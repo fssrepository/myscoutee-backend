@@ -25,3 +25,21 @@ Dependencies
 * cd /home/raxim/workspace/myscoutee/server/docker/images/mosquitto/
 * docker build --no-cache -t eclipse-mosquitto:2.0.18-ext_auth .
 * docker build --no-cache -t myscoutee-nginx:0.1.0 .
+
+Frontend Runtime Sync (optional)
+--------------------------------
+* Dev one-time sync to nginx runtime folder:
+* ./server/docker/scripts/sync_frontend_assets.sh dev
+* Dev auto-sync (watch mode):
+* ./server/docker/scripts/sync_frontend_assets.sh dev watch
+* Prod one-time sync (from frontend docs build):
+* ./server/docker/scripts/sync_frontend_assets.sh prod
+
+Prod Image Mode (keeps dev compose untouched)
+---------------------------------------------
+* Build frontend production assets in standalone repo:
+* cd ../myscoutee-old && npm run build:prod
+* Sync assets into backend nginx app folder:
+* cd ../myscoutee-backend && ./server/docker/scripts/sync_frontend_assets.sh prod
+* Run dockerized stack with baked nginx image:
+* cd server && docker compose -f docker-compose.prod-image.yml up --build
