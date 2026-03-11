@@ -1,2 +1,2 @@
-# myscoutee-server
+# myscoutee-backend
 myscoutee backend
