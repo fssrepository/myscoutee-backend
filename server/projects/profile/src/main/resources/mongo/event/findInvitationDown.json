@@ -1,0 +1,167 @@
+[
+    {
+        "$match": {
+            "$expr": {
+                "$and": [
+                    {
+                        "$eq": [
+                            "$type",
+                            "E"
+                        ]
+                    },
+                    {
+                        "$eq": [
+                            "$status",
+                            "P"
+                        ]
+                    },
+                    {
+                        "$or": [
+                            {
+                                "$eq": [
+                                    "$autoInvite",
+                                    true
+                                ]
+                            },
+                            {
+                                "$gt": [
+                                    {
+                                        "$size": {
+                                            "$filter": {
+                                                "input": "$members",
+                                                "as": "member",
+                                                "cond": {
+                                                    "$and": [
+                                                        {
+                                                            "$eq": [
+                                                                "?#{#param.id}",
+                                                                "$$member.profile.$id"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "$eq": [
+                                                                "$$member.status",
+                                                                "I"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "$match": {
+            "$expr": {
+                "$and": [
+                    {
+                        "$lt": [
+                            "$updatedDate",
+                            {
+                                "$toDate": "?#{#param.offset[0]}"
+                            }
+                        ]
+                    },
+                    {
+                        "$in": [
+                            "$status",
+                            ":#{#status}"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "$sort": {
+            "updatedDate": -1
+        }
+    },
+    {
+        "$limit": "?#{#param.limit}"
+    },
+    {
+        "$addFields": {
+            "groupKey": {
+                "$dateToString": {
+                    "format": "?#{#param.groupKey}",
+                    "date": "$range.start"
+                }
+            }
+        }
+    },
+    {
+        "$addFields": {
+            "user": {
+                "$first": {
+                    "$filter": {
+                        "input": "$members",
+                        "as": "member",
+                        "cond": {
+                            "$and": [
+                                {
+                                    "$eq": [
+                                        "$$member.profile.$id",
+                                        "?#{#param.id}"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "$replaceRoot": {
+            "newRoot": {
+                "$mergeObjects": [
+                    {
+                        "item": "$$ROOT"
+                    },
+                    {
+                        "groupKey": "$groupKey",
+                        "role": {
+                            "$cond": [
+                                {
+                                    "$ifNull": [
+                                        "$user",
+                                        null
+                                    ]
+                                },
+                                "$user.role",
+                                null
+                            ]
+                        },
+                        "isPromotion": {
+                            "$cond": [
+                                {
+                                    "$ifNull": [
+                                        "$ref",
+                                        false
+                                    ]
+                                },
+                                true,
+                                false
+                            ]
+                        },
+                        "sortKey": {
+                            "$toLong": "$updatedDate"
+                        },
+                        "offset": [
+                            "$updatedDate"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+]

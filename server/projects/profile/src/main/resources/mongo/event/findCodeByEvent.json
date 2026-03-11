@@ -1,0 +1,29 @@
+[
+        {
+            "$match": {
+                "_id": "?0"
+            }
+        },
+        {
+            "$match": {
+                "info.members": { "$elemMatch": { "profile.$id": "?1" } }
+            }
+        },
+        {
+            "$unwind": "$info.members"
+        },
+        {
+            "$group": {
+                "_id": "$info.members._id",
+                "data": {
+                    "$first": "$info.members.code"
+                }
+            }
+        },
+        {
+            "$replaceRoot": {
+                "newRoot": { "code": "$data" }
+            }
+        }
+    ]
+    

@@ -1,0 +1,699 @@
+[
+    {
+        "_id": {
+            "$binary": "oEy7pm3PAx0lyLoCFSX6kg==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "name": "Event1",
+        "range": {
+            "start": {
+                "$date": "2021-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2021-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "P",
+        "rule": {
+            "priority": true,
+            "eventGrace": 50
+        },
+        "capacity": {
+            "min": 4,
+            "max": 6
+        },
+        "createdDate": {
+            "$date": "2021-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 1,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A"
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "pUQakRBTZ8lMwwVGHzQ3sg==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "name": "Event11",
+        "range": {
+            "start": {
+                "$date": "9999-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "9999-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "P",
+        "rule": {
+            "priority": true,
+            "eventGrace": 50
+        },
+        "capacity": {
+            "min": 4,
+            "max": 6
+        },
+        "createdDate": {
+            "$date": "2021-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 1,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A"
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "f0XjJP5nYzMiKNTVqFsTlg==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "name": "Event12",
+        "range": {
+            "start": {
+                "$date": "9999-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "9999-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "P",
+        "rule": {
+            "priority": true,
+            "eventGrace": 50
+        },
+        "capacity": {
+            "min": 2,
+            "max": 6
+        },
+        "createdDate": {
+            "$date": "2021-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 1,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A"
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "jEzsC2l500NzJTdJoWk7ow==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "name": "Event2",
+        "range": {
+            "start": {
+                "$date": "2021-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2021-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2021-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 2,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A"
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U"
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "vldSpDImQDm8GnsRzFMYJQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "yUSGxbxr2t/cEdXAbUbNvg==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "name": "Event31",
+        "range": {
+            "start": {
+                "$date": "2019-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2019-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2019-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 2,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A"
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "L3VWbLpPSeuZZcjIFMQjUQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U"
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "7kUEsQ+WrRXY03is9usQhQ==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "multislot": true,
+        "name": "Event32",
+        "range": {
+            "start": {
+                "$date": "2020-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2020-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2020-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 4,
+        "capacity": {
+            "min": 2,
+            "max": 5
+        },
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A",
+                "createdDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                },
+                "updatedDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "L3VWbLpPSeuZZcjIFMQjUQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2020-01-30T04:17:08.000Z"
+                },
+                "updatedDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8r2G5Lj5TmmGtJ3xBX0QZQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-02-25T04:17:08.000Z"
+                },
+                "updatedDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "0eEFqfhyTPyMFU6R2cD4BQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-01-25T04:17:08.000Z"
+                },
+                "updatedDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+            "$type": "03"
+        },
+        "items": [
+            {
+                "$ref": "events",
+                "$id": {
+                    "$binary": "5kGUdSWfGlTxSAq+VQAHlw==",
+                    "$type": "03"
+                }
+            },
+            {
+                "$ref": "events",
+                "$id": {
+                    "$binary": "YUhbtS1lqrUIaNFYPQtbtA==",
+                    "$type": "03"
+                }
+            },
+            {
+                "$ref": "events",
+                "$id": {
+                    "$binary": "4EWBmET0Y+DdMZTve7bhng==",
+                    "$type": "03"
+                }
+            }
+        ]
+    },
+    {
+        "_id": {
+            "$binary": "8Ev2c8o1pCw13zY02oBNrA==",
+            "$type": "03"
+        },
+        "type": "E",
+        "stageIdx": 0,
+        "name": "Event33",
+        "range": {
+            "start": {
+                "$date": "2021-01-30T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2021-11-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2021-01-30T04:17:08.000Z"
+        },
+        "numOfMembers": 2,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8r2G5Lj5TmmGtJ3xBX0QZQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U"
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "0eEFqfhyTPyMFU6R2cD4BQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U"
+            }
+        ],
+        "group": {
+            "$binary": "NkaorobBPrNUDApiL0o1tg==",
+            "$type": "03"
+        },
+        "createdBy": {
+            "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "5kGUdSWfGlTxSAq+VQAHlw==",
+            "$type": "03"
+        },
+        "type": "S",
+        "stageIdx": 1,
+        "slotIdx": 1,
+        "name": "EventItem32",
+        "range": {
+            "start": {
+                "$date": "2020-01-31T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2020-10-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2020-01-29T04:17:08.000Z"
+        },
+        "numOfMembers": 4,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A",
+                "createdDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "L3VWbLpPSeuZZcjIFMQjUQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2020-01-30T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8r2G5Lj5TmmGtJ3xBX0QZQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-02-25T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "0eEFqfhyTPyMFU6R2cD4BQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-01-25T04:17:08.000Z"
+                }
+            }
+        ],
+        "createdBy": {
+            "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "4EWBmET0Y+DdMZTve7bhng==",
+            "$type": "03"
+        },
+        "type": "S",
+        "stageIdx": 1,
+        "slotIdx": 2,
+        "name": "EventItem32",
+        "range": {
+            "start": {
+                "$date": "2020-01-31T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2020-10-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2020-01-29T04:17:08.001Z"
+        },
+        "numOfMembers": 4,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A",
+                "createdDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "L3VWbLpPSeuZZcjIFMQjUQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "P",
+                "createdDate": {
+                    "$date": "2020-01-30T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8r2G5Lj5TmmGtJ3xBX0QZQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-02-25T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "0eEFqfhyTPyMFU6R2cD4BQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-01-25T04:17:08.000Z"
+                }
+            }
+        ],
+        "createdBy": {
+            "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+            "$type": "03"
+        }
+    },
+    {
+        "_id": {
+            "$binary": "YUhbtS1lqrUIaNFYPQtbtA==",
+            "$type": "03"
+        },
+        "type": "S",
+        "stageIdx": 2,
+        "name": "EventItem33",
+        "range": {
+            "start": {
+                "$date": "2020-01-31T04:17:08.000Z"
+            },
+            "end": {
+                "$date": "2020-10-17T09:22:01.000Z"
+            }
+        },
+        "status": "A",
+        "createdDate": {
+            "$date": "2020-01-29T04:17:08.000Z"
+        },
+        "numOfMembers": 4,
+        "members": [
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A",
+                "createdDate": {
+                    "$date": "2019-01-02T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "L3VWbLpPSeuZZcjIFMQjUQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "A",
+                "createdDate": {
+                    "$date": "2020-01-30T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "8r2G5Lj5TmmGtJ3xBX0QZQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-02-25T04:17:08.000Z"
+                }
+            },
+            {
+                "profile": {
+                    "$ref": "profiles",
+                    "$id": {
+                        "$binary": "0eEFqfhyTPyMFU6R2cD4BQ==",
+                        "$type": "03"
+                    }
+                },
+                "status": "A",
+                "role": "U",
+                "createdDate": {
+                    "$date": "2019-01-25T04:17:08.000Z"
+                }
+            }
+        ],
+        "createdBy": {
+            "$binary": "8EtHJWvMTFOkPpQ5p9yRrQ==",
+            "$type": "03"
+        }
+    }
+]

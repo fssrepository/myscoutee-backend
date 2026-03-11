@@ -1,0 +1,96 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.0'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'jacoco'
+	id "org.sonarqube" version "4.2.1.3168"
+}
+
+group = 'com.raxim'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+	mavenCentral()
+}
+
+jar {
+    enabled = false
+	bootJar.enabled = true
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+dependencies {
+	implementation 'com.google.firebase:firebase-admin:7.1.1'
+	implementation 'org.apache.httpcomponents:httpasyncclient'
+
+	implementation ('com.querydsl:querydsl-mongodb') {
+		exclude group: 'org.mongodb', module: 'mongo-java-driver'
+	}
+	
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.security:spring-security-data'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.springframework.boot:spring-boot-starter-integration'
+	implementation 'org.springframework.integration:spring-integration-mqtt:6.1.4'
+
+	implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+
+	implementation 'com.itextpdf:itextpdf:5.5.13.2'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.integration:spring-integration-test'
+	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.7.0'
+}
+
+tasks.named('jacocoTestReport') {
+	reports {
+		xml.required = true
+		xml.destination file("${buildDir}/reports/jacoco.xml")
+	}
+	dependsOn test
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+
+	finalizedBy jacocoTestReport
+}
+
+sonar {
+    properties {
+		property 'sonar.projectKey', 'fssrepository_myscoutee_AYnBBjoHSeqh8PdnQJtM'
+		property 'sonar.projectName', 'myscoutee'
+		property 'sonar.token', 'sqp_f93823b500ff50e1259d61e67f709d22446e3369'
+        property 'sonar.host.url', 'http://localhost:9000'
+		property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco.xml"
+    }
+}
+
+tasks.named('sonar').configure {
+    dependsOn test
+}
