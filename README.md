@@ -28,6 +28,8 @@ Dependencies
 
 Frontend Runtime Sync (optional)
 --------------------------------
+* `cd server && docker-compose up` now starts `frontend-sync` automatically and keeps watching continuously while Docker is alive (`../myscoutee-old/dev` -> `server/docker/conf/nginx/app/myscoutee`)
+* first run after pulling changes: `cd server && docker-compose up --build`
 * Dev one-time sync to nginx runtime folder:
 * ./server/docker/scripts/sync_frontend_assets.sh dev
 * Dev auto-sync (watch mode):

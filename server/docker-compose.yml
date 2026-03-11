@@ -105,3 +105,26 @@ services:
     depends_on:
       - mongodb
       - mqtt
+  frontend-sync:
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:0.1.0}
+    build:
+      context: .
+      dockerfile: docker/images/frontend-sync/Dockerfile
+    container_name: frontend-sync
+    hostname: frontend-sync
+    user: "${UID:-1000}:${GID:-1000}"
+    command: >
+      bash -c "while true; do
+      bash /scripts/sync_frontend_assets.sh dev watch || true;
+      echo 'frontend-sync watcher restarting in 3s...';
+      sleep 3;
+      done"
+    environment:
+      FRONTEND_SOURCE_DIR: /workspace/myscoutee-old/dev
+      NGINX_HTML_DIR: /workspace/nginx-html
+    volumes:
+      - ../../myscoutee-old:/workspace/myscoutee-old:ro
+      - ./docker/conf/nginx/app/myscoutee:/workspace/nginx-html
+      - ./docker/scripts/sync_frontend_assets.sh:/scripts/sync_frontend_assets.sh:ro
+    networks:
+      - myscoutee
