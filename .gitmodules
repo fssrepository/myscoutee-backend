@@ -1,4 +1,4 @@
 [submodule "frontend"]
 	path = frontend
-	url = file:///home/raxim/workspace/myscoutee-old
-	branch = frontend-split
+	url = https://github.com/fssrepository/myscoutee-old.git
+	branch = master
