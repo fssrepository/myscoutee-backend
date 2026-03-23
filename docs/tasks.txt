@@ -65,3 +65,53 @@ client token expired => refresh (firebase)
 jwt auth plugin in go and c does exist (check implementation)
 
 car - autocompleter on model
+
+mqtt
+----
+
+serviceWorker = true in angular json in dev section missing!!!
+
+spring server:
+2) bagde notification if the active page is diferrent than chat
+3) scroll to bottom when new message arrives
+----------------------
+5) b) event / car -> car changed, then send notification for the event to the members of the event
+6) => acl mqtt 4) => change mongo queries to make it without limit but passing an id in the where close.
+7) while querying the messages to the chat window, make members anonymous, who left the chat before,
+but message being sent by them remains. event.members have to have a updatedTime, so it can be compared.
+ -> male or female should be different image and based on senderId a number should be added to defferentiate
+ the anonymous user from each other. members.idx? picture image big number in the middle??
+8) send notification and mqtt message if the currentProfile is not in the same group then the sender's profile.
+9) message is being sent only to active event members
+10) if the route has mqtt, the spring server shouldn't send push to mqtt. (message.type=mqtt + currentPage = topic to be sent)
+
+mqtt
+------
+4) no acl for the time being -> acl sends url as topic param also (chat window url param) -> spring server verifies that url is for the profile.
+(mongo query without limit, but with additional id param in the where close 
+-> change the queries for the page accordinly with additional optional parameter.)
+5) Popup notification, if you are inside chat window for different chat channel.
+
+ui:
+4) channel list screen and chat window ui
+-----
+6) when ui receives a message from spring server for the individual channel, it should know which item should update and how. (inside the list based on url or badges etc.)
+(when someone reads the message sends a type=control action=read with message id.
+the channel updates the item in the list on the current page based on the messageId
+and clears the last message item position of the profile image about read)
+
+angular cache:
+1) ngsw json version change, index.html cache-contol no-cache should be set
+2) Version your package.json file in your angular root folder
+“version": “3.0.5"
+3) Add output hashing every time you build your angular app.
+4) ng build --outputHashing=all
+
+(jovohet)
+ssl:
+1) dummy ssl for nginx on localhost -> check wss
+2) certbot
+
+(future)
+spring:
+1) upgrade to spring boot 3.2 (when it is released), and set spring to virtual threads (when it's released)
