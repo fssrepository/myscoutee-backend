@@ -3,6 +3,9 @@ https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with
 
 HLS blue: 217/88/57
 
+git submodule sync
+git submodule update --init --remote
+
 User Settings import.gradle set JAVA 17
 
 git config --global user.email {email}
