@@ -65,6 +65,8 @@ services:
       MONGODB_HOST: "mongodb"
       MONGODB_USERNAME: "guest"
       MONGODB_PASSWORD: "guest"
+      FIREBASE_ENABLED: "false"
+      DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
       JAVA_TOOL_OPTIONS: >
         -Xdebug

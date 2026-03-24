@@ -1,5 +1,3 @@
-version: "3.3"
-
 #the purpose it that no external folder, everything is inside the image (angular js files, nginx configs etc.)
 # that verion of image needs to be built -> it's handy as on production server i don't need to copy hunderds of files
 
@@ -95,6 +93,8 @@ services:
       MONGODB_HOST: "mongodb"
       MONGODB_USERNAME: "guest"
       MONGODB_PASSWORD: "guest"
+      FIREBASE_ENABLED: "false"
+      DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
       JAVA_TOOL_OPTIONS: >
               -Xdebug

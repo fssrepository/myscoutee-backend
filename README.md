@@ -15,8 +15,8 @@ Boot Up:
 * You need to have a firebase project and configure it properly in the repo. (cloud messaging + web app)
 * cd ./server
 * gradle build -x test
-* docker-compose build --no-cache (build context)
-* docker-compose up
+* docker compose build --no-cache (build context)
+* docker compose up
 * cd ./frontend
 * ng serve --ssl
 
@@ -28,8 +28,8 @@ Dependencies
 
 Frontend Runtime Sync (optional)
 --------------------------------
-* `cd server && docker-compose up` now starts `frontend-sync` automatically and keeps watching continuously while Docker is alive (`../myscoutee-old/dev` -> `server/docker/conf/nginx/app/myscoutee`)
-* first run after pulling changes: `cd server && docker-compose up --build`
+* `cd server && docker compose up` now starts `frontend-sync` automatically and keeps watching continuously while Docker is alive (`frontend/dev` -> `server/docker/conf/nginx/app/myscoutee`)
+* first run after pulling changes: `cd server && docker compose up --build`
 * Dev one-time sync to nginx runtime folder:
 * ./server/docker/scripts/sync_frontend_assets.sh dev
 * Dev auto-sync (watch mode):
@@ -39,9 +39,9 @@ Frontend Runtime Sync (optional)
 
 Prod Image Mode (keeps dev compose untouched)
 ---------------------------------------------
-* Build frontend production assets in standalone repo:
-* cd ../myscoutee-old && npm run build:prod
+* Build frontend production assets in the frontend submodule:
+* cd frontend && npm run build:prod
 * Sync assets into backend nginx app folder:
-* cd ../myscoutee-backend && ./server/docker/scripts/sync_frontend_assets.sh prod
+* cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod
 * Run dockerized stack with baked nginx image:
 * cd server && docker compose -f docker-compose.prod-image.yml up --build
