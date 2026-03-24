@@ -18,8 +18,7 @@ Boot Up:
 * gradle build -x test
 * docker compose build --no-cache
 * docker compose up
-* cd ./frontend
-* ng serve --ssl
+* frontend changes rebuild automatically through frontend-sync and are served on http://localhost
 
 Dependencies
 ------------

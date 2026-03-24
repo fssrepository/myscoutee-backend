@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM node:22-alpine
 
 RUN apk add --no-cache bash rsync inotify-tools
 

@@ -112,16 +112,19 @@ services:
     user: "${UID:-1000}:${GID:-1000}"
     command: >
       bash -c "while true; do
-      bash /scripts/sync_frontend_assets.sh dev watch || true;
+      bash /scripts/frontend_auto_watch.sh || true;
       echo 'frontend-sync watcher restarting in 3s...';
       sleep 3;
       done"
     environment:
+      FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
       NGINX_HTML_DIR: /workspace/nginx-html
+      NG_BUILD_MAX_WORKERS: "12"
     volumes:
-      - ../frontend:/workspace/frontend:ro
+      - ../frontend:/workspace/frontend
       - ./docker/conf/nginx/app/myscoutee:/workspace/nginx-html
       - ./docker/scripts/sync_frontend_assets.sh:/scripts/sync_frontend_assets.sh:ro
+      - ./docker/scripts/frontend_auto_watch.sh:/scripts/frontend_auto_watch.sh:ro
     networks:
       - myscoutee
