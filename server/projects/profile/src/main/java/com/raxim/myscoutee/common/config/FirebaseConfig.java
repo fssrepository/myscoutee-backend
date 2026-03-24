@@ -24,11 +24,19 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void init() throws IOException {
+        if (!configProperties.isFirebaseEnabled()) {
+            return;
+        }
+
         String serviceAccountPath = this.configProperties.getFirebaseServiceAccountPath();
 
         if (serviceAccountPath == null || serviceAccountPath.isBlank()) {
             throw new IOException("Firebase service account path is not configured. "
                     + "Set 'config.firebase-service-account-path' or FIREBASE_SERVICE_ACCOUNT_PATH.");
+        }
+
+        if (!FirebaseApp.getApps().isEmpty()) {
+            return;
         }
 
         InputStream serviceAccount = new FileInputStream(serviceAccountPath);

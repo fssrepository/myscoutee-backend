@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.firebase.FirebaseService;
+import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.common.config.properties.MqttProperties;
 
 @Configuration
@@ -23,12 +24,16 @@ public class WebSecurityConfig {
     private final FirebaseService firebaseService;
     private final FirebaseAuthenticationProvider firebaseProvider;
     private final MqttProperties mqttProperties;
+    private final ConfigProperties configProperties;
 
     public WebSecurityConfig(FirebaseService firebaseService,
-            FirebaseAuthenticationProvider firebaseProvider, MqttProperties mqttProperties) {
+            FirebaseAuthenticationProvider firebaseProvider,
+            MqttProperties mqttProperties,
+            ConfigProperties configProperties) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
         this.mqttProperties = mqttProperties;
+        this.configProperties = configProperties;
     }
 
     @Bean
@@ -57,7 +62,7 @@ public class WebSecurityConfig {
     }
 
     private FirebaseFilter tokenAuthorizationFilter() {
-        return new FirebaseFilter(firebaseService, mqttProperties);
+        return new FirebaseFilter(firebaseService, mqttProperties, configProperties);
     }
 
     @Bean

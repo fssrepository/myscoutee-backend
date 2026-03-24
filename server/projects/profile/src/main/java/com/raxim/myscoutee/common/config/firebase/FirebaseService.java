@@ -72,7 +72,7 @@ public class FirebaseService {
                 profile.setFirstName(group.getName());
                 profile.setGroup(group.getId());
 
-                String role = config.getAdminUser().equals(username) ? "A" : "U";
+                String role = Objects.equals(config.getAdminUser(), username) ? "A" : "U";
                 profile.setRole(role);
                 return profile;
             }).toList();
