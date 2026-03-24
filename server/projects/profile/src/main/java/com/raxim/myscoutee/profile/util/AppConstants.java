@@ -63,21 +63,21 @@ public class AppConstants {
         public static final String SCHEDULE_RANDOM_GROUP = "RANDOM_GROUP";
 
         public static final String FIREBASE = "firebase";
-        public static final String MQTT = "mqtt";
+        public static final String CHAT = "chat";
 
-        public static final String MQTT_SENT = "s";
-        public static final String MQTT_RECEIVED = "r";
-        public static final String MQTT_WRITING = "w";
+        public static final String CHAT_SENT = "s";
+        public static final String CHAT_RECEIVED = "r";
+        public static final String CHAT_WRITING = "w";
 
-        public static final Set<String> MQTT_CONTROL = new HashSet<>();
+        public static final Set<String> CHAT_CONTROL = new HashSet<>();
 
         static {
-                MQTT_CONTROL.add(MQTT_SENT);
-                MQTT_CONTROL.add(MQTT_RECEIVED);
-                MQTT_CONTROL.add(MQTT_WRITING);
+                CHAT_CONTROL.add(CHAT_SENT);
+                CHAT_CONTROL.add(CHAT_RECEIVED);
+                CHAT_CONTROL.add(CHAT_WRITING);
         }
 
-        public static final String MQTT_MSG = "p";
+        public static final String CHAT_MSG = "p";
 
         public static final String SEPARATE_PROFILE = "i";
 }

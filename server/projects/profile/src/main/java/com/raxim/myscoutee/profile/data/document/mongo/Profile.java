@@ -172,9 +172,6 @@ public class Profile implements Cloneable {
     @JsonIgnore
     private LocalDateTime lastActive;
 
-    // is mqtt connection active?
-    @JsonIgnore
-    private Boolean mqtt;
 
     // which page the profile in?
     @JsonIgnore
@@ -454,13 +451,6 @@ public class Profile implements Cloneable {
         return ACTIVE;
     }
 
-    public Boolean getMqtt() {
-        return mqtt;
-    }
-
-    public void setMqtt(Boolean mqtt) {
-        this.mqtt = mqtt;
-    }
 
     public String getCurrentPage() {
         return currentPage;

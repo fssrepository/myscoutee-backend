@@ -25,8 +25,6 @@ public class DBMessage {
     @JsonProperty(value = "eventId")
     private UUID eventId;
 
-    // control, mqtt=if profile.mqtt is true, and the topic is the current page url
-    // of the profile then does not send as mosquitto handles
     @JsonProperty(value = "type")
     private String type;
 

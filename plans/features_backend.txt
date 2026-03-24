@@ -6,7 +6,6 @@ cloudflare reverse proxy
 base44 landing page (summary, GDPR popup)
 angular page on different server (login page, exact functionality)
 separate sensitive server passwords from the main code base (won't be uploaded to the github)
-redis streams for chat (remove mosquitto)
 Logo - heart in a circle by cutting the bottom part, so it can be an M and put a star on it
 link (booking.com link which backend scraps with og: tags (Open Graph technology - you can scrap summary from html))
 (the message area and the send message area - typing, read avatars etc. - normal chat, like facebook messenger)
@@ -47,7 +46,6 @@ manager role (if one of the asset of yours has been asigned to an event, you are
 Base Design:
 -------
 Login button - either test users popup or login screen popup
-Menu - will be updated based on websocket/mqtt message
 Main page - Logo + text on every main page with icon bar on the right side
 Filter buttons/Filter textbox - should be small (not the default angular one by saving space)
 badge - red counter, if more than 9, than 9+ (so only 2 digits appears - space)

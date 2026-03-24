@@ -12,7 +12,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.mongodb.client.model.geojson.Point;
 import com.raxim.myscoutee.profile.data.document.mongo.Event;
-import com.raxim.myscoutee.profile.data.document.mongo.EventWithToken;
 import com.raxim.myscoutee.profile.data.dto.rest.CodeDTO;
 import com.raxim.myscoutee.profile.data.dto.rest.EventDTO;
 import com.raxim.myscoutee.profile.data.dto.rest.FeedbackDTO;
@@ -94,9 +93,6 @@ public interface EventRepository extends MongoRepository<Event, UUID> {
                         @Param("eventId") UUID eventId,
                         @Param("userUid") UUID userUid);
 
-        @Aggregation(pipeline = "findTokensByEvent")
-        Optional<EventWithToken> findTokensByEvent(@Param("eventId") UUID eventId,
-                        @Param("profileId") UUID profileId);
 
         @Aggregation(pipeline = "findParents")
         List<Event> findParents(

@@ -111,42 +111,9 @@ New TODO:
     sorsolas, add reverse order score also
 
     check whether harmonic mean is the same how football ranking works
-37) multicast message
-        /*
-     * if (event.getRef() != null) {
-     * promotionRepository.findPromotionByEvent(event.getRef().getId()).ifPresent(
-     * promotion -> {
-     * promotion.setCnt(promotion.getEvents().stream().mapToInt(Event::getCnt).sum()
-     * );
-     * promotionRepository.save(promotion);
-     * });
-     * 
-     * if (action != null) {
-     * List<String> deviceKeys = eventRepository.findTokensByEvent(
-     * new UUID[] { event.getRef().getId() }).stream()
-     * .map(Token::getDeviceKey).collect(Collectors.toList());
-     * 
-     * if (!deviceKeys.isEmpty()) {
-     * MulticastMessage message = MulticastMessage.builder()
-     * .setNotification(Notification.builder()
-     * .setTitle("Event + " + action)
-     * .setBody("Promoter " + action +
-     * " the " + event.getName() + " event!")
-     * .build())
-     * .addAllTokens(deviceKeys)
-     * .build();
-     * 
-     * try {
-     * FirebaseMessaging.getInstance().sendMulticast(message);
-     * } catch (FirebaseMessagingException e) {
-     * e.printStackTrace();
-     * }
-     * System.out.println("Successfully sent message");
-     * }
-     * }
-     * }
-     * 
-     */
+37) push notifications
+    notify invited devices when promotion or event state changes
+    keep this aligned with the current Firebase notification path, without the old code snippet
 38) promoter accept
             // when the promoter accepts, can see the members, before that not!
         // instead of "clone" use name "pick or select"
@@ -287,15 +254,9 @@ New TODO:
        the event was messed up simply, and there wasn't any team work at all,
        or we just personally rated bad all of them in the team
 52) chat
-    (chatgpt)
-
-    mqtt - mosquitto module in Go to call the spring application on connection, hence can check the json token - json token is in the username.
-
-    nginx forward -> load balancer in go - websocket (can extract mqtt messages - topic, with paho library.) shard by topic to forward to mosquitto server
-
-    with load balancer in go we can also check json token first, and just forward connection, if json token is verified. (that option does not need any customisation of mosquitto)
-
-    based on mosquito docker image, we can create a docker file includes the auth_plug module
+    initial load should stay on http
+    live updates should run over websocket
+    redis streams is the server-side transport behind the websocket channel
 53) terkep:
     el lehet kerulni a terkep szervert - event, auto-complement to search for location
 

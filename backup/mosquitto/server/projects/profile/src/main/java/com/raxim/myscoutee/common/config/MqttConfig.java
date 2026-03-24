@@ -2,6 +2,7 @@ package com.raxim.myscoutee.common.config;
 
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -17,13 +18,13 @@ import org.springframework.messaging.handler.annotation.Header;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.common.config.properties.MqttProperties;
-import com.raxim.myscoutee.common.util.JsonUtil;
 import com.raxim.myscoutee.profile.converter.MqttMessageConverter;
 import com.raxim.myscoutee.profile.handler.MqttMessageHandler;
 import com.raxim.myscoutee.profile.service.MessageService;
 
 @Configuration
 @EnableIntegration
+@ConditionalOnProperty(prefix = "config", name = "mqtt-enabled", havingValue = "true")
 public class MqttConfig {
 
     @Autowired

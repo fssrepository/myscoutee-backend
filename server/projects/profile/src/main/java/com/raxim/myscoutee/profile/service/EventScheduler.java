@@ -148,7 +148,7 @@ public class EventScheduler {
             DBMessage dbMessage = new DBMessage();
             dbMessage.setId(UUID.randomUUID());
             dbMessage.setEventId(event.getId());
-            dbMessage.setType(AppConstants.MQTT_MSG);
+            dbMessage.setType(AppConstants.CHAT_MSG);
 
             List<UUID> profileIds = event.getMembers().stream().map(member -> member.getProfile().getId()).toList();
             dbMessage.setTos(profileIds);

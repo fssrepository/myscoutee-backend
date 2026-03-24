@@ -14,34 +14,33 @@ Boot Up:
 -------
 * You need to have a firebase project and configure it properly in the repo. (cloud messaging + web app)
 * cd ./server
+* ./docker/scripts/bootstrap_mongodb_seed.sh
 * gradle build -x test
-* docker compose build --no-cache (build context)
+* docker compose build --no-cache
 * docker compose up
 * cd ./frontend
 * ng serve --ssl
 
 Dependencies
 ------------
-* cd /home/raxim/workspace/myscoutee/server/docker/images/mosquitto/
-* docker build --no-cache -t eclipse-mosquitto:2.0.18-ext_auth .
-* docker build --no-cache -t myscoutee-nginx:0.1.0 .
+* docker build --no-cache -t myscoutee-nginx:0.1.0 ./server/docker/images/nginx
 
 Frontend Runtime Sync (optional)
 --------------------------------
-* `cd server && docker compose up` now starts `frontend-sync` automatically and keeps watching continuously while Docker is alive (`frontend/dev` -> `server/docker/conf/nginx/app/myscoutee`)
+* `cd server && docker compose up` starts `frontend-sync` automatically and keeps watching continuously while Docker is alive (`frontend/dev` -> `server/docker/conf/nginx/app/myscoutee`)
 * first run after pulling changes: `cd server && docker compose up --build`
 * Dev one-time sync to nginx runtime folder:
-* ./server/docker/scripts/sync_frontend_assets.sh dev
+* `./server/docker/scripts/sync_frontend_assets.sh dev`
 * Dev auto-sync (watch mode):
-* ./server/docker/scripts/sync_frontend_assets.sh dev watch
+* `./server/docker/scripts/sync_frontend_assets.sh dev watch`
 * Prod one-time sync (from frontend docs build):
-* ./server/docker/scripts/sync_frontend_assets.sh prod
+* `./server/docker/scripts/sync_frontend_assets.sh prod`
 
 Prod Image Mode (keeps dev compose untouched)
 ---------------------------------------------
 * Build frontend production assets in the frontend submodule:
-* cd frontend && npm run build:prod
+* `cd frontend && npm run build:prod`
 * Sync assets into backend nginx app folder:
-* cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod
+* `cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod`
 * Run dockerized stack with baked nginx image:
-* cd server && docker compose -f docker-compose.prod-image.yml up --build
+* `cd server && docker compose -f docker-compose.prod-image.yml up --build`

@@ -1,36 +1,22 @@
-portal_db = db.getSiblingDB("myscoutee_db");
-portal_db.createCollection("profiles");
-portal_db.createCollection("cars");
-portal_db.createCollection("events");
-portal_db.createCollection("items");
-portal_db.createCollection("feedbacks");
-portal_db.createCollection("users");
-portal_db.createCollection("groups");
-portal_db.createCollection("roles");
-portal_db.createCollection("messages");
-portal_db.createCollection("promotions");
-portal_db.createCollection("ideas");
-portal_db.createCollection("jobs");
-portal_db.createCollection("settings");
-portal_db.createCollection("forms");
-portal_db.createCollection("tokens");
-portal_db.createCollection("badges");
-portal_db.createCollection("paths");
-portal_db.createCollection("members");
+const portalDb = db.getSiblingDB('myscoutee_db');
+const requiredCollections = ['groups', 'profiles', 'users', 'events', 'messages'];
+const existingCollections = new Set(portalDb.getCollectionNames());
 
-portal_db.profiles.createIndex( { position : "2dsphere" } );
+requiredCollections.forEach(collectionName => {
+  if (!existingCollections.has(collectionName)) {
+    portalDb.createCollection(collectionName);
+  }
+});
 
-portal_db.events.createIndex( { position : "2dsphere" } );
+portalDb.users.createIndex({ email: 1 }, { unique: true });
+portalDb.messages.createIndex({ eventId: 1, createdDate: 1 });
 
-portal_db.promotions.createIndex( { "item.info.position" : "2dsphere" } );
-
-portal_db.groups.createIndex( { position : "2dsphere" } );
-
-portal_db.createUser(
-  {
-    user: "guest",
-    pwd: "guest",
+if (!portalDb.getUser('guest')) {
+  portalDb.createUser({
+    user: 'guest',
+    pwd: 'guest',
     roles: [
-      { role: "readWrite", db: "myscoutee_db" }
+      { role: 'readWrite', db: 'myscoutee_db' }
     ]
   });
+}

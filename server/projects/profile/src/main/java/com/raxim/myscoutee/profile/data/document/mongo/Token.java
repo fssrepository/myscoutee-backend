@@ -17,7 +17,7 @@ public class Token {
     @JsonProperty(value = "deviceKey")
     private String deviceKey;
 
-    // mqtt, firebase
+    // chat, firebase
     @JsonIgnore
     private String type;
 

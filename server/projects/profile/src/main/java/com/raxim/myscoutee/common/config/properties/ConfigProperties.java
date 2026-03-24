@@ -9,6 +9,7 @@ public class ConfigProperties {
     private String adminUser;
     private String firebaseServiceAccountPath;
     private boolean firebaseEnabled = false;
+    private boolean chatOnlyMode = false;
     private String devUser = "dev@myscoutee.local";
 
     public String getAdminUser() {
@@ -33,6 +34,14 @@ public class ConfigProperties {
 
     public void setFirebaseEnabled(boolean firebaseEnabled) {
         this.firebaseEnabled = firebaseEnabled;
+    }
+
+    public boolean isChatOnlyMode() {
+        return chatOnlyMode;
+    }
+
+    public void setChatOnlyMode(boolean chatOnlyMode) {
+        this.chatOnlyMode = chatOnlyMode;
     }
 
     public String getDevUser() {

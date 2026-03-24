@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseToken;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.common.config.properties.MqttProperties;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,16 +21,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class FirebaseFilter extends OncePerRequestFilter {
     private static final String AUTH_FIREBASE = "X-Authorization-Firebase";
-    private static final String AUTH_USER = "X-Authorization-User";
     private static final String AUTH_LINK = "X-Authorization-Link";
+    private static final String AUTHORIZATION = "Authorization";
 
     private final FirebaseService firebaseService;
-    private final MqttProperties mqttProperties;
     private final ConfigProperties configProperties;
 
-    public FirebaseFilter(FirebaseService firebaseService, MqttProperties mqttProperties, ConfigProperties configProperties) {
+    public FirebaseFilter(FirebaseService firebaseService, ConfigProperties configProperties) {
         this.firebaseService = firebaseService;
-        this.mqttProperties = mqttProperties;
         this.configProperties = configProperties;
     }
 
@@ -46,31 +43,22 @@ public class FirebaseFilter extends OncePerRequestFilter {
             return;
         }
 
-        String xAuth = request.getHeader(AUTH_FIREBASE);
-        if (xAuth == null || xAuth.isBlank()) {
-
-            if (request.getRequestURI().startsWith("/mqtt")
-                    && request.getRemoteAddr().equals(mqttProperties.getServerIp())) {
-
-                xAuth = request.getHeader(AUTH_USER);
-                if (xAuth != null && !xAuth.isBlank()) {
-                    UserDetails userDetails = firebaseService.loadUserById(xAuth);
-                    setAuthentication(userDetails, null);
-                }
-            }
+        String firebaseToken = extractFirebaseToken(request);
+        if (firebaseToken == null || firebaseToken.isBlank()) {
             filterChain.doFilter(request, response);
-        } else {
-            try {
-                FirebaseCredential credential = parseToken(xAuth);
-                String xLink = request.getHeader(AUTH_LINK);
+            return;
+        }
 
-                UserDetails userDetails = firebaseService.loadUserByUsername(credential.getEmail(), xLink, request.getRequestURI());
-                setAuthentication(userDetails, credential);
+        try {
+            FirebaseCredential credential = parseToken(firebaseToken);
+            String xLink = request.getHeader(AUTH_LINK);
 
-                filterChain.doFilter(request, response);
-            } catch (FirebaseTokenInvalidException e) {
-                throw new SecurityException(e);
-            }
+            UserDetails userDetails = firebaseService.loadUserByUsername(credential.getEmail(), xLink, request.getRequestURI());
+            setAuthentication(userDetails, credential);
+
+            filterChain.doFilter(request, response);
+        } catch (FirebaseTokenInvalidException e) {
+            throw new SecurityException(e);
         }
     }
 
@@ -85,16 +73,6 @@ public class FirebaseFilter extends OncePerRequestFilter {
     }
 
     private void authenticateWithoutFirebase(HttpServletRequest request) {
-        if (request.getRequestURI().startsWith("/mqtt")
-                && request.getRemoteAddr().equals(mqttProperties.getServerIp())) {
-            String profileId = request.getHeader(AUTH_USER);
-            if (profileId != null && !profileId.isBlank()) {
-                UserDetails userDetails = firebaseService.loadUserById(profileId);
-                setAuthentication(userDetails, null);
-                return;
-            }
-        }
-
         String devUser = configProperties.getDevUser();
         if (devUser == null || devUser.isBlank()) {
             return;
@@ -105,6 +83,22 @@ public class FirebaseFilter extends OncePerRequestFilter {
                 request.getHeader(AUTH_LINK),
                 request.getRequestURI());
         setAuthentication(userDetails, null);
+    }
+
+    private String extractFirebaseToken(HttpServletRequest request) {
+        String token = request.getHeader(AUTH_FIREBASE);
+        if (token != null && !token.isBlank()) {
+            return token;
+        }
+        String authorization = request.getHeader(AUTHORIZATION);
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            return authorization.substring("Bearer ".length()).trim();
+        }
+        String queryToken = request.getParameter("token");
+        if (queryToken != null && !queryToken.isBlank()) {
+            return queryToken.trim();
+        }
+        return null;
     }
 
     private void setAuthentication(UserDetails userDetails, Object credentials) {

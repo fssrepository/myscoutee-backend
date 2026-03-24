@@ -15,7 +15,6 @@ import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider
 import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.firebase.FirebaseService;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.common.config.properties.MqttProperties;
 
 @Configuration
 @EnableWebSecurity
@@ -23,16 +22,13 @@ public class WebSecurityConfig {
 
     private final FirebaseService firebaseService;
     private final FirebaseAuthenticationProvider firebaseProvider;
-    private final MqttProperties mqttProperties;
     private final ConfigProperties configProperties;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
-            MqttProperties mqttProperties,
             ConfigProperties configProperties) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
-        this.mqttProperties = mqttProperties;
         this.configProperties = configProperties;
     }
 
@@ -53,16 +49,23 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/i18n_messages", "/admin/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(authorizeRequests -> {
+                    authorizeRequests.requestMatchers("/health", "/metrics", "/shutdown", "/error").permitAll();
+                    if (configProperties.isChatOnlyMode()) {
+                        authorizeRequests.requestMatchers("/activities/chats/**").authenticated()
+                                .anyRequest().denyAll();
+                    } else {
+                        authorizeRequests.requestMatchers("/i18n_messages", "/admin/**").permitAll()
+                                .anyRequest().authenticated();
+                    }
+                })
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .csrf(csrf -> csrf.disable());
         return http.build();
     }
 
     private FirebaseFilter tokenAuthorizationFilter() {
-        return new FirebaseFilter(firebaseService, mqttProperties, configProperties);
+        return new FirebaseFilter(firebaseService, configProperties);
     }
 
     @Bean

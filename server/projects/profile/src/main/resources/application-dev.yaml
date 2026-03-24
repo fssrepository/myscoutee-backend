@@ -15,6 +15,7 @@ config:
   adminUser: ${ADMIN_USER:myscoutee@gmail.com}
   firebase-enabled: ${FIREBASE_ENABLED:false}
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:./secrets/firebase-service-account.json}
+  chat-only-mode: ${CHAT_ONLY_MODE:true}
   dev-user: ${DEV_USER:dev@myscoutee.local}
 
 fcm:
@@ -35,18 +36,12 @@ spring:
     mongodb:
       host: ${MONGODB_HOST:localhost}
       port: ${MONGODB_PORT:27017}
-      #authentication-database: ${MONGODB_AUTHENTICATION_DATABASE:admin}
       username: ${MONGODB_USERNAME:guest}
       password: ${MONGODB_PASSWORD:guest}
       database: ${MONGODB_DATABASE:myscoutee_db}
-  mqtt:
-    client-id: spring
-    url: tcp://mqtt:1883
-    username: spring
-    password: pwd
-    default-topic: channels/pages/#
-    timeout: 20000
-    server-ip: 172.18.0.2
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 
 logging:
   level:

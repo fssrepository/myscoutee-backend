@@ -20,8 +20,6 @@ services:
       - 443:443
       - 27017-27019:27017-27019
       - 5005:5005
-      - 1883:1883
-      - 8883:8883
     volumes:
       - ./docker/conf/nginx/keys:/etc/nginx/keys:ro
       - ./data/certbot/conf:/etc/letsencrypt
@@ -30,7 +28,7 @@ services:
       - myscoutee
     depends_on:
       - mongodb
-      - mqtt
+      - redis
       - profilemanagement
   mongodb:
     image: ${MONGO_IMAGE}
@@ -46,13 +44,10 @@ services:
       - ./docker/scripts:/scripts
     networks:
       - myscoutee
-  mqtt:
-    image: ${MOSQUITTO_IMAGE_EXT_AUTH}
-    container_name: mqtt
-    volumes:
-      - ./docker/conf/mosquitto:/mosquitto/config
-      - ./data/mosquitto/data:/mosquitto/data:rw
-      - ./data/mosquitto/log:/mosquitto/log:rw
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis
+    hostname: redis
     networks:
       - myscoutee
   profilemanagement:
@@ -65,6 +60,8 @@ services:
       MONGODB_HOST: "mongodb"
       MONGODB_USERNAME: "guest"
       MONGODB_PASSWORD: "guest"
+      SPRING_DATA_REDIS_HOST: "redis"
+      SPRING_DATA_REDIS_PORT: "6379"
       FIREBASE_ENABLED: "false"
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
@@ -77,4 +74,4 @@ services:
       - myscoutee
     depends_on:
       - mongodb
-      - mqtt
+      - redis
