@@ -1,7 +1,0 @@
-Mosquitto-related task notes kept from the pre-cleanup plan:
-
-52) chat
-    mqtt - mosquitto module in Go to call the spring application on connection, hence can check the json token - json token is in the username.
-    nginx forward -> load balancer in go - websocket (can extract mqtt messages - topic, with paho library.) shard by topic to forward to mosquitto server
-    with load balancer in go we can also check json token first, and just forward connection, if json token is verified. (that option does not need any customisation of mosquitto)
-    based on mosquitto docker image, we can create a docker file includes the auth_plug module

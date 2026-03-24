@@ -1,4 +1,0 @@
-Mosquitto-related feature notes kept from the pre-cleanup plan:
-
-- redis streams for chat (remove mosquitto)
-- Menu - will be updated based on websocket/mqtt message
