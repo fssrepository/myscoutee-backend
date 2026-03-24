@@ -1,6 +1,0 @@
-export CC=gcc
-export CFLAGS="-g"
-export CXXFLAGS="-g"
-make clean
-auto/configure --with-debug --without-select_module --without-poll_module
-make
