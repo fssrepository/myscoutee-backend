@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.dto.game;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
 
 public final class GameDtos {
@@ -9,6 +10,7 @@ public final class GameDtos {
     }
 
     public record UserGameCardsQueryRequestDto(
+            String userId,
             UserGameFilterPreferencesDto filterPreferences,
             String cursor,
             Integer pageSize) {
@@ -17,6 +19,7 @@ public final class GameDtos {
     public record UserGameCardsQueryResponseDto(
             Integer filterCount,
             List<String> cardUserIds,
-            String nextCursor) {
+            String nextCursor,
+            List<UserDto> users) {
     }
 }

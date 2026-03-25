@@ -1,0 +1,249 @@
+package com.raxim.myscoutee.profile.data.document.mongo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "users")
+public class Users {
+    @Id
+    private String id;
+    private String name;
+    private Integer age;
+    private String birthday;
+    private String city;
+    private String height;
+    private String physique;
+    private List<String> languages = new ArrayList<>();
+    private String horoscope;
+    private String initials;
+    private String gender;
+    private String statusText;
+    private String hostTier;
+    private String traitLabel;
+    private Integer completion;
+    private String headline;
+    private String about;
+    private Double affinity;
+    private LocationCoordinatesRecord locationCoordinates;
+    private List<String> images = new ArrayList<>();
+    private UserImpressionsRecord impressions;
+    private String profileStatus;
+    private UserActivitiesRecord activities;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getPhysique() {
+        return physique;
+    }
+
+    public void setPhysique(String physique) {
+        this.physique = physique;
+    }
+
+    public List<String> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
+    }
+
+    public String getHoroscope() {
+        return horoscope;
+    }
+
+    public void setHoroscope(String horoscope) {
+        this.horoscope = horoscope;
+    }
+
+    public String getInitials() {
+        return initials;
+    }
+
+    public void setInitials(String initials) {
+        this.initials = initials;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
+
+    public String getHostTier() {
+        return hostTier;
+    }
+
+    public void setHostTier(String hostTier) {
+        this.hostTier = hostTier;
+    }
+
+    public String getTraitLabel() {
+        return traitLabel;
+    }
+
+    public void setTraitLabel(String traitLabel) {
+        this.traitLabel = traitLabel;
+    }
+
+    public Integer getCompletion() {
+        return completion;
+    }
+
+    public void setCompletion(Integer completion) {
+        this.completion = completion;
+    }
+
+    public String getHeadline() {
+        return headline;
+    }
+
+    public void setHeadline(String headline) {
+        this.headline = headline;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public Double getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(Double affinity) {
+        this.affinity = affinity;
+    }
+
+    public LocationCoordinatesRecord getLocationCoordinates() {
+        return locationCoordinates;
+    }
+
+    public void setLocationCoordinates(LocationCoordinatesRecord locationCoordinates) {
+        this.locationCoordinates = locationCoordinates;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public UserImpressionsRecord getImpressions() {
+        return impressions;
+    }
+
+    public void setImpressions(UserImpressionsRecord impressions) {
+        this.impressions = impressions;
+    }
+
+    public String getProfileStatus() {
+        return profileStatus;
+    }
+
+    public void setProfileStatus(String profileStatus) {
+        this.profileStatus = profileStatus;
+    }
+
+    public UserActivitiesRecord getActivities() {
+        return activities;
+    }
+
+    public void setActivities(UserActivitiesRecord activities) {
+        this.activities = activities;
+    }
+
+    public record LocationCoordinatesRecord(
+            Double latitude,
+            Double longitude) {
+    }
+
+    public record UserActivitiesRecord(
+            Integer game,
+            Integer chat,
+            Integer invitations,
+            Integer events,
+            Integer hosting) {
+    }
+
+    public record UserImpressionsRecord(
+            UserImpressionsSectionRecord host,
+            UserImpressionsSectionRecord member) {
+    }
+
+    public record UserImpressionsSectionRecord(
+            Integer unreadCount,
+            Double averageRating,
+            Integer peopleMet,
+            Integer totalEvents,
+            Integer repeatCount,
+            Integer noShowCount,
+            List<String> vibeBadges,
+            List<String> personalityBadges,
+            List<String> categoryBadges) {
+    }
+}
