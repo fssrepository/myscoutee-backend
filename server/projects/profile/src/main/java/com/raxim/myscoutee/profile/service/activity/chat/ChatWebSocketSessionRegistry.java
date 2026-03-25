@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.service;
+package com.raxim.myscoutee.profile.service.activity.chat;
 
 import java.io.IOException;
 import java.util.Map;

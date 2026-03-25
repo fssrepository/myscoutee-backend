@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.service;
+package com.raxim.myscoutee.profile.service.activity.chat;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
