@@ -56,9 +56,12 @@ public class UserRatesService {
         addRecords(recordsById, userRatesRepository.findBySourceAndToUserId(SOURCE_GAME_CARD, ownerUserId));
         addRecords(recordsById, userRatesRepository.findBySourceAndModeAndOwnerUserId(SOURCE_GAME_CARD, "pair", ownerUserId));
 
-        return recordsById.values().stream()
+        List<RateMenuItemDto> dedupedItems = dedupeRateItems(recordsById.values().stream()
                 .map(record -> toRateMenuItem(record, currentUser))
                 .filter(Objects::nonNull)
+                .toList());
+
+        return dedupedItems.stream()
                 .sorted(Comparator
                         .comparing((RateMenuItemDto item) -> rateDateMillis(item.happenedAt()), Comparator.reverseOrder())
                         .thenComparing(item -> safeText(item.id())))
@@ -93,13 +96,16 @@ public class UserRatesService {
             return new ActivityRatePageResponseDto(List.of(), 0, null);
         }
 
-        List<RateMenuItemDto> items = userRatesRepository
+        List<ActivityRateProjection> projections = dedupeActivityRateProjections(userRatesRepository
                 .findByOwnerUserIdAndSourceAndMode(ownerUserId, SOURCE_ACTIVITY_RATE, mode)
                 .stream()
                 .map(record -> toActivityRateProjection(record, currentUser))
                 .filter(Objects::nonNull)
                 .filter(projection -> direction.equals(projection.item().direction()))
                 .filter(projection -> isWithinRange(projection.item(), rangeStartMs, rangeEndMs))
+                .toList());
+
+        List<RateMenuItemDto> items = projections.stream()
                 .sorted(activityRateComparator(sort, groupDirection, innerOrder))
                 .map(ActivityRateProjection::item)
                 .toList();
@@ -133,7 +139,7 @@ public class UserRatesService {
                 continue;
             }
             normalizedRates.add(normalized);
-            syncedRateIds.add(resolveResponseId(normalized));
+            syncedRateIds.add(resolveSyncAcknowledgementId(rate, normalized));
         }
 
         if (!normalizedRates.isEmpty()) {
@@ -149,6 +155,34 @@ public class UserRatesService {
             }
             target.put(record.getId(), record);
         }
+    }
+
+    private List<RateMenuItemDto> dedupeRateItems(List<RateMenuItemDto> items) {
+        Map<String, RateMenuItemDto> deduped = new LinkedHashMap<>();
+        for (RateMenuItemDto item : items) {
+            if (item == null || !StringUtils.hasText(safeText(item.id()))) {
+                continue;
+            }
+            RateMenuItemDto existing = deduped.get(item.id());
+            if (existing == null || rateDateMillis(item.happenedAt()) >= rateDateMillis(existing.happenedAt())) {
+                deduped.put(item.id(), item);
+            }
+        }
+        return new ArrayList<>(deduped.values());
+    }
+
+    private List<ActivityRateProjection> dedupeActivityRateProjections(List<ActivityRateProjection> projections) {
+        Map<String, ActivityRateProjection> deduped = new LinkedHashMap<>();
+        for (ActivityRateProjection projection : projections) {
+            if (projection == null || projection.item() == null || !StringUtils.hasText(safeText(projection.item().id()))) {
+                continue;
+            }
+            ActivityRateProjection existing = deduped.get(projection.item().id());
+            if (existing == null || projection.happenedAtMs() >= existing.happenedAtMs()) {
+                deduped.put(projection.item().id(), projection);
+            }
+        }
+        return new ArrayList<>(deduped.values());
     }
 
     private UserRate normalizeRecord(UserRateRecordDto rate) {
@@ -251,7 +285,6 @@ public class UserRatesService {
         if (normalizedRate == null) {
             return null;
         }
-
         document.setFromUserId(fromUserId);
         document.setToUserId(toUserId);
         document.setRate(normalizedRate);
@@ -546,6 +579,7 @@ public class UserRatesService {
         return normalizeOptionalText(rate.displayId());
     }
 
+
     private String resolveCreatedUser(
             UserRateRecordDto rate,
             String ownerUserId,
@@ -642,6 +676,14 @@ public class UserRatesService {
         return normalizeId(record.getId());
     }
 
+    private String resolveSyncAcknowledgementId(UserRateRecordDto requestRate, UserRate normalizedRate) {
+        String requestedId = requestRate == null ? null : normalizeOptionalText(requestRate.id());
+        if (StringUtils.hasText(requestedId)) {
+            return requestedId;
+        }
+        return resolveResponseId(normalizedRate);
+    }
+
     private String normalizeMode(String value) {
         String normalized = normalizeId(value).toLowerCase();
         if ("single".equals(normalized) || "pair".equals(normalized)) {
@@ -692,11 +734,7 @@ public class UserRatesService {
 
     private boolean isMetRequest(UserRateRecordDto rate) {
         String direction = normalizeDisplayDirection(rate.displayDirection());
-        if ("met".equals(direction)) {
-            return true;
-        }
-        String syncKey = normalizeOptionalText(resolveSyncKey(rate));
-        return StringUtils.hasText(syncKey) && syncKey.contains("-met-");
+        return "met".equals(direction);
     }
 
     private String resolveActivityRelatedUserId(String mode, String ownerUserId, String fromUserId, String toUserId) {
