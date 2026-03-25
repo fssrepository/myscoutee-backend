@@ -31,6 +31,7 @@ fi
 
 SOURCE_DIR="${FRONTEND_SOURCE_DIR:-${DEFAULT_SOURCE_DIR}}"
 TARGET_DIR="${NGINX_HTML_DIR:-${DEFAULT_NGINX_HTML_DIR}}"
+SKIP_INITIAL_SYNC="${SKIP_INITIAL_SYNC:-false}"
 
 if ! command -v rsync >/dev/null 2>&1; then
   echo "Error: rsync is required." >&2
@@ -44,12 +45,56 @@ fi
 
 mkdir -p "${TARGET_DIR}"
 
-sync_once() {
-  rsync -a --delete "${SOURCE_DIR}/" "${TARGET_DIR}/"
-  echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S')"
+SYNC_DEBOUNCE_SECONDS="${SYNC_DEBOUNCE_SECONDS:-2}"
+
+wait_for_quiet_period() {
+  if [[ "${WATCH_MODE}" != "watch" ]]; then
+    return 0
+  fi
+  if ! command -v inotifywait >/dev/null 2>&1; then
+    return 0
+  fi
+
+  while inotifywait -q -r -t "${SYNC_DEBOUNCE_SECONDS}" -e create,delete,modify,move "${SOURCE_DIR}" >/dev/null 2>&1; do
+    :
+  done
 }
 
-sync_once
+sync_once() {
+  local rsync_status=0
+  local rsync_log
+  local attempt=1
+  rsync_log="$(mktemp)"
+
+  while true; do
+    if rsync -a --delete "${SOURCE_DIR}/" "${TARGET_DIR}/" 2>"${rsync_log}"; then
+      rm -f "${rsync_log}"
+      echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S')"
+      return 0
+    fi
+
+    rsync_status=$?
+    if [[ "${rsync_status}" -ne 24 ]]; then
+      cat "${rsync_log}" >&2 || true
+      rm -f "${rsync_log}"
+      return "${rsync_status}"
+    fi
+
+    if [[ "${attempt}" -ge 2 ]]; then
+      rm -f "${rsync_log}"
+      echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S') (after concurrent file churn)"
+      return 0
+    fi
+
+    attempt=$((attempt + 1))
+    sleep 1
+  done
+}
+
+if [[ "${SKIP_INITIAL_SYNC}" != "true" ]]; then
+  wait_for_quiet_period
+  sync_once
+fi
 
 if [[ "${WATCH_MODE}" == "watch" ]]; then
   if ! command -v inotifywait >/dev/null 2>&1; then
@@ -59,6 +104,7 @@ if [[ "${WATCH_MODE}" == "watch" ]]; then
 
   echo "Watching ${SOURCE_DIR} ..."
   while inotifywait -r -e create,delete,modify,move "${SOURCE_DIR}" >/dev/null 2>&1; do
+    wait_for_quiet_period
     sync_once
   done
 fi

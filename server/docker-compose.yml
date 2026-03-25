@@ -121,6 +121,8 @@ services:
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
       NGINX_HTML_DIR: /workspace/nginx-html
       NG_BUILD_MAX_WORKERS: "12"
+      WAIT_FOR_HOSTS: "profilemanagement:8080"
+      SYNC_DEBOUNCE_SECONDS: "2"
     volumes:
       - ../frontend:/workspace/frontend
       - ./docker/conf/nginx/app/myscoutee:/workspace/nginx-html
