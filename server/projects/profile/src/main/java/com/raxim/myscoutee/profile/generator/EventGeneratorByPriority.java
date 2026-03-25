@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.generator;
+/*package com.raxim.myscoutee.profile.generator;
 
 import java.util.List;
 import java.util.Map;
@@ -53,3 +53,4 @@ public class EventGeneratorByPriority extends GeneratorBase<Event, Profile> {
     }
 
 }
+*/
