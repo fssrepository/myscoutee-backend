@@ -45,9 +45,18 @@ if [ "${existing_hash}" = "${seed_hash}" ] && [ "${data_present}" -eq 1 ]; then
   exit 0
 fi
 
+clear_data_dir() {
+  if find "${DATA_DIR}" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null; then
+    return 0
+  fi
+
+  echo "Local cleanup could not remove ${DATA_DIR}; retrying through a temporary container."
+  docker run --rm -v "${DATA_DIR}:/data" alpine sh -c 'rm -rf /data/* /data/.[!.]* /data/..?* 2>/dev/null || true'
+}
+
 if [ "${data_present}" -eq 1 ]; then
   echo "Refreshing Mongo data in ${DATA_DIR} for ${BOOTSTRAP_DB_NAME} seed ${seed_hash}."
-  find "${DATA_DIR}" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+  clear_data_dir
 else
   echo "Mongo data directory is already empty. Recording ${BOOTSTRAP_DB_NAME} seed ${seed_hash}."
 fi
