@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.controller;
+/*package com.raxim.myscoutee.profile.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,4 +24,4 @@ public class I18nMessageRestController {
         I18nMessage message = messageService.getMessageByLang(locale);
         return ResponseEntity.ok(message);
     }
-}
+}*/

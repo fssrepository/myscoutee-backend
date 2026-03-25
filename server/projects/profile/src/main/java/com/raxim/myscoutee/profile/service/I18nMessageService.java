@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.service;
+/*package com.raxim.myscoutee.profile.service;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -28,3 +28,4 @@ public class I18nMessageService {
         return message;
     }
 }
+*/

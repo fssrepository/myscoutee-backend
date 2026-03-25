@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.generator;
+/*package com.raxim.myscoutee.profile.generator;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -71,3 +71,4 @@ public class EventGeneratorByRandom extends GeneratorBase<Event, Profile> {
     }
 
 }
+*/

@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.generator;
+/*package com.raxim.myscoutee.profile.generator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,3 +109,4 @@ public class EventGeneratorByScore extends GeneratorBase<Event, Profile> {
     }
 
 }
+*/

@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.controller;
+package com.raxim.myscoutee.profile.controller.activity;
 
 import java.util.List;
 
@@ -20,10 +20,10 @@ import com.raxim.myscoutee.profile.service.ActivitiesChatService;
 
 @RestController
 @RequestMapping("activities/chats")
-public class ActivitiesChatRestController {
+public class ChatRestController {
     private final ActivitiesChatService activitiesChatService;
 
-    public ActivitiesChatRestController(ActivitiesChatService activitiesChatService) {
+    public ChatRestController(ActivitiesChatService activitiesChatService) {
         this.activitiesChatService = activitiesChatService;
     }
 
