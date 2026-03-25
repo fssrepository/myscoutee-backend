@@ -1,0 +1,62 @@
+[
+        {
+            "$match": {
+                "_id": "?0"
+            }
+        },
+    
+        {
+            "$match": {
+                "info.members": { "$elemMatch": { "code": "?1" } }
+            }
+        },
+    
+        {
+            "$unwind": "$info.members"
+        },
+    
+        {
+            "$lookup": {
+                "from": "profiles",
+                "let": { "p_id": "$info.members.profile.$id", "p_members": "$info.members" },
+                "pipeline": [
+                    {
+                        "$match": {
+                            "$expr": {
+                                "$eq": ["$$p_id", "$_id"]
+                            }
+                        }
+                    },
+                    {
+                        "$project": {
+                            "_id": "$$p_members._id",
+                            "profile": "$$ROOT",
+                            "createdDate": "$$p_members.createdDate",
+                            "status": "$$p_members.status"
+                        }
+                    }
+                ],
+                "as": "profiles"
+            }
+        },
+    
+        {
+            "$unwind": "$profiles"
+        },
+    
+        {
+            "$group": {
+                "_id": "$profiles._id",
+                "data": {
+                    "$first": "$profiles"
+                }
+            }
+        },
+    
+        {
+            "$replaceRoot": {
+                "newRoot": { "member": "$data" }
+            }
+        }
+    ]
+    

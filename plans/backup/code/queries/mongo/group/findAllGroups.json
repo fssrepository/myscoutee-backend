@@ -1,0 +1,329 @@
+[
+    {
+        "$geoNear": {
+            "near": ":#{#loc}",
+            "spherical": true,
+            "minDistance": "?#{#param.offset[0]}",
+            "distanceField": "distance",
+            "query": {
+                "system": false,
+                "status": {
+                    "$nin": [
+                        "D",
+                        "P"
+                    ]
+                },
+                "access": {
+                    "$in": [
+                        "A",
+                        "F"
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "$lookup": {
+            "from": "users",
+            "let": {
+                "groupId": "$_id"
+            },
+            "pipeline": [
+                {
+                    "$lookup": {
+                        "from": "profiles",
+                        "localField": "profiles.$id",
+                        "foreignField": "_id",
+                        "as": "profiles"
+                    }
+                },
+                {
+                    "$unwind": {
+                        "path": "$profiles"
+                    }
+                },
+                {
+                    "$elemMatch": {
+                        "profile.group": "$$groupId"
+                    }
+                }
+            ],
+            "as": "profiles"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$profiles",
+            "preserveNullAndEmptyArrays": true
+        }
+    },
+    {
+        "$match": {
+            "$in": [
+                "$profiles",
+                [
+                    null,
+                    []
+                ]
+            ]
+        }
+    },
+    {
+        "$lookup": {
+            "from": "events",
+            "let": {
+                "createdBy": "$createdBy"
+            },
+            "pipeline": [
+                {
+                    "$match": {
+                        "$expr": {
+                            "$and": [
+                                {
+                                    "$eq": [
+                                        "$status",
+                                        "A"
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "$match": {
+                        "$expr": {
+                            "$eq": [
+                                {
+                                    "$size": {
+                                        "$filter": {
+                                            "input": "$members",
+                                            "as": "member",
+                                            "cond": {
+                                                "$or": [
+                                                    {
+                                                        "$and": [
+                                                            {
+                                                                "$eq": [
+                                                                    "$$member.profile.$id",
+                                                                    "?#{#param.id}"
+                                                                ]
+                                                            },
+                                                            {
+                                                                "$in": [
+                                                                    "$$member.status",
+                                                                    [
+                                                                        "A"
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "$and": [
+                                                            {
+                                                                "$eq": [
+                                                                    "$$member.profile.$id",
+                                                                    "$$createdBy"
+                                                                ]
+                                                            },
+                                                            {
+                                                                "$in": [
+                                                                    "$$member.status",
+                                                                    [
+                                                                        "A"
+                                                                    ]
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                2
+                            ]
+                        }
+                    }
+                },
+                {
+                    "$group": {
+                        "_id": null,
+                        "count": {
+                            "$count": {}
+                        },
+                        "createdBy": {
+                            "$first": "$$createdBy"
+                        }
+                    }
+                }
+            ],
+            "as": "events"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$events",
+            "preserveNullAndEmptyArrays": true
+        }
+    },
+    {
+        "$addFields": {
+            "groupKey": {
+                "$multiply": [
+                    {
+                        "$floor": {
+                            "$divide": [
+                                "$distance",
+                                "?#{#param.step}"
+                            ]
+                        }
+                    },
+                    "?#{#param.step}"
+                ]
+            }
+        }
+    },
+    {
+        "$match": {
+            "$expr": {
+                "$and": [
+                    {
+                        "$or": [
+                            {
+                                "$and": [
+                                    {
+                                        "$eq": [
+                                            ":#{#access}",
+                                            "F"
+                                        ]
+                                    },
+                                    {
+                                        "$gt": [
+                                            {
+                                                "$ifNull": [
+                                                    "$events.count",
+                                                    0
+                                                ]
+                                            },
+                                            0
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "$in": [
+                                    ":#{#access}",
+                                    [
+                                        "A",
+                                        "F"
+                                    ]
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "$or": [
+                            {
+                                "$gt": [
+                                    "$groupKey",
+                                    "?#{#param.offset[0]}"
+                                ]
+                            },
+                            {
+                                "$and": [
+                                    {
+                                        "$eq": [
+                                            "$groupKey",
+                                            "?#{#param.offset[0]}"
+                                        ]
+                                    },
+                                    {
+                                        "$or": [
+                                            {
+                                                "$gt": [
+                                                    "$access",
+                                                    "?#{#param.offset[1]}"
+                                                ]
+                                            },
+                                            {
+                                                "$and": [
+                                                    {
+                                                        "$eq": [
+                                                            "$access",
+                                                            "?#{#param.offset[1]}"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "$lt": [
+                                                            "$updatedDate",
+                                                            {
+                                                                "$toDate": "?#{#param.offset[2]}"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$events",
+            "preserveNullAndEmptyArrays": true
+        }
+    },
+    {
+        "$sort": {
+            "groupKey": 1,
+            "access": -1,
+            "updatedDate": -1
+        }
+    },
+    {
+        "$limit": "?#{#param.limit}"
+    },
+    {
+        "$replaceRoot": {
+            "newRoot": {
+                "$mergeObjects": [
+                    {
+                        "item": "$$ROOT"
+                    },
+                    {
+                        "groupKey": "$groupKey",
+                        "offset": [
+                            "$groupKey",
+                            "$access",
+                            "$updatedDate"
+                        ]
+                    },
+                    {
+                        "access": {
+                            "$cond": [
+                                {
+                                    "$gt": [
+                                        {
+                                            "$ifNull": [
+                                                "$events.count",
+                                                0
+                                            ]
+                                        },
+                                        0
+                                    ]
+                                },
+                                "F",
+                                "A"
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+]

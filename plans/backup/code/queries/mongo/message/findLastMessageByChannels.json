@@ -1,0 +1,113 @@
+[
+  {
+    "$match": {
+      "type": "p"
+    }
+  },
+  {
+    "$match": {
+      "$expr": {
+        "$and": [
+          {
+            "$or": [
+              {
+                "$in": ["?#{#param.id}", "$tos"]
+              },
+              {
+                "$eq": ["$from", "?#{#param.id}"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "$sort": {
+      "createdDate": -1
+    }
+  },
+  {
+    "$group": {
+      "_id": "$eventId",
+      "lastMessage": {
+        "$first": "$$ROOT"
+      }
+    }
+  },
+  {
+    "$match": {
+      "$expr": {
+        "$lt": [
+          "$lastMessage.createdDate",
+          {
+            "$toDate": "?#{#param.offset[0]}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "$sort": {
+      "lastMessage.createdDate": -1
+    }
+  },
+  {
+    "$limit": "?#{#param.limit}"
+  },
+  {
+    "$lookup": {
+      "from": "profiles",
+      "localField": "lastMessage.from",
+      "foreignField": "_id",
+      "as": "profile"
+    }
+  },
+  {
+    "$unwind": "$profile"
+  },
+  {
+    "$lookup": {
+      "from": "events",
+      "localField": "lastMessage.eventId",
+      "foreignField": "_id",
+      "as": "event"
+    }
+  },
+  {
+    "$replaceRoot": {
+      "newRoot": {
+        "$mergeObjects": [
+          {
+            "message": "$lastMessage"
+          },
+          {
+            "name": "$event.name"
+          },
+          {
+            "from": {
+              "$cond": {
+                "if": {
+                  "$and": [
+                    { "$isArray": "$profile.images" },
+                    { "$gt": [{ "$size": "$profile.images" }, 0] }
+                  ]
+                },
+                "then": {
+                  "$ifNull": [
+                    { "$arrayElemAt": ["$profile.images.name", 0] },
+                    null
+                  ]
+                },
+                "else": null
+              }
+            }
+          },
+          {
+            "offset": ["$createdDate"]
+          }
+        ]
+      }
+    }
+  }
+]

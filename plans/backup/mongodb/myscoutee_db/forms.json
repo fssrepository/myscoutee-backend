@@ -1,0 +1,90 @@
+[
+  {
+    "_id": {
+      "$binary": "rUfQu0Wvb/14FVFQa3/Rlw==",
+      "$type": "03"
+    },
+    "key": "/activity/events",
+    "items": [
+      {
+        "name": "group",
+        "type": "os",
+        "data": [
+          0
+        ],
+        "options": [
+          {
+            "value": "1",
+            "viewValue": "Day"
+          },
+          {
+            "value": "2",
+            "viewValue": "Week"
+          },
+          {
+            "value": "3",
+            "viewValue": "Month"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$binary": "OUKNzrDi/yMyfis61/9/iw==",
+      "$type": "03"
+    },
+    "key": "/games/rate_none",
+    "items": [
+      {
+        "name": "age",
+        "type": "ms",
+        "data": [
+          18,
+          100
+        ],
+        "range": {
+          "min": 18,
+          "max": 100
+        }
+      },
+      {
+        "name": "group",
+        "type": "os",
+        "data": [
+          0
+        ],
+        "options": [
+          {
+            "value": "1",
+            "viewValue": "1"
+          },
+          {
+            "value": "3",
+            "viewValue": "3"
+          },
+          {
+            "value": "5",
+            "viewValue": "5"
+          },
+          {
+            "value": "10",
+            "viewValue": "10"
+          },
+          {
+            "value": "15",
+            "viewValue": "15"
+          },
+          {
+            "value": "50",
+            "viewValue": "50"
+          },
+          {
+            "value": "100",
+            "viewValue": "100"
+          }
+        ]
+      }
+    ]
+  }
+]

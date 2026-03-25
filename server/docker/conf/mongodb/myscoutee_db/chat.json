@@ -1,0 +1,613 @@
+[
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAADBAAAAAAAAAA==",
+      "$type": "03"
+    },
+    "name": "Driver Split - Alpine Weekend",
+    "desc": "Seeded from frontend demo chat data.",
+    "group": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "range": {
+      "start": {
+        "$date": "2026-03-01T12:30:00.000Z"
+      },
+      "end": {
+        "$date": "2026-03-01T14:30:00.000Z"
+      }
+    },
+    "status": "A",
+    "type": "E",
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "updatedDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "numOfMembers": 5,
+    "members": [
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "A",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAFAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAEAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAKAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAHAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAADCAAAAAAAAAA==",
+      "$type": "03"
+    },
+    "name": "Padel Night Pair Room",
+    "desc": "Seeded from frontend demo chat data.",
+    "group": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "range": {
+      "start": {
+        "$date": "2026-02-28T13:15:00.000Z"
+      },
+      "end": {
+        "$date": "2026-02-28T15:15:00.000Z"
+      }
+    },
+    "status": "A",
+    "type": "E",
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "updatedDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "numOfMembers": 6,
+    "members": [
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "A",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAHAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAGAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAKAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAADAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAALAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAADDAAAAAAAAAA==",
+      "$type": "03"
+    },
+    "name": "Host Circle Ops",
+    "desc": "Seeded from frontend demo chat data.",
+    "group": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "range": {
+      "start": {
+        "$date": "2026-03-01T12:15:00.000Z"
+      },
+      "end": {
+        "$date": "2026-03-01T14:15:00.000Z"
+      }
+    },
+    "status": "A",
+    "type": "E",
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "updatedDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "numOfMembers": 4,
+    "members": [
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "A",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAKAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAMAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAIAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAADEAAAAAAAAAA==",
+      "$type": "03"
+    },
+    "name": "City Brunch - Main Room",
+    "desc": "Seeded from frontend demo chat data.",
+    "group": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "range": {
+      "start": {
+        "$date": "2026-03-01T11:00:00.000Z"
+      },
+      "end": {
+        "$date": "2026-03-01T13:00:00.000Z"
+      }
+    },
+    "status": "A",
+    "type": "E",
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "updatedDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "numOfMembers": 4,
+    "members": [
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAACAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "A",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAGAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAEAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAADFAAAAAAAAAA==",
+      "$type": "03"
+    },
+    "name": "Trail Group - Transport",
+    "desc": "Seeded from frontend demo chat data.",
+    "group": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "range": {
+      "start": {
+        "$date": "2026-02-21T17:30:00.000Z"
+      },
+      "end": {
+        "$date": "2026-02-21T19:30:00.000Z"
+      }
+    },
+    "status": "A",
+    "type": "E",
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "updatedDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "numOfMembers": 5,
+    "members": [
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAADAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "A",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAFAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAHAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAAKAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      },
+      {
+        "profile": {
+          "$ref": "profiles",
+          "$id": {
+            "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+            "$type": "03"
+          }
+        },
+        "status": "A",
+        "role": "U",
+        "createdDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "updatedDate": {
+          "$date": "2026-02-01T08:00:00.000Z"
+        },
+        "stageIdx": 0,
+        "score": 0.0
+      }
+    ]
+  }
+]

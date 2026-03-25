@@ -1,0 +1,15 @@
+[
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "name": "Chat Dev",
+    "status": "A",
+    "type": "i",
+    "system": true,
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    }
+  }
+]

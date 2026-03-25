@@ -1,0 +1,16 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "/usr/lib/jvm/java-17-openjdk-amd64",
+            "default": true
+        }
+    ],
+    "java.import.gradle.enabled": true,
+    "java.import.gradle.wrapper.enabled": false,
+    "java.import.gradle.home": "/home/raxim/.sdkman/candidates/gradle/current",
+    "java.import.gradle.java.home": "/usr/lib/jvm/java-17-openjdk-amd64",
+    "workbench.editor.enablePreview": false
+}

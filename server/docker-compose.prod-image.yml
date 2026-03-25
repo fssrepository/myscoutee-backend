@@ -1,0 +1,77 @@
+# Production variant:
+# - nginx config + frontend static files are baked into the nginx image
+# - no bind mount for /usr/share/nginx/html
+# - dev compose remains unchanged
+
+networks:
+  myscoutee:
+    driver: bridge
+
+services:
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: ${NGINX_IMAGE_PROD:-myscoutee-nginx:0.1.0-prod}
+    build:
+      context: .
+      dockerfile: docker/images/nginx/Dockerfile.prod
+    ports:
+      - 80:80
+      - 443:443
+      - 27017-27019:27017-27019
+      - 5005:5005
+    volumes:
+      - ./docker/conf/nginx/keys:/etc/nginx/keys:ro
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+      - redis
+      - profilemanagement
+  mongodb:
+    image: ${MONGO_IMAGE}
+    container_name: mongodb
+    hostname: mongodb
+    environment:
+      MONGO_INITDB_DATABASE: myscoutee_db
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpw
+    volumes:
+      - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
+      - ./data/mongodb/data:/data/db
+      - ./docker/scripts:/scripts
+    networks:
+      - myscoutee
+  redis:
+    image: redis:7.4-alpine
+    container_name: redis
+    hostname: redis
+    networks:
+      - myscoutee
+  profilemanagement:
+    image: ${MYSCOUTEE_IMAGE}
+    build:
+      context: projects/profile
+    container_name: myscoutee
+    hostname: myscoutee
+    environment:
+      MONGODB_HOST: "mongodb"
+      MONGODB_USERNAME: "guest"
+      MONGODB_PASSWORD: "guest"
+      SPRING_DATA_REDIS_HOST: "redis"
+      SPRING_DATA_REDIS_PORT: "6379"
+      FIREBASE_ENABLED: "false"
+      DEV_USER: "dev@myscoutee.local"
+      ADMIN_USER: "myscoutee@gmail.com"
+      JAVA_TOOL_OPTIONS: >
+        -Xdebug
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    volumes:
+      - ./data/profile/img:/tmp/img
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+      - redis

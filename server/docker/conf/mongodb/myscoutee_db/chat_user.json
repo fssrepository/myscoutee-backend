@@ -1,0 +1,32 @@
+[
+  {
+    "_id": {
+      "$binary": "AAAAAAAAAAAB0AAAAAAAAA==",
+      "$type": "03"
+    },
+    "email": "dev@myscoutee.local",
+    "createdDate": {
+      "$date": "2026-02-01T08:00:00.000Z"
+    },
+    "group": {
+      "$binary": "AAAAAAAAAAABoAAAAAAAAA==",
+      "$type": "03"
+    },
+    "profile": {
+      "$ref": "profiles",
+      "$id": {
+        "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+        "$type": "03"
+      }
+    },
+    "profiles": [
+      {
+        "$ref": "profiles",
+        "$id": {
+          "$binary": "AAAAAAAAAAABAAAAAAAAAA==",
+          "$type": "03"
+        }
+      }
+    ]
+  }
+]

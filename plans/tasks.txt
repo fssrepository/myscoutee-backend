@@ -1,0 +1,264 @@
+Priority algorithm -> seems have been figured out
+------------------
+1) it's non paginated -> it's only grabbing the next X members to be invited to reach the capacity, and balance
+
+Event list screen
+-----------------
+1) groupKey can be eventName + eventDate, and the list can show the members who were present over there
+
+double rated profile list screen
+--------------------------------
+2) filter by gender, and whether we have met or not, that one can be opened for the priority
+   event also, instead of a separate priority event list screen
+
+met + gender (man/woman/both)
+not met (no gender parameter)
+
+findProfile query (gender filter optional + if met, 
+a) check whether any eventItems does exist, where currentUser and other profile are present)
+- it's inside the query, but needs to make it optional for double rated
+
+true/false slide, like on the rule page (priority, and show gender filter accordingly)
+
+event editor (event item editor is not needed for the time being, simplified version)
+-----------
+1) event.info is not in the list of eventItems, to add eventItems to an event is optional
+2) the rule should be moved to event, instead if eventItem, the priority flag etc. also
+3) event has status P (Pending), or T (timed out), eventItem has not
+4) for optional eventItems, the members of event can request permission (like car, which can be accepted)
+
+New TODO:
+1) az ujak listaja egy nagy kepernyo, nem egy lista, igy nem lehet atugorni embereket
+2) Azok, akik legalabb 30 szavazatot kaptak, ne jelenjenek meg az ujak listajaban -> folyamat felgyorsitas
+3) mongodb objectid instead of uuid, to make horizontal scaling
+   redis db (stores uuid, objectid pairs), hence you can pass an objectid to the query
+
+   rewrite url where the uuid is there
+   shard key can't be geo spatial + only one shardKey does exist by collection (create shardIndex for e.g. _id)
+   we have hash based and range based (ObjectId can be range based as it's a sequence like id, can be gte)
+4) create multikey on eventItem.member, to query efficiently
+5) qrcode -> when we have optional event, 
+   while scanning showing which optional event he requested, it will be moved from eventItem to event
+6) capacity
+   (eventItem max. capacity should be less than the event max. capacity -> validate on the screen)
+   max. capacity can't be more than 1000 (chat won't work also) -> validate on screen
+   if priority has been set, it' changes the max. capacity to 20, if the value is greater than 20.
+7) invitation will appear only in the chat, clicking on it, can can look into the event. 
+   (it won't appear on the event list, until it's not accepted
+8) clickable notification
+9) new chat tab on event screen -first one
+10) when you click on event (view/qrcode menu appears, not the eventItem list)
+11) event, when you click on the panel, you have info (has edit button bottom left corner) + eventitems list + members list
+12) if profile set its status to non-A/F, 
+    its member status for all events will be set LD (late delete), D (delete), RD (reject delete), AD (access delete -> from All to friends only)
+13) if admin leaves, the highest priority among admin and the certain member will get the admin role
+14) lock/unlock event (isLocked???)
+15) threadpool -> CTree-vel -> querying by 1000 records in a loop (maybe we don't need limit to make it simpler)
+16) multislot/multistage event does not need to use BTree algorithm, only at rule.mutual inside the memebr list
+17) close stage, might merge slots together, if min capacity hasn't been reached,
+    and ask whether accept the date change (memberGrace) Invite next one
+18) clone event or item inside the event or promotion, form will have a number of clones field
+19) on recommendation screen, only one event will be shown by slot, and just the first stage, anyway disappears form the list
+20) in the promotion editor, the number of available slots will appear and the number of booked one
+    Cancel a whole slot, or decrease the number to make it partially. (notify the last booked ones for cancellation)
+    assign admin/admins for each slot (from one of the team inside that group)
+21) team
+    you can create teams inside groups, and invite members (logical, only shown to you, if it's discreet)
+    two types of view on member list screen (grouped by team or sorted by rate)
+    you can invite members from outside (invitation link) or inside to a group or a team
+    you can invite someone from outside and priority rate in the same way (filter bar, whether it has been invited from outside)
+
+    Team{
+      profiles,
+      profileId (profileId is by group)
+    }
+
+
+    while creating an event, can select the whole team to invite
+    team list is visible from group list screen also, while entering a group, you can change the view type to team.
+
+    default team, nobody has been assigned to a team in there (name is "Unassigned") -> it's just shown on the member list screen, but hasn't been saved
+22) On profile screen, you can switch between groups, look for other groups to join, create groups etc. (private/public)
+23) activity/events/slots utvonalon lehet elerni addEvent
+24) don't allow (put to wait list) other participant to join or invite until the ratio is not balanced (number of man/woman is equal)
+    invite man or woman first
+25) if event has the same range.start and range.end => it will be shown in the same slot group on the screen,
+    but as it hasn't been cloned, other ones won't update it, while editing.
+26) assign admins to event (either me or different profiles)
+27) if there are slots in different time the first slot is the most preferred members, if the member hasn't added any preference (prefer for, available for)
+28) if max stage is not reached, algorithm invites to the next stage events based on selection mode
+    rate/join menu on promotion
+    event inside promotion has prefer and available menu  (opt for, favor for), available only for
+29) save event as template
+30) when adding to event either promotion or create new one, can select an already saved template.
+31) The name has a sequence number to differenciate.
+    (it does not have this number saved with the name it just appears in view, in multiple pages, how to handle??? - maybe on the view)
+32) groupkey = stage + relevant slot
+33) events inside the slot, can be handled independently, like cancel, delete, merge into other etc. 
+    add event to a slot on the event editor
+34) multislot and multi stage event coloured differently (event can be filtered by name also)
+35) before approving an event, alert if there is any other event crossing the range
+36) competition - ranking algorithm
+    cross matrix (win, loose, draw scores) are predefined
+    penalty/reward scores are predefined (matrix)
+
+    roundrobin invitation for cross match
+    scores are recalculated by stages
+
+    for every time all the member score has been recalculated and saved to event table (Match finished)
+
+    every match calculate score and if all score equal, than within equal add to a score an reversed order like score, first position +3, second +2, third +1
+    sorsolas, add reverse order score also
+
+    check whether harmonic mean is the same how football ranking works
+37) push notifications
+    notify invited devices when promotion or event state changes
+    keep this aligned with the current Firebase notification path, without the old code snippet
+38) promoter accept
+            // when the promoter accepts, can see the members, before that not!
+        // instead of "clone" use name "pick or select"
+        // TODO: promotion fix -> statusService.changeStatusForEvent not prepared to
+        // handle
+        // when event locked, promoter will be invited to the event,
+        // hence the events will appear in the invitations tab, not the promotion tab
+        // the promoter does not receive the chat messages, separate chat tab with
+        // admin?
+        // a normal event can cloned to a template and can be used for promotion later
+        // on
+        // promotion can be time based or just recommend something
+        // (what you can show on recommendation tab -> like approximate time)
+        // can't rerecommend already promotion event - recommended event hasn't any
+        // promoter member also, it's just an empty event
+        // group event is also on recommendation tab -> different colouring
+        // job/idea, is a promotion category, what you can filter on recommendation tab
+        // job is a group event of business, not dating -> advertise an event you need
+        // to have "A" = advertiser role
+        // dropdown box on profile editor, whether only advertiser for a group or
+        // participants also
+        // there is no separate job group
+        // promotion editor is on event tab
+        // group event will be shown at invitations tab
+        // (however members are not added to the event as invited members to simiplify)
+        // to join to a group is on profile screen (separate button etc.) -> remove from
+        // recommendations screen
+        // recommendation tab will be removed (when click on +, you can select -> it
+        // shows recommended
+        // and promotional event in the same screen, no separate tab)
+        // recommmended, promotion event needs geo position (longitude, lattitude
+        // built in map willbe later on -> the user coordinates to set for the time
+        // being)
+
+        // wait is when we have invited more members than what capacity we have set, if
+        // it's filled, we can accept with wait
+        // no separate promotions tab!!!
+
+        //join or rate on promotion event, and the sub event you can prefer
+
+        //if an event is full, promoter will get the invitation by the system
+39) groupKey (by 5km), range.start, dateUpdated - score is coloring
+    mutual filter (friend's friend adertisements??)
+40) recommendation list
+    (small rounded profile picture (similar to select member for invitation at top bar) 
+    left top corener of each panel, who has created)
+41) if clone an event from recommendations tab, the user will be a member with Role M, status A.
+    M (can invite members, or change the rule to priority etc.)
+42) /recommend has been removed (can't recommend an event, will be confusing, data privacy)
+
+---------------------------------------------------------------------------------------------------
+43) Last login date
+44) if a group is discreet (Privacy), event is should be discreet also 
+    (discreet level is member does not see invisible/visible/invisible_school/visible_school)
+    in dating group the group is visible, but in business school will be shown
+    invisible does mean, can't even rate or see new members, just wait for the admin to be invited
+    when query User first time, it has got group info also, hence the school tab will disappear
+45) school/car refactor (car join first optional event - check whether it's working)
+46) stats (liked, received, invited)
+47) findMemberByEvent (should be rate bar also) while saving on rate -> Member.score will be calculated 
+    -> hence the orderby is based on Member.createdDate (join first) or Member.score (score should be calculated even Member, where the creator hasn't been rated yet)
+    // for non-creator the event will have a rateBar, inside it can be discreet Event or not
+    // for creator the event does not have rateBar, but the promotion.members has and it shows the rate what the creator adds to them
+48) EventGeneratorPromotionService implementation
+    // if promotion is within eventGrace from start, if stage is within eventGrace start next stage
+    // stage can be closed manually before eventGrace (hence immediate calculation needs to be triggered and invite accordingly)
+    // a) if any timeslot has got minimum capacity, promotion status is A
+    // b) if any timeslot hasn't got minimum capacity then merge slots,
+    // invite members (considering prefered timeslots), memberGrace overdue, invite
+    // other ones based on rate
+    // join first is auto approval - but members can be kicked
+    // when promotion.event (subEvent) has min capacity after merge status is
+    // accepted
+
+    // the algorithm based on stage (score or rate - breaker), rate needs to be
+    // approved memberGrace in time
+    // or invite an other one from all the slots of the prev Stage
+49) menu item hide by current role discreet (ui)
+    schools tab shouldn't be shown
+
+    overscroll-behavior : none; - disable pull refresh on chrome
+
+    privacy popup
+
+
+    feedbacks refactor
+
+    when you rate a promotion, it will be shown on the event screen, like pending, and you are not selected by the organizer (gray)
+    you will be added to the member list with status "P" - pending rated or "J" join
+
+    event filter (show only, where i'm active etc.) - status of member is a parameter of the queries
+
+    event tabs (nincs kulon recommendations tab)
+
+    chats/events/invitations/recommendations (events with filter, friends only or all)
+
+    a recommendations for group is going next to the group editor
+
+    a new tab in group editor called members which has a view "teams" (it contains unassigned members also and invited from outside (close friend))
+    //T = Team, G = Group
+    //inside project list out Teams, show Unassigned Team as base etc.
+    you can chat with a person, even if event is not reaching min. capacity, if the person accepted invitation
+
+    multiStage, if more than two stages does exist - (coloring) - update on save (in sync method)
+
+50) findMembersByEvent - filter bar order by mutual rate or rate give (won't be implemented by now, only rate give for a member)
+51) rule algorithm (multislot/multistage)
+    members screen either a rate bar or score bar (rank none is the score bar)
+
+    event
+
+    rule - join - rule game first stage (from the main promotion event, move members to the sub events)
+                  member stage of the main event will be set to 1
+
+    if subevent is Preferred, if is rate -> then status is "O" (Opt For)
+    if it's rate the status of the member of main event is "P" pending
+
+    1) priority (based on rate)
+       eventGrace/MemberGrace/rate/from/balanced
+       from/mutual won't be visible when access is F or A (non private) - it does mean that it's an acquitance event
+       findCandidates query is handling that if from is null and mutual is false - 
+       the difference between private (P) and A/F is that you are selecting the member of the event, not your acquitance
+    2) non-priority (join first)
+       status "J" is an "A" (autoApprove)
+       i) if autoApprove -> "J" => right away will be added to the sub event with "J", for the main event it will be status "A" 
+          and stage set to 1 - he main event for members can be a filter (current stage or all stage)
+       member has a field variable stage (it shows the maxStage, what the member reached), the stage will be added to the group key before the status if it does exist
+       ii) if the min capacity hasn't been reached and it's single slot, then T (time out)
+           if it's multislot then merge invite, and cancel, if even with single room min capacity hasn't been reached
+
+    rule - game - second stage - querying based on available first stage slots' winners
+       i) breaker removed (auto allocation based on capacity, we don't need to set first X)
+       next stage you need to make sure, how to add less rooms for participants,
+       hence the first x will count for each
+       (if it can be divided by the slots of the previous stage, first slots can fill up the places)
+    
+       ii) don't invite anybody to the next round where the average rate is lower than rule.rate, even if it's a winner
+       the event was messed up simply, and there wasn't any team work at all,
+       or we just personally rated bad all of them in the team
+52) chat
+    initial load should stay on http
+    live updates should run over websocket
+    redis streams is the server-side transport behind the websocket channel
+53) terkep:
+    el lehet kerulni a terkep szervert - event, auto-complement to search for location
+
+    instead of using map selection, load open street map data (filtered by some location) to mongodb. hence the name you can search for, and get the geo location beneath.
+    (facebook also does not have map selection, while creating event)
