@@ -10,7 +10,7 @@ import org.bson.Document;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.raxim.myscoutee.profile.util.AppConstants;
+//import com.raxim.myscoutee.profile.util.AppConstants;
 
 public class JsonUtil {
     public static final String ISO_DATE_STRING = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -66,7 +66,7 @@ public class JsonUtil {
         }
     }
 
-    public static String toMongoJson(Object t, ObjectMapper objectMapper) {
+    /*public static String toMongoJson(Object t, ObjectMapper objectMapper) {
         try {
             String jsonString = objectMapper.writeValueAsString(t);
             return Document.parse(jsonString, AppConstants.UUID_CODEC).toJson();
@@ -85,6 +85,6 @@ public class JsonUtil {
             tJson = tJson.substring(0, tJson.length() - 1);
         }
         return "[" + tJson + "]";
-    }
+    }*/
 
 }
