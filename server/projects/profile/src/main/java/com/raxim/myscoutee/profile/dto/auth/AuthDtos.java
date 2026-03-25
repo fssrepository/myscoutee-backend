@@ -1,0 +1,176 @@
+package com.raxim.myscoutee.profile.dto.auth;
+
+import java.util.List;
+
+import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
+
+public final class AuthDtos {
+    private AuthDtos() {
+    }
+
+    public record UserImpressionsSectionDto(
+            Integer unreadCount,
+            Double averageRating,
+            Integer peopleMet,
+            Integer totalEvents,
+            Integer repeatCount,
+            Integer noShowCount,
+            List<String> vibeBadges,
+            List<String> personalityBadges,
+            List<String> categoryBadges) {
+    }
+
+    public record UserImpressionsDto(
+            UserImpressionsSectionDto host,
+            UserImpressionsSectionDto member) {
+    }
+
+    public record UserMenuCountersDto(
+            Integer game,
+            Integer chat,
+            Integer invitations,
+            Integer events,
+            Integer hosting,
+            Integer tickets,
+            Integer feedback) {
+    }
+
+    public record UserRealtimeCountersDto(
+            Integer game,
+            Integer chat,
+            Integer invitations,
+            Integer events,
+            Integer hosting,
+            Integer tickets,
+            Integer feedback,
+            Boolean impressionsHostChanged,
+            Boolean impressionsMemberChanged) {
+    }
+
+    public record UserGameFilterPreferencesDto(
+            Integer ageMin,
+            Integer ageMax,
+            Integer heightMinCm,
+            Integer heightMaxCm,
+            List<String> interests,
+            List<String> values,
+            List<String> physiques,
+            List<String> languages,
+            List<String> genders,
+            List<String> horoscopes,
+            List<String> traitLabels,
+            List<String> smoking,
+            List<String> drinking,
+            List<String> workout,
+            List<String> pets,
+            List<String> familyPlans,
+            List<String> children,
+            List<String> loveStyles,
+            List<String> communicationStyles,
+            List<String> sexualOrientations,
+            List<String> religions) {
+    }
+
+    public record UserActivitiesDto(
+            Integer game,
+            Integer chat,
+            Integer invitations,
+            Integer events,
+            Integer hosting) {
+    }
+
+    public record UserDto(
+            String id,
+            String name,
+            Integer age,
+            String birthday,
+            String city,
+            String height,
+            String physique,
+            List<String> languages,
+            String horoscope,
+            String initials,
+            String gender,
+            String statusText,
+            String hostTier,
+            String traitLabel,
+            Integer completion,
+            String headline,
+            String about,
+            Double affinity,
+            LocationCoordinatesDto locationCoordinates,
+            List<String> images,
+            UserImpressionsDto impressions,
+            String profileStatus,
+            UserActivitiesDto activities) {
+    }
+
+    public record UserByIdResponseDto(
+            String id,
+            String name,
+            Integer age,
+            String birthday,
+            String city,
+            String height,
+            String physique,
+            List<String> languages,
+            String horoscope,
+            String initials,
+            String gender,
+            String statusText,
+            String hostTier,
+            String traitLabel,
+            Integer completion,
+            String headline,
+            String about,
+            Double affinity,
+            LocationCoordinatesDto locationCoordinates,
+            List<String> images,
+            UserImpressionsDto impressions,
+            String profileStatus,
+            UserActivitiesDto activities,
+            Integer filterCount,
+            UserGameFilterPreferencesDto filterPreferences,
+            UserMenuCountersDto counterOverrides) {
+    }
+
+    public record UserRealtimeLongPollRequestDto(
+            String userId,
+            String cursor) {
+    }
+
+    public record UserRealtimeLongPollResponseDto(
+            String userId,
+            UserRealtimeCountersDto counters,
+            UserImpressionsDto impressions,
+            String cursor,
+            String serverTsIso) {
+    }
+
+    public record UserFilterPreferencesRequestDto(
+            String userId,
+            UserGameFilterPreferencesDto filterPreferences) {
+    }
+
+    public record UserFeedbackSubmitRequestDto(
+            String category,
+            String subject,
+            String details) {
+    }
+
+    public record UserReportUserSubmitRequestDto(
+            String handle,
+            String reason,
+            String details) {
+    }
+
+    public record UserSubmitActionResponseDto(
+            boolean submitted,
+            String message) {
+    }
+
+    public record UserProfileImageUploadResponseDto(
+            String imageUrl,
+            String url) {
+    }
+}
