@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.profile.data.document.mongo.UserFilterPreferences;
-import com.raxim.myscoutee.profile.data.document.mongo.UserRates;
+import com.raxim.myscoutee.profile.data.document.mongo.UserRate;
 import com.raxim.myscoutee.profile.data.document.mongo.Users;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserByIdResponseDto;
@@ -33,7 +33,6 @@ import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 @Service
 public class HomeUserProfileService {
     private static final String USER_FILTER_PREFERENCES_DOCUMENT_ID = "userFilterPreferences";
-    private static final String USER_RATES_DOCUMENT_ID = "userRates";
 
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
@@ -181,22 +180,35 @@ public class HomeUserProfileService {
                 toUserActivitiesDto(user.getActivities()));
     }
 
-    public String resolveSelectedUserId(String requestedUserId) {
-        String normalizedRequestedUserId = normalizeId(requestedUserId);
-        if (StringUtils.hasText(normalizedRequestedUserId)
-                && findUser(normalizedRequestedUserId) != null) {
-            return normalizedRequestedUserId;
-        }
-
+    public Users resolveCurrentUser(String requestedUserId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal) {
-            String principalUserId = normalizeId(firebasePrincipal.getUserId());
-            if (StringUtils.hasText(principalUserId) && findUser(principalUserId) != null) {
-                return principalUserId;
+            Users principalUser = firebasePrincipal.getUser();
+            String principalUserId = principalUser != null
+                    ? normalizeId(principalUser.getId())
+                    : normalizeId(firebasePrincipal.getUserId());
+            if (StringUtils.hasText(principalUserId)) {
+                Users refreshedPrincipalUser = findUser(principalUserId);
+                if (refreshedPrincipalUser != null) {
+                    return refreshedPrincipalUser;
+                }
+            }
+            if (isUsableUserDocument(principalUser)) {
+                return principalUser;
             }
         }
 
+        String normalizedRequestedUserId = normalizeId(requestedUserId);
+        if (StringUtils.hasText(normalizedRequestedUserId)) {
+            return findUser(normalizedRequestedUserId);
+        }
+
         return null;
+    }
+
+    public String resolveSelectedUserId(String requestedUserId) {
+        Users currentUser = resolveCurrentUser(requestedUserId);
+        return currentUser == null ? null : normalizeId(currentUser.getId());
     }
 
     private UserFilterPreferences userFilterPreferencesDocument() {
@@ -204,15 +216,6 @@ public class HomeUserProfileService {
                 .orElseGet(() -> {
                     UserFilterPreferences document = new UserFilterPreferences();
                     document.setId(USER_FILTER_PREFERENCES_DOCUMENT_ID);
-                    return document;
-                });
-    }
-
-    private UserRates userRatesDocument() {
-        return userRatesRepository.findById(USER_RATES_DOCUMENT_ID)
-                .orElseGet(() -> {
-                    UserRates document = new UserRates();
-                    document.setId(USER_RATES_DOCUMENT_ID);
                     return document;
                 });
     }
@@ -262,29 +265,21 @@ public class HomeUserProfileService {
             return ratedUserIds;
         }
 
-        UserRates document = userRatesDocument();
-        Map<String, UserRates.UserRateRecord> byId = safeMap(document.getById());
-        for (String id : safeList(document.getIds())) {
-            UserRates.UserRateRecord record = byId.get(id);
-            if (record == null || !"game-card".equals(normalizeToken(record.source()))) {
-                continue;
+        for (UserRate record : userRatesRepository.findBySourceAndFromUserId("game-card", raterUserId)) {
+            String ratedUserId = normalizeId(record.getToUserId());
+            if (StringUtils.hasText(ratedUserId) && !raterUserId.equals(ratedUserId)) {
+                ratedUserIds.add(ratedUserId);
             }
-            if ("pair".equals(normalizeToken(record.mode())) && raterUserId.equals(normalizeId(record.ownerUserId()))) {
-                String firstUserId = normalizeId(record.fromUserId());
-                String secondUserId = normalizeId(record.toUserId());
-                if (StringUtils.hasText(firstUserId)) {
-                    ratedUserIds.add(firstUserId);
-                }
-                if (StringUtils.hasText(secondUserId)) {
-                    ratedUserIds.add(secondUserId);
-                }
-                continue;
+        }
+
+        for (UserRate record : userRatesRepository.findBySourceAndModeAndOwnerUserId("game-card", "pair", raterUserId)) {
+            String firstUserId = normalizeId(record.getFromUserId());
+            String secondUserId = normalizeId(record.getToUserId());
+            if (StringUtils.hasText(firstUserId) && !raterUserId.equals(firstUserId)) {
+                ratedUserIds.add(firstUserId);
             }
-            if (raterUserId.equals(normalizeId(record.fromUserId()))) {
-                String ratedUserId = normalizeId(record.toUserId());
-                if (StringUtils.hasText(ratedUserId)) {
-                    ratedUserIds.add(ratedUserId);
-                }
+            if (StringUtils.hasText(secondUserId) && !raterUserId.equals(secondUserId)) {
+                ratedUserIds.add(secondUserId);
             }
         }
         return ratedUserIds;

@@ -38,7 +38,7 @@ spring:
       port: ${MONGODB_PORT:27017}
       username: ${MONGODB_USERNAME:guest}
       password: ${MONGODB_PASSWORD:guest}
-      database: ${MONGODB_DATABASE:myscoutee_db}
+      database: ${MONGODB_DATABASE:demo_db}
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}

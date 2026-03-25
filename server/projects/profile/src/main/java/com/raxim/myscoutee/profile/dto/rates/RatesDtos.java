@@ -20,6 +20,12 @@ public final class RatesDtos {
             Integer distanceMetersExact) {
     }
 
+    public record ActivityRatePageResponseDto(
+            List<RateMenuItemDto> items,
+            Integer total,
+            String nextCursor) {
+    }
+
     public record UserRateRecordDto(
             String id,
             String fromUserId,

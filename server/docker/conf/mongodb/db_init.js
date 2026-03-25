@@ -1,4 +1,3 @@
-const portalDb = db.getSiblingDB('myscoutee_db');
 const requiredCollections = [
   'users',
   'userRates',
@@ -9,20 +8,24 @@ const requiredCollections = [
   'chats',
   'events'
 ];
-const existingCollections = new Set(portalDb.getCollectionNames());
 
-requiredCollections.forEach(collectionName => {
-  if (!existingCollections.has(collectionName)) {
-    portalDb.createCollection(collectionName);
+['demo_db', 'myscoutee_db'].forEach(databaseName => {
+  const portalDb = db.getSiblingDB(databaseName);
+  const existingCollections = new Set(portalDb.getCollectionNames());
+
+  requiredCollections.forEach(collectionName => {
+    if (!existingCollections.has(collectionName)) {
+      portalDb.createCollection(collectionName);
+    }
+  });
+
+  if (!portalDb.getUser('guest')) {
+    portalDb.createUser({
+      user: 'guest',
+      pwd: 'guest',
+      roles: [
+        { role: 'readWrite', db: databaseName }
+      ]
+    });
   }
 });
-
-if (!portalDb.getUser('guest')) {
-  portalDb.createUser({
-    user: 'guest',
-    pwd: 'guest',
-    roles: [
-      { role: 'readWrite', db: 'myscoutee_db' }
-    ]
-  });
-}

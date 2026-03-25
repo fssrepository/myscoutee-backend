@@ -56,12 +56,14 @@ services:
     #restart: always
     #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     environment:
-      MONGO_INITDB_DATABASE: myscoutee_db
+      MONGO_INITDB_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_SEED_DIRECTORY: demo_db
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpw
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
-      - ./data/mongodb/data:/data/db
+      - ./data/mongodb/demo-data:/data/db
       - ./docker/scripts:/scripts
       #- /etc/timezone:/etc/timezone:ro
       #- /etc/localtime:/etc/localtime:ro
@@ -83,6 +85,7 @@ services:
     hostname: myscoutee
     environment:
       MONGODB_HOST: "mongodb"
+      MONGODB_DATABASE: "${MONGO_DEMO_DATABASE}"
       MONGODB_USERNAME: "guest"
       MONGODB_PASSWORD: "guest"
       SPRING_DATA_REDIS_HOST: "redis"
