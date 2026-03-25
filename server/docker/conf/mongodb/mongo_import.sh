@@ -19,8 +19,11 @@ import_file() {
   mongoimport "${COMMON_ARGS[@]}" --collection "$collection" --file "${IMPORT_ROOT}/${file_name}"
 }
 
-import_file groups chat_group.json
-import_file profiles chat_profile.json
-import_file users chat_user.json
-import_file events chat.json
-import_file messages chat_message.json
+import_file users users.json
+import_file userRates userRates.json
+import_file userFilterPreferences userFilterPreferences.json
+import_file assets assets.json
+import_file activityMembers activityMembers.json
+import_file activityResources activityResources.json
+import_file chats chats.json
+import_file events events.json

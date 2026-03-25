@@ -1,5 +1,14 @@
 const portalDb = db.getSiblingDB('myscoutee_db');
-const requiredCollections = ['groups', 'profiles', 'users', 'events', 'messages'];
+const requiredCollections = [
+  'users',
+  'userRates',
+  'userFilterPreferences',
+  'assets',
+  'activityMembers',
+  'activityResources',
+  'chats',
+  'events'
+];
 const existingCollections = new Set(portalDb.getCollectionNames());
 
 requiredCollections.forEach(collectionName => {
@@ -7,9 +16,6 @@ requiredCollections.forEach(collectionName => {
     portalDb.createCollection(collectionName);
   }
 });
-
-portalDb.users.createIndex({ email: 1 }, { unique: true });
-portalDb.messages.createIndex({ eventId: 1, createdDate: 1 });
 
 if (!portalDb.getUser('guest')) {
   portalDb.createUser({
