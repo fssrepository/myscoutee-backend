@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.algo;
+/*package com.raxim.myscoutee.algo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,3 +32,4 @@ public class Algo {
         return nodesByGroup;
     }
 }
+*/

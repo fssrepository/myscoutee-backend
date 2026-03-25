@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.algo;
+/*package com.raxim.myscoutee.algo;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -151,3 +151,4 @@ public class Fifa {
         this.members = members;
     }
 }
+*/

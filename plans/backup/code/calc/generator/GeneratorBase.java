@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.generator;
+/*package com.raxim.myscoutee.profile.generator;
 
 import java.util.List;
 import java.util.Map;
@@ -25,3 +25,4 @@ public abstract class GeneratorBase<T, P> {
 
     public abstract List<T> generate(Object flags);
 }
+*/

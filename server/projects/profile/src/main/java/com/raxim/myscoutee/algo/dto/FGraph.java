@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.algo.dto;
+/*package com.raxim.myscoutee.algo.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,3 +84,4 @@ public class FGraph extends Graph {
     }
 
 }
+*/

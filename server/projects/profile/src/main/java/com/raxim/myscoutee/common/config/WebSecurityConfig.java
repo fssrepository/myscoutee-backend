@@ -51,12 +51,13 @@ public class WebSecurityConfig {
         http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers("/health", "/metrics", "/shutdown", "/error").permitAll();
-                    if (configProperties.isChatOnlyMode()) {
+                    if (!configProperties.isFirebaseEnabled()) {
+                        authorizeRequests.anyRequest().permitAll();
+                    } else if (configProperties.isChatOnlyMode()) {
                         authorizeRequests.requestMatchers("/activities/chats/**").authenticated()
                                 .anyRequest().denyAll();
                     } else {
-                        authorizeRequests.requestMatchers("/i18n_messages", "/admin/**").permitAll()
-                                .anyRequest().authenticated();
+                        authorizeRequests.anyRequest().authenticated();
                     }
                 })
                 .httpBasic(httpBasic -> httpBasic.disable())
