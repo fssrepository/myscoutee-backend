@@ -1,3 +1,0 @@
-1) pls. check whether any document is missing on backend which has been seeded on ui by demo bootstrap
-2) pls. clean the jsons, no static ids, should be either objectid or uuid and it needs to be indexed also
-3) pls. check features backend so, you can see what you need to prepare for, and pls. normalize the json documents more
