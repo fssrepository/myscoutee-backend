@@ -37,6 +37,41 @@ public final class EventsDtos {
             String sourceId) {
     }
 
+    public record EventFeedbackAnswerSubmitDto(
+            String cardId,
+            String kind,
+            String targetUserId,
+            String targetRole,
+            String primaryValue,
+            String secondaryValue,
+            List<String> tags,
+            String submittedAtIso) {
+    }
+
+    public record EventFeedbackStateDto(
+            String eventId,
+            Boolean removed,
+            String submittedAtIso,
+            String organizerNote) {
+    }
+
+    public record EventFeedbackSubmitRequestDto(
+            String userId,
+            String eventId,
+            List<EventFeedbackAnswerSubmitDto> answers) {
+    }
+
+    public record EventFeedbackNoteRequestDto(
+            String userId,
+            String eventId,
+            String text) {
+    }
+
+    public record EventFeedbackToggleRequestDto(
+            String userId,
+            String eventId) {
+    }
+
     public record EventRecordDto(
             String id,
             String userId,

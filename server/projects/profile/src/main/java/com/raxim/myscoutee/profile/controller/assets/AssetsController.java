@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.service.AssetsService;
@@ -27,6 +28,15 @@ public class AssetsController {
     @GetMapping
     public List<AssetCardDto> queryAssets(@RequestParam("userId") String userId) {
         return assetsService.queryAssets(userId);
+    }
+
+    @GetMapping("/tickets")
+    public AssetTicketsPageDto queryTickets(
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+            @RequestParam(value = "order", defaultValue = "upcoming") String order) {
+        return assetsService.queryTicketPage(userId, page, pageSize, order);
     }
 
     @PostMapping("/upsert")

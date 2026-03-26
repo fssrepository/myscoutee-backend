@@ -1,6 +1,5 @@
 package com.raxim.myscoutee.profile.controller.auth;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -16,9 +15,9 @@ import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserFilterPreferencesRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserImpressionsDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDeleteRequestDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserProfileImageUploadResponseDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
@@ -46,12 +45,7 @@ public class AuthController {
 
     @PostMapping("/me/realtime/long-poll")
     public UserRealtimeLongPollResponseDto queryRealtimeSnapshot(@RequestBody UserRealtimeLongPollRequestDto request) {
-        return new UserRealtimeLongPollResponseDto(
-                request.userId(),
-                new UserRealtimeCountersDto(0, 0, 0, 0, 0, 0, 0, false, false),
-                (UserImpressionsDto) null,
-                request.cursor(),
-                Instant.now().toString());
+        return homeUserProfileService.queryRealtimeSnapshot(request);
     }
 
     @PostMapping("/me/filter-preferences")
@@ -66,12 +60,22 @@ public class AuthController {
 
     @PostMapping("/me/feedback")
     public UserSubmitActionResponseDto submitFeedback(@RequestBody UserFeedbackSubmitRequestDto request) {
-        return new UserSubmitActionResponseDto(true, null);
+        return homeUserProfileService.submitFeedback(request);
     }
 
     @PostMapping("/me/report-user")
     public UserSubmitActionResponseDto submitReport(@RequestBody UserReportUserSubmitRequestDto request) {
-        return new UserSubmitActionResponseDto(true, null);
+        return homeUserProfileService.submitReport(request);
+    }
+
+    @PostMapping("/me/logout")
+    public UserSubmitActionResponseDto logout(@RequestBody(required = false) UserLogoutRequestDto request) {
+        return homeUserProfileService.logout(request);
+    }
+
+    @PostMapping("/me/delete")
+    public UserSubmitActionResponseDto deleteUser(@RequestBody(required = false) UserDeleteRequestDto request) {
+        return homeUserProfileService.deleteUser(request);
     }
 
     @PostMapping(path = "/me/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

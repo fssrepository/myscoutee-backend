@@ -30,6 +30,7 @@ public class Users {
     private LocationCoordinatesRecord locationCoordinates;
     private List<String> images = new ArrayList<>();
     private UserImpressionsRecord impressions;
+    private String status;
     private String profileStatus;
     private UserActivitiesRecord activities;
 
@@ -209,6 +210,14 @@ public class Users {
         this.profileStatus = profileStatus;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public UserActivitiesRecord getActivities() {
         return activities;
     }
@@ -227,7 +236,9 @@ public class Users {
             Integer chat,
             Integer invitations,
             Integer events,
-            Integer hosting) {
+            Integer hosting,
+            Integer tickets,
+            Integer feedback) {
     }
 
     public record UserImpressionsRecord(

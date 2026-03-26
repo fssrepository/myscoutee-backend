@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,15 +19,19 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.mongo.Asset;
 import com.raxim.myscoutee.profile.data.document.mongo.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.mongo.Users;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 
@@ -37,14 +42,17 @@ public class AssetsService {
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
+    private final ActivityEventsRepository activityEventsRepository;
     private final MongoTemplate mongoTemplate;
 
     public AssetsService(
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
+            ActivityEventsRepository activityEventsRepository,
             MongoTemplate mongoTemplate) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
+        this.activityEventsRepository = activityEventsRepository;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -59,6 +67,36 @@ public class AssetsService {
                 .map(this::toDto)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new AssetTicketsPageDto(List.of(), 0);
+        }
+
+        int normalizedPage = Math.max(0, page == null ? 0 : page.intValue());
+        int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
+        boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
+
+        List<EventRecordDto> ordered = activityEventsRepository.findByOwnerUserId(normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(event -> Boolean.TRUE.equals(event.getTicketing()))
+                .filter(event -> !Boolean.TRUE.equals(event.getIsInvitation()))
+                .filter(event -> !Boolean.TRUE.equals(event.getIsTrashed()))
+                .map(this::toTicketEventRecordDto)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso())))
+                .toList();
+
+        List<EventRecordDto> visible = new ArrayList<>(ordered);
+        if (upcoming) {
+            java.util.Collections.reverse(visible);
+        }
+
+        int startIndex = Math.min(visible.size(), normalizedPage * normalizedPageSize);
+        int endIndex = Math.min(visible.size(), startIndex + normalizedPageSize);
+        return new AssetTicketsPageDto(visible.subList(startIndex, endIndex), visible.size());
     }
 
     public void upsert(AssetUpsertRequestDto request) {
@@ -346,6 +384,60 @@ public class AssetsService {
         return clone;
     }
 
+    private EventRecordDto toTicketEventRecordDto(ActivityEvent event) {
+        String sourceId = normalizeId(event.getSourceId());
+        if (!StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        return new EventRecordDto(
+                sourceId,
+                normalizeId(event.getOwnerUserId()),
+                safeText(event.getType()),
+                safeText(event.getAvatar()),
+                safeText(event.getTitle()),
+                safeText(event.getSubtitle()),
+                safeText(event.getTimeframe()),
+                StringUtils.hasText(event.getInviter()) ? event.getInviter().trim() : null,
+                normalizeCount(event.getUnread()),
+                normalizeCount(event.getActivity()),
+                Boolean.TRUE.equals(event.getIsAdmin()),
+                Boolean.TRUE.equals(event.getIsInvitation()),
+                Boolean.TRUE.equals(event.getIsHosting()),
+                Boolean.TRUE.equals(event.getIsTrashed()),
+                Boolean.FALSE.equals(event.getPublished()) ? Boolean.FALSE : Boolean.TRUE,
+                safeNullableText(event.getTrashedAtIso()),
+                normalizeId(event.getCreatorUserId()),
+                safeText(event.getCreatorName()),
+                safeText(event.getCreatorInitials()),
+                safeText(event.getCreatorGender()),
+                safeText(event.getCreatorCity()),
+                safeText(event.getVisibility()),
+                safeText(event.getBlindMode()),
+                safeNullableText(event.getStartAtIso()),
+                safeNullableText(event.getEndAtIso()),
+                safeDouble(event.getDistanceKm()),
+                safeText(event.getImageUrl()),
+                safeText(event.getSourceLink()),
+                safeText(event.getLocation()),
+                event.getLocationCoordinates(),
+                nullableCount(event.getCapacityMin()),
+                nullableCount(event.getCapacityMax()),
+                normalizeCount(event.getCapacityTotal()),
+                Boolean.TRUE.equals(event.getAutoInviter()),
+                safeText(event.getFrequency()),
+                Boolean.TRUE.equals(event.getTicketing()),
+                normalizeCount(event.getAcceptedMembers()),
+                normalizeCount(event.getPendingMembers()),
+                normalizeStrings(event.getAcceptedMemberUserIds()),
+                normalizeStrings(event.getPendingMemberUserIds()),
+                normalizeStrings(event.getTopics()),
+                event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
+                safeText(event.getSubEventsDisplayMode()),
+                safeDouble(event.getRating()),
+                safeDouble(event.getRelevance()),
+                safeDouble(event.getAffinity()));
+    }
+
     private AssetCardDto toDto(Asset asset) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
@@ -447,6 +539,15 @@ public class AssetsService {
         return new ArrayList<>(next);
     }
 
+    private Double safeDouble(Double value) {
+        return value == null || !Double.isFinite(value) ? 0d : value;
+    }
+
+    private String safeNullableText(String value) {
+        String normalizedValue = safeText(value);
+        return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
+    }
+
     private int normalizeCount(Object value) {
         if (value instanceof Number number) {
             return Math.max(0, (int) Math.floor(number.doubleValue()));
@@ -456,6 +557,10 @@ public class AssetsService {
         } catch (Exception ignored) {
             return 0;
         }
+    }
+
+    private Integer nullableCount(Number value) {
+        return value == null ? null : Math.max(0, (int) Math.floor(value.doubleValue()));
     }
 
     private String normalizeId(String value) {
@@ -479,6 +584,18 @@ public class AssetsService {
     private String normalizeDateTime(String value, String fallback) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
+    }
+
+    private long toSortableDate(String value) {
+        String normalizedValue = safeText(value);
+        if (!StringUtils.hasText(normalizedValue)) {
+            return Long.MIN_VALUE;
+        }
+        try {
+            return Instant.parse(normalizedValue).toEpochMilli();
+        } catch (Exception ignored) {
+            return Long.MIN_VALUE;
+        }
     }
 
     private String safeText(String value) {

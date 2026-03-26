@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
+import com.raxim.myscoutee.profile.service.ActivitiesEventFeedbackService;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
+import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackStateDto;
+import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
+import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExploreQueryDto;
@@ -21,9 +26,13 @@ import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsFilterRequestDto;
 @RequestMapping("/activities/events")
 public class ActivitiesEventsController {
     private final ActivitiesEventsService activitiesEventsService;
+    private final ActivitiesEventFeedbackService activitiesEventFeedbackService;
 
-    public ActivitiesEventsController(ActivitiesEventsService activitiesEventsService) {
+    public ActivitiesEventsController(
+            ActivitiesEventsService activitiesEventsService,
+            ActivitiesEventFeedbackService activitiesEventFeedbackService) {
         this.activitiesEventsService = activitiesEventsService;
+        this.activitiesEventFeedbackService = activitiesEventFeedbackService;
     }
 
     @GetMapping
@@ -85,6 +94,31 @@ public class ActivitiesEventsController {
     @PostMapping("/join")
     public EventRecordDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
+    }
+
+    @GetMapping("/feedback")
+    public List<EventFeedbackStateDto> queryFeedback(@RequestParam("userId") String userId) {
+        return activitiesEventFeedbackService.queryStates(userId);
+    }
+
+    @PostMapping("/feedback/submit")
+    public void submitFeedback(@RequestBody EventFeedbackSubmitRequestDto request) {
+        activitiesEventFeedbackService.submit(request);
+    }
+
+    @PostMapping("/feedback/note")
+    public void saveFeedbackNote(@RequestBody EventFeedbackNoteRequestDto request) {
+        activitiesEventFeedbackService.saveNote(request);
+    }
+
+    @PostMapping("/feedback/remove")
+    public void removeFeedbackEvent(@RequestBody EventFeedbackToggleRequestDto request) {
+        activitiesEventFeedbackService.markRemoved(request, true);
+    }
+
+    @PostMapping("/feedback/restore")
+    public void restoreFeedbackEvent(@RequestBody EventFeedbackToggleRequestDto request) {
+        activitiesEventFeedbackService.markRemoved(request, false);
     }
 
     @PostMapping("/sync")

@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.time.Instant;
+import java.util.UUID;
+
+import org.bson.types.ObjectId;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,35 +20,69 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.profile.data.document.mongo.UserFilterPreferences;
+import com.raxim.myscoutee.profile.data.document.mongo.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.mongo.UserRate;
+import com.raxim.myscoutee.profile.data.document.mongo.UserReportSubmission;
+import com.raxim.myscoutee.profile.data.document.mongo.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.mongo.Users;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserByIdResponseDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserImpressionsDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserImpressionsSectionDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserMenuCountersDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeCountersDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackState;
+import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.mongo.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UserFilterPreferencesRepository;
+import com.raxim.myscoutee.profile.repository.mongo.UserFeedbackSubmissionsRepository;
+import com.raxim.myscoutee.profile.repository.mongo.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.mongo.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 
 @Service
 public class HomeUserProfileService {
     private static final String USER_FILTER_PREFERENCES_DOCUMENT_ID = "userFilterPreferences";
+    private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
 
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserRatesRepository userRatesRepository;
+    private final ActivityEventsRepository activityEventsRepository;
+    private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
+    private final UserReportSubmissionsRepository userReportSubmissionsRepository;
+    private final UserSessionActionsRepository userSessionActionsRepository;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
-            UserRatesRepository userRatesRepository) {
+            UserRatesRepository userRatesRepository,
+            ActivityEventsRepository activityEventsRepository,
+            EventFeedbackStatesRepository eventFeedbackStatesRepository,
+            UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
+            UserReportSubmissionsRepository userReportSubmissionsRepository,
+            UserSessionActionsRepository userSessionActionsRepository) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userRatesRepository = userRatesRepository;
+        this.activityEventsRepository = activityEventsRepository;
+        this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+        this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
+        this.userReportSubmissionsRepository = userReportSubmissionsRepository;
+        this.userSessionActionsRepository = userSessionActionsRepository;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -53,7 +91,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = findUser(resolvedUserId);
+        Users user = syncComputedUserActivities(findUser(resolvedUserId));
         if (user == null) {
             return null;
         }
@@ -89,6 +127,26 @@ public class HomeUserProfileService {
                 filterCount,
                 filterPreferences,
                 buildMenuCounters(user));
+    }
+
+    public UserRealtimeLongPollResponseDto queryRealtimeSnapshot(UserRealtimeLongPollRequestDto request) {
+        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return null;
+        }
+
+        Users user = syncComputedUserActivities(findUser(resolvedUserId));
+        if (user == null) {
+            return null;
+        }
+
+        UserRealtimeCountersDto counters = buildRealtimeCounters(user);
+        return new UserRealtimeLongPollResponseDto(
+                resolvedUserId,
+                counters,
+                toUserImpressionsDto(user.getImpressions()),
+                buildRealtimeCursor(user, counters),
+                Instant.now().toString());
     }
 
     public UserGameFilterPreferencesDto resolveFilterPreferences(String requestedUserId) {
@@ -132,8 +190,82 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users saved = usersRepository.save(toUsersDocument(user));
-        return toUserDto(saved);
+        Users existing = usersRepository.findById(normalizeId(user.id())).orElse(null);
+        Users saved = usersRepository.save(mergeUserDocument(existing, user));
+        return toUserDto(syncComputedUserActivities(saved));
+    }
+
+    public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
+        Users currentUser = resolveCurrentUser(null);
+        String userId = normalizeId(currentUser == null ? null : currentUser.getId());
+        if (!StringUtils.hasText(userId) || request == null) {
+            return new UserSubmitActionResponseDto(false, "Unable to send feedback.");
+        }
+
+        String nowIso = Instant.now().toString();
+        UserFeedbackSubmission document = new UserFeedbackSubmission();
+        document.setId(new ObjectId().toHexString());
+        document.setSyncKey(UUID.randomUUID().toString());
+        document.setUserId(userId);
+        document.setCategory(safeText(request.category()));
+        document.setSubject(safeText(request.subject()));
+        document.setDetails(safeText(request.details()));
+        document.setCreatedDate(nowIso);
+        document.setCreatedUser(userId);
+        document.setUpdatedDate(nowIso);
+        document.setUpdatedUser(userId);
+        userFeedbackSubmissionsRepository.save(document);
+        return new UserSubmitActionResponseDto(true, null);
+    }
+
+    public UserSubmitActionResponseDto submitReport(UserReportUserSubmitRequestDto request) {
+        Users currentUser = resolveCurrentUser(null);
+        String userId = normalizeId(currentUser == null ? null : currentUser.getId());
+        if (!StringUtils.hasText(userId) || request == null) {
+            return new UserSubmitActionResponseDto(false, "Unable to submit report.");
+        }
+
+        String nowIso = Instant.now().toString();
+        UserReportSubmission document = new UserReportSubmission();
+        document.setId(new ObjectId().toHexString());
+        document.setSyncKey(UUID.randomUUID().toString());
+        document.setUserId(userId);
+        document.setHandle(safeText(request.handle()));
+        document.setReason(safeText(request.reason()));
+        document.setDetails(safeText(request.details()));
+        document.setCreatedDate(nowIso);
+        document.setCreatedUser(userId);
+        document.setUpdatedDate(nowIso);
+        document.setUpdatedUser(userId);
+        userReportSubmissionsRepository.save(document);
+        return new UserSubmitActionResponseDto(true, null);
+    }
+
+    public UserSubmitActionResponseDto logout(UserLogoutRequestDto request) {
+        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return new UserSubmitActionResponseDto(false, "Unable to logout.");
+        }
+        recordSessionAction(resolvedUserId, "logout", "session");
+        return new UserSubmitActionResponseDto(true, null);
+    }
+
+    public UserSubmitActionResponseDto deleteUser(UserDeleteRequestDto request) {
+        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
+        }
+
+        Users user = usersRepository.findById(resolvedUserId).orElse(null);
+        if (user == null) {
+            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
+        }
+
+        user.setStatus("D");
+        user.setProfileStatus("deleted");
+        usersRepository.save(user);
+        recordSessionAction(resolvedUserId, "delete", "status:D");
+        return new UserSubmitActionResponseDto(true, null);
     }
 
     public List<Users> queryGameStackUserRecords(String activeUserId) {
@@ -176,7 +308,7 @@ public class HomeUserProfileService {
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
                 normalizeStrings(user.getImages()),
                 toUserImpressionsDto(user.getImpressions()),
-                nullToEmpty(user.getProfileStatus()),
+                resolveProfileStatus(user),
                 toUserActivitiesDto(user.getActivities()));
     }
 
@@ -333,12 +465,12 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.invitations()),
                 activities == null ? 0 : normalizeCount(activities.events()),
                 activities == null ? 0 : normalizeCount(activities.hosting()),
-                0,
-                0);
+                activities == null ? 0 : normalizeCount(activities.tickets()),
+                activities == null ? 0 : normalizeCount(activities.feedback()));
     }
 
-    private Users toUsersDocument(UserDto user) {
-        Users document = new Users();
+    private Users mergeUserDocument(Users current, UserDto user) {
+        Users document = current == null ? new Users() : current;
         document.setId(normalizeId(user.id()));
         document.setName(nullToEmpty(user.name()));
         document.setAge(normalizeCount(user.age()));
@@ -360,9 +492,173 @@ public class HomeUserProfileService {
         document.setLocationCoordinates(toLocationCoordinatesRecord(user.locationCoordinates()));
         document.setImages(normalizeStrings(user.images()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
-        document.setProfileStatus(nullToEmpty(user.profileStatus()));
-        document.setActivities(toUserActivitiesRecord(user.activities()));
+        String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus()))
+                ? current.getStatus()
+                : resolveStatusCode(user.profileStatus(), current == null ? null : current.getStatus());
+        document.setStatus(status);
+        document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
+        document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
+    }
+
+    private Users syncComputedUserActivities(Users user) {
+        if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
+            return user;
+        }
+
+        Users.UserActivitiesRecord computed = buildComputedUserActivities(normalizeId(user.getId()), user.getActivities());
+        if (activitiesEqual(user.getActivities(), computed)) {
+            return user;
+        }
+
+        user.setActivities(computed);
+        return usersRepository.save(user);
+    }
+
+    private Users.UserActivitiesRecord buildComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
+        List<ActivityEvent> eventRecords = queryEventRecords(userId);
+        return new Users.UserActivitiesRecord(
+                queryGameStackUserRecords(userId).size(),
+                existing == null ? 0 : normalizeCount(existing.chat()),
+                countEventsByType(eventRecords, "invitations"),
+                countEventsByType(eventRecords, "events"),
+                countEventsByType(eventRecords, "hosting"),
+                countTicketRecords(eventRecords),
+                countPendingEventFeedback(userId, eventRecords));
+    }
+
+    private List<ActivityEvent> queryEventRecords(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            return List.of();
+        }
+        return activityEventsRepository.findByOwnerUserId(userId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private int countEventsByType(List<ActivityEvent> eventRecords, String type) {
+        return Math.toIntExact(eventRecords.stream()
+                .filter(record -> type.equals(safeText(record.getType())))
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .count());
+    }
+
+    private int countTicketRecords(List<ActivityEvent> eventRecords) {
+        return Math.toIntExact(eventRecords.stream()
+                .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> Boolean.TRUE.equals(record.getTicketing()))
+                .count());
+    }
+
+    private int countPendingEventFeedback(String userId, List<ActivityEvent> eventRecords) {
+        long nowMs = Instant.now().toEpochMilli();
+        Set<String> hiddenEventIds = eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc(userId).stream()
+                .filter(Objects::nonNull)
+                .filter(state -> Boolean.TRUE.equals(state.getRemoved()) || StringUtils.hasText(safeText(state.getSubmittedAtIso())))
+                .map(EventFeedbackState::getEventId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        return Math.toIntExact(eventRecords.stream()
+                .filter(record -> "events".equals(safeText(record.getType())))
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> !Boolean.TRUE.equals(record.getIsAdmin()))
+                .filter(record -> !hiddenEventIds.contains(normalizeId(record.getSourceId())))
+                .map(ActivityEvent::getStartAtIso)
+                .map(this::toSortableDate)
+                .filter(startAtMs -> startAtMs > 0L && nowMs >= startAtMs + EVENT_FEEDBACK_UNLOCK_DELAY_MS)
+                .count());
+    }
+
+    private UserRealtimeCountersDto buildRealtimeCounters(Users user) {
+        UserMenuCountersDto counters = buildMenuCounters(user);
+        return new UserRealtimeCountersDto(
+                counters.game(),
+                counters.chat(),
+                counters.invitations(),
+                counters.events(),
+                counters.hosting(),
+                counters.tickets(),
+                counters.feedback(),
+                false,
+                false);
+    }
+
+    private String buildRealtimeCursor(Users user, UserRealtimeCountersDto counters) {
+        return String.join(":",
+                normalizeId(user.getId()),
+                String.valueOf(normalizeCount(counters.game())),
+                String.valueOf(normalizeCount(counters.chat())),
+                String.valueOf(normalizeCount(counters.invitations())),
+                String.valueOf(normalizeCount(counters.events())),
+                String.valueOf(normalizeCount(counters.hosting())),
+                String.valueOf(normalizeCount(counters.tickets())),
+                String.valueOf(normalizeCount(counters.feedback())));
+    }
+
+    private boolean activitiesEqual(Users.UserActivitiesRecord left, Users.UserActivitiesRecord right) {
+        if (left == right) {
+            return true;
+        }
+        if (left == null || right == null) {
+            return false;
+        }
+        return normalizeCount(left.game()) == normalizeCount(right.game())
+                && normalizeCount(left.chat()) == normalizeCount(right.chat())
+                && normalizeCount(left.invitations()) == normalizeCount(right.invitations())
+                && normalizeCount(left.events()) == normalizeCount(right.events())
+                && normalizeCount(left.hosting()) == normalizeCount(right.hosting())
+                && normalizeCount(left.tickets()) == normalizeCount(right.tickets())
+                && normalizeCount(left.feedback()) == normalizeCount(right.feedback());
+    }
+
+    private void recordSessionAction(String userId, String action, String metadata) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        String nowIso = Instant.now().toString();
+        UserSessionAction document = new UserSessionAction();
+        document.setId(new ObjectId().toHexString());
+        document.setSyncKey(UUID.randomUUID().toString());
+        document.setUserId(normalizedUserId);
+        document.setAction(safeText(action));
+        document.setMetadata(safeText(metadata));
+        document.setCreatedDate(nowIso);
+        document.setCreatedUser(normalizedUserId);
+        document.setUpdatedDate(nowIso);
+        document.setUpdatedUser(normalizedUserId);
+        userSessionActionsRepository.save(document);
+    }
+
+    private String resolveProfileStatus(Users user) {
+        return resolveProfileStatus(user == null ? null : user.getStatus(), user == null ? null : user.getProfileStatus());
+    }
+
+    private String resolveProfileStatus(String status, String fallbackProfileStatus) {
+        return switch (safeText(status)) {
+            case "D" -> "deleted";
+            case "I" -> "inactive";
+            case "F" -> "friends only";
+            case "H" -> "host only";
+            case "A" -> "public";
+            default -> {
+                String normalizedProfileStatus = safeText(fallbackProfileStatus);
+                yield StringUtils.hasText(normalizedProfileStatus) ? normalizedProfileStatus : "public";
+            }
+        };
+    }
+
+    private String resolveStatusCode(String profileStatus, String fallbackStatus) {
+        return switch (safeText(profileStatus)) {
+            case "deleted" -> "D";
+            case "inactive" -> "I";
+            case "friends only" -> "F";
+            case "host only" -> "H";
+            case "public" -> "A";
+            default -> StringUtils.hasText(safeText(fallbackStatus)) ? safeText(fallbackStatus) : "A";
+        };
     }
 
     private UserFilterPreferences.UserFilterPreferencesRecord toPreferencesRecord(
@@ -419,26 +715,30 @@ public class HomeUserProfileService {
 
     private UserActivitiesDto toUserActivitiesDto(Users.UserActivitiesRecord activities) {
         if (activities == null) {
-            return new UserActivitiesDto(0, 0, 0, 0, 0);
+            return new UserActivitiesDto(0, 0, 0, 0, 0, 0, 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
                 normalizeCount(activities.chat()),
                 normalizeCount(activities.invitations()),
                 normalizeCount(activities.events()),
-                normalizeCount(activities.hosting()));
+                normalizeCount(activities.hosting()),
+                normalizeCount(activities.tickets()),
+                normalizeCount(activities.feedback()));
     }
 
     private Users.UserActivitiesRecord toUserActivitiesRecord(UserActivitiesDto activities) {
         if (activities == null) {
-            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0);
+            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0);
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
                 normalizeCount(activities.chat()),
                 normalizeCount(activities.invitations()),
                 normalizeCount(activities.events()),
-                normalizeCount(activities.hosting()));
+                normalizeCount(activities.hosting()),
+                normalizeCount(activities.tickets()),
+                normalizeCount(activities.feedback()));
     }
 
     private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord record) {
@@ -534,6 +834,18 @@ public class HomeUserProfileService {
 
     private String normalizeToken(String value) {
         return normalizeId(value).toLowerCase();
+    }
+
+    private String safeText(String value) {
+        return normalizeId(value);
+    }
+
+    private long toSortableDate(String value) {
+        try {
+            return Instant.parse(safeText(value)).toEpochMilli();
+        } catch (Exception ignored) {
+            return 0L;
+        }
     }
 
     private String nullToEmpty(String value) {

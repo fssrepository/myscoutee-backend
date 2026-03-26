@@ -76,7 +76,9 @@ public final class AuthDtos {
             Integer chat,
             Integer invitations,
             Integer events,
-            Integer hosting) {
+            Integer hosting,
+            Integer tickets,
+            Integer feedback) {
     }
 
     public record UserDto(
@@ -162,6 +164,14 @@ public final class AuthDtos {
             String handle,
             String reason,
             String details) {
+    }
+
+    public record UserLogoutRequestDto(
+            String userId) {
+    }
+
+    public record UserDeleteRequestDto(
+            String userId) {
     }
 
     public record UserSubmitActionResponseDto(
