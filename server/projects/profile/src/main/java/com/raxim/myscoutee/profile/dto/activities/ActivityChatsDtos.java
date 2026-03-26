@@ -29,6 +29,12 @@ public final class ActivityChatsDtos {
             Integer distanceMetersExact) {
     }
 
+    public record ChatPageResponseDto(
+            List<ChatSummaryDto> items,
+            Integer total,
+            String nextCursor) {
+    }
+
     public record ChatMessageDto(
             String id,
             String senderId,
@@ -41,13 +47,39 @@ public final class ActivityChatsDtos {
             List<ChatReadAvatarDto> readBy) {
     }
 
+    public record ChatTypingDto(
+            String userId,
+            String userName,
+            String userInitials,
+            String userGender,
+            Boolean typing) {
+    }
+
+    public record ChatReadReceiptDto(
+            String userId,
+            String userInitials,
+            String userGender,
+            List<String> messageIds,
+            String readAtIso) {
+    }
+
+    public record ChatSocketEventDto(
+            String type,
+            String chatId,
+            ChatMessageDto message,
+            ChatTypingDto typing,
+            ChatReadReceiptDto read) {
+    }
+
     public record ChatPostMessageRequestDto(
             String text) {
     }
 
     public record ChatSocketRequestDto(
             String type,
-            String text) {
+            String text,
+            Boolean typing,
+            List<String> messageIds) {
     }
 
     public record ChatDeviceUpsertRequestDto(

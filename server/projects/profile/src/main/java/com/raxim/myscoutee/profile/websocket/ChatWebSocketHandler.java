@@ -56,6 +56,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         String type = request.type() == null ? "message" : request.type().trim();
+        if ("typing".equalsIgnoreCase(type)) {
+            activitiesChatService.sendTypingSignal(chatId, userId, request.typing());
+            return;
+        }
+        if ("read".equalsIgnoreCase(type)) {
+            activitiesChatService.markMessagesRead(chatId, userId, request.messageIds());
+            return;
+        }
         if (!type.isEmpty() && !"message".equalsIgnoreCase(type)) {
             return;
         }

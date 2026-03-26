@@ -27,6 +27,7 @@ import com.raxim.myscoutee.profile.data.document.mongo.Users;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSummaryDto;
 import com.raxim.myscoutee.profile.repository.mongo.ActivityChatsRepository;
@@ -71,10 +72,61 @@ public class ActivitiesChatService {
                 .toList();
     }
 
+    public ChatPageResponseDto queryChatPage(
+            String requestedUserId,
+            String contextFilterValue,
+            String sortValue,
+            String sortDirectionValue,
+            String secondaryFilterValue,
+            String cursor,
+            Integer limitValue,
+            String rangeStartIso,
+            String rangeEndIso) {
+        String userId = resolveUserId(requestedUserId);
+        if (!StringUtils.hasText(userId)) {
+            return new ChatPageResponseDto(List.of(), 0, null);
+        }
+
+        ensureOwnerCopiesForUser(userId);
+        String contextFilter = normalizeChatContextFilter(contextFilterValue);
+        String sort = normalizeChatQuerySort(sortValue, secondaryFilterValue);
+        boolean sortAscending = resolveChatSortAscending(sort, sortDirectionValue);
+        long rangeStartMs = parseIsoMillis(rangeStartIso, Long.MIN_VALUE);
+        long rangeEndMs = parseIsoMillis(rangeEndIso, Long.MAX_VALUE);
+        if (rangeStartMs > rangeEndMs) {
+            return new ChatPageResponseDto(List.of(), 0, null);
+        }
+
+        List<ChatSummaryProjection> projections = activityChatsRepository.findByOwnerUserId(userId).stream()
+                .filter(Objects::nonNull)
+                .map(this::toSummaryProjection)
+                .filter(Objects::nonNull)
+                .filter(item -> matchesChatContextFilter(item.summary(), contextFilter))
+                .filter(item -> item.dateMs() >= rangeStartMs && item.dateMs() <= rangeEndMs)
+                .sorted(chatSummaryComparator(sort, sortAscending))
+                .toList();
+
+        int startIndex = resolveChatCursorStartIndex(projections, cursor);
+        int limit = normalizeChatPageLimit(limitValue);
+        int endIndex = Math.min(projections.size(), startIndex + limit);
+        List<ChatSummaryDto> items = projections.subList(startIndex, endIndex).stream()
+                .map(ChatSummaryProjection::summary)
+                .toList();
+        String nextCursor = endIndex < projections.size() && !items.isEmpty()
+                ? serializeChatCursor(items.get(items.size() - 1))
+                : null;
+
+        return new ChatPageResponseDto(items, projections.size(), nextCursor);
+    }
+
     public List<ChatMessageDto> queryMessages(String chatId, String requestedUserId) {
         String userId = requireResolvedUserId(requestedUserId);
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
-        ActivityChat viewerChat = markMessagesRead(snapshot, userId);
+        ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, null);
+        ActivityChat viewerChat = readUpdate.viewerChat();
+        if (!readUpdate.readMessageIds().isEmpty()) {
+            publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
+        }
         if (viewerChat == null || viewerChat.getMessages() == null) {
             return List.of();
         }
@@ -113,12 +165,31 @@ public class ActivitiesChatService {
         activityChatsRepository.saveAll(updatedDocuments);
 
         ChatStreamEvent streamEvent = toStreamEvent(snapshot.chatId(), messageRecord);
-        boolean published = chatStreamPublisher.publish(streamEvent);
-        if (!published) {
-            chatWebSocketSessionRegistry.broadcast(streamEvent);
-        }
+        publishChatEvent(streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         return toMessageDto(messageRecord, userId);
+    }
+
+    public void markMessagesRead(String chatId, String requestedUserId, List<String> messageIds) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, messageIds);
+        if (!readUpdate.readMessageIds().isEmpty()) {
+            publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
+        }
+    }
+
+    public void sendTypingSignal(String chatId, String requestedUserId, Boolean typing) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Users user = findUser(userId);
+        publishChatEvent(ChatStreamEvent.typing(
+                snapshot.chatId(),
+                userId,
+                resolveUserName(user, userId),
+                resolveUserInitials(user, userId),
+                resolveUserGender(user),
+                Boolean.TRUE.equals(typing)));
     }
 
     public boolean hasChatAccess(String chatId, String userId) {
@@ -285,27 +356,44 @@ public class ActivitiesChatService {
         return flattened;
     }
 
-    private ActivityChat markMessagesRead(ChatDocumentsSnapshot snapshot, String viewerUserId) {
+    private ChatReadUpdate markMessagesRead(
+            ChatDocumentsSnapshot snapshot,
+            String viewerUserId,
+            List<String> requestedMessageIds) {
         Users viewer = findUser(viewerUserId);
         ChatReadAvatarRecord reader = buildReadAvatarRecord(viewer, viewerUserId);
+        Set<String> targetMessageIds = requestedMessageIds == null
+                ? Set.of()
+                : requestedMessageIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        boolean targetAllMessages = targetMessageIds.isEmpty();
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         boolean changed = false;
+        Set<String> readMessageIds = new LinkedHashSet<>();
+        String readAtIso = Instant.now().toString();
         for (ActivityChat existing : snapshot.chatDocuments()) {
             ActivityChat next = copyChat(existing);
-            if (viewerUserId.equals(normalizeId(existing.getOwnerUserId())) && normalizeCount(existing.getUnread()) != 0) {
-                next.setUnread(0);
-                changed = true;
-            }
             List<ChatMessageRecord> nextMessages = new ArrayList<>();
             for (ChatMessageRecord message : safeMessages(existing.getMessages())) {
                 ChatMessageRecord nextMessage = copyMessageRecord(message);
                 String senderId = nextMessage.getSenderAvatar() == null ? "" : normalizeId(nextMessage.getSenderAvatar().getId());
-                if (!viewerUserId.equals(senderId) && addReader(nextMessage, reader)) {
+                boolean matchesTarget = targetAllMessages || targetMessageIds.contains(normalizeId(nextMessage.getId()));
+                if (matchesTarget && !viewerUserId.equals(senderId) && addReader(nextMessage, reader)) {
                     changed = true;
+                    readMessageIds.add(normalizeId(nextMessage.getId()));
                 }
                 nextMessages.add(nextMessage);
             }
             next.setMessages(nextMessages);
+            if (viewerUserId.equals(normalizeId(existing.getOwnerUserId()))) {
+                int unread = countUnreadMessages(next, viewerUserId);
+                if (normalizeCount(existing.getUnread()) != unread) {
+                    changed = true;
+                }
+                next.setUnread(unread);
+            }
             updatedDocuments.add(next);
         }
         if (changed) {
@@ -313,7 +401,11 @@ public class ActivitiesChatService {
         } else {
             updatedDocuments = snapshot.chatDocuments();
         }
-        return findOwnerChat(updatedDocuments, viewerUserId);
+        return new ChatReadUpdate(
+                findOwnerChat(updatedDocuments, viewerUserId),
+                List.copyOf(readMessageIds),
+                toReadAvatarDto(reader),
+                readAtIso);
     }
 
     private boolean addReader(ChatMessageRecord message, ChatReadAvatarRecord reader) {
@@ -359,6 +451,24 @@ public class ActivitiesChatService {
                 chat.getDistanceMetersExact());
     }
 
+    private ChatSummaryProjection toSummaryProjection(ActivityChat chat) {
+        if (chat == null) {
+            return null;
+        }
+        ChatSummaryDto summary = toSummaryDto(chat);
+        int unread = normalizeCount(summary.unread());
+        int memberCount = Math.max(1, (int) safeMemberIds(chat.getMemberIds()).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .count());
+        int relevanceScore = (unread * 10) + memberCount;
+        int distanceMeters = chat.getDistanceMetersExact() != null
+                ? Math.max(0, chat.getDistanceMetersExact())
+                : Math.max(0, (int) Math.round((chat.getDistanceKm() == null ? 0d : chat.getDistanceKm()) * 1000d));
+        return new ChatSummaryProjection(summary, sortableDate(summary.dateIso()), distanceMeters, relevanceScore);
+    }
+
     private ChatMessageDto toMessageDto(ChatMessageRecord message, String viewerUserId) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
@@ -399,7 +509,7 @@ public class ActivitiesChatService {
 
     private ChatStreamEvent toStreamEvent(String chatId, ChatMessageRecord messageRecord) {
         ChatAvatarRecord senderAvatar = messageRecord.getSenderAvatar();
-        return new ChatStreamEvent(
+        return ChatStreamEvent.message(
                 chatId,
                 messageRecord.getId(),
                 senderAvatar == null ? "" : safeText(senderAvatar.getId()),
@@ -411,6 +521,23 @@ public class ActivitiesChatService {
                 safeReadBy(messageRecord.getReadBy()).stream()
                         .map(this::toReadAvatarDto)
                         .toList());
+    }
+
+    private ChatStreamEvent toReadEvent(String chatId, ChatReadUpdate readUpdate) {
+        return ChatStreamEvent.read(
+                chatId,
+                readUpdate.reader().id(),
+                readUpdate.reader().initials(),
+                readUpdate.reader().gender(),
+                readUpdate.readMessageIds(),
+                readUpdate.readAtIso());
+    }
+
+    private void publishChatEvent(ChatStreamEvent streamEvent) {
+        boolean published = chatStreamPublisher.publish(streamEvent);
+        if (!published) {
+            chatWebSocketSessionRegistry.broadcast(streamEvent);
+        }
     }
 
     private ActivityChat findOwnerChat(List<ActivityChat> chats, String ownerUserId) {
@@ -610,6 +737,10 @@ public class ActivitiesChatService {
         return messages == null ? List.of() : messages;
     }
 
+    private List<String> safeMemberIds(List<String> memberIds) {
+        return memberIds == null ? List.of() : memberIds;
+    }
+
     private List<ChatReadAvatarRecord> safeReadBy(List<ChatReadAvatarRecord> readBy) {
         return readBy == null ? List.of() : readBy;
     }
@@ -630,11 +761,138 @@ public class ActivitiesChatService {
         return value == null ? "" : value.trim();
     }
 
+    private String normalizeChatContextFilter(String value) {
+        String normalized = safeText(value);
+        if ("event".equalsIgnoreCase(normalized)
+                || "subEvent".equalsIgnoreCase(normalized)
+                || "group".equalsIgnoreCase(normalized)) {
+            return normalized;
+        }
+        return "all";
+    }
+
+    private boolean matchesChatContextFilter(ChatSummaryDto item, String contextFilter) {
+        if (!StringUtils.hasText(contextFilter) || "all".equalsIgnoreCase(contextFilter)) {
+            return true;
+        }
+        String channelType = safeText(item == null ? null : item.channelType());
+        if ("event".equalsIgnoreCase(contextFilter)) {
+            return "mainEvent".equalsIgnoreCase(channelType);
+        }
+        if ("subEvent".equalsIgnoreCase(contextFilter)) {
+            return "optionalSubEvent".equalsIgnoreCase(channelType);
+        }
+        if ("group".equalsIgnoreCase(contextFilter)) {
+            return "groupSubEvent".equalsIgnoreCase(channelType);
+        }
+        return true;
+    }
+
+    private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
+        String normalizedSort = safeText(sortValue).toLowerCase(Locale.ROOT);
+        if ("distance".equals(normalizedSort) || "relevance".equals(normalizedSort)) {
+            return normalizedSort;
+        }
+        if ("relevant".equalsIgnoreCase(safeText(secondaryFilterValue))) {
+            return "relevance";
+        }
+        return "date";
+    }
+
+    private boolean resolveChatSortAscending(String sort, String sortDirectionValue) {
+        String normalizedDirection = safeText(sortDirectionValue);
+        if ("asc".equalsIgnoreCase(normalizedDirection)) {
+            return true;
+        }
+        if ("desc".equalsIgnoreCase(normalizedDirection)) {
+            return false;
+        }
+        return "distance".equals(sort);
+    }
+
+    private Comparator<ChatSummaryProjection> chatSummaryComparator(String sort, boolean ascending) {
+        return (left, right) -> {
+            int comparison;
+            if ("distance".equals(sort)) {
+                comparison = compareInts(left.distanceMeters(), right.distanceMeters(), ascending);
+                if (comparison != 0) {
+                    return comparison;
+                }
+                comparison = compareLongs(left.dateMs(), right.dateMs(), false);
+                if (comparison != 0) {
+                    return comparison;
+                }
+            } else if ("relevance".equals(sort)) {
+                comparison = compareInts(left.relevanceScore(), right.relevanceScore(), ascending);
+                if (comparison != 0) {
+                    return comparison;
+                }
+                comparison = compareLongs(left.dateMs(), right.dateMs(), false);
+                if (comparison != 0) {
+                    return comparison;
+                }
+            } else {
+                comparison = compareLongs(left.dateMs(), right.dateMs(), ascending);
+                if (comparison != 0) {
+                    return comparison;
+                }
+            }
+            return safeText(left.summary().id()).compareTo(safeText(right.summary().id()));
+        };
+    }
+
+    private int compareInts(int left, int right, boolean ascending) {
+        return ascending ? Integer.compare(left, right) : Integer.compare(right, left);
+    }
+
+    private int compareLongs(long left, long right, boolean ascending) {
+        return ascending ? Long.compare(left, right) : Long.compare(right, left);
+    }
+
+    private int resolveChatCursorStartIndex(List<ChatSummaryProjection> items, String cursor) {
+        String cursorId = parseChatCursorId(cursor);
+        if (!StringUtils.hasText(cursorId)) {
+            return 0;
+        }
+        for (int index = 0; index < items.size(); index += 1) {
+            if (cursorId.equals(normalizeId(items.get(index).summary().id()))) {
+                return index + 1;
+            }
+        }
+        return 0;
+    }
+
+    private String serializeChatCursor(ChatSummaryDto item) {
+        return item == null ? null : normalizeId(item.id());
+    }
+
+    private String parseChatCursorId(String cursor) {
+        return normalizeId(cursor);
+    }
+
+    private int normalizeChatPageLimit(Integer limitValue) {
+        if (limitValue == null || limitValue.intValue() <= 0) {
+            return 10;
+        }
+        return Math.min(100, limitValue.intValue());
+    }
+
     private long sortableDate(String value) {
         try {
             return StringUtils.hasText(value) ? Instant.parse(value.trim()).toEpochMilli() : 0L;
         } catch (Exception exception) {
             return 0L;
+        }
+    }
+
+    private long parseIsoMillis(String value, long fallback) {
+        if (!StringUtils.hasText(value)) {
+            return fallback;
+        }
+        try {
+            return Instant.parse(value.trim()).toEpochMilli();
+        } catch (Exception exception) {
+            return fallback;
         }
     }
 
@@ -644,6 +902,20 @@ public class ActivitiesChatService {
 
     private String buildMongoId(String ownerUserId, String chatId) {
         return normalizeId(ownerUserId) + ":" + normalizeId(chatId);
+    }
+
+    private record ChatSummaryProjection(
+            ChatSummaryDto summary,
+            long dateMs,
+            int distanceMeters,
+            int relevanceScore) {
+    }
+
+    private record ChatReadUpdate(
+            ActivityChat viewerChat,
+            List<String> readMessageIds,
+            ChatReadAvatarDto reader,
+            String readAtIso) {
     }
 
     private record ChatDocumentsSnapshot(String chatId, ActivityChat viewerChat, List<ActivityChat> chatDocuments) {

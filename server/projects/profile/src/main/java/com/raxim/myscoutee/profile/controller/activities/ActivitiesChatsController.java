@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSummaryDto;
 import com.raxim.myscoutee.profile.service.ActivitiesChatService;
@@ -30,6 +31,29 @@ public class ActivitiesChatsController {
     @GetMapping
     public List<ChatSummaryDto> queryChats(@RequestParam("userId") String userId) {
         return activitiesChatService.queryChats(userId);
+    }
+
+    @GetMapping("/page")
+    public ChatPageResponseDto queryChatPage(
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "contextFilter", required = false) String contextFilter,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "sortDirection", required = false) String sortDirection,
+            @RequestParam(value = "secondaryFilter", required = false) String secondaryFilter,
+            @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "rangeStartIso", required = false) String rangeStartIso,
+            @RequestParam(value = "rangeEndIso", required = false) String rangeEndIso) {
+        return activitiesChatService.queryChatPage(
+                userId,
+                contextFilter,
+                sort,
+                sortDirection,
+                secondaryFilter,
+                cursor,
+                limit,
+                rangeStartIso,
+                rangeEndIso);
     }
 
     @GetMapping("/{chatId}/messages")

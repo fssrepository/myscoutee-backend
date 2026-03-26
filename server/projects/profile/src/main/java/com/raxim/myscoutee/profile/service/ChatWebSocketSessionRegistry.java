@@ -12,7 +12,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
 
 @Service
 public class ChatWebSocketSessionRegistry {
@@ -76,9 +76,9 @@ public class ChatWebSocketSessionRegistry {
                 unregister(session);
                 continue;
             }
-            ChatMessageDto message = event.toMessage(sessionRef.userId());
+            ChatSocketEventDto socketEvent = event.toSocketEvent(sessionRef.userId());
             try {
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(socketEvent)));
             } catch (IOException exception) {
                 unregister(session);
             } catch (Exception exception) {
