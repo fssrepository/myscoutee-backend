@@ -363,15 +363,6 @@ public class HomeUserProfileService {
                 .toList();
     }
 
-    public List<UserDto> queryDemoUsers() {
-        return orderedUsers().stream()
-                .map(this::syncComputedUserActivities)
-                .filter(Objects::nonNull)
-                .map(this::toUserDto)
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
     public UserDto toUserDto(Users user) {
         if (user == null) {
             return null;

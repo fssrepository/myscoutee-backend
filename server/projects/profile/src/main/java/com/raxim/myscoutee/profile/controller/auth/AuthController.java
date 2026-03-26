@@ -35,7 +35,7 @@ public class AuthController {
 
     @GetMapping("/demo-users")
     public List<UserDto> queryDemoUsers() {
-        return homeUserProfileService.queryDemoUsers();
+        return List.of();
     }
 
     @GetMapping("/me")
