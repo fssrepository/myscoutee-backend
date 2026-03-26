@@ -13,28 +13,34 @@ import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.service.AssetsService;
 
 @RestController
 @RequestMapping("/assets")
 public class AssetsController {
+    private final AssetsService assetsService;
+
+    public AssetsController(AssetsService assetsService) {
+        this.assetsService = assetsService;
+    }
 
     @GetMapping
     public List<AssetCardDto> queryAssets(@RequestParam("userId") String userId) {
-        return List.of();
+        return assetsService.queryAssets(userId);
     }
 
     @PostMapping("/upsert")
     public void upsert(@RequestBody AssetUpsertRequestDto request) {
-        // no-op skeleton
+        assetsService.upsert(request);
     }
 
     @PostMapping("/replace")
     public void replace(@RequestBody AssetReplaceRequestDto request) {
-        // no-op skeleton
+        assetsService.replace(request);
     }
 
     @PostMapping("/delete")
     public void delete(@RequestBody AssetDeleteRequestDto request) {
-        // no-op skeleton
+        assetsService.delete(request);
     }
 }

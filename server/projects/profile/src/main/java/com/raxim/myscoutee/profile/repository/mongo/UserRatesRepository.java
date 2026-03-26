@@ -10,6 +10,8 @@ import com.raxim.myscoutee.profile.data.document.mongo.UserRate;
 public interface UserRatesRepository extends MongoRepository<UserRate, String> {
     Optional<UserRate> findBySyncKey(String syncKey);
 
+    List<UserRate> findByOwnerUserId(String ownerUserId);
+
     List<UserRate> findByOwnerUserIdAndSource(String ownerUserId, String source);
 
     List<UserRate> findByOwnerUserIdAndSourceAndMode(

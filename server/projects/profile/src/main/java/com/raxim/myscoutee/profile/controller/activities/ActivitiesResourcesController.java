@@ -8,21 +8,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.service.ActivitiesResourcesService;
 
 @RestController
 @RequestMapping("/activities/events/subevent-resources")
 public class ActivitiesResourcesController {
+    private final ActivitiesResourcesService activitiesResourcesService;
+
+    public ActivitiesResourcesController(ActivitiesResourcesService activitiesResourcesService) {
+        this.activitiesResourcesService = activitiesResourcesService;
+    }
 
     @GetMapping
     public ActivitySubEventResourceStateDto queryState(
             @RequestParam("ownerId") String ownerId,
             @RequestParam("subEventId") String subEventId,
             @RequestParam("assetOwnerUserId") String assetOwnerUserId) {
-        return null;
+        return activitiesResourcesService.queryState(ownerId, subEventId, assetOwnerUserId);
     }
 
     @PostMapping("/replace")
     public ActivitySubEventResourceStateDto replace(@RequestBody ActivitySubEventResourceStateDto request) {
-        return request;
+        return activitiesResourcesService.replace(request);
     }
 }

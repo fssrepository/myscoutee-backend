@@ -46,14 +46,17 @@ public class ActivitiesEventsService {
     private final ActivityEventsRepository activityEventsRepository;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final ActivitiesMembersService activitiesMembersService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
             UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService) {
+            HomeUserProfileService homeUserProfileService,
+            ActivitiesMembersService activitiesMembersService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.activitiesMembersService = activitiesMembersService;
     }
 
     public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
@@ -246,32 +249,10 @@ public class ActivitiesEventsService {
             return null;
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
-            return toEventRecordDto(buildMembershipProjection(viewer.userId(), preferred), viewer);
+            return toEventRecordDto(preferred, viewer);
         }
 
-        Set<String> accepted = new LinkedHashSet<>(normalizeIds(preferred.getAcceptedMemberUserIds()));
-        Set<String> pending = new LinkedHashSet<>(normalizeIds(preferred.getPendingMemberUserIds()));
-        if (!accepted.contains(viewer.userId()) && !pending.contains(viewer.userId())) {
-            pending.add(viewer.userId());
-            List<ActivityEvent> documents = activityEventsRepository.findBySourceId(sourceId);
-            for (ActivityEvent document : documents) {
-                if (document == null || Boolean.TRUE.equals(document.getIsInvitation())) {
-                    continue;
-                }
-                document.setAcceptedMemberUserIds(new ArrayList<>(accepted));
-                document.setPendingMemberUserIds(new ArrayList<>(pending));
-                document.setAcceptedMembers(accepted.size());
-                document.setPendingMembers(pending.size());
-                document.setCapacityTotal(Math.max(accepted.size(), normalizeCount(document.getCapacityTotal())));
-                document.setUpdatedDate(Instant.now().toString());
-                document.setUpdatedUser(viewer.userId());
-            }
-            activityEventsRepository.saveAll(documents);
-            preferred = computePreferredEventRecords(documents).stream()
-                    .filter(record -> sourceId.equals(normalizeId(record.getSourceId())))
-                    .findFirst()
-                    .orElse(preferred);
-        }
+        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), preferred), viewer);
     }
 
@@ -289,6 +270,8 @@ public class ActivitiesEventsService {
         if (!StringUtils.hasText(actorUserId)) {
             return;
         }
+
+        activitiesMembersService.sync(request);
 
         String targetType = normalizeTargetType(request.target());
         if (!StringUtils.hasText(targetType)) {
@@ -336,7 +319,7 @@ public class ActivitiesEventsService {
                 .toList();
         List<ActivityEvent> myEventItems = userItems.stream()
                 .filter(record -> TYPE_HOSTING.equals(normalizeType(record.getType())))
-                .filter(record -> Boolean.TRUE.equals(record.getIsAdmin()))
+                .filter(record -> isViewerAdmin(record, viewer.userId()))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
                 .toList();
         List<ActivityEvent> draftItems = myEventItems.stream()
@@ -406,8 +389,8 @@ public class ActivitiesEventsService {
         if (!Boolean.TRUE.equals(next.getIsHosting()) && Boolean.TRUE.equals(current.getIsHosting())) {
             return false;
         }
-        if (!Objects.equals(next.getIsAdmin(), current.getIsAdmin())) {
-            return Boolean.TRUE.equals(next.getIsAdmin());
+        if (Boolean.TRUE.equals(next.getIsHosting()) != Boolean.TRUE.equals(current.getIsHosting())) {
+            return Boolean.TRUE.equals(next.getIsHosting());
         }
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
     }
@@ -419,7 +402,7 @@ public class ActivitiesEventsService {
         if (!TYPE_EVENTS.equals(normalizeType(record.getType())) || Boolean.TRUE.equals(record.getIsInvitation())) {
             return true;
         }
-        if (userId.equals(normalizeId(record.getCreatorUserId())) || Boolean.TRUE.equals(record.getIsAdmin())) {
+        if (userId.equals(normalizeId(record.getCreatorUserId())) || isViewerAdmin(record, userId)) {
             return true;
         }
         return hasTrackedUserParticipation(preferredRecord == null ? record : preferredRecord, userId);
@@ -507,6 +490,8 @@ public class ActivitiesEventsService {
         if (record == null) {
             return null;
         }
+        List<String> acceptedMemberUserIds = resolveAcceptedMemberUserIds(record);
+        List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record);
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
@@ -518,7 +503,7 @@ public class ActivitiesEventsService {
                 StringUtils.hasText(record.getInviter()) ? record.getInviter().trim() : null,
                 normalizeCount(record.getUnread()),
                 normalizeCount(record.getActivity()),
-                Boolean.TRUE.equals(record.getIsAdmin()),
+                isViewerAdmin(record, viewer == null ? null : viewer.userId()),
                 Boolean.TRUE.equals(record.getIsInvitation()),
                 Boolean.TRUE.equals(record.getIsHosting()),
                 Boolean.TRUE.equals(record.getIsTrashed()),
@@ -544,10 +529,10 @@ public class ActivitiesEventsService {
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
-                normalizeCount(record.getAcceptedMembers()),
-                normalizeCount(record.getPendingMembers()),
-                normalizeIds(record.getAcceptedMemberUserIds()),
-                normalizeIds(record.getPendingMemberUserIds()),
+                acceptedMemberUserIds.size(),
+                pendingMemberUserIds.size(),
+                acceptedMemberUserIds,
+                pendingMemberUserIds,
                 normalizeStrings(record.getTopics()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getSubEventsDisplayMode()),
@@ -762,7 +747,7 @@ public class ActivitiesEventsService {
         document.setInviter(existing == null ? null : existing.getInviter());
         document.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
         document.setActivity(normalizeCount(request.activity()));
-        document.setIsAdmin(Boolean.TRUE.equals(request.isAdmin()) || TYPE_HOSTING.equals(targetType));
+        document.setIsAdmin(TYPE_HOSTING.equals(targetType));
         document.setIsInvitation(false);
         document.setIsHosting(TYPE_HOSTING.equals(targetType));
         document.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
@@ -794,8 +779,8 @@ public class ActivitiesEventsService {
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
         document.setAcceptedMembers(resolveAcceptedMembers(request));
         document.setPendingMembers(resolvePendingMembers(request));
-        document.setAcceptedMemberUserIds(normalizeIds(request.acceptedMemberUserIds()));
-        document.setPendingMemberUserIds(normalizeIds(request.pendingMemberUserIds()));
+        document.setAcceptedMemberUserIds(List.of());
+        document.setPendingMemberUserIds(List.of());
         document.setTopics(normalizeStrings(request.topics()));
         document.setSubEvents(cloneSubEvents(request.subEvents()));
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
@@ -871,6 +856,10 @@ public class ActivitiesEventsService {
         if (record == null || !StringUtils.hasText(userId)) {
             return false;
         }
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
+        if (snapshot != null) {
+            return snapshot.hasParticipation(userId);
+        }
         return normalizeIds(record.getAcceptedMemberUserIds()).contains(userId)
                 || normalizeIds(record.getPendingMemberUserIds()).contains(userId);
     }
@@ -884,7 +873,7 @@ public class ActivitiesEventsService {
     private boolean exploreHasFriendGoing(ActivityEvent record, String activeUserId) {
         List<String> candidateUserIds = new ArrayList<>();
         candidateUserIds.add(normalizeId(record.getCreatorUserId()));
-        candidateUserIds.addAll(normalizeIds(record.getAcceptedMemberUserIds()));
+        candidateUserIds.addAll(resolveAcceptedMemberUserIds(record));
         return candidateUserIds.stream()
                 .filter(StringUtils::hasText)
                 .filter(userId -> !userId.equals(activeUserId))
@@ -892,7 +881,35 @@ public class ActivitiesEventsService {
     }
 
     private boolean exploreHasOpenSpots(ActivityEvent record) {
-        return normalizeCount(record.getCapacityTotal()) > normalizeCount(record.getAcceptedMembers());
+        return normalizeCount(record.getCapacityTotal()) > resolveAcceptedMemberUserIds(record).size();
+    }
+
+    private boolean isViewerAdmin(ActivityEvent record, String viewerUserId) {
+        if (record == null || !StringUtils.hasText(viewerUserId)) {
+            return false;
+        }
+        if (viewerUserId.equals(normalizeId(record.getCreatorUserId()))) {
+            return true;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
+        return snapshot != null && snapshot.hasAcceptedAdminRole(viewerUserId);
+    }
+
+    private ActivitiesMembersService.OwnerMembersSnapshot resolveMembersSnapshot(ActivityEvent record) {
+        if (record == null || !StringUtils.hasText(normalizeId(record.getSourceId()))) {
+            return null;
+        }
+        return activitiesMembersService.queryOwnerSnapshot("event", normalizeId(record.getSourceId()));
+    }
+
+    private List<String> resolveAcceptedMemberUserIds(ActivityEvent record) {
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
+        return snapshot == null ? normalizeIds(record.getAcceptedMemberUserIds()) : new ArrayList<>(snapshot.acceptedMemberUserIds());
+    }
+
+    private List<String> resolvePendingMemberUserIds(ActivityEvent record) {
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
+        return snapshot == null ? normalizeIds(record.getPendingMemberUserIds()) : new ArrayList<>(snapshot.pendingMemberUserIds());
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {

@@ -14,30 +14,36 @@ import com.raxim.myscoutee.profile.dto.activities.ActivityMembersDtos.ActivityMe
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMembersSummaryDto;
+import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
 
 @RestController
 @RequestMapping("/activities/events/members")
 public class ActivitiesMembersController {
+    private final ActivitiesMembersService activitiesMembersService;
+
+    public ActivitiesMembersController(ActivitiesMembersService activitiesMembersService) {
+        this.activitiesMembersService = activitiesMembersService;
+    }
 
     @GetMapping
     public List<ActivityMemberEntryDto> queryMembers(
             @RequestParam("ownerType") String ownerType,
             @RequestParam("ownerId") String ownerId) {
-        return List.of();
+        return activitiesMembersService.queryMembers(ownerType, ownerId);
     }
 
     @PostMapping("/summaries")
     public List<ActivityMembersSummaryDto> querySummaries(@RequestBody ActivityMembersSummariesRequestDto request) {
-        return List.of();
+        return activitiesMembersService.querySummaries(request);
     }
 
     @PostMapping("/replace")
     public void replace(@RequestBody ActivityMembersReplaceRequestDto request) {
-        // no-op skeleton
+        activitiesMembersService.replace(request);
     }
 
     @PostMapping("/sync")
     public void sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
-        // no-op skeleton
+        activitiesMembersService.sync(request);
     }
 }
