@@ -566,11 +566,10 @@ public class ActivitiesMembersService {
         String creatorUserId = normalizeId(record.getCreatorUserId());
         String createdDate = normalizeDateTime(record.getCreatedDate(), normalizeDateTime(record.getStartAtIso(), Instant.now().toString()));
         String updatedDate = normalizeDateTime(record.getUpdatedDate(), createdDate);
-        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>(normalizeUserIds(record.getAcceptedMemberUserIds()));
-        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>(normalizeUserIds(record.getPendingMemberUserIds()));
+        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
+        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
         if (StringUtils.hasText(creatorUserId)) {
             acceptedUserIds.add(creatorUserId);
-            pendingUserIds.remove(creatorUserId);
         }
 
         List<ActivityMember> nextDocuments = new ArrayList<>();
@@ -660,7 +659,7 @@ public class ActivitiesMembersService {
         if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
             return null;
         }
-        Users user = usersRepository.findById(normalizeId(member.getUserId())).orElse(null);
+        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
         String role = normalizeRole(member.getRole(), normalizeId(member.getUserId()), member.getOwnerType(), member.getOwnerId());
         String status = normalizeStatus(member.getStatus());
         String pendingSource = resolvePendingSource(member.getPendingSource(), status);

@@ -4,12 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 public class Users {
     @Id
-    private String id;
+    private String mongoId;
+
+    @Indexed(name = "users_sync_key", unique = true, sparse = true)
+    private String syncKey;
+
+    @Indexed(name = "users_user_id", unique = true)
+    private String userId;
+
     private String name;
     private Integer age;
     private String birthday;
@@ -34,12 +42,36 @@ public class Users {
     private String profileStatus;
     private UserActivitiesRecord activities;
 
+    public String getMongoId() {
+        return mongoId;
+    }
+
+    public void setMongoId(String mongoId) {
+        this.mongoId = mongoId;
+    }
+
+    public String getSyncKey() {
+        return syncKey;
+    }
+
+    public void setSyncKey(String syncKey) {
+        this.syncKey = syncKey;
+    }
+
     public String getId() {
-        return id;
+        return userId;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.userId = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {

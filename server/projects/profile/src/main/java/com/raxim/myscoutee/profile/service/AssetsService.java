@@ -16,6 +16,8 @@ import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -389,6 +391,7 @@ public class AssetsService {
         if (!StringUtils.hasText(sourceId)) {
             return null;
         }
+        EventMemberSnapshot memberSnapshot = resolveEventMemberSnapshot(event);
         return new EventRecordDto(
                 sourceId,
                 normalizeId(event.getOwnerUserId()),
@@ -426,16 +429,52 @@ public class AssetsService {
                 Boolean.TRUE.equals(event.getAutoInviter()),
                 safeText(event.getFrequency()),
                 Boolean.TRUE.equals(event.getTicketing()),
-                normalizeCount(event.getAcceptedMembers()),
-                normalizeCount(event.getPendingMembers()),
-                normalizeStrings(event.getAcceptedMemberUserIds()),
-                normalizeStrings(event.getPendingMemberUserIds()),
+                memberSnapshot.acceptedUserIds().size(),
+                memberSnapshot.pendingUserIds().size(),
+                memberSnapshot.acceptedUserIds(),
+                memberSnapshot.pendingUserIds(),
                 normalizeStrings(event.getTopics()),
                 event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
                 safeText(event.getSubEventsDisplayMode()),
                 safeDouble(event.getRating()),
                 safeDouble(event.getRelevance()),
                 safeDouble(event.getAffinity()));
+    }
+
+    private EventMemberSnapshot resolveEventMemberSnapshot(ActivityEvent event) {
+        String eventId = event == null ? null : normalizeId(event.getSourceId());
+        String creatorUserId = event == null ? null : normalizeId(event.getCreatorUserId());
+        if (!StringUtils.hasText(eventId)) {
+            return new EventMemberSnapshot(List.of(), List.of());
+        }
+
+        Query query = Query.query(Criteria.where("ownerType").is("event").and("ownerId").is(eventId));
+        List<ActivityMember> members = mongoTemplate.find(query, ActivityMember.class);
+        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
+        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
+        for (ActivityMember member : members) {
+            if (member == null) {
+                continue;
+            }
+            String memberUserId = normalizeId(member.getUserId());
+            if (!StringUtils.hasText(memberUserId)) {
+                continue;
+            }
+            if ("pending".equals(normalizeMemberStatus(member.getStatus()))) {
+                pendingUserIds.add(memberUserId);
+            } else {
+                acceptedUserIds.add(memberUserId);
+            }
+        }
+        if (acceptedUserIds.isEmpty() && StringUtils.hasText(creatorUserId)) {
+            acceptedUserIds.add(creatorUserId);
+        }
+        pendingUserIds.removeAll(acceptedUserIds);
+        return new EventMemberSnapshot(new ArrayList<>(acceptedUserIds), new ArrayList<>(pendingUserIds));
+    }
+
+    private String normalizeMemberStatus(String status) {
+        return "pending".equals(safeText(status)) ? "pending" : "accepted";
     }
 
     private AssetCardDto toDto(Asset asset) {
@@ -469,7 +508,7 @@ public class AssetsService {
         if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
             return null;
         }
-        Users user = usersRepository.findById(normalizeId(member.getUserId())).orElse(null);
+        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
         String status = "pending".equals(safeText(member.getStatus())) ? "pending" : "accepted";
         String note = "pending".equals(status)
                 ? "Awaiting owner confirmation."
@@ -541,6 +580,9 @@ public class AssetsService {
 
     private Double safeDouble(Double value) {
         return value == null || !Double.isFinite(value) ? 0d : value;
+    }
+
+    private record EventMemberSnapshot(List<String> acceptedUserIds, List<String> pendingUserIds) {
     }
 
     private String safeNullableText(String value) {

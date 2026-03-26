@@ -54,7 +54,6 @@ import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 
 @Service
 public class HomeUserProfileService {
-    private static final String USER_FILTER_PREFERENCES_DOCUMENT_ID = "userFilterPreferences";
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
 
     private final UsersRepository usersRepository;
@@ -170,18 +169,17 @@ public class HomeUserProfileService {
             return;
         }
 
-        UserFilterPreferences document = userFilterPreferencesDocument();
-        Map<String, UserFilterPreferences.UserFilterPreferencesRecord> byId =
-                new LinkedHashMap<>(safeMap(document.getById()));
-        List<String> ids = new ArrayList<>(safeList(document.getIds()));
-
-        byId.put(resolvedUserId, toPreferencesRecord(preferences));
-        if (!ids.contains(resolvedUserId)) {
-            ids.add(resolvedUserId);
-        }
-
-        document.setById(byId);
-        document.setIds(ids);
+        String nowIso = Instant.now().toString();
+        UserFilterPreferences document = userFilterPreferencesRepository.findByUserId(resolvedUserId)
+                .orElseGet(UserFilterPreferences::new);
+        document.setId(StringUtils.hasText(document.getId()) ? document.getId() : new ObjectId().toHexString());
+        document.setSyncKey(StringUtils.hasText(document.getSyncKey()) ? document.getSyncKey() : UUID.randomUUID().toString());
+        document.setUserId(resolvedUserId);
+        applyPreferences(document, preferences);
+        document.setCreatedDate(StringUtils.hasText(document.getCreatedDate()) ? document.getCreatedDate() : nowIso);
+        document.setCreatedUser(StringUtils.hasText(document.getCreatedUser()) ? document.getCreatedUser() : resolvedUserId);
+        document.setUpdatedDate(nowIso);
+        document.setUpdatedUser(resolvedUserId);
         userFilterPreferencesRepository.save(document);
     }
 
@@ -190,7 +188,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users existing = usersRepository.findById(normalizeId(user.id())).orElse(null);
+        Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         return toUserDto(syncComputedUserActivities(saved));
     }
@@ -256,7 +254,7 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
         }
 
-        Users user = usersRepository.findById(resolvedUserId).orElse(null);
+        Users user = usersRepository.findByUserId(resolvedUserId).orElse(null);
         if (user == null) {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
         }
@@ -343,20 +341,11 @@ public class HomeUserProfileService {
         return currentUser == null ? null : normalizeId(currentUser.getId());
     }
 
-    private UserFilterPreferences userFilterPreferencesDocument() {
-        return userFilterPreferencesRepository.findById(USER_FILTER_PREFERENCES_DOCUMENT_ID)
-                .orElseGet(() -> {
-                    UserFilterPreferences document = new UserFilterPreferences();
-                    document.setId(USER_FILTER_PREFERENCES_DOCUMENT_ID);
-                    return document;
-                });
-    }
-
     private Users findUser(String userId) {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
-        Users user = usersRepository.findById(userId).orElse(null);
+        Users user = usersRepository.findByUserId(userId).orElse(null);
         return isUsableUserDocument(user) ? user : null;
     }
 
@@ -386,9 +375,9 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
-        UserFilterPreferences.UserFilterPreferencesRecord stored =
-                safeMap(userFilterPreferencesDocument().getById()).get(userId);
-        return stored == null ? null : toUserGameFilterPreferencesDto(stored);
+        return userFilterPreferencesRepository.findByUserId(userId)
+                .map(this::toUserGameFilterPreferencesDto)
+                .orElse(null);
     }
 
     private Set<String> queryRatedGameCardUserIds(String raterUserId) {
@@ -471,7 +460,9 @@ public class HomeUserProfileService {
 
     private Users mergeUserDocument(Users current, UserDto user) {
         Users document = current == null ? new Users() : current;
-        document.setId(normalizeId(user.id()));
+        document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
+        document.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey() : UUID.randomUUID().toString());
+        document.setUserId(normalizeId(user.id()));
         document.setName(nullToEmpty(user.name()));
         document.setAge(normalizeCount(user.age()));
         document.setBirthday(nullToEmpty(user.birthday()));
@@ -661,56 +652,53 @@ public class HomeUserProfileService {
         };
     }
 
-    private UserFilterPreferences.UserFilterPreferencesRecord toPreferencesRecord(
-            UserGameFilterPreferencesDto preferences) {
-        return new UserFilterPreferences.UserFilterPreferencesRecord(
-                preferences.ageMin(),
-                preferences.ageMax(),
-                preferences.heightMinCm(),
-                preferences.heightMaxCm(),
-                normalizeStrings(preferences.interests()),
-                normalizeStrings(preferences.values()),
-                normalizeStrings(preferences.physiques()),
-                normalizeStrings(preferences.languages()),
-                normalizeStrings(preferences.genders()),
-                normalizeStrings(preferences.horoscopes()),
-                normalizeStrings(preferences.traitLabels()),
-                normalizeStrings(preferences.smoking()),
-                normalizeStrings(preferences.drinking()),
-                normalizeStrings(preferences.workout()),
-                normalizeStrings(preferences.pets()),
-                normalizeStrings(preferences.familyPlans()),
-                normalizeStrings(preferences.children()),
-                normalizeStrings(preferences.loveStyles()),
-                normalizeStrings(preferences.communicationStyles()),
-                normalizeStrings(preferences.sexualOrientations()),
-                normalizeStrings(preferences.religions()));
+    private void applyPreferences(UserFilterPreferences document, UserGameFilterPreferencesDto preferences) {
+        document.setAgeMin(preferences.ageMin());
+        document.setAgeMax(preferences.ageMax());
+        document.setHeightMinCm(preferences.heightMinCm());
+        document.setHeightMaxCm(preferences.heightMaxCm());
+        document.setInterests(normalizeStrings(preferences.interests()));
+        document.setValues(normalizeStrings(preferences.values()));
+        document.setPhysiques(normalizeStrings(preferences.physiques()));
+        document.setLanguages(normalizeStrings(preferences.languages()));
+        document.setGenders(normalizeStrings(preferences.genders()));
+        document.setHoroscopes(normalizeStrings(preferences.horoscopes()));
+        document.setTraitLabels(normalizeStrings(preferences.traitLabels()));
+        document.setSmoking(normalizeStrings(preferences.smoking()));
+        document.setDrinking(normalizeStrings(preferences.drinking()));
+        document.setWorkout(normalizeStrings(preferences.workout()));
+        document.setPets(normalizeStrings(preferences.pets()));
+        document.setFamilyPlans(normalizeStrings(preferences.familyPlans()));
+        document.setChildren(normalizeStrings(preferences.children()));
+        document.setLoveStyles(normalizeStrings(preferences.loveStyles()));
+        document.setCommunicationStyles(normalizeStrings(preferences.communicationStyles()));
+        document.setSexualOrientations(normalizeStrings(preferences.sexualOrientations()));
+        document.setReligions(normalizeStrings(preferences.religions()));
     }
 
-    private UserGameFilterPreferencesDto toUserGameFilterPreferencesDto(
-            UserFilterPreferences.UserFilterPreferencesRecord preferences) {
+    private UserGameFilterPreferencesDto toUserGameFilterPreferencesDto(UserFilterPreferences preferences) {
         return new UserGameFilterPreferencesDto(
-                preferences.ageMin(),
-                preferences.ageMax(),
-                preferences.heightMinCm(),
-                preferences.heightMaxCm(),
-                normalizeStrings(preferences.interests()),
-                normalizeStrings(preferences.values()),
-                normalizeStrings(preferences.physiques()),
-                normalizeStrings(preferences.languages()),
-                normalizeStrings(preferences.genders()),
-                normalizeStrings(preferences.horoscopes()),
-                normalizeStrings(preferences.traitLabels()),
-                normalizeStrings(preferences.smoking()),
-                normalizeStrings(preferences.drinking()),
-                normalizeStrings(preferences.workout()),
-                normalizeStrings(preferences.pets()),
-                normalizeStrings(preferences.familyPlans()),
-                normalizeStrings(preferences.children()),
-                normalizeStrings(preferences.loveStyles()),
-                normalizeStrings(preferences.communicationStyles()),
-                normalizeStrings(preferences.sexualOrientations()),
-                normalizeStrings(preferences.religions()));
+                preferences.getAgeMin(),
+                preferences.getAgeMax(),
+                preferences.getHeightMinCm(),
+                preferences.getHeightMaxCm(),
+                normalizeStrings(preferences.getInterests()),
+                normalizeStrings(preferences.getValues()),
+                normalizeStrings(preferences.getPhysiques()),
+                normalizeStrings(preferences.getLanguages()),
+                normalizeStrings(preferences.getGenders()),
+                normalizeStrings(preferences.getHoroscopes()),
+                normalizeStrings(preferences.getTraitLabels()),
+                normalizeStrings(preferences.getSmoking()),
+                normalizeStrings(preferences.getDrinking()),
+                normalizeStrings(preferences.getWorkout()),
+                normalizeStrings(preferences.getPets()),
+                normalizeStrings(preferences.getFamilyPlans()),
+                normalizeStrings(preferences.getChildren()),
+                normalizeStrings(preferences.getLoveStyles()),
+                normalizeStrings(preferences.getCommunicationStyles()),
+                normalizeStrings(preferences.getSexualOrientations()),
+                normalizeStrings(preferences.getReligions()));
     }
 
     private UserActivitiesDto toUserActivitiesDto(Users.UserActivitiesRecord activities) {

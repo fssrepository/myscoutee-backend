@@ -62,8 +62,6 @@ public class ActivityEvent {
     private Boolean ticketing;
     private Integer acceptedMembers;
     private Integer pendingMembers;
-    private List<String> acceptedMemberUserIds = new ArrayList<>();
-    private List<String> pendingMemberUserIds = new ArrayList<>();
     private List<String> topics = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String subEventsDisplayMode;
@@ -155,10 +153,6 @@ public class ActivityEvent {
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }
     public void setPendingMembers(Integer pendingMembers) { this.pendingMembers = pendingMembers; }
-    public List<String> getAcceptedMemberUserIds() { return acceptedMemberUserIds; }
-    public void setAcceptedMemberUserIds(List<String> acceptedMemberUserIds) { this.acceptedMemberUserIds = acceptedMemberUserIds; }
-    public List<String> getPendingMemberUserIds() { return pendingMemberUserIds; }
-    public void setPendingMemberUserIds(List<String> pendingMemberUserIds) { this.pendingMemberUserIds = pendingMemberUserIds; }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }

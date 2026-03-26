@@ -278,7 +278,7 @@ public class ActivitiesEventsService {
             return;
         }
 
-        Users creator = actor != null ? actor.user() : usersRepository.findById(actorUserId).orElse(null);
+        Users creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, targetType);
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         documentsToSave.add(baseRecord);
@@ -779,8 +779,6 @@ public class ActivitiesEventsService {
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
         document.setAcceptedMembers(resolveAcceptedMembers(request));
         document.setPendingMembers(resolvePendingMembers(request));
-        document.setAcceptedMemberUserIds(List.of());
-        document.setPendingMemberUserIds(List.of());
         document.setTopics(normalizeStrings(request.topics()));
         document.setSubEvents(cloneSubEvents(request.subEvents()));
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
@@ -803,7 +801,7 @@ public class ActivitiesEventsService {
             values.add(creator.getAffinity());
         }
         for (String userId : normalizeIds(acceptedMemberUserIds)) {
-            usersRepository.findById(userId).map(Users::getAffinity).filter(Objects::nonNull).ifPresent(values::add);
+            usersRepository.findByUserId(userId).map(Users::getAffinity).filter(Objects::nonNull).ifPresent(values::add);
         }
         return values.stream().mapToDouble(Double::doubleValue).average().orElse(0d);
     }
@@ -860,8 +858,8 @@ public class ActivitiesEventsService {
         if (snapshot != null) {
             return snapshot.hasParticipation(userId);
         }
-        return normalizeIds(record.getAcceptedMemberUserIds()).contains(userId)
-                || normalizeIds(record.getPendingMemberUserIds()).contains(userId);
+        return resolveAcceptedMemberUserIds(record).contains(userId)
+                || resolvePendingMemberUserIds(record).contains(userId);
     }
 
     private boolean hasTopic(ActivityEvent record, String topic) {
@@ -904,12 +902,17 @@ public class ActivitiesEventsService {
 
     private List<String> resolveAcceptedMemberUserIds(ActivityEvent record) {
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
-        return snapshot == null ? normalizeIds(record.getAcceptedMemberUserIds()) : new ArrayList<>(snapshot.acceptedMemberUserIds());
+        return snapshot == null ? fallbackAcceptedMemberUserIds(record) : new ArrayList<>(snapshot.acceptedMemberUserIds());
     }
 
     private List<String> resolvePendingMemberUserIds(ActivityEvent record) {
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
-        return snapshot == null ? normalizeIds(record.getPendingMemberUserIds()) : new ArrayList<>(snapshot.pendingMemberUserIds());
+        return snapshot == null ? List.of() : new ArrayList<>(snapshot.pendingMemberUserIds());
+    }
+
+    private List<String> fallbackAcceptedMemberUserIds(ActivityEvent record) {
+        String creatorUserId = record == null ? null : normalizeId(record.getCreatorUserId());
+        return StringUtils.hasText(creatorUserId) ? List.of(creatorUserId) : List.of();
     }
 
     private boolean isFriendOfActiveUser(String userId, String activeUserId) {
@@ -974,8 +977,6 @@ public class ActivitiesEventsService {
     private ActivityEvent cloneDocument(ActivityEvent source) {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
-        clone.setAcceptedMemberUserIds(new ArrayList<>(normalizeIds(source.getAcceptedMemberUserIds())));
-        clone.setPendingMemberUserIds(new ArrayList<>(normalizeIds(source.getPendingMemberUserIds())));
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));

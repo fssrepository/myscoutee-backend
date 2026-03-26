@@ -782,7 +782,7 @@ public class UserRatesService {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
-        Users user = usersRepository.findById(userId).orElse(null);
+        Users user = usersRepository.findByUserId(userId).orElse(null);
         if (user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())) {
             return null;
         }
@@ -793,7 +793,7 @@ public class UserRatesService {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
-        Users user = usersRepository.findById(userId).orElse(null);
+        Users user = usersRepository.findByUserId(userId).orElse(null);
         if (user == null || user.getLocationCoordinates() == null) {
             return null;
         }
