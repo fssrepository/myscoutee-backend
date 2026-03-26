@@ -62,3 +62,7 @@ Thumbs.db
 /frontend/src/secrets/keys.ts
 /server/projects/profile/secrets/application-dev-secrets.yaml
 /server/projects/profile/secrets/firebase-service-account.json
+/server/projects/profile/secrets/*.json
+/server/projects/profile/secrets/*.yaml
+/server/projects/profile/secrets/*.yml
+!/server/projects/profile/secrets/README.md

@@ -44,4 +44,23 @@ public final class ActivityChatsDtos {
     public record ChatPostMessageRequestDto(
             String text) {
     }
+
+    public record ChatSocketRequestDto(
+            String type,
+            String text) {
+    }
+
+    public record ChatDeviceUpsertRequestDto(
+            String userId,
+            String deviceId,
+            String platform,
+            String firebaseToken,
+            Boolean notificationsEnabled) {
+    }
+
+    public record ChatDeviceDeleteRequestDto(
+            String userId,
+            String deviceId,
+            String firebaseToken) {
+    }
 }

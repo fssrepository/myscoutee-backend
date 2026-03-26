@@ -43,6 +43,7 @@ import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserSubmitActionResponseDto
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackState;
+import com.raxim.myscoutee.profile.repository.mongo.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UserFilterPreferencesRepository;
@@ -59,6 +60,7 @@ public class HomeUserProfileService {
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserRatesRepository userRatesRepository;
+    private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
@@ -69,6 +71,7 @@ public class HomeUserProfileService {
             UsersRepository usersRepository,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
             UserRatesRepository userRatesRepository,
+            ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
@@ -77,6 +80,7 @@ public class HomeUserProfileService {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userRatesRepository = userRatesRepository;
+        this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
@@ -510,7 +514,7 @@ public class HomeUserProfileService {
         List<ActivityEvent> eventRecords = queryEventRecords(userId);
         return new Users.UserActivitiesRecord(
                 queryGameStackUserRecords(userId).size(),
-                existing == null ? 0 : normalizeCount(existing.chat()),
+                countUnreadChats(userId),
                 countEventsByType(eventRecords, "invitations"),
                 countEventsByType(eventRecords, "events"),
                 countEventsByType(eventRecords, "hosting"),
@@ -525,6 +529,16 @@ public class HomeUserProfileService {
         return activityEventsRepository.findByOwnerUserId(userId).stream()
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private int countUnreadChats(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            return 0;
+        }
+        return activityChatsRepository.findByOwnerUserId(userId).stream()
+                .filter(Objects::nonNull)
+                .map(chat -> normalizeCount(chat.getUnread()))
+                .reduce(0, Integer::sum);
     }
 
     private int countEventsByType(List<ActivityEvent> eventRecords, String type) {

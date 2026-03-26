@@ -41,6 +41,7 @@ public class Users {
     private String status;
     private String profileStatus;
     private UserActivitiesRecord activities;
+    private List<UserDeviceRecord> devices = new ArrayList<>();
 
     public String getMongoId() {
         return mongoId;
@@ -258,6 +259,14 @@ public class Users {
         this.activities = activities;
     }
 
+    public List<UserDeviceRecord> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<UserDeviceRecord> devices) {
+        this.devices = devices == null ? new ArrayList<>() : devices;
+    }
+
     public record LocationCoordinatesRecord(
             Double latitude,
             Double longitude) {
@@ -271,6 +280,63 @@ public class Users {
             Integer hosting,
             Integer tickets,
             Integer feedback) {
+    }
+
+    public static class UserDeviceRecord {
+        private String deviceId;
+        private String platform;
+        private String firebaseToken;
+        private Boolean notificationsEnabled;
+        private String lastRegisteredAtIso;
+        private String lastSeenAtIso;
+
+        public String getDeviceId() {
+            return deviceId;
+        }
+
+        public void setDeviceId(String deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        public String getPlatform() {
+            return platform;
+        }
+
+        public void setPlatform(String platform) {
+            this.platform = platform;
+        }
+
+        public String getFirebaseToken() {
+            return firebaseToken;
+        }
+
+        public void setFirebaseToken(String firebaseToken) {
+            this.firebaseToken = firebaseToken;
+        }
+
+        public Boolean getNotificationsEnabled() {
+            return notificationsEnabled;
+        }
+
+        public void setNotificationsEnabled(Boolean notificationsEnabled) {
+            this.notificationsEnabled = notificationsEnabled;
+        }
+
+        public String getLastRegisteredAtIso() {
+            return lastRegisteredAtIso;
+        }
+
+        public void setLastRegisteredAtIso(String lastRegisteredAtIso) {
+            this.lastRegisteredAtIso = lastRegisteredAtIso;
+        }
+
+        public String getLastSeenAtIso() {
+            return lastSeenAtIso;
+        }
+
+        public void setLastSeenAtIso(String lastSeenAtIso) {
+            this.lastSeenAtIso = lastSeenAtIso;
+        }
     }
 
     public record UserImpressionsRecord(
