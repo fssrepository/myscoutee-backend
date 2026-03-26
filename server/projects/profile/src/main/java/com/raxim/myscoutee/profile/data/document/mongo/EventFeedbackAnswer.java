@@ -12,7 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventFeedbackAnswers")
 @CompoundIndexes({
         @CompoundIndex(name = "event_feedback_answer_user_event_card", def = "{'viewerUserId': 1, 'eventId': 1, 'cardId': 1}", unique = true),
-        @CompoundIndex(name = "event_feedback_answer_user_event", def = "{'viewerUserId': 1, 'eventId': 1}")
+        @CompoundIndex(name = "event_feedback_answer_user_event", def = "{'viewerUserId': 1, 'eventId': 1}"),
+        @CompoundIndex(name = "event_feedback_answer_target_user_submitted", def = "{'targetUserId': 1, 'submittedAtIso': -1}")
 })
 public class EventFeedbackAnswer {
     @Id
@@ -29,6 +30,7 @@ public class EventFeedbackAnswer {
     private String targetRole;
     private String primaryValue;
     private String secondaryValue;
+    private List<String> personalityTraitIds = new ArrayList<>();
     private List<String> tags = new ArrayList<>();
     private String submittedAtIso;
     private String createdDate;
@@ -114,6 +116,14 @@ public class EventFeedbackAnswer {
 
     public void setSecondaryValue(String secondaryValue) {
         this.secondaryValue = secondaryValue;
+    }
+
+    public List<String> getPersonalityTraitIds() {
+        return personalityTraitIds;
+    }
+
+    public void setPersonalityTraitIds(List<String> personalityTraitIds) {
+        this.personalityTraitIds = personalityTraitIds;
     }
 
     public List<String> getTags() {

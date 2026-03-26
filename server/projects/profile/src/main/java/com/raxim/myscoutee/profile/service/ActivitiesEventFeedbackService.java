@@ -1,7 +1,9 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,6 +14,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackState;
+import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackAnswerDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackStateDto;
@@ -44,9 +47,10 @@ public class ActivitiesEventFeedbackService {
         if (!StringUtils.hasText(userId)) {
             return List.of();
         }
+        Map<String, Map<String, EventFeedbackAnswerDto>> answersByEventId = buildAnswersByEventId(userId);
         return eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc(userId).stream()
                 .filter(Objects::nonNull)
-                .map(this::toDto)
+                .map(state -> toDto(state, answersByEventId.get(normalizeId(state.getEventId()))))
                 .toList();
     }
 
@@ -78,6 +82,9 @@ public class ActivitiesEventFeedbackService {
             document.setTargetRole(safeText(answer.targetRole()));
             document.setPrimaryValue(safeText(answer.primaryValue()));
             document.setSecondaryValue(safeText(answer.secondaryValue()));
+            document.setPersonalityTraitIds(answer.personalityTraitIds() == null
+                    ? List.of()
+                    : answer.personalityTraitIds().stream().map(this::safeText).filter(StringUtils::hasText).toList());
             document.setTags(answer.tags() == null ? List.of() : answer.tags().stream().map(this::safeText).filter(StringUtils::hasText).toList());
             document.setSubmittedAtIso(firstNonBlank(answer.submittedAtIso(), nowIso));
             document.setUpdatedDate(nowIso);
@@ -177,12 +184,49 @@ public class ActivitiesEventFeedbackService {
         return answers == null ? List.of() : answers;
     }
 
-    private EventFeedbackStateDto toDto(EventFeedbackState state) {
+    private Map<String, Map<String, EventFeedbackAnswerDto>> buildAnswersByEventId(String userId) {
+        Map<String, Map<String, EventFeedbackAnswerDto>> answersByEventId = new LinkedHashMap<>();
+        for (EventFeedbackAnswer answer : eventFeedbackAnswersRepository.findByViewerUserIdOrderByEventIdAscSubmittedAtIsoDesc(userId)) {
+            if (answer == null) {
+                continue;
+            }
+            String eventId = normalizeId(answer.getEventId());
+            String cardId = normalizeId(answer.getCardId());
+            if (!StringUtils.hasText(eventId) || !StringUtils.hasText(cardId)) {
+                continue;
+            }
+            answersByEventId
+                    .computeIfAbsent(eventId, ignored -> new LinkedHashMap<>())
+                    .put(cardId, toAnswerDto(answer));
+        }
+        return answersByEventId;
+    }
+
+    private EventFeedbackAnswerDto toAnswerDto(EventFeedbackAnswer answer) {
+        return new EventFeedbackAnswerDto(
+                normalizeId(answer.getCardId()),
+                normalizeId(answer.getEventId()),
+                safeText(answer.getKind()),
+                normalizeId(answer.getTargetUserId()),
+                safeText(answer.getTargetRole()),
+                safeText(answer.getPrimaryValue()),
+                safeText(answer.getSecondaryValue()),
+                answer.getPersonalityTraitIds() == null
+                        ? List.of()
+                        : answer.getPersonalityTraitIds().stream().map(this::safeText).filter(StringUtils::hasText).toList(),
+                answer.getTags() == null
+                        ? List.of()
+                        : answer.getTags().stream().map(this::safeText).filter(StringUtils::hasText).toList(),
+                safeText(answer.getSubmittedAtIso()));
+    }
+
+    private EventFeedbackStateDto toDto(EventFeedbackState state, Map<String, EventFeedbackAnswerDto> answersByCardId) {
         return new EventFeedbackStateDto(
                 normalizeId(state.getEventId()),
                 Boolean.TRUE.equals(state.getRemoved()),
                 safeText(state.getSubmittedAtIso()),
-                safeText(state.getOrganizerNote()));
+                safeText(state.getOrganizerNote()),
+                answersByCardId == null ? Map.of() : Map.copyOf(answersByCardId));
     }
 
     private String firstNonBlank(String first, String fallback) {

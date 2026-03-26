@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.dto.events;
 
 import java.util.List;
+import java.util.Map;
 
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
@@ -44,6 +45,20 @@ public final class EventsDtos {
             String targetRole,
             String primaryValue,
             String secondaryValue,
+            List<String> personalityTraitIds,
+            List<String> tags,
+            String submittedAtIso) {
+    }
+
+    public record EventFeedbackAnswerDto(
+            String cardId,
+            String eventId,
+            String kind,
+            String targetUserId,
+            String targetRole,
+            String primaryValue,
+            String secondaryValue,
+            List<String> personalityTraitIds,
             List<String> tags,
             String submittedAtIso) {
     }
@@ -52,7 +67,8 @@ public final class EventsDtos {
             String eventId,
             Boolean removed,
             String submittedAtIso,
-            String organizerNote) {
+            String organizerNote,
+            Map<String, EventFeedbackAnswerDto> answersByCardId) {
     }
 
     public record EventFeedbackSubmitRequestDto(

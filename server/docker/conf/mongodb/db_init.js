@@ -6,7 +6,9 @@ const requiredCollections = [
   'activityMembers',
   'activityResources',
   'chats',
-  'events'
+  'events',
+  'eventFeedbackStates',
+  'eventFeedbackAnswers'
 ];
 
 ['demo_db', 'myscoutee_db'].forEach(databaseName => {

@@ -353,6 +353,15 @@ public class Users {
             Integer noShowCount,
             List<String> vibeBadges,
             List<String> personalityBadges,
+            List<UserPersonalityTraitRecord> personalityTraits,
             List<String> categoryBadges) {
+    }
+
+    public record UserPersonalityTraitRecord(
+            String id,
+            String label,
+            Integer percent,
+            Integer evidenceCount,
+            String lastRatedAtIso) {
     }
 }

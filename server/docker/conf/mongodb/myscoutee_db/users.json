@@ -26,6 +26,99 @@
       "https://randomuser.me/api/portraits/women/91.jpg",
       "https://randomuser.me/api/portraits/women/8.jpg"
     ],
+    "impressions": {
+      "host": {
+        "unreadCount": 2,
+        "averageRating": 4.8,
+        "peopleMet": 218,
+        "totalEvents": 64,
+        "repeatCount": 93,
+        "noShowCount": 7,
+        "vibeBadges": [
+          "Social 41%",
+          "Focused 33%",
+          "Creative 26%"
+        ],
+        "personalityBadges": [
+          "Empath 42%",
+          "Reliable One 33%",
+          "Social Charmer 25%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 42,
+            "evidenceCount": 6,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          },
+          {
+            "id": "reliable-one",
+            "label": "Reliable One",
+            "percent": 33,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          },
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 25,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Road Trip 39%",
+          "Culture 34%",
+          "Coffee Meetup 27%"
+        ]
+      },
+      "member": {
+        "unreadCount": 1,
+        "peopleMet": 184,
+        "totalEvents": 58,
+        "repeatCount": 71,
+        "noShowCount": 5,
+        "vibeBadges": [
+          "Social 38%",
+          "Relaxed 34%",
+          "Creative 28%"
+        ],
+        "personalityBadges": [
+          "Empath 39%",
+          "Social Charmer 34%",
+          "Creative Soul 27%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 39,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          },
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 34,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          },
+          {
+            "id": "creative-soul",
+            "label": "Creative Soul",
+            "percent": 27,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Brunch 36%",
+          "Games 34%",
+          "Outdoors 30%"
+        ]
+      }
+    },
     "initials": "FA",
     "languages": [
       "English",
@@ -114,6 +207,99 @@
       "https://randomuser.me/api/portraits/women/93.jpg",
       "https://randomuser.me/api/portraits/women/10.jpg"
     ],
+    "impressions": {
+      "host": {
+        "unreadCount": 1,
+        "averageRating": 4.6,
+        "peopleMet": 152,
+        "totalEvents": 42,
+        "repeatCount": 51,
+        "noShowCount": 4,
+        "vibeBadges": [
+          "Creative 40%",
+          "Deep 35%",
+          "Social 25%"
+        ],
+        "personalityBadges": [
+          "Creative Soul 40%",
+          "Deep Thinker 35%",
+          "Empath 25%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "creative-soul",
+            "label": "Creative Soul",
+            "percent": 40,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "deep-thinker",
+            "label": "Deep Thinker",
+            "percent": 35,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 25,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Culture 42%",
+          "Workshop 31%",
+          "Coffee Meetup 27%"
+        ]
+      },
+      "member": {
+        "unreadCount": 1,
+        "peopleMet": 139,
+        "totalEvents": 39,
+        "repeatCount": 46,
+        "noShowCount": 3,
+        "vibeBadges": [
+          "Creative 37%",
+          "Deep 36%",
+          "Relaxed 27%"
+        ],
+        "personalityBadges": [
+          "Creative Soul 38%",
+          "Deep Thinker 36%",
+          "Social Charmer 26%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "creative-soul",
+            "label": "Creative Soul",
+            "percent": 38,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "deep-thinker",
+            "label": "Deep Thinker",
+            "percent": 36,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 26,
+            "evidenceCount": 2,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Culture 39%",
+          "Games 33%",
+          "Outdoors 28%"
+        ]
+      }
+    },
     "initials": "NE",
     "languages": [
       "English",
@@ -158,6 +344,99 @@
       "https://randomuser.me/api/portraits/women/94.jpg",
       "https://randomuser.me/api/portraits/women/11.jpg"
     ],
+    "impressions": {
+      "host": {
+        "unreadCount": 1,
+        "averageRating": 4.7,
+        "peopleMet": 176,
+        "totalEvents": 48,
+        "repeatCount": 62,
+        "noShowCount": 5,
+        "vibeBadges": [
+          "Social 45%",
+          "Energetic 31%",
+          "Relaxed 24%"
+        ],
+        "personalityBadges": [
+          "Social Charmer 44%",
+          "Playful Spirit 30%",
+          "Empath 26%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 44,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          },
+          {
+            "id": "playful-spirit",
+            "label": "Playful Spirit",
+            "percent": 30,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          },
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 26,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Coffee Meetup 38%",
+          "Road Trip 32%",
+          "Sports 30%"
+        ]
+      },
+      "member": {
+        "unreadCount": 0,
+        "peopleMet": 161,
+        "totalEvents": 44,
+        "repeatCount": 57,
+        "noShowCount": 4,
+        "vibeBadges": [
+          "Social 43%",
+          "Energetic 32%",
+          "Creative 25%"
+        ],
+        "personalityBadges": [
+          "Social Charmer 46%",
+          "Playful Spirit 31%",
+          "Empath 23%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 46,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-07T14:55:00.000Z"
+          },
+          {
+            "id": "playful-spirit",
+            "label": "Playful Spirit",
+            "percent": 31,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-07T14:55:00.000Z"
+          },
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 23,
+            "evidenceCount": 2,
+            "lastRatedAtIso": "2026-03-07T14:55:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Culture 35%",
+          "Games 34%",
+          "Outdoors 31%"
+        ]
+      }
+    },
     "initials": "MS",
     "languages": [
       "English"

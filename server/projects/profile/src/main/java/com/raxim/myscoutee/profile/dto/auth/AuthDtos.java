@@ -8,6 +8,14 @@ public final class AuthDtos {
     private AuthDtos() {
     }
 
+    public record UserPersonalityTraitDto(
+            String id,
+            String label,
+            Integer percent,
+            Integer evidenceCount,
+            String lastRatedAtIso) {
+    }
+
     public record UserImpressionsSectionDto(
             Integer unreadCount,
             Double averageRating,
@@ -17,6 +25,7 @@ public final class AuthDtos {
             Integer noShowCount,
             List<String> vibeBadges,
             List<String> personalityBadges,
+            List<UserPersonalityTraitDto> personalityTraits,
             List<String> categoryBadges) {
     }
 

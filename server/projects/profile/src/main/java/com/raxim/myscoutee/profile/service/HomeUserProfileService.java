@@ -42,9 +42,11 @@ import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserReportUserSubmitRequest
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackState;
 import com.raxim.myscoutee.profile.repository.mongo.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.mongo.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.mongo.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UserFeedbackSubmissionsRepository;
@@ -52,10 +54,80 @@ import com.raxim.myscoutee.profile.repository.mongo.UserReportSubmissionsReposit
 import com.raxim.myscoutee.profile.repository.mongo.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserPersonalityTraitDto;
 
 @Service
 public class HomeUserProfileService {
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
+    private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
+            new PersonalityTraitDefinition(
+                    "social-charmer",
+                    "Social Charmer",
+                    "Warm, magnetic, easy to talk to",
+                    List.of("Friendly", "Outgoing", "Funny"),
+                    List.of("social charmer", "the social charmer")),
+            new PersonalityTraitDefinition(
+                    "deep-thinker",
+                    "Deep Thinker",
+                    "Reflective, intellectual, meaningful",
+                    List.of("Thoughtful", "Curious", "Insightful"),
+                    List.of("deep thinker", "the deep thinker")),
+            new PersonalityTraitDefinition(
+                    "adventurer",
+                    "Adventurer",
+                    "Energetic, bold, spontaneous",
+                    List.of("Spontaneous", "Brave", "Active"),
+                    List.of("adventurer", "the adventurer")),
+            new PersonalityTraitDefinition(
+                    "reliable-one",
+                    "Reliable One",
+                    "Stable, trustworthy, grounded",
+                    List.of("Loyal", "Honest", "Dependable"),
+                    List.of("reliable one", "the reliable one", "megbízható", "megbizhato")),
+            new PersonalityTraitDefinition(
+                    "creative-soul",
+                    "Creative Soul",
+                    "Expressive, imaginative, artistic",
+                    List.of("Artistic", "Unique", "Visionary"),
+                    List.of("creative soul", "the creative soul", "kreatív", "kreativ")),
+            new PersonalityTraitDefinition(
+                    "empath",
+                    "Empath",
+                    "Kind, emotionally safe, nurturing",
+                    List.of("Caring", "Supportive", "Patient"),
+                    List.of("empath", "the empath", "empatikus")),
+            new PersonalityTraitDefinition(
+                    "ambitious-go-getter",
+                    "Ambitious Go-Getter",
+                    "Driven, goal-oriented, high standards",
+                    List.of("Motivated", "Focused", "Strategic thinker"),
+                    List.of("ambitious go-getter", "ambitious go getter", "the ambitious go-getter")),
+            new PersonalityTraitDefinition(
+                    "playful-spirit",
+                    "Playful Spirit",
+                    "Lighthearted, fun, youthful",
+                    List.of("Silly", "Optimistic", "Witty"),
+                    List.of("playful spirit", "the playful spirit")));
+    private static final Map<String, PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITION_BY_ID = buildPersonalityTraitDefinitionById();
+    private static final Map<String, String> PERSONALITY_TRAIT_ID_BY_TOKEN = buildPersonalityTraitIdByToken();
+    private static final Map<String, String> LEGACY_FEEDBACK_TRAIT_ID_BY_TOKEN = Map.ofEntries(
+            Map.entry("communication", "social-charmer"),
+            Map.entry("coordination", "reliable-one"),
+            Map.entry("host vibe", "social-charmer"),
+            Map.entry("host reliability", "reliable-one"),
+            Map.entry("host consistency", "reliable-one"),
+            Map.entry("host quality", "ambitious-go-getter"),
+            Map.entry("host organization", "reliable-one"),
+            Map.entry("host communication", "social-charmer"),
+            Map.entry("host planning", "ambitious-go-getter"),
+            Map.entry("attendee teamwork", "empath"),
+            Map.entry("attendee reliability", "reliable-one"),
+            Map.entry("attendee neutrality", "deep-thinker"),
+            Map.entry("attendee fit", "adventurer"),
+            Map.entry("attendee trust", "empath"),
+            Map.entry("attendee compatibility", "social-charmer"),
+            Map.entry("attendee risk", "ambitious-go-getter"),
+            Map.entry("attendee role-fit", "deep-thinker"));
 
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
@@ -63,6 +135,7 @@ public class HomeUserProfileService {
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
     private final UserReportSubmissionsRepository userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
@@ -74,6 +147,7 @@ public class HomeUserProfileService {
             ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
+            EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
             UserReportSubmissionsRepository userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository) {
@@ -83,6 +157,7 @@ public class HomeUserProfileService {
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+        this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
         this.userSessionActionsRepository = userSessionActionsRepository;
@@ -143,12 +218,13 @@ public class HomeUserProfileService {
             return null;
         }
 
-        UserRealtimeCountersDto counters = buildRealtimeCounters(user);
+        UserImpressionsDto impressions = resolveMergedUserImpressions(user);
+        UserRealtimeCountersDto counters = buildRealtimeCounters(user, request == null ? null : request.cursor(), impressions);
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
                 counters,
-                toUserImpressionsDto(user.getImpressions()),
-                buildRealtimeCursor(user, counters),
+                impressions,
+                buildRealtimeCursor(user, counters, impressions),
                 Instant.now().toString());
     }
 
@@ -309,7 +385,7 @@ public class HomeUserProfileService {
                 user.getAffinity(),
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
                 normalizeStrings(user.getImages()),
-                toUserImpressionsDto(user.getImpressions()),
+                resolveMergedUserImpressions(user),
                 resolveProfileStatus(user),
                 toUserActivitiesDto(user.getActivities()));
     }
@@ -576,8 +652,15 @@ public class HomeUserProfileService {
                 .count());
     }
 
-    private UserRealtimeCountersDto buildRealtimeCounters(Users user) {
+    private UserRealtimeCountersDto buildRealtimeCounters(
+            Users user,
+            String requestCursor,
+            UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
+        String previousHostHash = cursorPart(requestCursor, 8);
+        String previousMemberHash = cursorPart(requestCursor, 9);
+        String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
+        String nextMemberHash = impressionsFingerprint(impressions == null ? null : impressions.member());
         return new UserRealtimeCountersDto(
                 counters.game(),
                 counters.chat(),
@@ -586,11 +669,14 @@ public class HomeUserProfileService {
                 counters.hosting(),
                 counters.tickets(),
                 counters.feedback(),
-                false,
-                false);
+                StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
+                StringUtils.hasText(previousMemberHash) && !Objects.equals(previousMemberHash, nextMemberHash));
     }
 
-    private String buildRealtimeCursor(Users user, UserRealtimeCountersDto counters) {
+    private String buildRealtimeCursor(
+            Users user,
+            UserRealtimeCountersDto counters,
+            UserImpressionsDto impressions) {
         return String.join(":",
                 normalizeId(user.getId()),
                 String.valueOf(normalizeCount(counters.game())),
@@ -599,7 +685,9 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.events())),
                 String.valueOf(normalizeCount(counters.hosting())),
                 String.valueOf(normalizeCount(counters.tickets())),
-                String.valueOf(normalizeCount(counters.feedback())));
+                String.valueOf(normalizeCount(counters.feedback())),
+                impressionsFingerprint(impressions == null ? null : impressions.host()),
+                impressionsFingerprint(impressions == null ? null : impressions.member()));
     }
 
     private boolean activitiesEqual(Users.UserActivitiesRecord left, Users.UserActivitiesRecord right) {
@@ -788,6 +876,7 @@ public class HomeUserProfileService {
                 record.noShowCount(),
                 normalizeStrings(record.vibeBadges()),
                 normalizeStrings(record.personalityBadges()),
+                toUserPersonalityTraitDtos(record.personalityTraits()),
                 normalizeStrings(record.categoryBadges()));
     }
 
@@ -804,14 +893,416 @@ public class HomeUserProfileService {
                 dto.noShowCount(),
                 normalizeStrings(dto.vibeBadges()),
                 normalizeStrings(dto.personalityBadges()),
+                toUserPersonalityTraitRecords(dto.personalityTraits()),
                 normalizeStrings(dto.categoryBadges()));
+    }
+
+    private UserImpressionsDto resolveMergedUserImpressions(Users user) {
+        if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
+            return null;
+        }
+        List<EventFeedbackAnswer> feedbackAnswers = eventFeedbackAnswersRepository
+                .findByTargetUserIdOrderBySubmittedAtIsoDesc(normalizeId(user.getId()));
+        UserImpressionsSectionDto host = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().host(), "event", feedbackAnswers);
+        UserImpressionsSectionDto member = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().member(), "attendee", feedbackAnswers);
+        if (host == null && member == null) {
+            return null;
+        }
+        return new UserImpressionsDto(host, member);
+    }
+
+    private UserImpressionsSectionDto resolveMergedImpressionsSection(
+            Users user,
+            Users.UserImpressionsSectionRecord record,
+            String feedbackKind,
+            List<EventFeedbackAnswer> feedbackAnswers) {
+        List<UserPersonalityTraitDto> personalityTraits = resolvePersonalityTraits(user, record, feedbackKind, feedbackAnswers);
+        if (record == null && personalityTraits.isEmpty()) {
+            return null;
+        }
+        return new UserImpressionsSectionDto(
+                record == null ? 0 : record.unreadCount(),
+                record == null ? null : record.averageRating(),
+                record == null ? null : record.peopleMet(),
+                record == null ? null : record.totalEvents(),
+                record == null ? null : record.repeatCount(),
+                record == null ? null : record.noShowCount(),
+                normalizeStrings(record == null ? null : record.vibeBadges()),
+                personalityTraits.isEmpty()
+                        ? normalizeStrings(record == null ? null : record.personalityBadges())
+                        : toPersonalityBadges(personalityTraits),
+                personalityTraits,
+                normalizeStrings(record == null ? null : record.categoryBadges()));
+    }
+
+    private List<UserPersonalityTraitDto> resolvePersonalityTraits(
+            Users user,
+            Users.UserImpressionsSectionRecord record,
+            String feedbackKind,
+            List<EventFeedbackAnswer> feedbackAnswers) {
+        Map<String, Double> scoreByTraitId = new LinkedHashMap<>();
+        Map<String, Integer> evidenceByTraitId = new LinkedHashMap<>();
+        Map<String, String> lastRatedAtByTraitId = new LinkedHashMap<>();
+        boolean seeded = applySeededPersonalityTraitRecords(scoreByTraitId, evidenceByTraitId, lastRatedAtByTraitId, record);
+        if (!seeded) {
+            seeded = applyLegacyPersonalityBadgeScores(scoreByTraitId, record);
+        }
+        if (!seeded) {
+            applyFallbackPersonalityBaseline(user, scoreByTraitId);
+        }
+        applyFeedbackAnswerTraitSignals(feedbackKind, feedbackAnswers, scoreByTraitId, evidenceByTraitId, lastRatedAtByTraitId);
+        return toResolvedPersonalityTraits(scoreByTraitId, evidenceByTraitId, lastRatedAtByTraitId);
+    }
+
+    private boolean applySeededPersonalityTraitRecords(
+            Map<String, Double> scoreByTraitId,
+            Map<String, Integer> evidenceByTraitId,
+            Map<String, String> lastRatedAtByTraitId,
+            Users.UserImpressionsSectionRecord record) {
+        boolean applied = false;
+        if (record == null) {
+            return false;
+        }
+        for (Users.UserPersonalityTraitRecord traitRecord : safeList(record.personalityTraits())) {
+            String traitId = resolvePersonalityTraitId(traitRecord.id(), traitRecord.label());
+            if (!StringUtils.hasText(traitId)) {
+                continue;
+            }
+            scoreByTraitId.merge(traitId, Math.max(1d, normalizeCount(traitRecord.percent())), Double::sum);
+            evidenceByTraitId.merge(traitId, normalizeCount(traitRecord.evidenceCount()), Integer::sum);
+            mergeLastRatedAt(lastRatedAtByTraitId, traitId, traitRecord.lastRatedAtIso());
+            applied = true;
+        }
+        return applied;
+    }
+
+    private boolean applyLegacyPersonalityBadgeScores(
+            Map<String, Double> scoreByTraitId,
+            Users.UserImpressionsSectionRecord record) {
+        boolean applied = false;
+        if (record == null) {
+            return false;
+        }
+        for (String badge : normalizeStrings(record.personalityBadges())) {
+            LegacyTraitBadgeSignal signal = parseLegacyTraitBadgeSignal(badge);
+            if (signal == null) {
+                continue;
+            }
+            scoreByTraitId.merge(signal.traitId(), Math.max(1d, signal.percent()), Double::sum);
+            applied = true;
+        }
+        return applied;
+    }
+
+    private void applyFallbackPersonalityBaseline(Users user, Map<String, Double> scoreByTraitId) {
+        for (PersonalityTraitDefinition definition : PERSONALITY_TRAIT_DEFINITIONS) {
+            scoreByTraitId.putIfAbsent(definition.id(), 1d);
+        }
+        List<String> orderedTraitIds = PERSONALITY_TRAIT_DEFINITIONS.stream()
+                .map(PersonalityTraitDefinition::id)
+                .toList();
+        String dominantTraitId = resolvePersonalityTraitId(null, user == null ? null : user.getTraitLabel());
+        if (!StringUtils.hasText(dominantTraitId)) {
+            dominantTraitId = orderedTraitIds.get(Math.floorMod(Objects.hash(normalizeId(user == null ? null : user.getId())), orderedTraitIds.size()));
+        }
+        int dominantIndex = orderedTraitIds.indexOf(dominantTraitId);
+        if (dominantIndex < 0) {
+            dominantIndex = 0;
+            dominantTraitId = orderedTraitIds.get(0);
+        }
+        String secondaryTraitId = orderedTraitIds.get((dominantIndex + 2) % orderedTraitIds.size());
+        String tertiaryTraitId = orderedTraitIds.get((dominantIndex + 5) % orderedTraitIds.size());
+        scoreByTraitId.merge(dominantTraitId, 48d, Double::sum);
+        scoreByTraitId.merge(secondaryTraitId, 20d, Double::sum);
+        scoreByTraitId.merge(tertiaryTraitId, 12d, Double::sum);
+    }
+
+    private void applyFeedbackAnswerTraitSignals(
+            String feedbackKind,
+            List<EventFeedbackAnswer> feedbackAnswers,
+            Map<String, Double> scoreByTraitId,
+            Map<String, Integer> evidenceByTraitId,
+            Map<String, String> lastRatedAtByTraitId) {
+        String expectedKind = normalizeToken(feedbackKind);
+        for (EventFeedbackAnswer answer : safeList(feedbackAnswers)) {
+            if (answer == null || !Objects.equals(expectedKind, normalizeToken(answer.getKind()))) {
+                continue;
+            }
+            Set<String> signaledTraitIds = new LinkedHashSet<>();
+            for (String traitId : safeList(answer.getPersonalityTraitIds())) {
+                String resolvedTraitId = resolvePersonalityTraitId(traitId, traitId);
+                if (StringUtils.hasText(resolvedTraitId)) {
+                    signaledTraitIds.add(resolvedTraitId);
+                }
+            }
+            for (String tag : safeList(answer.getTags())) {
+                String resolvedTraitId = resolveLegacyFeedbackTraitId(tag);
+                if (StringUtils.hasText(resolvedTraitId)) {
+                    signaledTraitIds.add(resolvedTraitId);
+                }
+            }
+            for (String traitId : signaledTraitIds) {
+                scoreByTraitId.merge(traitId, 18d, Double::sum);
+                evidenceByTraitId.merge(traitId, 1, Integer::sum);
+                mergeLastRatedAt(lastRatedAtByTraitId, traitId, answer.getSubmittedAtIso());
+            }
+        }
+    }
+
+    private List<UserPersonalityTraitDto> toResolvedPersonalityTraits(
+            Map<String, Double> scoreByTraitId,
+            Map<String, Integer> evidenceByTraitId,
+            Map<String, String> lastRatedAtByTraitId) {
+        if (scoreByTraitId.isEmpty()) {
+            return List.of();
+        }
+        List<String> orderedTraitIds = scoreByTraitId.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue() > 0d)
+                .sorted((left, right) -> {
+                    int scoreCompare = Double.compare(right.getValue(), left.getValue());
+                    if (scoreCompare != 0) {
+                        return scoreCompare;
+                    }
+                    int evidenceCompare = Integer.compare(
+                            evidenceByTraitId.getOrDefault(right.getKey(), 0),
+                            evidenceByTraitId.getOrDefault(left.getKey(), 0));
+                    if (evidenceCompare != 0) {
+                        return evidenceCompare;
+                    }
+                    PersonalityTraitDefinition leftDefinition = PERSONALITY_TRAIT_DEFINITION_BY_ID.get(left.getKey());
+                    PersonalityTraitDefinition rightDefinition = PERSONALITY_TRAIT_DEFINITION_BY_ID.get(right.getKey());
+                    return nullToEmpty(leftDefinition == null ? left.getKey() : leftDefinition.label())
+                            .compareTo(nullToEmpty(rightDefinition == null ? right.getKey() : rightDefinition.label()));
+                })
+                .map(Map.Entry::getKey)
+                .toList();
+        if (orderedTraitIds.isEmpty()) {
+            return List.of();
+        }
+        double total = orderedTraitIds.stream()
+                .map(scoreByTraitId::get)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        if (total <= 0d) {
+            return List.of();
+        }
+
+        List<Integer> percents = new ArrayList<>();
+        int percentTotal = 0;
+        for (String traitId : orderedTraitIds) {
+            int percent = (int) Math.round((scoreByTraitId.getOrDefault(traitId, 0d) * 100d) / total);
+            percents.add(percent);
+            percentTotal += percent;
+        }
+        if (!percents.isEmpty() && percentTotal != 100) {
+            percents.set(0, Math.max(0, percents.get(0) + (100 - percentTotal)));
+        }
+
+        List<UserPersonalityTraitDto> traits = new ArrayList<>();
+        for (int index = 0; index < orderedTraitIds.size(); index += 1) {
+            String traitId = orderedTraitIds.get(index);
+            PersonalityTraitDefinition definition = PERSONALITY_TRAIT_DEFINITION_BY_ID.get(traitId);
+            if (definition == null) {
+                continue;
+            }
+            traits.add(new UserPersonalityTraitDto(
+                    definition.id(),
+                    definition.label(),
+                    percents.get(index),
+                    evidenceByTraitId.getOrDefault(traitId, 0),
+                    safeText(lastRatedAtByTraitId.get(traitId))));
+        }
+        return traits;
+    }
+
+    private List<String> toPersonalityBadges(List<UserPersonalityTraitDto> traits) {
+        return safeList(traits).stream()
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(UserPersonalityTraitDto::percent, Comparator.nullsLast(Comparator.reverseOrder())))
+                .limit(3)
+                .map(trait -> String.format("%s %d%%", trait.label(), normalizeCount(trait.percent())))
+                .toList();
+    }
+
+    private List<UserPersonalityTraitDto> toUserPersonalityTraitDtos(List<Users.UserPersonalityTraitRecord> records) {
+        if (records == null || records.isEmpty()) {
+            return List.of();
+        }
+        return records.stream()
+                .filter(Objects::nonNull)
+                .map(record -> {
+                    String traitId = resolvePersonalityTraitId(record.id(), record.label());
+                    PersonalityTraitDefinition definition = PERSONALITY_TRAIT_DEFINITION_BY_ID.get(traitId);
+                    String resolvedLabel = definition == null ? safeText(record.label()) : definition.label();
+                    String resolvedId = definition == null ? safeText(record.id()) : definition.id();
+                    if (!StringUtils.hasText(resolvedId) || !StringUtils.hasText(resolvedLabel)) {
+                        return null;
+                    }
+                    return new UserPersonalityTraitDto(
+                            resolvedId,
+                            resolvedLabel,
+                            normalizeCount(record.percent()),
+                            normalizeCount(record.evidenceCount()),
+                            safeText(record.lastRatedAtIso()));
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private List<Users.UserPersonalityTraitRecord> toUserPersonalityTraitRecords(List<UserPersonalityTraitDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return List.of();
+        }
+        return dtos.stream()
+                .filter(Objects::nonNull)
+                .map(dto -> {
+                    String traitId = resolvePersonalityTraitId(dto.id(), dto.label());
+                    PersonalityTraitDefinition definition = PERSONALITY_TRAIT_DEFINITION_BY_ID.get(traitId);
+                    String resolvedLabel = definition == null ? safeText(dto.label()) : definition.label();
+                    String resolvedId = definition == null ? safeText(dto.id()) : definition.id();
+                    if (!StringUtils.hasText(resolvedId) || !StringUtils.hasText(resolvedLabel)) {
+                        return null;
+                    }
+                    return new Users.UserPersonalityTraitRecord(
+                            resolvedId,
+                            resolvedLabel,
+                            normalizeCount(dto.percent()),
+                            normalizeCount(dto.evidenceCount()),
+                            safeText(dto.lastRatedAtIso()));
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private String resolvePersonalityTraitId(String id, String label) {
+        String normalizedId = normalizeToken(id);
+        if (PERSONALITY_TRAIT_DEFINITION_BY_ID.containsKey(normalizedId)) {
+            return normalizedId;
+        }
+        return resolvePersonalityTraitIdFromLabel(label);
+    }
+
+    private String resolvePersonalityTraitIdFromLabel(String label) {
+        String normalizedLabel = normalizeToken(label);
+        if (!StringUtils.hasText(normalizedLabel)) {
+            return null;
+        }
+        String resolved = PERSONALITY_TRAIT_ID_BY_TOKEN.get(normalizedLabel);
+        if (StringUtils.hasText(resolved)) {
+            return resolved;
+        }
+        String[] words = normalizedLabel.split("\\s+");
+        for (int start = 0; start < words.length; start += 1) {
+            String candidate = String.join(" ", java.util.Arrays.copyOfRange(words, start, words.length));
+            resolved = PERSONALITY_TRAIT_ID_BY_TOKEN.get(candidate);
+            if (StringUtils.hasText(resolved)) {
+                return resolved;
+            }
+        }
+        return LEGACY_FEEDBACK_TRAIT_ID_BY_TOKEN.get(normalizedLabel);
+    }
+
+    private String resolveLegacyFeedbackTraitId(String tag) {
+        String normalizedTag = normalizeToken(tag);
+        if (!StringUtils.hasText(normalizedTag)) {
+            return null;
+        }
+        String resolved = LEGACY_FEEDBACK_TRAIT_ID_BY_TOKEN.get(normalizedTag);
+        if (StringUtils.hasText(resolved)) {
+            return resolved;
+        }
+        return resolvePersonalityTraitIdFromLabel(tag);
+    }
+
+    private LegacyTraitBadgeSignal parseLegacyTraitBadgeSignal(String badge) {
+        String normalizedBadge = safeText(badge);
+        if (!StringUtils.hasText(normalizedBadge)) {
+            return null;
+        }
+        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("^(.*?)(\\d{1,3})%$").matcher(normalizedBadge);
+        if (!matcher.find()) {
+            String traitId = resolvePersonalityTraitIdFromLabel(normalizedBadge);
+            return StringUtils.hasText(traitId) ? new LegacyTraitBadgeSignal(traitId, 1) : null;
+        }
+        String traitId = resolvePersonalityTraitIdFromLabel(matcher.group(1));
+        if (!StringUtils.hasText(traitId)) {
+            return null;
+        }
+        return new LegacyTraitBadgeSignal(traitId, normalizeCount(Integer.parseInt(matcher.group(2))));
+    }
+
+    private void mergeLastRatedAt(Map<String, String> lastRatedAtByTraitId, String traitId, String candidateIso) {
+        String normalizedCandidate = safeText(candidateIso);
+        if (!StringUtils.hasText(traitId) || !StringUtils.hasText(normalizedCandidate)) {
+            return;
+        }
+        String current = lastRatedAtByTraitId.get(traitId);
+        if (!StringUtils.hasText(current) || toSortableDate(normalizedCandidate) >= toSortableDate(current)) {
+            lastRatedAtByTraitId.put(traitId, normalizedCandidate);
+        }
+    }
+
+    private String cursorPart(String cursor, int index) {
+        String normalizedCursor = safeText(cursor);
+        if (!StringUtils.hasText(normalizedCursor)) {
+            return "";
+        }
+        String[] parts = normalizedCursor.split(":", -1);
+        return parts.length > index ? safeText(parts[index]) : "";
+    }
+
+    private String impressionsFingerprint(UserImpressionsSectionDto section) {
+        if (section == null) {
+            return "";
+        }
+        String personalityTraitToken = safeList(section.personalityTraits()).stream()
+                .filter(Objects::nonNull)
+                .map(trait -> String.join("~",
+                        safeText(trait.id()),
+                        String.valueOf(normalizeCount(trait.percent())),
+                        String.valueOf(normalizeCount(trait.evidenceCount())),
+                        safeText(trait.lastRatedAtIso())))
+                .reduce("", (left, right) -> left.isEmpty() ? right : left + "," + right);
+        String fingerprintSource = String.join("|",
+                String.valueOf(normalizeCount(section.unreadCount())),
+                String.valueOf(section.averageRating() == null ? 0d : section.averageRating()),
+                String.valueOf(normalizeCount(section.peopleMet())),
+                String.valueOf(normalizeCount(section.totalEvents())),
+                String.valueOf(normalizeCount(section.repeatCount())),
+                String.valueOf(normalizeCount(section.noShowCount())),
+                String.join(",", normalizeStrings(section.vibeBadges())),
+                String.join(",", normalizeStrings(section.personalityBadges())),
+                personalityTraitToken,
+                String.join(",", normalizeStrings(section.categoryBadges())));
+        return Integer.toHexString(fingerprintSource.hashCode());
+    }
+
+    private static Map<String, PersonalityTraitDefinition> buildPersonalityTraitDefinitionById() {
+        Map<String, PersonalityTraitDefinition> next = new LinkedHashMap<>();
+        for (PersonalityTraitDefinition definition : PERSONALITY_TRAIT_DEFINITIONS) {
+            next.put(definition.id(), definition);
+        }
+        return Map.copyOf(next);
+    }
+
+    private static Map<String, String> buildPersonalityTraitIdByToken() {
+        Map<String, String> next = new LinkedHashMap<>();
+        for (PersonalityTraitDefinition definition : PERSONALITY_TRAIT_DEFINITIONS) {
+            next.put(definition.id(), definition.id());
+            next.put(definition.label().toLowerCase(), definition.id());
+            for (String alias : definition.aliases()) {
+                next.put(alias.toLowerCase(), definition.id());
+            }
+        }
+        return Map.copyOf(next);
     }
 
     private <T> Map<String, T> safeMap(Map<String, T> source) {
         return source == null ? Map.of() : source;
     }
 
-    private List<String> safeList(List<String> source) {
+    private <T> List<T> safeList(List<T> source) {
         return source == null ? List.of() : source;
     }
 
@@ -852,5 +1343,18 @@ public class HomeUserProfileService {
 
     private String nullToEmpty(String value) {
         return value == null ? "" : value;
+    }
+
+    private record PersonalityTraitDefinition(
+            String id,
+            String label,
+            String coreVibe,
+            List<String> highlights,
+            List<String> aliases) {
+    }
+
+    private record LegacyTraitBadgeSignal(
+            String traitId,
+            Integer percent) {
     }
 }

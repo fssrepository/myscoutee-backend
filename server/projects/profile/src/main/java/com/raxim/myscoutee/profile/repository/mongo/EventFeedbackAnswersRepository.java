@@ -10,5 +10,9 @@ import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackAnswer;
 public interface EventFeedbackAnswersRepository extends MongoRepository<EventFeedbackAnswer, String> {
     List<EventFeedbackAnswer> findByViewerUserIdAndEventId(String viewerUserId, String eventId);
 
+    List<EventFeedbackAnswer> findByViewerUserIdOrderByEventIdAscSubmittedAtIsoDesc(String viewerUserId);
+
     Optional<EventFeedbackAnswer> findByViewerUserIdAndEventIdAndCardId(String viewerUserId, String eventId, String cardId);
+
+    List<EventFeedbackAnswer> findByTargetUserIdOrderBySubmittedAtIsoDesc(String targetUserId);
 }
