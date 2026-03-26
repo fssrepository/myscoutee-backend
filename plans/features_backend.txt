@@ -1,14 +1,13 @@
-git submodule to grab the front end code, the backend will be in private repo
+service worker caching / location browser query / touch animation (old myscoutee had it)
+(time sync in docker) RUN apk add --update busybox-suid && apk --update add tzdata && cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime
 
-Dictionary:
------------
-cloudflare reverse proxy
-base44 landing page (summary, GDPR popup)
-angular page on different server (login page, exact functionality)
-separate sensitive server passwords from the main code base (won't be uploaded to the github)
-Logo - heart in a circle by cutting the bottom part, so it can be an M and put a star on it
+cloudflare - caching images (so won't need to use google cloud bandwith)
+https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
+
+firebase (Login button - either test users popup or login screen popup)
 link (booking.com link which backend scraps with og: tags (Open Graph technology - you can scrap summary from html))
 (the message area and the send message area - typing, read avatars etc. - normal chat, like facebook messenger)
+badge - red counter, if more than 9, than 9+ (so only 2 digits appears - space)
 
 Algorithm
 ---------
@@ -43,9 +42,18 @@ supplies stays does mean, remove the number of supplies what the manager added i
 
 manager role (if one of the asset of yours has been asigned to an event, you are not an admin, you are amaneger of your asset)
 
-Base Design:
--------
-Login button - either test users popup or login screen popup
-Main page - Logo + text on every main page with icon bar on the right side
-Filter buttons/Filter textbox - should be small (not the default angular one by saving space)
-badge - red counter, if more than 9, than 9+ (so only 2 digits appears - space)
+Commands
+--------
+
+ng serve --ssl
+
+git submodule sync
+git submodule update --init --remote
+
+git config --global user.email {email}
+git config --global user.name {name}
+git config --global user.password {personal access token - Profile -> Settings -> Develpoper Settings (last menu item)}
+
+gradle build
+docker compose build --no-cache
+docker compose up
