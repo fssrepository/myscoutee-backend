@@ -72,16 +72,14 @@ public class EventParticipationTicketService {
         }
 
         List<ActivityEvent> toSave = new ArrayList<>();
-        List<ActivityEvent> toDelete = new ArrayList<>();
-        reconcileSource(normalizedSourceId, null, toSave, toDelete);
-        flushChanges(toSave, toDelete);
+        reconcileSource(normalizedSourceId, null, toSave);
+        flushChanges(toSave);
     }
 
     private void reconcileSource(
             String sourceId,
             Set<String> limitedUserIds,
-            List<ActivityEvent> toSave,
-            List<ActivityEvent> toDelete) {
+            List<ActivityEvent> toSave) {
         SourceTicketSnapshot snapshot = loadSnapshot(sourceId);
         if (snapshot == null) {
             return;
@@ -97,7 +95,7 @@ public class EventParticipationTicketService {
         candidateUserIds.remove(snapshot.creatorUserId());
 
         for (String ownerUserId : candidateUserIds) {
-            reconcileUserOverlay(snapshot, ownerUserId, toSave, toDelete);
+            reconcileUserOverlay(snapshot, ownerUserId, toSave);
         }
     }
 
@@ -122,7 +120,11 @@ public class EventParticipationTicketService {
             if (!StringUtils.hasText(memberUserId)) {
                 continue;
             }
-            if ("pending".equals(normalizeMemberStatus(member.getStatus()))) {
+            String memberStatus = normalizeMemberStatus(member.getStatus());
+            if ("deleted".equals(memberStatus)) {
+                continue;
+            }
+            if ("pending".equals(memberStatus)) {
                 pendingMemberUserIds.add(memberUserId);
             } else {
                 acceptedMemberUserIds.add(memberUserId);
@@ -158,8 +160,7 @@ public class EventParticipationTicketService {
     private void reconcileUserOverlay(
             SourceTicketSnapshot snapshot,
             String ownerUserId,
-            List<ActivityEvent> toSave,
-            List<ActivityEvent> toDelete) {
+            List<ActivityEvent> toSave) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         if (!StringUtils.hasText(normalizedOwnerUserId)) {
             return;
@@ -172,7 +173,10 @@ public class EventParticipationTicketService {
 
         if (preferred == null || !acceptedParticipant || Boolean.TRUE.equals(preferred.getIsInvitation())) {
             if (existing != null) {
-                toDelete.add(existing);
+                ActivityEvent next = buildInactiveParticipationOverlay(snapshot, normalizedOwnerUserId, existing);
+                if (!equivalentOverlay(existing, next)) {
+                    toSave.add(next);
+                }
             }
             return;
         }
@@ -183,11 +187,42 @@ public class EventParticipationTicketService {
             return;
         }
 
+        if (!ticketingEnabled || eventTrashed) {
+            ActivityEvent next = buildInactiveParticipationOverlay(snapshot, normalizedOwnerUserId, existing);
+            if (existing != null && equivalentOverlay(existing, next)) {
+                return;
+            }
+            if (next != null) {
+                toSave.add(next);
+            }
+            return;
+        }
+
         ActivityEvent next = buildParticipationOverlay(snapshot, normalizedOwnerUserId, existing);
         if (existing != null && equivalentOverlay(existing, next)) {
             return;
         }
         toSave.add(next);
+    }
+
+    private ActivityEvent buildInactiveParticipationOverlay(
+            SourceTicketSnapshot snapshot,
+            String ownerUserId,
+            ActivityEvent existing) {
+        if (existing == null) {
+            return null;
+        }
+
+        ActivityEvent preferred = snapshot.preferredRecord();
+        ActivityEvent next = preferred == null
+                ? cloneDocument(existing)
+                : buildParticipationOverlay(snapshot, ownerUserId, existing);
+        next.setTicketing(false);
+        next.setIsTrashed(preferred != null && Boolean.TRUE.equals(preferred.getIsTrashed()));
+        next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, Boolean.TRUE.equals(next.getIsTrashed())));
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(resolveUpdatedUser(preferred, existing, ownerUserId));
+        return next;
     }
 
     private ActivityEvent buildParticipationOverlay(
@@ -214,10 +249,9 @@ public class EventParticipationTicketService {
         next.setIsInvitation(false);
         next.setIsHosting(false);
         boolean globallyTrashed = Boolean.TRUE.equals(preferred.getIsTrashed());
-        boolean locallyTrashed = existing != null && Boolean.TRUE.equals(existing.getIsTrashed());
-        next.setIsTrashed(globallyTrashed || locallyTrashed);
+        next.setIsTrashed(globallyTrashed);
         next.setPublished(Boolean.FALSE.equals(preferred.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
-        next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, globallyTrashed, locallyTrashed));
+        next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, globallyTrashed));
         next.setCreatorUserId(normalizeId(preferred.getCreatorUserId()));
         next.setCreatorName(safeText(preferred.getCreatorName()));
         next.setCreatorInitials(safeText(preferred.getCreatorInitials()));
@@ -253,10 +287,7 @@ public class EventParticipationTicketService {
         return next;
     }
 
-    private void flushChanges(List<ActivityEvent> toSave, List<ActivityEvent> toDelete) {
-        if (!toDelete.isEmpty()) {
-            activityEventsRepository.deleteAll(toDelete);
-        }
+    private void flushChanges(List<ActivityEvent> toSave) {
         if (!toSave.isEmpty()) {
             activityEventsRepository.saveAll(toSave);
         }
@@ -413,15 +444,11 @@ public class EventParticipationTicketService {
     private String resolveTrashedAtIso(
             ActivityEvent preferred,
             ActivityEvent existing,
-            boolean globallyTrashed,
-            boolean locallyTrashed) {
+            boolean globallyTrashed) {
         if (globallyTrashed) {
             return normalizeDateTime(
                     preferred == null ? null : preferred.getTrashedAtIso(),
                     normalizeDateTime(existing == null ? null : existing.getTrashedAtIso(), preferred == null ? null : preferred.getUpdatedDate()));
-        }
-        if (locallyTrashed) {
-            return normalizeDateTime(existing == null ? null : existing.getTrashedAtIso(), null);
         }
         return null;
     }
@@ -443,7 +470,14 @@ public class EventParticipationTicketService {
     }
 
     private String normalizeMemberStatus(String value) {
-        return "pending".equals(safeText(value)) ? "pending" : "accepted";
+        String normalized = safeText(value);
+        if ("pending".equals(normalized)) {
+            return "pending";
+        }
+        if ("deleted".equals(normalized)) {
+            return "deleted";
+        }
+        return "accepted";
     }
 
     private String normalizeType(String value) {

@@ -36,8 +36,11 @@ import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 public class ActivitiesMembersService {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
+    private static final String STATUS_ACCEPTED = "accepted";
+    private static final String STATUS_PENDING = "pending";
+    private static final String STATUS_DELETED = "deleted";
     private static final Set<String> OWNER_TYPES = Set.of("event", "subEvent", "group", "asset");
-    private static final Set<String> ACCEPTED_STATUSES = Set.of("accepted");
+    private static final Set<String> ACCEPTED_STATUSES = Set.of(STATUS_ACCEPTED);
     private static final Set<String> ADMIN_ROLES = Set.of("Admin");
 
     private final ActivityMembersRepository activityMembersRepository;
@@ -71,6 +74,7 @@ public class ActivitiesMembersService {
 
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
         return loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
+                .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .map(member -> toEntryDto(member, viewerUserId))
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(entry -> toSortableDate(entry.actionAtIso())))
@@ -194,21 +198,21 @@ public class ActivitiesMembersService {
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
         Set<String> retainedMemberIds = retainedIds;
-        List<ActivityMember> toDelete = existing.stream()
+        List<ActivityMember> removedMembers = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !retainedMemberIds.contains(member.getId()))
+                .map(member -> toDeletedMember(member, actorUserId, nowIso))
                 .toList();
-        if (!toDelete.isEmpty()) {
-            activityMembersRepository.deleteAll(toDelete);
-        }
-        if (!nextDocuments.isEmpty()) {
-            activityMembersRepository.saveAll(nextDocuments);
+        List<ActivityMember> membersToSave = new ArrayList<>(nextDocuments);
+        membersToSave.addAll(removedMembers);
+        if (!membersToSave.isEmpty()) {
+            activityMembersRepository.saveAll(membersToSave);
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
         }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
-            assetsService.syncRequestsFromMembers(ownerId, nextDocuments);
+            assetsService.syncRequestsFromMembers(ownerId, membersToSave);
         }
     }
 
@@ -295,15 +299,15 @@ public class ActivitiesMembersService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        List<ActivityMember> toDelete = existing.stream()
+        List<ActivityMember> removedMembers = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !retainedUserIds.contains(normalizeId(member.getUserId())))
+                .map(member -> toDeletedMember(member, creatorUserId, nowIso))
                 .toList();
-        if (!toDelete.isEmpty()) {
-            activityMembersRepository.deleteAll(toDelete);
-        }
-        if (!nextDocuments.isEmpty()) {
-            activityMembersRepository.saveAll(nextDocuments);
+        List<ActivityMember> membersToSave = new ArrayList<>(nextDocuments);
+        membersToSave.addAll(removedMembers);
+        if (!membersToSave.isEmpty()) {
+            activityMembersRepository.saveAll(membersToSave);
         }
         eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
     }
@@ -393,6 +397,7 @@ public class ActivitiesMembersService {
     private OwnerMembersSnapshot toOwnerSnapshot(String ownerType, String ownerId, List<ActivityMember> members) {
         List<ActivityMember> ordered = members.stream()
                 .filter(Objects::nonNull)
+                .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
                 .sorted(Comparator.comparing(ActivityMember::getActionAtIso, Comparator.nullsLast(String::compareTo)))
                 .toList();
         List<String> acceptedUserIds = ordered.stream()
@@ -760,12 +765,33 @@ public class ActivitiesMembersService {
         return safeText(second);
     }
 
+    private ActivityMember toDeletedMember(ActivityMember member, String actorUserId, String nowIso) {
+        if (member == null) {
+            return null;
+        }
+        ActivityMember next = cloneMember(member);
+        next.setStatus(STATUS_DELETED);
+        next.setPendingSource(null);
+        next.setRequestKind(null);
+        next.setActionAtIso(nowIso);
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, member));
+        return next;
+    }
+
     private String normalizeStatus(String status) {
-        return "pending".equals(safeText(status)) ? "pending" : "accepted";
+        String normalizedStatus = safeText(status);
+        if (STATUS_PENDING.equals(normalizedStatus)) {
+            return STATUS_PENDING;
+        }
+        if (STATUS_DELETED.equals(normalizedStatus)) {
+            return STATUS_DELETED;
+        }
+        return STATUS_ACCEPTED;
     }
 
     private String resolvePendingSource(String pendingSource, String status) {
-        if (!"pending".equals(status)) {
+        if (!STATUS_PENDING.equals(status)) {
             return null;
         }
         String normalizedPendingSource = safeText(pendingSource);
@@ -773,7 +799,7 @@ public class ActivitiesMembersService {
     }
 
     private String resolveRequestKind(String requestKind, String status, String pendingSource) {
-        if (!"pending".equals(status)) {
+        if (!STATUS_PENDING.equals(status)) {
             return null;
         }
         String normalizedRequestKind = safeText(requestKind);
@@ -793,7 +819,7 @@ public class ActivitiesMembersService {
         if (current != null && StringUtils.hasText(current.getInvitedByUserId())) {
             return current.getInvitedByUserId().trim();
         }
-        if (entry != null && "pending".equals(normalizeStatus(entry.status())) && "invite".equals(resolveRequestKind(entry.requestKind(), normalizeStatus(entry.status()), resolvePendingSource(entry.pendingSource(), normalizeStatus(entry.status()))))) {
+        if (entry != null && STATUS_PENDING.equals(normalizeStatus(entry.status())) && "invite".equals(resolveRequestKind(entry.requestKind(), normalizeStatus(entry.status()), resolvePendingSource(entry.pendingSource(), normalizeStatus(entry.status()))))) {
             return actorUserId;
         }
         return null;
@@ -885,8 +911,11 @@ public class ActivitiesMembersService {
     }
 
     private String defaultStatusText(String status, String requestKind, String pendingSource) {
-        if ("accepted".equals(status)) {
+        if (STATUS_ACCEPTED.equals(status)) {
             return "Recently Active";
+        }
+        if (STATUS_DELETED.equals(status)) {
+            return "No longer active in this event.";
         }
         if ("join".equals(requestKind) || "member".equals(pendingSource)) {
             return "Waiting for admin approval.";

@@ -194,6 +194,7 @@ public class AssetsService {
         List<AssetRequestRecord> nextRequests = members == null ? List.of() : members.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !ownerUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> !"deleted".equals(normalizeMemberStatus(member.getStatus())))
                 .map(member -> toAssetRequest(member, existingByUserId.get(normalizeId(member.getUserId()))))
                 .filter(Objects::nonNull)
                 .toList();
@@ -470,7 +471,14 @@ public class AssetsService {
     }
 
     private String normalizeMemberStatus(String status) {
-        return "pending".equals(safeText(status)) ? "pending" : "accepted";
+        String normalized = safeText(status);
+        if ("pending".equals(normalized)) {
+            return "pending";
+        }
+        if ("deleted".equals(normalized)) {
+            return "deleted";
+        }
+        return "accepted";
     }
 
     private AssetCardDto toDto(Asset asset) {
