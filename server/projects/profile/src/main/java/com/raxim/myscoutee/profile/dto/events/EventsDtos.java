@@ -12,7 +12,12 @@ public final class EventsDtos {
     public record EventsFilterRequestDto(
             String userId,
             String filter,
-            String hostingPublicationFilter) {
+            String hostingPublicationFilter,
+            String secondaryFilter,
+            String sort,
+            String view,
+            Integer limit,
+            String cursor) {
     }
 
     public record EventsExploreQueryDto(
@@ -88,6 +93,7 @@ public final class EventsDtos {
     }
 
     public record ActivitiesEventSyncPayloadDto(
+            String syncKey,
             String id,
             String target,
             String title,

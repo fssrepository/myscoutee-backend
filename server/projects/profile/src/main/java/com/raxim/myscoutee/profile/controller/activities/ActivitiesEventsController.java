@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
@@ -19,59 +20,75 @@ import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsFilterRequestDto;
 @RestController
 @RequestMapping("/activities/events")
 public class ActivitiesEventsController {
+    private final ActivitiesEventsService activitiesEventsService;
+
+    public ActivitiesEventsController(ActivitiesEventsService activitiesEventsService) {
+        this.activitiesEventsService = activitiesEventsService;
+    }
 
     @GetMapping
     public List<EventRecordDto> queryItems(@RequestParam("userId") String userId) {
-        return List.of();
+        return activitiesEventsService.queryItemsByUser(userId);
     }
 
     @GetMapping("/invitations")
     public List<EventRecordDto> queryInvitations(@RequestParam("userId") String userId) {
-        return List.of();
+        return activitiesEventsService.queryInvitations(userId);
     }
 
     @GetMapping("/attending")
     public List<EventRecordDto> queryAttending(@RequestParam("userId") String userId) {
-        return List.of();
+        return activitiesEventsService.queryAttending(userId);
     }
 
     @GetMapping("/hosting")
     public List<EventRecordDto> queryHosting(@RequestParam("userId") String userId) {
-        return List.of();
+        return activitiesEventsService.queryHosting(userId);
     }
 
     @GetMapping("/trash")
     public List<EventRecordDto> queryTrash(@RequestParam("userId") String userId) {
-        return List.of();
+        return activitiesEventsService.queryTrash(userId);
     }
 
     @PostMapping("/filter")
-    public List<EventRecordDto> filter(@RequestBody EventsFilterRequestDto request) {
-        return List.of();
+    public Object filter(@RequestBody EventsFilterRequestDto request) {
+        if (activitiesEventsService.isPagedFilterRequest(request)) {
+            return activitiesEventsService.queryActivitiesEventPage(request);
+        }
+        return activitiesEventsService.queryItemsByFilter(request);
     }
 
     @PostMapping("/explore")
-    public EventsExplorePageDto explore(@RequestBody EventsExploreQueryDto request) {
-        return new EventsExplorePageDto(List.of(), 0, null);
+    public Object explore(@RequestBody EventsExploreQueryDto request) {
+        if (activitiesEventsService.isPagedExploreRequest(request)) {
+            return activitiesEventsService.queryEventExplorePage(request);
+        }
+        return activitiesEventsService.queryExploreItems(request == null ? null : request.userId());
     }
 
     @PostMapping("/trash")
     public void trash(@RequestBody EventActionRequestDto request) {
-        // no-op skeleton
+        activitiesEventsService.trash(request);
     }
 
     @PostMapping("/publish")
     public void publish(@RequestBody EventActionRequestDto request) {
-        // no-op skeleton
+        activitiesEventsService.publish(request);
     }
 
     @PostMapping("/restore")
     public void restore(@RequestBody EventActionRequestDto request) {
-        // no-op skeleton
+        activitiesEventsService.restore(request);
+    }
+
+    @PostMapping("/join")
+    public EventRecordDto requestJoin(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.requestJoin(request);
     }
 
     @PostMapping("/sync")
     public void sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
-        // no-op skeleton
+        activitiesEventsService.sync(request);
     }
 }
