@@ -47,16 +47,19 @@ public class ActivitiesEventsService {
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
+    private final EventParticipationTicketService eventParticipationTicketService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
-            ActivitiesMembersService activitiesMembersService) {
+            ActivitiesMembersService activitiesMembersService,
+            EventParticipationTicketService eventParticipationTicketService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.activitiesMembersService = activitiesMembersService;
+        this.eventParticipationTicketService = eventParticipationTicketService;
     }
 
     public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
@@ -292,6 +295,7 @@ public class ActivitiesEventsService {
             documentsToSave.add(eventsOverlay);
         }
         activityEventsRepository.saveAll(documentsToSave);
+        eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {

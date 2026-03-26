@@ -33,7 +33,6 @@ import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetMemberRequestDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 
@@ -44,17 +43,17 @@ public class AssetsService {
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
-    private final ActivityEventsRepository activityEventsRepository;
+    private final EventParticipationTicketService eventParticipationTicketService;
     private final MongoTemplate mongoTemplate;
 
     public AssetsService(
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
-            ActivityEventsRepository activityEventsRepository,
+            EventParticipationTicketService eventParticipationTicketService,
             MongoTemplate mongoTemplate) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
-        this.activityEventsRepository = activityEventsRepository;
+        this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -81,11 +80,8 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<EventRecordDto> ordered = activityEventsRepository.findByOwnerUserId(normalizedUserId).stream()
+        List<EventRecordDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .filter(event -> Boolean.TRUE.equals(event.getTicketing()))
-                .filter(event -> !Boolean.TRUE.equals(event.getIsInvitation()))
-                .filter(event -> !Boolean.TRUE.equals(event.getIsTrashed()))
                 .map(this::toTicketEventRecordDto)
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso())))

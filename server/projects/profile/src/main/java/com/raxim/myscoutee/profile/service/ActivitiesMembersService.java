@@ -45,18 +45,21 @@ public class ActivitiesMembersService {
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final AssetsService assetsService;
+    private final EventParticipationTicketService eventParticipationTicketService;
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
             ActivityEventsRepository activityEventsRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
-            AssetsService assetsService) {
+            AssetsService assetsService,
+            EventParticipationTicketService eventParticipationTicketService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.assetsService = assetsService;
+        this.eventParticipationTicketService = eventParticipationTicketService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -201,6 +204,9 @@ public class ActivitiesMembersService {
         if (!nextDocuments.isEmpty()) {
             activityMembersRepository.saveAll(nextDocuments);
         }
+        if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
+        }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, nextDocuments);
         }
@@ -299,6 +305,7 @@ public class ActivitiesMembersService {
         if (!nextDocuments.isEmpty()) {
             activityMembersRepository.saveAll(nextDocuments);
         }
+        eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {

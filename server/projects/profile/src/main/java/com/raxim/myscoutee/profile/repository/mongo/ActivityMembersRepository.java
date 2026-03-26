@@ -15,5 +15,7 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
 
     List<ActivityMember> findByOwnerTypeAndOwnerId(String ownerType, String ownerId);
 
+    List<ActivityMember> findByOwnerTypeAndUserId(String ownerType, String userId);
+
     List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String ownerType, Collection<String> ownerIds);
 }

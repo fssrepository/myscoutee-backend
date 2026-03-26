@@ -134,6 +134,7 @@ public class HomeUserProfileService {
     private final UserRatesRepository userRatesRepository;
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
+    private final EventParticipationTicketService eventParticipationTicketService;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
@@ -146,6 +147,7 @@ public class HomeUserProfileService {
             UserRatesRepository userRatesRepository,
             ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
+            EventParticipationTicketService eventParticipationTicketService,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
@@ -156,6 +158,7 @@ public class HomeUserProfileService {
         this.userRatesRepository = userRatesRepository;
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
@@ -594,7 +597,7 @@ public class HomeUserProfileService {
                 countEventsByType(eventRecords, "invitations"),
                 countEventsByType(eventRecords, "events"),
                 countEventsByType(eventRecords, "hosting"),
-                countTicketRecords(eventRecords),
+                countTicketRecords(userId),
                 countPendingEventFeedback(userId, eventRecords));
     }
 
@@ -624,12 +627,11 @@ public class HomeUserProfileService {
                 .count());
     }
 
-    private int countTicketRecords(List<ActivityEvent> eventRecords) {
-        return Math.toIntExact(eventRecords.stream()
-                .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> Boolean.TRUE.equals(record.getTicketing()))
-                .count());
+    private int countTicketRecords(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            return 0;
+        }
+        return eventParticipationTicketService.queryTicketRecordsForUser(userId).size();
     }
 
     private int countPendingEventFeedback(String userId, List<ActivityEvent> eventRecords) {
