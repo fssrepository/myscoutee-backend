@@ -16,11 +16,13 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
 import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
 
 @Configuration
 @EnableConfigurationProperties({
         ConfigProperties.class,
+        FirebaseProperties.class,
         MediaStorageProperties.class,
         AssetSourceRefreshProperties.class
 })

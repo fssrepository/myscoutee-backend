@@ -47,17 +47,20 @@ spring:
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+  mongodb:
+    host: ${MONGODB_HOST:localhost}
+    port: ${MONGODB_PORT:27017}
+    username: ${MONGODB_USERNAME:guest}
+    password: ${MONGODB_PASSWORD:guest}
+    database: ${MONGODB_DATABASE:demo_db}
   data:
-    mongodb:
-      host: ${MONGODB_HOST:localhost}
-      port: ${MONGODB_PORT:27017}
-      username: ${MONGODB_USERNAME:guest}
-      password: ${MONGODB_PASSWORD:guest}
-      database: ${MONGODB_DATABASE:demo_db}
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}
+      repositories:
+        enabled: false
 
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    org.springframework.integration: WARN

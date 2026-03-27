@@ -12,6 +12,7 @@ services:
     container_name: nginx
     hostname: nginx
     image: ${NGINX_IMAGE_PROD:-myscoutee-nginx:0.2.0-prod}
+    pull_policy: build
     build:
       context: .
       dockerfile: docker/images/nginx/Dockerfile.prod
@@ -49,7 +50,7 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
-      - ./data/mongodb/data:/data/db
+      - ./data/mongodb/data-v8:/data/db
       - ./docker/scripts:/scripts
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -83,6 +84,7 @@ services:
       - myscoutee
   profilemanagement:
     image: ${MYSCOUTEE_IMAGE}
+    pull_policy: build
     build:
       context: projects/profile
       args:
@@ -90,6 +92,8 @@ services:
     container_name: myscoutee
     hostname: myscoutee
     environment:
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_MONGODB_URI: "mongodb://guest:guest@mongodb:27017/${MONGO_REAL_DATABASE}?authSource=${MONGO_REAL_DATABASE}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE}"
       MONGODB_USERNAME: "guest"
@@ -110,6 +114,7 @@ services:
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: >
+        --enable-native-access=ALL-UNNAMED
         -Xdebug
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     volumes:

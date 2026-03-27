@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 BOOTSTRAP_DB_NAME="${MONGO_BOOTSTRAP_DATABASE:-demo_db}"
-DATA_DIR="${MONGO_BOOTSTRAP_DATA_DIR:-${SERVER_ROOT}/data/mongodb/demo-data}"
+DATA_DIR="${MONGO_BOOTSTRAP_DATA_DIR:-${SERVER_ROOT}/data/mongodb/demo-data-v8}"
 SEED_DIR="${MONGO_BOOTSTRAP_SEED_DIR:-${SERVER_ROOT}/docker/conf/mongodb/${BOOTSTRAP_DB_NAME}}"
 SEED_HASH_FILE="${SERVER_ROOT}/data/mongodb/.${BOOTSTRAP_DB_NAME}_seed_hash"
 SEED_FILES=(

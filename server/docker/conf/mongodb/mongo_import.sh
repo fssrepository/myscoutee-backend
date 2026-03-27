@@ -11,6 +11,11 @@ if [ ! -d "${seed_dir}" ]; then
 fi
 
 find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
+  if ! grep -q '[^[:space:]\[\]]' "${jsonfile}"; then
+    echo "Skipping empty JSON array seed ${jsonfile}"
+    continue
+  fi
+
   mongoimport \
     -h 127.0.0.1 \
     -d "${db_name}" \
