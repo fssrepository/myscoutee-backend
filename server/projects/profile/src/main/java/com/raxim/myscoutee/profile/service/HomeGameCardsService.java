@@ -13,6 +13,7 @@ import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameCardsQueryRequestDto;
 import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameCardsQueryResponseDto;
+import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameSocialCardDto;
 
 @Service
 public class HomeGameCardsService {
@@ -25,7 +26,18 @@ public class HomeGameCardsService {
     public UserGameCardsQueryResponseDto queryPage(UserGameCardsQueryRequestDto request) {
         String resolvedUserId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
         if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserGameCardsQueryResponseDto(0, List.of(), null, List.of());
+            return new UserGameCardsQueryResponseDto(0, List.of(), null, List.of(), List.of());
+        }
+
+        String mode = normalizeMode(request == null ? null : request.mode());
+        if (isSocialMode(mode)) {
+            return querySocialPage(
+                    resolvedUserId,
+                    mode,
+                    request == null ? null : request.leftQuery(),
+                    request == null ? null : request.rightQuery(),
+                    request == null ? null : request.cursor(),
+                    request == null ? null : request.pageSize());
         }
 
         UserGameFilterPreferencesDto effectivePreferences =
@@ -54,7 +66,8 @@ public class HomeGameCardsService {
                 filteredUsers.size(),
                 users.stream().map(UserDto::id).toList(),
                 nextCursor,
-                users);
+                users,
+                List.of());
     }
 
     private int resolvePageSize(Integer value) {
@@ -155,5 +168,106 @@ public class HomeGameCardsService {
 
     private String normalize(String value) {
         return value == null ? "" : value.trim().toLowerCase();
+    }
+
+    private UserGameCardsQueryResponseDto querySocialPage(
+            String userId,
+            String mode,
+            String leftQuery,
+            String rightQuery,
+            String cursor,
+            Integer pageSizeValue) {
+        List<UserDto> allUsers = homeUserProfileService.queryDemoUsers();
+        List<HomeUserProfileService.GameSocialCardCandidate> filteredCards = ("separated-friends".equals(mode)
+                ? homeUserProfileService.querySeparatedFriendCards(userId)
+                : homeUserProfileService.queryFriendsInCommonCards(userId))
+                .stream()
+                .filter(card -> matchesSocialQuery(allUsers, card, leftQuery, rightQuery))
+                .toList();
+
+        int pageSize = resolvePageSize(pageSizeValue);
+        int offset = resolveOffset(cursor);
+        int endExclusive = Math.min(filteredCards.size(), offset + pageSize);
+        List<HomeUserProfileService.GameSocialCardCandidate> page = offset >= filteredCards.size()
+                ? List.of()
+                : filteredCards.subList(offset, endExclusive);
+        String nextCursor = endExclusive < filteredCards.size() ? String.valueOf(endExclusive) : null;
+
+        Set<String> referencedUserIds = page.stream()
+                .flatMap(card -> List.of(card.userId(), card.secondaryUserId(), card.bridgeUserId()).stream())
+                .filter(StringUtils::hasText)
+                .collect(Collectors.toSet());
+        List<UserDto> users = allUsers.stream()
+                .filter(user -> referencedUserIds.contains(user.id()))
+                .toList();
+        List<UserGameSocialCardDto> socialCards = page.stream()
+                .map(card -> new UserGameSocialCardDto(
+                        card.id(),
+                        card.userId(),
+                        card.secondaryUserId(),
+                        card.socialContext(),
+                        card.bridgeUserId(),
+                        card.bridgeCount(),
+                        card.eventName()))
+                .toList();
+
+        return new UserGameCardsQueryResponseDto(
+                filteredCards.size(),
+                List.of(),
+                nextCursor,
+                users,
+                socialCards);
+    }
+
+    private boolean matchesSocialQuery(
+            List<UserDto> users,
+            HomeUserProfileService.GameSocialCardCandidate card,
+            String leftQuery,
+            String rightQuery) {
+        if (card == null) {
+            return false;
+        }
+        return matchesSocialSide(users, card.userId(), card.eventName(), leftQuery)
+                && matchesSocialSide(users, resolveRightSideUserId(card), card.eventName(), rightQuery);
+    }
+
+    private boolean matchesSocialSide(List<UserDto> users, String userId, String eventName, String query) {
+        String normalizedQuery = normalize(query);
+        if (!StringUtils.hasText(normalizedQuery)) {
+            return true;
+        }
+        UserDto user = users.stream()
+                .filter(candidate -> Objects.equals(candidate.id(), userId))
+                .findFirst()
+                .orElse(null);
+        if (containsQuery(user == null ? null : user.name(), normalizedQuery)
+                || containsQuery(user == null ? null : user.city(), normalizedQuery)
+                || containsQuery(eventName, normalizedQuery)) {
+            return true;
+        }
+        return false;
+    }
+
+    private String resolveRightSideUserId(HomeUserProfileService.GameSocialCardCandidate card) {
+        if (card == null) {
+            return null;
+        }
+        return StringUtils.hasText(card.secondaryUserId()) ? card.secondaryUserId() : card.bridgeUserId();
+    }
+
+    private boolean containsQuery(String value, String query) {
+        return normalize(value).contains(query);
+    }
+
+    private String normalizeMode(String value) {
+        String normalized = normalize(value);
+        if ("pair".equals(normalized) || "separated-friends".equals(normalized) || "friends-in-common".equals(normalized)) {
+            return normalized;
+        }
+        return "single";
+    }
+
+    private boolean isSocialMode(String value) {
+        return "separated-friends".equals(value) || "friends-in-common".equals(value);
     }
 }

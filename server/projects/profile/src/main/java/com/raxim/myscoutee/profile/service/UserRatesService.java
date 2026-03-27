@@ -331,16 +331,20 @@ public class UserRatesService {
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
         RateDistance distance = resolveActivityDistance(currentUser, record.getOwnerLocation());
+        String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), direction);
+        String bridgeUserId = resolvePairBridgeUserId(record, ownerUserId, socialContext);
+        Integer bridgeCount = resolvePairBridgeCount(socialContext);
 
         if ("pair".equals(normalizeMode(record.getMode()))) {
             String primaryUserId = normalizeOptionalId(record.getRelatedUserId());
             String secondaryUserId = normalizeOptionalId(record.getSecondaryRelatedUserId());
             if (!StringUtils.hasText(primaryUserId)
-                    || !StringUtils.hasText(secondaryUserId)
-                    || primaryUserId.equals(secondaryUserId)) {
+                        || !StringUtils.hasText(secondaryUserId)
+                        || primaryUserId.equals(secondaryUserId)) {
                 return null;
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
+                    socialContext, bridgeUserId, bridgeCount,
                     scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
         }
 
@@ -349,6 +353,7 @@ public class UserRatesService {
             return null;
         }
         return new RateMenuItemDto(displayId, relatedUserId, null, "individual", direction,
+                null, null, null,
                 scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
     }
 
@@ -370,11 +375,13 @@ public class UserRatesService {
             String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
             if (ownerUserId.equals(recordOwnerUserId)) {
                 return new RateMenuItemDto(resolveResponseId(record), firstUserId, secondUserId, "pair", "given",
+                        "separated-friends", null, 2,
                         normalizedScore, 0, "Pair rate", happenedAt, distance.kilometers(), distance.metersExact());
             }
             if (firstUserId.equals(ownerUserId) || secondUserId.equals(ownerUserId)) {
                 String otherUserId = firstUserId.equals(ownerUserId) ? secondUserId : firstUserId;
                 return new RateMenuItemDto(resolveResponseId(record), otherUserId, ownerUserId, "pair", "received",
+                        "friends-in-common", recordOwnerUserId, 1,
                         0, normalizedScore, "Pair rate", happenedAt, distance.kilometers(), distance.metersExact());
             }
             return null;
@@ -391,6 +398,7 @@ public class UserRatesService {
         }
         return new RateMenuItemDto(resolveResponseId(record), counterpartyUserId, null, "individual",
                 isGiven ? "given" : "received",
+                null, null, null,
                 isGiven ? normalizedScore : 0,
                 isReceived ? normalizedScore : 0,
                 "Single rate",
@@ -664,6 +672,44 @@ public class UserRatesService {
         }
         if (scoreGiven > 0) {
             return "given";
+        }
+        return null;
+    }
+
+    private String resolvePairSocialContext(String mode, String direction) {
+        if (!"pair".equals(mode)) {
+            return null;
+        }
+        if ("given".equals(direction)) {
+            return "separated-friends";
+        }
+        if ("received".equals(direction)) {
+            return "friends-in-common";
+        }
+        return null;
+    }
+
+    private String resolvePairBridgeUserId(UserRate record, String ownerUserId, String socialContext) {
+        if (!"friends-in-common".equals(socialContext) || record == null) {
+            return null;
+        }
+        String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
+        if (StringUtils.hasText(recordOwnerUserId) && !recordOwnerUserId.equals(ownerUserId)) {
+            return recordOwnerUserId;
+        }
+        String createdUserId = normalizeOptionalId(record.getCreatedUser());
+        if (StringUtils.hasText(createdUserId) && !createdUserId.equals(ownerUserId)) {
+            return createdUserId;
+        }
+        return null;
+    }
+
+    private Integer resolvePairBridgeCount(String socialContext) {
+        if ("friends-in-common".equals(socialContext)) {
+            return 1;
+        }
+        if ("separated-friends".equals(socialContext)) {
+            return 2;
         }
         return null;
     }

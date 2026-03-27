@@ -11,15 +11,29 @@ public final class GameDtos {
 
     public record UserGameCardsQueryRequestDto(
             String userId,
+            String mode,
+            String leftQuery,
+            String rightQuery,
             UserGameFilterPreferencesDto filterPreferences,
             String cursor,
             Integer pageSize) {
+    }
+
+    public record UserGameSocialCardDto(
+            String id,
+            String userId,
+            String secondaryUserId,
+            String socialContext,
+            String bridgeUserId,
+            Integer bridgeCount,
+            String eventName) {
     }
 
     public record UserGameCardsQueryResponseDto(
             Integer filterCount,
             List<String> cardUserIds,
             String nextCursor,
-            List<UserDto> users) {
+            List<UserDto> users,
+            List<UserGameSocialCardDto> socialCards) {
     }
 }

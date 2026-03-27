@@ -385,6 +385,120 @@ public class HomeUserProfileService {
                 .toList();
     }
 
+    public List<GameSocialCardCandidate> querySeparatedFriendCards(String activeUserId) {
+        String normalizedUserId = normalizeId(activeUserId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+
+        ActivitySocialGraph graph = buildActivitySocialGraph();
+        List<Users> users = orderedUsers();
+        Map<String, Users> usersById = users.stream()
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+        List<String> neighbors = new ArrayList<>(graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of()));
+        neighbors.sort((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)));
+
+        Set<String> ratedPairKeys = queryRatedGameCardPairKeys(normalizedUserId);
+        List<GameSocialCardCandidate> candidates = new ArrayList<>();
+        for (int leftIndex = 0; leftIndex < neighbors.size(); leftIndex += 1) {
+            String leftUserId = neighbors.get(leftIndex);
+            for (int rightIndex = leftIndex + 1; rightIndex < neighbors.size(); rightIndex += 1) {
+                String rightUserId = neighbors.get(rightIndex);
+                if (!StringUtils.hasText(leftUserId)
+                        || !StringUtils.hasText(rightUserId)
+                        || leftUserId.equals(rightUserId)
+                        || graph.hasDirectEdge(leftUserId, rightUserId)
+                        || ratedPairKeys.contains(pairKey(leftUserId, rightUserId))) {
+                    continue;
+                }
+                double score = resolveUserAffinity(usersById.get(leftUserId)) + resolveUserAffinity(usersById.get(rightUserId));
+                String eventName = firstNonBlank(
+                        graph.latestEventNameByEdgeKey().get(pairKey(normalizedUserId, leftUserId)),
+                        graph.latestEventNameByEdgeKey().get(pairKey(normalizedUserId, rightUserId)),
+                        "Separated friends");
+                candidates.add(new GameSocialCardCandidate(
+                        "separated-friends:" + normalizedUserId + ":" + pairKey(leftUserId, rightUserId),
+                        leftUserId,
+                        rightUserId,
+                        "separated-friends",
+                        null,
+                        2,
+                        eventName,
+                        score));
+            }
+        }
+
+        return candidates.stream()
+                .sorted(Comparator
+                        .comparingDouble(GameSocialCardCandidate::score).reversed()
+                        .thenComparing(GameSocialCardCandidate::id))
+                .toList();
+    }
+
+    public List<GameSocialCardCandidate> queryFriendsInCommonCards(String activeUserId) {
+        String normalizedUserId = normalizeId(activeUserId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+
+        ActivitySocialGraph graph = buildActivitySocialGraph();
+        Set<String> activeNeighbors = graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
+        if (activeNeighbors.isEmpty()) {
+            return List.of();
+        }
+
+        Set<String> ratedUserIds = queryRatedGameCardUserIds(normalizedUserId);
+        List<GameSocialCardCandidate> candidates = new ArrayList<>();
+        for (Users user : orderedUsers()) {
+            String candidateUserId = normalizeId(user.getId());
+            if (!StringUtils.hasText(candidateUserId)
+                    || normalizedUserId.equals(candidateUserId)
+                    || activeNeighbors.contains(candidateUserId)
+                    || ratedUserIds.contains(candidateUserId)) {
+                continue;
+            }
+
+            Set<String> candidateNeighbors = graph.neighborsByUserId().getOrDefault(candidateUserId, Set.of());
+            if (candidateNeighbors.isEmpty()) {
+                continue;
+            }
+
+            List<String> bridges = activeNeighbors.stream()
+                    .filter(candidateNeighbors::contains)
+                    .sorted((left, right) -> compareUsersForSuggestions(findUser(left), findUser(right)))
+                    .toList();
+            if (bridges.isEmpty()) {
+                continue;
+            }
+
+            String bridgeUserId = bridges.stream()
+                    .max(Comparator
+                            .comparingDouble((String bridgeId) -> resolveUserAffinity(findUser(bridgeId)))
+                            .thenComparing(bridgeId -> bridgeId))
+                    .orElse(bridges.get(0));
+            String eventName = firstNonBlank(
+                    graph.latestEventNameByEdgeKey().get(pairKey(normalizedUserId, bridgeUserId)),
+                    graph.latestEventNameByEdgeKey().get(pairKey(candidateUserId, bridgeUserId)),
+                    "Friends in common");
+            double score = (bridges.size() * 100d) + resolveUserAffinity(user);
+            candidates.add(new GameSocialCardCandidate(
+                    "friends-in-common:" + normalizedUserId + ":" + candidateUserId,
+                    candidateUserId,
+                    null,
+                    "friends-in-common",
+                    bridgeUserId,
+                    bridges.size(),
+                    eventName,
+                    score));
+        }
+
+        return candidates.stream()
+                .sorted(Comparator
+                        .comparingDouble(GameSocialCardCandidate::score).reversed()
+                        .thenComparing(GameSocialCardCandidate::id))
+                .toList();
+    }
+
     public List<UserDto> queryDemoUsers() {
         return orderedUsers().stream()
                 .map(this::syncComputedUserActivities)
@@ -518,6 +632,124 @@ public class HomeUserProfileService {
             }
         }
         return ratedUserIds;
+    }
+
+    private Set<String> queryRatedGameCardPairKeys(String raterUserId) {
+        Set<String> ratedPairKeys = new LinkedHashSet<>();
+        if (!StringUtils.hasText(raterUserId)) {
+            return ratedPairKeys;
+        }
+        for (UserRate record : userRatesRepository.findBySourceAndModeAndOwnerUserId("game-card", "pair", raterUserId)) {
+            String firstUserId = normalizeId(record.getFromUserId());
+            String secondUserId = normalizeId(record.getToUserId());
+            if (!StringUtils.hasText(firstUserId)
+                    || !StringUtils.hasText(secondUserId)
+                    || firstUserId.equals(secondUserId)) {
+                continue;
+            }
+            ratedPairKeys.add(pairKey(firstUserId, secondUserId));
+        }
+        return ratedPairKeys;
+    }
+
+    private ActivitySocialGraph buildActivitySocialGraph() {
+        Map<String, Set<String>> neighborsByUserId = new LinkedHashMap<>();
+        Map<String, String> latestEventNameByEdgeKey = new LinkedHashMap<>();
+        Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
+
+        for (UserRate record : userRatesRepository.findAll()) {
+            if (!"activity-rate".equals(normalizeId(record.getSource()).toLowerCase())) {
+                continue;
+            }
+            String ownerUserId = normalizeId(record.getOwnerUserId());
+            String relatedUserId = normalizeId(record.getRelatedUserId());
+            String secondaryRelatedUserId = normalizeId(record.getSecondaryRelatedUserId());
+            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(relatedUserId) && !ownerUserId.equals(relatedUserId)) {
+                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, ownerUserId, relatedUserId, record);
+            }
+            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(secondaryRelatedUserId) && !ownerUserId.equals(secondaryRelatedUserId)) {
+                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, ownerUserId, secondaryRelatedUserId, record);
+            }
+
+            String firstUserId = normalizeId(record.getFromUserId());
+            String secondUserId = normalizeId(record.getToUserId());
+            if ("single".equals(normalizeId(record.getMode()).toLowerCase())
+                    && StringUtils.hasText(firstUserId)
+                    && StringUtils.hasText(secondUserId)
+                    && !firstUserId.equals(secondUserId)) {
+                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, firstUserId, secondUserId, record);
+            }
+        }
+
+        return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
+    }
+
+    private void registerSocialEdge(
+            Map<String, Set<String>> neighborsByUserId,
+            Map<String, String> latestEventNameByEdgeKey,
+            Map<String, Long> latestTimestampByEdgeKey,
+            String leftUserId,
+            String rightUserId,
+            UserRate record) {
+        neighborsByUserId.computeIfAbsent(leftUserId, ignored -> new LinkedHashSet<>()).add(rightUserId);
+        neighborsByUserId.computeIfAbsent(rightUserId, ignored -> new LinkedHashSet<>()).add(leftUserId);
+
+        String edgeKey = pairKey(leftUserId, rightUserId);
+        String eventName = normalizeOptionalText(record.getEventName());
+        if (!StringUtils.hasText(eventName)) {
+            return;
+        }
+        long happenedAtMs = resolveRateRecordTimestampMs(record);
+        Long currentMs = latestTimestampByEdgeKey.get(edgeKey);
+        if (currentMs == null || happenedAtMs >= currentMs.longValue()) {
+            latestTimestampByEdgeKey.put(edgeKey, happenedAtMs);
+            latestEventNameByEdgeKey.put(edgeKey, eventName);
+        }
+    }
+
+    private long resolveRateRecordTimestampMs(UserRate record) {
+        try {
+            return Instant.parse(firstNonBlank(record.getUpdatedDate(), record.getCreatedDate(), Instant.EPOCH.toString())).toEpochMilli();
+        } catch (Exception exception) {
+            return 0L;
+        }
+    }
+
+    private int compareUsersForSuggestions(Users left, Users right) {
+        double affinityDelta = resolveUserAffinity(right) - resolveUserAffinity(left);
+        if (affinityDelta > 0d) {
+            return 1;
+        }
+        if (affinityDelta < 0d) {
+            return -1;
+        }
+        return normalizeId(left == null ? null : left.getId()).compareTo(normalizeId(right == null ? null : right.getId()));
+    }
+
+    private double resolveUserAffinity(Users user) {
+        if (user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())) {
+            return 0d;
+        }
+        return Math.max(0d, user.getAffinity());
+    }
+
+    private String pairKey(String leftUserId, String rightUserId) {
+        String normalizedLeft = normalizeId(leftUserId);
+        String normalizedRight = normalizeId(rightUserId);
+        if (normalizedLeft.compareTo(normalizedRight) <= 0) {
+            return normalizedLeft + ":" + normalizedRight;
+        }
+        return normalizedRight + ":" + normalizedLeft;
+    }
+
+    private String firstNonBlank(String... values) {
+        for (String value : values) {
+            String normalized = normalizeOptionalText(value);
+            if (StringUtils.hasText(normalized)) {
+                return normalized;
+            }
+        }
+        return null;
     }
 
     private UserGameFilterPreferencesDto buildDefaultFilterPreferences(Users user) {
@@ -1358,6 +1590,11 @@ public class HomeUserProfileService {
         return value == null ? "" : value.trim();
     }
 
+    private String normalizeOptionalText(String value) {
+        String normalized = normalizeId(value);
+        return StringUtils.hasText(normalized) ? normalized : null;
+    }
+
     private String normalizeToken(String value) {
         return normalizeId(value).toLowerCase();
     }
@@ -1376,6 +1613,25 @@ public class HomeUserProfileService {
 
     private String nullToEmpty(String value) {
         return value == null ? "" : value;
+    }
+
+    public record GameSocialCardCandidate(
+            String id,
+            String userId,
+            String secondaryUserId,
+            String socialContext,
+            String bridgeUserId,
+            Integer bridgeCount,
+            String eventName,
+            Double score) {
+    }
+
+    private record ActivitySocialGraph(
+            Map<String, Set<String>> neighborsByUserId,
+            Map<String, String> latestEventNameByEdgeKey) {
+        private boolean hasDirectEdge(String leftUserId, String rightUserId) {
+            return neighborsByUserId.getOrDefault(leftUserId, Set.of()).contains(rightUserId);
+        }
     }
 
     private record PersonalityTraitDefinition(
