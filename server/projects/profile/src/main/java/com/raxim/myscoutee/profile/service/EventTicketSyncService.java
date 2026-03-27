@@ -289,9 +289,10 @@ public class EventTicketSyncService {
             next.setAffinity(safeDouble(canonical.getAffinity()));
             next.setTicketing(ticketingEnabled);
             boolean existingTrashed = existing != null && Boolean.TRUE.equals(existing.getIsTrashed());
+            String existingTrashedAtIso = existing == null ? null : existing.getTrashedAtIso();
             next.setIsTrashed(existingTrashed || Boolean.TRUE.equals(canonical.getIsTrashed()));
             next.setTrashedAtIso(existingTrashed
-                    ? firstNonBlank(existing.getTrashedAtIso(), canonical.getTrashedAtIso())
+                    ? firstNonBlank(existingTrashedAtIso, canonical.getTrashedAtIso())
                     : safeNullableText(canonical.getTrashedAtIso()));
         } else {
             next.setTicketing(false);

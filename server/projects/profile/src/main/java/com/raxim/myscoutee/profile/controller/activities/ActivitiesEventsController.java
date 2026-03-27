@@ -18,7 +18,6 @@ import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsFilterRequestDto;
 

@@ -101,7 +101,8 @@ public class ActivitiesEventFeedbackService {
         }
         String nowIso = Instant.now().toString();
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
-        state.setOrganizerNote(safeText(request.text()));
+        String organizerNote = request == null ? null : request.text();
+        state.setOrganizerNote(safeText(organizerNote));
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);

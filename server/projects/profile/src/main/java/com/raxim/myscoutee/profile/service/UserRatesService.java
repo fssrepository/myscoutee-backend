@@ -359,6 +359,10 @@ public class UserRatesService {
 
     private RateMenuItemDto toGameCardRateMenuItem(UserRate record, Users currentUser) {
         String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        if (!StringUtils.hasText(ownerUserId)) {
+            return null;
+        }
+        final String resolvedOwnerUserId = ownerUserId;
         String recordMode = normalizeMode(record.getMode());
         String happenedAt = normalizeDate(record.getCreatedDate(), normalizeDate(record.getUpdatedDate(), Instant.now().toString()));
         int normalizedScore = normalizeScore(record.getRate());
@@ -373,22 +377,22 @@ public class UserRatesService {
                 return null;
             }
             String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
-            if (ownerUserId.equals(recordOwnerUserId)) {
+            if (resolvedOwnerUserId.equals(recordOwnerUserId)) {
                 return new RateMenuItemDto(resolveResponseId(record), firstUserId, secondUserId, "pair", "given",
                         "separated-friends", null, 2,
                         normalizedScore, 0, "Pair rate", happenedAt, distance.kilometers(), distance.metersExact());
             }
-            if (firstUserId.equals(ownerUserId) || secondUserId.equals(ownerUserId)) {
-                String otherUserId = firstUserId.equals(ownerUserId) ? secondUserId : firstUserId;
-                return new RateMenuItemDto(resolveResponseId(record), otherUserId, ownerUserId, "pair", "received",
+            if (firstUserId.equals(resolvedOwnerUserId) || secondUserId.equals(resolvedOwnerUserId)) {
+                String otherUserId = firstUserId.equals(resolvedOwnerUserId) ? secondUserId : firstUserId;
+                return new RateMenuItemDto(resolveResponseId(record), otherUserId, resolvedOwnerUserId, "pair", "received",
                         "friends-in-common", recordOwnerUserId, 1,
                         0, normalizedScore, "Pair rate", happenedAt, distance.kilometers(), distance.metersExact());
             }
             return null;
         }
 
-        boolean isGiven = ownerUserId.equals(normalizeId(record.getFromUserId()));
-        boolean isReceived = ownerUserId.equals(normalizeId(record.getToUserId()));
+        boolean isGiven = resolvedOwnerUserId.equals(normalizeId(record.getFromUserId()));
+        boolean isReceived = resolvedOwnerUserId.equals(normalizeId(record.getToUserId()));
         if (!isGiven && !isReceived) {
             return null;
         }
@@ -861,6 +865,10 @@ public class UserRatesService {
 
     private RateDistance resolveGameCardDistance(UserRate record, Users currentUser) {
         String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        if (!StringUtils.hasText(ownerUserId)) {
+            return ZERO_DISTANCE;
+        }
+        final String resolvedOwnerUserId = ownerUserId;
         UserRate.LocationSnapshot origin = resolveCurrentUserLocation(currentUser);
         if (origin == null) {
             return ZERO_DISTANCE;
@@ -869,21 +877,21 @@ public class UserRatesService {
         String secondUserId = normalizeId(record.getToUserId());
         if ("pair".equals(normalizeMode(record.getMode()))) {
             String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
-            if (ownerUserId.equals(recordOwnerUserId)) {
+            if (resolvedOwnerUserId.equals(recordOwnerUserId)) {
                 return distanceBetween(origin, record.getOwnerLocation());
             }
-            if (firstUserId.equals(ownerUserId)) {
+            if (firstUserId.equals(resolvedOwnerUserId)) {
                 return distanceBetween(origin, record.getOwnerLocation());
             }
-            if (secondUserId.equals(ownerUserId)) {
+            if (secondUserId.equals(resolvedOwnerUserId)) {
                 return distanceBetween(origin, record.getOwnerLocation());
             }
             return ZERO_DISTANCE;
         }
-        if (ownerUserId.equals(firstUserId)) {
+        if (resolvedOwnerUserId.equals(firstUserId)) {
             return distanceBetween(origin, record.getOwnerLocation());
         }
-        if (ownerUserId.equals(secondUserId)) {
+        if (resolvedOwnerUserId.equals(secondUserId)) {
             return distanceBetween(origin, record.getOwnerLocation());
         }
         return ZERO_DISTANCE;
@@ -925,12 +933,6 @@ public class UserRatesService {
         double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
         int meters = Math.max(0, (int) Math.round(earthRadiusMeters * c));
         return new RateDistance(meters / 1000d, meters);
-    }
-
-    private static int rateRelevanceValue(RateMenuItemDto item) {
-        int ownScore = item.scoreGiven() != null && item.scoreGiven() > 0 ? item.scoreGiven() : 5;
-        int received = item.scoreReceived() == null ? 0 : Math.max(0, Math.min(10, item.scoreReceived()));
-        return "mutual".equals(item.direction()) ? ownScore + received : ownScore;
     }
 
     private static double normalizeAffinityScore(Double value) {

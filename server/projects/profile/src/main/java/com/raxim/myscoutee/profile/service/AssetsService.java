@@ -394,7 +394,7 @@ public class AssetsService {
     private Asset toDocument(AssetCardDto dto, String ownerUserId, Asset current) {
         String assetId = normalizeId(dto == null ? null : dto.id());
         String type = normalizeAssetType(dto == null ? null : dto.type());
-        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
+        if (dto == null || !StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
             return null;
         }
 
@@ -414,7 +414,8 @@ public class AssetsService {
         next.setSourceLink(safeText(dto.sourceLink()));
         next.setRoutes(normalizeStrings(dto.routes()));
         next.setRequests(normalizeRequests(dto.requests()));
-        next.setVisibility(StringUtils.hasText(safeText(current == null ? null : current.getVisibility())) ? current.getVisibility().trim() : "Invitation only");
+        String currentVisibility = safeText(current == null ? null : current.getVisibility());
+        next.setVisibility(StringUtils.hasText(currentVisibility) ? currentVisibility : "Invitation only");
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -645,7 +646,10 @@ public class AssetsService {
 
         List<AssetRequestRecord> next = new ArrayList<>();
         for (AssetMemberRequestDto request : requests) {
-            String requestId = normalizeId(request == null ? null : request.id());
+            if (request == null) {
+                continue;
+            }
+            String requestId = normalizeId(request.id());
             if (!StringUtils.hasText(requestId)) {
                 continue;
             }

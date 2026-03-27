@@ -1,9 +1,7 @@
 package com.raxim.myscoutee.algo;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.raxim.myscoutee.algo.dto.CGroup;
 import com.raxim.myscoutee.algo.dto.Edge;
@@ -41,8 +39,6 @@ public class BCTreeIterator implements Iterator<CGroup> {
 
     private void handleGroup() {
         System.out.println("--------- start -------");
-        Set<Edge> edges = new HashSet<>();
-
         while (cGroup.size() < this.range.getMax()
                 && cTreeIterator.hasNext()) {
 
@@ -52,7 +48,6 @@ public class BCTreeIterator implements Iterator<CGroup> {
             Edge edge;
             do {
                 edge = cTreeIterator.next();
-                edges.add(edge);
 
                 if (from == null && !cTree.contains(edge.getFrom())) {
                     from = edge.getFrom();
@@ -81,10 +76,6 @@ public class BCTreeIterator implements Iterator<CGroup> {
         int newSize = nodes.size();
 
         System.out.println(oldSize - newSize);
-
-        // edges not used - it might be needed to put it back
-        Set<Edge> rEdges = edges.stream().filter(edge -> !nodes.contains(edge.getFrom())
-                && !nodes.contains(edge.getTo())).collect(Collectors.toSet());
         // cTreeIterator.getUsed().addAll(nodes);
 
         if (!hasRemaining()) {

@@ -160,10 +160,11 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        String secondaryFilter = normalizeActivitiesSecondaryFilter(request.secondaryFilter());
-        String view = normalizeActivitiesView(request.view());
-        String sort = normalizeActivitiesSort(request.sort(), view, secondaryFilter);
-        int limit = normalizeLimit(request.limit(), 10);
+        String secondaryFilter = normalizeActivitiesSecondaryFilter(request == null ? null : request.secondaryFilter());
+        String view = normalizeActivitiesView(request == null ? null : request.view());
+        String sort = normalizeActivitiesSort(request == null ? null : request.sort(), view, secondaryFilter);
+        Integer requestedLimit = request == null ? null : request.limit();
+        int limit = normalizeLimit(requestedLimit, 10);
 
         List<EventProjection> sorted = queryFilteredRecords(viewer, request).stream()
                 .map(record -> toProjection(record, viewer))
@@ -175,7 +176,8 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(sorted.stream().map(EventProjection::item).toList(), sorted.size(), null);
         }
 
-        int startIndex = resolveCursorStartIndex(sorted, request.cursor());
+        String cursor = request == null ? null : request.cursor();
+        int startIndex = resolveCursorStartIndex(sorted, cursor);
         int endIndex = Math.min(sorted.size(), startIndex + limit);
         List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
                 .map(EventProjection::item)
@@ -208,12 +210,15 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        String order = normalizeExploreOrder(request.order());
-        String view = normalizeExploreView(request.view());
-        String topic = normalizeTopic(request.topic());
-        boolean friendsOnly = request.friendsOnly() != null && request.friendsOnly();
-        boolean openSpotsOnly = request.openSpotsOnly() != null && request.openSpotsOnly();
-        int limit = normalizeLimit(request.limit(), 10);
+        String order = normalizeExploreOrder(request == null ? null : request.order());
+        String view = normalizeExploreView(request == null ? null : request.view());
+        String topic = normalizeTopic(request == null ? null : request.topic());
+        Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
+        Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
+        Integer requestedLimit = request == null ? null : request.limit();
+        boolean friendsOnly = Boolean.TRUE.equals(requestedFriendsOnly);
+        boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
+        int limit = normalizeLimit(requestedLimit, 10);
 
         List<EventProjection> sorted = computeExploreRecords(viewer).stream()
                 .map(record -> toProjection(record, viewer))
@@ -224,7 +229,8 @@ public class ActivitiesEventsService {
                 .sorted((left, right) -> compareExploreProjection(left, right, order, view))
                 .toList();
 
-        int startIndex = resolveCursorStartIndex(sorted, request.cursor());
+        String cursor = request == null ? null : request.cursor();
+        int startIndex = resolveCursorStartIndex(sorted, cursor);
         int endIndex = Math.min(sorted.size(), startIndex + limit);
         List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
                 .map(EventProjection::item)
@@ -261,9 +267,10 @@ public class ActivitiesEventsService {
         if (viewer == null || !StringUtils.hasText(sourceId)) {
             return null;
         }
+        final String requestedSourceId = Objects.requireNonNull(sourceId);
 
         ActivityEvent preferred = computePreferredEventRecords(allEventDocuments()).stream()
-                .filter(record -> sourceId.equals(normalizeId(record.getSourceId())))
+                .filter(record -> requestedSourceId.equals(normalizeId(record.getSourceId())))
                 .findFirst()
                 .orElse(null);
         if (preferred == null) {
@@ -274,9 +281,10 @@ public class ActivitiesEventsService {
         }
 
         if (StringUtils.hasText(slotSourceId)) {
+            final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
             ActivityEvent slotRecord = computePreferredEventRecords(allEventDocuments()).stream()
                     .filter(this::isGeneratedSlotRecord)
-                    .filter(record -> slotSourceId.equals(normalizeId(record.getSourceId())))
+                    .filter(record -> requestedSlotSourceId.equals(normalizeId(record.getSourceId())))
                     .findFirst()
                     .orElse(null);
             if (slotRecord != null) {
@@ -714,9 +722,10 @@ public class ActivitiesEventsService {
             return;
         }
 
-        List<ActivityEvent> documents = resolveActionDocuments(viewer.userId(), request.type(), sourceId);
+        String requestType = request == null ? null : request.type();
+        List<ActivityEvent> documents = resolveActionDocuments(viewer.userId(), requestType, sourceId);
         if (documents.isEmpty()) {
-            ActivityEvent overlay = buildUserStateOverlayRecord(viewer.userId(), request.type(), sourceId);
+            ActivityEvent overlay = buildUserStateOverlayRecord(viewer.userId(), requestType, sourceId);
             if (overlay == null) {
                 return;
             }
@@ -1392,15 +1401,12 @@ public class ActivitiesEventsService {
                 next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
                 next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
                 next.setDistanceKm(null);
-                next.setImageUrl(StringUtils.hasText(safeText(existing == null ? null : existing.getImageUrl()))
-                        ? existing.getImageUrl()
-                        : parent.getImageUrl());
-                next.setSourceLink(StringUtils.hasText(safeText(existing == null ? null : existing.getSourceLink()))
-                        ? existing.getSourceLink()
-                        : parent.getSourceLink());
-                next.setLocation(StringUtils.hasText(safeText(existing == null ? null : existing.getLocation()))
-                        ? existing.getLocation()
-                        : parent.getLocation());
+                String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
+                String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());
+                String existingLocation = safeText(existing == null ? null : existing.getLocation());
+                next.setImageUrl(StringUtils.hasText(existingImageUrl) ? existingImageUrl : parent.getImageUrl());
+                next.setSourceLink(StringUtils.hasText(existingSourceLink) ? existingSourceLink : parent.getSourceLink());
+                next.setLocation(StringUtils.hasText(existingLocation) ? existingLocation : parent.getLocation());
                 next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
                 next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
                 next.setCapacityMin(parent.getCapacityMin());

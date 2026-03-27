@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -296,13 +295,16 @@ public class ActivitiesMembersService {
             next.setStatus("pending");
             next.setPendingSource(resolvePendingSource(current == null ? null : current.getPendingSource(), "pending"));
             next.setRequestKind(resolveRequestKind(current == null ? null : current.getRequestKind(), "pending", next.getPendingSource()));
-            next.setInvitedByUserId(StringUtils.hasText(current == null ? null : current.getInvitedByUserId())
+            String invitedByUserId = current != null && StringUtils.hasText(current.getInvitedByUserId())
                     ? current.getInvitedByUserId().trim()
-                    : creatorUserId);
-            String actionAtIso = current != null ? normalizeDateTime(current.getActionAtIso(), nowIso) : normalizeDateTime(request.startAt(), nowIso);
+                    : safeText(creatorUserId);
+            next.setInvitedByUserId(invitedByUserId);
+            String requestedStartAt = request == null ? null : request.startAt();
+            String requestedLocation = request == null ? null : request.location();
+            String actionAtIso = current != null ? normalizeDateTime(current.getActionAtIso(), nowIso) : normalizeDateTime(requestedStartAt, nowIso);
             next.setActionAtIso(actionAtIso);
             next.setMetAtIso(current != null ? normalizeDateTime(current.getMetAtIso(), actionAtIso) : actionAtIso);
-            next.setMetWhere(current == null ? safeText(request.location()) : safeText(current.getMetWhere()));
+            next.setMetWhere(current == null ? safeText(requestedLocation) : safeText(current.getMetWhere()));
             next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
             next.setCreatedUser(current == null ? resolveCreatedUser(next, creatorUserId) : safeText(current.getCreatedUser()));
             next.setUpdatedDate(nowIso);
@@ -677,12 +679,13 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(creatorUserId)) {
             return nextDocuments;
         }
+        final String creatorId = Objects.requireNonNull(creatorUserId);
         String ownerRole = OWNER_TYPE_EVENT.equals(ownerType) ? "Admin" : "Manager";
-        boolean alreadyPresent = nextDocuments.stream().anyMatch(member -> creatorUserId.equals(normalizeId(member.getUserId())));
+        boolean alreadyPresent = nextDocuments.stream().anyMatch(member -> creatorId.equals(normalizeId(member.getUserId())));
         if (alreadyPresent) {
             return nextDocuments.stream()
                     .map(member -> {
-                        if (!creatorUserId.equals(normalizeId(member.getUserId()))) {
+                        if (!creatorId.equals(normalizeId(member.getUserId()))) {
                             return member;
                         }
                         ActivityMember next = cloneMember(member);

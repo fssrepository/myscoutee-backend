@@ -879,8 +879,8 @@ public class HomeUserProfileService {
         }
         return activityChatsRepository.findByOwnerUserId(userId).stream()
                 .filter(Objects::nonNull)
-                .map(chat -> normalizeCount(chat.getUnread()))
-                .reduce(0, Integer::sum);
+                .mapToInt(chat -> normalizeCount(chat.getUnread()))
+                .sum();
     }
 
     private int countEventsByType(List<ActivityEvent> eventRecords, String type) {
@@ -1110,15 +1110,6 @@ public class HomeUserProfileService {
         return new Users.LocationCoordinatesRecord(dto.latitude(), dto.longitude());
     }
 
-    private UserImpressionsDto toUserImpressionsDto(Users.UserImpressionsRecord record) {
-        if (record == null) {
-            return null;
-        }
-        return new UserImpressionsDto(
-                toUserImpressionsSectionDto(record.host()),
-                toUserImpressionsSectionDto(record.member()));
-    }
-
     private Users.UserImpressionsRecord toUserImpressionsRecord(UserImpressionsDto dto) {
         if (dto == null) {
             return null;
@@ -1126,23 +1117,6 @@ public class HomeUserProfileService {
         return new Users.UserImpressionsRecord(
                 toUserImpressionsSectionRecord(dto.host()),
                 toUserImpressionsSectionRecord(dto.member()));
-    }
-
-    private UserImpressionsSectionDto toUserImpressionsSectionDto(Users.UserImpressionsSectionRecord record) {
-        if (record == null) {
-            return null;
-        }
-        return new UserImpressionsSectionDto(
-                record.unreadCount(),
-                record.averageRating(),
-                record.peopleMet(),
-                record.totalEvents(),
-                record.repeatCount(),
-                record.noShowCount(),
-                normalizeStrings(record.vibeBadges()),
-                normalizeStrings(record.personalityBadges()),
-                toUserPersonalityTraitDtos(record.personalityTraits()),
-                normalizeStrings(record.categoryBadges()));
     }
 
     private Users.UserImpressionsSectionRecord toUserImpressionsSectionRecord(UserImpressionsSectionDto dto) {
@@ -1233,8 +1207,8 @@ public class HomeUserProfileService {
             if (!StringUtils.hasText(traitId)) {
                 continue;
             }
-            scoreByTraitId.merge(traitId, Math.max(1d, normalizeCount(traitRecord.percent())), Double::sum);
-            evidenceByTraitId.merge(traitId, normalizeCount(traitRecord.evidenceCount()), Integer::sum);
+            addTraitScore(scoreByTraitId, traitId, Math.max(1d, normalizeCount(traitRecord.percent())));
+            addTraitEvidence(evidenceByTraitId, traitId, normalizeCount(traitRecord.evidenceCount()));
             mergeLastRatedAt(lastRatedAtByTraitId, traitId, traitRecord.lastRatedAtIso());
             applied = true;
         }
@@ -1253,7 +1227,7 @@ public class HomeUserProfileService {
             if (signal == null) {
                 continue;
             }
-            scoreByTraitId.merge(signal.traitId(), Math.max(1d, signal.percent()), Double::sum);
+            addTraitScore(scoreByTraitId, signal.traitId(), Math.max(1d, signal.percent()));
             applied = true;
         }
         return applied;
@@ -1277,9 +1251,9 @@ public class HomeUserProfileService {
         }
         String secondaryTraitId = orderedTraitIds.get((dominantIndex + 2) % orderedTraitIds.size());
         String tertiaryTraitId = orderedTraitIds.get((dominantIndex + 5) % orderedTraitIds.size());
-        scoreByTraitId.merge(dominantTraitId, 48d, Double::sum);
-        scoreByTraitId.merge(secondaryTraitId, 20d, Double::sum);
-        scoreByTraitId.merge(tertiaryTraitId, 12d, Double::sum);
+        addTraitScore(scoreByTraitId, dominantTraitId, 48d);
+        addTraitScore(scoreByTraitId, secondaryTraitId, 20d);
+        addTraitScore(scoreByTraitId, tertiaryTraitId, 12d);
     }
 
     private void applyFeedbackAnswerTraitSignals(
@@ -1307,8 +1281,8 @@ public class HomeUserProfileService {
                 }
             }
             for (String traitId : signaledTraitIds) {
-                scoreByTraitId.merge(traitId, 18d, Double::sum);
-                evidenceByTraitId.merge(traitId, 1, Integer::sum);
+                addTraitScore(scoreByTraitId, traitId, 18d);
+                addTraitEvidence(evidenceByTraitId, traitId, 1);
                 mergeLastRatedAt(lastRatedAtByTraitId, traitId, answer.getSubmittedAtIso());
             }
         }
@@ -1387,31 +1361,6 @@ public class HomeUserProfileService {
                 .sorted(Comparator.comparing(UserPersonalityTraitDto::percent, Comparator.nullsLast(Comparator.reverseOrder())))
                 .limit(3)
                 .map(trait -> String.format("%s %d%%", trait.label(), normalizeCount(trait.percent())))
-                .toList();
-    }
-
-    private List<UserPersonalityTraitDto> toUserPersonalityTraitDtos(List<Users.UserPersonalityTraitRecord> records) {
-        if (records == null || records.isEmpty()) {
-            return List.of();
-        }
-        return records.stream()
-                .filter(Objects::nonNull)
-                .map(record -> {
-                    String traitId = resolvePersonalityTraitId(record.id(), record.label());
-                    PersonalityTraitDefinition definition = PERSONALITY_TRAIT_DEFINITION_BY_ID.get(traitId);
-                    String resolvedLabel = definition == null ? safeText(record.label()) : definition.label();
-                    String resolvedId = definition == null ? safeText(record.id()) : definition.id();
-                    if (!StringUtils.hasText(resolvedId) || !StringUtils.hasText(resolvedLabel)) {
-                        return null;
-                    }
-                    return new UserPersonalityTraitDto(
-                            resolvedId,
-                            resolvedLabel,
-                            normalizeCount(record.percent()),
-                            normalizeCount(record.evidenceCount()),
-                            safeText(record.lastRatedAtIso()));
-                })
-                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -1508,6 +1457,14 @@ public class HomeUserProfileService {
         }
     }
 
+    private void addTraitScore(Map<String, Double> scoreByTraitId, String traitId, double amount) {
+        scoreByTraitId.put(traitId, scoreByTraitId.getOrDefault(traitId, 0d) + amount);
+    }
+
+    private void addTraitEvidence(Map<String, Integer> evidenceByTraitId, String traitId, int amount) {
+        evidenceByTraitId.put(traitId, evidenceByTraitId.getOrDefault(traitId, 0) + amount);
+    }
+
     private String cursorPart(String cursor, int index) {
         String normalizedCursor = safeText(cursor);
         if (!StringUtils.hasText(normalizedCursor)) {
@@ -1561,10 +1518,6 @@ public class HomeUserProfileService {
             }
         }
         return Map.copyOf(next);
-    }
-
-    private <T> Map<String, T> safeMap(Map<String, T> source) {
-        return source == null ? Map.of() : source;
     }
 
     private <T> List<T> safeList(List<T> source) {
