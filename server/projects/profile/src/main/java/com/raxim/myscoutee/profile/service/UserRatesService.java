@@ -362,7 +362,7 @@ public class UserRatesService {
         if (!StringUtils.hasText(ownerUserId)) {
             return null;
         }
-        final String resolvedOwnerUserId = ownerUserId;
+        final String resolvedOwnerUserId = Objects.requireNonNull(ownerUserId);
         String recordMode = normalizeMode(record.getMode());
         String happenedAt = normalizeDate(record.getCreatedDate(), normalizeDate(record.getUpdatedDate(), Instant.now().toString()));
         int normalizedScore = normalizeScore(record.getRate());
@@ -868,7 +868,7 @@ public class UserRatesService {
         if (!StringUtils.hasText(ownerUserId)) {
             return ZERO_DISTANCE;
         }
-        final String resolvedOwnerUserId = ownerUserId;
+        final String resolvedOwnerUserId = Objects.requireNonNull(ownerUserId);
         UserRate.LocationSnapshot origin = resolveCurrentUserLocation(currentUser);
         if (origin == null) {
             return ZERO_DISTANCE;
