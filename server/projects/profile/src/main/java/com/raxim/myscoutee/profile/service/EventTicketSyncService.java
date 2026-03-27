@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -262,15 +263,17 @@ public class EventTicketSyncService {
             next.setCreatorInitials(safeText(canonical.getCreatorInitials()));
             next.setCreatorGender(safeText(canonical.getCreatorGender()));
             next.setCreatorCity(safeText(canonical.getCreatorCity()));
+            next.setAdmins(canonical.getAdmins() == null ? List.of() : new ArrayList<>(canonical.getAdmins()));
             next.setVisibility(safeText(canonical.getVisibility()));
             next.setBlindMode(safeText(canonical.getBlindMode()));
             next.setStartAtIso(safeNullableText(canonical.getStartAtIso()));
             next.setEndAtIso(safeNullableText(canonical.getEndAtIso()));
-            next.setDistanceKm(safeDouble(canonical.getDistanceKm()));
+            next.setDistanceKm(null);
             next.setImageUrl(safeText(canonical.getImageUrl()));
             next.setSourceLink(safeText(canonical.getSourceLink()));
             next.setLocation(safeText(canonical.getLocation()));
             next.setLocationCoordinates(canonical.getLocationCoordinates());
+            next.setLocationGeo(cloneGeoPoint(canonical.getLocationGeo()));
             next.setCapacityMin(nullableCount(canonical.getCapacityMin()));
             next.setCapacityMax(nullableCount(canonical.getCapacityMax()));
             next.setCapacityTotal(normalizeCount(canonical.getCapacityTotal()));
@@ -306,6 +309,7 @@ public class EventTicketSyncService {
         next.setUpdatedUser(existing == null
                 ? normalizedOwnerUserId
                 : safeText(existing.getUpdatedUser()));
+        next.normalizeLifecycleState();
         return next;
     }
 
@@ -316,10 +320,12 @@ public class EventTicketSyncService {
         clone.setSourceId(source.getSourceId());
         clone.setOwnerUserId(source.getOwnerUserId());
         clone.setType(source.getType());
+        clone.setStatus(source.getStatus());
         clone.setAvatar(source.getAvatar());
         clone.setTitle(source.getTitle());
         clone.setSubtitle(source.getSubtitle());
         clone.setTimeframe(source.getTimeframe());
+        clone.setAdmins(source.getAdmins() == null ? List.of() : new ArrayList<>(source.getAdmins()));
         clone.setInviter(source.getInviter());
         clone.setUnread(source.getUnread());
         clone.setActivity(source.getActivity());
@@ -343,6 +349,7 @@ public class EventTicketSyncService {
         clone.setSourceLink(source.getSourceLink());
         clone.setLocation(source.getLocation());
         clone.setLocationCoordinates(source.getLocationCoordinates());
+        clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         clone.setCapacityMin(source.getCapacityMin());
         clone.setCapacityMax(source.getCapacityMax());
         clone.setCapacityTotal(source.getCapacityTotal());
@@ -400,6 +407,7 @@ public class EventTicketSyncService {
                 && Objects.equals(safeText(left.getSourceLink()), safeText(right.getSourceLink()))
                 && Objects.equals(safeText(left.getLocation()), safeText(right.getLocation()))
                 && Objects.equals(left.getLocationCoordinates(), right.getLocationCoordinates())
+                && Objects.equals(left.getLocationGeo(), right.getLocationGeo())
                 && Objects.equals(nullableCount(left.getCapacityMin()), nullableCount(right.getCapacityMin()))
                 && Objects.equals(nullableCount(left.getCapacityMax()), nullableCount(right.getCapacityMax()))
                 && normalizeCount(left.getCapacityTotal()) == normalizeCount(right.getCapacityTotal())
@@ -448,6 +456,10 @@ public class EventTicketSyncService {
 
     private double safeDouble(Double value) {
         return value == null || !Double.isFinite(value) ? 0d : value;
+    }
+
+    private GeoJsonPoint cloneGeoPoint(GeoJsonPoint source) {
+        return source == null ? null : new GeoJsonPoint(source.getX(), source.getY());
     }
 
     private String normalizeDateTime(String value, String fallback) {

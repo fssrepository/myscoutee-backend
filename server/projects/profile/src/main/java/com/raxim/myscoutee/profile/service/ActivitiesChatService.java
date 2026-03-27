@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.bson.types.ObjectId;
+
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat.ChatMessageRecord;
@@ -447,8 +449,8 @@ public class ActivitiesChatService {
                 chat.getEventId(),
                 chat.getSubEventId(),
                 chat.getGroupId(),
-                chat.getDistanceKm(),
-                chat.getDistanceMetersExact());
+                null,
+                null);
     }
 
     private ChatSummaryProjection toSummaryProjection(ActivityChat chat) {
@@ -463,10 +465,7 @@ public class ActivitiesChatService {
                 .distinct()
                 .count());
         int relevanceScore = (unread * 10) + memberCount;
-        int distanceMeters = chat.getDistanceMetersExact() != null
-                ? Math.max(0, chat.getDistanceMetersExact())
-                : Math.max(0, (int) Math.round((chat.getDistanceKm() == null ? 0d : chat.getDistanceKm()) * 1000d));
-        return new ChatSummaryProjection(summary, sortableDate(summary.dateIso()), distanceMeters, relevanceScore);
+        return new ChatSummaryProjection(summary, sortableDate(summary.dateIso()), Integer.MAX_VALUE, relevanceScore);
     }
 
     private ChatMessageDto toMessageDto(ChatMessageRecord message, String viewerUserId) {
@@ -608,8 +607,8 @@ public class ActivitiesChatService {
         copy.setEventId(source.getEventId());
         copy.setSubEventId(source.getSubEventId());
         copy.setGroupId(source.getGroupId());
-        copy.setDistanceKm(source.getDistanceKm());
-        copy.setDistanceMetersExact(source.getDistanceMetersExact());
+        copy.setDistanceKm(null);
+        copy.setDistanceMetersExact(null);
         List<ChatMessageRecord> copiedMessages = new ArrayList<>();
         for (ChatMessageRecord message : safeMessages(source.getMessages())) {
             copiedMessages.add(copyMessageRecord(message));
@@ -790,7 +789,7 @@ public class ActivitiesChatService {
 
     private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
         String normalizedSort = safeText(sortValue).toLowerCase(Locale.ROOT);
-        if ("distance".equals(normalizedSort) || "relevance".equals(normalizedSort)) {
+        if ("relevance".equals(normalizedSort)) {
             return normalizedSort;
         }
         if ("relevant".equalsIgnoreCase(safeText(secondaryFilterValue))) {
@@ -807,22 +806,13 @@ public class ActivitiesChatService {
         if ("desc".equalsIgnoreCase(normalizedDirection)) {
             return false;
         }
-        return "distance".equals(sort);
+        return false;
     }
 
     private Comparator<ChatSummaryProjection> chatSummaryComparator(String sort, boolean ascending) {
         return (left, right) -> {
             int comparison;
-            if ("distance".equals(sort)) {
-                comparison = compareInts(left.distanceMeters(), right.distanceMeters(), ascending);
-                if (comparison != 0) {
-                    return comparison;
-                }
-                comparison = compareLongs(left.dateMs(), right.dateMs(), false);
-                if (comparison != 0) {
-                    return comparison;
-                }
-            } else if ("relevance".equals(sort)) {
+            if ("relevance".equals(sort)) {
                 comparison = compareInts(left.relevanceScore(), right.relevanceScore(), ascending);
                 if (comparison != 0) {
                     return comparison;
@@ -901,7 +891,7 @@ public class ActivitiesChatService {
     }
 
     private String buildMongoId(String ownerUserId, String chatId) {
-        return normalizeId(ownerUserId) + ":" + normalizeId(chatId);
+        return new ObjectId().toHexString();
     }
 
     private record ChatSummaryProjection(

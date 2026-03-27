@@ -16,8 +16,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -39,6 +42,7 @@ import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
 @Service
 public class ActivitiesEventsService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String OWNER_TYPE_EVENT = "event";
     private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
@@ -48,18 +52,21 @@ public class ActivitiesEventsService {
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
+    private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
-            EventParticipationTicketService eventParticipationTicketService) {
+            EventParticipationTicketService eventParticipationTicketService,
+            MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
@@ -292,6 +299,8 @@ public class ActivitiesEventsService {
             eventsOverlay.setIsInvitation(false);
             eventsOverlay.setId(resolveExistingId(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
             eventsOverlay.setSyncKey(resolveExistingSyncKey(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
+            eventsOverlay.setAdmins(resolveAdminUserIds(sourceId, baseRecord.getCreatorUserId()));
+            eventsOverlay.normalizeLifecycleState();
             documentsToSave.add(eventsOverlay);
         }
         activityEventsRepository.saveAll(documentsToSave);
@@ -341,13 +350,14 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> queryUserRecords(ViewerContext viewer) {
-        List<ActivityEvent> allRecords = allEventDocuments();
+        List<ActivityEvent> allRecords = allEventDocuments(viewer);
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : computePreferredEventRecords(allRecords)) {
             preferredBySourceId.put(normalizeId(record.getSourceId()), record);
         }
 
-        List<ActivityEvent> directRecords = activityEventsRepository.findByOwnerUserId(viewer.userId()).stream()
+        List<ActivityEvent> directRecords = allRecords.stream()
+                .filter(record -> viewer.userId().equals(normalizeId(record.getOwnerUserId())))
                 .filter(record -> shouldIncludeUserDirectRecord(record, viewer.userId(), preferredBySourceId.get(normalizeId(record.getSourceId()))))
                 .map(this::cloneDocument)
                 .toList();
@@ -419,12 +429,14 @@ public class ActivitiesEventsService {
         projection.setIsAdmin(false);
         projection.setIsInvitation(false);
         projection.setIsHosting(false);
+        projection.setAdmins(resolveAdminUserIds(projection.getSourceId(), projection.getCreatorUserId()));
+        projection.normalizeLifecycleState();
         return projection;
     }
 
     private List<ActivityEvent> computeExploreRecords(ViewerContext viewer) {
         Map<String, ActivityEvent> preferredByEventId = new LinkedHashMap<>();
-        for (ActivityEvent record : allEventDocuments()) {
+        for (ActivityEvent record : allEventDocuments(viewer)) {
             if (!shouldIncludeExploreRecord(record, viewer.userId())) {
                 continue;
             }
@@ -478,10 +490,11 @@ public class ActivitiesEventsService {
             return null;
         }
         long startAtMs = toSortableDate(item.startAtIso());
+        Integer distanceMetersExact = resolveDistanceMetersExact(viewer.locationCoordinates(), record);
         return new EventProjection(
                 record,
                 item,
-                Math.max(0, (int) Math.round(item.distanceKm() * 1000d)),
+                distanceMetersExact == null ? Integer.MAX_VALUE : distanceMetersExact,
                 Math.max(0d, safeDouble(item.relevance())),
                 startAtMs,
                 dateOnly(startAtMs),
@@ -494,6 +507,7 @@ public class ActivitiesEventsService {
         if (record == null) {
             return null;
         }
+        Integer distanceMetersExact = resolveDistanceMetersExact(viewer == null ? null : viewer.locationCoordinates(), record);
         List<String> acceptedMemberUserIds = resolveAcceptedMemberUserIds(record);
         List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record);
         return new EventRecordDto(
@@ -522,7 +536,9 @@ public class ActivitiesEventsService {
                 safeText(record.getBlindMode()),
                 StringUtils.hasText(record.getStartAtIso()) ? record.getStartAtIso().trim() : null,
                 StringUtils.hasText(record.getEndAtIso()) ? record.getEndAtIso().trim() : null,
-                resolveDistanceKm(viewer.locationCoordinates(), record),
+                distanceMetersExact == null
+                        ? Math.max(0d, safeDouble(record.getDistanceKm()))
+                        : distanceMetersExact.doubleValue() / 1000d,
                 safeText(record.getImageUrl()),
                 safeText(record.getSourceLink()),
                 safeText(record.getLocation()),
@@ -679,6 +695,8 @@ public class ActivitiesEventsService {
             updater.accept(next);
             next.setUpdatedDate(Instant.now().toString());
             next.setUpdatedUser(viewer.userId());
+            next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
+            next.normalizeLifecycleState();
             updated.add(next);
         }
         activityEventsRepository.saveAll(updated);
@@ -716,10 +734,12 @@ public class ActivitiesEventsService {
         overlay.setIsAdmin(TYPE_HOSTING.equals(overlayType));
         overlay.setIsHosting(TYPE_HOSTING.equals(overlayType));
         overlay.setIsInvitation(false);
+        overlay.setAdmins(resolveAdminUserIds(sourceId, overlay.getCreatorUserId()));
         overlay.setCreatedDate(Instant.now().toString());
         overlay.setCreatedUser(ownerUserId);
         overlay.setUpdatedDate(Instant.now().toString());
         overlay.setUpdatedUser(ownerUserId);
+        overlay.normalizeLifecycleState();
         return overlay;
     }
 
@@ -766,7 +786,7 @@ public class ActivitiesEventsService {
         document.setBlindMode(resolveBlindMode(request.blindMode(), existing));
         document.setStartAtIso(normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
         document.setEndAtIso(normalizeDateTime(request.endAt(), document.getStartAtIso()));
-        document.setDistanceKm(Math.max(0d, safeDouble(request.distanceKm())));
+        document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
         document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
         document.setLocation(StringUtils.hasText(request.location()) ? request.location().trim() : safeText(existing == null ? null : existing.getLocation()));
@@ -775,6 +795,7 @@ public class ActivitiesEventsService {
                 : (existing != null && existing.getLocationCoordinates() != null
                         ? cloneLocation(existing.getLocationCoordinates())
                         : toLocationCoordinatesDto(creator == null ? null : creator.getLocationCoordinates())));
+        document.setLocationGeo(toGeoPoint(document.getLocationCoordinates()));
         document.setCapacityMin(nullableCount(request.capacityMin()));
         document.setCapacityMax(nullableCount(request.capacityMax()));
         document.setCapacityTotal(resolveCapacityTotal(request, existing));
@@ -793,6 +814,8 @@ public class ActivitiesEventsService {
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(actorUserId);
+        document.setAdmins(resolveAdminUserIds(sourceId, document.getCreatorUserId()));
+        document.normalizeLifecycleState();
         return document;
     }
 
@@ -854,6 +877,58 @@ public class ActivitiesEventsService {
                 .toList();
     }
 
+    private List<ActivityEvent> allEventDocuments(ViewerContext viewer) {
+        if (viewer == null || viewer.locationCoordinates() == null) {
+            return allEventDocuments();
+        }
+
+        List<ActivityEvent> fallback = allEventDocuments();
+        List<ActivityEvent> geoOrdered = geoOrderedEventDocuments(viewer.locationCoordinates());
+        if (geoOrdered.isEmpty()) {
+            return fallback;
+        }
+
+        LinkedHashMap<String, ActivityEvent> merged = new LinkedHashMap<>();
+        for (ActivityEvent record : geoOrdered) {
+            String documentId = normalizeId(record == null ? null : record.getId());
+            if (StringUtils.hasText(documentId)) {
+                merged.put(documentId, record);
+            }
+        }
+        for (ActivityEvent record : fallback) {
+            String documentId = normalizeId(record == null ? null : record.getId());
+            if (StringUtils.hasText(documentId) && !merged.containsKey(documentId)) {
+                merged.put(documentId, record);
+            }
+        }
+        return new ArrayList<>(merged.values());
+    }
+
+    private List<ActivityEvent> geoOrderedEventDocuments(LocationCoordinatesDto viewerCoordinates) {
+        GeoJsonPoint viewerPoint = toGeoPoint(viewerCoordinates);
+        if (viewerPoint == null) {
+            return List.of();
+        }
+
+        Document geoNearStage = new Document("$geoNear", new Document("near", toGeoJsonDocument(viewerPoint))
+                .append("distanceField", "distanceSortValue")
+                .append("spherical", true)
+                .append("key", "locationGeo"));
+
+        List<Document> rawDocuments = mongoTemplate.getCollection(mongoTemplate.getCollectionName(ActivityEvent.class))
+                .aggregate(List.of(geoNearStage))
+                .into(new ArrayList<>());
+
+        List<ActivityEvent> ordered = new ArrayList<>();
+        for (Document rawDocument : rawDocuments) {
+            ActivityEvent record = readGeoOrderedDocument(rawDocument);
+            if (record != null && StringUtils.hasText(normalizeId(record.getSourceId()))) {
+                ordered.add(record);
+            }
+        }
+        return ordered;
+    }
+
     private boolean hasTrackedUserParticipation(ActivityEvent record, String userId) {
         if (record == null || !StringUtils.hasText(userId)) {
             return false;
@@ -890,18 +965,34 @@ public class ActivitiesEventsService {
         if (record == null || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
-        if (viewerUserId.equals(normalizeId(record.getCreatorUserId()))) {
+        if (normalizeIds(record.getAdmins()).contains(viewerUserId)) {
             return true;
         }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
-        return snapshot != null && snapshot.hasAcceptedAdminRole(viewerUserId);
+        if (snapshot != null && snapshot.hasAcceptedAdminRole(viewerUserId)) {
+            return true;
+        }
+        return viewerUserId.equals(normalizeId(record.getCreatorUserId()));
     }
 
     private ActivitiesMembersService.OwnerMembersSnapshot resolveMembersSnapshot(ActivityEvent record) {
         if (record == null || !StringUtils.hasText(normalizeId(record.getSourceId()))) {
             return null;
         }
-        return activitiesMembersService.queryOwnerSnapshot("event", normalizeId(record.getSourceId()));
+        return activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(record.getSourceId()));
+    }
+
+    private List<String> resolveAdminUserIds(String sourceId, String creatorUserId) {
+        LinkedHashSet<String> adminUserIds = new LinkedHashSet<>();
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(sourceId));
+        if (snapshot != null) {
+            adminUserIds.addAll(snapshot.adminUserIds());
+        }
+        String normalizedCreatorUserId = normalizeId(creatorUserId);
+        if (StringUtils.hasText(normalizedCreatorUserId)) {
+            adminUserIds.add(normalizedCreatorUserId);
+        }
+        return new ArrayList<>(adminUserIds);
     }
 
     private List<String> resolveAcceptedMemberUserIds(ActivityEvent record) {
@@ -981,9 +1072,11 @@ public class ActivitiesEventsService {
     private ActivityEvent cloneDocument(ActivityEvent source) {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
+        clone.setAdmins(new ArrayList<>(normalizeIds(source.getAdmins())));
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
+        clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
     }
 
@@ -1125,6 +1218,13 @@ public class ActivitiesEventsService {
         return new LocationCoordinatesDto(value.latitude(), value.longitude());
     }
 
+    private GeoJsonPoint cloneGeoPoint(GeoJsonPoint value) {
+        if (value == null) {
+            return null;
+        }
+        return new GeoJsonPoint(value.getX(), value.getY());
+    }
+
     private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord value) {
         if (value == null || value.latitude() == null || value.longitude() == null) {
             return null;
@@ -1132,15 +1232,43 @@ public class ActivitiesEventsService {
         return new LocationCoordinatesDto(value.latitude(), value.longitude());
     }
 
-    private double resolveDistanceKm(LocationCoordinatesDto viewerCoordinates, ActivityEvent record) {
-        LocationCoordinatesDto eventCoordinates = record == null ? null : cloneLocation(record.getLocationCoordinates());
-        if (viewerCoordinates == null || eventCoordinates == null) {
-            return Math.max(0d, safeDouble(record == null ? null : record.getDistanceKm()));
+    private GeoJsonPoint toGeoPoint(LocationCoordinatesDto value) {
+        if (value == null || value.latitude() == null || value.longitude() == null) {
+            return null;
         }
-        return Math.round((haversineDistanceMeters(viewerCoordinates, eventCoordinates) / 1000d) * 10d) / 10d;
+        return new GeoJsonPoint(value.longitude(), value.latitude());
     }
 
-    private double haversineDistanceMeters(LocationCoordinatesDto from, LocationCoordinatesDto to) {
+    private Document toGeoJsonDocument(GeoJsonPoint value) {
+        if (value == null) {
+            return null;
+        }
+        return new Document("type", "Point")
+                .append("coordinates", List.of(value.getX(), value.getY()));
+    }
+
+    private ActivityEvent readGeoOrderedDocument(Document rawDocument) {
+        if (rawDocument == null) {
+            return null;
+        }
+        Document copy = new Document(rawDocument);
+        copy.remove("distanceSortValue");
+        return mongoTemplate.getConverter().read(ActivityEvent.class, copy);
+    }
+
+    private Integer resolveDistanceMetersExact(LocationCoordinatesDto viewerCoordinates, ActivityEvent record) {
+        LocationCoordinatesDto eventCoordinates = record == null ? null : cloneLocation(record.getLocationCoordinates());
+        if (viewerCoordinates == null || eventCoordinates == null) {
+            Double fallbackDistanceKm = record == null ? null : record.getDistanceKm();
+            if (fallbackDistanceKm == null || !Double.isFinite(fallbackDistanceKm)) {
+                return null;
+            }
+            return Math.max(0, (int) Math.round(fallbackDistanceKm * 1000d));
+        }
+        return haversineDistanceMeters(viewerCoordinates, eventCoordinates);
+    }
+
+    private int haversineDistanceMeters(LocationCoordinatesDto from, LocationCoordinatesDto to) {
         double earthRadiusMeters = 6_371_000d;
         double latitudeDelta = Math.toRadians(to.latitude() - from.latitude());
         double longitudeDelta = Math.toRadians(to.longitude() - from.longitude());
@@ -1151,7 +1279,7 @@ public class ActivitiesEventsService {
         double a = (sinLatitude * sinLatitude)
                 + (Math.cos(fromLatitude) * Math.cos(toLatitude) * sinLongitude * sinLongitude);
         double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
-        return Math.round(earthRadiusMeters * c);
+        return Math.max(0, (int) Math.round(earthRadiusMeters * c));
     }
 
     private long toSortableDate(String value) {

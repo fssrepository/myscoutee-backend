@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,9 +20,18 @@ import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
         @CompoundIndex(name = "event_owner_type_source", def = "{'ownerUserId': 1, 'type': 1, 'sourceId': 1}", unique = true),
         @CompoundIndex(name = "event_owner_type", def = "{'ownerUserId': 1, 'type': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1, 'type': 1}"),
-        @CompoundIndex(name = "event_explore_visibility", def = "{'published': 1, 'isTrashed': 1, 'isInvitation': 1, 'creatorUserId': 1, 'visibility': 1}")
+        @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}")
 })
 public class ActivityEvent {
+    private static final String TYPE_EVENTS = "events";
+    private static final String TYPE_HOSTING = "hosting";
+    private static final String TYPE_INVITATIONS = "invitations";
+    private static final String STATUS_ACTIVE = "active";
+    private static final String STATUS_HOSTING = "hosting";
+    private static final String STATUS_INVITATION = "invitation";
+    private static final String STATUS_DRAFT = "draft";
+    private static final String STATUS_TRASHED = "trashed";
+
     @Id
     private String id;
     @Indexed(name = "event_sync_key", unique = true, sparse = true)
@@ -27,6 +39,8 @@ public class ActivityEvent {
     private String sourceId;
     private String ownerUserId;
     private String type;
+    private String status;
+    private List<String> admins = new ArrayList<>();
     private String avatar;
     private String title;
     private String subtitle;
@@ -54,6 +68,8 @@ public class ActivityEvent {
     private String sourceLink;
     private String location;
     private LocationCoordinatesDto locationCoordinates;
+    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+    private GeoJsonPoint locationGeo;
     private Integer capacityMin;
     private Integer capacityMax;
     private Integer capacityTotal;
@@ -81,8 +97,22 @@ public class ActivityEvent {
     public void setSourceId(String sourceId) { this.sourceId = sourceId; }
     public String getOwnerUserId() { return ownerUserId; }
     public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
-    public String getType() { return type; }
+    public String getType() {
+        if (hasText(type)) {
+            return type;
+        }
+        return deriveTypeFromStatus(getStatus());
+    }
     public void setType(String type) { this.type = type; }
+    public String getStatus() {
+        if (hasText(status)) {
+            return normalizeStatusValue(status);
+        }
+        return deriveStatusFromLegacy();
+    }
+    public void setStatus(String status) { this.status = normalizeStatusValue(status); }
+    public List<String> getAdmins() { return admins; }
+    public void setAdmins(List<String> admins) { this.admins = admins == null ? new ArrayList<>() : new ArrayList<>(admins); }
     public String getAvatar() { return avatar; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
     public String getTitle() { return title; }
@@ -91,21 +121,54 @@ public class ActivityEvent {
     public void setSubtitle(String subtitle) { this.subtitle = subtitle; }
     public String getTimeframe() { return timeframe; }
     public void setTimeframe(String timeframe) { this.timeframe = timeframe; }
-    public String getInviter() { return inviter; }
+    public String getInviter() {
+        if (inviter != null && !inviter.isBlank()) {
+            return inviter;
+        }
+        return Boolean.TRUE.equals(getIsInvitation()) ? creatorName : null;
+    }
     public void setInviter(String inviter) { this.inviter = inviter; }
-    public Integer getUnread() { return unread; }
+    public Integer getUnread() { return unread == null ? 0 : unread; }
     public void setUnread(Integer unread) { this.unread = unread; }
-    public Integer getActivity() { return activity; }
+    public Integer getActivity() { return activity == null ? 0 : activity; }
     public void setActivity(Integer activity) { this.activity = activity; }
-    public Boolean getIsAdmin() { return isAdmin; }
+    public Boolean getIsAdmin() {
+        if (isAdmin != null) {
+            return isAdmin;
+        }
+        if (hasText(ownerUserId) && admins != null && admins.contains(ownerUserId)) {
+            return true;
+        }
+        return hasText(ownerUserId) && ownerUserId.equals(creatorUserId);
+    }
     public void setIsAdmin(Boolean admin) { isAdmin = admin; }
-    public Boolean getIsInvitation() { return isInvitation; }
+    public Boolean getIsInvitation() {
+        if (isInvitation != null) {
+            return isInvitation;
+        }
+        return STATUS_INVITATION.equals(getStatus()) || TYPE_INVITATIONS.equals(type);
+    }
     public void setIsInvitation(Boolean invitation) { isInvitation = invitation; }
-    public Boolean getIsHosting() { return isHosting; }
+    public Boolean getIsHosting() {
+        if (isHosting != null) {
+            return isHosting;
+        }
+        return TYPE_HOSTING.equals(type) || STATUS_HOSTING.equals(getStatus());
+    }
     public void setIsHosting(Boolean hosting) { isHosting = hosting; }
-    public Boolean getIsTrashed() { return isTrashed; }
+    public Boolean getIsTrashed() {
+        if (isTrashed != null) {
+            return isTrashed;
+        }
+        return STATUS_TRASHED.equals(getStatus()) || (trashedAtIso != null && !trashedAtIso.isBlank());
+    }
     public void setIsTrashed(Boolean trashed) { isTrashed = trashed; }
-    public Boolean getPublished() { return published; }
+    public Boolean getPublished() {
+        if (published != null) {
+            return published;
+        }
+        return !STATUS_DRAFT.equals(getStatus());
+    }
     public void setPublished(Boolean published) { this.published = published; }
     public String getTrashedAtIso() { return trashedAtIso; }
     public void setTrashedAtIso(String trashedAtIso) { this.trashedAtIso = trashedAtIso; }
@@ -137,6 +200,8 @@ public class ActivityEvent {
     public void setLocation(String location) { this.location = location; }
     public LocationCoordinatesDto getLocationCoordinates() { return locationCoordinates; }
     public void setLocationCoordinates(LocationCoordinatesDto locationCoordinates) { this.locationCoordinates = locationCoordinates; }
+    public GeoJsonPoint getLocationGeo() { return locationGeo; }
+    public void setLocationGeo(GeoJsonPoint locationGeo) { this.locationGeo = locationGeo; }
     public Integer getCapacityMin() { return capacityMin; }
     public void setCapacityMin(Integer capacityMin) { this.capacityMin = capacityMin; }
     public Integer getCapacityMax() { return capacityMax; }
@@ -173,4 +238,49 @@ public class ActivityEvent {
     public void setUpdatedDate(String updatedDate) { this.updatedDate = updatedDate; }
     public String getUpdatedUser() { return updatedUser; }
     public void setUpdatedUser(String updatedUser) { this.updatedUser = updatedUser; }
+
+    public void normalizeLifecycleState() {
+        status = getStatus();
+        isAdmin = null;
+        isInvitation = null;
+        isHosting = null;
+        isTrashed = null;
+        published = null;
+    }
+
+    private String deriveStatusFromLegacy() {
+        if (Boolean.TRUE.equals(isTrashed) || hasText(trashedAtIso)) {
+            return STATUS_TRASHED;
+        }
+        if (Boolean.TRUE.equals(isInvitation) || TYPE_INVITATIONS.equals(type)) {
+            return STATUS_INVITATION;
+        }
+        if (Boolean.FALSE.equals(published)) {
+            return STATUS_DRAFT;
+        }
+        if (Boolean.TRUE.equals(isHosting) || TYPE_HOSTING.equals(type)) {
+            return STATUS_HOSTING;
+        }
+        return STATUS_ACTIVE;
+    }
+
+    private static String deriveTypeFromStatus(String status) {
+        return switch (normalizeStatusValue(status)) {
+            case STATUS_INVITATION -> TYPE_INVITATIONS;
+            case STATUS_HOSTING -> TYPE_HOSTING;
+            default -> TYPE_EVENTS;
+        };
+    }
+
+    private static String normalizeStatusValue(String value) {
+        String normalized = value == null ? "" : value.trim();
+        return switch (normalized) {
+            case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED -> normalized;
+            default -> STATUS_ACTIVE;
+        };
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
 }

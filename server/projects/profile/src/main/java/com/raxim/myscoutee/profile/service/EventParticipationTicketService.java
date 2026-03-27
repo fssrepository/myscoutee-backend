@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -222,6 +223,7 @@ public class EventParticipationTicketService {
         next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, Boolean.TRUE.equals(next.getIsTrashed())));
         next.setUpdatedDate(Instant.now().toString());
         next.setUpdatedUser(resolveUpdatedUser(preferred, existing, ownerUserId));
+        next.normalizeLifecycleState();
         return next;
     }
 
@@ -257,15 +259,17 @@ public class EventParticipationTicketService {
         next.setCreatorInitials(safeText(preferred.getCreatorInitials()));
         next.setCreatorGender(safeText(preferred.getCreatorGender()));
         next.setCreatorCity(safeText(preferred.getCreatorCity()));
+        next.setAdmins(preferred.getAdmins() == null ? List.of() : new ArrayList<>(preferred.getAdmins()));
         next.setVisibility(safeText(preferred.getVisibility()));
         next.setBlindMode(safeText(preferred.getBlindMode()));
         next.setStartAtIso(normalizeDateTime(preferred.getStartAtIso(), null));
         next.setEndAtIso(normalizeDateTime(preferred.getEndAtIso(), next.getStartAtIso()));
-        next.setDistanceKm(preferred.getDistanceKm());
+        next.setDistanceKm(null);
         next.setImageUrl(safeText(preferred.getImageUrl()));
         next.setSourceLink(safeText(preferred.getSourceLink()));
         next.setLocation(safeText(preferred.getLocation()));
         next.setLocationCoordinates(cloneLocation(preferred.getLocationCoordinates()));
+        next.setLocationGeo(cloneGeoPoint(preferred.getLocationGeo()));
         next.setCapacityMin(preferred.getCapacityMin());
         next.setCapacityMax(preferred.getCapacityMax());
         next.setCapacityTotal(preferred.getCapacityTotal());
@@ -284,6 +288,7 @@ public class EventParticipationTicketService {
         next.setCreatedUser(existing != null ? safeText(existing.getCreatedUser()) : ownerUserId);
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(resolveUpdatedUser(preferred, existing, ownerUserId));
+        next.normalizeLifecycleState();
         return next;
     }
 
@@ -388,6 +393,7 @@ public class EventParticipationTicketService {
                 && Objects.equals(left.getSourceLink(), right.getSourceLink())
                 && Objects.equals(left.getLocation(), right.getLocation())
                 && Objects.equals(left.getLocationCoordinates(), right.getLocationCoordinates())
+                && Objects.equals(left.getLocationGeo(), right.getLocationGeo())
                 && Objects.equals(left.getCapacityMin(), right.getCapacityMin())
                 && Objects.equals(left.getCapacityMax(), right.getCapacityMax())
                 && Objects.equals(left.getCapacityTotal(), right.getCapacityTotal())
@@ -409,9 +415,11 @@ public class EventParticipationTicketService {
     private ActivityEvent cloneDocument(ActivityEvent source) {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
+        clone.setAdmins(source.getAdmins() == null ? List.of() : new ArrayList<>(source.getAdmins()));
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
+        clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
     }
 
@@ -425,6 +433,10 @@ public class EventParticipationTicketService {
 
     private LocationCoordinatesDto cloneLocation(LocationCoordinatesDto source) {
         return source == null ? null : new LocationCoordinatesDto(source.latitude(), source.longitude());
+    }
+
+    private GeoJsonPoint cloneGeoPoint(GeoJsonPoint source) {
+        return source == null ? null : new GeoJsonPoint(source.getX(), source.getY());
     }
 
     private List<String> normalizeStrings(List<String> values) {
