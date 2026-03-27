@@ -118,7 +118,6 @@ services:
         -Xdebug
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     volumes:
-      - ./data/profile/img:/tmp/img
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
