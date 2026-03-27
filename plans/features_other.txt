@@ -22,4 +22,4 @@ assets, you have a refresh button on the ui form, next to the link input text, o
 the feature of this refresh could be disabled - no ui button and no backend
 badge - red counter, if more than 9, than 9+ (so only 2 digits appears - space)
 
-image upload - object store (profile editor/event editor etc.) - can you introduce (probably there is a docker image for that - later on we might switch to s3, so it should be easily configureable) and wire up and to end?
+image upload - object store (for profile editor/event editor etc.) - can you introduce (probably there is a docker image for that - later on we might switch to s3, so it should be easily configureable) and wire up and to end?
