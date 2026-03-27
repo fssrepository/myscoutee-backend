@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:25.0.2_10-jre-alpine
 
 ARG TZ=Europe/Brussels
 ENV TZ=${TZ}

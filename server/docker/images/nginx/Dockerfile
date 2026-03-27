@@ -1,4 +1,4 @@
-FROM nginx:1.21.0
+FROM nginx:1.29.6
 
 ARG TZ=Europe/Brussels
 ENV TZ=${TZ}

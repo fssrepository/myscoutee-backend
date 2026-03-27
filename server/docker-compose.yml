@@ -74,7 +74,7 @@ services:
     #ports:
     #  - 27017-27019:27017-27019
   redis:
-    image: redis:7.4-alpine
+    image: ${REDIS_IMAGE}
     container_name: redis
     hostname: redis
     environment:

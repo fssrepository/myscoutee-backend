@@ -11,7 +11,7 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE_PROD:-myscoutee-nginx:0.1.0-prod}
+    image: ${NGINX_IMAGE_PROD:-myscoutee-nginx:0.2.0-prod}
     build:
       context: .
       dockerfile: docker/images/nginx/Dockerfile.prod
@@ -56,7 +56,7 @@ services:
     networks:
       - myscoutee
   redis:
-    image: redis:7.4-alpine
+    image: ${REDIS_IMAGE}
     container_name: redis
     hostname: redis
     environment:
