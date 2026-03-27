@@ -1,16 +1,11 @@
 package com.raxim.myscoutee.common.util;
 
-import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
-import org.bson.Document;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.raxim.myscoutee.profile.util.AppConstants;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 public class JsonUtil {
     public static final String ISO_DATE_STRING = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -18,8 +13,7 @@ public class JsonUtil {
     public static <T> T jsonToObject(String jsonString, Class<T> targetClass, ObjectMapper objectMapper) {
         try {
             return objectMapper.readValue(jsonString, targetClass);
-        } catch (IOException e) {
-            // Handle the exception appropriately
+        } catch (JacksonException e) {
             e.printStackTrace();
             return null;
         }
@@ -49,8 +43,7 @@ public class JsonUtil {
                     };
                 }
             });
-        } catch (IOException e) {
-            // Handle the exception appropriately
+        } catch (JacksonException e) {
             e.printStackTrace();
             return null;
         }
@@ -59,32 +52,9 @@ public class JsonUtil {
     public static String toJson(Object t, ObjectMapper objectMapper) {
         try {
             return objectMapper.writeValueAsString(t);
-        } catch (IOException e) {
-            // Handle the exception appropriately
+        } catch (JacksonException e) {
             e.printStackTrace();
             return null;
         }
     }
-
-    /*public static String toMongoJson(Object t, ObjectMapper objectMapper) {
-        try {
-            String jsonString = objectMapper.writeValueAsString(t);
-            return Document.parse(jsonString, AppConstants.UUID_CODEC).toJson();
-        } catch (IOException e) {
-            // Handle the exception appropriately
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static <T> String toMongoJsonArray(Collection<T> t, ObjectMapper objectMapper) {
-        String tJson = t.stream()
-                .map(eventItem -> JsonUtil.toMongoJson(eventItem, objectMapper))
-                .collect(Collectors.joining(","));
-        if (tJson.charAt(tJson.length() - 1) == ',') {
-            tJson = tJson.substring(0, tJson.length() - 1);
-        }
-        return "[" + tJson + "]";
-    }*/
-
 }

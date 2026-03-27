@@ -27,16 +27,12 @@ import org.springframework.data.repository.core.support.RepositoryComposition.Re
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
-import org.springframework.data.repository.query.QueryMethodEvaluationContextProvider;
 import org.springframework.data.repository.query.RepositoryQuery;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.data.repository.query.ValueExpressionDelegate;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 public class MongoRepositoryFactory extends RepositoryFactorySupport {
-
-    private static final SpelExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
 
     private final MongoOperations operations;
     private final MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext;
@@ -96,9 +92,9 @@ public class MongoRepositoryFactory extends RepositoryFactorySupport {
 
     @Override
     protected Optional<QueryLookupStrategy> getQueryLookupStrategy(@Nullable Key key,
-            QueryMethodEvaluationContextProvider evaluationContextProvider) {
+            ValueExpressionDelegate valueExpressionDelegate) {
         return Optional
-                .of(new MongoQueryLookupStrategy(operations, evaluationContextProvider, mappingContext, queryCache));
+                .of(new MongoQueryLookupStrategy(operations, valueExpressionDelegate, mappingContext, queryCache));
     }
 
     public <T, ID> MongoEntityInformation<T, ID> getEntityInformation(Class<T> domainClass) {
@@ -116,18 +112,17 @@ public class MongoRepositoryFactory extends RepositoryFactorySupport {
     private static class MongoQueryLookupStrategy implements QueryLookupStrategy {
 
         private final MongoOperations operations;
-        private final QueryMethodEvaluationContextProvider evaluationContextProvider;
+        private final ValueExpressionDelegate valueExpressionDelegate;
         private final MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext;
-        private final ExpressionParser expressionParser = new CachingExpressionParser(EXPRESSION_PARSER);
         private final Map<String, String[]> queryCache;
 
         public MongoQueryLookupStrategy(MongoOperations operations,
-                QueryMethodEvaluationContextProvider evaluationContextProvider,
+                ValueExpressionDelegate valueExpressionDelegate,
                 MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext,
                 Map<String, String[]> queryCache) {
 
             this.operations = operations;
-            this.evaluationContextProvider = evaluationContextProvider;
+            this.valueExpressionDelegate = valueExpressionDelegate;
             this.mappingContext = mappingContext;
             this.queryCache = queryCache;
         }
@@ -143,14 +138,13 @@ public class MongoRepositoryFactory extends RepositoryFactorySupport {
 
             if (namedQueries.hasQuery(namedQueryName)) {
                 String namedQuery = namedQueries.getQuery(namedQueryName);
-                return new StringBasedMongoQuery(namedQuery, queryMethod, operations, expressionParser,
-                        evaluationContextProvider);
+                return new StringBasedMongoQuery(namedQuery, queryMethod, operations, valueExpressionDelegate);
             } else if (queryMethod.hasAnnotatedAggregation()) {
-                return new StringBasedAggregation(queryMethod, operations, expressionParser, evaluationContextProvider);
+                return new StringBasedAggregation(queryMethod, operations, valueExpressionDelegate);
             } else if (queryMethod.hasAnnotatedQuery()) {
-                return new StringBasedMongoQuery(queryMethod, operations, expressionParser, evaluationContextProvider);
+                return new StringBasedMongoQuery(queryMethod, operations, valueExpressionDelegate);
             } else {
-                return new PartTreeMongoQuery(queryMethod, operations, expressionParser, evaluationContextProvider);
+                return new PartTreeMongoQuery(queryMethod, operations, valueExpressionDelegate);
             }
         }
     }

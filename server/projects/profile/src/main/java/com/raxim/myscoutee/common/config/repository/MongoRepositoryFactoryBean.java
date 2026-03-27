@@ -26,8 +26,8 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 public class MongoRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable>
 		extends RepositoryFactoryBeanSupport<T, S, ID> {
