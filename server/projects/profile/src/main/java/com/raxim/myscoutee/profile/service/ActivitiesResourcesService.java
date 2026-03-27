@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.mongo.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
@@ -81,6 +82,56 @@ public class ActivitiesResourcesService {
 
         ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
         return toDto(filterToOwnedAssets(saved));
+    }
+
+    public Set<String> removeManagedResourcesForRemovedEventMembers(
+            String ownerId,
+            List<ActivityMember> removedMembers,
+            String actorUserId,
+            String nowIso) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerId) || removedMembers == null || removedMembers.isEmpty()) {
+            return Set.of();
+        }
+
+        Set<String> removedManagerUserIds = removedMembers.stream()
+                .filter(Objects::nonNull)
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (removedManagerUserIds.isEmpty()) {
+            return Set.of();
+        }
+
+        String normalizedActorUserId = normalizeId(actorUserId);
+        String effectiveNowIso = normalizeDateTime(nowIso, Instant.now().toString());
+        List<ActivitySubEventResource> changedRecords = new ArrayList<>();
+        Set<String> removedAssignedAssetIds = new LinkedHashSet<>();
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findByOwnerId(normalizedOwnerId)) {
+            if (record == null) {
+                continue;
+            }
+            ResourceCleanupResult cleanup = cleanupRecordForRemovedManagers(record, removedManagerUserIds);
+            removedAssignedAssetIds.addAll(cleanup.removedAssignedAssetIds());
+            if (!cleanup.changed()) {
+                continue;
+            }
+
+            ActivitySubEventResource next = cloneRecord(record);
+            next.setAssetAssignmentIds(cleanup.assetAssignmentIds());
+            next.setAssetSettingsByType(cleanup.assetSettingsByType());
+            next.setSupplyContributionEntriesByAssetId(cleanup.supplyContributionEntriesByAssetId());
+            next.setUpdatedDate(effectiveNowIso);
+            next.setUpdatedUser(StringUtils.hasText(normalizedActorUserId)
+                    ? normalizedActorUserId
+                    : firstNonBlank(record.getUpdatedUser(), record.getAssetOwnerUserId()));
+            changedRecords.add(next);
+        }
+        if (!changedRecords.isEmpty()) {
+            activitySubEventResourcesRepository.saveAll(changedRecords);
+        }
+        return removedAssignedAssetIds;
     }
 
     private ActivitySubEventResource resolveRecord(String ownerId, String subEventId, String assetOwnerUserId) {
@@ -150,6 +201,114 @@ public class ActivitiesResourcesService {
         clone.setUpdatedDate(source.getUpdatedDate());
         clone.setUpdatedUser(source.getUpdatedUser());
         return clone;
+    }
+
+    private ResourceCleanupResult cleanupRecordForRemovedManagers(
+            ActivitySubEventResource record,
+            Set<String> removedManagerUserIds) {
+        Map<String, List<String>> nextAssignmentIds = filterAssignmentIds(record.getAssetAssignmentIds(), null);
+        Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> nextSettingsByType = filterSettings(record.getAssetSettingsByType(), null);
+        Map<String, List<SubEventSupplyContributionEntryRecord>> nextSupplyEntriesByAssetId = filterSupplyEntries(record.getSupplyContributionEntriesByAssetId(), null);
+        Set<String> removedAssignedAssetIds = new LinkedHashSet<>();
+        boolean changed = false;
+        String fallbackManagerUserId = normalizeId(record.getAssetOwnerUserId());
+
+        for (String type : List.of("Car", "Accommodation")) {
+            List<String> assignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault(type, List.of()));
+            Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault(type, Map.of()));
+            Set<String> candidateAssetIds = new LinkedHashSet<>(assignmentIds);
+            candidateAssetIds.addAll(settingsByAssetId.keySet());
+            boolean typeChanged = false;
+            for (String rawAssetId : candidateAssetIds) {
+                String assetId = normalizeId(rawAssetId);
+                if (!StringUtils.hasText(assetId)) {
+                    continue;
+                }
+                String managerUserId = resolveManagedUserId(settingsByAssetId.get(assetId), fallbackManagerUserId);
+                if (!removedManagerUserIds.contains(managerUserId)) {
+                    continue;
+                }
+
+                boolean removedAssignment = assignmentIds.removeIf(existingAssetId -> assetId.equals(normalizeId(existingAssetId)));
+                SubEventAssignedAssetSettingsRecord removedSettings = settingsByAssetId.remove(assetId);
+                if (removedAssignment || removedSettings != null) {
+                    removedAssignedAssetIds.add(assetId);
+                    typeChanged = true;
+                }
+            }
+            if (typeChanged) {
+                storeAssignmentIds(nextAssignmentIds, type, assignmentIds);
+                storeSettings(nextSettingsByType, type, settingsByAssetId);
+                changed = true;
+            }
+        }
+
+        List<String> supplyAssignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault("Supplies", List.of()));
+        Map<String, SubEventAssignedAssetSettingsRecord> supplySettingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault("Supplies", Map.of()));
+        Set<String> supplyAssetIds = new LinkedHashSet<>(supplyAssignmentIds);
+        supplyAssetIds.addAll(supplySettingsByAssetId.keySet());
+        supplyAssetIds.addAll(nextSupplyEntriesByAssetId.keySet());
+        boolean suppliesChanged = false;
+        for (String rawAssetId : supplyAssetIds) {
+            String assetId = normalizeId(rawAssetId);
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            String managerUserId = resolveManagedUserId(supplySettingsByAssetId.get(assetId), fallbackManagerUserId);
+            if (!removedManagerUserIds.contains(managerUserId)) {
+                continue;
+            }
+
+            List<SubEventSupplyContributionEntryRecord> currentEntries = new ArrayList<>(nextSupplyEntriesByAssetId.getOrDefault(assetId, List.of()));
+            List<SubEventSupplyContributionEntryRecord> remainingEntries = currentEntries.stream()
+                    .filter(Objects::nonNull)
+                    .filter(entry -> !removedManagerUserIds.contains(normalizeId(entry.userId())))
+                    .filter(entry -> normalizeCount(entry.quantity()) > 0)
+                    .toList();
+            if (remainingEntries.isEmpty()) {
+                boolean removedAssignment = supplyAssignmentIds.removeIf(existingAssetId -> assetId.equals(normalizeId(existingAssetId)));
+                SubEventAssignedAssetSettingsRecord removedSettings = supplySettingsByAssetId.remove(assetId);
+                List<SubEventSupplyContributionEntryRecord> removedEntries = nextSupplyEntriesByAssetId.remove(assetId);
+                if (removedAssignment || removedSettings != null || removedEntries != null) {
+                    suppliesChanged = true;
+                }
+                continue;
+            }
+
+            String nextManagerUserId = selectSupplyManagerUserId(remainingEntries, fallbackManagerUserId);
+            SubEventAssignedAssetSettingsRecord currentSettings = supplySettingsByAssetId.get(assetId);
+            SubEventAssignedAssetSettingsRecord nextSettings = currentSettings == null
+                    ? new SubEventAssignedAssetSettingsRecord(
+                            0,
+                            remainingEntries.stream().mapToInt(entry -> normalizeCount(entry.quantity())).sum(),
+                            nextManagerUserId,
+                            List.of())
+                    : new SubEventAssignedAssetSettingsRecord(
+                            currentSettings.capacityMin(),
+                            currentSettings.capacityMax(),
+                            nextManagerUserId,
+                            currentSettings.routes() == null ? List.of() : new ArrayList<>(currentSettings.routes()));
+            if (supplyAssignmentIds.stream().noneMatch(existingAssetId -> assetId.equals(normalizeId(existingAssetId)))) {
+                supplyAssignmentIds.add(assetId);
+            }
+            if (!remainingEntries.equals(nextSupplyEntriesByAssetId.get(assetId)) || !nextSettings.equals(currentSettings)) {
+                nextSupplyEntriesByAssetId.put(assetId, new ArrayList<>(remainingEntries));
+                supplySettingsByAssetId.put(assetId, nextSettings);
+                suppliesChanged = true;
+            }
+        }
+        if (suppliesChanged) {
+            storeAssignmentIds(nextAssignmentIds, "Supplies", supplyAssignmentIds);
+            storeSettings(nextSettingsByType, "Supplies", supplySettingsByAssetId);
+            changed = true;
+        }
+
+        return new ResourceCleanupResult(
+                changed,
+                nextAssignmentIds,
+                nextSettingsByType,
+                nextSupplyEntriesByAssetId,
+                removedAssignedAssetIds);
     }
 
     private ActivitySubEventResourceStateDto toDto(ActivitySubEventResource record) {
@@ -318,6 +477,15 @@ public class ActivitiesResourcesService {
         return next;
     }
 
+    private void storeAssignmentIds(Map<String, List<String>> target, String type, List<String> assetIds) {
+        List<String> normalizedAssetIds = normalizeStrings(assetIds);
+        if (normalizedAssetIds.isEmpty()) {
+            target.remove(type);
+            return;
+        }
+        target.put(type, normalizedAssetIds);
+    }
+
     private Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> filterSettings(
             Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> source,
             Set<String> eligibleAssetIds) {
@@ -341,6 +509,25 @@ public class ActivitiesResourcesService {
             }
         }
         return next;
+    }
+
+    private void storeSettings(
+            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> target,
+            String type,
+            Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId) {
+        Map<String, SubEventAssignedAssetSettingsRecord> normalizedSettings = new LinkedHashMap<>();
+        for (Map.Entry<String, SubEventAssignedAssetSettingsRecord> entry : settingsByAssetId.entrySet()) {
+            String assetId = normalizeId(entry.getKey());
+            if (!StringUtils.hasText(assetId) || entry.getValue() == null) {
+                continue;
+            }
+            normalizedSettings.put(assetId, entry.getValue());
+        }
+        if (normalizedSettings.isEmpty()) {
+            target.remove(type);
+            return;
+        }
+        target.put(type, normalizedSettings);
     }
 
     private Map<String, List<SubEventSupplyContributionEntryRecord>> filterSupplyEntries(
@@ -468,12 +655,69 @@ public class ActivitiesResourcesService {
         }
     }
 
+    private String resolveManagedUserId(SubEventAssignedAssetSettingsRecord settings, String fallbackUserId) {
+        String addedByUserId = normalizeId(settings == null ? null : settings.addedByUserId());
+        if (StringUtils.hasText(addedByUserId)) {
+            return addedByUserId;
+        }
+        return normalizeId(fallbackUserId);
+    }
+
+    private String selectSupplyManagerUserId(
+            List<SubEventSupplyContributionEntryRecord> entries,
+            String fallbackUserId) {
+        String selectedUserId = null;
+        long selectedDate = Long.MAX_VALUE;
+        for (SubEventSupplyContributionEntryRecord entry : entries) {
+            String userId = normalizeId(entry == null ? null : entry.userId());
+            if (!StringUtils.hasText(userId)) {
+                continue;
+            }
+            long addedAt = toSortableDate(entry == null ? null : entry.addedAtIso());
+            if (selectedUserId == null
+                    || addedAt < selectedDate
+                    || (addedAt == selectedDate && userId.compareTo(selectedUserId) < 0)) {
+                selectedUserId = userId;
+                selectedDate = addedAt;
+            }
+        }
+        return StringUtils.hasText(selectedUserId) ? selectedUserId : normalizeId(fallbackUserId);
+    }
+
     private String normalizeDateTime(String value, String fallback) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
     }
 
+    private long toSortableDate(String value) {
+        String normalizedValue = safeText(value);
+        if (!StringUtils.hasText(normalizedValue)) {
+            return Long.MAX_VALUE;
+        }
+        try {
+            return Instant.parse(normalizedValue).toEpochMilli();
+        } catch (Exception ignored) {
+            return Long.MAX_VALUE;
+        }
+    }
+
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String firstNonBlank(String first, String second) {
+        String firstValue = safeText(first);
+        if (StringUtils.hasText(firstValue)) {
+            return firstValue;
+        }
+        return safeText(second);
+    }
+
+    private record ResourceCleanupResult(
+            boolean changed,
+            Map<String, List<String>> assetAssignmentIds,
+            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> assetSettingsByType,
+            Map<String, List<SubEventSupplyContributionEntryRecord>> supplyContributionEntriesByAssetId,
+            Set<String> removedAssignedAssetIds) {
     }
 }
