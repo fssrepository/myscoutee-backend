@@ -3,6 +3,8 @@ package com.raxim.myscoutee.profile.dto.events;
 import java.util.List;
 import java.util.Map;
 
+import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
 
@@ -35,7 +37,8 @@ public final class EventsDtos {
     public record EventActionRequestDto(
             String userId,
             String type,
-            String sourceId) {
+            String sourceId,
+            String slotSourceId) {
     }
 
     public record EventFeedbackAnswerSubmitDto(
@@ -125,6 +128,14 @@ public final class EventsDtos {
             Boolean autoInviter,
             String frequency,
             Boolean ticketing,
+            Boolean slotsEnabled,
+            List<EventSlotTemplateDto> slotTemplates,
+            String parentEventId,
+            String slotTemplateId,
+            Boolean generated,
+            String eventType,
+            EventSlotOccurrenceDto nextSlot,
+            List<EventSlotOccurrenceDto> upcomingSlots,
             Integer acceptedMembers,
             Integer pendingMembers,
             List<String> acceptedMemberUserIds,
@@ -164,6 +175,12 @@ public final class EventsDtos {
             Boolean autoInviter,
             String frequency,
             Boolean ticketing,
+            Boolean slotsEnabled,
+            List<EventSlotTemplateDto> slotTemplates,
+            String parentEventId,
+            String slotTemplateId,
+            Boolean generated,
+            String eventType,
             String visibility,
             String blindMode,
             Boolean published,

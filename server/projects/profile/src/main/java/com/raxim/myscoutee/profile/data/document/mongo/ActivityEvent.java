@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
 
 @Document(collection = "events")
@@ -76,6 +77,12 @@ public class ActivityEvent {
     private Boolean autoInviter;
     private String frequency;
     private Boolean ticketing;
+    private Boolean slotsEnabled;
+    private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
+    private String parentEventId;
+    private String slotTemplateId;
+    private Boolean generated;
+    private String eventType;
     private Integer acceptedMembers;
     private Integer pendingMembers;
     private List<String> topics = new ArrayList<>();
@@ -214,6 +221,20 @@ public class ActivityEvent {
     public void setFrequency(String frequency) { this.frequency = frequency; }
     public Boolean getTicketing() { return ticketing; }
     public void setTicketing(Boolean ticketing) { this.ticketing = ticketing; }
+    public Boolean getSlotsEnabled() { return slotsEnabled; }
+    public void setSlotsEnabled(Boolean slotsEnabled) { this.slotsEnabled = slotsEnabled; }
+    public List<EventSlotTemplateDto> getSlotTemplates() { return slotTemplates; }
+    public void setSlotTemplates(List<EventSlotTemplateDto> slotTemplates) {
+        this.slotTemplates = slotTemplates == null ? new ArrayList<>() : new ArrayList<>(slotTemplates);
+    }
+    public String getParentEventId() { return parentEventId; }
+    public void setParentEventId(String parentEventId) { this.parentEventId = parentEventId; }
+    public String getSlotTemplateId() { return slotTemplateId; }
+    public void setSlotTemplateId(String slotTemplateId) { this.slotTemplateId = slotTemplateId; }
+    public Boolean getGenerated() { return generated; }
+    public void setGenerated(Boolean generated) { this.generated = generated; }
+    public String getEventType() { return eventType; }
+    public void setEventType(String eventType) { this.eventType = eventType; }
     public Integer getAcceptedMembers() { return acceptedMembers; }
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }

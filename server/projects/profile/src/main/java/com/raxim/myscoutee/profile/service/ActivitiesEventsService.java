@@ -1,9 +1,11 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,6 +36,8 @@ import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsFilterRequestDto;
+import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
@@ -90,6 +94,7 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
+        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -136,6 +141,7 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryItemsByFilter(EventsFilterRequestDto request) {
+        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return List.of();
@@ -148,6 +154,7 @@ public class ActivitiesEventsService {
     }
 
     public EventsExplorePageDto queryActivitiesEventPage(EventsFilterRequestDto request) {
+        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return new EventsExplorePageDto(List.of(), 0, null);
@@ -180,6 +187,7 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryExploreItems(String requestedUserId) {
+        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -194,6 +202,7 @@ public class ActivitiesEventsService {
     }
 
     public EventsExplorePageDto queryEventExplorePage(EventsExploreQueryDto request) {
+        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return new EventsExplorePageDto(List.of(), 0, null);
@@ -245,8 +254,10 @@ public class ActivitiesEventsService {
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
+        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
+        String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
             return null;
         }
@@ -260,6 +271,19 @@ public class ActivitiesEventsService {
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
+        }
+
+        if (StringUtils.hasText(slotSourceId)) {
+            ActivityEvent slotRecord = computePreferredEventRecords(allEventDocuments()).stream()
+                    .filter(this::isGeneratedSlotRecord)
+                    .filter(record -> slotSourceId.equals(normalizeId(record.getSourceId())))
+                    .findFirst()
+                    .orElse(null);
+            if (slotRecord != null) {
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
+                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord);
+                return toEventRecordDto(buildMembershipProjection(viewer.userId(), slotRecord), viewer);
+            }
         }
 
         activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
@@ -304,6 +328,7 @@ public class ActivitiesEventsService {
             documentsToSave.add(eventsOverlay);
         }
         activityEventsRepository.saveAll(documentsToSave);
+        materializeSlotOccurrences();
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
     }
 
@@ -452,7 +477,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean shouldIncludeExploreRecord(ActivityEvent record, String activeUserId) {
-        if (record == null || Boolean.TRUE.equals(record.getIsTrashed()) || Boolean.TRUE.equals(record.getIsInvitation())) {
+        if (record == null || isGeneratedSlotRecord(record) || Boolean.TRUE.equals(record.getIsTrashed()) || Boolean.TRUE.equals(record.getIsInvitation())) {
             return false;
         }
         if (Boolean.FALSE.equals(record.getPublished())) {
@@ -510,6 +535,7 @@ public class ActivitiesEventsService {
         Integer distanceMetersExact = resolveDistanceMetersExact(viewer == null ? null : viewer.locationCoordinates(), record);
         List<String> acceptedMemberUserIds = resolveAcceptedMemberUserIds(record);
         List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record);
+        List<EventSlotOccurrenceDto> upcomingSlots = resolveUpcomingSlotOccurrences(record);
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
@@ -549,6 +575,14 @@ public class ActivitiesEventsService {
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
+                Boolean.TRUE.equals(record.getSlotsEnabled()),
+                cloneSlotTemplates(record.getSlotTemplates()),
+                safeText(record.getParentEventId()),
+                safeText(record.getSlotTemplateId()),
+                Boolean.TRUE.equals(record.getGenerated()),
+                isGeneratedSlotRecord(record) ? "slot" : "main",
+                upcomingSlots.isEmpty() ? null : upcomingSlots.get(0),
+                upcomingSlots,
                 acceptedMemberUserIds.size(),
                 pendingMemberUserIds.size(),
                 acceptedMemberUserIds,
@@ -758,6 +792,24 @@ public class ActivitiesEventsService {
                 .orElse(null);
         ActivityEvent document = existing == null ? new ActivityEvent() : cloneDocument(existing);
         String nowIso = Instant.now().toString();
+        String parentEventId = safeText(request.parentEventId());
+        if (!StringUtils.hasText(parentEventId) && existing != null) {
+            parentEventId = safeText(existing.getParentEventId());
+        }
+        String slotTemplateId = safeText(request.slotTemplateId());
+        if (!StringUtils.hasText(slotTemplateId) && existing != null) {
+            slotTemplateId = safeText(existing.getSlotTemplateId());
+        }
+        boolean generated = request.generated() != null
+                ? Boolean.TRUE.equals(request.generated())
+                : existing != null && Boolean.TRUE.equals(existing.getGenerated());
+        String requestedEventType = safeText(request.eventType());
+        if (!StringUtils.hasText(requestedEventType) && existing != null) {
+            requestedEventType = safeText(existing.getEventType());
+        }
+        boolean slotEvent = generated
+                || "slot".equalsIgnoreCase(requestedEventType)
+                || StringUtils.hasText(parentEventId);
 
         document.setId(resolveExistingId(ownerUserId, targetType, sourceId, existing));
         document.setSyncKey(resolveExistingSyncKey(ownerUserId, targetType, sourceId, existing == null ? request.syncKey() : existing.getSyncKey()));
@@ -802,6 +854,14 @@ public class ActivitiesEventsService {
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
+        document.setSlotsEnabled(slotEvent
+                ? false
+                : (request.slotsEnabled() != null ? request.slotsEnabled() : existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())));
+        document.setSlotTemplates(slotEvent ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        document.setParentEventId(slotEvent ? parentEventId : null);
+        document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
+        document.setGenerated(slotEvent && generated);
+        document.setEventType(slotEvent ? "slot" : "main");
         document.setAcceptedMembers(resolveAcceptedMembers(request));
         document.setPendingMembers(resolvePendingMembers(request));
         document.setTopics(normalizeStrings(request.topics()));
@@ -814,7 +874,9 @@ public class ActivitiesEventsService {
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(actorUserId);
-        document.setAdmins(resolveAdminUserIds(sourceId, document.getCreatorUserId()));
+        document.setAdmins(existing != null && existing.getAdmins() != null
+                ? new ArrayList<>(existing.getAdmins())
+                : resolveAdminUserIds(StringUtils.hasText(parentEventId) ? parentEventId : sourceId, document.getCreatorUserId()));
         document.normalizeLifecycleState();
         return document;
     }
@@ -1075,6 +1137,7 @@ public class ActivitiesEventsService {
         clone.setAdmins(new ArrayList<>(normalizeIds(source.getAdmins())));
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
+        clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
         clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
@@ -1209,6 +1272,267 @@ public class ActivitiesEventsService {
 
     private List<SubEventFormItemDto> cloneSubEvents(List<SubEventFormItemDto> items) {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
+        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    private boolean isGeneratedSlotRecord(ActivityEvent record) {
+        return record != null
+                && (Boolean.TRUE.equals(record.getGenerated())
+                        || "slot".equalsIgnoreCase(safeText(record.getEventType()))
+                        || StringUtils.hasText(normalizeId(record.getParentEventId())));
+    }
+
+    private boolean isSlotParentRecord(ActivityEvent record) {
+        return record != null
+                && Boolean.TRUE.equals(record.getSlotsEnabled())
+                && !isGeneratedSlotRecord(record)
+                && record.getSlotTemplates() != null
+                && !record.getSlotTemplates().isEmpty();
+    }
+
+    private void materializeSlotOccurrences() {
+        List<ActivityEvent> documents = allEventDocuments();
+        List<ActivityEvent> parents = computePreferredEventRecords(documents).stream()
+                .filter(this::isSlotParentRecord)
+                .toList();
+        if (parents.isEmpty()) {
+            return;
+        }
+
+        List<ActivityEvent> toSave = new ArrayList<>();
+        for (ActivityEvent parent : parents) {
+            Map<String, ActivityEvent> existingBySourceId = new LinkedHashMap<>();
+            for (ActivityEvent record : documents) {
+                if (isGeneratedSlotRecord(record)
+                        && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))) {
+                    existingBySourceId.put(normalizeId(record.getSourceId()), record);
+                }
+            }
+            for (ActivityEvent generated : buildGeneratedSlotRecordsForParent(parent, existingBySourceId)) {
+                ActivityEvent existing = existingBySourceId.get(normalizeId(generated.getSourceId()));
+                if (existing == null) {
+                    toSave.add(generated);
+                }
+            }
+        }
+        if (!toSave.isEmpty()) {
+            activityEventsRepository.saveAll(toSave);
+        }
+    }
+
+    private List<ActivityEvent> buildGeneratedSlotRecordsForParent(
+            ActivityEvent parent,
+            Map<String, ActivityEvent> existingBySourceId) {
+        LocalDateTime parentStart = toLocalDateTime(parent.getStartAtIso());
+        LocalDateTime parentEnd = toLocalDateTime(parent.getEndAtIso());
+        if (parentStart == null || parentEnd == null || !parentEnd.isAfter(parentStart)) {
+            return List.of();
+        }
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        LocalDateTime horizonStart = parentStart.isAfter(now.minusDays(1)) ? parentStart : now.minusDays(1);
+        LocalDateTime horizonEnd = parentEnd.isBefore(now.plusDays(45)) ? parentEnd : now.plusDays(45);
+        if (horizonEnd.isBefore(horizonStart)) {
+            return List.of();
+        }
+
+        List<ActivityEvent> records = new ArrayList<>();
+        String parentSourceId = normalizeId(parent.getSourceId());
+        String creatorUserId = normalizeId(parent.getCreatorUserId());
+        for (EventSlotTemplateDto template : cloneSlotTemplates(parent.getSlotTemplates())) {
+            if (template == null || !StringUtils.hasText(template.id())) {
+                continue;
+            }
+            LocalDateTime templateStart = toLocalDateTime(template.startAt());
+            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
+            if (templateStart == null || templateEnd == null) {
+                continue;
+            }
+            long durationMinutes = Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
+            for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
+                LocalDateTime occurrenceEnd = occurrenceStart.plusMinutes(durationMinutes);
+                if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
+                    continue;
+                }
+                String sourceId = buildGeneratedSlotSourceId(parentSourceId, template.id(), occurrenceStart);
+                ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
+                if (existing != null) {
+                    continue;
+                }
+                ActivityEvent next = new ActivityEvent();
+                String nowIso = Instant.now().toString();
+                next.setId(resolveExistingId(creatorUserId, TYPE_EVENTS, sourceId, existing));
+                next.setSyncKey(resolveExistingSyncKey(creatorUserId, TYPE_EVENTS, sourceId, existing == null ? null : existing.getSyncKey()));
+                next.setSourceId(sourceId);
+                next.setOwnerUserId(creatorUserId);
+                next.setType(TYPE_EVENTS);
+                next.setAvatar(parent.getAvatar());
+                next.setTitle(parent.getTitle());
+                next.setSubtitle(parent.getSubtitle());
+                next.setTimeframe(buildGeneratedSlotTimeframe(occurrenceStart, occurrenceEnd));
+                next.setInviter(null);
+                next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
+                next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
+                next.setIsAdmin(true);
+                next.setIsInvitation(false);
+                next.setIsHosting(false);
+                next.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
+                next.setPublished(Boolean.FALSE.equals(parent.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
+                next.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
+                next.setCreatorUserId(creatorUserId);
+                next.setCreatorName(parent.getCreatorName());
+                next.setCreatorInitials(parent.getCreatorInitials());
+                next.setCreatorGender(parent.getCreatorGender());
+                next.setCreatorCity(parent.getCreatorCity());
+                next.setVisibility(parent.getVisibility());
+                next.setBlindMode(parent.getBlindMode());
+                next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
+                next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
+                next.setDistanceKm(null);
+                next.setImageUrl(StringUtils.hasText(safeText(existing == null ? null : existing.getImageUrl()))
+                        ? existing.getImageUrl()
+                        : parent.getImageUrl());
+                next.setSourceLink(StringUtils.hasText(safeText(existing == null ? null : existing.getSourceLink()))
+                        ? existing.getSourceLink()
+                        : parent.getSourceLink());
+                next.setLocation(StringUtils.hasText(safeText(existing == null ? null : existing.getLocation()))
+                        ? existing.getLocation()
+                        : parent.getLocation());
+                next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
+                next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
+                next.setCapacityMin(parent.getCapacityMin());
+                next.setCapacityMax(parent.getCapacityMax());
+                next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
+                next.setAutoInviter(parent.getAutoInviter());
+                next.setFrequency(parent.getFrequency());
+                next.setTicketing(parent.getTicketing());
+                next.setSlotsEnabled(false);
+                next.setSlotTemplates(List.of());
+                next.setParentEventId(parentSourceId);
+                next.setSlotTemplateId(template.id());
+                next.setGenerated(true);
+                next.setEventType("slot");
+                next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
+                next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
+                next.setTopics(normalizeStrings(parent.getTopics()));
+                next.setSubEvents(cloneSubEvents(parent.getSubEvents()));
+                next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
+                next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
+                next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
+                next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
+                next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
+                next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
+                next.setUpdatedDate(nowIso);
+                next.setUpdatedUser(creatorUserId);
+                next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
+                next.normalizeLifecycleState();
+                records.add(next);
+            }
+        }
+        return records;
+    }
+
+    private List<EventSlotOccurrenceDto> resolveUpcomingSlotOccurrences(ActivityEvent record) {
+        if (!isSlotParentRecord(record)) {
+            return List.of();
+        }
+        String parentSourceId = normalizeId(record.getSourceId());
+        long nowMs = System.currentTimeMillis() - (60L * 60L * 1000L);
+        return computePreferredEventRecords(allEventDocuments()).stream()
+                .filter(this::isGeneratedSlotRecord)
+                .filter(item -> parentSourceId.equals(normalizeId(item.getParentEventId())))
+                .filter(item -> !Boolean.TRUE.equals(item.getIsTrashed()))
+                .filter(item -> toSortableDate(item.getEndAtIso()) >= nowMs)
+                .sorted(Comparator.comparing(item -> toSortableDate(item.getStartAtIso())))
+                .map(item -> new EventSlotOccurrenceDto(
+                        normalizeId(item.getSourceId()),
+                        parentSourceId,
+                        safeText(item.getSlotTemplateId()),
+                        safeText(item.getTitle()),
+                        safeText(item.getTimeframe()),
+                        safeText(item.getStartAtIso()),
+                        safeText(item.getEndAtIso()),
+                        normalizeCount(item.getCapacityTotal()),
+                        resolveAcceptedMemberUserIds(item).size(),
+                        resolvePendingMemberUserIds(item).size()))
+                .toList();
+    }
+
+    private String buildGeneratedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime occurrenceStart) {
+        return parentEventId + ":slot:" + slotTemplateId + ":" + occurrenceStart.toInstant(ZoneOffset.UTC);
+    }
+
+    private String buildGeneratedSlotTimeframe(LocalDateTime startAt, LocalDateTime endAt) {
+        return startAt.toLocalDate() + " · "
+                + String.format("%02d:%02d", startAt.getHour(), startAt.getMinute())
+                + " - "
+                + String.format("%02d:%02d", endAt.getHour(), endAt.getMinute());
+    }
+
+    private List<LocalDateTime> generateSlotOccurrenceStarts(
+            String frequency,
+            LocalDateTime templateStart,
+            LocalDateTime horizonStart,
+            LocalDateTime horizonEnd) {
+        String normalizedFrequency = safeText(frequency).toLowerCase();
+        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency)) {
+            return !templateStart.isBefore(horizonStart) && !templateStart.isAfter(horizonEnd)
+                    ? List.of(templateStart)
+                    : List.of();
+        }
+
+        List<LocalDateTime> starts = new ArrayList<>();
+        LocalDate cursor = horizonStart.toLocalDate();
+        LocalDate endDate = horizonEnd.toLocalDate();
+        while (!cursor.isAfter(endDate)) {
+            if (matchesSlotFrequency(cursor, templateStart, normalizedFrequency)) {
+                LocalDateTime candidate = cursor.atTime(templateStart.toLocalTime());
+                if (!candidate.isBefore(horizonStart) && !candidate.isAfter(horizonEnd)) {
+                    starts.add(candidate);
+                }
+            }
+            cursor = cursor.plusDays(1);
+        }
+        return starts;
+    }
+
+    private boolean matchesSlotFrequency(LocalDate date, LocalDateTime templateStart, String frequency) {
+        if ("daily".equals(frequency)) {
+            return true;
+        }
+        if ("weekly".equals(frequency)) {
+            return date.getDayOfWeek() == templateStart.getDayOfWeek();
+        }
+        if ("bi-weekly".equals(frequency) || "biweekly".equals(frequency)) {
+            if (date.getDayOfWeek() != templateStart.getDayOfWeek()) {
+                return false;
+            }
+            long weeksBetween = ChronoUnit.WEEKS.between(templateStart.toLocalDate(), date);
+            return weeksBetween >= 0L && weeksBetween % 2L == 0L;
+        }
+        if ("monthly".equals(frequency)) {
+            int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
+            return date.getDayOfMonth() == day;
+        }
+        return false;
+    }
+
+    private LocalDateTime toLocalDateTime(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        try {
+            return Instant.parse(value.trim()).atOffset(ZoneOffset.UTC).toLocalDateTime();
+        } catch (DateTimeParseException ignored) {
+            try {
+                return LocalDateTime.parse(value.trim());
+            } catch (DateTimeParseException secondIgnored) {
+                return null;
+            }
+        }
     }
 
     private LocationCoordinatesDto cloneLocation(LocationCoordinatesDto value) {

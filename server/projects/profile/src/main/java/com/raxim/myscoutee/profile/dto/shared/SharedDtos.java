@@ -53,6 +53,25 @@ public final class SharedDtos {
             Integer suppliesCapacityMax) {
     }
 
+    public record EventSlotTemplateDto(
+            String id,
+            String startAt,
+            String endAt) {
+    }
+
+    public record EventSlotOccurrenceDto(
+            String id,
+            String parentEventId,
+            String slotTemplateId,
+            String title,
+            String timeframe,
+            String startAtIso,
+            String endAtIso,
+            Integer capacityTotal,
+            Integer acceptedMembers,
+            Integer pendingMembers) {
+    }
+
     public record ActivityMemberOwnerRefDto(
             String ownerType,
             String ownerId) {
