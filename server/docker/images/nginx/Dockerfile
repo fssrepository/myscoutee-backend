@@ -1,8 +1,14 @@
 FROM nginx:1.21.0
 
+ARG TZ=Europe/Brussels
+ENV TZ=${TZ}
+
 RUN apt-get update &&\
-    apt-get install -y cron nano curl inotify-tools &&\
-    apt-get clean
+    apt-get install -y cron nano curl inotify-tools tzdata &&\
+    ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime &&\
+    echo "${TZ}" > /etc/timezone &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/*
 
 #wait
 COPY wait-for-it.sh /scripts/wait-for-it.sh

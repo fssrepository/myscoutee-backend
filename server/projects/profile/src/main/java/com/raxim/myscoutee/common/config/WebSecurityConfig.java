@@ -37,7 +37,7 @@ public class WebSecurityConfig {
         return (web) -> web
                 .ignoring()
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico",
-                        "/user/profile/images/**", "/games/*/*/images/**", "user/cars/*/images/**",
+                        "/user/profile/images/**", "/games/*/*/images/**", "/media/public/**", "user/cars/*/images/**",
                         "user/groups/images/**", "history/events/*/members/*/images/**");
     }
 
@@ -50,7 +50,8 @@ public class WebSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests.requestMatchers("/health", "/metrics", "/shutdown", "/error").permitAll();
+                    authorizeRequests.requestMatchers("/health", "/metrics", "/shutdown", "/error", "/media/public/**")
+                            .permitAll();
                     if (!configProperties.isFirebaseEnabled()) {
                         authorizeRequests.anyRequest().permitAll();
                     } else if (configProperties.isChatOnlyMode()) {

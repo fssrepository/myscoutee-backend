@@ -276,6 +276,28 @@ public class HomeUserProfileService {
         return toUserDto(syncComputedUserActivities(saved));
     }
 
+    public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
+        String resolvedUserId = resolveSelectedUserId(requestedUserId);
+        int normalizedSlotIndex = slotIndex == null ? -1 : slotIndex.intValue();
+        String normalizedImageUrl = nullToEmpty(imageUrl);
+        if (!StringUtils.hasText(resolvedUserId) || normalizedSlotIndex < 0 || !StringUtils.hasText(normalizedImageUrl)) {
+            return;
+        }
+
+        Users user = usersRepository.findByUserId(resolvedUserId).orElse(null);
+        if (user == null) {
+            return;
+        }
+
+        List<String> slots = new ArrayList<>(normalizeStrings(user.getImages()));
+        while (slots.size() <= normalizedSlotIndex) {
+            slots.add("");
+        }
+        slots.set(normalizedSlotIndex, normalizedImageUrl);
+        user.setImages(normalizeStrings(slots));
+        usersRepository.save(user);
+    }
+
     public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
         Users currentUser = resolveCurrentUser(null);
         String userId = normalizeId(currentUser == null ? null : currentUser.getId());

@@ -3,12 +3,14 @@ package com.raxim.myscoutee.profile.controller.auth;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserByIdResponseDto;
@@ -23,14 +25,19 @@ import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollRespons
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
+import com.raxim.myscoutee.profile.service.MediaStorageService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final HomeUserProfileService homeUserProfileService;
+    private final MediaStorageService mediaStorageService;
 
-    public AuthController(HomeUserProfileService homeUserProfileService) {
+    public AuthController(
+            HomeUserProfileService homeUserProfileService,
+            MediaStorageService mediaStorageService) {
         this.homeUserProfileService = homeUserProfileService;
+        this.mediaStorageService = mediaStorageService;
     }
 
     @GetMapping("/demo-users")
@@ -83,8 +90,11 @@ public class AuthController {
             @RequestParam("userId") String userId,
             @RequestParam("slotIndex") Integer slotIndex,
             @RequestParam("image") MultipartFile image) {
-        String fileName = image != null && image.getOriginalFilename() != null ? image.getOriginalFilename() : "profile.jpg";
-        String imageUrl = "/user/profile/images/" + userId + "/" + slotIndex + "/" + fileName;
+        String imageUrl = mediaStorageService.storeImage("profile", userId, String.valueOf(slotIndex), image);
+        if (imageUrl == null) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Profile image upload unavailable.");
+        }
+        homeUserProfileService.saveUserProfileImage(userId, slotIndex, imageUrl);
         return new UserProfileImageUploadResponseDto(imageUrl, imageUrl);
     }
 }

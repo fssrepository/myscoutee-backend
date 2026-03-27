@@ -42,6 +42,9 @@ sourceSets {
 dependencies {
 	implementation 'com.google.firebase:firebase-admin:7.1.1'
 	implementation 'org.apache.httpcomponents:httpasyncclient'
+	implementation 'org.jsoup:jsoup:1.18.1'
+	implementation 'software.amazon.awssdk:s3:2.32.20'
+	implementation 'software.amazon.awssdk:url-connection-client:2.32.20'
 
 	implementation ('com.querydsl:querydsl-mongodb') {
 		exclude group: 'org.mongodb', module: 'mongo-java-driver'

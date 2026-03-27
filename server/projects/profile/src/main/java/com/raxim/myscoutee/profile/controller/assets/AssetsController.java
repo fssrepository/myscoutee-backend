@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
+import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
@@ -52,5 +54,10 @@ public class AssetsController {
     @PostMapping("/delete")
     public void delete(@RequestBody AssetDeleteRequestDto request) {
         assetsService.delete(request);
+    }
+
+    @PostMapping("/refresh-from-source")
+    public AssetSourceRefreshResponseDto refreshFromSource(@RequestBody AssetSourceRefreshRequestDto request) {
+        return assetsService.refreshFromSource(request);
     }
 }

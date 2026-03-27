@@ -24,6 +24,22 @@ public final class AssetsDtos {
             String assetId) {
     }
 
+    public record AssetSourceRefreshRequestDto(
+            String userId,
+            String type,
+            String sourceLink) {
+    }
+
+    public record AssetSourceRefreshResponseDto(
+            Boolean enabled,
+            Boolean supported,
+            String normalizedUrl,
+            String title,
+            String subtitle,
+            String details,
+            String imageUrl) {
+    }
+
     public record AssetTicketsPageDto(
             List<EventRecordDto> records,
             Integer total) {
