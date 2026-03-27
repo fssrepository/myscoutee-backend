@@ -11,7 +11,9 @@ if [ ! -d "${seed_dir}" ]; then
 fi
 
 find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
-  if ! grep -q '[^[:space:]\[\]]' "${jsonfile}"; then
+  # All seed files are JSON arrays of documents. If the file contains no object
+  # start at all, it is just an empty array like "[]", which mongoimport rejects.
+  if ! grep -q '{' "${jsonfile}"; then
     echo "Skipping empty JSON array seed ${jsonfile}"
     continue
   fi
