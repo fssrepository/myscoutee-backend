@@ -16,10 +16,3 @@ git config --global user.password {personal access token - Profile -> Settings -
 gradle build
 docker compose build --no-cache
 docker compose up
-
-(time sync in docker) RUN apk add --update busybox-suid && apk --update add tzdata && cp /usr/share/zoneinfo/Europe/Brussels /etc/localtime - the dockers' time should be in sync
-assets, you have a refresh button on the ui form, next to the link input text, on that the server can scrap (booking.com link which backend scraps with og: tags (Open Graph technology - you can scrap summary from html)) - naturally you need to identify which page is using og at all (so you might have a dedicated list of urls, if the url is matching then call)
-the feature of this refresh could be disabled - no ui button and no backend
-badge - red counter, if more than 9, than 9+ (so only 2 digits appears - space)
-
-image upload - object store (for profile editor/event editor etc.) - can you introduce (probably there is a docker image for that - later on we might switch to s3, so it should be easily configureable) and wire up and to end?
