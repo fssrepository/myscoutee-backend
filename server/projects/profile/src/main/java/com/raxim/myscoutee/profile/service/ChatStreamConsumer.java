@@ -37,9 +37,7 @@ public class ChatStreamConsumer {
     @Scheduled(fixedDelayString = "${chat.stream.poll-delay-ms:250}")
     public void poll() {
         try {
-            List<MapRecord<String, Object, Object>> records = stringRedisTemplate.opsForStream().read(
-                    StreamReadOptions.empty().count(100),
-                    StreamOffset.create(ChatStreamPublisher.STREAM_KEY, ReadOffset.from(lastSeenId)));
+            List<MapRecord<String, Object, Object>> records = readRecords();
             if (streamUnavailableLogged) {
                 LOGGER.info("Chat Redis stream consumer reconnected.");
                 streamUnavailableLogged = false;
@@ -66,5 +64,12 @@ public class ChatStreamConsumer {
                 streamUnavailableLogged = true;
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<MapRecord<String, Object, Object>> readRecords() {
+        return stringRedisTemplate.opsForStream().read(
+                StreamReadOptions.empty().count(100),
+                StreamOffset.create(ChatStreamPublisher.STREAM_KEY, ReadOffset.from(lastSeenId)));
     }
 }

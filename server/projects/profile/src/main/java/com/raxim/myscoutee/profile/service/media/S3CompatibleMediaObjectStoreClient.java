@@ -13,12 +13,12 @@ import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
-import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -60,7 +60,7 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
                     .build();
             ResponseBytes<GetObjectResponse> bytes = s3Client.getObjectAsBytes(request);
             return new StoredObject(bytes.asByteArray(), safeText(bytes.response().contentType()));
-        } catch (NoSuchKeyException | S3Exception ex) {
+        } catch (S3Exception ex) {
             return null;
         }
     }
@@ -70,7 +70,7 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
             return null;
         }
         try {
-            S3Client.Builder builder = S3Client.builder()
+            S3ClientBuilder builder = S3Client.builder()
                     .region(Region.of(StringUtils.hasText(safeText(storageProperties.getRegion()))
                             ? storageProperties.getRegion().trim()
                             : "eu-central-1"))

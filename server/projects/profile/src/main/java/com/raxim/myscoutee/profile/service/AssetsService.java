@@ -670,7 +670,13 @@ public class AssetsService {
             return document;
         }
         if (raw instanceof Map<?, ?> map) {
-            return new Document((Map<String, Object>) map);
+            Document document = new Document();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                if (entry.getKey() instanceof String key) {
+                    document.put(key, entry.getValue());
+                }
+            }
+            return document;
         }
         return new Document();
     }
