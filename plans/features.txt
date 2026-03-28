@@ -24,9 +24,11 @@ You can borrow items from a foreigner (assets (accomodation/car/suplies) with pu
 Assets can be filtered by capacity, availability, topic (very similar screen then the event explore)
 Assets can have price tag (we haven't introduced purse for public/friends event also)
 
-Speed
------
+mobile issues:
 1) scrolling animation speed up in most of the places
+2) clicking on the chat message input text - it's breaking the scroll probably - we need to make it detacheable
+3) chat scroll seems to be slow, something bad is happening
 
-2) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
-3) put a contacts button to show assign members popup without basket
+---
+3) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
+4) put a contacts button to show assign members popup without basket
