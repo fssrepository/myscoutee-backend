@@ -5,7 +5,7 @@ import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.raxim.myscoutee.common.merge.Mergeable;
+import com.raxim.myscoutee.algo.util.Mergeable;
 
 public class CNode implements Mergeable<CNode>, Comparable<CNode> {
 

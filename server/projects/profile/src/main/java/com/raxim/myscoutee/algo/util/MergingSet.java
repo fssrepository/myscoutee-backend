@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.common.merge;
+package com.raxim.myscoutee.algo.util;
 
 import java.util.Collection;
 import java.util.HashSet;

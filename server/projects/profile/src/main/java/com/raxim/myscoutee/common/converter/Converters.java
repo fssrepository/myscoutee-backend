@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.converter;
+package com.raxim.myscoutee.common.converter;
 
 import java.util.ArrayList;
 import java.util.List;

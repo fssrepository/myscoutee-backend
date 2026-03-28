@@ -3,8 +3,8 @@ package com.raxim.myscoutee.algo.dto;
 import java.util.Arrays;
 import java.util.List;
 
-import com.raxim.myscoutee.common.merge.Mergeable;
-import com.raxim.myscoutee.common.merge.MergingSet;
+import com.raxim.myscoutee.algo.util.Mergeable;
+import com.raxim.myscoutee.algo.util.MergingSet;
 
 /*
  * connected graph

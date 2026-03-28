@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.converter;
+package com.raxim.myscoutee.common.converter;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

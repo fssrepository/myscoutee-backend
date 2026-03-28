@@ -2,7 +2,7 @@ package com.raxim.myscoutee.algo.dto;
 
 import java.util.List;
 
-import com.raxim.myscoutee.common.merge.MergingSet;
+import com.raxim.myscoutee.algo.util.MergingSet;
 
 /*
  * disjoint graph
