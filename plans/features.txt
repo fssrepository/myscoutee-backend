@@ -31,4 +31,3 @@ Speed
 2) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
 
 3) put a contacts button to show assign members popup without basket
-4) on profile editor the school/workspace item can be loaded from a cv (pdf/docx parse)
