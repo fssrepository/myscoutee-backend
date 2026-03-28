@@ -63,6 +63,8 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class HomeUserProfileService {
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
+    private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
+    private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
@@ -613,6 +615,8 @@ public class HomeUserProfileService {
     private List<Users> orderedUsers() {
         return usersRepository.findAll().stream()
                 .filter(this::isUsableUserDocument)
+                .map(this::syncComputedUserPartition)
+                .filter(Objects::nonNull)
                 .sorted(userComparator())
                 .toList();
     }
@@ -864,7 +868,10 @@ public class HomeUserProfileService {
         if (regionSecurityProperties.isEnabled() && user.locationCoordinates() != null && !StringUtils.hasText(resolvedPartitionKey)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
         }
-        document.setPartitionKey(resolvedPartitionKey);
+        document.setPartitionKey(resolveStoredPartitionKey(
+                user.locationCoordinates(),
+                current == null ? null : current.getPartitionKey(),
+                current));
         document.setImages(normalizeStrings(user.images()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
         String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus()))
@@ -895,13 +902,46 @@ public class HomeUserProfileService {
             return null;
         }
 
-        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(toLocationCoordinatesDto(user.getLocationCoordinates()));
+        String resolvedPartitionKey = resolveStoredPartitionKey(
+                toLocationCoordinatesDto(user.getLocationCoordinates()),
+                user.getPartitionKey(),
+                user);
         if (Objects.equals(nullToEmpty(user.getPartitionKey()), nullToEmpty(resolvedPartitionKey))) {
             return user;
         }
 
         user.setPartitionKey(resolvedPartitionKey);
         return usersRepository.save(user);
+    }
+
+    private String resolveStoredPartitionKey(
+            LocationCoordinatesDto coordinates,
+            String currentPartitionKey,
+            Users partitionOwner) {
+        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(coordinates);
+        if (StringUtils.hasText(resolvedPartitionKey)) {
+            return resolvedPartitionKey;
+        }
+
+        String normalizedCurrentPartitionKey = safeText(currentPartitionKey);
+        if (StringUtils.hasText(normalizedCurrentPartitionKey)) {
+            return normalizedCurrentPartitionKey;
+        }
+
+        return isSeedLikeHungaryUser(partitionOwner) ? DEFAULT_SEED_PARTITION_KEY : null;
+    }
+
+    private boolean isSeedLikeHungaryUser(Users user) {
+        if (user == null) {
+            return false;
+        }
+
+        return normalizeStrings(user.getImages()).stream()
+                .anyMatch(this::isSeedImageUrl);
+    }
+
+    private boolean isSeedImageUrl(String value) {
+        return safeText(value).contains(SEED_USER_IMAGE_HOST);
     }
 
     private Users.UserActivitiesRecord buildComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {

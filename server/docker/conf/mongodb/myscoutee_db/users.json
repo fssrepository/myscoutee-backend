@@ -134,6 +134,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Empatikus",
     "syncKey": "aeda4d98-e210-55b7-a888-7a15acb4cc58",
+    "partitionKey": "country:hu",
     "userId": "bf057de7c586eede7e84bdc7"
   },
   {
@@ -178,6 +179,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Megbízható",
     "syncKey": "f621a5a2-5d1c-5078-94e4-9f4757007eca",
+    "partitionKey": "country:hu",
     "userId": "b29df68956f3fe15e04558de"
   },
   {
@@ -315,6 +317,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Kreatív",
     "syncKey": "9b85707e-468c-5f08-ab3c-a5068cde1346",
+    "partitionKey": "country:hu",
     "userId": "9f3b3f085e23af6c89dbc432"
   },
   {
@@ -451,6 +454,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "776cc29f-72d5-50e2-98d8-4f0048ee03c0",
+    "partitionKey": "country:hu",
     "userId": "1b1c70be2349b3359a8f6f94"
   },
   {
@@ -495,6 +499,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "bb89ba15-b6a7-59b8-8ba2-871c2e57ad4b",
+    "partitionKey": "country:hu",
     "userId": "178e8d0cbe164fa3fede5884"
   },
   {
@@ -539,6 +544,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Adventurer",
     "syncKey": "dbe14c26-4c24-5276-a4fe-0d5d1f8e2992",
+    "partitionKey": "country:hu",
     "userId": "f4b2ebd8f56628ab7df58221"
   },
   {
@@ -582,6 +588,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Playful Spirit",
     "syncKey": "f9cb848b-b73b-5124-b0e7-6132bc57566a",
+    "partitionKey": "country:hu",
     "userId": "cdd937e0adcbd1a5e38f3ceb"
   },
   {
@@ -626,6 +633,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Ambitious Go-Getter",
     "syncKey": "7824323d-7b9a-544d-9d63-e43563f6ea3d",
+    "partitionKey": "country:hu",
     "userId": "1d7d3545ba5e0f1d63918589"
   },
   {
@@ -669,6 +677,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Creative Soul",
     "syncKey": "e30b5854-a2cd-58d9-aa41-ef01601f367b",
+    "partitionKey": "country:hu",
     "userId": "7822c5f99eff99d63abe8933"
   },
   {
@@ -713,6 +722,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Reliable One",
     "syncKey": "55100d80-2ca1-5ae3-a763-c48dcbf38c4d",
+    "partitionKey": "country:hu",
     "userId": "d182041b8a54132d5168034f"
   },
   {
@@ -756,6 +766,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "d8c8b4fc-7cf1-57bb-82f1-fa1cdb9a529a",
+    "partitionKey": "country:hu",
     "userId": "d04cd419e735549e3f312977"
   },
   {
@@ -800,6 +811,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "f1facb67-629c-5157-8856-e8b3214cc722",
+    "partitionKey": "country:hu",
     "userId": "eb1ca0b761885bb0763e2929"
   },
   {
@@ -844,6 +856,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Empatikus",
     "syncKey": "908db772-851d-5afe-886b-bcdf03b9bddd",
+    "partitionKey": "country:hu",
     "userId": "fcad6954169063f106a7a240"
   },
   {
@@ -888,6 +901,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Megbízható",
     "syncKey": "bd1c28f3-d3ab-5798-8b12-60951ab211e8",
+    "partitionKey": "country:hu",
     "userId": "2d520f3c98b0440c1556f4af"
   },
   {
@@ -932,6 +946,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Kreatív",
     "syncKey": "fee932e2-0e2a-5a24-bbf5-65abe9f63c9b",
+    "partitionKey": "country:hu",
     "userId": "0216b1ceb256d6f2c89073b8"
   },
   {
@@ -975,6 +990,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "7230b437-5ada-5cb1-ba9a-4ffcb15abd5d",
+    "partitionKey": "country:hu",
     "userId": "eac11b0685f9799953a40dd4"
   },
   {
@@ -1019,6 +1035,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "4f1c17d9-2c81-57b8-b3df-232f11cdd112",
+    "partitionKey": "country:hu",
     "userId": "7313a9379f60200cba7b9f71"
   },
   {
@@ -1063,6 +1080,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Adventurer",
     "syncKey": "e7038872-ccc0-5947-b29e-70f8a73305d3",
+    "partitionKey": "country:hu",
     "userId": "f6f22ba0a6f14cfcf4585d47"
   },
   {
@@ -1106,6 +1124,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Playful Spirit",
     "syncKey": "e92dadff-cacd-5259-ab98-1660be66b90e",
+    "partitionKey": "country:hu",
     "userId": "0c3ab5da9af33d4e688e809c"
   },
   {
@@ -1150,6 +1169,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Ambitious Go-Getter",
     "syncKey": "59448baf-715c-57a4-8372-f2e1275780f1",
+    "partitionKey": "country:hu",
     "userId": "76da95a9109da485555c0d25"
   },
   {
@@ -1193,6 +1213,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Creative Soul",
     "syncKey": "2a2c99ed-f678-506d-adcb-3fe422fef22c",
+    "partitionKey": "country:hu",
     "userId": "0b8e5df4ec85d858c304a350"
   },
   {
@@ -1237,6 +1258,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Reliable One",
     "syncKey": "e10fa893-194d-5964-b81a-ba09a556d507",
+    "partitionKey": "country:hu",
     "userId": "4da20eb049179e73d4757808"
   },
   {
@@ -1280,6 +1302,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "8874bc3d-67fa-52ad-b687-a270a678bf41",
+    "partitionKey": "country:hu",
     "userId": "9184901a15076d32ea8b626f"
   },
   {
@@ -1324,6 +1347,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "9e66b6f0-2ad1-5cc9-b5e6-636c68a78085",
+    "partitionKey": "country:hu",
     "userId": "e1dccfc3443239865c6ac69a"
   },
   {
@@ -1368,6 +1392,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Empatikus",
     "syncKey": "a4772bcf-79fb-51d0-984a-021db1c23e65",
+    "partitionKey": "country:hu",
     "userId": "4b5bad1292fb6db05dc0e455"
   },
   {
@@ -1412,6 +1437,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Megbízható",
     "syncKey": "eaf35db9-f7da-599c-9baf-bea3bc38d67b",
+    "partitionKey": "country:hu",
     "userId": "ed4924c22a5240a54e48c0b5"
   },
   {
@@ -1456,6 +1482,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Kreatív",
     "syncKey": "7c22191b-11fe-50fc-9192-a883c27da918",
+    "partitionKey": "country:hu",
     "userId": "a0fb804ad6f347d6a9dab526"
   },
   {
@@ -1499,6 +1526,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "53fdc3ea-2a62-5be2-a5a2-d620426a1a97",
+    "partitionKey": "country:hu",
     "userId": "0f9350e50f1ffc3cf002b7ed"
   },
   {
@@ -1543,6 +1571,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "59a2e803-7172-5396-870e-d22a71b01f13",
+    "partitionKey": "country:hu",
     "userId": "9d3ba3d74edabe4695e6d3f9"
   },
   {
@@ -1587,6 +1616,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Adventurer",
     "syncKey": "9e851190-e366-5da6-bd40-bf7dc0b1ec79",
+    "partitionKey": "country:hu",
     "userId": "8f6ff3752a1f0912cd63e912"
   },
   {
@@ -1630,6 +1660,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Playful Spirit",
     "syncKey": "570f474f-3f68-59db-93fc-aa343a1256a0",
+    "partitionKey": "country:hu",
     "userId": "b0971e779dbdb71f9327eabb"
   },
   {
@@ -1674,6 +1705,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Ambitious Go-Getter",
     "syncKey": "e61c678b-b373-5e29-a0e2-86090a07841d",
+    "partitionKey": "country:hu",
     "userId": "af0436815ab38f4864dd1e24"
   },
   {
@@ -1717,6 +1749,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Creative Soul",
     "syncKey": "8308df43-bfb4-5608-a990-cf0da7ca980f",
+    "partitionKey": "country:hu",
     "userId": "d94ebcdf7bf9c8f33bb3f32c"
   },
   {
@@ -1761,6 +1794,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Reliable One",
     "syncKey": "e69bb7d8-e8e0-5b31-8a18-a8d2c94f94f6",
+    "partitionKey": "country:hu",
     "userId": "904ee3c526298f6921cde3f3"
   },
   {
@@ -1804,6 +1838,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "c5153aef-058c-5b6d-a51e-bb59fc91b7a9",
+    "partitionKey": "country:hu",
     "userId": "4a008502646a200488911f45"
   },
   {
@@ -1848,6 +1883,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "b486c1a9-bc9c-5894-a379-63396363e85e",
+    "partitionKey": "country:hu",
     "userId": "e904dad402b47dd2cdaa8bec"
   },
   {
@@ -1892,6 +1928,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Empatikus",
     "syncKey": "9faf3fe4-0174-5a94-9e7a-00c8e68cf94d",
+    "partitionKey": "country:hu",
     "userId": "25f4744ead36d038064d62c3"
   },
   {
@@ -1936,6 +1973,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Megbízható",
     "syncKey": "98984e81-21d0-5219-a980-7bd1edb1f4b2",
+    "partitionKey": "country:hu",
     "userId": "c100132b3ae88b47890def59"
   },
   {
@@ -1980,6 +2018,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Kreatív",
     "syncKey": "68636114-53b9-57fe-8c61-6f166610e6a0",
+    "partitionKey": "country:hu",
     "userId": "c033e546ef7c928fb8cf073b"
   },
   {
@@ -2023,6 +2062,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "cf5cfc3e-86c4-5957-a989-1b4d2ef836e1",
+    "partitionKey": "country:hu",
     "userId": "ec342d9af3f2cfd6adfd4ee5"
   },
   {
@@ -2067,6 +2107,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "b2be1322-f849-5266-8b75-7824b8b23c43",
+    "partitionKey": "country:hu",
     "userId": "931a01221376d8e28a068fe8"
   },
   {
@@ -2111,6 +2152,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Adventurer",
     "syncKey": "004a61ab-2fa9-522c-992d-e57f29f86310",
+    "partitionKey": "country:hu",
     "userId": "23820c1e76d3bd843f61c799"
   },
   {
@@ -2154,6 +2196,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Playful Spirit",
     "syncKey": "cbae02bd-8c5f-5a87-aa99-616129aada59",
+    "partitionKey": "country:hu",
     "userId": "63bae8417bd352e5013c2e93"
   },
   {
@@ -2198,6 +2241,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Ambitious Go-Getter",
     "syncKey": "2ea076b3-9c67-57e9-b4eb-56ef03baf069",
+    "partitionKey": "country:hu",
     "userId": "41f4659dbd75a03abc20cd6d"
   },
   {
@@ -2241,6 +2285,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Creative Soul",
     "syncKey": "a7c85249-5b48-5d4e-bf46-51eb1b4d063a",
+    "partitionKey": "country:hu",
     "userId": "af70e41dbe826cbd7d8b3500"
   },
   {
@@ -2285,6 +2330,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Reliable One",
     "syncKey": "c54133e8-4eea-56ed-8d19-29833e9fdd25",
+    "partitionKey": "country:hu",
     "userId": "0cc9990d08304ab26ee67784"
   },
   {
@@ -2328,6 +2374,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Deep Thinker",
     "syncKey": "c543a956-f1a8-5905-8a19-e9efe0256922",
+    "partitionKey": "country:hu",
     "userId": "e76d63199eff33a6945cb797"
   },
   {
@@ -2372,6 +2419,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Social Charmer",
     "syncKey": "0fdfbe29-d92b-5815-90d2-a0766432a35f",
+    "partitionKey": "country:hu",
     "userId": "f01086c19a00a6f46b6d41a7"
   },
   {
@@ -2416,6 +2464,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Empatikus",
     "syncKey": "9174d349-67a3-5e8d-8711-9313952caaca",
+    "partitionKey": "country:hu",
     "userId": "f7bcd28c65ea349b4ee7aed2"
   },
   {
@@ -2460,6 +2509,7 @@
     "statusText": "Recently Active",
     "traitLabel": "Megbízható",
     "syncKey": "4cffc1d1-a0a2-5287-bcc7-763f87e91188",
+    "partitionKey": "country:hu",
     "userId": "b5e2db6882d989d8532af12c"
   }
 ]

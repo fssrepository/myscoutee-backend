@@ -64,7 +64,7 @@ public class CountryPartitionService {
                 .connectTimeout(Duration.ofSeconds(20))
                 .build();
         this.mongoTemplate.indexOps(CountryPartition.class)
-                .ensureIndex(new GeospatialIndex("geometry")
+                .createIndex(new GeospatialIndex("geometry")
                         .typed(GeoSpatialIndexType.GEO_2DSPHERE)
                         .named("country_partition_geometry"));
     }
@@ -105,9 +105,9 @@ public class CountryPartitionService {
         document.setPartitionKey(normalizedPartitionKey);
         document.setCountryCode(resolveCountryCode(normalizedCountryCode, match));
         document.setCountryName(resolveCountryName(normalizedCountryName, match));
-        document.setDisplayName(safeText(match.path("display_name").asText()));
+        document.setDisplayName(readText(match.path("display_name")));
         document.setSource(OSM_SOURCE);
-        document.setOsmType(safeText(match.path("osm_type").asText()));
+        document.setOsmType(readText(match.path("osm_type")));
         document.setOsmId(match.path("osm_id").isNumber() ? match.path("osm_id").asLong() : null);
         document.setSpecificity(DEFAULT_COUNTRY_SPECIFICITY);
         document.setImportedAtIso(Instant.now().toString());
@@ -188,7 +188,7 @@ public class CountryPartitionService {
     }
 
     private GeoJsonMultiPolygon toMultiPolygon(JsonNode geoJson) {
-        String type = safeText(geoJson.path("type").asText());
+        String type = readText(geoJson.path("type"));
         JsonNode coordinates = geoJson.path("coordinates");
         if (!coordinates.isArray() || coordinates.isEmpty()) {
             throw new IllegalArgumentException("OpenStreetMap returned an empty country geometry.");
@@ -268,7 +268,7 @@ public class CountryPartitionService {
         }
 
         JsonNode address = match.path("address");
-        return normalizeCountryCode(address.path("country_code").asText());
+        return normalizeCountryCode(readText(address.path("country_code")));
     }
 
     private String resolveCountryName(String countryName, JsonNode match) {
@@ -277,12 +277,12 @@ public class CountryPartitionService {
         }
 
         JsonNode address = match.path("address");
-        String addressCountry = safeText(address.path("country").asText());
+        String addressCountry = readText(address.path("country"));
         if (StringUtils.hasText(addressCountry)) {
             return addressCountry;
         }
 
-        return safeText(match.path("name").asText());
+        return readText(match.path("name"));
     }
 
     private String normalizeCountryCode(String countryCode) {
@@ -314,5 +314,12 @@ public class CountryPartitionService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String readText(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return "";
+        }
+        return safeText(node.asString(""));
     }
 }
