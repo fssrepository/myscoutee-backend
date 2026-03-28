@@ -8,7 +8,8 @@ const requiredCollections = [
   'chats',
   'events',
   'eventFeedbackStates',
-  'eventFeedbackAnswers'
+  'eventFeedbackAnswers',
+  'countryPartitions'
 ];
 
 ['demo_db', 'myscoutee_db'].forEach(databaseName => {

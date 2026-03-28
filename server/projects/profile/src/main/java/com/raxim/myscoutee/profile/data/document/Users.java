@@ -36,6 +36,8 @@ public class Users {
     private String about;
     private Double affinity;
     private LocationCoordinatesRecord locationCoordinates;
+    @Indexed(name = "users_partition_key", sparse = true)
+    private String partitionKey;
     private List<String> images = new ArrayList<>();
     private UserImpressionsRecord impressions;
     private String status;
@@ -217,6 +219,14 @@ public class Users {
 
     public void setLocationCoordinates(LocationCoordinatesRecord locationCoordinates) {
         this.locationCoordinates = locationCoordinates;
+    }
+
+    public String getPartitionKey() {
+        return partitionKey;
+    }
+
+    public void setPartitionKey(String partitionKey) {
+        this.partitionKey = partitionKey;
     }
 
     public List<String> getImages() {

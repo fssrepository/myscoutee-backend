@@ -45,6 +45,7 @@ public class WebSecurityConfig {
                             "/metrics",
                             "/shutdown",
                             "/error",
+                            "/auth/eligibility",
                             "/css/**",
                             "/js/**",
                             "/img/**",

@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFilterPreferencesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserProfileImageUploadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
@@ -48,6 +49,13 @@ public class AuthController {
     @GetMapping("/me")
     public UserByIdResponseDto queryMe(@RequestParam(value = "userId", required = false) String userId) {
         return homeUserProfileService.queryUserById(userId);
+    }
+
+    @GetMapping("/eligibility")
+    public UserLocationEligibilityResponseDto queryLocationEligibility(
+            @RequestParam(value = "latitude", required = false) Double latitude,
+            @RequestParam(value = "longitude", required = false) Double longitude) {
+        return homeUserProfileService.queryLocationEligibility(latitude, longitude);
     }
 
     @PostMapping("/me/realtime/long-poll")

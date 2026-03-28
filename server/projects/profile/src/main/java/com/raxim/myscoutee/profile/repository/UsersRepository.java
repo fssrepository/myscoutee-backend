@@ -12,4 +12,6 @@ public interface UsersRepository extends MongoRepository<Users, String> {
     Optional<Users> findByUserId(String userId);
 
     List<Users> findByUserIdIn(Collection<String> userIds);
+
+    List<Users> findByPartitionKey(String partitionKey);
 }

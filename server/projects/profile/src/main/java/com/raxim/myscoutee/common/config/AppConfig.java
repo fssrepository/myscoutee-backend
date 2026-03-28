@@ -18,13 +18,15 @@ import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
 import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
+import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 
 @Configuration
 @EnableConfigurationProperties({
         ConfigProperties.class,
         FirebaseProperties.class,
         MediaStorageProperties.class,
-        AssetSourceRefreshProperties.class
+        AssetSourceRefreshProperties.class,
+        RegionSecurityProperties.class
 })
 @EnableSpringDataWebSupport
 @EnableScheduling

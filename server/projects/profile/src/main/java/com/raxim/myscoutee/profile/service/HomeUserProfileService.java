@@ -13,12 +13,15 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
@@ -39,6 +42,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserImpressionsSection
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPersonalityTraitDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
@@ -59,6 +63,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class HomeUserProfileService {
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
+    private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -140,6 +145,8 @@ public class HomeUserProfileService {
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
     private final UserReportSubmissionsRepository userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
+    private final CountryPartitionService countryPartitionService;
+    private final RegionSecurityProperties regionSecurityProperties;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -152,7 +159,9 @@ public class HomeUserProfileService {
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
             UserReportSubmissionsRepository userReportSubmissionsRepository,
-            UserSessionActionsRepository userSessionActionsRepository) {
+            UserSessionActionsRepository userSessionActionsRepository,
+            CountryPartitionService countryPartitionService,
+            RegionSecurityProperties regionSecurityProperties) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userRatesRepository = userRatesRepository;
@@ -164,6 +173,8 @@ public class HomeUserProfileService {
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
         this.userSessionActionsRepository = userSessionActionsRepository;
+        this.countryPartitionService = countryPartitionService;
+        this.regionSecurityProperties = regionSecurityProperties;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -172,7 +183,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncComputedUserActivities(findUser(resolvedUserId));
+        Users user = syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId)));
         if (user == null) {
             return null;
         }
@@ -201,6 +212,7 @@ public class HomeUserProfileService {
                 userDto.about(),
                 userDto.affinity(),
                 userDto.locationCoordinates(),
+                userDto.partitionKey(),
                 userDto.images(),
                 userDto.impressions(),
                 userDto.profileStatus(),
@@ -216,7 +228,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncComputedUserActivities(findUser(resolvedUserId));
+        Users user = syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId)));
         if (user == null) {
             return null;
         }
@@ -229,6 +241,25 @@ public class HomeUserProfileService {
                 impressions,
                 buildRealtimeCursor(user, counters, impressions),
                 Instant.now().toString());
+    }
+
+    public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
+        if (!regionSecurityProperties.isEnabled()) {
+            return new UserLocationEligibilityResponseDto(true, null, null, false, false);
+        }
+
+        if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
+            return new UserLocationEligibilityResponseDto(false, null, null, true, true);
+        }
+
+        LocationCoordinatesDto coordinates = new LocationCoordinatesDto(latitude, longitude);
+        String partitionKey = countryPartitionService.resolvePartitionKey(coordinates);
+        return new UserLocationEligibilityResponseDto(
+                StringUtils.hasText(partitionKey),
+                partitionKey,
+                StringUtils.hasText(partitionKey) ? null : INELIGIBLE_REGION_MESSAGE,
+                true,
+                false);
     }
 
     public UserGameFilterPreferencesDto resolveFilterPreferences(String requestedUserId) {
@@ -273,7 +304,7 @@ public class HomeUserProfileService {
 
         Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
-        return toUserDto(syncComputedUserActivities(saved));
+        return toUserDto(syncComputedUserPartition(syncComputedUserActivities(saved)));
     }
 
     public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
@@ -502,6 +533,7 @@ public class HomeUserProfileService {
     public List<UserDto> queryDemoUsers() {
         return orderedUsers().stream()
                 .map(this::syncComputedUserActivities)
+                .map(this::syncComputedUserPartition)
                 .filter(Objects::nonNull)
                 .map(this::toUserDto)
                 .filter(Objects::nonNull)
@@ -532,6 +564,7 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getAbout()),
                 user.getAffinity(),
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
+                nullToEmpty(user.getPartitionKey()),
                 normalizeStrings(user.getImages()),
                 resolveMergedUserImpressions(user),
                 resolveProfileStatus(user),
@@ -827,6 +860,11 @@ public class HomeUserProfileService {
         document.setAbout(nullToEmpty(user.about()));
         document.setAffinity(user.affinity());
         document.setLocationCoordinates(toLocationCoordinatesRecord(user.locationCoordinates()));
+        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(user.locationCoordinates());
+        if (regionSecurityProperties.isEnabled() && user.locationCoordinates() != null && !StringUtils.hasText(resolvedPartitionKey)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
+        }
+        document.setPartitionKey(resolvedPartitionKey);
         document.setImages(normalizeStrings(user.images()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
         String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus()))
@@ -849,6 +887,20 @@ public class HomeUserProfileService {
         }
 
         user.setActivities(computed);
+        return usersRepository.save(user);
+    }
+
+    private Users syncComputedUserPartition(Users user) {
+        if (user == null) {
+            return null;
+        }
+
+        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(toLocationCoordinatesDto(user.getLocationCoordinates()));
+        if (Objects.equals(nullToEmpty(user.getPartitionKey()), nullToEmpty(resolvedPartitionKey))) {
+            return user;
+        }
+
+        user.setPartitionKey(resolvedPartitionKey);
         return usersRepository.save(user);
     }
 

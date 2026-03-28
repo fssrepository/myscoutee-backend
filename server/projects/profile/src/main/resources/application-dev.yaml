@@ -24,6 +24,10 @@ assets:
     timeout-ms: ${ASSET_SOURCE_REFRESH_TIMEOUT_MS:5000}
     allowed-hosts: ${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS:booking.com,www.booking.com}
 
+auth:
+  region-security:
+    enabled: ${AUTH_REGION_SECURITY_ENABLED:false}
+
 media:
   enabled: ${MEDIA_ENABLED:true}
   endpoint: ${MEDIA_OBJECT_STORE_ENDPOINT:http://localhost:9000}

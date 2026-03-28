@@ -7,6 +7,6 @@ import com.raxim.myscoutee.common.config.repository.MongoRepositoryFactoryBean;
 
 @Configuration
 @EnableMongoRepositories(repositoryFactoryBeanClass = MongoRepositoryFactoryBean.class, basePackages = {
-        "com.raxim.myscoutee.profile.repository.mongo" })
+        "com.raxim.myscoutee.profile.repository" })
 public class RepositoryConfig {
 }

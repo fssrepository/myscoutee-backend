@@ -110,6 +110,7 @@ public final class AuthDtos {
             String about,
             Double affinity,
             LocationCoordinatesDto locationCoordinates,
+            String partitionKey,
             List<String> images,
             UserImpressionsDto impressions,
             String profileStatus,
@@ -136,6 +137,7 @@ public final class AuthDtos {
             String about,
             Double affinity,
             LocationCoordinatesDto locationCoordinates,
+            String partitionKey,
             List<String> images,
             UserImpressionsDto impressions,
             String profileStatus,
@@ -148,6 +150,14 @@ public final class AuthDtos {
     public record UserRealtimeLongPollRequestDto(
             String userId,
             String cursor) {
+    }
+
+    public record UserLocationEligibilityResponseDto(
+            boolean eligible,
+            String partitionKey,
+            String message,
+            boolean securityGateEnabled,
+            boolean locationRequired) {
     }
 
     public record UserRealtimeLongPollResponseDto(
