@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.ActivityRatePageResponseDto;
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.RateMenuItemDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.ActivityRatePageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.RateMenuItemDto;
 import com.raxim.myscoutee.profile.service.UserRatesService;
 
 @RestController

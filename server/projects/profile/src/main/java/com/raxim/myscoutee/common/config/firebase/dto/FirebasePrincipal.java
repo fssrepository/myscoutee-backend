@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
+import com.raxim.myscoutee.profile.data.document.Users;
 
 public class FirebasePrincipal implements UserDetails {
     private final String userId;

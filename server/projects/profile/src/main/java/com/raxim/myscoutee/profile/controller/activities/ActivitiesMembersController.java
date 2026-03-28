@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.profile.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMemberEntryDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMembersSummaryDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMembersSummaryDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
 
 @RestController

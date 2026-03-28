@@ -16,9 +16,9 @@ import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import com.google.firebase.messaging.WebpushNotification;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ChatPushNotificationService {

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSummaryDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
 import com.raxim.myscoutee.profile.service.ActivitiesChatService;
 
 @RestController

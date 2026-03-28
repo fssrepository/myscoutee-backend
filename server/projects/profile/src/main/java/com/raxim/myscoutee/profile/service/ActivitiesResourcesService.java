@@ -19,14 +19,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityMember;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 
 @Service
 public class ActivitiesResourcesService {

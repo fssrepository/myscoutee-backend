@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserByIdResponseDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserFilterPreferencesRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDeleteRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserLogoutRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserProfileImageUploadResponseDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserSubmitActionResponseDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFilterPreferencesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserProfileImageUploadResponseDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 

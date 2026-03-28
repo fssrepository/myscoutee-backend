@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetDeleteRequestDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetTicketsPageDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.service.AssetsService;
 
 @RestController

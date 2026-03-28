@@ -10,8 +10,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSocketRequestDto;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketRequestDto;
 import com.raxim.myscoutee.profile.service.ActivitiesChatService;
 import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
 

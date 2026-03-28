@@ -9,8 +9,8 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class FirebaseService {

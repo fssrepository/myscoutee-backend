@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameCardsQueryRequestDto;
-import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameCardsQueryResponseDto;
+import com.raxim.myscoutee.profile.data.dto.game.GameDtos.UserGameCardsQueryRequestDto;
+import com.raxim.myscoutee.profile.data.dto.game.GameDtos.UserGameCardsQueryResponseDto;
 import com.raxim.myscoutee.profile.service.HomeGameCardsService;
 
 @RestController

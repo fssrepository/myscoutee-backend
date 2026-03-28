@@ -11,18 +11,18 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackAnswer;
-import com.raxim.myscoutee.profile.data.document.mongo.EventFeedbackState;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackAnswerDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackStateDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
-import com.raxim.myscoutee.profile.repository.mongo.EventFeedbackAnswersRepository;
-import com.raxim.myscoutee.profile.repository.mongo.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
+import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
+import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 
 @Service
 public class ActivitiesEventFeedbackService {

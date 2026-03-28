@@ -28,20 +28,21 @@ import org.springframework.util.StringUtils;
 
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventActionRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExplorePageDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExploreQueryDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsFilterRequestDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotOccurrenceDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.EventSlotTemplateDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesEventsService {

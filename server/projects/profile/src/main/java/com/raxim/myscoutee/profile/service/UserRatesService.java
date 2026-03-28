@@ -14,15 +14,15 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.UserRate;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.ActivityRatePageResponseDto;
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.RateMenuItemDto;
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.UserRateRecordDto;
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.UserRatesSyncRequestDto;
-import com.raxim.myscoutee.profile.dto.rates.RatesDtos.UserRatesSyncResponseDto;
-import com.raxim.myscoutee.profile.repository.mongo.UserRatesRepository;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.ActivityRatePageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.RateMenuItemDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRateRecordDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncResponseDto;
+import com.raxim.myscoutee.profile.repository.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserRatesService {

@@ -11,8 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
+
 import tools.jackson.databind.ObjectMapper;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
 
 @Service
 public class ChatWebSocketSessionRegistry {

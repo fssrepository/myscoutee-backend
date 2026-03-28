@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.profile.dto.media.MediaDtos.MediaImageUploadResponseDto;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
 

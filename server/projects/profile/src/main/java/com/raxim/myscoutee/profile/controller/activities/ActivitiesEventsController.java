@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.service.ActivitiesEventFeedbackService;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventActionRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackStateDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsExploreQueryDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventsFilterRequestDto;
 
 @RestController
 @RequestMapping("/activities/events")

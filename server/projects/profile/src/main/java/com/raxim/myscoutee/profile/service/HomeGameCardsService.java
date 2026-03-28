@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserDto;
-import com.raxim.myscoutee.profile.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
-import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameCardsQueryRequestDto;
-import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameCardsQueryResponseDto;
-import com.raxim.myscoutee.profile.dto.game.GameDtos.UserGameSocialCardDto;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
+import com.raxim.myscoutee.profile.data.dto.game.GameDtos.UserGameCardsQueryRequestDto;
+import com.raxim.myscoutee.profile.data.dto.game.GameDtos.UserGameCardsQueryResponseDto;
+import com.raxim.myscoutee.profile.data.dto.game.GameDtos.UserGameSocialCardDto;
 
 @Service
 public class HomeGameCardsService {

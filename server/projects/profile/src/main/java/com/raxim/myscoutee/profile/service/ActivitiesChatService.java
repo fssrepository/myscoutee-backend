@@ -21,19 +21,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 import org.bson.types.ObjectId;
 
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat.ChatAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat.ChatMessageRecord;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityChat.ChatReadAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSummaryDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityChatsRepository;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageRecord;
+import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
+import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesChatService {

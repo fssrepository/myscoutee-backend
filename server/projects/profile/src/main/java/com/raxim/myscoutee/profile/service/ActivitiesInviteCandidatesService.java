@@ -13,12 +13,12 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.UserRate;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.activities.ActivityInviteDtos.ActivityInviteCandidatesRequestDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMemberEntryDto;
-import com.raxim.myscoutee.profile.repository.mongo.UserRatesRepository;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityInviteDtos.ActivityInviteCandidatesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.profile.repository.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesInviteCandidatesService {

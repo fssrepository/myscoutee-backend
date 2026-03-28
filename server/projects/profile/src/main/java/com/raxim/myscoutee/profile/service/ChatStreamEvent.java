@@ -3,11 +3,11 @@ package com.raxim.myscoutee.profile.service;
 import java.util.List;
 import java.util.Objects;
 
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatReadReceiptDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityChatsDtos.ChatTypingDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadReceiptDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatTypingDto;
 
 public record ChatStreamEvent(
         String type,

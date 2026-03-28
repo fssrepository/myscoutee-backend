@@ -16,22 +16,22 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityMember;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivitySubEventResource;
-import com.raxim.myscoutee.profile.data.document.mongo.Asset;
-import com.raxim.myscoutee.profile.data.document.mongo.Asset.AssetRequestRecord;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
-import com.raxim.myscoutee.profile.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMemberEntryDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.ActivityMembersSummaryDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityMembersRepository;
-import com.raxim.myscoutee.profile.repository.mongo.ActivitySubEventResourcesRepository;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMembersSummaryDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesMembersService {

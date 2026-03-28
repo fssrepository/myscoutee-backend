@@ -17,12 +17,12 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityMember;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.SubEventFormItemDto;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityEventsRepository;
-import com.raxim.myscoutee.profile.repository.mongo.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
 @Service
 public class EventParticipationTicketService {

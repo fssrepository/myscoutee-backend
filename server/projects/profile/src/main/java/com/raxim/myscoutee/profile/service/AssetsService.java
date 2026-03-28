@@ -27,22 +27,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.mongo.ActivityMember;
-import com.raxim.myscoutee.profile.data.document.mongo.Asset;
-import com.raxim.myscoutee.profile.data.document.mongo.Asset.AssetRequestRecord;
-import com.raxim.myscoutee.profile.data.document.mongo.Users;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetDeleteRequestDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetTicketsPageDto;
-import com.raxim.myscoutee.profile.dto.assets.AssetsDtos.AssetUpsertRequestDto;
-import com.raxim.myscoutee.profile.dto.events.EventsDtos.EventRecordDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetCardDto;
-import com.raxim.myscoutee.profile.dto.shared.SharedDtos.AssetMemberRequestDto;
-import com.raxim.myscoutee.profile.repository.mongo.AssetsRepository;
-import com.raxim.myscoutee.profile.repository.mongo.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AssetsService {
