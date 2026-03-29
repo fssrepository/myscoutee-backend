@@ -32,3 +32,4 @@ mobile issues:
 ---
 2) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
 3) put a contacts button to show assign members popup without basket
+make "circle"-s - group people etc. (what you can invite to group chat add extra info for external app like calling etc.)
