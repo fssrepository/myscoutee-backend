@@ -26,8 +26,7 @@ Assets can have price tag (we haven't introduced purse for public/friends event 
 
 mobile issues:
 1) scrolling animation speed up (e.g.: chat, members)
-2) clicking on the chat message input text - it's breaking the scroll probably - we need to make it detacheable
 
 ---
-3) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
-4) put a contacts button to show assign members popup without basket
+2) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
+3) put a contacts button to show assign members popup without basket
