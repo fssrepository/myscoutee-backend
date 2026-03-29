@@ -244,7 +244,6 @@ class AlgorithmJsonFixturesTest {
         return edges;
     }
 
-    @SuppressWarnings("unchecked")
     private static List<List<String>> toStringMatrix(Object value) {
         if (!(value instanceof List<?> rows)) {
             return List.of();
@@ -256,7 +255,6 @@ class AlgorithmJsonFixturesTest {
         return matrix;
     }
 
-    @SuppressWarnings("unchecked")
     private static List<String> asStringList(Object value) {
         if (!(value instanceof List<?> listValue)) {
             return List.of();
