@@ -325,10 +325,6 @@ public class EventScheduler {
         return states;
     }
 
-    private FGraph buildGraphSnapshot() {
-        return buildGraphSnapshot(Set.of());
-    }
-
     private FGraph buildGraphSnapshot(Set<String> requiredUserIds) {
         List<Edge> edges = new ArrayList<>();
         Set<String> discoveredUserIds = new LinkedHashSet<>();

@@ -24,6 +24,8 @@ You can borrow items from a foreigner (assets (accomodation/car/suplies) with pu
 Assets can be filtered by capacity, availability, topic (very similar screen then the event explore)
 Assets can have price tag (we haven't introduced purse for public/friends event also)
 
+planning stripe/barion integration (price, commision etc. + accomodation etc.)
+
 mobile issues:
 1) scrolling animation speed up (e.g.: chat, members)
 

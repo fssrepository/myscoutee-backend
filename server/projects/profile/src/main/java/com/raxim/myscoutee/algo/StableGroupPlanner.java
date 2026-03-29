@@ -637,8 +637,11 @@ public class StableGroupPlanner {
         }
 
         private static void addWeight(Map<String, Map<String, Double>> weightsByUserId, String fromUserId, String toUserId, double weight) {
-            weightsByUserId.computeIfAbsent(fromUserId, key -> new LinkedHashMap<>())
-                    .merge(toUserId, weight, Math::max);
+            Map<String, Double> weights = weightsByUserId.computeIfAbsent(fromUserId, key -> new LinkedHashMap<>());
+            Double currentWeight = weights.get(toUserId);
+            if (currentWeight == null || weight > currentWeight.doubleValue()) {
+                weights.put(toUserId, weight);
+            }
         }
     }
 }
