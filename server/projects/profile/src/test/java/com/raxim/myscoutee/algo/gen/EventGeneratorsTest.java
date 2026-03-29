@@ -18,7 +18,9 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.LeaderboardMember;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.PriorityGeneratorRequest;
+import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGeneratorRequest;
+import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorRequest;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.ScoreGeneratorGroup;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.ScoreGeneratorResult;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.ScoreLeaderboardEntry;
@@ -97,6 +99,31 @@ class EventGeneratorsTest {
     }
 
     @Test
+    void randomGeneratorCanTargetExplicitGroupSlots() {
+        EventGeneratorByRandom generator = new EventGeneratorByRandom();
+
+        FGraph graph = graph(
+                edge("a1", "a2", 0.95d), edge("a1", "a3", 0.94d), edge("a1", "a4", 0.93d), edge("a1", "a5", 0.92d),
+                edge("a2", "a3", 0.91d), edge("a2", "a4", 0.90d), edge("a2", "a5", 0.89d),
+                edge("a3", "a4", 0.88d), edge("a3", "a5", 0.87d), edge("a4", "a5", 0.86d),
+                edge("b1", "b2", 0.85d), edge("b1", "b3", 0.84d), edge("b2", "b3", 0.83d));
+
+        List<GeneratedEventPlan> plans = generator.generateTargets(new RandomTargetedGeneratorRequest(
+                graph,
+                List.of(
+                        new RandomGroupTarget("group-small", Range.of(3, 3)),
+                        new RandomGroupTarget("group-large", Range.of(5, 5))),
+                List.of(),
+                false));
+
+        assertThat(plans).hasSize(2);
+        assertThat(plans.get(0).seedId()).isEqualTo("group-small");
+        assertThat(plans.get(0).memberUserIds()).containsExactly("b1", "b2", "b3");
+        assertThat(plans.get(1).seedId()).isEqualTo("group-large");
+        assertThat(plans.get(1).memberUserIds()).containsExactly("a1", "a2", "a3", "a4", "a5");
+    }
+
+    @Test
     void priorityGeneratorPrefersCandidatesConnectedToLockedGroup() {
         EventGeneratorByPriority generator = new EventGeneratorByPriority();
 
@@ -137,6 +164,28 @@ class EventGeneratorsTest {
                 0.1d));
 
         assertThat(plan.invitedUserIds()).containsExactly("u1");
+    }
+
+    @Test
+    void priorityGeneratorKeepsPlannerRankingOrder() {
+        EventGeneratorByPriority generator = new EventGeneratorByPriority();
+
+        FGraph graph = graph(
+                edge("locked-1", "u9", 1.0d),
+                edge("locked-1", "u1", 0.8d),
+                edge("u9", "u1", 0.1d));
+
+        InviteBatchPlan plan = generator.generate(new PriorityGeneratorRequest(
+                "event-4",
+                graph,
+                Set.of("u1", "u9"),
+                Set.of("locked-1"),
+                Range.of(2, 2),
+                List.of(),
+                true,
+                0.05d));
+
+        assertThat(plan.invitedUserIds()).containsExactly("u9", "u1");
     }
 
     @Test

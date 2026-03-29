@@ -16,6 +16,13 @@ public class Algo {
         return stableGroupPlanner.planGroups(fGraph, types, range, hasAny);
     }
 
+    public List<Set<Node>> run(FGraph fGraph, List<String> types, List<Range> ranges, boolean hasAny) {
+        if (fGraph == null || ranges == null || ranges.isEmpty()) {
+            return List.of();
+        }
+        return stableGroupPlanner.planGroups(fGraph, types, ranges, hasAny);
+    }
+
     public Set<Node> selectInviteBatch(
             FGraph graph,
             Set<String> candidateUserIds,

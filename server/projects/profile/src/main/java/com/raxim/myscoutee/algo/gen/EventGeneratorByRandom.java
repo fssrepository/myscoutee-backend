@@ -36,4 +36,39 @@ public class EventGeneratorByRandom extends GeneratorBase<GeneratorModels.Random
         }
         return plans;
     }
+
+    public List<GeneratorModels.GeneratedEventPlan> generateTargets(GeneratorModels.RandomTargetedGeneratorRequest input) {
+        if (input == null || input.graph() == null || input.targets() == null || input.targets().isEmpty()) {
+            return List.of();
+        }
+
+        List<GeneratorModels.RandomGroupTarget> targets = input.targets().stream()
+                .filter(target -> target != null && target.range() != null)
+                .toList();
+        if (targets.isEmpty()) {
+            return List.of();
+        }
+
+        Algo algo = new Algo();
+        List<Set<Node>> groups = algo.run(
+                input.graph(),
+                input.types() == null ? List.of() : input.types(),
+                targets.stream().map(GeneratorModels.RandomGroupTarget::range).toList(),
+                input.hasAny());
+        if (groups.size() != targets.size()) {
+            return List.of();
+        }
+
+        List<GeneratorModels.GeneratedEventPlan> plans = new ArrayList<>();
+        for (int index = 0; index < targets.size(); index += 1) {
+            GeneratorModels.RandomGroupTarget target = targets.get(index);
+            Set<Node> group = groups.get(index);
+            List<String> memberUserIds = group.stream()
+                    .map(Node::getId)
+                    .sorted()
+                    .toList();
+            plans.add(new GeneratorModels.GeneratedEventPlan(target.targetId(), memberUserIds));
+        }
+        return plans;
+    }
 }

@@ -149,6 +149,57 @@ public class ActivitiesEventLeaderboardService {
         return queryState(normalizedEventId, normalizedSubEventId);
     }
 
+    public List<SubEventGroupItemDto> materializeGeneratedGroups(String eventId, String subEventId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return List.of();
+        }
+
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (documents.isEmpty()) {
+            return List.of();
+        }
+
+        ActivityEvent canonical = resolvePreferredEvent(documents);
+        SubEventFormItemDto subEvent = resolveSubEvent(canonical, normalizedSubEventId);
+        if (subEvent == null) {
+            return List.of();
+        }
+
+        List<SubEventGroupItemDto> groups = resolveGroups(subEvent);
+        if (groups.isEmpty()) {
+            return List.of();
+        }
+        if (subEvent.groups() != null && !subEvent.groups().isEmpty()) {
+            return groups;
+        }
+
+        String nowIso = Instant.now().toString();
+        List<ActivityEvent> updatedDocuments = new ArrayList<>();
+        for (ActivityEvent document : documents) {
+            List<SubEventFormItemDto> updatedSubEvents = replaceSubEventGroups(document.getSubEvents(), normalizedSubEventId, groups);
+            if (updatedSubEvents.equals(document.getSubEvents())) {
+                continue;
+            }
+            document.setSubEvents(updatedSubEvents);
+            document.setUpdatedDate(nowIso);
+            document.setUpdatedUser(StringUtils.hasText(normalizeId(document.getUpdatedUser()))
+                    ? normalizeId(document.getUpdatedUser())
+                    : StringUtils.hasText(normalizeId(document.getCreatorUserId()))
+                            ? normalizeId(document.getCreatorUserId())
+                            : "scheduler");
+            updatedDocuments.add(document);
+        }
+
+        if (!updatedDocuments.isEmpty()) {
+            activityEventsRepository.saveAll(updatedDocuments);
+        }
+        return groups;
+    }
+
     private EventLeaderboardGroupDto toGroupDto(
             String eventId,
             String subEventId,
@@ -303,30 +354,7 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private ActivityEvent resolveCanonicalEvent(String sourceId) {
-        ActivityEvent preferred = null;
-        for (ActivityEvent record : activityEventsRepository.findBySourceId(sourceId)) {
-            if (record == null) {
-                continue;
-            }
-            if (preferred == null) {
-                preferred = record;
-                continue;
-            }
-            if (Boolean.TRUE.equals(record.getIsHosting()) && !Boolean.TRUE.equals(preferred.getIsHosting())) {
-                preferred = record;
-                continue;
-            }
-            if (!Objects.equals(Boolean.TRUE.equals(record.getPublished()), Boolean.TRUE.equals(preferred.getPublished()))
-                    && Boolean.TRUE.equals(record.getPublished())) {
-                preferred = record;
-                continue;
-            }
-            if ((record.getAcceptedMembers() == null ? 0 : record.getAcceptedMembers())
-                    >= (preferred.getAcceptedMembers() == null ? 0 : preferred.getAcceptedMembers())) {
-                preferred = record;
-            }
-        }
-        return preferred;
+        return resolvePreferredEvent(activityEventsRepository.findBySourceId(sourceId));
     }
 
     private SubEventFormItemDto resolveSubEvent(ActivityEvent event, String subEventId) {
@@ -360,6 +388,84 @@ public class ActivitiesEventLeaderboardService {
                     "generated"));
         }
         return groups;
+    }
+
+    private ActivityEvent resolvePreferredEvent(List<ActivityEvent> records) {
+        ActivityEvent preferred = null;
+        for (ActivityEvent record : records) {
+            if (record == null) {
+                continue;
+            }
+            if (preferred == null) {
+                preferred = record;
+                continue;
+            }
+            if (Boolean.TRUE.equals(record.getIsHosting()) && !Boolean.TRUE.equals(preferred.getIsHosting())) {
+                preferred = record;
+                continue;
+            }
+            if (!Objects.equals(Boolean.TRUE.equals(record.getPublished()), Boolean.TRUE.equals(preferred.getPublished()))
+                    && Boolean.TRUE.equals(record.getPublished())) {
+                preferred = record;
+                continue;
+            }
+            if ((record.getAcceptedMembers() == null ? 0 : record.getAcceptedMembers())
+                    >= (preferred.getAcceptedMembers() == null ? 0 : preferred.getAcceptedMembers())) {
+                preferred = record;
+            }
+        }
+        return preferred;
+    }
+
+    private List<SubEventFormItemDto> replaceSubEventGroups(
+            List<SubEventFormItemDto> subEvents,
+            String subEventId,
+            List<SubEventGroupItemDto> groups) {
+        if (subEvents == null || subEvents.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventFormItemDto> updated = new ArrayList<>();
+        for (SubEventFormItemDto subEvent : subEvents) {
+            if (subEvent == null) {
+                continue;
+            }
+            if (!subEventId.equals(normalizeId(subEvent.id()))) {
+                updated.add(subEvent);
+                continue;
+            }
+            updated.add(new SubEventFormItemDto(
+                    subEvent.id(),
+                    subEvent.name(),
+                    subEvent.description(),
+                    subEvent.startAt(),
+                    subEvent.endAt(),
+                    subEvent.location(),
+                    subEvent.createdByUserId(),
+                    groups,
+                    subEvent.tournamentGroupCount(),
+                    subEvent.tournamentGroupCapacityMin(),
+                    subEvent.tournamentGroupCapacityMax(),
+                    subEvent.tournamentLeaderboardType(),
+                    subEvent.tournamentAdvancePerGroup(),
+                    subEvent.optional(),
+                    subEvent.capacityMin(),
+                    subEvent.capacityMax(),
+                    subEvent.membersAccepted(),
+                    subEvent.membersPending(),
+                    subEvent.carsPending(),
+                    subEvent.accommodationPending(),
+                    subEvent.suppliesPending(),
+                    subEvent.carsAccepted(),
+                    subEvent.accommodationAccepted(),
+                    subEvent.suppliesAccepted(),
+                    subEvent.carsCapacityMin(),
+                    subEvent.carsCapacityMax(),
+                    subEvent.accommodationCapacityMin(),
+                    subEvent.accommodationCapacityMax(),
+                    subEvent.suppliesCapacityMin(),
+                    subEvent.suppliesCapacityMax()));
+        }
+        return updated;
     }
 
     private String normalizeLeaderboardType(String value) {

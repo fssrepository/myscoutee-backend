@@ -67,6 +67,39 @@ public class StableGroupPlanner {
         return groups;
     }
 
+    public List<Set<Node>> planGroups(FGraph graph, List<String> types, List<Range> ranges, boolean hasAny) {
+        GraphSnapshot snapshot = GraphSnapshot.from(graph, 0d);
+        if (snapshot.isEmpty() || ranges == null || ranges.isEmpty()) {
+            return List.of();
+        }
+
+        List<String> normalizedTypes = normalizeTypes(types);
+        Set<String> eligibleUserIds = filterEligibleUserIds(snapshot.nodeIds(), snapshot, normalizedTypes);
+        if (eligibleUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<Range> normalizedRanges = normalizeRanges(ranges);
+        if (normalizedRanges.isEmpty()) {
+            return List.of();
+        }
+        if (!canSatisfyRemainingRanges(eligibleUserIds.size(), normalizedRanges, normalizedTypes, hasAny)) {
+            return List.of();
+        }
+
+        List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds, normalizedRanges, normalizedTypes, hasAny, 0);
+        if (plannedGroups == null) {
+            return List.of();
+        }
+        List<Set<Node>> groups = new ArrayList<>();
+        for (List<String> group : plannedGroups) {
+            groups.add(group.stream()
+                    .map(snapshot::node)
+                    .collect(LinkedHashSet<Node>::new, Set::add, Set::addAll));
+        }
+        return groups;
+    }
+
     public Set<Node> planInviteBatch(
             FGraph graph,
             Set<String> candidateUserIds,
@@ -230,6 +263,97 @@ public class StableGroupPlanner {
         return bestSize;
     }
 
+    private List<List<String>> planTargetedGroups(
+            GraphSnapshot snapshot,
+            Set<String> remainingUserIds,
+            List<Range> ranges,
+            List<String> types,
+            boolean hasAny,
+            int index) {
+        if (index >= ranges.size()) {
+            return remainingUserIds.isEmpty() ? new ArrayList<>() : null;
+        }
+
+        Range range = ranges.get(index);
+        List<Range> remainingRanges = ranges.subList(index + 1, ranges.size());
+        for (List<String> candidateGroup : enumerateTargetedGroups(snapshot, remainingUserIds, range, remainingRanges, types, hasAny)) {
+            Set<String> nextRemainingUserIds = new LinkedHashSet<>(remainingUserIds);
+            candidateGroup.forEach(nextRemainingUserIds::remove);
+
+            List<List<String>> remainingGroups = planTargetedGroups(snapshot, nextRemainingUserIds, ranges, types, hasAny, index + 1);
+            if (remainingGroups != null) {
+                List<List<String>> plannedGroups = new ArrayList<>();
+                plannedGroups.add(candidateGroup);
+                plannedGroups.addAll(remainingGroups);
+                return plannedGroups;
+            }
+        }
+        return null;
+    }
+
+    private List<List<String>> enumerateTargetedGroups(
+            GraphSnapshot snapshot,
+            Set<String> remainingUserIds,
+            Range range,
+            List<Range> remainingRanges,
+            List<String> types,
+            boolean hasAny) {
+        List<Set<String>> components = snapshot.connectedComponents(remainingUserIds);
+        components.sort(Comparator
+                .<Set<String>>comparingInt(Set::size)
+                .thenComparing(Comparator.comparingDouble(snapshot::componentWeight).reversed())
+                .thenComparing(this::firstId));
+
+        List<List<String>> candidateGroups = new ArrayList<>();
+        Set<String> seenGroupKeys = new LinkedHashSet<>();
+        int minimumSize = minimumRandomGroupSize(range, types);
+        for (Set<String> component : components) {
+            int maximumSize = Math.min(component.size(), Math.max(0, range.getMax()));
+            for (int size = maximumSize; size >= 1; size -= 1) {
+                if (!hasAny && size < minimumSize) {
+                    continue;
+                }
+                if (!types.isEmpty() && resolveTypeTargets(snapshot, component, size, types).isEmpty()) {
+                    continue;
+                }
+                if (!canSatisfyRemainingRanges(remainingUserIds.size() - size, remainingRanges, types, hasAny)) {
+                    continue;
+                }
+
+                List<String> selectedUserIds = buildGroup(snapshot, component, Set.of(), size, types, false);
+                if (selectedUserIds.isEmpty()) {
+                    continue;
+                }
+                if (!hasAny && selectedUserIds.size() < minimumSize) {
+                    continue;
+                }
+
+                String groupKey = String.join("|", selectedUserIds);
+                if (seenGroupKeys.add(groupKey)) {
+                    candidateGroups.add(selectedUserIds);
+                }
+            }
+        }
+        return candidateGroups;
+    }
+
+    private boolean canSatisfyRemainingRanges(int remainingUserCount, List<Range> remainingRanges, List<String> types, boolean hasAny) {
+        if (remainingRanges == null || remainingRanges.isEmpty()) {
+            return remainingUserCount == 0;
+        }
+
+        int minimumPossible = 0;
+        int maximumPossible = 0;
+        for (Range range : remainingRanges) {
+            if (range == null) {
+                continue;
+            }
+            minimumPossible += hasAny ? 0 : minimumRandomGroupSize(range, types);
+            maximumPossible += Math.max(0, range.getMax());
+        }
+        return remainingUserCount >= minimumPossible && remainingUserCount <= maximumPossible;
+    }
+
     private int resolveInviteTargetSize(GraphSnapshot snapshot, Set<String> availableUserIds, Range range, boolean hasAny, List<String> types) {
         int maximumSize = Math.min(availableUserIds.size(), Math.max(0, range.getMax()));
         int minimumSize = minimumInviteSize(range, types);
@@ -359,6 +483,19 @@ public class StableGroupPlanner {
             }
         }
         return List.copyOf(normalized);
+    }
+
+    private List<Range> normalizeRanges(List<Range> ranges) {
+        List<Range> normalized = new ArrayList<>();
+        for (Range range : ranges == null ? List.<Range>of() : ranges) {
+            if (range == null) {
+                continue;
+            }
+            int min = Math.max(0, range.getMin());
+            int max = Math.max(min, range.getMax());
+            normalized.add(Range.of(min, max));
+        }
+        return normalized;
     }
 
     private String firstId(Set<String> userIds) {

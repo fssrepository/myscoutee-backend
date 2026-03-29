@@ -17,6 +17,18 @@ public final class GeneratorModels {
             boolean hasAny) {
     }
 
+    public record RandomGroupTarget(
+            String targetId,
+            Range range) {
+    }
+
+    public record RandomTargetedGeneratorRequest(
+            FGraph graph,
+            List<RandomGroupTarget> targets,
+            List<String> types,
+            boolean hasAny) {
+    }
+
     public record GeneratedEventPlan(
             String seedId,
             List<String> memberUserIds) {

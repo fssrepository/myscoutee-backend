@@ -26,7 +26,6 @@ public class EventGeneratorByPriority extends GeneratorBase<GeneratorModels.Prio
 
         List<String> invitedUserIds = selectedNodes.stream()
                 .map(Node::getId)
-                .sorted()
                 .toList();
 
         return new GeneratorModels.InviteBatchPlan(input.ownerId(), invitedUserIds);

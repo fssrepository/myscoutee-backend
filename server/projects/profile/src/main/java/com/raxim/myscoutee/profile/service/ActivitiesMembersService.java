@@ -433,6 +433,72 @@ public class ActivitiesMembersService {
         return newlyInvitedUserIds;
     }
 
+    public List<String> syncGroupMembers(String groupId, String actorUserId, List<String> memberUserIds) {
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedGroupId)) {
+            return List.of();
+        }
+
+        String normalizedActorUserId = resolveActorUserId(actorUserId);
+        String nowIso = Instant.now().toString();
+        List<ActivityMember> existing = loadOwnerDocuments("group", normalizedGroupId);
+        Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
+        for (ActivityMember member : existing) {
+            if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
+                existingByUserId.put(normalizeId(member.getUserId()), member);
+            }
+        }
+
+        List<ActivityMember> membersToSave = new ArrayList<>();
+        List<String> syncedUserIds = new ArrayList<>();
+        Set<String> retainedUserIds = new LinkedHashSet<>();
+        for (String userId : normalizeUserIds(memberUserIds)) {
+            retainedUserIds.add(userId);
+
+            ActivityMember current = existingByUserId.get(userId);
+            ActivityMember next = current == null ? new ActivityMember() : cloneMember(current);
+            next.setId(current == null ? new ObjectId().toHexString() : current.getId());
+            next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey())
+                    ? current.getSyncKey().trim()
+                    : UUID.randomUUID().toString());
+            next.setOwnerType("group");
+            next.setOwnerId(normalizedGroupId);
+            next.setUserId(userId);
+            next.setRole(normalizeRole(current == null ? null : current.getRole(), userId, "group", normalizedGroupId));
+            next.setStatus(STATUS_ACCEPTED);
+            next.setPendingSource(null);
+            next.setRequestKind(null);
+            next.setInvitedByUserId(null);
+            next.setActionAtIso(nowIso);
+            next.setMetAtIso(current == null ? nowIso : normalizeDateTime(current.getMetAtIso(), nowIso));
+            next.setMetWhere(safeText(current == null ? null : current.getMetWhere()));
+            next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
+            next.setCreatedUser(current == null ? resolveCreatedUser(next, normalizedActorUserId) : safeText(current.getCreatedUser()));
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(resolveUpdatedUser(normalizedActorUserId, next, current));
+            membersToSave.add(next);
+            syncedUserIds.add(userId);
+        }
+
+        for (ActivityMember member : existing) {
+            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (!StringUtils.hasText(userId)
+                    || retainedUserIds.contains(userId)
+                    || STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus()))) {
+                continue;
+            }
+            ActivityMember deletedMember = toDeletedMember(member, normalizedActorUserId, nowIso);
+            if (deletedMember != null) {
+                membersToSave.add(deletedMember);
+            }
+        }
+
+        if (!membersToSave.isEmpty()) {
+            activityMembersRepository.saveAll(membersToSave);
+        }
+        return syncedUserIds;
+    }
+
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId) {
         return loadOwnerDocuments(ownerType, ownerId, null);
     }
