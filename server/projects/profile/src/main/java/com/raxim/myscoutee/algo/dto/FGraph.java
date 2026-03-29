@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.algo.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,9 +22,15 @@ public class FGraph extends Graph {
     }
 
     public FGraph(Map<String, Node> nodes, List<Edge> edges, Set<Node> ignoredNodes, List<Set<Edge>> ignoredEdges) {
-        super(edges == null ? List.of() : List.copyOf(edges), nodes == null ? Map.of() : Map.copyOf(nodes));
-        this.ignoredNodes = ignoredNodes == null ? Set.of() : Set.copyOf(ignoredNodes);
-        this.ignoredEdges = ignoredEdges == null ? List.of() : List.copyOf(ignoredEdges);
+        super(
+                edges == null ? List.of() : List.copyOf(edges),
+                nodes == null ? Map.of() : Collections.unmodifiableMap(new LinkedHashMap<>(nodes)));
+        this.ignoredNodes = ignoredNodes == null
+                ? Set.of()
+                : Collections.unmodifiableSet(new LinkedHashSet<>(ignoredNodes));
+        this.ignoredEdges = ignoredEdges == null
+                ? List.of()
+                : Collections.unmodifiableList(new ArrayList<>(ignoredEdges));
     }
 
     public List<Set<Edge>> getIgnoredEdges() {

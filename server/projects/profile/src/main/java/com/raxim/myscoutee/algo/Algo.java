@@ -1,38 +1,32 @@
 package com.raxim.myscoutee.algo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.raxim.myscoutee.algo.dto.DGraph;
 import com.raxim.myscoutee.algo.dto.FGraph;
 import com.raxim.myscoutee.algo.dto.Node;
 import com.raxim.myscoutee.algo.dto.Range;
 
 public class Algo {
+    private final StableGroupPlanner stableGroupPlanner = new StableGroupPlanner();
 
     public List<Set<Node>> run(FGraph fGraph, List<String> types, Range range, boolean hasAny) {
-        if (fGraph == null || range == null || fGraph.getEdges().isEmpty()) {
+        if (fGraph == null || range == null) {
             return List.of();
         }
+        return stableGroupPlanner.planGroups(fGraph, types, range, hasAny);
+    }
 
-        DGraph dGraph = new DGraph();
-        dGraph.addAll(fGraph.getEdges());
-
-        List<BCTree> bcTrees = dGraph.stream().map(cGraph -> {
-            CTree cTree = new CTree(cGraph, types, fGraph.getIgnoredEdges());
-            return new BCTree(cTree, range, fGraph.getIgnoredNodes(), true, hasAny);
-        }).toList();
-
-        List<Set<Node>> nodesByGroup = new ArrayList<>();
-        bcTrees.forEach(bcTree -> bcTree.forEach(cGroup -> {
-            Set<Node> nodes = cGroup.stream().collect(Collectors.toSet());
-            if (!nodes.isEmpty()) {
-                nodesByGroup.add(nodes);
-            }
-        }));
-
-        return nodesByGroup;
+    public Set<Node> selectInviteBatch(
+            FGraph graph,
+            Set<String> candidateUserIds,
+            Set<String> lockedUserIds,
+            Range range,
+            List<String> types,
+            boolean hasAny,
+            double minWeight) {
+        if (graph == null || range == null) {
+            return Set.of();
+        }
+        return stableGroupPlanner.planInviteBatch(graph, candidateUserIds, lockedUserIds, range, types, hasAny, minWeight);
     }
 }

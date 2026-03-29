@@ -373,6 +373,66 @@ public class ActivitiesMembersService {
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
     }
 
+    public List<String> inviteUsers(String eventId, String inviterUserId, List<String> invitedUserIds, ActivityEvent eventRecord) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return List.of();
+        }
+
+        String actorUserId = resolveActorUserId(
+                StringUtils.hasText(inviterUserId)
+                        ? inviterUserId
+                        : eventRecord == null ? null : eventRecord.getCreatorUserId());
+        String nowIso = Instant.now().toString();
+        String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
+
+        List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId, eventRecord);
+        Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
+        for (ActivityMember member : existing) {
+            if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
+                existingByUserId.put(normalizeId(member.getUserId()), member);
+            }
+        }
+
+        List<ActivityMember> membersToSave = new ArrayList<>();
+        List<String> newlyInvitedUserIds = new ArrayList<>();
+        for (String userId : normalizeUserIds(invitedUserIds)) {
+            ActivityMember current = existingByUserId.get(userId);
+            if (current != null && !STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                continue;
+            }
+
+            ActivityMember next = current == null ? new ActivityMember() : cloneMember(current);
+            next.setId(current == null ? new ObjectId().toHexString() : current.getId());
+            next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey())
+                    ? current.getSyncKey().trim()
+                    : UUID.randomUUID().toString());
+            next.setOwnerType(OWNER_TYPE_EVENT);
+            next.setOwnerId(normalizedEventId);
+            next.setUserId(userId);
+            next.setRole(normalizeRole(current == null ? null : current.getRole(), userId, OWNER_TYPE_EVENT, normalizedEventId));
+            next.setStatus(STATUS_PENDING);
+            next.setPendingSource("admin");
+            next.setRequestKind("invite");
+            next.setInvitedByUserId(StringUtils.hasText(actorUserId) ? actorUserId : null);
+            next.setActionAtIso(nowIso);
+            next.setMetAtIso(current == null ? nowIso : normalizeDateTime(current.getMetAtIso(), nowIso));
+            next.setMetWhere(StringUtils.hasText(safeText(next.getMetWhere())) ? safeText(next.getMetWhere()) : metWhere);
+            next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
+            next.setCreatedUser(current == null ? resolveCreatedUser(next, actorUserId) : safeText(current.getCreatedUser()));
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+            membersToSave.add(next);
+            newlyInvitedUserIds.add(userId);
+        }
+
+        if (!membersToSave.isEmpty()) {
+            activityMembersRepository.saveAll(membersToSave);
+            eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
+        }
+        return newlyInvitedUserIds;
+    }
+
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId) {
         return loadOwnerDocuments(ownerType, ownerId, null);
     }

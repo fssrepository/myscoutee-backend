@@ -73,6 +73,73 @@ class EventGeneratorsTest {
     }
 
     @Test
+    void randomGeneratorPrefersPackableGroupSizesOverLeavingLargeRemainders() {
+        EventGeneratorByRandom generator = new EventGeneratorByRandom();
+
+        FGraph graph = graph(
+                edge("u1", "u2", 0.9d), edge("u1", "u3", 0.9d), edge("u1", "u4", 0.9d), edge("u1", "u5", 0.9d), edge("u1", "u6", 0.9d), edge("u1", "u7", 0.9d), edge("u1", "u8", 0.9d), edge("u1", "u9", 0.9d),
+                edge("u2", "u3", 0.9d), edge("u2", "u4", 0.9d), edge("u2", "u5", 0.9d), edge("u2", "u6", 0.9d), edge("u2", "u7", 0.9d), edge("u2", "u8", 0.9d), edge("u2", "u9", 0.9d),
+                edge("u3", "u4", 0.9d), edge("u3", "u5", 0.9d), edge("u3", "u6", 0.9d), edge("u3", "u7", 0.9d), edge("u3", "u8", 0.9d), edge("u3", "u9", 0.9d),
+                edge("u4", "u5", 0.9d), edge("u4", "u6", 0.9d), edge("u4", "u7", 0.9d), edge("u4", "u8", 0.9d), edge("u4", "u9", 0.9d),
+                edge("u5", "u6", 0.9d), edge("u5", "u7", 0.9d), edge("u5", "u8", 0.9d), edge("u5", "u9", 0.9d),
+                edge("u6", "u7", 0.9d), edge("u6", "u8", 0.9d), edge("u6", "u9", 0.9d),
+                edge("u7", "u8", 0.9d), edge("u7", "u9", 0.9d),
+                edge("u8", "u9", 0.9d));
+
+        List<GeneratedEventPlan> plans = generator.generate(new RandomGeneratorRequest(
+                graph,
+                Range.of(4, 6),
+                List.of(),
+                false));
+
+        assertThat(plans).hasSize(2);
+        assertThat(plans).extracting(plan -> plan.memberUserIds().size()).containsExactly(5, 4);
+    }
+
+    @Test
+    void priorityGeneratorPrefersCandidatesConnectedToLockedGroup() {
+        EventGeneratorByPriority generator = new EventGeneratorByPriority();
+
+        FGraph graph = graph(
+                edge("locked-1", "u1", 1.0d),
+                edge("locked-1", "u2", 0.8d),
+                edge("u1", "u3", 0.95d),
+                edge("u2", "u3", 0.1d));
+
+        InviteBatchPlan plan = generator.generate(new PriorityGeneratorRequest(
+                "event-2",
+                graph,
+                Set.of("u1", "u2", "u3"),
+                Set.of("locked-1"),
+                Range.of(2, 2),
+                List.of(),
+                true,
+                0.05d));
+
+        assertThat(plan.invitedUserIds()).containsExactly("u1", "u2");
+    }
+
+    @Test
+    void priorityGeneratorCanReturnPartialBatchWhenHasAnyIsEnabled() {
+        EventGeneratorByPriority generator = new EventGeneratorByPriority();
+
+        FGraph graph = graph(
+                edge("locked-1", "u1", 0.7d));
+
+        InviteBatchPlan plan = generator.generate(new PriorityGeneratorRequest(
+                "event-3",
+                graph,
+                Set.of("u1"),
+                Set.of("locked-1"),
+                Range.of(2, 2),
+                List.of(),
+                true,
+                0.1d));
+
+        assertThat(plan.invitedUserIds()).containsExactly("u1");
+    }
+
+    @Test
     void scoreGeneratorComputesScoreAndFifaLeaderboardsWithAdvancingMembers() {
         EventGeneratorByScore generator = new EventGeneratorByScore();
 

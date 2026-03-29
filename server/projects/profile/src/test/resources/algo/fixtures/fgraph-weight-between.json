@@ -1,0 +1,32 @@
+[
+  {
+    "name": "weight-between-prefers-strongest-edge",
+    "nodes": [
+      { "id": "u1" },
+      { "id": "u2" },
+      { "id": "u3" }
+    ],
+    "edges": [
+      { "from": "u1", "to": "u2", "weight": 0.40 },
+      { "from": "u2", "to": "u1", "weight": 0.90 },
+      { "from": "u1", "to": "u3", "weight": 0.60 }
+    ],
+    "leftUserId": "u1",
+    "rightUserId": "u2",
+    "expectedWeight": 0.90
+  },
+  {
+    "name": "weight-between-missing-edge-is-zero",
+    "nodes": [
+      { "id": "u1" },
+      { "id": "u2" },
+      { "id": "u3" }
+    ],
+    "edges": [
+      { "from": "u1", "to": "u2", "weight": 0.50 }
+    ],
+    "leftUserId": "u1",
+    "rightUserId": "u3",
+    "expectedWeight": 0.00
+  }
+]

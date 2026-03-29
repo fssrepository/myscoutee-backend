@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.raxim.myscoutee.algo.Algo;
-import com.raxim.myscoutee.algo.dto.FGraph;
 import com.raxim.myscoutee.algo.dto.Node;
 
 public class EventGeneratorByPriority extends GeneratorBase<GeneratorModels.PriorityGeneratorRequest, GeneratorModels.InviteBatchPlan> {
@@ -15,22 +14,17 @@ public class EventGeneratorByPriority extends GeneratorBase<GeneratorModels.Prio
             return new GeneratorModels.InviteBatchPlan(input == null ? "" : input.ownerId(), List.of());
         }
 
-        FGraph filteredGraph = input.graph().filter(
+        Algo algo = new Algo();
+        Set<Node> selectedNodes = algo.selectInviteBatch(
+                input.graph(),
                 input.candidateUserIds(),
                 input.lockedUserIds(),
+                input.range(),
+                input.types() == null ? List.of() : input.types(),
+                input.hasAny(),
                 input.minWeight());
 
-        Algo algo = new Algo();
-        List<Set<Node>> candidateGroups = algo.run(
-                filteredGraph,
-                input.types() == null ? List.of() : input.types(),
-                input.range(),
-                input.hasAny());
-
-        List<String> invitedUserIds = candidateGroups.stream()
-                .findFirst()
-                .orElse(Set.of())
-                .stream()
+        List<String> invitedUserIds = selectedNodes.stream()
                 .map(Node::getId)
                 .sorted()
                 .toList();

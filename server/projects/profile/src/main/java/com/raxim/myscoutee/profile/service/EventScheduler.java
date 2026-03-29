@@ -24,12 +24,10 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.PriorityGeneratorRequest;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGeneratorRequest;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -40,8 +38,9 @@ public class EventScheduler {
     private final UsersRepository usersRepository;
     private final UserRatesRepository userRatesRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
+    private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
+    private final EventInviteNotificationService eventInviteNotificationService;
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
 
@@ -52,13 +51,15 @@ public class EventScheduler {
             UsersRepository usersRepository,
             UserRatesRepository userRatesRepository,
             ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
-            ActivitiesEventLeaderboardService activitiesEventLeaderboardService) {
+            ActivitiesMembersService activitiesMembersService,
+            ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
+            EventInviteNotificationService eventInviteNotificationService) {
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityEventsRepository = activityEventsRepository;
-        this.activityMembersRepository = activityMembersRepository;
+        this.activitiesMembersService = activitiesMembersService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
+        this.eventInviteNotificationService = eventInviteNotificationService;
     }
 
     @Scheduled(fixedDelayString = "${events.scheduler.poll-delay-ms:900000}")
@@ -88,16 +89,22 @@ public class EventScheduler {
 
         List<InviteBatchPlan> plans = new ArrayList<>();
         for (ActivityEvent event : resolveCanonicalEvents()) {
-            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter())) {
+            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) {
                 continue;
             }
             String eventId = normalizeId(event.getSourceId());
-            int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - acceptedMemberIds(eventId).size());
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+            int activeMembers = snapshot == null ? 0 : snapshot.acceptedMembers() + snapshot.pendingMembers();
+            int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - activeMembers);
             if (!StringUtils.hasText(eventId) || openSpots <= 0) {
                 continue;
             }
 
-            Set<String> lockedUserIds = currentMemberIds(eventId);
+            Set<String> lockedUserIds = new LinkedHashSet<>();
+            if (snapshot != null) {
+                lockedUserIds.addAll(snapshot.acceptedMemberUserIds());
+                lockedUserIds.addAll(snapshot.pendingMemberUserIds());
+            }
             Set<String> candidateUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
             candidateUserIds.removeAll(lockedUserIds);
             candidateUserIds.remove(normalizeId(event.getCreatorUserId()));
@@ -111,8 +118,18 @@ public class EventScheduler {
                     List.of(),
                     true,
                     0d));
-            if (!plan.invitedUserIds().isEmpty()) {
-                plans.add(plan);
+            if (plan.invitedUserIds().isEmpty()) {
+                continue;
+            }
+
+            List<String> persistedInviteUserIds = activitiesMembersService.inviteUsers(
+                    eventId,
+                    resolveInviterUserId(event),
+                    plan.invitedUserIds(),
+                    event);
+            if (!persistedInviteUserIds.isEmpty()) {
+                eventInviteNotificationService.notifyInvitees(event, persistedInviteUserIds);
+                plans.add(new InviteBatchPlan(eventId, persistedInviteUserIds));
             }
         }
         return plans;
@@ -216,27 +233,12 @@ public class EventScheduler {
         return safeCount(next.getAcceptedMembers()) >= safeCount(current.getAcceptedMembers());
     }
 
-    private Set<String> acceptedMemberIds(String eventId) {
-        return activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, eventId).stream()
-                .filter(Objects::nonNull)
-                .filter(member -> "accepted".equalsIgnoreCase(safeText(member.getStatus())))
-                .map(ActivityMember::getUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
-    }
-
-    private Set<String> currentMemberIds(String eventId) {
-        return activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, eventId).stream()
-                .filter(Objects::nonNull)
-                .map(ActivityMember::getUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
-    }
-
     private int safeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
+    }
+
+    private String resolveInviterUserId(ActivityEvent event) {
+        return normalizeId(event == null ? null : event.getCreatorUserId());
     }
 
     private String normalizeId(String value) {
