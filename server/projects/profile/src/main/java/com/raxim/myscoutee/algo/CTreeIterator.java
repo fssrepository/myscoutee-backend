@@ -125,9 +125,6 @@ public class CTreeIterator implements Iterator<Edge> {
         }
 
         loadNodeTo();
-        if (!cTree.isIgnoredEdge(currEdge)) {
-            System.out.println("kTree ------" + currEdge);
-        }
         return currEdge;
     }
 

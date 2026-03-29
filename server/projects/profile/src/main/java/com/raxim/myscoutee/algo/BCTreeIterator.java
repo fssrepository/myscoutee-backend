@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.algo;
 
 import java.util.Iterator;
-import java.util.Set;
 
 import com.raxim.myscoutee.algo.dto.CGroup;
 import com.raxim.myscoutee.algo.dto.Edge;
@@ -38,7 +37,6 @@ public class BCTreeIterator implements Iterator<CGroup> {
     }
 
     private void handleGroup() {
-        System.out.println("--------- start -------");
         while (cGroup.size() < this.range.getMax()
                 && cTreeIterator.hasNext()) {
 
@@ -62,25 +60,17 @@ public class BCTreeIterator implements Iterator<CGroup> {
             } while ((edge.getFrom() == null || edge.getTo() == null)
                     && cTreeIterator.hasNext());
 
-            if (!bcTree.getUsedNodes().contains(from)) {
+            if (from != null && !bcTree.getUsedNodes().contains(from)) {
                 cGroup.add(from);
             }
-            if (!bcTree.getUsedNodes().contains(to)) {
+            if (to != null && !bcTree.getUsedNodes().contains(to)) {
                 cGroup.add(to);
             }
             cTree.addAll(cGroup);
         }
         // System.out.println(cGroup);
-        int oldSize = cGroup.size();
-        Set<Node> nodes = cGroup.balance(cTreeIterator.getTypes());
-        int newSize = nodes.size();
-
-        System.out.println(oldSize - newSize);
+        cGroup.balance(cTreeIterator.getTypes());
         // cTreeIterator.getUsed().addAll(nodes);
-
-        if (!hasRemaining()) {
-            System.out.println("--------- end -------");
-        }
     }
 
     private boolean hasRemaining() {
@@ -95,12 +85,8 @@ public class BCTreeIterator implements Iterator<CGroup> {
 
     @Override
     public CGroup next() {
-        System.out.println(cGroup);
-
         CGroup result = (CGroup) cGroup.clone();
         cGroup = new CGroup();
-
-        System.out.println("--------- end -------");
         return result;
     }
 }

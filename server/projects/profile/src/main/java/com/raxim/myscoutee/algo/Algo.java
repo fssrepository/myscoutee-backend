@@ -1,4 +1,4 @@
-/*package com.raxim.myscoutee.algo;
+package com.raxim.myscoutee.algo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,26 +10,29 @@ import com.raxim.myscoutee.algo.dto.FGraph;
 import com.raxim.myscoutee.algo.dto.Node;
 import com.raxim.myscoutee.algo.dto.Range;
 
-//can be Runnable
 public class Algo {
 
     public List<Set<Node>> run(FGraph fGraph, List<String> types, Range range, boolean hasAny) {
+        if (fGraph == null || range == null || fGraph.getEdges().isEmpty()) {
+            return List.of();
+        }
+
         DGraph dGraph = new DGraph();
         dGraph.addAll(fGraph.getEdges());
 
         List<BCTree> bcTrees = dGraph.stream().map(cGraph -> {
-            CTree cTree = new CTree(cGraph, types,
-                    fGraph.getIgnoredEdges());
+            CTree cTree = new CTree(cGraph, types, fGraph.getIgnoredEdges());
             return new BCTree(cTree, range, fGraph.getIgnoredNodes(), true, hasAny);
         }).toList();
 
         List<Set<Node>> nodesByGroup = new ArrayList<>();
         bcTrees.forEach(bcTree -> bcTree.forEach(cGroup -> {
             Set<Node> nodes = cGroup.stream().collect(Collectors.toSet());
-            nodesByGroup.add(nodes);
+            if (!nodes.isEmpty()) {
+                nodesByGroup.add(nodes);
+            }
         }));
 
         return nodesByGroup;
     }
 }
-*/
