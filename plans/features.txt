@@ -18,13 +18,44 @@ gradle build
 docker compose build --no-cache
 docker compose up
 
-Asset explore
--------------
-You can borrow items from a foreigner (assets (accomodation/car/suplies) with public or friends visibility)
-Assets can be filtered by capacity, availability, topic (very similar screen then the event explore)
-Assets can have price tag (we haven't introduced purse for public/friends event also)
+Feature Summary: Asset Explore & Integrated Monetization
+--------------------------------------------------------
 
-planning stripe/barion integration (price, commision etc. + accomodation etc.)
+1. Resource Marketplace (Asset Explore)
+Peer-to-Peer Sharing: Users can list and borrow assets (Accommodation, Transportation, Supplies) from others.
+
+Visibility Control: Granular privacy settings (Public vs. Friends-only visibility).
+
+Smart Filtering: Search by capacity, real-time availability, topic, and a "Free-only" toggle.
+(It can be applied to event explore also)
+
+Unified UI: Consistent design language with the "Event Explore" screen for a seamless user experience.
+
+2. Advanced Scheduling & Inventory
+Custom Slot Management: Organizers can "unlock" and customize specific availability slots for dedicated days, weeks, or months.
+
+Interactive Date Slider: Dynamic UI element to adjust frequency and specific time-blocks for asset usage.
+
+Usage Policies: Managers can define custom terms of service and capacity rules for every item.
+
+3. Dynamic Pricing Engine
+Price Wizard: A simplified "description + price" input to quickly monetize event elements in a single form.
+
+Seasonal Algorithms: Automated price adjustments based on dates or demand (on/off toggle).
+
+Hybrid Monetization: Support for "Free Events" with "Paid Add-ons" (e.g., free entry but paid carpool or equipment rental).
+
+4. Transaction & Checkout Logic
+Flattened Basket: A consolidated checkout view that lists all payable features (entry fees + chosen assets) in one list with a simple [+] addition logic.
+
+Policy Enforcement: Automatic verification of capacity and member assignment during the checkout flow.
+
+Payment Integration: Hooking into Stripe/Barion to handle multi-party transactions (Price + Commission/Service fees).
+
+5. Role-Based Permissions (Allowers)
+Admin Level: Global toggles to allow or disallow pricing for specific asset categories.
+
+Manager Level: Independent control over specific price tags, slot customization, and asset availability within their managed events.
 
 ---
 1) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
