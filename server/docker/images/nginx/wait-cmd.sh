@@ -1,7 +1,7 @@
 #! /bin/bash
 
 while true; do
-    inotifywait -r -e modify,create,delete /etc/nginx
+    inotifywait -qq -r -e modify,create,delete /etc/nginx >/dev/null 2>&1
     nginx -s reload
 done &
 

@@ -99,7 +99,7 @@ public class IndexEnsuringQueryCreationListener implements QueryCreationListener
 
 		MongoEntityMetadata<?> metadata = query.getQueryMethod().getEntityInformation();
 		try {
-			indexOperationsProvider.indexOps(metadata.getCollectionName(), metadata.getJavaType()).ensureIndex(index);
+			indexOperationsProvider.indexOps(metadata.getCollectionName(), metadata.getJavaType()).createIndex(index);
 		} catch (UncategorizedMongoDbException e) {
 
 			if (e.getCause() instanceof MongoException mongoException) {

@@ -1,0 +1,33 @@
+cloudflare - caching images (so won't need to use google cloud bandwith)
+https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
+
+Commands
+--------
+
+ng serve --ssl
+ng serve --host 0.0.0.0 --port 4200
+
+git submodule sync
+git submodule update --init --remote
+
+git config --global user.email {email}
+git config --global user.name {name}
+git config --global user.password {personal access token - Profile -> Settings -> Develpoper Settings (last menu item)}
+
+gradle build
+docker compose build --no-cache
+docker compose up
+
+Asset explore
+-------------
+You can borrow items from a foreigner (assets (accomodation/car/suplies) with public or friends visibility)
+Assets can be filtered by capacity, availability, topic (very similar screen then the event explore)
+Assets can have price tag (we haven't introduced purse for public/friends event also)
+
+planning stripe/barion integration (price, commision etc. + accomodation etc.)
+
+---
+1) instagram account should be renamed from myscoutee1 to myscoutee, after the other account deleted (deletion period ended apr 3)
+2) put a contacts button to show assign members popup without basket
+make "circle"-s - group people etc. (what you can invite to group chat add extra info for external app like calling etc.)
+contacts screen shows most important people, what you can practically add from the friends list

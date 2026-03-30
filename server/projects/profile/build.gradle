@@ -1,15 +1,21 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.1.0'
-	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.springframework.boot' version '4.0.3'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'jacoco'
 	id "org.sonarqube" version "4.2.1.3168"
 }
 
 group = 'com.raxim'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+	sourceCompatibility = JavaVersion.toVersion(25)
+	targetCompatibility = JavaVersion.toVersion(25)
+}
 
 repositories {
 	mavenCentral()
@@ -42,6 +48,9 @@ sourceSets {
 dependencies {
 	implementation 'com.google.firebase:firebase-admin:7.1.1'
 	implementation 'org.apache.httpcomponents:httpasyncclient'
+	implementation 'org.jsoup:jsoup:1.18.1'
+	implementation 'software.amazon.awssdk:s3:2.32.20'
+	implementation 'software.amazon.awssdk:url-connection-client:2.32.20'
 
 	implementation ('com.querydsl:querydsl-mongodb') {
 		exclude group: 'org.mongodb', module: 'mongo-java-driver'
@@ -55,7 +64,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	implementation 'org.springframework.boot:spring-boot-starter-integration'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	implementation 'com.itextpdf:itextpdf:5.5.13.2'
@@ -69,7 +77,7 @@ dependencies {
 tasks.named('jacocoTestReport') {
 	reports {
 		xml.required = true
-		xml.destination file("${buildDir}/reports/jacoco.xml")
+		xml.outputLocation = layout.buildDirectory.file("reports/jacoco.xml")
 	}
 	dependsOn test
 }
@@ -78,6 +86,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 
 	finalizedBy jacocoTestReport
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-parameters']
 }
 
 sonar {

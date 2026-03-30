@@ -1,22 +1,34 @@
-const portalDb = db.getSiblingDB('myscoutee_db');
-const requiredCollections = ['groups', 'profiles', 'users', 'events', 'messages'];
-const existingCollections = new Set(portalDb.getCollectionNames());
+const requiredCollections = [
+  'users',
+  'userRates',
+  'userFilterPreferences',
+  'assets',
+  'activityMembers',
+  'activityResources',
+  'chats',
+  'events',
+  'eventFeedbackStates',
+  'eventFeedbackAnswers',
+  'countryPartitions'
+];
 
-requiredCollections.forEach(collectionName => {
-  if (!existingCollections.has(collectionName)) {
-    portalDb.createCollection(collectionName);
+['demo_db', 'myscoutee_db'].forEach(databaseName => {
+  const portalDb = db.getSiblingDB(databaseName);
+  const existingCollections = new Set(portalDb.getCollectionNames());
+
+  requiredCollections.forEach(collectionName => {
+    if (!existingCollections.has(collectionName)) {
+      portalDb.createCollection(collectionName);
+    }
+  });
+
+  if (!portalDb.getUser('guest')) {
+    portalDb.createUser({
+      user: 'guest',
+      pwd: 'guest',
+      roles: [
+        { role: 'readWrite', db: databaseName }
+      ]
+    });
   }
 });
-
-portalDb.users.createIndex({ email: 1 }, { unique: true });
-portalDb.messages.createIndex({ eventId: 1, createdDate: 1 });
-
-if (!portalDb.getUser('guest')) {
-  portalDb.createUser({
-    user: 'guest',
-    pwd: 'guest',
-    roles: [
-      { role: 'readWrite', db: 'myscoutee_db' }
-    ]
-  });
-}

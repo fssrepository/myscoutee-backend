@@ -1,9 +1,9 @@
 package com.raxim.myscoutee.common.config.repository;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.MappingMongoEntityInformation;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 public final class MongoEntityInformationSupport {

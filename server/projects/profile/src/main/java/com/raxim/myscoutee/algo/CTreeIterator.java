@@ -55,6 +55,9 @@ public class CTreeIterator implements Iterator<Edge> {
                     && cTree.isEmpty()) {
                 return false;
             }
+            if (node == null) {
+                return false;
+            }
 
             if (node.getType() == null || nodesOrderedByType.containsKey(CTree.DEFAULT_TYPE)) {
                 node = new Node(node.getId(), CTree.DEFAULT_TYPE);
@@ -122,9 +125,6 @@ public class CTreeIterator implements Iterator<Edge> {
         }
 
         loadNodeTo();
-        if (!cTree.isIgnoredEdge(currEdge)) {
-            System.out.println("kTree ------" + currEdge);
-        }
         return currEdge;
     }
 

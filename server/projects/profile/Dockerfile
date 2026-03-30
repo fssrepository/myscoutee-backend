@@ -1,4 +1,11 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:25.0.2_10-jre-alpine
+
+ARG TZ=Europe/Brussels
+ENV TZ=${TZ}
+
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/${TZ} /etc/localtime && \
+    echo "${TZ}" > /etc/timezone
 
 EXPOSE 8080
 

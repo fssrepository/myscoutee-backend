@@ -6,15 +6,23 @@ import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.raxim.myscoutee.profile.data.document.Users;
+
 public class FirebasePrincipal implements UserDetails {
     private final String userId;
     private final String email;
     private final String role;
+    private final Users user;
 
     public FirebasePrincipal(String userId, String email, String role) {
+        this(userId, email, role, null);
+    }
+
+    public FirebasePrincipal(String userId, String email, String role, Users user) {
         this.userId = userId;
         this.email = email;
         this.role = role;
+        this.user = user;
     }
 
     @Override
@@ -23,11 +31,18 @@ public class FirebasePrincipal implements UserDetails {
     }
 
     public String getUserId() {
+        if (user != null && user.getId() != null && !user.getId().isBlank()) {
+            return user.getId();
+        }
         return userId;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public Users getUser() {
+        return user;
     }
 
     @Override
@@ -37,7 +52,10 @@ public class FirebasePrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        if (email != null && !email.isBlank()) {
+            return email;
+        }
+        return getUserId();
     }
 
     @Override

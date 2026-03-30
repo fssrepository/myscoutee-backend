@@ -5,26 +5,43 @@ import java.util.UUID;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class FirebaseService {
     private final ConfigProperties config;
+    private final UsersRepository usersRepository;
 
-    public FirebaseService(ConfigProperties config) {
+    public FirebaseService(ConfigProperties config, UsersRepository usersRepository) {
         this.config = config;
+        this.usersRepository = usersRepository;
     }
 
     public UserDetails loadUserById(String profileId) {
-        String normalizedProfileId = normalizeId(profileId);
-        return new FirebasePrincipal(normalizedProfileId, config.getDevUser(), resolveRole(config.getDevUser()));
+        Users user = findUser(profileId);
+        String normalizedProfileId = user != null ? normalizeId(user.getId()) : normalizeId(profileId);
+        String email = normalizeEmail(config.getDevUser());
+        return new FirebasePrincipal(normalizedProfileId, email, resolveRole(email), user);
     }
 
     public UserDetails loadUserByUsername(String username, String xLink, String currentPage) {
         String normalizedEmail = normalizeEmail(username);
-        return new FirebasePrincipal(stableUserId(normalizedEmail), normalizedEmail, resolveRole(normalizedEmail));
+        Users user = findUser(username);
+        String resolvedUserId = user != null ? normalizeId(user.getId()) : stableUserId(normalizedEmail);
+        return new FirebasePrincipal(resolvedUserId, normalizedEmail, resolveRole(normalizedEmail), user);
+    }
+
+    private Users findUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return null;
+        }
+        return usersRepository.findById(normalizedUserId).orElse(null);
     }
 
     private String normalizeId(String profileId) {

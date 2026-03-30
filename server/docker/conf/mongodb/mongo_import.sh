@@ -1,26 +1,31 @@
-#!/bin/bash
+#! /bin/bash
 set -euo pipefail
 
-IMPORT_ROOT="/docker-entrypoint-initdb.d/myscoutee_db"
-COMMON_ARGS=(
-  -h 127.0.0.1
-  -d myscoutee_db
-  -u guest
-  -p guest
-  --mode=upsert
-  --upsertFields _id
-  --jsonArray
-  --type json
-)
+db_name="${MONGO_APP_DATABASE:-${MONGO_INITDB_DATABASE:-demo_db}}"
+seed_dir_name="${MONGO_SEED_DIRECTORY:-${db_name}}"
+seed_dir="/docker-entrypoint-initdb.d/${seed_dir_name}"
 
-import_file() {
-  local collection="$1"
-  local file_name="$2"
-  mongoimport "${COMMON_ARGS[@]}" --collection "$collection" --file "${IMPORT_ROOT}/${file_name}"
-}
+if [ ! -d "${seed_dir}" ]; then
+  echo "Seed directory ${seed_dir} does not exist, skipping mongoimport."
+  exit 0
+fi
 
-import_file groups chat_group.json
-import_file profiles chat_profile.json
-import_file users chat_user.json
-import_file events chat.json
-import_file messages chat_message.json
+find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
+  # All seed files are JSON arrays of documents. If the file contains no object
+  # start at all, it is just an empty array like "[]", which mongoimport rejects.
+  if ! grep -q '{' "${jsonfile}"; then
+    echo "Skipping empty JSON array seed ${jsonfile}"
+    continue
+  fi
+
+  mongoimport \
+    -h 127.0.0.1 \
+    -d "${db_name}" \
+    -u guest \
+    -p guest \
+    --mode=upsert \
+    --upsertFields _id \
+    --file "$jsonfile" \
+    --jsonArray \
+    --type json
+ done
