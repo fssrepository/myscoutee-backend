@@ -63,3 +63,5 @@ Manager Level: Independent control over specific price tags, slot customization,
 2) put a contacts button to show assign members popup without basket
 make "circle"-s - group people etc. (what you can invite to group chat add extra info for external app like calling etc.)
 contacts screen shows most important people, what you can practically add from the friends list
+
+3) i18n - introduce internalisation
