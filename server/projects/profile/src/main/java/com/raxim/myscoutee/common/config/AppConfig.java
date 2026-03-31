@@ -14,8 +14,20 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
+import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
+import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
+import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
+import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+
 @Configuration
-@EnableConfigurationProperties
+@EnableConfigurationProperties({
+        ConfigProperties.class,
+        FirebaseProperties.class,
+        MediaStorageProperties.class,
+        AssetSourceRefreshProperties.class,
+        RegionSecurityProperties.class
+})
 @EnableSpringDataWebSupport
 @EnableScheduling
 public class AppConfig {
@@ -23,7 +35,7 @@ public class AppConfig {
     @Bean
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver slr = new AcceptHeaderLocaleResolver();
-        slr.setDefaultLocale(Locale.ENGLISH); // Set default Locale as US
+        slr.setDefaultLocale(Locale.ENGLISH);
         return slr;
     }
 

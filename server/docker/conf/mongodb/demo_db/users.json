@@ -1,0 +1,2515 @@
+[
+  {
+    "_id": {
+      "$oid": "bf057de7c586eede7e84bdc7"
+    },
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "activities": {
+      "chat": 8,
+      "events": 162,
+      "game": 9,
+      "hosting": 5,
+      "invitations": 4
+    },
+    "affinity": 432507,
+    "age": 28,
+    "birthday": "1997-05-12",
+    "city": "Austin",
+    "completion": 72,
+    "gender": "woman",
+    "headline": "Planning cozy chaos with structure.",
+    "height": "170 cm",
+    "horoscope": "Taurus",
+    "hostTier": "Platinum Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/74.jpg",
+      "https://randomuser.me/api/portraits/women/91.jpg",
+      "https://randomuser.me/api/portraits/women/8.jpg"
+    ],
+    "impressions": {
+      "host": {
+        "unreadCount": 2,
+        "averageRating": 4.8,
+        "peopleMet": 218,
+        "totalEvents": 64,
+        "repeatCount": 93,
+        "noShowCount": 7,
+        "vibeBadges": [
+          "Social 41%",
+          "Focused 33%",
+          "Creative 26%"
+        ],
+        "personalityBadges": [
+          "Empath 42%",
+          "Reliable One 33%",
+          "Social Charmer 25%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 42,
+            "evidenceCount": 6,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          },
+          {
+            "id": "reliable-one",
+            "label": "Reliable One",
+            "percent": 33,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          },
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 25,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Road Trip 39%",
+          "Culture 34%",
+          "Coffee Meetup 27%"
+        ]
+      },
+      "member": {
+        "unreadCount": 1,
+        "peopleMet": 184,
+        "totalEvents": 58,
+        "repeatCount": 71,
+        "noShowCount": 5,
+        "vibeBadges": [
+          "Social 38%",
+          "Relaxed 34%",
+          "Creative 28%"
+        ],
+        "personalityBadges": [
+          "Empath 39%",
+          "Social Charmer 34%",
+          "Creative Soul 27%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 39,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          },
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 34,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          },
+          {
+            "id": "creative-soul",
+            "label": "Creative Soul",
+            "percent": 27,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-20T13:40:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Brunch 36%",
+          "Games 34%",
+          "Outdoors 30%"
+        ]
+      }
+    },
+    "initials": "FA",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "name": "Farkas Anna",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Empatikus",
+    "syncKey": "aeda4d98-e210-55b7-a888-7a15acb4cc58",
+    "partitionKey": "country:hu",
+    "userId": "bf057de7c586eede7e84bdc7"
+  },
+  {
+    "_id": {
+      "$oid": "b29df68956f3fe15e04558de"
+    },
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "activities": {
+      "chat": 2,
+      "events": 164,
+      "game": 4,
+      "hosting": 1,
+      "invitations": 1
+    },
+    "affinity": 499225,
+    "age": 31,
+    "birthday": "1994-09-23",
+    "city": "Chicago",
+    "completion": 64,
+    "gender": "man",
+    "headline": "Reliable planning, zero drama.",
+    "height": "182 cm",
+    "horoscope": "Libra",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/75.jpg",
+      "https://randomuser.me/api/portraits/men/92.jpg",
+      "https://randomuser.me/api/portraits/men/9.jpg"
+    ],
+    "initials": "KB",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "name": "Kiss Balázs",
+    "physique": "Lean",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Megbízható",
+    "syncKey": "f621a5a2-5d1c-5078-94e4-9f4757007eca",
+    "partitionKey": "country:hu",
+    "userId": "b29df68956f3fe15e04558de"
+  },
+  {
+    "_id": {
+      "$oid": "9f3b3f085e23af6c89dbc432"
+    },
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "activities": {
+      "chat": 4,
+      "events": 166,
+      "game": 6,
+      "hosting": 1,
+      "invitations": 1
+    },
+    "affinity": 581523,
+    "age": 30,
+    "birthday": "1995-07-19",
+    "city": "Seattle",
+    "completion": 58,
+    "gender": "woman",
+    "headline": "Art nights and adventure mornings.",
+    "height": "168 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/76.jpg",
+      "https://randomuser.me/api/portraits/women/93.jpg",
+      "https://randomuser.me/api/portraits/women/10.jpg"
+    ],
+    "impressions": {
+      "host": {
+        "unreadCount": 1,
+        "averageRating": 4.6,
+        "peopleMet": 152,
+        "totalEvents": 42,
+        "repeatCount": 51,
+        "noShowCount": 4,
+        "vibeBadges": [
+          "Creative 40%",
+          "Deep 35%",
+          "Social 25%"
+        ],
+        "personalityBadges": [
+          "Creative Soul 40%",
+          "Deep Thinker 35%",
+          "Empath 25%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "creative-soul",
+            "label": "Creative Soul",
+            "percent": 40,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "deep-thinker",
+            "label": "Deep Thinker",
+            "percent": 35,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 25,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Culture 42%",
+          "Workshop 31%",
+          "Coffee Meetup 27%"
+        ]
+      },
+      "member": {
+        "unreadCount": 1,
+        "peopleMet": 139,
+        "totalEvents": 39,
+        "repeatCount": 46,
+        "noShowCount": 3,
+        "vibeBadges": [
+          "Creative 37%",
+          "Deep 36%",
+          "Relaxed 27%"
+        ],
+        "personalityBadges": [
+          "Creative Soul 38%",
+          "Deep Thinker 36%",
+          "Social Charmer 26%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "creative-soul",
+            "label": "Creative Soul",
+            "percent": 38,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "deep-thinker",
+            "label": "Deep Thinker",
+            "percent": 36,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          },
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 26,
+            "evidenceCount": 2,
+            "lastRatedAtIso": "2026-03-08T15:45:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Culture 39%",
+          "Games 33%",
+          "Outdoors 28%"
+        ]
+      }
+    },
+    "initials": "NE",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "name": "Nagy Eszter",
+    "physique": "Fit",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Kreatív",
+    "syncKey": "9b85707e-468c-5f08-ab3c-a5068cde1346",
+    "partitionKey": "country:hu",
+    "userId": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "1b1c70be2349b3359a8f6f94"
+    },
+    "about": "I host social-first events where people who do not know each other can connect fast.",
+    "activities": {
+      "chat": 0,
+      "events": 165,
+      "game": 7,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 440843,
+    "age": 29,
+    "birthday": "1996-11-04",
+    "city": "San Diego",
+    "completion": 76,
+    "gender": "woman",
+    "headline": "Sunset rides and coffee circles.",
+    "height": "172 cm",
+    "horoscope": "Scorpio",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/77.jpg",
+      "https://randomuser.me/api/portraits/women/94.jpg",
+      "https://randomuser.me/api/portraits/women/11.jpg"
+    ],
+    "impressions": {
+      "host": {
+        "unreadCount": 1,
+        "averageRating": 4.7,
+        "peopleMet": 176,
+        "totalEvents": 48,
+        "repeatCount": 62,
+        "noShowCount": 5,
+        "vibeBadges": [
+          "Social 45%",
+          "Energetic 31%",
+          "Relaxed 24%"
+        ],
+        "personalityBadges": [
+          "Social Charmer 44%",
+          "Playful Spirit 30%",
+          "Empath 26%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 44,
+            "evidenceCount": 5,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          },
+          {
+            "id": "playful-spirit",
+            "label": "Playful Spirit",
+            "percent": 30,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          },
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 26,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-04T14:35:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Coffee Meetup 38%",
+          "Road Trip 32%",
+          "Sports 30%"
+        ]
+      },
+      "member": {
+        "unreadCount": 0,
+        "peopleMet": 161,
+        "totalEvents": 44,
+        "repeatCount": 57,
+        "noShowCount": 4,
+        "vibeBadges": [
+          "Social 43%",
+          "Energetic 32%",
+          "Creative 25%"
+        ],
+        "personalityBadges": [
+          "Social Charmer 46%",
+          "Playful Spirit 31%",
+          "Empath 23%"
+        ],
+        "personalityTraits": [
+          {
+            "id": "social-charmer",
+            "label": "Social Charmer",
+            "percent": 46,
+            "evidenceCount": 4,
+            "lastRatedAtIso": "2026-03-07T14:55:00.000Z"
+          },
+          {
+            "id": "playful-spirit",
+            "label": "Playful Spirit",
+            "percent": 31,
+            "evidenceCount": 3,
+            "lastRatedAtIso": "2026-03-07T14:55:00.000Z"
+          },
+          {
+            "id": "empath",
+            "label": "Empath",
+            "percent": 23,
+            "evidenceCount": 2,
+            "lastRatedAtIso": "2026-03-07T14:55:00.000Z"
+          }
+        ],
+        "categoryBadges": [
+          "Culture 35%",
+          "Games 34%",
+          "Outdoors 31%"
+        ]
+      }
+    },
+    "initials": "MS",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "name": "Maya Stone",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "776cc29f-72d5-50e2-98d8-4f0048ee03c0",
+    "partitionKey": "country:hu",
+    "userId": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "178e8d0cbe164fa3fede5884"
+    },
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "activities": {
+      "chat": 0,
+      "events": 88,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 444724,
+    "age": 27,
+    "birthday": "1998-02-21",
+    "city": "Denver",
+    "completion": 68,
+    "gender": "woman",
+    "headline": "Thoughtful plans, minimal noise.",
+    "height": "167 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/78.jpg",
+      "https://randomuser.me/api/portraits/women/95.jpg",
+      "https://randomuser.me/api/portraits/women/12.jpg"
+    ],
+    "initials": "LP",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "name": "Lina Park",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "bb89ba15-b6a7-59b8-8ba2-871c2e57ad4b",
+    "partitionKey": "country:hu",
+    "userId": "178e8d0cbe164fa3fede5884"
+  },
+  {
+    "_id": {
+      "$oid": "f4b2ebd8f56628ab7df58221"
+    },
+    "about": "I organize active and travel-style events with flexible participant roles.",
+    "activities": {
+      "chat": 0,
+      "events": 79,
+      "game": 3,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 620130,
+    "age": 26,
+    "birthday": "1999-08-14",
+    "city": "Miami",
+    "completion": 55,
+    "gender": "woman",
+    "headline": "Travel light, host well.",
+    "height": "169 cm",
+    "horoscope": "Leo",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/79.jpg",
+      "https://randomuser.me/api/portraits/women/96.jpg",
+      "https://randomuser.me/api/portraits/women/13.jpg"
+    ],
+    "initials": "IB",
+    "languages": [
+      "English",
+      "Portuguese"
+    ],
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "name": "Iris Bloom",
+    "physique": "Curvy",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Adventurer",
+    "syncKey": "dbe14c26-4c24-5276-a4fe-0d5d1f8e2992",
+    "partitionKey": "country:hu",
+    "userId": "f4b2ebd8f56628ab7df58221"
+  },
+  {
+    "_id": {
+      "$oid": "cdd937e0adcbd1a5e38f3ceb"
+    },
+    "about": "I host sports and game-heavy events with structured follow-ups.",
+    "activities": {
+      "chat": 0,
+      "events": 90,
+      "game": 8,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 305793,
+    "age": 30,
+    "birthday": "1995-03-07",
+    "city": "New York",
+    "completion": 70,
+    "gender": "man",
+    "headline": "Fast pace, good vibes.",
+    "height": "184 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/80.jpg",
+      "https://randomuser.me/api/portraits/men/97.jpg",
+      "https://randomuser.me/api/portraits/men/14.jpg"
+    ],
+    "initials": "NH",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "name": "Noah Hart",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Playful Spirit",
+    "syncKey": "f9cb848b-b73b-5124-b0e7-6132bc57566a",
+    "partitionKey": "country:hu",
+    "userId": "cdd937e0adcbd1a5e38f3ceb"
+  },
+  {
+    "_id": {
+      "$oid": "1d7d3545ba5e0f1d63918589"
+    },
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "activities": {
+      "chat": 0,
+      "events": 82,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 443988,
+    "age": 32,
+    "birthday": "1993-12-28",
+    "city": "Boston",
+    "completion": 61,
+    "gender": "man",
+    "headline": "Metrics first, then movement.",
+    "height": "180 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/81.jpg",
+      "https://randomuser.me/api/portraits/men/98.jpg",
+      "https://randomuser.me/api/portraits/men/15.jpg"
+    ],
+    "initials": "ER",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "name": "Evan Reed",
+    "physique": "Average",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Ambitious Go-Getter",
+    "syncKey": "7824323d-7b9a-544d-9d63-e43563f6ea3d",
+    "partitionKey": "country:hu",
+    "userId": "1d7d3545ba5e0f1d63918589"
+  },
+  {
+    "_id": {
+      "$oid": "7822c5f99eff99d63abe8933"
+    },
+    "about": "I design event atmospheres first and build flow around people and space.",
+    "activities": {
+      "chat": 0,
+      "events": 88,
+      "game": 2,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 227821,
+    "age": 25,
+    "birthday": "2000-04-18",
+    "city": "Portland",
+    "completion": 53,
+    "gender": "man",
+    "headline": "Design-led hangouts only.",
+    "height": "178 cm",
+    "horoscope": "Aries",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/82.jpg",
+      "https://randomuser.me/api/portraits/men/99.jpg",
+      "https://randomuser.me/api/portraits/men/16.jpg"
+    ],
+    "initials": "KM",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "name": "Kai Morgan",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Creative Soul",
+    "syncKey": "e30b5854-a2cd-58d9-aa41-ef01601f367b",
+    "partitionKey": "country:hu",
+    "userId": "7822c5f99eff99d63abe8933"
+  },
+  {
+    "_id": {
+      "$oid": "d182041b8a54132d5168034f"
+    },
+    "about": "I keep the calendar strict and communication transparent for all members.",
+    "activities": {
+      "chat": 0,
+      "events": 147,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 522709,
+    "age": 29,
+    "birthday": "1996-01-11",
+    "city": "Los Angeles",
+    "completion": 74,
+    "gender": "man",
+    "headline": "Always on time, always clear.",
+    "height": "183 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/10.jpg",
+      "https://randomuser.me/api/portraits/men/27.jpg",
+      "https://randomuser.me/api/portraits/men/44.jpg"
+    ],
+    "initials": "LH",
+    "languages": [
+      "English",
+      "Italian"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "name": "Luca Hale",
+    "physique": "Fit",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Reliable One",
+    "syncKey": "55100d80-2ca1-5ae3-a763-c48dcbf38c4d",
+    "partitionKey": "country:hu",
+    "userId": "d182041b8a54132d5168034f"
+  },
+  {
+    "_id": {
+      "$oid": "d04cd419e735549e3f312977"
+    },
+    "about": "I run long-format events with multiple sub-events and role-based access.",
+    "activities": {
+      "chat": 0,
+      "events": 78,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 398080,
+    "age": 33,
+    "birthday": "1992-10-02",
+    "city": "Nashville",
+    "completion": 60,
+    "gender": "man",
+    "headline": "Calm planning for complex events.",
+    "height": "186 cm",
+    "horoscope": "Libra",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/11.jpg",
+      "https://randomuser.me/api/portraits/men/28.jpg",
+      "https://randomuser.me/api/portraits/men/45.jpg"
+    ],
+    "initials": "TL",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "name": "Theo Lane",
+    "physique": "Athletic",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "d8c8b4fc-7cf1-57bb-82f1-fa1cdb9a529a",
+    "partitionKey": "country:hu",
+    "userId": "d04cd419e735549e3f312977"
+  },
+  {
+    "_id": {
+      "$oid": "eb1ca0b761885bb0763e2929"
+    },
+    "about": "I host quality-first social events with strong moderation and feedback loops.",
+    "activities": {
+      "chat": 0,
+      "events": 154,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 329173,
+    "age": 27,
+    "birthday": "1998-06-27",
+    "city": "Phoenix",
+    "completion": 66,
+    "gender": "man",
+    "headline": "Curated nights, meaningful circles.",
+    "height": "176 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/12.jpg",
+      "https://randomuser.me/api/portraits/men/29.jpg",
+      "https://randomuser.me/api/portraits/men/46.jpg"
+    ],
+    "initials": "MG",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "name": "Milo Grant",
+    "physique": "Average",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "f1facb67-629c-5157-8856-e8b3214cc722",
+    "partitionKey": "country:hu",
+    "userId": "eb1ca0b761885bb0763e2929"
+  },
+  {
+    "_id": {
+      "$oid": "fcad6954169063f106a7a240"
+    },
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "activities": {
+      "chat": 0,
+      "events": 83,
+      "game": 9,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 432507,
+    "age": 24,
+    "birthday": "1991-01-12",
+    "city": "Chicago",
+    "completion": 72,
+    "gender": "woman",
+    "headline": "Planning cozy chaos with structure.",
+    "height": "170 cm",
+    "horoscope": "Taurus",
+    "hostTier": "Platinum Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/84.jpg",
+      "https://randomuser.me/api/portraits/women/1.jpg",
+      "https://randomuser.me/api/portraits/women/18.jpg"
+    ],
+    "initials": "OR",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "name": "Olivia Rivera",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Empatikus",
+    "syncKey": "908db772-851d-5afe-886b-bcdf03b9bddd",
+    "partitionKey": "country:hu",
+    "userId": "fcad6954169063f106a7a240"
+  },
+  {
+    "_id": {
+      "$oid": "2d520f3c98b0440c1556f4af"
+    },
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "activities": {
+      "chat": 0,
+      "events": 70,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 499225,
+    "age": 25,
+    "birthday": "1992-02-13",
+    "city": "Denver",
+    "completion": 64,
+    "gender": "man",
+    "headline": "Reliable planning, zero drama.",
+    "height": "182 cm",
+    "horoscope": "Libra",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/91.jpg",
+      "https://randomuser.me/api/portraits/men/8.jpg",
+      "https://randomuser.me/api/portraits/men/25.jpg"
+    ],
+    "initials": "MG",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "name": "Mason Grant",
+    "physique": "Lean",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Megbízható",
+    "syncKey": "bd1c28f3-d3ab-5798-8b12-60951ab211e8",
+    "partitionKey": "country:hu",
+    "userId": "2d520f3c98b0440c1556f4af"
+  },
+  {
+    "_id": {
+      "$oid": "0216b1ceb256d6f2c89073b8"
+    },
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "activities": {
+      "chat": 0,
+      "events": 90,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 581523,
+    "age": 26,
+    "birthday": "1993-03-14",
+    "city": "Miami",
+    "completion": 58,
+    "gender": "woman",
+    "headline": "Art nights and adventure mornings.",
+    "height": "168 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/98.jpg",
+      "https://randomuser.me/api/portraits/women/15.jpg",
+      "https://randomuser.me/api/portraits/women/32.jpg"
+    ],
+    "initials": "LS",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "name": "Lina Stone",
+    "physique": "Fit",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Kreatív",
+    "syncKey": "fee932e2-0e2a-5a24-bbf5-65abe9f63c9b",
+    "partitionKey": "country:hu",
+    "userId": "0216b1ceb256d6f2c89073b8"
+  },
+  {
+    "_id": {
+      "$oid": "eac11b0685f9799953a40dd4"
+    },
+    "about": "I host social-first events where people who do not know each other can connect fast.",
+    "activities": {
+      "chat": 0,
+      "events": 78,
+      "game": 7,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 440843,
+    "age": 27,
+    "birthday": "1994-04-15",
+    "city": "Boston",
+    "completion": 76,
+    "gender": "man",
+    "headline": "Sunset rides and coffee circles.",
+    "height": "172 cm",
+    "horoscope": "Scorpio",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/5.jpg",
+      "https://randomuser.me/api/portraits/men/22.jpg",
+      "https://randomuser.me/api/portraits/men/39.jpg"
+    ],
+    "initials": "OH",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "name": "Owen Hale",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "7230b437-5ada-5cb1-ba9a-4ffcb15abd5d",
+    "partitionKey": "country:hu",
+    "userId": "eac11b0685f9799953a40dd4"
+  },
+  {
+    "_id": {
+      "$oid": "7313a9379f60200cba7b9f71"
+    },
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "activities": {
+      "chat": 0,
+      "events": 90,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 444724,
+    "age": 28,
+    "birthday": "1995-05-16",
+    "city": "Phoenix",
+    "completion": 68,
+    "gender": "woman",
+    "headline": "Thoughtful plans, minimal noise.",
+    "height": "167 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/12.jpg",
+      "https://randomuser.me/api/portraits/women/29.jpg",
+      "https://randomuser.me/api/portraits/women/46.jpg"
+    ],
+    "initials": "CB",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "name": "Chloe Brooks",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "4f1c17d9-2c81-57b8-b3df-232f11cdd112",
+    "partitionKey": "country:hu",
+    "userId": "7313a9379f60200cba7b9f71"
+  },
+  {
+    "_id": {
+      "$oid": "f6f22ba0a6f14cfcf4585d47"
+    },
+    "about": "I organize active and travel-style events with flexible participant roles.",
+    "activities": {
+      "chat": 0,
+      "events": 88,
+      "game": 3,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 620130,
+    "age": 29,
+    "birthday": "1996-06-17",
+    "city": "Nashville",
+    "completion": 55,
+    "gender": "man",
+    "headline": "Travel light, host well.",
+    "height": "169 cm",
+    "horoscope": "Leo",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/19.jpg",
+      "https://randomuser.me/api/portraits/men/36.jpg",
+      "https://randomuser.me/api/portraits/men/53.jpg"
+    ],
+    "initials": "LR",
+    "languages": [
+      "English",
+      "Portuguese"
+    ],
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "name": "Leo Reed",
+    "physique": "Curvy",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Adventurer",
+    "syncKey": "e7038872-ccc0-5947-b29e-70f8a73305d3",
+    "partitionKey": "country:hu",
+    "userId": "f6f22ba0a6f14cfcf4585d47"
+  },
+  {
+    "_id": {
+      "$oid": "0c3ab5da9af33d4e688e809c"
+    },
+    "about": "I host sports and game-heavy events with structured follow-ups.",
+    "activities": {
+      "chat": 0,
+      "events": 75,
+      "game": 8,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 305793,
+    "age": 30,
+    "birthday": "1997-07-18",
+    "city": "San Diego",
+    "completion": 70,
+    "gender": "woman",
+    "headline": "Fast pace, good vibes.",
+    "height": "184 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/26.jpg",
+      "https://randomuser.me/api/portraits/women/43.jpg",
+      "https://randomuser.me/api/portraits/women/60.jpg"
+    ],
+    "initials": "AB",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "name": "Ava Baker",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Playful Spirit",
+    "syncKey": "e92dadff-cacd-5259-ab98-1660be66b90e",
+    "partitionKey": "country:hu",
+    "userId": "0c3ab5da9af33d4e688e809c"
+  },
+  {
+    "_id": {
+      "$oid": "76da95a9109da485555c0d25"
+    },
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "activities": {
+      "chat": 0,
+      "events": 93,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 443988,
+    "age": 31,
+    "birthday": "1998-08-19",
+    "city": "Portland",
+    "completion": 61,
+    "gender": "man",
+    "headline": "Metrics first, then movement.",
+    "height": "180 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/33.jpg",
+      "https://randomuser.me/api/portraits/men/50.jpg",
+      "https://randomuser.me/api/portraits/men/67.jpg"
+    ],
+    "initials": "AT",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "name": "Alex Turner",
+    "physique": "Average",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Ambitious Go-Getter",
+    "syncKey": "59448baf-715c-57a4-8372-f2e1275780f1",
+    "partitionKey": "country:hu",
+    "userId": "76da95a9109da485555c0d25"
+  },
+  {
+    "_id": {
+      "$oid": "0b8e5df4ec85d858c304a350"
+    },
+    "about": "I design event atmospheres first and build flow around people and space.",
+    "activities": {
+      "chat": 0,
+      "events": 84,
+      "game": 2,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 227821,
+    "age": 32,
+    "birthday": "1999-09-20",
+    "city": "Austin",
+    "completion": 53,
+    "gender": "woman",
+    "headline": "Design-led hangouts only.",
+    "height": "178 cm",
+    "horoscope": "Aries",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/40.jpg",
+      "https://randomuser.me/api/portraits/women/57.jpg",
+      "https://randomuser.me/api/portraits/women/74.jpg"
+    ],
+    "initials": "EP",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "name": "Emma Parker",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Creative Soul",
+    "syncKey": "2a2c99ed-f678-506d-adcb-3fe422fef22c",
+    "partitionKey": "country:hu",
+    "userId": "0b8e5df4ec85d858c304a350"
+  },
+  {
+    "_id": {
+      "$oid": "4da20eb049179e73d4757808"
+    },
+    "about": "I keep the calendar strict and communication transparent for all members.",
+    "activities": {
+      "chat": 0,
+      "events": 89,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 522709,
+    "age": 33,
+    "birthday": "2000-10-21",
+    "city": "Seattle",
+    "completion": 74,
+    "gender": "man",
+    "headline": "Always on time, always clear.",
+    "height": "183 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/47.jpg",
+      "https://randomuser.me/api/portraits/men/64.jpg",
+      "https://randomuser.me/api/portraits/men/81.jpg"
+    ],
+    "initials": "NL",
+    "languages": [
+      "English",
+      "Italian"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "name": "Noah Lane",
+    "physique": "Fit",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Reliable One",
+    "syncKey": "e10fa893-194d-5964-b81a-ba09a556d507",
+    "partitionKey": "country:hu",
+    "userId": "4da20eb049179e73d4757808"
+  },
+  {
+    "_id": {
+      "$oid": "9184901a15076d32ea8b626f"
+    },
+    "about": "I run long-format events with multiple sub-events and role-based access.",
+    "activities": {
+      "chat": 0,
+      "events": 81,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 398080,
+    "age": 34,
+    "birthday": "1990-11-22",
+    "city": "Chicago",
+    "completion": 60,
+    "gender": "woman",
+    "headline": "Calm planning for complex events.",
+    "height": "186 cm",
+    "horoscope": "Libra",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/54.jpg",
+      "https://randomuser.me/api/portraits/women/71.jpg",
+      "https://randomuser.me/api/portraits/women/88.jpg"
+    ],
+    "initials": "OR",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "name": "Olivia Rivera",
+    "physique": "Athletic",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "8874bc3d-67fa-52ad-b687-a270a678bf41",
+    "partitionKey": "country:hu",
+    "userId": "9184901a15076d32ea8b626f"
+  },
+  {
+    "_id": {
+      "$oid": "e1dccfc3443239865c6ac69a"
+    },
+    "about": "I host quality-first social events with strong moderation and feedback loops.",
+    "activities": {
+      "chat": 0,
+      "events": 83,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 329173,
+    "age": 35,
+    "birthday": "1991-12-23",
+    "city": "Denver",
+    "completion": 66,
+    "gender": "man",
+    "headline": "Curated nights, meaningful circles.",
+    "height": "176 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/61.jpg",
+      "https://randomuser.me/api/portraits/men/78.jpg",
+      "https://randomuser.me/api/portraits/men/95.jpg"
+    ],
+    "initials": "MG",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "name": "Mason Grant",
+    "physique": "Average",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "9e66b6f0-2ad1-5cc9-b5e6-636c68a78085",
+    "partitionKey": "country:hu",
+    "userId": "e1dccfc3443239865c6ac69a"
+  },
+  {
+    "_id": {
+      "$oid": "4b5bad1292fb6db05dc0e455"
+    },
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "activities": {
+      "chat": 0,
+      "events": 82,
+      "game": 9,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 432507,
+    "age": 24,
+    "birthday": "1992-01-24",
+    "city": "Miami",
+    "completion": 72,
+    "gender": "woman",
+    "headline": "Planning cozy chaos with structure.",
+    "height": "170 cm",
+    "horoscope": "Taurus",
+    "hostTier": "Platinum Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/68.jpg",
+      "https://randomuser.me/api/portraits/women/85.jpg",
+      "https://randomuser.me/api/portraits/women/2.jpg"
+    ],
+    "initials": "LS",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "name": "Lina Stone",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Empatikus",
+    "syncKey": "a4772bcf-79fb-51d0-984a-021db1c23e65",
+    "partitionKey": "country:hu",
+    "userId": "4b5bad1292fb6db05dc0e455"
+  },
+  {
+    "_id": {
+      "$oid": "ed4924c22a5240a54e48c0b5"
+    },
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "activities": {
+      "chat": 0,
+      "events": 85,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 499225,
+    "age": 25,
+    "birthday": "1993-02-25",
+    "city": "Boston",
+    "completion": 64,
+    "gender": "man",
+    "headline": "Reliable planning, zero drama.",
+    "height": "182 cm",
+    "horoscope": "Libra",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/75.jpg",
+      "https://randomuser.me/api/portraits/men/92.jpg",
+      "https://randomuser.me/api/portraits/men/9.jpg"
+    ],
+    "initials": "OH",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "name": "Owen Hale",
+    "physique": "Lean",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Megbízható",
+    "syncKey": "eaf35db9-f7da-599c-9baf-bea3bc38d67b",
+    "partitionKey": "country:hu",
+    "userId": "ed4924c22a5240a54e48c0b5"
+  },
+  {
+    "_id": {
+      "$oid": "a0fb804ad6f347d6a9dab526"
+    },
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "activities": {
+      "chat": 0,
+      "events": 85,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 581523,
+    "age": 26,
+    "birthday": "1994-03-26",
+    "city": "Phoenix",
+    "completion": 58,
+    "gender": "woman",
+    "headline": "Art nights and adventure mornings.",
+    "height": "168 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/82.jpg",
+      "https://randomuser.me/api/portraits/women/99.jpg",
+      "https://randomuser.me/api/portraits/women/16.jpg"
+    ],
+    "initials": "CB",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "name": "Chloe Brooks",
+    "physique": "Fit",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Kreatív",
+    "syncKey": "7c22191b-11fe-50fc-9192-a883c27da918",
+    "partitionKey": "country:hu",
+    "userId": "a0fb804ad6f347d6a9dab526"
+  },
+  {
+    "_id": {
+      "$oid": "0f9350e50f1ffc3cf002b7ed"
+    },
+    "about": "I host social-first events where people who do not know each other can connect fast.",
+    "activities": {
+      "chat": 0,
+      "events": 90,
+      "game": 7,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 440843,
+    "age": 27,
+    "birthday": "1995-03-31",
+    "city": "Nashville",
+    "completion": 76,
+    "gender": "man",
+    "headline": "Sunset rides and coffee circles.",
+    "height": "172 cm",
+    "horoscope": "Scorpio",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/89.jpg",
+      "https://randomuser.me/api/portraits/men/6.jpg",
+      "https://randomuser.me/api/portraits/men/23.jpg"
+    ],
+    "initials": "LR",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "name": "Leo Reed",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "53fdc3ea-2a62-5be2-a5a2-d620426a1a97",
+    "partitionKey": "country:hu",
+    "userId": "0f9350e50f1ffc3cf002b7ed"
+  },
+  {
+    "_id": {
+      "$oid": "9d3ba3d74edabe4695e6d3f9"
+    },
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "activities": {
+      "chat": 0,
+      "events": 80,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 444724,
+    "age": 28,
+    "birthday": "1996-05-01",
+    "city": "San Diego",
+    "completion": 68,
+    "gender": "woman",
+    "headline": "Thoughtful plans, minimal noise.",
+    "height": "167 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/96.jpg",
+      "https://randomuser.me/api/portraits/women/13.jpg",
+      "https://randomuser.me/api/portraits/women/30.jpg"
+    ],
+    "initials": "AB",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "name": "Ava Baker",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "59a2e803-7172-5396-870e-d22a71b01f13",
+    "partitionKey": "country:hu",
+    "userId": "9d3ba3d74edabe4695e6d3f9"
+  },
+  {
+    "_id": {
+      "$oid": "8f6ff3752a1f0912cd63e912"
+    },
+    "about": "I organize active and travel-style events with flexible participant roles.",
+    "activities": {
+      "chat": 0,
+      "events": 91,
+      "game": 3,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 620130,
+    "age": 29,
+    "birthday": "1997-06-02",
+    "city": "Portland",
+    "completion": 55,
+    "gender": "man",
+    "headline": "Travel light, host well.",
+    "height": "169 cm",
+    "horoscope": "Leo",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/3.jpg",
+      "https://randomuser.me/api/portraits/men/20.jpg",
+      "https://randomuser.me/api/portraits/men/37.jpg"
+    ],
+    "initials": "AT",
+    "languages": [
+      "English",
+      "Portuguese"
+    ],
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "name": "Alex Turner",
+    "physique": "Curvy",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Adventurer",
+    "syncKey": "9e851190-e366-5da6-bd40-bf7dc0b1ec79",
+    "partitionKey": "country:hu",
+    "userId": "8f6ff3752a1f0912cd63e912"
+  },
+  {
+    "_id": {
+      "$oid": "b0971e779dbdb71f9327eabb"
+    },
+    "about": "I host sports and game-heavy events with structured follow-ups.",
+    "activities": {
+      "chat": 0,
+      "events": 87,
+      "game": 8,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 305793,
+    "age": 30,
+    "birthday": "1998-07-03",
+    "city": "Austin",
+    "completion": 70,
+    "gender": "woman",
+    "headline": "Fast pace, good vibes.",
+    "height": "184 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/10.jpg",
+      "https://randomuser.me/api/portraits/women/27.jpg",
+      "https://randomuser.me/api/portraits/women/44.jpg"
+    ],
+    "initials": "EP",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "name": "Emma Parker",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Playful Spirit",
+    "syncKey": "570f474f-3f68-59db-93fc-aa343a1256a0",
+    "partitionKey": "country:hu",
+    "userId": "b0971e779dbdb71f9327eabb"
+  },
+  {
+    "_id": {
+      "$oid": "af0436815ab38f4864dd1e24"
+    },
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "activities": {
+      "chat": 0,
+      "events": 84,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 443988,
+    "age": 31,
+    "birthday": "1999-08-04",
+    "city": "Seattle",
+    "completion": 61,
+    "gender": "man",
+    "headline": "Metrics first, then movement.",
+    "height": "180 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/17.jpg",
+      "https://randomuser.me/api/portraits/men/34.jpg",
+      "https://randomuser.me/api/portraits/men/51.jpg"
+    ],
+    "initials": "NL",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "name": "Noah Lane",
+    "physique": "Average",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Ambitious Go-Getter",
+    "syncKey": "e61c678b-b373-5e29-a0e2-86090a07841d",
+    "partitionKey": "country:hu",
+    "userId": "af0436815ab38f4864dd1e24"
+  },
+  {
+    "_id": {
+      "$oid": "d94ebcdf7bf9c8f33bb3f32c"
+    },
+    "about": "I design event atmospheres first and build flow around people and space.",
+    "activities": {
+      "chat": 0,
+      "events": 94,
+      "game": 2,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 227821,
+    "age": 32,
+    "birthday": "2000-09-05",
+    "city": "Chicago",
+    "completion": 53,
+    "gender": "woman",
+    "headline": "Design-led hangouts only.",
+    "height": "178 cm",
+    "horoscope": "Aries",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/24.jpg",
+      "https://randomuser.me/api/portraits/women/41.jpg",
+      "https://randomuser.me/api/portraits/women/58.jpg"
+    ],
+    "initials": "OR",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "name": "Olivia Rivera",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Creative Soul",
+    "syncKey": "8308df43-bfb4-5608-a990-cf0da7ca980f",
+    "partitionKey": "country:hu",
+    "userId": "d94ebcdf7bf9c8f33bb3f32c"
+  },
+  {
+    "_id": {
+      "$oid": "904ee3c526298f6921cde3f3"
+    },
+    "about": "I keep the calendar strict and communication transparent for all members.",
+    "activities": {
+      "chat": 0,
+      "events": 82,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 522709,
+    "age": 33,
+    "birthday": "1990-10-06",
+    "city": "Denver",
+    "completion": 74,
+    "gender": "man",
+    "headline": "Always on time, always clear.",
+    "height": "183 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/31.jpg",
+      "https://randomuser.me/api/portraits/men/48.jpg",
+      "https://randomuser.me/api/portraits/men/65.jpg"
+    ],
+    "initials": "MG",
+    "languages": [
+      "English",
+      "Italian"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "name": "Mason Grant",
+    "physique": "Fit",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Reliable One",
+    "syncKey": "e69bb7d8-e8e0-5b31-8a18-a8d2c94f94f6",
+    "partitionKey": "country:hu",
+    "userId": "904ee3c526298f6921cde3f3"
+  },
+  {
+    "_id": {
+      "$oid": "4a008502646a200488911f45"
+    },
+    "about": "I run long-format events with multiple sub-events and role-based access.",
+    "activities": {
+      "chat": 0,
+      "events": 92,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 398080,
+    "age": 34,
+    "birthday": "1991-11-07",
+    "city": "Miami",
+    "completion": 60,
+    "gender": "woman",
+    "headline": "Calm planning for complex events.",
+    "height": "186 cm",
+    "horoscope": "Libra",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/38.jpg",
+      "https://randomuser.me/api/portraits/women/55.jpg",
+      "https://randomuser.me/api/portraits/women/72.jpg"
+    ],
+    "initials": "LS",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "name": "Lina Stone",
+    "physique": "Athletic",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "c5153aef-058c-5b6d-a51e-bb59fc91b7a9",
+    "partitionKey": "country:hu",
+    "userId": "4a008502646a200488911f45"
+  },
+  {
+    "_id": {
+      "$oid": "e904dad402b47dd2cdaa8bec"
+    },
+    "about": "I host quality-first social events with strong moderation and feedback loops.",
+    "activities": {
+      "chat": 0,
+      "events": 83,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 329173,
+    "age": 35,
+    "birthday": "1992-12-08",
+    "city": "Boston",
+    "completion": 66,
+    "gender": "man",
+    "headline": "Curated nights, meaningful circles.",
+    "height": "176 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/45.jpg",
+      "https://randomuser.me/api/portraits/men/62.jpg",
+      "https://randomuser.me/api/portraits/men/79.jpg"
+    ],
+    "initials": "OH",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "name": "Owen Hale",
+    "physique": "Average",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "b486c1a9-bc9c-5894-a379-63396363e85e",
+    "partitionKey": "country:hu",
+    "userId": "e904dad402b47dd2cdaa8bec"
+  },
+  {
+    "_id": {
+      "$oid": "25f4744ead36d038064d62c3"
+    },
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "activities": {
+      "chat": 0,
+      "events": 81,
+      "game": 9,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 432507,
+    "age": 24,
+    "birthday": "1993-01-09",
+    "city": "Phoenix",
+    "completion": 72,
+    "gender": "woman",
+    "headline": "Planning cozy chaos with structure.",
+    "height": "170 cm",
+    "horoscope": "Taurus",
+    "hostTier": "Platinum Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/52.jpg",
+      "https://randomuser.me/api/portraits/women/69.jpg",
+      "https://randomuser.me/api/portraits/women/86.jpg"
+    ],
+    "initials": "CB",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "name": "Chloe Brooks",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Empatikus",
+    "syncKey": "9faf3fe4-0174-5a94-9e7a-00c8e68cf94d",
+    "partitionKey": "country:hu",
+    "userId": "25f4744ead36d038064d62c3"
+  },
+  {
+    "_id": {
+      "$oid": "c100132b3ae88b47890def59"
+    },
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "activities": {
+      "chat": 0,
+      "events": 85,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 499225,
+    "age": 25,
+    "birthday": "1994-02-10",
+    "city": "Nashville",
+    "completion": 64,
+    "gender": "man",
+    "headline": "Reliable planning, zero drama.",
+    "height": "182 cm",
+    "horoscope": "Libra",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/59.jpg",
+      "https://randomuser.me/api/portraits/men/76.jpg",
+      "https://randomuser.me/api/portraits/men/93.jpg"
+    ],
+    "initials": "LR",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "name": "Leo Reed",
+    "physique": "Lean",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Megbízható",
+    "syncKey": "98984e81-21d0-5219-a980-7bd1edb1f4b2",
+    "partitionKey": "country:hu",
+    "userId": "c100132b3ae88b47890def59"
+  },
+  {
+    "_id": {
+      "$oid": "c033e546ef7c928fb8cf073b"
+    },
+    "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
+    "activities": {
+      "chat": 0,
+      "events": 86,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 581523,
+    "age": 26,
+    "birthday": "1995-03-11",
+    "city": "San Diego",
+    "completion": 58,
+    "gender": "woman",
+    "headline": "Art nights and adventure mornings.",
+    "height": "168 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/66.jpg",
+      "https://randomuser.me/api/portraits/women/83.jpg",
+      "https://randomuser.me/api/portraits/women/0.jpg"
+    ],
+    "initials": "AB",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "name": "Ava Baker",
+    "physique": "Fit",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Kreatív",
+    "syncKey": "68636114-53b9-57fe-8c61-6f166610e6a0",
+    "partitionKey": "country:hu",
+    "userId": "c033e546ef7c928fb8cf073b"
+  },
+  {
+    "_id": {
+      "$oid": "ec342d9af3f2cfd6adfd4ee5"
+    },
+    "about": "I host social-first events where people who do not know each other can connect fast.",
+    "activities": {
+      "chat": 0,
+      "events": 89,
+      "game": 7,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 440843,
+    "age": 27,
+    "birthday": "1996-04-12",
+    "city": "Portland",
+    "completion": 76,
+    "gender": "man",
+    "headline": "Sunset rides and coffee circles.",
+    "height": "172 cm",
+    "horoscope": "Scorpio",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/73.jpg",
+      "https://randomuser.me/api/portraits/men/90.jpg",
+      "https://randomuser.me/api/portraits/men/7.jpg"
+    ],
+    "initials": "AT",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "name": "Alex Turner",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "cf5cfc3e-86c4-5957-a989-1b4d2ef836e1",
+    "partitionKey": "country:hu",
+    "userId": "ec342d9af3f2cfd6adfd4ee5"
+  },
+  {
+    "_id": {
+      "$oid": "931a01221376d8e28a068fe8"
+    },
+    "about": "I prefer meaningful conversations and smaller events with quality curation.",
+    "activities": {
+      "chat": 0,
+      "events": 85,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 444724,
+    "age": 28,
+    "birthday": "1997-05-13",
+    "city": "Austin",
+    "completion": 68,
+    "gender": "woman",
+    "headline": "Thoughtful plans, minimal noise.",
+    "height": "167 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/80.jpg",
+      "https://randomuser.me/api/portraits/women/97.jpg",
+      "https://randomuser.me/api/portraits/women/14.jpg"
+    ],
+    "initials": "EP",
+    "languages": [
+      "English",
+      "Korean"
+    ],
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "name": "Emma Parker",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "b2be1322-f849-5266-8b75-7824b8b23c43",
+    "partitionKey": "country:hu",
+    "userId": "931a01221376d8e28a068fe8"
+  },
+  {
+    "_id": {
+      "$oid": "23820c1e76d3bd843f61c799"
+    },
+    "about": "I organize active and travel-style events with flexible participant roles.",
+    "activities": {
+      "chat": 0,
+      "events": 85,
+      "game": 3,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 620130,
+    "age": 29,
+    "birthday": "1998-06-14",
+    "city": "Seattle",
+    "completion": 55,
+    "gender": "man",
+    "headline": "Travel light, host well.",
+    "height": "169 cm",
+    "horoscope": "Leo",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/87.jpg",
+      "https://randomuser.me/api/portraits/men/4.jpg",
+      "https://randomuser.me/api/portraits/men/21.jpg"
+    ],
+    "initials": "NL",
+    "languages": [
+      "English",
+      "Portuguese"
+    ],
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "name": "Noah Lane",
+    "physique": "Curvy",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Adventurer",
+    "syncKey": "004a61ab-2fa9-522c-992d-e57f29f86310",
+    "partitionKey": "country:hu",
+    "userId": "23820c1e76d3bd843f61c799"
+  },
+  {
+    "_id": {
+      "$oid": "63bae8417bd352e5013c2e93"
+    },
+    "about": "I host sports and game-heavy events with structured follow-ups.",
+    "activities": {
+      "chat": 0,
+      "events": 88,
+      "game": 8,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 305793,
+    "age": 30,
+    "birthday": "1999-07-15",
+    "city": "Chicago",
+    "completion": 70,
+    "gender": "woman",
+    "headline": "Fast pace, good vibes.",
+    "height": "184 cm",
+    "horoscope": "Pisces",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/94.jpg",
+      "https://randomuser.me/api/portraits/women/11.jpg",
+      "https://randomuser.me/api/portraits/women/28.jpg"
+    ],
+    "initials": "OR",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "name": "Olivia Rivera",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Playful Spirit",
+    "syncKey": "cbae02bd-8c5f-5a87-aa99-616129aada59",
+    "partitionKey": "country:hu",
+    "userId": "63bae8417bd352e5013c2e93"
+  },
+  {
+    "_id": {
+      "$oid": "41f4659dbd75a03abc20cd6d"
+    },
+    "about": "I optimize event outcomes and participant quality through filtered invites.",
+    "activities": {
+      "chat": 0,
+      "events": 84,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 443988,
+    "age": 31,
+    "birthday": "2000-08-16",
+    "city": "Denver",
+    "completion": 61,
+    "gender": "man",
+    "headline": "Metrics first, then movement.",
+    "height": "180 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/1.jpg",
+      "https://randomuser.me/api/portraits/men/18.jpg",
+      "https://randomuser.me/api/portraits/men/35.jpg"
+    ],
+    "initials": "MG",
+    "languages": [
+      "English",
+      "French"
+    ],
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "name": "Mason Grant",
+    "physique": "Average",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Ambitious Go-Getter",
+    "syncKey": "2ea076b3-9c67-57e9-b4eb-56ef03baf069",
+    "partitionKey": "country:hu",
+    "userId": "41f4659dbd75a03abc20cd6d"
+  },
+  {
+    "_id": {
+      "$oid": "af70e41dbe826cbd7d8b3500"
+    },
+    "about": "I design event atmospheres first and build flow around people and space.",
+    "activities": {
+      "chat": 0,
+      "events": 82,
+      "game": 2,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 227821,
+    "age": 32,
+    "birthday": "1990-09-17",
+    "city": "Miami",
+    "completion": 53,
+    "gender": "woman",
+    "headline": "Design-led hangouts only.",
+    "height": "178 cm",
+    "horoscope": "Aries",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/8.jpg",
+      "https://randomuser.me/api/portraits/women/25.jpg",
+      "https://randomuser.me/api/portraits/women/42.jpg"
+    ],
+    "initials": "LS",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "name": "Lina Stone",
+    "physique": "Slim",
+    "profileStatus": "host only",
+    "statusText": "Recently Active",
+    "traitLabel": "Creative Soul",
+    "syncKey": "a7c85249-5b48-5d4e-bf46-51eb1b4d063a",
+    "partitionKey": "country:hu",
+    "userId": "af70e41dbe826cbd7d8b3500"
+  },
+  {
+    "_id": {
+      "$oid": "0cc9990d08304ab26ee67784"
+    },
+    "about": "I keep the calendar strict and communication transparent for all members.",
+    "activities": {
+      "chat": 0,
+      "events": 87,
+      "game": 6,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 522709,
+    "age": 33,
+    "birthday": "1991-10-18",
+    "city": "Boston",
+    "completion": 74,
+    "gender": "man",
+    "headline": "Always on time, always clear.",
+    "height": "183 cm",
+    "horoscope": "Capricorn",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/15.jpg",
+      "https://randomuser.me/api/portraits/men/32.jpg",
+      "https://randomuser.me/api/portraits/men/49.jpg"
+    ],
+    "initials": "OH",
+    "languages": [
+      "English",
+      "Italian"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "name": "Owen Hale",
+    "physique": "Fit",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Reliable One",
+    "syncKey": "c54133e8-4eea-56ed-8d19-29833e9fdd25",
+    "partitionKey": "country:hu",
+    "userId": "0cc9990d08304ab26ee67784"
+  },
+  {
+    "_id": {
+      "$oid": "e76d63199eff33a6945cb797"
+    },
+    "about": "I run long-format events with multiple sub-events and role-based access.",
+    "activities": {
+      "chat": 0,
+      "events": 81,
+      "game": 5,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 398080,
+    "age": 34,
+    "birthday": "1992-11-19",
+    "city": "Phoenix",
+    "completion": 60,
+    "gender": "woman",
+    "headline": "Calm planning for complex events.",
+    "height": "186 cm",
+    "horoscope": "Libra",
+    "hostTier": "Silver Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/22.jpg",
+      "https://randomuser.me/api/portraits/women/39.jpg",
+      "https://randomuser.me/api/portraits/women/56.jpg"
+    ],
+    "initials": "CB",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "name": "Chloe Brooks",
+    "physique": "Athletic",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Deep Thinker",
+    "syncKey": "c543a956-f1a8-5905-8a19-e9efe0256922",
+    "partitionKey": "country:hu",
+    "userId": "e76d63199eff33a6945cb797"
+  },
+  {
+    "_id": {
+      "$oid": "f01086c19a00a6f46b6d41a7"
+    },
+    "about": "I host quality-first social events with strong moderation and feedback loops.",
+    "activities": {
+      "chat": 0,
+      "events": 88,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 329173,
+    "age": 35,
+    "birthday": "1993-12-20",
+    "city": "Nashville",
+    "completion": 66,
+    "gender": "man",
+    "headline": "Curated nights, meaningful circles.",
+    "height": "176 cm",
+    "horoscope": "Cancer",
+    "hostTier": "Bronze Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/29.jpg",
+      "https://randomuser.me/api/portraits/men/46.jpg",
+      "https://randomuser.me/api/portraits/men/63.jpg"
+    ],
+    "initials": "LR",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "name": "Leo Reed",
+    "physique": "Average",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "0fdfbe29-d92b-5815-90d2-a0766432a35f",
+    "partitionKey": "country:hu",
+    "userId": "f01086c19a00a6f46b6d41a7"
+  },
+  {
+    "_id": {
+      "$oid": "f7bcd28c65ea349b4ee7aed2"
+    },
+    "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
+    "activities": {
+      "chat": 0,
+      "events": 88,
+      "game": 9,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 432507,
+    "age": 24,
+    "birthday": "1994-01-21",
+    "city": "San Diego",
+    "completion": 72,
+    "gender": "woman",
+    "headline": "Planning cozy chaos with structure.",
+    "height": "170 cm",
+    "horoscope": "Taurus",
+    "hostTier": "Platinum Host",
+    "images": [
+      "https://randomuser.me/api/portraits/women/36.jpg",
+      "https://randomuser.me/api/portraits/women/53.jpg",
+      "https://randomuser.me/api/portraits/women/70.jpg"
+    ],
+    "initials": "AB",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "name": "Ava Baker",
+    "physique": "Athletic",
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Empatikus",
+    "syncKey": "9174d349-67a3-5e8d-8711-9313952caaca",
+    "partitionKey": "country:hu",
+    "userId": "f7bcd28c65ea349b4ee7aed2"
+  },
+  {
+    "_id": {
+      "$oid": "b5e2db6882d989d8532af12c"
+    },
+    "about": "I like compact events with clear timelines and simple role assignment.",
+    "activities": {
+      "chat": 0,
+      "events": 86,
+      "game": 4,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 499225,
+    "age": 25,
+    "birthday": "1995-02-22",
+    "city": "Portland",
+    "completion": 64,
+    "gender": "man",
+    "headline": "Reliable planning, zero drama.",
+    "height": "182 cm",
+    "horoscope": "Libra",
+    "hostTier": "Gold Host",
+    "images": [
+      "https://randomuser.me/api/portraits/men/43.jpg",
+      "https://randomuser.me/api/portraits/men/60.jpg",
+      "https://randomuser.me/api/portraits/men/77.jpg"
+    ],
+    "initials": "AT",
+    "languages": [
+      "English",
+      "Hungarian"
+    ],
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "name": "Alex Turner",
+    "physique": "Lean",
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Megbízható",
+    "syncKey": "4cffc1d1-a0a2-5287-bcc7-763f87e91188",
+    "partitionKey": "country:hu",
+    "userId": "b5e2db6882d989d8532af12c"
+  }
+]

@@ -18,6 +18,25 @@ config:
   chat-only-mode: ${CHAT_ONLY_MODE:false}
   dev-user: ${DEV_USER:dev@myscoutee.local}
 
+assets:
+  source-refresh:
+    enabled: ${ASSET_SOURCE_REFRESH_ENABLED:true}
+    timeout-ms: ${ASSET_SOURCE_REFRESH_TIMEOUT_MS:5000}
+    allowed-hosts: ${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS:booking.com,www.booking.com}
+
+auth:
+  region-security:
+    enabled: ${AUTH_REGION_SECURITY_ENABLED:false}
+
+media:
+  enabled: ${MEDIA_ENABLED:true}
+  endpoint: ${MEDIA_OBJECT_STORE_ENDPOINT:http://localhost:9000}
+  region: ${MEDIA_OBJECT_STORE_REGION:eu-central-1}
+  access-key: ${MEDIA_OBJECT_STORE_ACCESS_KEY:minioadmin}
+  secret-key: ${MEDIA_OBJECT_STORE_SECRET_KEY:minioadmin}
+  bucket: ${MEDIA_BUCKET:myscoutee-media}
+  path-style-access: ${MEDIA_OBJECT_STORE_PATH_STYLE:true}
+
 fcm:
   url: "https://fcm.googleapis.com/fcm/send"
   apiKey: ${FCM_API_KEY:}
@@ -32,17 +51,20 @@ spring:
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+  mongodb:
+    host: ${MONGODB_HOST:localhost}
+    port: ${MONGODB_PORT:27017}
+    username: ${MONGODB_USERNAME:guest}
+    password: ${MONGODB_PASSWORD:guest}
+    database: ${MONGODB_DATABASE:demo_db}
   data:
-    mongodb:
-      host: ${MONGODB_HOST:localhost}
-      port: ${MONGODB_PORT:27017}
-      username: ${MONGODB_USERNAME:guest}
-      password: ${MONGODB_PASSWORD:guest}
-      database: ${MONGODB_DATABASE:myscoutee_db}
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}
+      repositories:
+        enabled: false
 
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    org.springframework.integration: WARN

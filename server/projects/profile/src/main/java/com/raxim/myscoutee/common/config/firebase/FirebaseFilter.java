@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,16 +74,30 @@ public class FirebaseFilter extends OncePerRequestFilter {
     }
 
     private void authenticateWithoutFirebase(HttpServletRequest request) {
-        String devUser = configProperties.getDevUser();
-        if (devUser == null || devUser.isBlank()) {
-            return;
+        String requestedUserId = normalizeRequestUserId(request);
+        UserDetails userDetails;
+        if (StringUtils.hasText(requestedUserId)) {
+            userDetails = firebaseService.loadUserById(requestedUserId);
+        } else {
+            String devUser = configProperties.getDevUser();
+            if (devUser == null || devUser.isBlank()) {
+                return;
+            }
+            userDetails = firebaseService.loadUserByUsername(
+                    devUser,
+                    request.getHeader(AUTH_LINK),
+                    request.getRequestURI());
         }
-
-        UserDetails userDetails = firebaseService.loadUserByUsername(
-                devUser,
-                request.getHeader(AUTH_LINK),
-                request.getRequestURI());
         setAuthentication(userDetails, null);
+    }
+
+    private String normalizeRequestUserId(HttpServletRequest request) {
+        String requestedUserId = request.getParameter("userId");
+        if (requestedUserId == null) {
+            return null;
+        }
+        String normalizedUserId = requestedUserId.trim();
+        return normalizedUserId.isEmpty() ? null : normalizedUserId;
     }
 
     private String extractFirebaseToken(HttpServletRequest request) {

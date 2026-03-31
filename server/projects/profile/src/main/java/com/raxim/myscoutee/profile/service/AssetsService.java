@@ -1,0 +1,813 @@
+package com.raxim.myscoutee.profile.service;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
+
+@Service
+public class AssetsService {
+    private static final String LEGACY_ASSETS_WRAPPER_ID = "assets";
+    private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
+
+    private final AssetsRepository assetsRepository;
+    private final UsersRepository usersRepository;
+    private final EventParticipationTicketService eventParticipationTicketService;
+    private final MongoTemplate mongoTemplate;
+    private final AssetSourceRefreshProperties assetSourceRefreshProperties;
+
+    public AssetsService(
+            AssetsRepository assetsRepository,
+            UsersRepository usersRepository,
+            EventParticipationTicketService eventParticipationTicketService,
+            MongoTemplate mongoTemplate,
+            AssetSourceRefreshProperties assetSourceRefreshProperties) {
+        this.assetsRepository = assetsRepository;
+        this.usersRepository = usersRepository;
+        this.eventParticipationTicketService = eventParticipationTicketService;
+        this.mongoTemplate = mongoTemplate;
+        this.assetSourceRefreshProperties = assetSourceRefreshProperties;
+    }
+
+    public List<AssetCardDto> queryAssets(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+
+        ensureOwnerAssetsBootstrapped(normalizedUserId);
+        return assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(normalizedUserId).stream()
+                .map(this::toDto)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new AssetTicketsPageDto(List.of(), 0);
+        }
+
+        int normalizedPage = Math.max(0, page == null ? 0 : page.intValue());
+        int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
+        boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
+
+        List<EventRecordDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .map(this::toTicketEventRecordDto)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso())))
+                .toList();
+
+        List<EventRecordDto> visible = new ArrayList<>(ordered);
+        if (upcoming) {
+            java.util.Collections.reverse(visible);
+        }
+
+        int startIndex = Math.min(visible.size(), normalizedPage * normalizedPageSize);
+        int endIndex = Math.min(visible.size(), startIndex + normalizedPageSize);
+        return new AssetTicketsPageDto(visible.subList(startIndex, endIndex), visible.size());
+    }
+
+    public void upsert(AssetUpsertRequestDto request) {
+        if (request == null || request.asset() == null) {
+            return;
+        }
+        saveOwnedAsset(normalizeId(request.userId()), request.asset());
+    }
+
+    public void replace(AssetReplaceRequestDto request) {
+        if (request == null) {
+            return;
+        }
+        String normalizedUserId = normalizeId(request.userId());
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+
+        ensureOwnerAssetsBootstrapped(normalizedUserId);
+        List<Asset> existing = assetsRepository.findByOwnerUserId(normalizedUserId);
+        Map<String, Asset> existingByAssetId = new LinkedHashMap<>();
+        for (Asset asset : existing) {
+            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            if (StringUtils.hasText(assetId)) {
+                existingByAssetId.put(assetId, asset);
+            }
+        }
+
+        List<Asset> nextDocuments = new ArrayList<>();
+        Set<String> retainedIds = new LinkedHashSet<>();
+        for (AssetCardDto assetDto : safeAssets(request.assets())) {
+            Asset next = toDocument(assetDto, normalizedUserId, existingByAssetId.get(normalizeId(assetDto.id())));
+            if (next == null) {
+                continue;
+            }
+            nextDocuments.add(next);
+            retainedIds.add(next.getId());
+        }
+
+        List<Asset> toDelete = existing.stream()
+                .filter(Objects::nonNull)
+                .filter(asset -> !retainedIds.contains(asset.getId()))
+                .toList();
+        if (!toDelete.isEmpty()) {
+            assetsRepository.deleteAll(toDelete);
+        }
+        if (!nextDocuments.isEmpty()) {
+            assetsRepository.saveAll(nextDocuments);
+        }
+    }
+
+    public void delete(AssetDeleteRequestDto request) {
+        if (request == null) {
+            return;
+        }
+        String normalizedUserId = normalizeId(request.userId());
+        String normalizedAssetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return;
+        }
+        ensureOwnerAssetsBootstrapped(normalizedUserId);
+        assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
+                .ifPresent(assetsRepository::delete);
+    }
+
+    public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
+        String normalizedUrl = normalizeExternalUrl(request == null ? null : request.sourceLink());
+        boolean enabled = assetSourceRefreshProperties.isEnabled();
+        if (!StringUtils.hasText(normalizedUrl)) {
+            return new AssetSourceRefreshResponseDto(enabled, false, normalizedUrl, null, null, null, null);
+        }
+        if (!enabled) {
+            return new AssetSourceRefreshResponseDto(false, false, normalizedUrl, null, null, null, null);
+        }
+
+        URI uri = toUri(normalizedUrl);
+        String normalizedHost = normalizeHost(uri == null ? null : uri.getHost());
+        if (!isAllowedRefreshHost(normalizedHost)) {
+            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
+        }
+
+        try {
+            org.jsoup.nodes.Document document = Jsoup.connect(normalizedUrl)
+                    .userAgent("Mozilla/5.0 (compatible; MyScouteeBot/1.0)")
+                    .timeout(Math.max(1000, assetSourceRefreshProperties.getTimeoutMs()))
+                    .followRedirects(true)
+                    .get();
+            String finalUrl = normalizeExternalUrl(document.location());
+            String title = firstMetaContent(document, "property", "og:title");
+            if (!StringUtils.hasText(title)) {
+                title = safeText(document.title());
+            }
+            String subtitle = firstMetaContent(document, "property", "og:site_name");
+            if (!StringUtils.hasText(subtitle)) {
+                subtitle = normalizedHost;
+            }
+            String details = firstMetaContent(document, "property", "og:description");
+            if (!StringUtils.hasText(details)) {
+                details = firstMetaContent(document, "name", "description");
+            }
+            String imageUrl = firstMetaContent(document, "property", "og:image");
+            if (!StringUtils.hasText(imageUrl)) {
+                imageUrl = firstMetaContent(document, "name", "twitter:image");
+            }
+            return new AssetSourceRefreshResponseDto(
+                    true,
+                    true,
+                    StringUtils.hasText(finalUrl) ? finalUrl : normalizedUrl,
+                    safeNullableText(title),
+                    safeNullableText(subtitle),
+                    safeNullableText(details),
+                    safeNullableText(imageUrl));
+        } catch (IOException ex) {
+            return new AssetSourceRefreshResponseDto(true, true, normalizedUrl, null, null, null, null);
+        }
+    }
+
+    public Optional<Asset> findAssetByAssetId(String assetId) {
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedAssetId)) {
+            return Optional.empty();
+        }
+
+        Optional<Asset> stored = assetsRepository.findByAssetId(normalizedAssetId);
+        if (stored.isPresent()) {
+            return stored;
+        }
+
+        Asset bootstrapped = bootstrapAssetFromLegacy(normalizedAssetId);
+        return Optional.ofNullable(bootstrapped);
+    }
+
+    public void syncRequestsFromMembers(String assetId, List<ActivityMember> members) {
+        Optional<Asset> assetOptional = findAssetByAssetId(assetId);
+        if (assetOptional.isEmpty()) {
+            return;
+        }
+
+        Asset current = assetOptional.get();
+        String ownerUserId = normalizeId(current.getOwnerUserId());
+        Map<String, AssetRequestRecord> existingByUserId = new LinkedHashMap<>();
+        for (AssetRequestRecord request : safeRequests(current.getRequests())) {
+            String requestUserId = normalizeId(request.userId());
+            if (StringUtils.hasText(requestUserId)) {
+                existingByUserId.put(requestUserId, request);
+            }
+        }
+
+        List<AssetRequestRecord> nextRequests = members == null ? List.of() : members.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !ownerUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> !"deleted".equals(normalizeMemberStatus(member.getStatus())))
+                .map(member -> toAssetRequest(member, existingByUserId.get(normalizeId(member.getUserId()))))
+                .filter(Objects::nonNull)
+                .toList();
+
+        Asset next = cloneAsset(current);
+        next.setRequests(nextRequests);
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(ownerUserId);
+        assetsRepository.save(next);
+    }
+
+    private AssetCardDto saveOwnedAsset(String ownerUserId, AssetCardDto assetDto) {
+        if (!StringUtils.hasText(ownerUserId)) {
+            return null;
+        }
+
+        ensureOwnerAssetsBootstrapped(ownerUserId);
+        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, normalizeId(assetDto.id())).orElse(null);
+        Asset saved = toDocument(assetDto, ownerUserId, existing);
+        if (saved == null) {
+            return null;
+        }
+        assetsRepository.save(saved);
+        return toDto(saved);
+    }
+
+    private void ensureOwnerAssetsBootstrapped(String ownerUserId) {
+        if (!assetsRepository.findByOwnerUserId(ownerUserId).isEmpty()) {
+            return;
+        }
+        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
+        if (wrapper == null) {
+            return;
+        }
+
+        List<Asset> bootstrapped = readLegacyAssets(wrapper).stream()
+                .filter(asset -> ownerUserId.equals(normalizeId(asset.getOwnerUserId())))
+                .toList();
+        if (!bootstrapped.isEmpty()) {
+            assetsRepository.saveAll(bootstrapped);
+        }
+    }
+
+    private Asset bootstrapAssetFromLegacy(String assetId) {
+        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
+        if (wrapper == null) {
+            return null;
+        }
+        Asset legacy = readLegacyAssets(wrapper).stream()
+                .filter(asset -> assetId.equals(normalizeId(asset.getAssetId())))
+                .findFirst()
+                .orElse(null);
+        if (legacy == null) {
+            return null;
+        }
+        return assetsRepository.findByOwnerUserIdAndAssetId(legacy.getOwnerUserId(), legacy.getAssetId())
+                .orElseGet(() -> assetsRepository.save(legacy));
+    }
+
+    private List<Asset> readLegacyAssets(Document wrapper) {
+        Object rawById = wrapper.get("byId");
+        if (!(rawById instanceof Map<?, ?> byId)) {
+            return List.of();
+        }
+
+        List<Asset> assets = new ArrayList<>();
+        for (Object rawValue : byId.values()) {
+            Document value = toDocument(rawValue);
+            Asset asset = fromLegacyDocument(value);
+            if (asset != null) {
+                assets.add(asset);
+            }
+        }
+        return assets;
+    }
+
+    private Asset fromLegacyDocument(Document legacy) {
+        String assetId = normalizeId(legacy.getString("id"));
+        String ownerUserId = normalizeId(legacy.getString("ownerUserId"));
+        String type = normalizeAssetType(legacy.getString("type"));
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
+            return null;
+        }
+
+        Asset asset = new Asset();
+        asset.setId(new ObjectId().toHexString());
+        asset.setSyncKey(UUID.randomUUID().toString());
+        asset.setAssetId(assetId);
+        asset.setOwnerUserId(ownerUserId);
+        asset.setType(type);
+        asset.setTitle(safeText(legacy.getString("title")));
+        asset.setSubtitle(safeText(legacy.getString("subtitle")));
+        asset.setCity(safeText(legacy.getString("city")));
+        asset.setCapacityTotal(Math.max(1, normalizeCount(legacy.get("capacityTotal"))));
+        asset.setDetails(safeText(legacy.getString("details")));
+        asset.setImageUrl(safeText(legacy.getString("imageUrl")));
+        asset.setSourceLink(safeText(legacy.getString("sourceLink")));
+        asset.setRoutes(normalizeStrings(legacy.get("routes")));
+        asset.setRequests(readLegacyRequests(legacy.get("requests")));
+        asset.setVisibility(safeText(legacy.getString("visibility")));
+        String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
+        String updatedDate = normalizeDateTime(legacy.getString("updatedAtIso"), createdDate);
+        asset.setCreatedDate(createdDate);
+        asset.setCreatedUser(ownerUserId);
+        asset.setUpdatedDate(updatedDate);
+        asset.setUpdatedUser(ownerUserId);
+        return asset;
+    }
+
+    private List<AssetRequestRecord> readLegacyRequests(Object rawRequests) {
+        if (!(rawRequests instanceof Collection<?> requests)) {
+            return List.of();
+        }
+
+        List<AssetRequestRecord> next = new ArrayList<>();
+        for (Object rawRequest : requests) {
+            Document request = toDocument(rawRequest);
+            String requestId = normalizeId(request.getString("id"));
+            if (!StringUtils.hasText(requestId)) {
+                continue;
+            }
+            next.add(new AssetRequestRecord(
+                    requestId,
+                    normalizeId(request.getString("userId")),
+                    safeText(request.getString("name")),
+                    safeText(request.getString("initials")),
+                    normalizeGender(request.getString("gender")),
+                    normalizeRequestStatus(request.getString("status")),
+                    safeText(request.getString("note"))));
+        }
+        return next;
+    }
+
+    private Asset toDocument(AssetCardDto dto, String ownerUserId, Asset current) {
+        String assetId = normalizeId(dto == null ? null : dto.id());
+        String type = normalizeAssetType(dto == null ? null : dto.type());
+        if (dto == null || !StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
+            return null;
+        }
+
+        String nowIso = Instant.now().toString();
+        Asset next = current == null ? new Asset() : cloneAsset(current);
+        next.setId(current == null ? new ObjectId().toHexString() : current.getId());
+        next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
+        next.setAssetId(assetId);
+        next.setOwnerUserId(ownerUserId);
+        next.setType(type);
+        next.setTitle(safeText(dto.title()));
+        next.setSubtitle(safeText(dto.subtitle()));
+        next.setCity(safeText(dto.city()));
+        next.setCapacityTotal(Math.max(1, normalizeCount(dto.capacityTotal())));
+        next.setDetails(safeText(dto.details()));
+        next.setImageUrl(safeText(dto.imageUrl()));
+        next.setSourceLink(safeText(dto.sourceLink()));
+        next.setRoutes(normalizeStrings(dto.routes()));
+        next.setRequests(normalizeRequests(dto.requests()));
+        String currentVisibility = safeText(current == null ? null : current.getVisibility());
+        next.setVisibility(StringUtils.hasText(currentVisibility) ? currentVisibility : "Invitation only");
+        next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
+        next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(ownerUserId);
+        return next;
+    }
+
+    private Asset cloneAsset(Asset source) {
+        Asset clone = new Asset();
+        clone.setId(source.getId());
+        clone.setSyncKey(source.getSyncKey());
+        clone.setAssetId(source.getAssetId());
+        clone.setOwnerUserId(source.getOwnerUserId());
+        clone.setType(source.getType());
+        clone.setTitle(source.getTitle());
+        clone.setSubtitle(source.getSubtitle());
+        clone.setCity(source.getCity());
+        clone.setCapacityTotal(source.getCapacityTotal());
+        clone.setDetails(source.getDetails());
+        clone.setImageUrl(source.getImageUrl());
+        clone.setSourceLink(source.getSourceLink());
+        clone.setRoutes(new ArrayList<>(normalizeStrings(source.getRoutes())));
+        clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
+        clone.setVisibility(source.getVisibility());
+        clone.setCreatedDate(source.getCreatedDate());
+        clone.setCreatedUser(source.getCreatedUser());
+        clone.setUpdatedDate(source.getUpdatedDate());
+        clone.setUpdatedUser(source.getUpdatedUser());
+        return clone;
+    }
+
+    private EventRecordDto toTicketEventRecordDto(ActivityEvent event) {
+        String sourceId = normalizeId(event.getSourceId());
+        if (!StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        EventMemberSnapshot memberSnapshot = resolveEventMemberSnapshot(event);
+        return new EventRecordDto(
+                sourceId,
+                normalizeId(event.getOwnerUserId()),
+                safeText(event.getType()),
+                safeText(event.getAvatar()),
+                safeText(event.getTitle()),
+                safeText(event.getSubtitle()),
+                safeText(event.getTimeframe()),
+                StringUtils.hasText(event.getInviter()) ? event.getInviter().trim() : null,
+                normalizeCount(event.getUnread()),
+                normalizeCount(event.getActivity()),
+                Boolean.TRUE.equals(event.getIsAdmin()),
+                Boolean.TRUE.equals(event.getIsInvitation()),
+                Boolean.TRUE.equals(event.getIsHosting()),
+                Boolean.TRUE.equals(event.getIsTrashed()),
+                Boolean.FALSE.equals(event.getPublished()) ? Boolean.FALSE : Boolean.TRUE,
+                safeNullableText(event.getTrashedAtIso()),
+                normalizeId(event.getCreatorUserId()),
+                safeText(event.getCreatorName()),
+                safeText(event.getCreatorInitials()),
+                safeText(event.getCreatorGender()),
+                safeText(event.getCreatorCity()),
+                safeText(event.getVisibility()),
+                safeText(event.getBlindMode()),
+                safeNullableText(event.getStartAtIso()),
+                safeNullableText(event.getEndAtIso()),
+                safeDouble(event.getDistanceKm()),
+                safeText(event.getImageUrl()),
+                safeText(event.getSourceLink()),
+                safeText(event.getLocation()),
+                event.getLocationCoordinates(),
+                nullableCount(event.getCapacityMin()),
+                nullableCount(event.getCapacityMax()),
+                normalizeCount(event.getCapacityTotal()),
+                Boolean.TRUE.equals(event.getAutoInviter()),
+                safeText(event.getFrequency()),
+                Boolean.TRUE.equals(event.getTicketing()),
+                Boolean.TRUE.equals(event.getSlotsEnabled()),
+                event.getSlotTemplates() == null ? List.of() : new ArrayList<>(event.getSlotTemplates()),
+                safeNullableText(event.getParentEventId()),
+                safeNullableText(event.getSlotTemplateId()),
+                Boolean.TRUE.equals(event.getGenerated()),
+                safeText(event.getEventType()),
+                null,
+                List.of(),
+                memberSnapshot.acceptedUserIds().size(),
+                memberSnapshot.pendingUserIds().size(),
+                memberSnapshot.acceptedUserIds(),
+                memberSnapshot.pendingUserIds(),
+                normalizeStrings(event.getTopics()),
+                event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
+                safeText(event.getSubEventsDisplayMode()),
+                safeDouble(event.getRating()),
+                safeDouble(event.getRelevance()),
+                safeDouble(event.getAffinity()));
+    }
+
+    private EventMemberSnapshot resolveEventMemberSnapshot(ActivityEvent event) {
+        String eventId = event == null ? null : normalizeId(event.getSourceId());
+        String creatorUserId = event == null ? null : normalizeId(event.getCreatorUserId());
+        if (!StringUtils.hasText(eventId)) {
+            return new EventMemberSnapshot(List.of(), List.of());
+        }
+
+        Query query = Query.query(Criteria.where("ownerType").is("event").and("ownerId").is(eventId));
+        List<ActivityMember> members = mongoTemplate.find(query, ActivityMember.class);
+        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
+        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
+        for (ActivityMember member : members) {
+            if (member == null) {
+                continue;
+            }
+            String memberUserId = normalizeId(member.getUserId());
+            if (!StringUtils.hasText(memberUserId)) {
+                continue;
+            }
+            if ("pending".equals(normalizeMemberStatus(member.getStatus()))) {
+                pendingUserIds.add(memberUserId);
+            } else {
+                acceptedUserIds.add(memberUserId);
+            }
+        }
+        if (acceptedUserIds.isEmpty() && StringUtils.hasText(creatorUserId)) {
+            acceptedUserIds.add(creatorUserId);
+        }
+        pendingUserIds.removeAll(acceptedUserIds);
+        return new EventMemberSnapshot(new ArrayList<>(acceptedUserIds), new ArrayList<>(pendingUserIds));
+    }
+
+    private String normalizeMemberStatus(String status) {
+        String normalized = safeText(status);
+        if ("pending".equals(normalized)) {
+            return "pending";
+        }
+        if ("deleted".equals(normalized)) {
+            return "deleted";
+        }
+        return "accepted";
+    }
+
+    private AssetCardDto toDto(Asset asset) {
+        if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
+            return null;
+        }
+        return new AssetCardDto(
+                normalizeId(asset.getAssetId()),
+                normalizeAssetType(asset.getType()),
+                safeText(asset.getTitle()),
+                safeText(asset.getSubtitle()),
+                safeText(asset.getCity()),
+                Math.max(1, normalizeCount(asset.getCapacityTotal())),
+                safeText(asset.getDetails()),
+                safeText(asset.getImageUrl()),
+                safeText(asset.getSourceLink()),
+                normalizeStrings(asset.getRoutes()),
+                safeRequests(asset.getRequests()).stream()
+                        .map(request -> new AssetMemberRequestDto(
+                                normalizeId(request.id()),
+                                normalizeId(request.userId()),
+                                safeText(request.name()),
+                                safeText(request.initials()),
+                                normalizeGender(request.gender()),
+                                normalizeRequestStatus(request.status()),
+                                safeText(request.note())))
+                        .toList());
+    }
+
+    private AssetRequestRecord toAssetRequest(ActivityMember member, AssetRequestRecord existing) {
+        if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
+            return null;
+        }
+        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
+        String status = "pending".equals(safeText(member.getStatus())) ? "pending" : "accepted";
+        String note = "pending".equals(status)
+                ? "Awaiting owner confirmation."
+                : "Approved and synced with the plan.";
+        return new AssetRequestRecord(
+                existing != null && StringUtils.hasText(existing.id()) ? existing.id().trim() : UUID.randomUUID().toString(),
+                normalizeId(member.getUserId()),
+                user == null ? normalizeId(member.getUserId()) : safeText(user.getName()),
+                user == null ? initialsFromText(normalizeId(member.getUserId())) : safeText(user.getInitials()),
+                user == null ? "man" : normalizeGender(user.getGender()),
+                status,
+                note);
+    }
+
+    private boolean isAllowedRefreshHost(String host) {
+        if (!StringUtils.hasText(host)) {
+            return false;
+        }
+        for (String allowedHost : assetSourceRefreshProperties.getAllowedHosts()) {
+            String normalizedAllowedHost = normalizeHost(allowedHost);
+            if (!StringUtils.hasText(normalizedAllowedHost)) {
+                continue;
+            }
+            if (host.equals(normalizedAllowedHost) || host.endsWith("." + normalizedAllowedHost)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String firstMetaContent(org.jsoup.nodes.Document document, String attributeName, String attributeValue) {
+        if (document == null || !StringUtils.hasText(attributeName) || !StringUtils.hasText(attributeValue)) {
+            return "";
+        }
+        for (Element element : document.select("meta[" + attributeName + "]")) {
+            if (!attributeValue.equalsIgnoreCase(safeText(element.attr(attributeName)))) {
+                continue;
+            }
+            String absoluteContent = safeText(element.absUrl("content"));
+            if (StringUtils.hasText(absoluteContent)) {
+                return absoluteContent;
+            }
+            String content = safeText(element.attr("content"));
+            if (StringUtils.hasText(content)) {
+                return content;
+            }
+        }
+        return "";
+    }
+
+    private List<AssetCardDto> safeAssets(List<AssetCardDto> assets) {
+        return assets == null ? List.of() : assets;
+    }
+
+    private List<AssetRequestRecord> normalizeRequests(List<AssetMemberRequestDto> requests) {
+        if (requests == null) {
+            return List.of();
+        }
+
+        List<AssetRequestRecord> next = new ArrayList<>();
+        for (AssetMemberRequestDto request : requests) {
+            if (request == null) {
+                continue;
+            }
+            String requestId = normalizeId(request.id());
+            if (!StringUtils.hasText(requestId)) {
+                continue;
+            }
+            next.add(new AssetRequestRecord(
+                    requestId,
+                    normalizeId(request.userId()),
+                    safeText(request.name()),
+                    safeText(request.initials()),
+                    normalizeGender(request.gender()),
+                    normalizeRequestStatus(request.status()),
+                    safeText(request.note())));
+        }
+        return next;
+    }
+
+    private List<AssetRequestRecord> safeRequests(List<AssetRequestRecord> requests) {
+        return requests == null ? List.of() : requests;
+    }
+
+    private Document toDocument(Object raw) {
+        if (raw instanceof Document document) {
+            return document;
+        }
+        if (raw instanceof Map<?, ?> map) {
+            Document document = new Document();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                if (entry.getKey() instanceof String key) {
+                    document.put(key, entry.getValue());
+                }
+            }
+            return document;
+        }
+        return new Document();
+    }
+
+    private List<String> normalizeStrings(Object rawValues) {
+        if (!(rawValues instanceof Collection<?> values)) {
+            return List.of();
+        }
+        LinkedHashSet<String> next = new LinkedHashSet<>();
+        for (Object rawValue : values) {
+            String value = normalizeId(String.valueOf(rawValue));
+            if (StringUtils.hasText(value)) {
+                next.add(value);
+            }
+        }
+        return new ArrayList<>(next);
+    }
+
+    private Double safeDouble(Double value) {
+        return value == null || !Double.isFinite(value) ? 0d : value;
+    }
+
+    private record EventMemberSnapshot(List<String> acceptedUserIds, List<String> pendingUserIds) {
+    }
+
+    private String safeNullableText(String value) {
+        String normalizedValue = safeText(value);
+        return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
+    }
+
+    private int normalizeCount(Object value) {
+        if (value instanceof Number number) {
+            return Math.max(0, (int) Math.floor(number.doubleValue()));
+        }
+        try {
+            return Math.max(0, (int) Math.floor(Double.parseDouble(String.valueOf(value))));
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    private Integer nullableCount(Number value) {
+        return value == null ? null : Math.max(0, (int) Math.floor(value.doubleValue()));
+    }
+
+    private String normalizeExternalUrl(String value) {
+        String trimmed = safeText(value);
+        if (!StringUtils.hasText(trimmed)) {
+            return "";
+        }
+        String candidate = trimmed.matches("^[a-zA-Z][a-zA-Z0-9+.-]*://.*$") ? trimmed : "https://" + trimmed;
+        URI uri = toUri(candidate);
+        if (uri == null || !StringUtils.hasText(uri.getHost())) {
+            return "";
+        }
+        String scheme = StringUtils.hasText(uri.getScheme()) ? uri.getScheme().toLowerCase() : "https";
+        if (!"http".equals(scheme) && !"https".equals(scheme)) {
+            return "";
+        }
+        return uri.normalize().toString();
+    }
+
+    private URI toUri(String value) {
+        try {
+            return new URI(value);
+        } catch (URISyntaxException ex) {
+            return null;
+        }
+    }
+
+    private String normalizeId(String value) {
+        String normalizedValue = safeText(value);
+        return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
+    }
+
+    private String normalizeHost(String value) {
+        return safeText(value).toLowerCase();
+    }
+
+    private String normalizeAssetType(String type) {
+        String normalizedType = safeText(type);
+        return ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
+    }
+
+    private String normalizeRequestStatus(String status) {
+        return "accepted".equals(safeText(status)) ? "accepted" : "pending";
+    }
+
+    private String normalizeGender(String value) {
+        return "woman".equals(safeText(value)) ? "woman" : "man";
+    }
+
+    private String normalizeDateTime(String value, String fallback) {
+        String normalizedValue = safeText(value);
+        return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
+    }
+
+    private long toSortableDate(String value) {
+        String normalizedValue = safeText(value);
+        if (!StringUtils.hasText(normalizedValue)) {
+            return Long.MIN_VALUE;
+        }
+        try {
+            return Instant.parse(normalizedValue).toEpochMilli();
+        } catch (Exception ignored) {
+            return Long.MIN_VALUE;
+        }
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String initialsFromText(String value) {
+        String normalizedValue = safeText(value);
+        if (!StringUtils.hasText(normalizedValue)) {
+            return "";
+        }
+        StringBuilder initials = new StringBuilder();
+        for (String part : normalizedValue.split("\\s+")) {
+            if (!part.isEmpty()) {
+                initials.append(Character.toUpperCase(part.charAt(0)));
+            }
+            if (initials.length() >= 2) {
+                break;
+            }
+        }
+        return initials.toString();
+    }
+}

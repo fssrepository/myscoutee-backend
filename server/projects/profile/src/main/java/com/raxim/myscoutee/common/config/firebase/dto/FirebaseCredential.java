@@ -33,9 +33,25 @@ public class FirebaseCredential {
     }
 
     public String getGoogleId() {
-        Map<String, Object> firebaseClaim = (Map<String, Object>) token.getClaims().get(FIREBASE);
-        Map<String, Object> identitiesMap = (Map<String, Object>) firebaseClaim.get(IDENTITES);
-        List<String> identitiesGoogle = (List<String>) identitiesMap.get(GOOGLE_COM);
-        return identitiesGoogle.get(0);
+        Map<?, ?> firebaseClaim = asMap(token.getClaims().get(FIREBASE));
+        Map<?, ?> identitiesMap = asMap(firebaseClaim.get(IDENTITES));
+        return firstString(asList(identitiesMap.get(GOOGLE_COM)));
+    }
+
+    private Map<?, ?> asMap(Object value) {
+        return value instanceof Map<?, ?> map ? map : Map.of();
+    }
+
+    private List<?> asList(Object value) {
+        return value instanceof List<?> list ? list : List.of();
+    }
+
+    private String firstString(List<?> values) {
+        for (Object value : values) {
+            if (value instanceof String stringValue) {
+                return stringValue;
+            }
+        }
+        return null;
     }
 }

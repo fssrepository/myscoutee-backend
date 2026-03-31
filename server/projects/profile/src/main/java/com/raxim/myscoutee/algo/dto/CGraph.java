@@ -1,10 +1,9 @@
 package com.raxim.myscoutee.algo.dto;
 
-import java.util.Arrays;
 import java.util.List;
 
-import com.raxim.myscoutee.common.merge.Mergeable;
-import com.raxim.myscoutee.common.merge.MergingSet;
+import com.raxim.myscoutee.algo.util.Mergeable;
+import com.raxim.myscoutee.algo.util.MergingSet;
 
 /*
  * connected graph
@@ -32,14 +31,18 @@ public class CGraph extends MergingSet<CNode> implements Mergeable<CGraph>, Comp
     }
 
     @Override
-    public void merge(CGraph node) {
-        CNode[] cNodes = node.toArray(new CNode[node.size()]);
-        super.addAll(Arrays.asList(cNodes));
+    public int compareTo(CGraph other) {
+        if (other == null)
+            return 1;
+        // Compare graphs by their size (number of nodes)
+        return Integer.compare(this.size(), other.size());
     }
 
     @Override
-    public int compareTo(CGraph arg0) {
-        return Integer.compare(this.hashCode(), arg0.hashCode());
+    public void merge(CGraph other) {
+        if (other != null) {
+            super.addAll(other);
+        }
     }
 
     @Override

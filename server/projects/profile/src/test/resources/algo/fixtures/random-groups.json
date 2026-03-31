@@ -1,0 +1,118 @@
+[
+  {
+    "name": "larger-component-first-and-packable",
+    "range": { "min": 4, "max": 6 },
+    "types": [],
+    "hasAny": false,
+    "nodes": [
+      { "id": "u1" },
+      { "id": "u2" },
+      { "id": "u3" },
+      { "id": "u4" },
+      { "id": "u5" },
+      { "id": "u6" },
+      { "id": "u7" },
+      { "id": "u8" },
+      { "id": "u9" },
+      { "id": "u10" },
+      { "id": "u11" }
+    ],
+    "edges": [
+      { "from": "u1", "to": "u2", "weight": 0.90 },
+      { "from": "u1", "to": "u3", "weight": 0.90 },
+      { "from": "u1", "to": "u4", "weight": 0.90 },
+      { "from": "u1", "to": "u5", "weight": 0.90 },
+      { "from": "u1", "to": "u6", "weight": 0.90 },
+      { "from": "u1", "to": "u7", "weight": 0.90 },
+      { "from": "u1", "to": "u8", "weight": 0.90 },
+      { "from": "u1", "to": "u9", "weight": 0.90 },
+      { "from": "u2", "to": "u3", "weight": 0.90 },
+      { "from": "u2", "to": "u4", "weight": 0.90 },
+      { "from": "u2", "to": "u5", "weight": 0.90 },
+      { "from": "u2", "to": "u6", "weight": 0.90 },
+      { "from": "u2", "to": "u7", "weight": 0.90 },
+      { "from": "u2", "to": "u8", "weight": 0.90 },
+      { "from": "u2", "to": "u9", "weight": 0.90 },
+      { "from": "u3", "to": "u4", "weight": 0.90 },
+      { "from": "u3", "to": "u5", "weight": 0.90 },
+      { "from": "u3", "to": "u6", "weight": 0.90 },
+      { "from": "u3", "to": "u7", "weight": 0.90 },
+      { "from": "u3", "to": "u8", "weight": 0.90 },
+      { "from": "u3", "to": "u9", "weight": 0.90 },
+      { "from": "u4", "to": "u5", "weight": 0.90 },
+      { "from": "u4", "to": "u6", "weight": 0.90 },
+      { "from": "u4", "to": "u7", "weight": 0.90 },
+      { "from": "u4", "to": "u8", "weight": 0.90 },
+      { "from": "u4", "to": "u9", "weight": 0.90 },
+      { "from": "u5", "to": "u6", "weight": 0.90 },
+      { "from": "u5", "to": "u7", "weight": 0.90 },
+      { "from": "u5", "to": "u8", "weight": 0.90 },
+      { "from": "u5", "to": "u9", "weight": 0.90 },
+      { "from": "u6", "to": "u7", "weight": 0.90 },
+      { "from": "u6", "to": "u8", "weight": 0.90 },
+      { "from": "u6", "to": "u9", "weight": 0.90 },
+      { "from": "u7", "to": "u8", "weight": 0.90 },
+      { "from": "u7", "to": "u9", "weight": 0.90 },
+      { "from": "u8", "to": "u9", "weight": 0.90 },
+      { "from": "u10", "to": "u11", "weight": 0.75 }
+    ],
+    "expectedGroups": [
+      ["u1", "u2", "u3", "u4", "u5"],
+      ["u6", "u7", "u8", "u9"]
+    ]
+  },
+  {
+    "name": "typed-balance-with-four-members",
+    "range": { "min": 4, "max": 4 },
+    "types": ["man", "woman"],
+    "hasAny": false,
+    "nodes": [
+      { "id": "m1", "type": "man" },
+      { "id": "m2", "type": "man" },
+      { "id": "w1", "type": "woman" },
+      { "id": "w2", "type": "woman" }
+    ],
+    "edges": [
+      { "from": "m1", "to": "w1", "weight": 1.00 },
+      { "from": "m1", "to": "w2", "weight": 0.90 },
+      { "from": "m2", "to": "w1", "weight": 0.95 },
+      { "from": "m2", "to": "w2", "weight": 0.85 },
+      { "from": "m1", "to": "m2", "weight": 0.30 },
+      { "from": "w1", "to": "w2", "weight": 0.30 }
+    ],
+    "expectedGroups": [
+      ["m1", "m2", "w1", "w2"]
+    ]
+  },
+  {
+    "name": "disconnected-components-ignore-isolated-tail",
+    "range": { "min": 3, "max": 4 },
+    "types": [],
+    "hasAny": false,
+    "nodes": [
+      { "id": "a1" },
+      { "id": "a2" },
+      { "id": "a3" },
+      { "id": "a4" },
+      { "id": "a5" },
+      { "id": "a6" },
+      { "id": "a7" },
+      { "id": "a8" }
+    ],
+    "edges": [
+      { "from": "a1", "to": "a2", "weight": 0.92 },
+      { "from": "a1", "to": "a3", "weight": 0.91 },
+      { "from": "a1", "to": "a4", "weight": 0.90 },
+      { "from": "a2", "to": "a3", "weight": 0.89 },
+      { "from": "a2", "to": "a4", "weight": 0.88 },
+      { "from": "a3", "to": "a4", "weight": 0.87 },
+      { "from": "a5", "to": "a6", "weight": 0.86 },
+      { "from": "a5", "to": "a7", "weight": 0.85 },
+      { "from": "a6", "to": "a7", "weight": 0.84 }
+    ],
+    "expectedGroups": [
+      ["a1", "a2", "a3", "a4"],
+      ["a5", "a6", "a7"]
+    ]
+  }
+]

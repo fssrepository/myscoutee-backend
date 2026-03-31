@@ -1,13 +1,13 @@
 package com.raxim.myscoutee.algo;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.raxim.myscoutee.algo.dto.CNode;
 import com.raxim.myscoutee.algo.dto.Edge;
@@ -16,6 +16,7 @@ import com.raxim.myscoutee.algo.dto.Node;
 public class CTreeIterator implements Iterator<Edge> {
     private final CTree cTree;
 
+    // Changed from ConcurrentMap to standard Map
     private final Map<String, PriorityQueue<CNode>> nodesOrderedByType;
     private final Set<String> visited = new HashSet<>();
 
@@ -24,7 +25,7 @@ public class CTreeIterator implements Iterator<Edge> {
 
     public CTreeIterator(final CTree cTree, List<String> types) {
         this.cTree = cTree;
-        this.nodesOrderedByType = new ConcurrentHashMap<>();
+        this.nodesOrderedByType = new HashMap<>(); // Standard Map
 
         for (String type : cTree.getTypes()) {
             PriorityQueue<CNode> nodes = new PriorityQueue<>(
@@ -53,6 +54,9 @@ public class CTreeIterator implements Iterator<Edge> {
 
             if ((node == null || cTree.isDisabledNode(node))
                     && cTree.isEmpty()) {
+                return false;
+            }
+            if (node == null) {
                 return false;
             }
 
@@ -98,7 +102,7 @@ public class CTreeIterator implements Iterator<Edge> {
             if (cTree.isDisabledNode(currEdge.getTo()) || cTree.isDisabledNode(currEdge.getFrom())) {
                 hasNext();
             } else if (cTree.isIgnoredEdge(currEdge) && !visited.contains(currEdge.getTo().getId())
-             /*&& (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty())*/ ) {
+            /* && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()) */ ) {
                 next();
                 hasNext();
             }
@@ -106,7 +110,7 @@ public class CTreeIterator implements Iterator<Edge> {
 
         return (currEdge != null
                 && (!visited.contains(currEdge.getTo().getId())));
-        //&& (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()));
+        // && (!cTree.isEmpty() || !nodesOrderedByType.get(type).isEmpty()));
     }
 
     @Override
@@ -122,9 +126,6 @@ public class CTreeIterator implements Iterator<Edge> {
         }
 
         loadNodeTo();
-        if (!cTree.isIgnoredEdge(currEdge)) {
-            System.out.println("kTree ------" + currEdge);
-        }
         return currEdge;
     }
 

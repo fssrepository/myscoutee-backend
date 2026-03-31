@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -32,15 +31,6 @@ public class WebSecurityConfig {
         this.configProperties = configProperties;
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web
-                .ignoring()
-                .requestMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico",
-                        "/user/profile/images/**", "/games/*/*/images/**", "user/cars/*/images/**",
-                        "user/groups/images/**", "history/events/*/members/*/images/**");
-    }
-
     @Autowired
     protected void registerProvider(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(firebaseProvider);
@@ -50,7 +40,24 @@ public class WebSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests.requestMatchers("/health", "/metrics", "/shutdown", "/error").permitAll();
+                    authorizeRequests.requestMatchers(
+                            "/health",
+                            "/metrics",
+                            "/shutdown",
+                            "/error",
+                            "/auth/eligibility",
+                            "/css/**",
+                            "/js/**",
+                            "/img/**",
+                            "/lib/**",
+                            "/favicon.ico",
+                            "/user/profile/images/**",
+                            "/games/*/*/images/**",
+                            "/media/public/**",
+                            "/user/cars/*/images/**",
+                            "/user/groups/images/**",
+                            "/history/events/*/members/*/images/**")
+                            .permitAll();
                     if (!configProperties.isFirebaseEnabled()) {
                         authorizeRequests.anyRequest().permitAll();
                     } else if (configProperties.isChatOnlyMode()) {

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class CGroup extends LinkedHashSet<Node> {
     private double weight;
+    private double totalWeight = 0d;
 
     private Set<String> types = new HashSet<>();
 
@@ -37,9 +38,13 @@ public class CGroup extends LinkedHashSet<Node> {
     }
 
     public boolean add(Edge edge) {
+        if (edge == null) return false;
+        
         edges.add(edge);
-
-        this.weight = edges.stream().mapToDouble(Edge::getWeight).average().getAsDouble();
+        totalWeight += edge.getWeight();
+        
+        // O(1) average calculation instead of a Stream loop
+        this.weight = totalWeight / edges.size(); 
         return true;
     }
 

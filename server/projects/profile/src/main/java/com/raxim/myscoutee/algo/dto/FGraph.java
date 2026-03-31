@@ -1,87 +1,111 @@
-/*package com.raxim.myscoutee.algo.dto;
+package com.raxim.myscoutee.algo.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.raxim.myscoutee.profile.data.document.mongo.Event;
-import com.raxim.myscoutee.profile.data.document.mongo.Member;
-import com.raxim.myscoutee.profile.data.document.mongo.Rule;
-import com.raxim.myscoutee.profile.util.EventUtil;
-
 public class FGraph extends Graph {
-    private Set<Node> ignoredNodes;
-    private List<Set<Edge>> ignoredEdges;
+    private final Set<Node> ignoredNodes;
+    private final List<Set<Edge>> ignoredEdges;
 
     public FGraph() {
-        this(null, null);
+        this(Map.of(), List.of());
     }
 
     public FGraph(Map<String, Node> nodes, List<Edge> edges) {
-        this(nodes, edges, null, null);
+        this(nodes, edges, Set.of(), List.of());
     }
 
     public FGraph(Map<String, Node> nodes, List<Edge> edges, Set<Node> ignoredNodes, List<Set<Edge>> ignoredEdges) {
-        super(edges, nodes);
-        this.ignoredNodes = ignoredNodes;
-        this.ignoredEdges = ignoredEdges;
+        super(
+                edges == null ? List.of() : List.copyOf(edges),
+                nodes == null ? Map.of() : Collections.unmodifiableMap(new LinkedHashMap<>(nodes)));
+        this.ignoredNodes = ignoredNodes == null
+                ? Set.of()
+                : Collections.unmodifiableSet(new LinkedHashSet<>(ignoredNodes));
+        this.ignoredEdges = ignoredEdges == null
+                ? List.of()
+                : Collections.unmodifiableList(new ArrayList<>(ignoredEdges));
     }
 
     public List<Set<Edge>> getIgnoredEdges() {
         return ignoredEdges;
     }
 
-    public void setIgnoredEdges(List<Set<Edge>> ignoredEdges) {
-        this.ignoredEdges = ignoredEdges;
-    }
-
     public Set<Node> getIgnoredNodes() {
         return ignoredNodes;
     }
 
-    public void setIgnoredNodes(Set<Node> ignoredNodes) {
-        this.ignoredNodes = ignoredNodes;
-    }
+    public FGraph filter(Set<String> candidateUserIds, Set<String> disabledUserIds, double minWeight) {
+        Set<String> includedUserIds = candidateUserIds == null
+                ? Set.of()
+                : candidateUserIds.stream()
+                        .filter(id -> id != null && !id.isBlank())
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (includedUserIds.isEmpty()) {
+            return new FGraph(Map.of(), List.of(), resolveIgnoredNodes(disabledUserIds), ignoredEdges);
+        }
 
-    public FGraph filter(Event evt) {
-        FGraph fg = this;
+        Map<String, Node> filteredNodes = new LinkedHashMap<>();
+        for (String includedUserId : includedUserIds) {
+            Node node = getNodes().get(includedUserId);
+            filteredNodes.put(includedUserId, node == null ? new Node(includedUserId) : node);
+        }
 
-        Set<Member> members = evt.getMembers();
-        Set<Member> candidates = evt.getCandidates();
-        Rule rule = evt.getRule();
-
-        Set<Edge> sIgnoredEdges = EventUtil.permutate(members);
-
-        Set<Edge> sIgnoredEdgesByRate = fg.getEdges().stream()
-                .filter(edge -> rule.getRate() != null &&
-                        edge.getWeight() >= rule.getRate())
-                .collect(Collectors.toSet());
-
-        List<Set<Edge>> ignoredEdges = new ArrayList<>();
-        ignoredEdges.add(sIgnoredEdges);
-        ignoredEdges.add(sIgnoredEdgesByRate);
-        ignoredEdges.addAll(fg.getIgnoredEdges());
-
-        Set<Edge> possibleEdges = EventUtil.permutate(candidates);
-
-        List<Edge> validEdges = fg.getEdges().stream()
-                .filter(edge -> possibleEdges.contains(edge))
+        List<Edge> filteredEdges = getEdges().stream()
+                .filter(edge -> edge != null
+                        && edge.getFrom() != null
+                        && edge.getTo() != null
+                        && includedUserIds.contains(edge.getFrom().getId())
+                        && includedUserIds.contains(edge.getTo().getId())
+                        && edge.getWeight() >= minWeight)
                 .toList();
 
-        Set<Node> ignoredNodes = members.stream()
-                .filter(member -> "A".equals(member.getStatus())
-                        || "I".equals(member.getStatus()))
-                .map(member -> {
-                    return new Node(member.getProfile().getId().toString(),
-                            member.getProfile().getGender());
-                })
-                .collect(Collectors.toSet());
-
-        FGraph fGraph = new FGraph(fg.getNodes(), validEdges, ignoredNodes, ignoredEdges);
-        return fGraph;
+        return new FGraph(filteredNodes, filteredEdges, resolveIgnoredNodes(disabledUserIds), ignoredEdges);
     }
 
+    public double weightBetween(String leftUserId, String rightUserId) {
+        if (leftUserId == null || rightUserId == null || leftUserId.isBlank() || rightUserId.isBlank()) {
+            return 0d;
+        }
+        return getEdges().stream()
+                .filter(edge -> edge != null && edge.getFrom() != null && edge.getTo() != null)
+                .filter(edge -> edge.getFrom().getId().equals(leftUserId) && edge.getTo().getId().equals(rightUserId)
+                        || edge.getFrom().getId().equals(rightUserId) && edge.getTo().getId().equals(leftUserId))
+                .mapToDouble(Edge::getWeight)
+                .max()
+                .orElse(0d);
+    }
+
+    public static FGraph fromEdges(List<Edge> edges) {
+        if (edges == null || edges.isEmpty()) {
+            return new FGraph();
+        }
+        Map<String, Node> nodes = new LinkedHashMap<>();
+        List<Edge> normalizedEdges = new ArrayList<>();
+        for (Edge edge : edges) {
+            if (edge == null || edge.getFrom() == null || edge.getTo() == null) {
+                continue;
+            }
+            nodes.putIfAbsent(edge.getFrom().getId(), edge.getFrom());
+            nodes.putIfAbsent(edge.getTo().getId(), edge.getTo());
+            normalizedEdges.add(edge);
+        }
+        return new FGraph(nodes, normalizedEdges);
+    }
+
+    private Set<Node> resolveIgnoredNodes(Set<String> disabledUserIds) {
+        if (disabledUserIds == null || disabledUserIds.isEmpty()) {
+            return Set.of();
+        }
+        return disabledUserIds.stream()
+                .filter(id -> id != null && !id.isBlank())
+                .map(id -> getNodes().getOrDefault(id, new Node(id)))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 }
-*/

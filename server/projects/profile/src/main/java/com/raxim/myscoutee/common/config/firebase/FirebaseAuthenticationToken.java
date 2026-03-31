@@ -12,7 +12,7 @@ public class FirebaseAuthenticationToken extends AbstractAuthenticationToken {
     private Object credentials;
 
     public FirebaseAuthenticationToken(Object principal, Object credentials) {
-        super(null);
+        super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);
