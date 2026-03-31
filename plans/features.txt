@@ -65,3 +65,4 @@ make "circle"-s - group people etc. (what you can invite to group chat add extra
 contacts screen shows most important people, what you can practically add from the friends list
 
 3) i18n - introduce internalisation
+4) redis session handling
