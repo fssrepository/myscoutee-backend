@@ -24,6 +24,96 @@ import com.raxim.myscoutee.algo.dto.Range;
 
 public class StableGroupPlanner {
     private record CandidateScore(String userId, double score) {}
+
+/**
+     * Post-processing step: Applies the local search (Swap Check) 
+     * to maximize global affinity across all generated groups.
+     */
+    private List<Set<Node>> refineGroups(GraphSnapshot snapshot, List<Set<Node>> rawGroups, Set<String> lockedUserIds) {
+        List<Set<String>> stringGroups = rawGroups.stream()
+                .map(group -> group.stream().map(Node::getId).collect(Collectors.toSet()))
+                .toList();
+
+        boolean improved = true;
+        int maxPasses = 5;
+        int passes = 0;
+
+        while (improved && passes < maxPasses) {
+            improved = false;
+            passes++;
+            for (int i = 0; i < stringGroups.size(); i++) {
+                for (int j = i + 1; j < stringGroups.size(); j++) {
+                    if (optimizeBySwapping(snapshot, stringGroups.get(i), stringGroups.get(j), lockedUserIds)) {
+                        improved = true;
+                    }
+                }
+            }
+        }
+
+        return stringGroups.stream()
+                .map(groupIds -> (Set<Node>)groupIds.stream()
+                        .map(snapshot::node)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .toList();
+    }
+
+    private boolean optimizeBySwapping(GraphSnapshot snapshot, Set<String> groupA, Set<String> groupB, Set<String> lockedUserIds) {
+        double bestGain = 0d;
+        String bestSwapA = null;
+        String bestSwapB = null;
+
+        for (String userA : groupA) {
+            if (lockedUserIds.contains(userA)) continue;
+
+            for (String userB : groupB) {
+                if (lockedUserIds.contains(userB)) continue;
+                if (!isSafelySwappable(snapshot, userA, userB)) continue;
+
+                double weightLossA = calculateUserWeightInGroup(snapshot, userA, groupA);
+                // FIXED: using snapshot.weight()
+                double weightGainA = calculateUserWeightInGroup(snapshot, userB, groupA) - snapshot.weight(userA, userB);
+
+                double weightLossB = calculateUserWeightInGroup(snapshot, userB, groupB);
+                // FIXED: using snapshot.weight()
+                double weightGainB = calculateUserWeightInGroup(snapshot, userA, groupB) - snapshot.weight(userB, userA);
+
+                double totalGain = (weightGainA - weightLossA) + (weightGainB - weightLossB);
+
+                if (totalGain > bestGain) {
+                    bestGain = totalGain;
+                    bestSwapA = userA;
+                    bestSwapB = userB;
+                }
+            }
+        }
+
+        if (bestSwapA != null && bestSwapB != null) {
+            groupA.remove(bestSwapA);
+            groupA.add(bestSwapB);
+            groupB.remove(bestSwapB);
+            groupB.add(bestSwapA);
+            return true;
+        }
+        return false;
+    }
+
+    private double calculateUserWeightInGroup(GraphSnapshot snapshot, String userId, Set<String> groupUserIds) {
+        double weight = 0d;
+        for (String memberId : groupUserIds) {
+            if (!memberId.equals(userId)) {
+                // FIXED: using snapshot.weight()
+                weight += snapshot.weight(userId, memberId);
+            }
+        }
+        return weight;
+    }
+
+    private boolean isSafelySwappable(GraphSnapshot snapshot, String userA, String userB) {
+        // FIXED: Using snapshot's built-in typeOf method which safely handles nulls
+        String typeA = snapshot.typeOf(userA);
+        String typeB = snapshot.typeOf(userB);
+        return typeA.equals(typeB);
+    }
     
     public List<Set<Node>> planGroups(FGraph graph, List<String> types, Range range, boolean hasAny) {
         GraphSnapshot snapshot = GraphSnapshot.from(graph, 0d);
@@ -46,7 +136,7 @@ public class StableGroupPlanner {
                 .thenComparing(this::firstId));
 
         // --- OPTIMIZATION: Process disconnected graph components concurrently ---
-        return components.parallelStream()
+        List<Set<Node>> initialGroups = components.parallelStream()
                 .flatMap(component -> {
                     List<Set<Node>> localGroups = new ArrayList<>();
                     Set<String> remainingUserIds = new HashSet<>(component); // Standard HashSet!
@@ -75,6 +165,9 @@ public class StableGroupPlanner {
                     return localGroups.stream(); 
                 })
                 .collect(Collectors.toList());
+
+        // Run the swap check on the fully assembled groups
+        return refineGroups(snapshot, initialGroups, Set.of());
     }
 
     public List<Set<Node>> planGroups(FGraph graph, List<String> types, List<Range> ranges, boolean hasAny) {
@@ -94,17 +187,20 @@ public class StableGroupPlanner {
             return List.of();
         }
 
-        List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds, normalizedRanges, normalizedTypes, hasAny, 0);
+List<List<String>> plannedGroups = planTargetedGroups(snapshot, eligibleUserIds, normalizedRanges, normalizedTypes, hasAny, 0);
         if (plannedGroups == null) {
             return List.of();
         }
         
         // CLEANUP: Streamlined mapping
-        return plannedGroups.stream()
+        List<Set<Node>> initialGroups = plannedGroups.stream()
                 .map(group -> (Set<Node>)group.stream()
                         .map(snapshot::node)
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .toList();
+
+        // Run the swap check on the fully assembled groups
+        return refineGroups(snapshot, initialGroups, Set.of());
     }
 
     public Set<Node> planInviteBatch(
