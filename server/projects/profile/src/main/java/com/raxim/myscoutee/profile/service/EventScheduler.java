@@ -249,25 +249,50 @@ public class EventScheduler {
 
     public List<EventLeaderboardStateDto> generateScorePlans() {
         List<EventLeaderboardStateDto> states = new ArrayList<>();
-        for (ActivityEvent event : resolveCanonicalEvents()) {
-            if (event == null || event.getSubEvents() == null) {
-                continue;
-            }
+        List<ActivityEvent> events = resolveCanonicalEvents();
+        
+        // --- OPTIMIZATION PART 1: PRE-FETCH PHASE ---
+        // Gather all users and snapshots up front to eliminate N+1 database queries
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
+        Set<String> allRequiredUserIds = new LinkedHashSet<>();
+        
+        for (ActivityEvent event : events) {
+            if (event == null || event.getSubEvents() == null) continue;
+            
             String eventId = normalizeId(event.getSourceId());
-            if (!StringUtils.hasText(eventId)) {
-                continue;
-            }
+            if (!StringUtils.hasText(eventId)) continue;
+            
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+            snapshotsByEventId.put(eventId, snapshot);
+            
+            if (snapshot != null && snapshot.acceptedMemberUserIds() != null) {
+                allRequiredUserIds.addAll(snapshot.acceptedMemberUserIds());
+            }
+        }
+        
+        // ONE SINGLE DB CALL: Build a master graph for the entire scheduled run
+        FGraph globalGraph = allRequiredUserIds.isEmpty() ? new FGraph() : buildGraphSnapshot(allRequiredUserIds);
+        // ---------------------------------------------
+
+
+        // --- OPTIMIZATION PART 2: EXECUTION PHASE ---
+        for (ActivityEvent event : events) {
+            if (event == null || event.getSubEvents() == null) continue;
+            
+            String eventId = normalizeId(event.getSourceId());
+            if (!StringUtils.hasText(eventId)) continue;
+            
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
+            
+            // SLICE IN-MEMORY: Filter the global graph instead of hitting the DB
             FGraph eventGraph = snapshot == null || snapshot.acceptedMemberUserIds().isEmpty()
-                    ? new FGraph(Map.of(), List.of())
-                    : buildGraphSnapshot(new LinkedHashSet<>(snapshot.acceptedMemberUserIds()));
+                    ? new FGraph()
+                    : globalGraph.filter(new LinkedHashSet<>(snapshot.acceptedMemberUserIds()), Set.of(), 0d);
 
             List<SubEventFormItemDto> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
                 SubEventFormItemDto subEvent = subEvents.get(index);
-                if (subEvent == null || !StringUtils.hasText(normalizeId(subEvent.id()))) {
-                    continue;
-                }
+                if (subEvent == null || !StringUtils.hasText(normalizeId(subEvent.id()))) continue;
                 if (!(subEvent.groups() != null && !subEvent.groups().isEmpty() || safeCount(subEvent.tournamentGroupCount()) > 0)) {
                     continue;
                 }
@@ -275,24 +300,24 @@ public class EventScheduler {
                 String subEventId = normalizeId(subEvent.id());
                 activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId);
                 EventLeaderboardStateDto state = activitiesEventLeaderboardService.queryState(eventId, subEventId);
+                
                 if (state == null) {
                     logDiagnostic("score", eventId, subEventId, "Leaderboard state lookup returned no data.");
                     continue;
                 }
+                
                 if (state.groups().stream().anyMatch(group -> !group.advancingMemberIds().isEmpty())) {
                     states.add(state);
                 }
 
-                if (index + 1 >= subEvents.size()) {
-                    continue;
-                }
+                if (index + 1 >= subEvents.size()) continue;
 
                 Set<String> advancingUserIds = resolveAdvancingUserIds(state);
-                if (advancingUserIds.isEmpty()) {
-                    continue;
-                }
+                if (advancingUserIds.isEmpty()) continue;
+
                 if (eventGraph.getNodes().isEmpty()) {
-                    eventGraph = buildGraphSnapshot(advancingUserIds);
+                    // SLICE IN-MEMORY AGAIN: Drop the second N+1 DB call
+                    eventGraph = globalGraph.filter(advancingUserIds, Set.of(), 0d);
                 }
 
                 SubEventFormItemDto nextSubEvent = subEvents.get(index + 1);
@@ -303,22 +328,12 @@ public class EventScheduler {
                 }
 
                 List<GroupAssignmentTarget> nextTargets = resolveGroupAssignmentTargets(
-                        eventId,
-                        nextSubEventId,
-                        nextSubEvent,
-                        advancingUserIds,
-                        true,
-                        "score");
-                if (nextTargets.isEmpty()) {
-                    continue;
-                }
+                        eventId, nextSubEventId, nextSubEvent, advancingUserIds, true, "score");
+                
+                if (nextTargets.isEmpty()) continue;
 
                 assignMembersToTargets(
-                        event,
-                        eventGraph,
-                        advancingUserIds,
-                        nextTargets,
-                        "score",
+                        event, eventGraph, advancingUserIds, nextTargets, "score", 
                         "score:" + eventId + ":" + subEventId + "->" + nextSubEventId);
             }
         }
@@ -699,26 +714,25 @@ public class EventScheduler {
     }
 
     private List<String> normalizeUserIds(Collection<String> userIds) {
-        List<String> normalized = new ArrayList<>();
-        if (userIds == null) {
-            return normalized;
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
         }
-        for (String userId : userIds) {
-            String normalizedUserId = normalizeId(userId);
-            if (StringUtils.hasText(normalizedUserId) && !normalized.contains(normalizedUserId)) {
-                normalized.add(normalizedUserId);
-            }
-        }
-        return normalized;
+        // OPTIMIZATION: .distinct() uses a HashSet internally for O(1) lookups
+        return userIds.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct() 
+                .toList();
     }
 
     private List<String> mergeUserIds(Collection<String> left, Collection<String> right) {
-        List<String> merged = new ArrayList<>(normalizeUserIds(left));
-        for (String userId : normalizeUserIds(right)) {
-            if (!merged.contains(userId)) {
-                merged.add(userId);
-            }
-        }
+        if (left == null) left = List.of();
+        if (right == null) right = List.of();
+        
+        // OPTIMIZATION: LinkedHashSet guarantees O(1) inserts while preventing duplicates
+        Set<String> merged = new LinkedHashSet<>(normalizeUserIds(left));
+        merged.addAll(normalizeUserIds(right));
+        
         return merged.stream().sorted().toList();
     }
 
@@ -739,11 +753,10 @@ public class EventScheduler {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(normalized.getBytes(StandardCharsets.UTF_8));
-            StringBuilder builder = new StringBuilder(hash.length * 2);
-            for (byte value : hash) {
-                builder.append(String.format("%02x", value));
-            }
-            return builder.toString();
+            
+            // OPTIMIZATION: Replaces the slow, memory-heavy String.format loop
+            return java.util.HexFormat.of().formatHex(hash);
+            
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("Missing SHA-256 support for scheduler plan markers.", exception);
         }
