@@ -7,7 +7,7 @@ import java.util.Set;
 import com.raxim.myscoutee.algo.Algo;
 import com.raxim.myscoutee.algo.dto.Node;
 
-public class EventGeneratorByRandom extends GeneratorBase<GeneratorModels.RandomGeneratorRequest, List<GeneratorModels.GeneratedEventPlan>> {
+public class EventGeneratorByRandom implements EventGenerator<GeneratorModels.RandomGeneratorRequest, List<GeneratorModels.GeneratedEventPlan>> {
 
     @Override
     public List<GeneratorModels.GeneratedEventPlan> generate(GeneratorModels.RandomGeneratorRequest input) {

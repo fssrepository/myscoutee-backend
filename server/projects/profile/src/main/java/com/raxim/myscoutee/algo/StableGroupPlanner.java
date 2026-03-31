@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -39,7 +41,7 @@ public class StableGroupPlanner {
 
         List<Set<Node>> groups = new ArrayList<>();
         for (Set<String> component : components) {
-            Set<String> remainingUserIds = new LinkedHashSet<>(component);
+            Set<String> remainingUserIds = new HashSet<>(component);
             while (!remainingUserIds.isEmpty()) {
                 int targetSize = resolveGroupTargetSize(snapshot, remainingUserIds, range, hasAny, normalizedTypes);
                 if (targetSize == 0) {
@@ -156,54 +158,73 @@ public class StableGroupPlanner {
             return List.of();
         }
 
-        Set<String> availableUserIds = new LinkedHashSet<>(poolUserIds);
+        // Changed LinkedHashSet to standard HashSet for better performance
+        Set<String> availableUserIds = new HashSet<>(poolUserIds); 
         List<String> selectedUserIds = new ArrayList<>();
+
+        // --- OPTIMIZATION: Precompute scores to avoid O(N^2) recalculations ---
+        Map<String, Double> anchorWeights = new HashMap<>();
+        Map<String, Double> poolDegrees = new HashMap<>();
+        Map<String, Double> selectedWeights = new HashMap<>();
+
+        for (String candidate : availableUserIds) {
+            anchorWeights.put(candidate, snapshot.totalWeight(candidate, anchorUserIds));
+            poolDegrees.put(candidate, snapshot.degree(candidate, poolUserIds));
+            selectedWeights.put(candidate, 0d); // Initially 0
+        }
+
         while (selectedUserIds.size() < targetSize && !availableUserIds.isEmpty()) {
             List<String> candidates = availableUserIds.stream()
                     .filter(candidateUserId -> fitsTypeQuota(snapshot, candidateUserId, selectedUserIds, typeTargets))
-                    .sorted()
                     .toList();
+            
             if (candidates.isEmpty()) {
                 break;
             }
 
             String nextUserId = selectedUserIds.isEmpty()
-                    ? chooseSeed(snapshot, candidates, poolUserIds, anchorUserIds, requireAnchorForSeed)
-                    : chooseNext(snapshot, candidates, poolUserIds, anchorUserIds, selectedUserIds);
+                    ? chooseSeedOptimized(candidates, anchorWeights, poolDegrees, anchorUserIds.isEmpty(), requireAnchorForSeed)
+                    : chooseNextOptimized(candidates, anchorWeights, selectedWeights, poolDegrees);
+
             if (!StringUtils.hasText(nextUserId)) {
                 break;
             }
 
             selectedUserIds.add(nextUserId);
             availableUserIds.remove(nextUserId);
+
+            // --- OPTIMIZATION: Incrementally update selectedWeights for remaining candidates only ---
+            for (String remainingUserId : availableUserIds) {
+                double edgeWeight = snapshot.weight(nextUserId, remainingUserId);
+                if (edgeWeight > 0d) {
+                    // CLEANUP: Use an explicit lambda to avoid the unboxing warning
+                    selectedWeights.merge(remainingUserId, edgeWeight, (oldVal, newVal) -> oldVal + newVal);
+                }
+            }
         }
         return selectedUserIds;
     }
 
-    private String chooseSeed(
-            GraphSnapshot snapshot,
+    private String chooseSeedOptimized(
             List<String> candidateUserIds,
-            Set<String> poolUserIds,
-            Set<String> anchorUserIds,
+            Map<String, Double> anchorWeights,
+            Map<String, Double> poolDegrees,
+            boolean noAnchors,
             boolean requireAnchorForSeed) {
+        
         String bestUserId = null;
         double bestScore = Double.NEGATIVE_INFINITY;
-        for (String candidateUserId : candidateUserIds) {
-            double anchorWeight = snapshot.totalWeight(candidateUserId, anchorUserIds);
-            double degree = snapshot.degree(candidateUserId, poolUserIds);
-            if (requireAnchorForSeed && anchorWeight <= 0d) {
-                continue;
-            }
-            if (!requireAnchorForSeed && degree <= 0d) {
-                continue;
-            }
 
-            double score = anchorUserIds.isEmpty()
-                    ? degree
-                    : anchorWeight * 100d + degree;
-            if (bestUserId == null
-                    || score > bestScore
-                    || score == bestScore && candidateUserId.compareTo(bestUserId) < 0) {
+        for (String candidateUserId : candidateUserIds) {
+            double anchorWeight = anchorWeights.get(candidateUserId);
+            double degree = poolDegrees.get(candidateUserId);
+
+            if (requireAnchorForSeed && anchorWeight <= 0d) continue;
+            if (!requireAnchorForSeed && degree <= 0d) continue;
+
+            double score = noAnchors ? degree : (anchorWeight * 100d + degree);
+            
+            if (bestUserId == null || score > bestScore || (score == bestScore && candidateUserId.compareTo(bestUserId) < 0)) {
                 bestUserId = candidateUserId;
                 bestScore = score;
             }
@@ -211,26 +232,25 @@ public class StableGroupPlanner {
         return bestUserId;
     }
 
-    private String chooseNext(
-            GraphSnapshot snapshot,
+    private String chooseNextOptimized(
             List<String> candidateUserIds,
-            Set<String> poolUserIds,
-            Set<String> anchorUserIds,
-            List<String> selectedUserIds) {
+            Map<String, Double> anchorWeights,
+            Map<String, Double> selectedWeights,
+            Map<String, Double> poolDegrees) {
+        
         String bestUserId = null;
         double bestScore = Double.NEGATIVE_INFINITY;
-        for (String candidateUserId : candidateUserIds) {
-            double anchorWeight = snapshot.totalWeight(candidateUserId, anchorUserIds);
-            double selectedWeight = snapshot.totalWeight(candidateUserId, selectedUserIds);
-            if (anchorWeight <= 0d && selectedWeight <= 0d) {
-                continue;
-            }
 
-            double degree = snapshot.degree(candidateUserId, poolUserIds);
+        for (String candidateUserId : candidateUserIds) {
+            double anchorWeight = anchorWeights.get(candidateUserId);
+            double selectedWeight = selectedWeights.get(candidateUserId);
+            
+            if (anchorWeight <= 0d && selectedWeight <= 0d) continue;
+
+            double degree = poolDegrees.get(candidateUserId);
             double score = anchorWeight * 100d + selectedWeight * 10d + degree;
-            if (bestUserId == null
-                    || score > bestScore
-                    || score == bestScore && candidateUserId.compareTo(bestUserId) < 0) {
+            
+            if (bestUserId == null || score > bestScore || (score == bestScore && candidateUserId.compareTo(bestUserId) < 0)) {
                 bestUserId = candidateUserId;
                 bestScore = score;
             }
@@ -277,7 +297,7 @@ public class StableGroupPlanner {
         Range range = ranges.get(index);
         List<Range> remainingRanges = ranges.subList(index + 1, ranges.size());
         for (List<String> candidateGroup : enumerateTargetedGroups(snapshot, remainingUserIds, range, remainingRanges, types, hasAny)) {
-            Set<String> nextRemainingUserIds = new LinkedHashSet<>(remainingUserIds);
+            Set<String> nextRemainingUserIds = new HashSet<>(remainingUserIds);
             candidateGroup.forEach(nextRemainingUserIds::remove);
 
             List<List<String>> remainingGroups = planTargetedGroups(snapshot, nextRemainingUserIds, ranges, types, hasAny, index + 1);
@@ -305,7 +325,7 @@ public class StableGroupPlanner {
                 .thenComparing(this::firstId));
 
         List<List<String>> candidateGroups = new ArrayList<>();
-        Set<String> seenGroupKeys = new LinkedHashSet<>();
+        Set<String> seenGroupKeys = new HashSet<>();
         int minimumSize = minimumRandomGroupSize(range, types);
         for (Set<String> component : components) {
             int maximumSize = Math.min(component.size(), Math.max(0, range.getMax()));
@@ -599,7 +619,7 @@ public class StableGroupPlanner {
         }
 
         List<Set<String>> connectedComponents(Set<String> candidateUserIds) {
-            Set<String> remaining = new LinkedHashSet<>(candidateUserIds);
+            Set<String> remaining = new HashSet<>(candidateUserIds);
             List<Set<String>> components = new ArrayList<>();
             while (!remaining.isEmpty()) {
                 String rootUserId = remaining.iterator().next();
@@ -625,23 +645,28 @@ public class StableGroupPlanner {
             return components;
         }
 
+        // In GraphSnapshot
         double componentWeight(Set<String> component) {
-            List<String> ids = component.stream().sorted().toList();
             double weight = 0d;
-            for (int index = 0; index < ids.size(); index += 1) {
-                for (int nestedIndex = index + 1; nestedIndex < ids.size(); nestedIndex += 1) {
-                    weight += weight(ids.get(index), ids.get(nestedIndex));
+            for (String nodeId : component) {
+                Map<String, Double> edges = weightsByUserId.get(nodeId);
+                if (edges != null) {
+                    for (Map.Entry<String, Double> edge : edges.entrySet()) {
+                        if (component.contains(edge.getKey())) {
+                            weight += edge.getValue();
+                        }
+                    }
                 }
             }
-            return weight;
+            // Divide by 2 because each undirected edge is counted twice
+            return weight / 2.0; 
         }
 
         private static void addWeight(Map<String, Map<String, Double>> weightsByUserId, String fromUserId, String toUserId, double weight) {
-            Map<String, Double> weights = weightsByUserId.computeIfAbsent(fromUserId, key -> new LinkedHashMap<>());
-            Double currentWeight = weights.get(toUserId);
-            if (currentWeight == null || weight > currentWeight.doubleValue()) {
-                weights.put(toUserId, weight);
-            }
+            Map<String, Double> weights = weightsByUserId.computeIfAbsent(fromUserId, key -> new HashMap<>()); 
+    
+            // The linter sees explicit object comparison and stops complaining
+            weights.merge(toUserId, weight, (oldVal, newVal) -> oldVal > newVal ? oldVal : newVal);
         }
     }
 }

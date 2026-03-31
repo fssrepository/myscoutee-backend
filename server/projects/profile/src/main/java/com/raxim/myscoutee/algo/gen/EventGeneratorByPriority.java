@@ -6,7 +6,7 @@ import java.util.Set;
 import com.raxim.myscoutee.algo.Algo;
 import com.raxim.myscoutee.algo.dto.Node;
 
-public class EventGeneratorByPriority extends GeneratorBase<GeneratorModels.PriorityGeneratorRequest, GeneratorModels.InviteBatchPlan> {
+public class EventGeneratorByPriority implements EventGenerator<GeneratorModels.PriorityGeneratorRequest, GeneratorModels.InviteBatchPlan> {
 
     @Override
     public GeneratorModels.InviteBatchPlan generate(GeneratorModels.PriorityGeneratorRequest input) {

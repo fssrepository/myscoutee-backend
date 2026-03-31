@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.algo;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import com.raxim.myscoutee.algo.dto.CGroup;
 import com.raxim.myscoutee.algo.dto.Edge;
@@ -14,7 +15,6 @@ public class BCTreeIterator implements Iterator<CGroup> {
     private final boolean hasAny;
     private final CTreeIterator cTreeIterator;
 
-    private CGroup cGroup = new CGroup();
     private CGroup cTree = new CGroup();
 
     public BCTreeIterator(BCTree bcTree,
@@ -30,20 +30,29 @@ public class BCTreeIterator implements Iterator<CGroup> {
         this.range = new Range(min, max);
     }
 
+    private CGroup nextGroup = null;
+
     @Override
     public boolean hasNext() {
-        handleGroup();
-        return hasAny ? hasAnyRemaining() : hasRemaining();
+        if (nextGroup == null) {
+            nextGroup = computeNextGroup(); // Move handleGroup logic here
+        }
+        return nextGroup != null && (hasAny ? hasAnyRemaining(nextGroup) : hasRemaining(nextGroup));
     }
 
-    private void handleGroup() {
-        while (cGroup.size() < this.range.getMax()
-                && cTreeIterator.hasNext()) {
+    private CGroup computeNextGroup() {
+        // If the underlying iterator is empty, we can't build a new group
+        if (!cTreeIterator.hasNext()) {
+            return null;
+        }
 
+        CGroup candidateGroup = new CGroup();
+
+        while (candidateGroup.size() < this.range.getMax() && cTreeIterator.hasNext()) {
             Node from = null;
             Node to = null;
-
             Edge edge;
+
             do {
                 edge = cTreeIterator.next();
 
@@ -55,38 +64,42 @@ public class BCTreeIterator implements Iterator<CGroup> {
                     to = edge.getTo();
                 }
 
-                cGroup.add(edge);
+                candidateGroup.add(edge);
 
-            } while ((edge.getFrom() == null || edge.getTo() == null)
-                    && cTreeIterator.hasNext());
+            } while ((edge.getFrom() == null || edge.getTo() == null) && cTreeIterator.hasNext());
 
             if (from != null && !bcTree.getUsedNodes().contains(from)) {
-                cGroup.add(from);
+                candidateGroup.add(from);
             }
             if (to != null && !bcTree.getUsedNodes().contains(to)) {
-                cGroup.add(to);
+                candidateGroup.add(to);
             }
-            cTree.addAll(cGroup);
+            
+            // Maintain the historical state of what has been processed
+            cTree.addAll(candidateGroup);
         }
-        // System.out.println(cGroup);
-        cGroup.balance(cTreeIterator.getTypes());
-        // cTreeIterator.getUsed().addAll(nodes);
+
+        candidateGroup.balance(cTreeIterator.getTypes());
+        return candidateGroup;
     }
 
-    private boolean hasRemaining() {
-        return cGroup.size() >= this.range.getMin()
-                && (cGroup.size() % cTreeIterator.getTypes().size() == 0);
+    private boolean hasRemaining(CGroup group) {
+        return group != null 
+                && group.size() >= this.range.getMin()
+                && (group.size() % cTreeIterator.getTypes().size() == 0);
     }
 
-    private boolean hasAnyRemaining() {
-        return cGroup.size() > 0
-                && (cGroup.size() % cTreeIterator.getTypes().size() == 0);
+    private boolean hasAnyRemaining(CGroup group) {
+        return group != null 
+                && group.size() > 0
+                && (group.size() % cTreeIterator.getTypes().size() == 0);
     }
 
     @Override
     public CGroup next() {
-        CGroup result = (CGroup) cGroup.clone();
-        cGroup = new CGroup();
+        if (!hasNext()) throw new NoSuchElementException();
+        CGroup result = nextGroup;
+        nextGroup = null; // Clear the buffer
         return result;
     }
 }

@@ -6,7 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventGeneratorByScore extends GeneratorBase<List<GeneratorModels.ScoreGeneratorGroup>, List<GeneratorModels.ScoreGeneratorResult>> {
+// FIX A: Implement EventGenerator directly
+public class EventGeneratorByScore implements EventGenerator<List<GeneratorModels.ScoreGeneratorGroup>, List<GeneratorModels.ScoreGeneratorResult>> {
 
     @Override
     public List<GeneratorModels.ScoreGeneratorResult> generate(List<GeneratorModels.ScoreGeneratorGroup> input) {
@@ -19,9 +20,19 @@ public class EventGeneratorByScore extends GeneratorBase<List<GeneratorModels.Sc
             if (group == null) {
                 continue;
             }
-            List<GeneratorModels.ScoreStandingRow> scoreRows = buildScoreRows(group);
-            List<GeneratorModels.FifaStandingRow> fifaRows = buildFifaRows(group);
+            
+            List<GeneratorModels.ScoreStandingRow> scoreRows = List.of();
+            List<GeneratorModels.FifaStandingRow> fifaRows = List.of();
+
+            // FIX B: Only build the rows required by the leaderboard type to save CPU
+            if ("Fifa".equalsIgnoreCase(group.leaderboardType())) {
+                fifaRows = buildFifaRows(group);
+            } else {
+                scoreRows = buildScoreRows(group);
+            }
+            
             List<String> advancingMemberIds = resolveAdvancingMemberIds(group, scoreRows, fifaRows);
+            
             results.add(new GeneratorModels.ScoreGeneratorResult(
                     group.groupId(),
                     advancingMemberIds,
@@ -61,17 +72,18 @@ public class EventGeneratorByScore extends GeneratorBase<List<GeneratorModels.Sc
                     0,
                     0));
         }
+        
         for (GeneratorModels.ScoreLeaderboardEntry entry : safeScoreEntries(group)) {
-            GeneratorModels.ScoreStandingAccumulator current = rowsByMemberId.get(entry.memberId());
-            if (current == null) {
-                continue;
-            }
-            rowsByMemberId.put(entry.memberId(), new GeneratorModels.ScoreStandingAccumulator(
-                    current.memberId(),
-                    current.memberName(),
-                    current.total() + entry.value(),
-                    current.updates() + 1));
+            // FIX C: Clean up Map updates with computeIfPresent (no manual null-checking required)
+            rowsByMemberId.computeIfPresent(entry.memberId(), (id, current) -> 
+                    new GeneratorModels.ScoreStandingAccumulator(
+                            current.memberId(),
+                            current.memberName(),
+                            current.total() + entry.value(),
+                            current.updates() + 1)
+            );
         }
+        
         return rowsByMemberId.values().stream()
                 .map(accumulator -> new GeneratorModels.ScoreStandingRow(
                         accumulator.memberId(),
