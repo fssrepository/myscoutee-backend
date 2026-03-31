@@ -12,6 +12,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
@@ -21,6 +23,8 @@ import com.raxim.myscoutee.algo.dto.Node;
 import com.raxim.myscoutee.algo.dto.Range;
 
 public class StableGroupPlanner {
+    private record CandidateScore(String userId, double score) {}
+    
     public List<Set<Node>> planGroups(FGraph graph, List<String> types, Range range, boolean hasAny) {
         GraphSnapshot snapshot = GraphSnapshot.from(graph, 0d);
         if (snapshot.isEmpty() || range == null) {
@@ -34,39 +38,43 @@ public class StableGroupPlanner {
         }
 
         List<Set<String>> components = snapshot.connectedComponents(eligibleUserIds);
+        
+        // Sorting is still fine here, but less critical when executing in parallel
         components.sort(Comparator
                 .<Set<String>>comparingInt(Set::size).reversed()
                 .thenComparing(Comparator.comparingDouble(snapshot::componentWeight).reversed())
                 .thenComparing(this::firstId));
 
-        List<Set<Node>> groups = new ArrayList<>();
-        for (Set<String> component : components) {
-            Set<String> remainingUserIds = new HashSet<>(component);
-            while (!remainingUserIds.isEmpty()) {
-                int targetSize = resolveGroupTargetSize(snapshot, remainingUserIds, range, hasAny, normalizedTypes);
-                if (targetSize == 0) {
-                    break;
-                }
+        // --- OPTIMIZATION: Process disconnected graph components concurrently ---
+        return components.parallelStream()
+                .flatMap(component -> {
+                    List<Set<Node>> localGroups = new ArrayList<>();
+                    Set<String> remainingUserIds = new HashSet<>(component); // Standard HashSet!
+                    
+                    while (!remainingUserIds.isEmpty()) {
+                        int targetSize = resolveGroupTargetSize(snapshot, remainingUserIds, range, hasAny, normalizedTypes);
+                        if (targetSize == 0) break;
 
-                List<String> selectedUserIds = buildGroup(snapshot, remainingUserIds, Set.of(), targetSize, normalizedTypes, false);
-                int minimumGroupSize = minimumRandomGroupSize(range, normalizedTypes);
-                if (selectedUserIds.isEmpty()) {
-                    break;
-                }
-                if (!hasAny && selectedUserIds.size() < minimumGroupSize) {
-                    break;
-                }
+                        List<String> selectedUserIds = buildGroup(snapshot, remainingUserIds, Set.of(), targetSize, normalizedTypes, false);
+                        int minimumGroupSize = minimumRandomGroupSize(range, normalizedTypes);
+                        
+                        if (selectedUserIds.isEmpty()) break;
+                        if (!hasAny && selectedUserIds.size() < minimumGroupSize) break;
 
-                selectedUserIds.forEach(remainingUserIds::remove);
-                Set<Node> group = selectedUserIds.stream()
-                        .map(snapshot::node)
-                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
-                if (!group.isEmpty()) {
-                    groups.add(group);
-                }
-            }
-        }
-        return groups;
+                        selectedUserIds.forEach(remainingUserIds::remove);
+                        
+                        Set<Node> group = selectedUserIds.stream()
+                                .map(snapshot::node)
+                                .collect(Collectors.toCollection(LinkedHashSet::new));
+                                
+                        if (!group.isEmpty()) {
+                            localGroups.add(group);
+                        }
+                    }
+                    // Stream the resulting groups back to the flatMap to combine them thread-safely
+                    return localGroups.stream(); 
+                })
+                .collect(Collectors.toList());
     }
 
     public List<Set<Node>> planGroups(FGraph graph, List<String> types, List<Range> ranges, boolean hasAny) {
@@ -82,10 +90,7 @@ public class StableGroupPlanner {
         }
 
         List<Range> normalizedRanges = normalizeRanges(ranges);
-        if (normalizedRanges.isEmpty()) {
-            return List.of();
-        }
-        if (!canSatisfyRemainingRanges(eligibleUserIds.size(), normalizedRanges, normalizedTypes, hasAny)) {
+        if (normalizedRanges.isEmpty() || !canSatisfyRemainingRanges(eligibleUserIds.size(), normalizedRanges, normalizedTypes, hasAny)) {
             return List.of();
         }
 
@@ -93,13 +98,13 @@ public class StableGroupPlanner {
         if (plannedGroups == null) {
             return List.of();
         }
-        List<Set<Node>> groups = new ArrayList<>();
-        for (List<String> group : plannedGroups) {
-            groups.add(group.stream()
-                    .map(snapshot::node)
-                    .collect(LinkedHashSet<Node>::new, Set::add, Set::addAll));
-        }
-        return groups;
+        
+        // CLEANUP: Streamlined mapping
+        return plannedGroups.stream()
+                .map(group -> (Set<Node>)group.stream()
+                        .map(snapshot::node)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
+                .toList();
     }
 
     public Set<Node> planInviteBatch(
@@ -238,16 +243,56 @@ public class StableGroupPlanner {
             Map<String, Double> selectedWeights,
             Map<String, Double> poolDegrees) {
         
+        // --- OPTIMIZATION: Adaptive Parallelism Threshold ---
+        // If the pool is small, sequential is faster. If it's huge, go parallel.
+        // (You can tune this threshold number based on your server's CPU benchmarks)
+        if (candidateUserIds.size() < 1000) {
+            return chooseNextSequential(candidateUserIds, anchorWeights, selectedWeights, poolDegrees);
+        }
+
+        // --- PARALLEL PATH ---
+        return candidateUserIds.parallelStream()
+                .map(candidateUserId -> {
+                    double anchorWeight = anchorWeights.getOrDefault(candidateUserId, 0d);
+                    double selectedWeight = selectedWeights.getOrDefault(candidateUserId, 0d);
+                    
+                    if (anchorWeight <= 0d && selectedWeight <= 0d) {
+                        return new CandidateScore(candidateUserId, Double.NEGATIVE_INFINITY);
+                    }
+
+                    double degree = poolDegrees.getOrDefault(candidateUserId, 0d);
+                    double score = anchorWeight * 100d + selectedWeight * 10d + degree;
+                    
+                    return new CandidateScore(candidateUserId, score);
+                })
+                .filter(cs -> cs.score() > Double.NEGATIVE_INFINITY)
+                .reduce((c1, c2) -> {
+                    // Tie-breaking logic (Highest score wins, alphabetical if tied)
+                    if (c1.score() > c2.score()) return c1;
+                    if (c2.score() > c1.score()) return c2;
+                    return c1.userId().compareTo(c2.userId()) < 0 ? c1 : c2;
+                })
+                .map(CandidateScore::userId)
+                .orElse(null);
+    }
+
+    // --- SEQUENTIAL PATH (Your previously optimized logic) ---
+    private String chooseNextSequential(
+            List<String> candidateUserIds,
+            Map<String, Double> anchorWeights,
+            Map<String, Double> selectedWeights,
+            Map<String, Double> poolDegrees) {
+        
         String bestUserId = null;
         double bestScore = Double.NEGATIVE_INFINITY;
 
         for (String candidateUserId : candidateUserIds) {
-            double anchorWeight = anchorWeights.get(candidateUserId);
-            double selectedWeight = selectedWeights.get(candidateUserId);
+            double anchorWeight = anchorWeights.getOrDefault(candidateUserId, 0d);
+            double selectedWeight = selectedWeights.getOrDefault(candidateUserId, 0d);
             
             if (anchorWeight <= 0d && selectedWeight <= 0d) continue;
 
-            double degree = poolDegrees.get(candidateUserId);
+            double degree = poolDegrees.getOrDefault(candidateUserId, 0d);
             double score = anchorWeight * 100d + selectedWeight * 10d + degree;
             
             if (bestUserId == null || score > bestScore || (score == bestScore && candidateUserId.compareTo(bestUserId) < 0)) {
@@ -290,14 +335,18 @@ public class StableGroupPlanner {
             List<String> types,
             boolean hasAny,
             int index) {
+        
         if (index >= ranges.size()) {
             return remainingUserIds.isEmpty() ? new ArrayList<>() : null;
         }
 
         Range range = ranges.get(index);
         List<Range> remainingRanges = ranges.subList(index + 1, ranges.size());
+        
         for (List<String> candidateGroup : enumerateTargetedGroups(snapshot, remainingUserIds, range, remainingRanges, types, hasAny)) {
-            Set<String> nextRemainingUserIds = new HashSet<>(remainingUserIds);
+            
+            // MEMORY OPTIMIZATION: Use standard HashSet instead of LinkedHashSet inside heavy recursion loops
+            Set<String> nextRemainingUserIds = new HashSet<>(remainingUserIds); 
             candidateGroup.forEach(nextRemainingUserIds::remove);
 
             List<List<String>> remainingGroups = planTargetedGroups(snapshot, nextRemainingUserIds, ranges, types, hasAny, index + 1);
@@ -318,43 +367,44 @@ public class StableGroupPlanner {
             List<Range> remainingRanges,
             List<String> types,
             boolean hasAny) {
+            
         List<Set<String>> components = snapshot.connectedComponents(remainingUserIds);
         components.sort(Comparator
                 .<Set<String>>comparingInt(Set::size)
                 .thenComparing(Comparator.comparingDouble(snapshot::componentWeight).reversed())
                 .thenComparing(this::firstId));
 
-        List<List<String>> candidateGroups = new ArrayList<>();
-        Set<String> seenGroupKeys = new HashSet<>();
         int minimumSize = minimumRandomGroupSize(range, types);
-        for (Set<String> component : components) {
-            int maximumSize = Math.min(component.size(), Math.max(0, range.getMax()));
-            for (int size = maximumSize; size >= 1; size -= 1) {
-                if (!hasAny && size < minimumSize) {
-                    continue;
-                }
-                if (!types.isEmpty() && resolveTypeTargets(snapshot, component, size, types).isEmpty()) {
-                    continue;
-                }
-                if (!canSatisfyRemainingRanges(remainingUserIds.size() - size, remainingRanges, types, hasAny)) {
-                    continue;
-                }
+        
+        // THREAD SAFETY: A concurrent set allows multiple threads to safely deduplicate keys
+        Set<String> seenGroupKeys = ConcurrentHashMap.newKeySet();
 
-                List<String> selectedUserIds = buildGroup(snapshot, component, Set.of(), size, types, false);
-                if (selectedUserIds.isEmpty()) {
-                    continue;
-                }
-                if (!hasAny && selectedUserIds.size() < minimumSize) {
-                    continue;
-                }
+        // --- OPTIMIZATION: Parallelize Candidate Generation ---
+        return components.parallelStream()
+                .flatMap(component -> {
+                    List<List<String>> localCandidates = new ArrayList<>();
+                    int maximumSize = Math.min(component.size(), Math.max(0, range.getMax()));
+                    
+                    for (int size = maximumSize; size >= 1; size -= 1) {
+                        if (!hasAny && size < minimumSize) continue;
+                        if (!types.isEmpty() && resolveTypeTargets(snapshot, component, size, types).isEmpty()) continue;
+                        if (!canSatisfyRemainingRanges(remainingUserIds.size() - size, remainingRanges, types, hasAny)) continue;
 
-                String groupKey = String.join("|", selectedUserIds);
-                if (seenGroupKeys.add(groupKey)) {
-                    candidateGroups.add(selectedUserIds);
-                }
-            }
-        }
-        return candidateGroups;
+                        List<String> selectedUserIds = buildGroup(snapshot, component, Set.of(), size, types, false);
+                        
+                        if (selectedUserIds.isEmpty()) continue;
+                        if (!hasAny && selectedUserIds.size() < minimumSize) continue;
+
+                        String groupKey = String.join("|", selectedUserIds);
+                        
+                        // Thread-safe addition and presence check
+                        if (seenGroupKeys.add(groupKey)) {
+                            localCandidates.add(selectedUserIds);
+                        }
+                    }
+                    return localCandidates.stream();
+                })
+                .toList();
     }
 
     private boolean canSatisfyRemainingRanges(int remainingUserCount, List<Range> remainingRanges, List<String> types, boolean hasAny) {

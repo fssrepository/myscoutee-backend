@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -99,8 +100,11 @@ public class EventScheduler {
 
     public List<GeneratedEventPlan> generateRandomPlans() {
         List<ActivityEvent> events = resolveCanonicalEvents();
+        
+        // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
+        
         for (ActivityEvent event : events) {
             if (event == null || !Boolean.TRUE.equals(event.getPublished()) || safeSubEvents(event).isEmpty()) {
                 continue;
@@ -117,141 +121,131 @@ public class EventScheduler {
             requiredUserIds.addAll(snapshot.acceptedMemberUserIds());
         }
 
+        // Single DB/Graph construction
         FGraph graph = buildGraphSnapshot(requiredUserIds);
         if (graph.getNodes().isEmpty()) {
             return List.of();
         }
 
-        List<GeneratedEventPlan> plans = new ArrayList<>();
-        for (ActivityEvent event : events) {
-            if (event == null || !Boolean.TRUE.equals(event.getPublished())) {
-                continue;
-            }
+        // THREAD SAFETY: Synchronized list for parallel addition
+        List<GeneratedEventPlan> plans = Collections.synchronizedList(new ArrayList<>());
+
+        // --- PHASE 2: PARALLEL EXECUTION ---
+        events.parallelStream().forEach(event -> {
+            if (event == null || !Boolean.TRUE.equals(event.getPublished())) return; // Use return instead of continue in lambda
+
             String eventId = normalizeId(event.getSourceId());
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
-            if (snapshot == null) {
-                continue;
-            }
+            if (snapshot == null) return;
 
             Set<String> acceptedUserIds = new LinkedHashSet<>(snapshot.acceptedMemberUserIds());
             FGraph eventGraph = graph.filter(acceptedUserIds, Set.of(), 0d);
-            if (eventGraph.getNodes().isEmpty()) {
-                continue;
-            }
+            
+            if (eventGraph.getNodes().isEmpty()) return;
 
+            // Standard for-loop inside the lambda, so we use 'continue' here
             for (SubEventFormItemDto subEvent : safeSubEvents(event)) {
                 String subEventId = normalizeId(subEvent == null ? null : subEvent.id());
-                if (!StringUtils.hasText(subEventId)) {
-                    continue;
-                }
+                if (!StringUtils.hasText(subEventId)) continue; 
 
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
-                        eventId,
-                        subEventId,
-                        subEvent,
-                        acceptedUserIds,
-                        true,
-                        "random");
-                if (targets.isEmpty()) {
-                    continue;
-                }
-                plans.addAll(assignMembersToTargets(
-                        event,
-                        eventGraph,
-                        acceptedUserIds,
-                        targets,
-                        "random",
-                        "random:" + eventId + ":" + subEventId));
+                        eventId, subEventId, subEvent, acceptedUserIds, true, "random");
+                        
+                if (targets.isEmpty()) continue;
+                
+                List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
+                        event, eventGraph, acceptedUserIds, targets, "random", "random:" + eventId + ":" + subEventId);
+                        
+                // Thread-safe addition
+                plans.addAll(assignedMembers);
             }
-        }
+        });
+        
         return plans;
     }
 
-    public List<InviteBatchPlan> generatePriorityPlans() {
+public List<InviteBatchPlan> generatePriorityPlans() {
         List<ActivityEvent> events = resolveCanonicalEvents(activityEventsRepository.findByAutoInviterTrue());
+        
+        // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
+        
         for (ActivityEvent event : events) {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) {
                 continue;
             }
             String eventId = normalizeId(event.getSourceId());
-            if (!StringUtils.hasText(eventId)) {
-                continue;
-            }
+            if (!StringUtils.hasText(eventId)) continue;
+            
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
             snapshotsByEventId.put(eventId, snapshot);
             requiredUserIds.add(normalizeId(event.getCreatorUserId()));
+            
             if (snapshot != null) {
                 requiredUserIds.addAll(snapshot.acceptedMemberUserIds());
                 requiredUserIds.addAll(snapshot.pendingMemberUserIds());
             }
         }
 
+        // Single DB/Graph construction
         FGraph graph = buildGraphSnapshot(requiredUserIds);
         if (graph.getNodes().isEmpty()) {
             return List.of();
         }
 
-        List<InviteBatchPlan> plans = new ArrayList<>();
-        for (ActivityEvent event : events) {
-            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) {
-                continue;
-            }
+        // THREAD SAFETY: Synchronized list for parallel addition
+        List<InviteBatchPlan> plans = Collections.synchronizedList(new ArrayList<>());
+
+        // --- PHASE 2: PARALLEL EXECUTION ---
+        events.parallelStream().forEach(event -> {
+            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) return;
+            
             String eventId = normalizeId(event.getSourceId());
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
+            
             int activeMembers = snapshot == null ? 0 : snapshot.acceptedMembers() + snapshot.pendingMembers();
             int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - activeMembers);
-            if (!StringUtils.hasText(eventId) || openSpots <= 0) {
-                continue;
-            }
+            
+            if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
             Set<String> lockedUserIds = new LinkedHashSet<>();
             if (snapshot != null) {
                 lockedUserIds.addAll(snapshot.acceptedMemberUserIds());
                 lockedUserIds.addAll(snapshot.pendingMemberUserIds());
             }
+            
             Set<String> candidateUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
             candidateUserIds.removeAll(lockedUserIds);
             candidateUserIds.remove(normalizeId(event.getCreatorUserId()));
 
             InviteBatchPlan plan = eventGeneratorByPriority.generate(new PriorityGeneratorRequest(
-                    eventId,
-                    graph,
-                    candidateUserIds,
-                    lockedUserIds,
-                    Range.of(openSpots, openSpots),
-                    List.of(),
-                    true,
-                    0d));
-            if (plan.invitedUserIds().isEmpty()) {
-                continue;
-            }
+                    eventId, graph, candidateUserIds, lockedUserIds, Range.of(openSpots, openSpots), List.of(), true, 0d));
+                    
+            if (plan.invitedUserIds().isEmpty()) return;
 
+            // These DB writes now execute concurrently across cores
             List<String> persistedInviteUserIds = activitiesMembersService.inviteUsers(
-                    eventId,
-                    resolveInviterUserId(event),
-                    plan.invitedUserIds(),
-                    event);
+                    eventId, resolveInviterUserId(event), plan.invitedUserIds(), event);
+                    
             if (!persistedInviteUserIds.isEmpty()) {
-                recordPlanMarker(
-                        "priority",
-                        MARKER_ACTION_INVITE_BATCH,
-                        eventId,
-                        eventId,
-                        persistedInviteUserIds);
+                recordPlanMarker("priority", MARKER_ACTION_INVITE_BATCH, eventId, eventId, persistedInviteUserIds);
                 eventInviteNotificationService.notifyInvitees(event, persistedInviteUserIds);
+                
+                // Thread-safe addition
                 plans.add(new InviteBatchPlan(eventId, persistedInviteUserIds));
             }
-        }
+        });
+        
         return plans;
     }
 
     public List<EventLeaderboardStateDto> generateScorePlans() {
-        List<EventLeaderboardStateDto> states = new ArrayList<>();
+        // THREAD SAFETY: We must use a synchronized list because multiple CPU threads will add to this simultaneously
+        List<EventLeaderboardStateDto> states = Collections.synchronizedList(new ArrayList<>());
         List<ActivityEvent> events = resolveCanonicalEvents();
         
-        // --- OPTIMIZATION PART 1: PRE-FETCH PHASE ---
+        // --- PHASE 1: PRE-FETCH (Runs Sequentially) ---
         // Gather all users and snapshots up front to eliminate N+1 database queries
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> allRequiredUserIds = new LinkedHashSet<>();
@@ -270,21 +264,18 @@ public class EventScheduler {
             }
         }
         
-        // ONE SINGLE DB CALL: Build a master graph for the entire scheduled run
         FGraph globalGraph = allRequiredUserIds.isEmpty() ? new FGraph() : buildGraphSnapshot(allRequiredUserIds);
-        // ---------------------------------------------
 
-
-        // --- OPTIMIZATION PART 2: EXECUTION PHASE ---
-        for (ActivityEvent event : events) {
-            if (event == null || event.getSubEvents() == null) continue;
+        // --- PHASE 2: PARALLEL EXECUTION ---
+        // Process every event concurrently across all available CPU cores!
+        events.parallelStream().forEach(event -> {
+            if (event == null || event.getSubEvents() == null) return; // 'return' replaces 'continue' in lambdas
             
             String eventId = normalizeId(event.getSourceId());
-            if (!StringUtils.hasText(eventId)) continue;
+            if (!StringUtils.hasText(eventId)) return;
             
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
             
-            // SLICE IN-MEMORY: Filter the global graph instead of hitting the DB
             FGraph eventGraph = snapshot == null || snapshot.acceptedMemberUserIds().isEmpty()
                     ? new FGraph()
                     : globalGraph.filter(new LinkedHashSet<>(snapshot.acceptedMemberUserIds()), Set.of(), 0d);
@@ -292,22 +283,23 @@ public class EventScheduler {
             List<SubEventFormItemDto> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
                 SubEventFormItemDto subEvent = subEvents.get(index);
-                if (subEvent == null || !StringUtils.hasText(normalizeId(subEvent.id()))) continue;
+                if (subEvent == null || !StringUtils.hasText(normalizeId(subEvent.id()))) continue; // We are inside a standard for-loop here, so continue is fine
                 if (!(subEvent.groups() != null && !subEvent.groups().isEmpty() || safeCount(subEvent.tournamentGroupCount()) > 0)) {
                     continue;
                 }
 
                 String subEventId = normalizeId(subEvent.id());
+                
                 activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId);
                 EventLeaderboardStateDto state = activitiesEventLeaderboardService.queryState(eventId, subEventId);
                 
                 if (state == null) {
                     logDiagnostic("score", eventId, subEventId, "Leaderboard state lookup returned no data.");
-                    continue;
+                    continue; 
                 }
                 
                 if (state.groups().stream().anyMatch(group -> !group.advancingMemberIds().isEmpty())) {
-                    states.add(state);
+                    states.add(state); // Thread-safe addition
                 }
 
                 if (index + 1 >= subEvents.size()) continue;
@@ -316,7 +308,6 @@ public class EventScheduler {
                 if (advancingUserIds.isEmpty()) continue;
 
                 if (eventGraph.getNodes().isEmpty()) {
-                    // SLICE IN-MEMORY AGAIN: Drop the second N+1 DB call
                     eventGraph = globalGraph.filter(advancingUserIds, Set.of(), 0d);
                 }
 
@@ -336,7 +327,8 @@ public class EventScheduler {
                         event, eventGraph, advancingUserIds, nextTargets, "score", 
                         "score:" + eventId + ":" + subEventId + "->" + nextSubEventId);
             }
-        }
+        }); // End of parallel stream
+
         return states;
     }
 
