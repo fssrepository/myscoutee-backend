@@ -25,7 +25,7 @@ import com.raxim.myscoutee.algo.dto.Range;
 public class StableGroupPlanner {
     private record CandidateScore(String userId, double score) {}
 
-/**
+    /**
      * Post-processing step: Applies the local search (Swap Check) 
      * to maximize global affinity across all generated groups.
      */
