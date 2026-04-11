@@ -1352,8 +1352,18 @@ public class ActivitiesEventsService {
         List<ActivityEvent> records = new ArrayList<>();
         String parentSourceId = normalizeId(parent.getSourceId());
         String creatorUserId = normalizeId(parent.getCreatorUserId());
-        for (EventSlotTemplateDto template : cloneSlotTemplates(parent.getSlotTemplates())) {
+        List<EventSlotTemplateDto> templates = cloneSlotTemplates(parent.getSlotTemplates());
+        Set<LocalDate> overrideDates = templates.stream()
+                .filter(Objects::nonNull)
+                .map(EventSlotTemplateDto::overrideDate)
+                .map(this::toLocalDate)
+                .filter(Objects::nonNull)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        for (EventSlotTemplateDto template : templates) {
             if (template == null || !StringUtils.hasText(template.id())) {
+                continue;
+            }
+            if (StringUtils.hasText(template.overrideDate()) || Boolean.TRUE.equals(template.closed())) {
                 continue;
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
@@ -1363,83 +1373,122 @@ public class ActivitiesEventsService {
             }
             long durationMinutes = Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
+                if (overrideDates.contains(occurrenceStart.toLocalDate())) {
+                    continue;
+                }
                 LocalDateTime occurrenceEnd = occurrenceStart.plusMinutes(durationMinutes);
                 if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
                     continue;
                 }
-                String sourceId = buildGeneratedSlotSourceId(parentSourceId, template.id(), occurrenceStart);
-                ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
-                if (existing != null) {
-                    continue;
-                }
-                ActivityEvent next = new ActivityEvent();
-                String nowIso = Instant.now().toString();
-                next.setId(resolveExistingId(creatorUserId, TYPE_EVENTS, sourceId, existing));
-                next.setSyncKey(resolveExistingSyncKey(creatorUserId, TYPE_EVENTS, sourceId, existing == null ? null : existing.getSyncKey()));
-                next.setSourceId(sourceId);
-                next.setOwnerUserId(creatorUserId);
-                next.setType(TYPE_EVENTS);
-                next.setAvatar(parent.getAvatar());
-                next.setTitle(parent.getTitle());
-                next.setSubtitle(parent.getSubtitle());
-                next.setTimeframe(buildGeneratedSlotTimeframe(occurrenceStart, occurrenceEnd));
-                next.setInviter(null);
-                next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
-                next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
-                next.setIsAdmin(true);
-                next.setIsInvitation(false);
-                next.setIsHosting(false);
-                next.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
-                next.setPublished(Boolean.FALSE.equals(parent.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
-                next.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
-                next.setCreatorUserId(creatorUserId);
-                next.setCreatorName(parent.getCreatorName());
-                next.setCreatorInitials(parent.getCreatorInitials());
-                next.setCreatorGender(parent.getCreatorGender());
-                next.setCreatorCity(parent.getCreatorCity());
-                next.setVisibility(parent.getVisibility());
-                next.setBlindMode(parent.getBlindMode());
-                next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
-                next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
-                next.setDistanceKm(null);
-                String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
-                String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());
-                String existingLocation = safeText(existing == null ? null : existing.getLocation());
-                next.setImageUrl(StringUtils.hasText(existingImageUrl) ? existingImageUrl : parent.getImageUrl());
-                next.setSourceLink(StringUtils.hasText(existingSourceLink) ? existingSourceLink : parent.getSourceLink());
-                next.setLocation(StringUtils.hasText(existingLocation) ? existingLocation : parent.getLocation());
-                next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
-                next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
-                next.setCapacityMin(parent.getCapacityMin());
-                next.setCapacityMax(parent.getCapacityMax());
-                next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
-                next.setAutoInviter(parent.getAutoInviter());
-                next.setFrequency(parent.getFrequency());
-                next.setTicketing(parent.getTicketing());
-                next.setSlotsEnabled(false);
-                next.setSlotTemplates(List.of());
-                next.setParentEventId(parentSourceId);
-                next.setSlotTemplateId(template.id());
-                next.setGenerated(true);
-                next.setEventType("slot");
-                next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
-                next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
-                next.setTopics(normalizeStrings(parent.getTopics()));
-                next.setSubEvents(cloneSubEvents(parent.getSubEvents()));
-                next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
-                next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
-                next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
-                next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
-                next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
-                next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
-                next.setUpdatedDate(nowIso);
-                next.setUpdatedUser(creatorUserId);
-                next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
-                next.normalizeLifecycleState();
-                records.add(next);
+                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId);
             }
         }
+        for (EventSlotTemplateDto template : templates) {
+            if (template == null || !StringUtils.hasText(template.id()) || !StringUtils.hasText(template.overrideDate())) {
+                continue;
+            }
+            if (Boolean.TRUE.equals(template.closed())) {
+                continue;
+            }
+            LocalDate overrideDate = toLocalDate(template.overrideDate());
+            LocalDateTime templateStart = alignToOverrideDate(toLocalDateTime(template.startAt()), overrideDate);
+            LocalDateTime templateEnd = alignToOverrideDate(toLocalDateTime(template.endAt()), overrideDate);
+            if (overrideDate == null || templateStart == null || templateEnd == null) {
+                continue;
+            }
+            if (templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart)) {
+                templateEnd = templateStart.plusMinutes(60L);
+            }
+            if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
+                continue;
+            }
+            if (templateStart.isBefore(parentStart) || templateEnd.isAfter(parentEnd)) {
+                continue;
+            }
+            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId);
+        }
         return records;
+    }
+
+    private void addGeneratedSlotRecordIfMissing(
+            List<ActivityEvent> records,
+            ActivityEvent parent,
+            Map<String, ActivityEvent> existingBySourceId,
+            String slotTemplateId,
+            LocalDateTime occurrenceStart,
+            LocalDateTime occurrenceEnd,
+            String parentSourceId,
+            String creatorUserId) {
+        String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
+        ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
+        if (existing != null) {
+            return;
+        }
+        ActivityEvent next = new ActivityEvent();
+        String nowIso = Instant.now().toString();
+        next.setId(resolveExistingId(creatorUserId, TYPE_EVENTS, sourceId, existing));
+        next.setSyncKey(resolveExistingSyncKey(creatorUserId, TYPE_EVENTS, sourceId, existing == null ? null : existing.getSyncKey()));
+        next.setSourceId(sourceId);
+        next.setOwnerUserId(creatorUserId);
+        next.setType(TYPE_EVENTS);
+        next.setAvatar(parent.getAvatar());
+        next.setTitle(parent.getTitle());
+        next.setSubtitle(parent.getSubtitle());
+        next.setTimeframe(buildGeneratedSlotTimeframe(occurrenceStart, occurrenceEnd));
+        next.setInviter(null);
+        next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
+        next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
+        next.setIsAdmin(true);
+        next.setIsInvitation(false);
+        next.setIsHosting(false);
+        next.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
+        next.setPublished(Boolean.FALSE.equals(parent.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
+        next.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
+        next.setCreatorUserId(creatorUserId);
+        next.setCreatorName(parent.getCreatorName());
+        next.setCreatorInitials(parent.getCreatorInitials());
+        next.setCreatorGender(parent.getCreatorGender());
+        next.setCreatorCity(parent.getCreatorCity());
+        next.setVisibility(parent.getVisibility());
+        next.setBlindMode(parent.getBlindMode());
+        next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
+        next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
+        next.setDistanceKm(null);
+        String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
+        String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());
+        String existingLocation = safeText(existing == null ? null : existing.getLocation());
+        next.setImageUrl(StringUtils.hasText(existingImageUrl) ? existingImageUrl : parent.getImageUrl());
+        next.setSourceLink(StringUtils.hasText(existingSourceLink) ? existingSourceLink : parent.getSourceLink());
+        next.setLocation(StringUtils.hasText(existingLocation) ? existingLocation : parent.getLocation());
+        next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
+        next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
+        next.setCapacityMin(parent.getCapacityMin());
+        next.setCapacityMax(parent.getCapacityMax());
+        next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
+        next.setAutoInviter(parent.getAutoInviter());
+        next.setFrequency(parent.getFrequency());
+        next.setTicketing(parent.getTicketing());
+        next.setSlotsEnabled(false);
+        next.setSlotTemplates(List.of());
+        next.setParentEventId(parentSourceId);
+        next.setSlotTemplateId(slotTemplateId);
+        next.setGenerated(true);
+        next.setEventType("slot");
+        next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
+        next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
+        next.setTopics(normalizeStrings(parent.getTopics()));
+        next.setSubEvents(cloneSubEvents(parent.getSubEvents()));
+        next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
+        next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
+        next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
+        next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
+        next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
+        next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(creatorUserId);
+        next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
+        next.normalizeLifecycleState();
+        records.add(next);
     }
 
     private List<EventSlotOccurrenceDto> resolveUpcomingSlotOccurrences(ActivityEvent record) {
@@ -1540,6 +1589,24 @@ public class ActivitiesEventsService {
                 return null;
             }
         }
+    }
+
+    private LocalDate toLocalDate(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(value.trim());
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
+    }
+
+    private LocalDateTime alignToOverrideDate(LocalDateTime value, LocalDate overrideDate) {
+        if (value == null || overrideDate == null) {
+            return value;
+        }
+        return overrideDate.atTime(value.toLocalTime());
     }
 
     private LocationCoordinatesDto cloneLocation(LocationCoordinatesDto value) {

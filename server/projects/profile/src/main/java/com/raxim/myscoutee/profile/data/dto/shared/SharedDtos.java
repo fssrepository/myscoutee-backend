@@ -56,7 +56,9 @@ public final class SharedDtos {
     public record EventSlotTemplateDto(
             String id,
             String startAt,
-            String endAt) {
+            String endAt,
+            String overrideDate,
+            Boolean closed) {
     }
 
     public record EventSlotOccurrenceDto(
