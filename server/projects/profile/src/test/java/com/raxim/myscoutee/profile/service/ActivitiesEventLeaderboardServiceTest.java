@@ -95,6 +95,7 @@ class ActivitiesEventLeaderboardServiceTest {
                 null,
                 null,
                 null,
+                null,
                 null);
     }
 }
