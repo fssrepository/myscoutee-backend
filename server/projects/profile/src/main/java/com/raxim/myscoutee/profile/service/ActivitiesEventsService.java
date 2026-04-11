@@ -848,6 +848,8 @@ public class ActivitiesEventsService {
         document.setCreatorCity(resolveCreatorCity(request.creatorCity(), creator));
         document.setVisibility(resolveVisibility(request.visibility(), existing, targetType));
         document.setBlindMode(resolveBlindMode(request.blindMode(), existing));
+        String normalizedFrequency = normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
+        document.setFrequency(normalizedFrequency);
         document.setStartAtIso(normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
         document.setEndAtIso(normalizeDateTime(request.endAt(), document.getStartAtIso()));
         document.setDistanceKm(null);
@@ -864,13 +866,11 @@ public class ActivitiesEventsService {
         document.setCapacityMax(nullableCount(request.capacityMax()));
         document.setCapacityTotal(resolveCapacityTotal(request, existing));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
-        document.setFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
         document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
-        document.setSlotsEnabled(slotEvent
-                ? false
-                : (request.slotsEnabled() != null ? request.slotsEnabled() : existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())));
-        document.setSlotTemplates(slotEvent ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        boolean slotsEnabled = !slotEvent && !"One-time".equals(normalizedFrequency);
+        document.setSlotsEnabled(slotsEnabled);
+        document.setSlotTemplates(slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
         document.setParentEventId(slotEvent ? parentEventId : null);
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
@@ -1452,7 +1452,7 @@ public class ActivitiesEventsService {
         Set<LocalDate> overrideDates = templates.stream()
                 .filter(Objects::nonNull)
                 .map(EventSlotTemplateDto::overrideDate)
-                .map(this::toLocalDate)
+                .map(this::slotOverrideDateKey)
                 .filter(Objects::nonNull)
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         for (EventSlotTemplateDto template : templates) {
@@ -1469,7 +1469,7 @@ public class ActivitiesEventsService {
             }
             long durationMinutes = Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
-                if (overrideDates.contains(occurrenceStart.toLocalDate())) {
+                if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
                     continue;
                 }
                 LocalDateTime occurrenceEnd = occurrenceStart.plusMinutes(durationMinutes);
@@ -1486,10 +1486,9 @@ public class ActivitiesEventsService {
             if (Boolean.TRUE.equals(template.closed())) {
                 continue;
             }
-            LocalDate overrideDate = toLocalDate(template.overrideDate());
-            LocalDateTime templateStart = alignToOverrideDate(toLocalDateTime(template.startAt()), overrideDate);
-            LocalDateTime templateEnd = alignToOverrideDate(toLocalDateTime(template.endAt()), overrideDate);
-            if (overrideDate == null || templateStart == null || templateEnd == null) {
+            LocalDateTime templateStart = toLocalDateTime(template.startAt());
+            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
+            if (templateStart == null || templateEnd == null) {
                 continue;
             }
             if (templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart)) {
@@ -1670,6 +1669,13 @@ public class ActivitiesEventsService {
             int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
             return date.getDayOfMonth() == day;
         }
+        if ("yearly".equals(frequency) || "annual".equals(frequency) || "annually".equals(frequency)) {
+            if (date.getMonthValue() != templateStart.getMonthValue()) {
+                return false;
+            }
+            int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
+            return date.getDayOfMonth() == day;
+        }
         return false;
     }
 
@@ -1699,11 +1705,16 @@ public class ActivitiesEventsService {
         }
     }
 
-    private LocalDateTime alignToOverrideDate(LocalDateTime value, LocalDate overrideDate) {
-        if (value == null || overrideDate == null) {
-            return value;
+    private LocalDate slotOverrideDateKey(String value) {
+        return toLocalDate(value);
+    }
+
+    private LocalDate slotOccurrenceAnchorDateKey(LocalDateTime occurrenceStart, LocalDateTime templateStart, LocalDateTime parentStart) {
+        if (occurrenceStart == null || templateStart == null || parentStart == null) {
+            return null;
         }
-        return overrideDate.atTime(value.toLocalTime());
+        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart, templateStart);
+        return occurrenceStart.minusMinutes(templateOffsetMinutes).toLocalDate();
     }
 
     private LocationCoordinatesDto cloneLocation(LocationCoordinatesDto value) {
@@ -1813,6 +1824,71 @@ public class ActivitiesEventsService {
                 return normalized;
             }
         }
+    }
+
+    private String normalizeEventFrequency(String value) {
+        String normalized = safeText(value).toLowerCase();
+        return switch (normalized) {
+            case "daily" -> "Daily";
+            case "weekly" -> "Weekly";
+            case "bi-weekly", "biweekly" -> "Bi-weekly";
+            case "monthly" -> "Monthly";
+            case "yearly", "annual", "annually" -> "Yearly";
+            default -> "One-time";
+        };
+    }
+
+    private void normalizeEventDateRange(ActivityEvent document) {
+        if (document == null) {
+            return;
+        }
+        LocalDateTime start = toLocalDateTime(document.getStartAtIso());
+        LocalDateTime end = toLocalDateTime(document.getEndAtIso());
+        if (start == null || end == null) {
+            return;
+        }
+
+        LocalDateTime boundaryEnd = eventFrequencyBoundaryEnd(start, document.getFrequency());
+        if (boundaryEnd != null && end.isAfter(boundaryEnd)) {
+            end = boundaryEnd;
+        }
+        if (boundaryEnd != null && !start.isBefore(boundaryEnd)) {
+            start = boundaryEnd.minusMinutes(1L);
+        }
+        if (!end.isAfter(start)) {
+            LocalDateTime nextEnd = start.plusHours(1L);
+            end = boundaryEnd != null && nextEnd.isAfter(boundaryEnd) ? boundaryEnd : nextEnd;
+            if (!end.isAfter(start)) {
+                start = end.minusMinutes(1L);
+            }
+        }
+
+        document.setStartAtIso(start.toInstant(ZoneOffset.UTC).toString());
+        document.setEndAtIso(end.toInstant(ZoneOffset.UTC).toString());
+    }
+
+    private LocalDateTime eventFrequencyBoundaryEnd(LocalDateTime start, String frequency) {
+        if (start == null) {
+            return null;
+        }
+        String normalizedFrequency = normalizeEventFrequency(frequency);
+        LocalDate boundaryDate = switch (normalizedFrequency) {
+            case "Daily" -> start.toLocalDate();
+            case "Weekly" -> endOfWeekSunday(start.toLocalDate());
+            case "Bi-weekly" -> endOfWeekSunday(start.toLocalDate()).plusWeeks(1L);
+            case "Monthly" -> start.toLocalDate().withDayOfMonth(start.toLocalDate().lengthOfMonth());
+            case "Yearly" -> start.toLocalDate().withDayOfYear(start.toLocalDate().lengthOfYear());
+            default -> null;
+        };
+        return boundaryDate == null ? null : boundaryDate.atTime(23, 59);
+    }
+
+    private LocalDate endOfWeekSunday(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        long daysToSunday = 7L - date.getDayOfWeek().getValue();
+        return date.plusDays(daysToSunday);
     }
 
     private int safeSortableInt(long value) {
