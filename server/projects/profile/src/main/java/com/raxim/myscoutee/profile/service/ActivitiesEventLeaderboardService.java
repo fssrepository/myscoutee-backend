@@ -448,6 +448,7 @@ public class ActivitiesEventLeaderboardService {
                     subEvent.tournamentLeaderboardType(),
                     subEvent.tournamentAdvancePerGroup(),
                     subEvent.optional(),
+                    subEvent.pricing(),
                     subEvent.capacityMin(),
                     subEvent.capacityMax(),
                     subEvent.membersAccepted(),

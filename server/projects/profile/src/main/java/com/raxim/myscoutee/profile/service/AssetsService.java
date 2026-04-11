@@ -41,6 +41,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequest
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -356,6 +357,7 @@ public class AssetsService {
         asset.setImageUrl(safeText(legacy.getString("imageUrl")));
         asset.setSourceLink(safeText(legacy.getString("sourceLink")));
         asset.setRoutes(normalizeStrings(legacy.get("routes")));
+        asset.setPricing(null);
         asset.setRequests(readLegacyRequests(legacy.get("requests")));
         asset.setVisibility(safeText(legacy.getString("visibility")));
         String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
@@ -413,6 +415,7 @@ public class AssetsService {
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(safeText(dto.sourceLink()));
         next.setRoutes(normalizeStrings(dto.routes()));
+        next.setPricing(clonePricing(dto.pricing()));
         next.setRequests(normalizeRequests(dto.requests()));
         String currentVisibility = safeText(current == null ? null : current.getVisibility());
         next.setVisibility(StringUtils.hasText(currentVisibility) ? currentVisibility : "Invitation only");
@@ -438,6 +441,7 @@ public class AssetsService {
         clone.setImageUrl(source.getImageUrl());
         clone.setSourceLink(source.getSourceLink());
         clone.setRoutes(new ArrayList<>(normalizeStrings(source.getRoutes())));
+        clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
         clone.setCreatedDate(source.getCreatedDate());
@@ -490,6 +494,7 @@ public class AssetsService {
                 Boolean.TRUE.equals(event.getAutoInviter()),
                 safeText(event.getFrequency()),
                 Boolean.TRUE.equals(event.getTicketing()),
+                clonePricing(event.getPricing()),
                 Boolean.TRUE.equals(event.getSlotsEnabled()),
                 event.getSlotTemplates() == null ? List.of() : new ArrayList<>(event.getSlotTemplates()),
                 safeNullableText(event.getParentEventId()),
@@ -568,6 +573,7 @@ public class AssetsService {
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()),
                 normalizeStrings(asset.getRoutes()),
+                clonePricing(asset.getPricing()),
                 safeRequests(asset.getRequests()).stream()
                         .map(request -> new AssetMemberRequestDto(
                                 normalizeId(request.id()),
@@ -637,6 +643,10 @@ public class AssetsService {
 
     private List<AssetCardDto> safeAssets(List<AssetCardDto> assets) {
         return assets == null ? List.of() : assets;
+    }
+
+    private PricingConfigDto clonePricing(PricingConfigDto pricing) {
+        return pricing;
     }
 
     private List<AssetRequestRecord> normalizeRequests(List<AssetMemberRequestDto> requests) {

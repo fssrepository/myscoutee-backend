@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+
 @Document(collection = "assets")
 @CompoundIndexes({
         @CompoundIndex(name = "asset_owner_asset_id", def = "{'ownerUserId': 1, 'assetId': 1}", unique = true),
@@ -34,6 +36,7 @@ public class Asset {
     private String imageUrl;
     private String sourceLink;
     private List<String> routes = new ArrayList<>();
+    private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
     private String createdDate;
@@ -143,6 +146,14 @@ public class Asset {
 
     public void setRoutes(List<String> routes) {
         this.routes = routes;
+    }
+
+    public PricingConfigDto getPricing() {
+        return pricing;
+    }
+
+    public void setPricing(PricingConfigDto pricing) {
+        this.pricing = pricing;
     }
 
     public List<AssetRequestRecord> getRequests() {

@@ -12,6 +12,73 @@ public final class SharedDtos {
             Double longitude) {
     }
 
+    public record PricingActionDto(
+            String kind,
+            Double value) {
+    }
+
+    public record PricingSlotOverrideDto(
+            String id,
+            String slotId,
+            String label,
+            String startAt,
+            String endAt,
+            Double price,
+            String currency) {
+    }
+
+    public record PricingDemandRuleDto(
+            String id,
+            String operator,
+            Integer capacityFilledPercent,
+            PricingActionDto action,
+            String appliesTo,
+            List<String> slotIds) {
+    }
+
+    public record PricingTimeRuleDto(
+            String id,
+            String trigger,
+            Integer offsetValue,
+            String specificDate,
+            PricingActionDto action,
+            String appliesTo,
+            List<String> slotIds) {
+    }
+
+    public record PricingPromoCodeDto(
+            String id,
+            String code,
+            PricingActionDto action) {
+    }
+
+    public record PricingAudienceSettingsDto(
+            Boolean enabled,
+            Double memberPrice,
+            Double vipPrice,
+            Integer inviteOnlyDiscountPercent,
+            List<PricingPromoCodeDto> promoCodes,
+            String soldOutLabel) {
+    }
+
+    public record PricingConfigDto(
+            String mode,
+            Double basePrice,
+            String currency,
+            String taxMode,
+            String chargeType,
+            Double minPrice,
+            Double maxPrice,
+            String rounding,
+            Boolean demandRulesEnabled,
+            List<PricingDemandRuleDto> demandRules,
+            Boolean timeRulesEnabled,
+            List<PricingTimeRuleDto> timeRules,
+            Boolean slotPricingEnabled,
+            List<PricingSlotOverrideDto> slotOverrides,
+            PricingAudienceSettingsDto audience) {
+    }
+
     public record SubEventGroupItemDto(
             String id,
             String name,
@@ -35,6 +102,7 @@ public final class SharedDtos {
             String tournamentLeaderboardType,
             Integer tournamentAdvancePerGroup,
             Boolean optional,
+            PricingConfigDto pricing,
             Integer capacityMin,
             Integer capacityMax,
             Integer membersAccepted,
@@ -153,6 +221,7 @@ public final class SharedDtos {
             String imageUrl,
             String sourceLink,
             List<String> routes,
+            PricingConfigDto pricing,
             List<AssetMemberRequestDto> requests) {
     }
 }

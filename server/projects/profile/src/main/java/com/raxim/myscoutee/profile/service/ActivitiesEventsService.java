@@ -40,6 +40,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterReques
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -584,6 +585,7 @@ public class ActivitiesEventsService {
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
+                clonePricing(record.getPricing()),
                 Boolean.TRUE.equals(record.getSlotsEnabled()),
                 cloneSlotTemplates(record.getSlotTemplates()),
                 safeText(record.getParentEventId()),
@@ -864,6 +866,7 @@ public class ActivitiesEventsService {
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
+        document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
         document.setSlotsEnabled(slotEvent
                 ? false
                 : (request.slotsEnabled() != null ? request.slotsEnabled() : existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())));
@@ -1148,6 +1151,7 @@ public class ActivitiesEventsService {
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
+        clone.setPricing(clonePricing(source.getPricing()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
         clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
@@ -1286,6 +1290,10 @@ public class ActivitiesEventsService {
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    private PricingConfigDto clonePricing(PricingConfigDto pricing) {
+        return pricing;
     }
 
     private boolean isGeneratedSlotRecord(ActivityEvent record) {
@@ -1468,6 +1476,7 @@ public class ActivitiesEventsService {
         next.setAutoInviter(parent.getAutoInviter());
         next.setFrequency(parent.getFrequency());
         next.setTicketing(parent.getTicketing());
+        next.setPricing(clonePricing(parent.getPricing()));
         next.setSlotsEnabled(false);
         next.setSlotTemplates(List.of());
         next.setParentEventId(parentSourceId);
