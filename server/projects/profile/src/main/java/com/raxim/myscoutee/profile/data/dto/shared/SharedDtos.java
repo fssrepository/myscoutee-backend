@@ -118,7 +118,9 @@ public final class SharedDtos {
             Integer accommodationCapacityMin,
             Integer accommodationCapacityMax,
             Integer suppliesCapacityMin,
-            Integer suppliesCapacityMax) {
+            Integer suppliesCapacityMax,
+            Integer slotStartOffsetMinutes,
+            Integer slotDurationMinutes) {
     }
 
     public record EventSlotTemplateDto(

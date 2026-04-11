@@ -464,7 +464,9 @@ public class ActivitiesEventLeaderboardService {
                     subEvent.accommodationCapacityMin(),
                     subEvent.accommodationCapacityMax(),
                     subEvent.suppliesCapacityMin(),
-                    subEvent.suppliesCapacityMax()));
+                    subEvent.suppliesCapacityMax(),
+                    subEvent.slotStartOffsetMinutes(),
+                    subEvent.slotDurationMinutes()));
         }
         return updated;
     }

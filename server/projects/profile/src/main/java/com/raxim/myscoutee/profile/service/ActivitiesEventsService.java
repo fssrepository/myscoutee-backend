@@ -1288,6 +1288,94 @@ public class ActivitiesEventsService {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
+    private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(
+            List<SubEventFormItemDto> items,
+            LocalDateTime occurrenceStart,
+            LocalDateTime occurrenceEnd) {
+        List<SubEventFormItemDto> source = cloneSubEvents(items);
+        if (source.isEmpty() || occurrenceStart == null || occurrenceEnd == null || !occurrenceEnd.isAfter(occurrenceStart)) {
+            return source;
+        }
+
+        int slotDurationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(occurrenceStart, occurrenceEnd));
+        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        for (SubEventFormItemDto item : source) {
+            if (item == null) {
+                continue;
+            }
+
+            LocalDateTime rawStart = toLocalDateTime(item.startAt());
+            LocalDateTime rawEnd = toLocalDateTime(item.endAt());
+            Integer explicitOffset = item.slotStartOffsetMinutes();
+            Integer explicitDuration = item.slotDurationMinutes();
+
+            int offsetMinutes;
+            if (explicitOffset != null) {
+                offsetMinutes = Math.max(0, explicitOffset);
+            } else if (rawStart != null) {
+                offsetMinutes = Math.max(
+                        0,
+                        ((rawStart.getHour() * 60) + rawStart.getMinute())
+                                - ((occurrenceStart.getHour() * 60) + occurrenceStart.getMinute()));
+            } else {
+                offsetMinutes = 0;
+            }
+
+            int durationMinutes;
+            if (explicitDuration != null) {
+                durationMinutes = Math.max(1, explicitDuration);
+            } else if (rawStart != null && rawEnd != null && rawEnd.isAfter(rawStart)) {
+                durationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(rawStart, rawEnd));
+            } else {
+                durationMinutes = slotDurationMinutes;
+            }
+
+            int safeOffsetMinutes = Math.min(Math.max(0, slotDurationMinutes - 1), offsetMinutes);
+            int safeDurationMinutes = Math.min(Math.max(1, slotDurationMinutes - safeOffsetMinutes), durationMinutes);
+            LocalDateTime subEventStart = occurrenceStart.plusMinutes(safeOffsetMinutes);
+            LocalDateTime subEventEnd = subEventStart.plusMinutes(safeDurationMinutes);
+            if (!subEventEnd.isAfter(subEventStart)) {
+                subEventEnd = occurrenceEnd;
+            }
+
+            materialized.add(new SubEventFormItemDto(
+                    item.id(),
+                    item.name(),
+                    item.description(),
+                    subEventStart.toString(),
+                    subEventEnd.toString(),
+                    item.location(),
+                    item.createdByUserId(),
+                    item.groups(),
+                    item.tournamentGroupCount(),
+                    item.tournamentGroupCapacityMin(),
+                    item.tournamentGroupCapacityMax(),
+                    item.tournamentLeaderboardType(),
+                    item.tournamentAdvancePerGroup(),
+                    item.optional(),
+                    item.pricing(),
+                    item.capacityMin(),
+                    item.capacityMax(),
+                    item.membersAccepted(),
+                    item.membersPending(),
+                    item.carsPending(),
+                    item.accommodationPending(),
+                    item.suppliesPending(),
+                    item.carsAccepted(),
+                    item.accommodationAccepted(),
+                    item.suppliesAccepted(),
+                    item.carsCapacityMin(),
+                    item.carsCapacityMax(),
+                    item.accommodationCapacityMin(),
+                    item.accommodationCapacityMax(),
+                    item.suppliesCapacityMin(),
+                    item.suppliesCapacityMax(),
+                    safeOffsetMinutes,
+                    safeDurationMinutes));
+        }
+        return materialized;
+    }
+
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
@@ -1486,7 +1574,7 @@ public class ActivitiesEventsService {
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
-        next.setSubEvents(cloneSubEvents(parent.getSubEvents()));
+        next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
