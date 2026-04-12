@@ -30,6 +30,7 @@ import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetPolicyRecord;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
@@ -41,6 +42,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequest
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -415,6 +417,7 @@ public class AssetsService {
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(safeText(dto.sourceLink()));
         next.setRoutes(normalizeStrings(dto.routes()));
+        next.setPolicies(normalizePolicies(dto.policies()));
         next.setPricing(clonePricing(dto.pricing()));
         next.setRequests(normalizeRequests(dto.requests()));
         String currentVisibility = safeText(current == null ? null : current.getVisibility());
@@ -441,6 +444,7 @@ public class AssetsService {
         clone.setImageUrl(source.getImageUrl());
         clone.setSourceLink(source.getSourceLink());
         clone.setRoutes(new ArrayList<>(normalizeStrings(source.getRoutes())));
+        clone.setPolicies(new ArrayList<>(safePolicies(source.getPolicies())));
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
@@ -573,6 +577,13 @@ public class AssetsService {
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()),
                 normalizeStrings(asset.getRoutes()),
+                safePolicies(asset.getPolicies()).stream()
+                        .map(policy -> new PolicyItemDto(
+                                normalizeId(policy.id()),
+                                safeText(policy.title()),
+                                safeText(policy.description()),
+                                policy.required() != null ? policy.required() : Boolean.TRUE))
+                        .toList(),
                 clonePricing(asset.getPricing()),
                 safeRequests(asset.getRequests()).stream()
                         .map(request -> new AssetMemberRequestDto(
@@ -649,6 +660,30 @@ public class AssetsService {
         return pricing;
     }
 
+    private List<AssetPolicyRecord> normalizePolicies(List<PolicyItemDto> policies) {
+        if (policies == null) {
+            return List.of();
+        }
+        List<AssetPolicyRecord> next = new ArrayList<>();
+        for (PolicyItemDto policy : policies) {
+            if (policy == null) {
+                continue;
+            }
+            String policyId = normalizeId(policy.id());
+            String title = safeText(policy.title());
+            String description = safeText(policy.description());
+            if (!StringUtils.hasText(policyId) && !StringUtils.hasText(title) && !StringUtils.hasText(description)) {
+                continue;
+            }
+            next.add(new AssetPolicyRecord(
+                    StringUtils.hasText(policyId) ? policyId : UUID.randomUUID().toString(),
+                    title,
+                    description,
+                    policy.required() != null ? policy.required() : Boolean.TRUE));
+        }
+        return next;
+    }
+
     private List<AssetRequestRecord> normalizeRequests(List<AssetMemberRequestDto> requests) {
         if (requests == null) {
             return List.of();
@@ -677,6 +712,10 @@ public class AssetsService {
 
     private List<AssetRequestRecord> safeRequests(List<AssetRequestRecord> requests) {
         return requests == null ? List.of() : requests;
+    }
+
+    private List<AssetPolicyRecord> safePolicies(List<AssetPolicyRecord> policies) {
+        return policies == null ? List.of() : policies;
     }
 
     private Document toDocument(Object raw) {

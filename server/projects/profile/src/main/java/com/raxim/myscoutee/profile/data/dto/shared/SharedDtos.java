@@ -202,6 +202,13 @@ public final class SharedDtos {
             Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId) {
     }
 
+    public record PolicyItemDto(
+            String id,
+            String title,
+            String description,
+            Boolean required) {
+    }
+
     public record AssetMemberRequestDto(
             String id,
             String userId,
@@ -223,6 +230,7 @@ public final class SharedDtos {
             String imageUrl,
             String sourceLink,
             List<String> routes,
+            List<PolicyItemDto> policies,
             PricingConfigDto pricing,
             List<AssetMemberRequestDto> requests) {
     }

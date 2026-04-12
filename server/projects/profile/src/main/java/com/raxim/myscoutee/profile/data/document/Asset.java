@@ -36,6 +36,7 @@ public class Asset {
     private String imageUrl;
     private String sourceLink;
     private List<String> routes = new ArrayList<>();
+    private List<AssetPolicyRecord> policies = new ArrayList<>();
     private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
@@ -156,6 +157,14 @@ public class Asset {
         this.pricing = pricing;
     }
 
+    public List<AssetPolicyRecord> getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(List<AssetPolicyRecord> policies) {
+        this.policies = policies;
+    }
+
     public List<AssetRequestRecord> getRequests() {
         return requests;
     }
@@ -212,5 +221,12 @@ public class Asset {
             String gender,
             String status,
             String note) {
+    }
+
+    public record AssetPolicyRecord(
+            String id,
+            String title,
+            String description,
+            Boolean required) {
     }
 }
