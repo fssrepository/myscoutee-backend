@@ -419,6 +419,9 @@ class EventSchedulerTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null);
     }
 
@@ -459,6 +462,9 @@ class EventSchedulerTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null);
     }
 
@@ -478,6 +484,9 @@ class EventSchedulerTest {
                 "Score",
                 1,
                 false,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,

@@ -276,6 +276,7 @@ public class EventParticipationTicketService {
         next.setAutoInviter(Boolean.TRUE.equals(preferred.getAutoInviter()));
         next.setFrequency(safeText(preferred.getFrequency()));
         next.setTicketing(Boolean.TRUE.equals(preferred.getTicketing()));
+        next.setPricing(preferred.getPricing());
         next.setAcceptedMembers(Math.max(normalizeCount(preferred.getAcceptedMembers()), snapshot.acceptedMemberUserIds().size()));
         next.setPendingMembers(Math.max(normalizeCount(preferred.getPendingMembers()), snapshot.pendingMemberUserIds().size()));
         next.setTopics(new ArrayList<>(normalizeStrings(preferred.getTopics())));
@@ -400,6 +401,7 @@ public class EventParticipationTicketService {
                 && Objects.equals(left.getAutoInviter(), right.getAutoInviter())
                 && Objects.equals(left.getFrequency(), right.getFrequency())
                 && Objects.equals(left.getTicketing(), right.getTicketing())
+                && Objects.equals(left.getPricing(), right.getPricing())
                 && Objects.equals(left.getAcceptedMembers(), right.getAcceptedMembers())
                 && Objects.equals(left.getPendingMembers(), right.getPendingMembers())
                 && Objects.equals(normalizeStrings(left.getTopics()), normalizeStrings(right.getTopics()))
@@ -418,6 +420,7 @@ public class EventParticipationTicketService {
         clone.setAdmins(source.getAdmins() == null ? List.of() : new ArrayList<>(source.getAdmins()));
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
+        clone.setPricing(source.getPricing());
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
         clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;

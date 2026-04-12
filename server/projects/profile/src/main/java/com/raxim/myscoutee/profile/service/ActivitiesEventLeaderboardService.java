@@ -448,6 +448,7 @@ public class ActivitiesEventLeaderboardService {
                     subEvent.tournamentLeaderboardType(),
                     subEvent.tournamentAdvancePerGroup(),
                     subEvent.optional(),
+                    subEvent.pricing(),
                     subEvent.capacityMin(),
                     subEvent.capacityMax(),
                     subEvent.membersAccepted(),
@@ -463,7 +464,9 @@ public class ActivitiesEventLeaderboardService {
                     subEvent.accommodationCapacityMin(),
                     subEvent.accommodationCapacityMax(),
                     subEvent.suppliesCapacityMin(),
-                    subEvent.suppliesCapacityMax()));
+                    subEvent.suppliesCapacityMax(),
+                    subEvent.slotStartOffsetMinutes(),
+                    subEvent.slotDurationMinutes()));
         }
         return updated;
     }

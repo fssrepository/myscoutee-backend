@@ -40,6 +40,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterReques
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -584,6 +585,7 @@ public class ActivitiesEventsService {
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
+                clonePricing(record.getPricing()),
                 Boolean.TRUE.equals(record.getSlotsEnabled()),
                 cloneSlotTemplates(record.getSlotTemplates()),
                 safeText(record.getParentEventId()),
@@ -846,6 +848,8 @@ public class ActivitiesEventsService {
         document.setCreatorCity(resolveCreatorCity(request.creatorCity(), creator));
         document.setVisibility(resolveVisibility(request.visibility(), existing, targetType));
         document.setBlindMode(resolveBlindMode(request.blindMode(), existing));
+        String normalizedFrequency = normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
+        document.setFrequency(normalizedFrequency);
         document.setStartAtIso(normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
         document.setEndAtIso(normalizeDateTime(request.endAt(), document.getStartAtIso()));
         document.setDistanceKm(null);
@@ -862,12 +866,11 @@ public class ActivitiesEventsService {
         document.setCapacityMax(nullableCount(request.capacityMax()));
         document.setCapacityTotal(resolveCapacityTotal(request, existing));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
-        document.setFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
-        document.setSlotsEnabled(slotEvent
-                ? false
-                : (request.slotsEnabled() != null ? request.slotsEnabled() : existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())));
-        document.setSlotTemplates(slotEvent ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
+        boolean slotsEnabled = !slotEvent && !"One-time".equals(normalizedFrequency);
+        document.setSlotsEnabled(slotsEnabled);
+        document.setSlotTemplates(slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
         document.setParentEventId(slotEvent ? parentEventId : null);
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
@@ -1148,6 +1151,7 @@ public class ActivitiesEventsService {
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
+        clone.setPricing(clonePricing(source.getPricing()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
         clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
@@ -1284,8 +1288,100 @@ public class ActivitiesEventsService {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
+    private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(
+            List<SubEventFormItemDto> items,
+            LocalDateTime occurrenceStart,
+            LocalDateTime occurrenceEnd) {
+        List<SubEventFormItemDto> source = cloneSubEvents(items);
+        if (source.isEmpty() || occurrenceStart == null || occurrenceEnd == null || !occurrenceEnd.isAfter(occurrenceStart)) {
+            return source;
+        }
+
+        int slotDurationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(occurrenceStart, occurrenceEnd));
+        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        for (SubEventFormItemDto item : source) {
+            if (item == null) {
+                continue;
+            }
+
+            LocalDateTime rawStart = toLocalDateTime(item.startAt());
+            LocalDateTime rawEnd = toLocalDateTime(item.endAt());
+            Integer explicitOffset = item.slotStartOffsetMinutes();
+            Integer explicitDuration = item.slotDurationMinutes();
+
+            int offsetMinutes;
+            if (explicitOffset != null) {
+                offsetMinutes = Math.max(0, explicitOffset);
+            } else if (rawStart != null) {
+                offsetMinutes = Math.max(
+                        0,
+                        ((rawStart.getHour() * 60) + rawStart.getMinute())
+                                - ((occurrenceStart.getHour() * 60) + occurrenceStart.getMinute()));
+            } else {
+                offsetMinutes = 0;
+            }
+
+            int durationMinutes;
+            if (explicitDuration != null) {
+                durationMinutes = Math.max(1, explicitDuration);
+            } else if (rawStart != null && rawEnd != null && rawEnd.isAfter(rawStart)) {
+                durationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(rawStart, rawEnd));
+            } else {
+                durationMinutes = slotDurationMinutes;
+            }
+
+            int safeOffsetMinutes = Math.min(Math.max(0, slotDurationMinutes - 1), offsetMinutes);
+            int safeDurationMinutes = Math.min(Math.max(1, slotDurationMinutes - safeOffsetMinutes), durationMinutes);
+            LocalDateTime subEventStart = occurrenceStart.plusMinutes(safeOffsetMinutes);
+            LocalDateTime subEventEnd = subEventStart.plusMinutes(safeDurationMinutes);
+            if (!subEventEnd.isAfter(subEventStart)) {
+                subEventEnd = occurrenceEnd;
+            }
+
+            materialized.add(new SubEventFormItemDto(
+                    item.id(),
+                    item.name(),
+                    item.description(),
+                    subEventStart.toString(),
+                    subEventEnd.toString(),
+                    item.location(),
+                    item.createdByUserId(),
+                    item.groups(),
+                    item.tournamentGroupCount(),
+                    item.tournamentGroupCapacityMin(),
+                    item.tournamentGroupCapacityMax(),
+                    item.tournamentLeaderboardType(),
+                    item.tournamentAdvancePerGroup(),
+                    item.optional(),
+                    item.pricing(),
+                    item.capacityMin(),
+                    item.capacityMax(),
+                    item.membersAccepted(),
+                    item.membersPending(),
+                    item.carsPending(),
+                    item.accommodationPending(),
+                    item.suppliesPending(),
+                    item.carsAccepted(),
+                    item.accommodationAccepted(),
+                    item.suppliesAccepted(),
+                    item.carsCapacityMin(),
+                    item.carsCapacityMax(),
+                    item.accommodationCapacityMin(),
+                    item.accommodationCapacityMax(),
+                    item.suppliesCapacityMin(),
+                    item.suppliesCapacityMax(),
+                    safeOffsetMinutes,
+                    safeDurationMinutes));
+        }
+        return materialized;
+    }
+
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    private PricingConfigDto clonePricing(PricingConfigDto pricing) {
+        return pricing;
     }
 
     private boolean isGeneratedSlotRecord(ActivityEvent record) {
@@ -1352,8 +1448,18 @@ public class ActivitiesEventsService {
         List<ActivityEvent> records = new ArrayList<>();
         String parentSourceId = normalizeId(parent.getSourceId());
         String creatorUserId = normalizeId(parent.getCreatorUserId());
-        for (EventSlotTemplateDto template : cloneSlotTemplates(parent.getSlotTemplates())) {
+        List<EventSlotTemplateDto> templates = cloneSlotTemplates(parent.getSlotTemplates());
+        Set<LocalDate> overrideDates = templates.stream()
+                .filter(Objects::nonNull)
+                .map(EventSlotTemplateDto::overrideDate)
+                .map(this::slotOverrideDateKey)
+                .filter(Objects::nonNull)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        for (EventSlotTemplateDto template : templates) {
             if (template == null || !StringUtils.hasText(template.id())) {
+                continue;
+            }
+            if (StringUtils.hasText(template.overrideDate()) || Boolean.TRUE.equals(template.closed())) {
                 continue;
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
@@ -1363,83 +1469,122 @@ public class ActivitiesEventsService {
             }
             long durationMinutes = Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
+                if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
+                    continue;
+                }
                 LocalDateTime occurrenceEnd = occurrenceStart.plusMinutes(durationMinutes);
                 if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
                     continue;
                 }
-                String sourceId = buildGeneratedSlotSourceId(parentSourceId, template.id(), occurrenceStart);
-                ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
-                if (existing != null) {
-                    continue;
-                }
-                ActivityEvent next = new ActivityEvent();
-                String nowIso = Instant.now().toString();
-                next.setId(resolveExistingId(creatorUserId, TYPE_EVENTS, sourceId, existing));
-                next.setSyncKey(resolveExistingSyncKey(creatorUserId, TYPE_EVENTS, sourceId, existing == null ? null : existing.getSyncKey()));
-                next.setSourceId(sourceId);
-                next.setOwnerUserId(creatorUserId);
-                next.setType(TYPE_EVENTS);
-                next.setAvatar(parent.getAvatar());
-                next.setTitle(parent.getTitle());
-                next.setSubtitle(parent.getSubtitle());
-                next.setTimeframe(buildGeneratedSlotTimeframe(occurrenceStart, occurrenceEnd));
-                next.setInviter(null);
-                next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
-                next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
-                next.setIsAdmin(true);
-                next.setIsInvitation(false);
-                next.setIsHosting(false);
-                next.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
-                next.setPublished(Boolean.FALSE.equals(parent.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
-                next.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
-                next.setCreatorUserId(creatorUserId);
-                next.setCreatorName(parent.getCreatorName());
-                next.setCreatorInitials(parent.getCreatorInitials());
-                next.setCreatorGender(parent.getCreatorGender());
-                next.setCreatorCity(parent.getCreatorCity());
-                next.setVisibility(parent.getVisibility());
-                next.setBlindMode(parent.getBlindMode());
-                next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
-                next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
-                next.setDistanceKm(null);
-                String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
-                String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());
-                String existingLocation = safeText(existing == null ? null : existing.getLocation());
-                next.setImageUrl(StringUtils.hasText(existingImageUrl) ? existingImageUrl : parent.getImageUrl());
-                next.setSourceLink(StringUtils.hasText(existingSourceLink) ? existingSourceLink : parent.getSourceLink());
-                next.setLocation(StringUtils.hasText(existingLocation) ? existingLocation : parent.getLocation());
-                next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
-                next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
-                next.setCapacityMin(parent.getCapacityMin());
-                next.setCapacityMax(parent.getCapacityMax());
-                next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
-                next.setAutoInviter(parent.getAutoInviter());
-                next.setFrequency(parent.getFrequency());
-                next.setTicketing(parent.getTicketing());
-                next.setSlotsEnabled(false);
-                next.setSlotTemplates(List.of());
-                next.setParentEventId(parentSourceId);
-                next.setSlotTemplateId(template.id());
-                next.setGenerated(true);
-                next.setEventType("slot");
-                next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
-                next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
-                next.setTopics(normalizeStrings(parent.getTopics()));
-                next.setSubEvents(cloneSubEvents(parent.getSubEvents()));
-                next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
-                next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
-                next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
-                next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
-                next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
-                next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
-                next.setUpdatedDate(nowIso);
-                next.setUpdatedUser(creatorUserId);
-                next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
-                next.normalizeLifecycleState();
-                records.add(next);
+                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId);
             }
         }
+        for (EventSlotTemplateDto template : templates) {
+            if (template == null || !StringUtils.hasText(template.id()) || !StringUtils.hasText(template.overrideDate())) {
+                continue;
+            }
+            if (Boolean.TRUE.equals(template.closed())) {
+                continue;
+            }
+            LocalDateTime templateStart = toLocalDateTime(template.startAt());
+            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
+            if (templateStart == null || templateEnd == null) {
+                continue;
+            }
+            if (templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart)) {
+                templateEnd = templateStart.plusMinutes(60L);
+            }
+            if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
+                continue;
+            }
+            if (templateStart.isBefore(parentStart) || templateEnd.isAfter(parentEnd)) {
+                continue;
+            }
+            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId);
+        }
         return records;
+    }
+
+    private void addGeneratedSlotRecordIfMissing(
+            List<ActivityEvent> records,
+            ActivityEvent parent,
+            Map<String, ActivityEvent> existingBySourceId,
+            String slotTemplateId,
+            LocalDateTime occurrenceStart,
+            LocalDateTime occurrenceEnd,
+            String parentSourceId,
+            String creatorUserId) {
+        String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
+        ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
+        if (existing != null) {
+            return;
+        }
+        ActivityEvent next = new ActivityEvent();
+        String nowIso = Instant.now().toString();
+        next.setId(resolveExistingId(creatorUserId, TYPE_EVENTS, sourceId, existing));
+        next.setSyncKey(resolveExistingSyncKey(creatorUserId, TYPE_EVENTS, sourceId, existing == null ? null : existing.getSyncKey()));
+        next.setSourceId(sourceId);
+        next.setOwnerUserId(creatorUserId);
+        next.setType(TYPE_EVENTS);
+        next.setAvatar(parent.getAvatar());
+        next.setTitle(parent.getTitle());
+        next.setSubtitle(parent.getSubtitle());
+        next.setTimeframe(buildGeneratedSlotTimeframe(occurrenceStart, occurrenceEnd));
+        next.setInviter(null);
+        next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
+        next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
+        next.setIsAdmin(true);
+        next.setIsInvitation(false);
+        next.setIsHosting(false);
+        next.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
+        next.setPublished(Boolean.FALSE.equals(parent.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
+        next.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
+        next.setCreatorUserId(creatorUserId);
+        next.setCreatorName(parent.getCreatorName());
+        next.setCreatorInitials(parent.getCreatorInitials());
+        next.setCreatorGender(parent.getCreatorGender());
+        next.setCreatorCity(parent.getCreatorCity());
+        next.setVisibility(parent.getVisibility());
+        next.setBlindMode(parent.getBlindMode());
+        next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
+        next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
+        next.setDistanceKm(null);
+        String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
+        String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());
+        String existingLocation = safeText(existing == null ? null : existing.getLocation());
+        next.setImageUrl(StringUtils.hasText(existingImageUrl) ? existingImageUrl : parent.getImageUrl());
+        next.setSourceLink(StringUtils.hasText(existingSourceLink) ? existingSourceLink : parent.getSourceLink());
+        next.setLocation(StringUtils.hasText(existingLocation) ? existingLocation : parent.getLocation());
+        next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
+        next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
+        next.setCapacityMin(parent.getCapacityMin());
+        next.setCapacityMax(parent.getCapacityMax());
+        next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
+        next.setAutoInviter(parent.getAutoInviter());
+        next.setFrequency(parent.getFrequency());
+        next.setTicketing(parent.getTicketing());
+        next.setPricing(clonePricing(parent.getPricing()));
+        next.setSlotsEnabled(false);
+        next.setSlotTemplates(List.of());
+        next.setParentEventId(parentSourceId);
+        next.setSlotTemplateId(slotTemplateId);
+        next.setGenerated(true);
+        next.setEventType("slot");
+        next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
+        next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
+        next.setTopics(normalizeStrings(parent.getTopics()));
+        next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
+        next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
+        next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
+        next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
+        next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
+        next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
+        next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(creatorUserId);
+        next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
+        next.normalizeLifecycleState();
+        records.add(next);
     }
 
     private List<EventSlotOccurrenceDto> resolveUpcomingSlotOccurrences(ActivityEvent record) {
@@ -1524,6 +1669,13 @@ public class ActivitiesEventsService {
             int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
             return date.getDayOfMonth() == day;
         }
+        if ("yearly".equals(frequency) || "annual".equals(frequency) || "annually".equals(frequency)) {
+            if (date.getMonthValue() != templateStart.getMonthValue()) {
+                return false;
+            }
+            int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
+            return date.getDayOfMonth() == day;
+        }
         return false;
     }
 
@@ -1540,6 +1692,29 @@ public class ActivitiesEventsService {
                 return null;
             }
         }
+    }
+
+    private LocalDate toLocalDate(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(value.trim());
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
+    }
+
+    private LocalDate slotOverrideDateKey(String value) {
+        return toLocalDate(value);
+    }
+
+    private LocalDate slotOccurrenceAnchorDateKey(LocalDateTime occurrenceStart, LocalDateTime templateStart, LocalDateTime parentStart) {
+        if (occurrenceStart == null || templateStart == null || parentStart == null) {
+            return null;
+        }
+        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart, templateStart);
+        return occurrenceStart.minusMinutes(templateOffsetMinutes).toLocalDate();
     }
 
     private LocationCoordinatesDto cloneLocation(LocationCoordinatesDto value) {
@@ -1649,6 +1824,71 @@ public class ActivitiesEventsService {
                 return normalized;
             }
         }
+    }
+
+    private String normalizeEventFrequency(String value) {
+        String normalized = safeText(value).toLowerCase();
+        return switch (normalized) {
+            case "daily" -> "Daily";
+            case "weekly" -> "Weekly";
+            case "bi-weekly", "biweekly" -> "Bi-weekly";
+            case "monthly" -> "Monthly";
+            case "yearly", "annual", "annually" -> "Yearly";
+            default -> "One-time";
+        };
+    }
+
+    private void normalizeEventDateRange(ActivityEvent document) {
+        if (document == null) {
+            return;
+        }
+        LocalDateTime start = toLocalDateTime(document.getStartAtIso());
+        LocalDateTime end = toLocalDateTime(document.getEndAtIso());
+        if (start == null || end == null) {
+            return;
+        }
+
+        LocalDateTime boundaryEnd = eventFrequencyBoundaryEnd(start, document.getFrequency());
+        if (boundaryEnd != null && end.isAfter(boundaryEnd)) {
+            end = boundaryEnd;
+        }
+        if (boundaryEnd != null && !start.isBefore(boundaryEnd)) {
+            start = boundaryEnd.minusMinutes(1L);
+        }
+        if (!end.isAfter(start)) {
+            LocalDateTime nextEnd = start.plusHours(1L);
+            end = boundaryEnd != null && nextEnd.isAfter(boundaryEnd) ? boundaryEnd : nextEnd;
+            if (!end.isAfter(start)) {
+                start = end.minusMinutes(1L);
+            }
+        }
+
+        document.setStartAtIso(start.toInstant(ZoneOffset.UTC).toString());
+        document.setEndAtIso(end.toInstant(ZoneOffset.UTC).toString());
+    }
+
+    private LocalDateTime eventFrequencyBoundaryEnd(LocalDateTime start, String frequency) {
+        if (start == null) {
+            return null;
+        }
+        String normalizedFrequency = normalizeEventFrequency(frequency);
+        LocalDate boundaryDate = switch (normalizedFrequency) {
+            case "Daily" -> start.toLocalDate();
+            case "Weekly" -> endOfWeekSunday(start.toLocalDate());
+            case "Bi-weekly" -> endOfWeekSunday(start.toLocalDate()).plusWeeks(1L);
+            case "Monthly" -> start.toLocalDate().withDayOfMonth(start.toLocalDate().lengthOfMonth());
+            case "Yearly" -> start.toLocalDate().withDayOfYear(start.toLocalDate().lengthOfYear());
+            default -> null;
+        };
+        return boundaryDate == null ? null : boundaryDate.atTime(23, 59);
+    }
+
+    private LocalDate endOfWeekSunday(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        long daysToSunday = 7L - date.getDayOfWeek().getValue();
+        return date.plusDays(daysToSunday);
     }
 
     private int safeSortableInt(long value) {

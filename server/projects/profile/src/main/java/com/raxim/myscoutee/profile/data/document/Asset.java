@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+
 @Document(collection = "assets")
 @CompoundIndexes({
         @CompoundIndex(name = "asset_owner_asset_id", def = "{'ownerUserId': 1, 'assetId': 1}", unique = true),
@@ -28,12 +30,16 @@ public class Asset {
     private String type;
     private String title;
     private String subtitle;
+    private String category;
     private String city;
     private Integer capacityTotal;
+    private Integer quantity;
     private String details;
     private String imageUrl;
     private String sourceLink;
     private List<String> routes = new ArrayList<>();
+    private List<AssetPolicyRecord> policies = new ArrayList<>();
+    private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
     private String createdDate;
@@ -105,12 +111,28 @@ public class Asset {
         this.city = city;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public Integer getCapacityTotal() {
         return capacityTotal;
     }
 
     public void setCapacityTotal(Integer capacityTotal) {
         this.capacityTotal = capacityTotal;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public String getDetails() {
@@ -143,6 +165,22 @@ public class Asset {
 
     public void setRoutes(List<String> routes) {
         this.routes = routes;
+    }
+
+    public PricingConfigDto getPricing() {
+        return pricing;
+    }
+
+    public void setPricing(PricingConfigDto pricing) {
+        this.pricing = pricing;
+    }
+
+    public List<AssetPolicyRecord> getPolicies() {
+        return policies;
+    }
+
+    public void setPolicies(List<AssetPolicyRecord> policies) {
+        this.policies = policies;
     }
 
     public List<AssetRequestRecord> getRequests() {
@@ -200,6 +238,32 @@ public class Asset {
             String initials,
             String gender,
             String status,
-            String note) {
+            String note,
+            String requestKind,
+            String requestedAtIso,
+            AssetRequestBookingRecord booking) {
+    }
+
+    public record AssetRequestBookingRecord(
+            String eventId,
+            String eventTitle,
+            String subEventId,
+            String subEventTitle,
+            String slotKey,
+            String slotLabel,
+            String timeframe,
+            String startAtIso,
+            String endAtIso,
+            Integer quantity,
+            Double totalAmount,
+            String currency,
+            List<String> acceptedPolicyIds) {
+    }
+
+    public record AssetPolicyRecord(
+            String id,
+            String title,
+            String description,
+            Boolean required) {
     }
 }
