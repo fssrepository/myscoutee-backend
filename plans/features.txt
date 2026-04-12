@@ -20,6 +20,9 @@ docker compose up
 
 pricing and slots is in popup - and show the explainer only in the main event panel
 
+time rule - date range - not a simple date - so on car we can make seasonal price adjustments!!
+-----------------------------------------------------------------------------------------------
+
 Feature Summary: Asset Explore & Integrated Monetization
 --------------------------------------------------------
 
