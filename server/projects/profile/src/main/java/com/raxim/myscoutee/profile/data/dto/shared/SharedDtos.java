@@ -244,6 +244,7 @@ public final class SharedDtos {
             String type,
             String title,
             String subtitle,
+            String category,
             String city,
             Integer capacityTotal,
             Integer quantity,
@@ -253,6 +254,9 @@ public final class SharedDtos {
             List<String> routes,
             List<PolicyItemDto> policies,
             PricingConfigDto pricing,
+            String visibility,
+            String ownerUserId,
+            String ownerName,
             List<AssetMemberRequestDto> requests) {
     }
 }

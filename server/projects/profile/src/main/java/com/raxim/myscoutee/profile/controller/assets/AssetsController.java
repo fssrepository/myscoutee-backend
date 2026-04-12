@@ -32,6 +32,14 @@ public class AssetsController {
         return assetsService.queryAssets(userId);
     }
 
+    @GetMapping("/explore")
+    public List<AssetCardDto> queryVisibleAssets(
+            @RequestParam("userId") String userId,
+            @RequestParam("type") String type,
+            @RequestParam(value = "category", required = false) String category) {
+        return assetsService.queryVisibleAssets(userId, type, category);
+    }
+
     @GetMapping("/tickets")
     public AssetTicketsPageDto queryTickets(
             @RequestParam("userId") String userId,

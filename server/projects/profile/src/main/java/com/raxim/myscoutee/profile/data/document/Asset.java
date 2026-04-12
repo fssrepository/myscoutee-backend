@@ -30,6 +30,7 @@ public class Asset {
     private String type;
     private String title;
     private String subtitle;
+    private String category;
     private String city;
     private Integer capacityTotal;
     private Integer quantity;
@@ -108,6 +109,14 @@ public class Asset {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Integer getCapacityTotal() {

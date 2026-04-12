@@ -86,6 +86,27 @@ public class AssetsService {
                 .toList();
     }
 
+    public List<AssetCardDto> queryVisibleAssets(String userId, String type, String category) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedType = normalizeAssetType(type);
+        String normalizedCategory = safeText(category);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedType)) {
+            return List.of();
+        }
+
+        ensureExploreAssetsBootstrapped();
+        return assetsRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .filter(asset -> normalizedType.equals(normalizeAssetType(asset.getType())))
+                .filter(asset -> !normalizedUserId.equals(normalizeId(asset.getOwnerUserId())))
+                .filter(asset -> !StringUtils.hasText(normalizedCategory) || normalizedCategory.equals(safeText(asset.getCategory())))
+                .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
+                .sorted(Comparator.comparing(asset -> safeText(asset.getTitle())))
+                .map(this::toDto)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
@@ -306,6 +327,21 @@ public class AssetsService {
         }
     }
 
+    private void ensureExploreAssetsBootstrapped() {
+        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
+        if (wrapper == null) {
+            return;
+        }
+
+        List<Asset> missingAssets = readLegacyAssets(wrapper).stream()
+                .filter(Objects::nonNull)
+                .filter(asset -> assetsRepository.findByOwnerUserIdAndAssetId(asset.getOwnerUserId(), asset.getAssetId()).isEmpty())
+                .toList();
+        if (!missingAssets.isEmpty()) {
+            assetsRepository.saveAll(missingAssets);
+        }
+    }
+
     private Asset bootstrapAssetFromLegacy(String assetId) {
         Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
         if (wrapper == null) {
@@ -355,6 +391,7 @@ public class AssetsService {
         asset.setType(type);
         asset.setTitle(safeText(legacy.getString("title")));
         asset.setSubtitle(safeText(legacy.getString("subtitle")));
+        asset.setCategory(safeText(legacy.getString("category")));
         asset.setCity(safeText(legacy.getString("city")));
         asset.setCapacityTotal(Math.max(1, normalizeCount(legacy.get("capacityTotal"))));
         asset.setQuantity(normalizeAssetQuantity(type, legacy.get("quantity"), legacy.get("capacityTotal")));
@@ -417,6 +454,7 @@ public class AssetsService {
         next.setType(type);
         next.setTitle(safeText(dto.title()));
         next.setSubtitle(safeText(dto.subtitle()));
+        next.setCategory(safeText(dto.category()));
         next.setCity(safeText(dto.city()));
         next.setCapacityTotal(Math.max(1, normalizeCount(dto.capacityTotal())));
         next.setQuantity(normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
@@ -427,8 +465,11 @@ public class AssetsService {
         next.setPolicies(normalizePolicies(dto.policies()));
         next.setPricing(clonePricing(dto.pricing()));
         next.setRequests(normalizeRequests(dto.requests()));
-        String currentVisibility = safeText(current == null ? null : current.getVisibility());
-        next.setVisibility(StringUtils.hasText(currentVisibility) ? currentVisibility : "Invitation only");
+        String nextVisibility = normalizeVisibility(dto.visibility());
+        if (!StringUtils.hasText(nextVisibility)) {
+            nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
+        }
+        next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -445,6 +486,7 @@ public class AssetsService {
         clone.setType(source.getType());
         clone.setTitle(source.getTitle());
         clone.setSubtitle(source.getSubtitle());
+        clone.setCategory(source.getCategory());
         clone.setCity(source.getCity());
         clone.setCapacityTotal(source.getCapacityTotal());
         clone.setQuantity(source.getQuantity());
@@ -579,6 +621,7 @@ public class AssetsService {
                 normalizeAssetType(asset.getType()),
                 safeText(asset.getTitle()),
                 safeText(asset.getSubtitle()),
+                safeText(asset.getCategory()),
                 safeText(asset.getCity()),
                 Math.max(1, normalizeCount(asset.getCapacityTotal())),
                 normalizeAssetQuantity(normalizeAssetType(asset.getType()), asset.getQuantity(), asset.getCapacityTotal()),
@@ -594,6 +637,9 @@ public class AssetsService {
                                 policy.required() != null ? policy.required() : Boolean.TRUE))
                         .toList(),
                 clonePricing(asset.getPricing()),
+                normalizeVisibility(asset.getVisibility()),
+                normalizeId(asset.getOwnerUserId()),
+                resolveOwnerName(asset.getOwnerUserId()),
                 toAssetRequestDtos(asset));
     }
 
@@ -656,6 +702,57 @@ public class AssetsService {
                 normalizeAssetRequestKind(request.requestKind()),
                 requestedAtIso,
                 booking);
+    }
+
+    private boolean shouldIncludeExploreAsset(Asset asset, String activeUserId) {
+        if (asset == null) {
+            return false;
+        }
+        String visibility = normalizeVisibility(asset.getVisibility());
+        if ("Invitation only".equals(visibility)) {
+            return false;
+        }
+        return !"Friends only".equals(visibility) || isFriendOfActiveUser(normalizeId(asset.getOwnerUserId()), activeUserId);
+    }
+
+    private String normalizeVisibility(String visibility) {
+        String normalized = safeText(visibility);
+        if ("Friends only".equals(normalized)) {
+            return "Friends only";
+        }
+        if ("Invitation only".equals(normalized)) {
+            return "Invitation only";
+        }
+        return "Public";
+    }
+
+    private String resolveOwnerName(String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        if (!StringUtils.hasText(normalizedOwnerUserId)) {
+            return null;
+        }
+        return usersRepository.findByUserId(normalizedOwnerUserId)
+                .map(Users::getName)
+                .map(this::safeText)
+                .orElse(null);
+    }
+
+    private boolean isFriendOfActiveUser(String userId, String activeUserId) {
+        if (!StringUtils.hasText(userId) || !StringUtils.hasText(activeUserId) || userId.equals(activeUserId)) {
+            return false;
+        }
+        String firstId = userId.compareTo(activeUserId) <= 0 ? userId : activeUserId;
+        String secondId = userId.compareTo(activeUserId) <= 0 ? activeUserId : userId;
+        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
+        return (seed % 100) < 32;
+    }
+
+    private int hashText(String value) {
+        int hash = 0;
+        for (int index = 0; index < value.length(); index += 1) {
+            hash = (hash * 31 + value.charAt(index)) % 104729;
+        }
+        return Math.abs(hash);
     }
 
     private boolean isAllowedRefreshHost(String host) {
