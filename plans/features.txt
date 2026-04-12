@@ -24,6 +24,9 @@ time rule - date range - not a simple date - so on car we can make seasonal pric
 
 for Supplies you need to show somehow how many items are available for the particular time, or there is no capacity
 maybe you need to colour the last borrowed item, or show how many remaining, maybe show a graph of statistics also - header grpah button
+
+asset infor card is remove capacity, put quantity for supplies, and you can borrow quantity 2 etc.
+the borrow requests remove from menu, quantity badge will have red counter badge opening and show the list
 -----------------------------------------------------------------------------------------------
 
 Feature Summary: Asset Explore & Integrated Monetization
