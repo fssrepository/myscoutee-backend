@@ -31,8 +31,9 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetPolicyRecord;
-import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
@@ -40,6 +41,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefresh
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
@@ -355,6 +357,7 @@ public class AssetsService {
         asset.setSubtitle(safeText(legacy.getString("subtitle")));
         asset.setCity(safeText(legacy.getString("city")));
         asset.setCapacityTotal(Math.max(1, normalizeCount(legacy.get("capacityTotal"))));
+        asset.setQuantity(normalizeAssetQuantity(type, legacy.get("quantity"), legacy.get("capacityTotal")));
         asset.setDetails(safeText(legacy.getString("details")));
         asset.setImageUrl(safeText(legacy.getString("imageUrl")));
         asset.setSourceLink(safeText(legacy.getString("sourceLink")));
@@ -390,7 +393,10 @@ public class AssetsService {
                     safeText(request.getString("initials")),
                     normalizeGender(request.getString("gender")),
                     normalizeRequestStatus(request.getString("status")),
-                    safeText(request.getString("note"))));
+                    safeText(request.getString("note")),
+                    normalizeAssetRequestKind(request.getString("requestKind")),
+                    safeNullableText(request.getString("requestedAtIso")),
+                    readLegacyRequestBooking(request.get("booking"))));
         }
         return next;
     }
@@ -413,6 +419,7 @@ public class AssetsService {
         next.setSubtitle(safeText(dto.subtitle()));
         next.setCity(safeText(dto.city()));
         next.setCapacityTotal(Math.max(1, normalizeCount(dto.capacityTotal())));
+        next.setQuantity(normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
         next.setDetails(safeText(dto.details()));
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(safeText(dto.sourceLink()));
@@ -440,6 +447,7 @@ public class AssetsService {
         clone.setSubtitle(source.getSubtitle());
         clone.setCity(source.getCity());
         clone.setCapacityTotal(source.getCapacityTotal());
+        clone.setQuantity(source.getQuantity());
         clone.setDetails(source.getDetails());
         clone.setImageUrl(source.getImageUrl());
         clone.setSourceLink(source.getSourceLink());
@@ -573,6 +581,7 @@ public class AssetsService {
                 safeText(asset.getSubtitle()),
                 safeText(asset.getCity()),
                 Math.max(1, normalizeCount(asset.getCapacityTotal())),
+                normalizeAssetQuantity(normalizeAssetType(asset.getType()), asset.getQuantity(), asset.getCapacityTotal()),
                 safeText(asset.getDetails()),
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()),
@@ -585,16 +594,7 @@ public class AssetsService {
                                 policy.required() != null ? policy.required() : Boolean.TRUE))
                         .toList(),
                 clonePricing(asset.getPricing()),
-                safeRequests(asset.getRequests()).stream()
-                        .map(request -> new AssetMemberRequestDto(
-                                normalizeId(request.id()),
-                                normalizeId(request.userId()),
-                                safeText(request.name()),
-                                safeText(request.initials()),
-                                normalizeGender(request.gender()),
-                                normalizeRequestStatus(request.status()),
-                                safeText(request.note())))
-                        .toList());
+                toAssetRequestDtos(asset));
     }
 
     private AssetRequestRecord toAssetRequest(ActivityMember member, AssetRequestRecord existing) {
@@ -613,7 +613,49 @@ public class AssetsService {
                 user == null ? initialsFromText(normalizeId(member.getUserId())) : safeText(user.getInitials()),
                 user == null ? "man" : normalizeGender(user.getGender()),
                 status,
-                note);
+                note,
+                existing != null ? normalizeAssetRequestKind(existing.requestKind()) : "borrow",
+                existing != null
+                        ? safeNullableText(existing.requestedAtIso())
+                        : safeNullableText(normalizeDateTime(member.getActionAtIso(), Instant.now().toString())),
+                existing != null ? cloneRequestBooking(existing.booking()) : null);
+    }
+
+    private List<AssetMemberRequestDto> toAssetRequestDtos(Asset asset) {
+        List<AssetMemberRequestDto> next = new ArrayList<>();
+        List<AssetRequestRecord> requests = safeRequests(asset.getRequests());
+        for (int index = 0; index < requests.size(); index += 1) {
+            AssetMemberRequestDto dto = toAssetRequestDto(asset, requests.get(index), index);
+            if (dto != null) {
+                next.add(dto);
+            }
+        }
+        return next;
+    }
+
+    private AssetMemberRequestDto toAssetRequestDto(Asset asset, AssetRequestRecord request, int index) {
+        if (request == null) {
+            return null;
+        }
+        AssetRequestBookingDto booking = toRequestBookingDto(request.booking());
+        if (booking == null) {
+            booking = fallbackSeededRequestBooking(asset, index);
+        }
+        String requestedAtIso = safeNullableText(request.requestedAtIso());
+        if (!StringUtils.hasText(requestedAtIso) && booking != null && StringUtils.hasText(booking.startAtIso())) {
+            requestedAtIso = fallbackSeededRequestedAtIso(booking.startAtIso(), index);
+        }
+        return new AssetMemberRequestDto(
+                normalizeId(request.id()),
+                normalizeId(request.userId()),
+                safeText(request.name()),
+                safeText(request.initials()),
+                normalizeGender(request.gender()),
+                normalizeRequestStatus(request.status()),
+                safeText(request.note()),
+                normalizeAssetRequestKind(request.requestKind()),
+                requestedAtIso,
+                booking);
     }
 
     private boolean isAllowedRefreshHost(String host) {
@@ -654,6 +696,17 @@ public class AssetsService {
 
     private List<AssetCardDto> safeAssets(List<AssetCardDto> assets) {
         return assets == null ? List.of() : assets;
+    }
+
+    private Integer normalizeAssetQuantity(String type, Object value, Object capacityFallback) {
+        int parsed = Math.max(0, normalizeCount(value));
+        if (parsed > 0) {
+            return parsed;
+        }
+        if ("Supplies".equals(type)) {
+            return Math.max(1, normalizeCount(capacityFallback));
+        }
+        return 1;
     }
 
     private PricingConfigDto clonePricing(PricingConfigDto pricing) {
@@ -705,13 +758,190 @@ public class AssetsService {
                     safeText(request.initials()),
                     normalizeGender(request.gender()),
                     normalizeRequestStatus(request.status()),
-                    safeText(request.note())));
+                    safeText(request.note()),
+                    normalizeAssetRequestKind(request.requestKind()),
+                    safeNullableText(request.requestedAtIso()),
+                    normalizeRequestBooking(request.booking())));
         }
         return next;
     }
 
     private List<AssetRequestRecord> safeRequests(List<AssetRequestRecord> requests) {
         return requests == null ? List.of() : requests;
+    }
+
+    private AssetRequestBookingDto toRequestBookingDto(AssetRequestBookingRecord booking) {
+        if (booking == null) {
+            return null;
+        }
+        return new AssetRequestBookingDto(
+                normalizeId(booking.eventId()),
+                safeNullableText(booking.eventTitle()),
+                normalizeId(booking.subEventId()),
+                safeNullableText(booking.subEventTitle()),
+                safeNullableText(booking.slotKey()),
+                safeNullableText(booking.slotLabel()),
+                safeNullableText(booking.timeframe()),
+                safeNullableText(booking.startAtIso()),
+                safeNullableText(booking.endAtIso()),
+                nullableCount(booking.quantity()),
+                booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
+                safeNullableText(booking.currency()),
+                normalizeStrings(booking.acceptedPolicyIds()));
+    }
+
+    private AssetRequestBookingRecord readLegacyRequestBooking(Object rawBooking) {
+        Document booking = toDocument(rawBooking);
+        if (booking.isEmpty()) {
+            return null;
+        }
+        return normalizeRequestBooking(new AssetRequestBookingDto(
+                normalizeId(booking.getString("eventId")),
+                safeNullableText(booking.getString("eventTitle")),
+                normalizeId(booking.getString("subEventId")),
+                safeNullableText(booking.getString("subEventTitle")),
+                safeNullableText(booking.getString("slotKey")),
+                safeNullableText(booking.getString("slotLabel")),
+                safeNullableText(booking.getString("timeframe")),
+                safeNullableText(booking.getString("startAtIso")),
+                safeNullableText(booking.getString("endAtIso")),
+                nullableCount(booking.get("quantity") instanceof Number number ? number : null),
+                safeNullableDouble(booking.get("totalAmount")),
+                safeNullableText(booking.getString("currency")),
+                normalizeStrings(booking.get("acceptedPolicyIds"))));
+    }
+
+    private AssetRequestBookingRecord normalizeRequestBooking(AssetRequestBookingDto booking) {
+        if (booking == null) {
+            return null;
+        }
+        AssetRequestBookingRecord normalized = new AssetRequestBookingRecord(
+                normalizeId(booking.eventId()),
+                safeNullableText(booking.eventTitle()),
+                normalizeId(booking.subEventId()),
+                safeNullableText(booking.subEventTitle()),
+                safeNullableText(booking.slotKey()),
+                safeNullableText(booking.slotLabel()),
+                safeNullableText(booking.timeframe()),
+                safeNullableText(booking.startAtIso()),
+                safeNullableText(booking.endAtIso()),
+                nullableCount(booking.quantity()),
+                booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
+                safeNullableText(booking.currency()),
+                normalizeStrings(booking.acceptedPolicyIds()));
+        return hasRequestBookingContent(normalized) ? normalized : null;
+    }
+
+    private AssetRequestBookingRecord cloneRequestBooking(AssetRequestBookingRecord booking) {
+        if (booking == null) {
+            return null;
+        }
+        return new AssetRequestBookingRecord(
+                normalizeId(booking.eventId()),
+                safeNullableText(booking.eventTitle()),
+                normalizeId(booking.subEventId()),
+                safeNullableText(booking.subEventTitle()),
+                safeNullableText(booking.slotKey()),
+                safeNullableText(booking.slotLabel()),
+                safeNullableText(booking.timeframe()),
+                safeNullableText(booking.startAtIso()),
+                safeNullableText(booking.endAtIso()),
+                nullableCount(booking.quantity()),
+                booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
+                safeNullableText(booking.currency()),
+                normalizeStrings(booking.acceptedPolicyIds()));
+    }
+
+    private AssetRequestBookingDto fallbackSeededRequestBooking(Asset asset, int index) {
+        if (asset == null) {
+            return null;
+        }
+        SeededAssetRequestSlot slot = seededAssetRequestSlot(safeText(asset.getTitle()), index);
+        if (slot == null) {
+            return null;
+        }
+        return new AssetRequestBookingDto(
+                slugifySeededRequestValue(slot.eventTitle()) + "-event",
+                slot.eventTitle(),
+                slugifySeededRequestValue(slot.subEventTitle()) + "-subevent",
+                slot.subEventTitle(),
+                slugifySeededRequestValue(asset.getTitle()) + ":" + (index + 1),
+                slot.subEventTitle(),
+                slot.timeframe(),
+                slot.startAtIso(),
+                slot.endAtIso(),
+                1,
+                null,
+                null,
+                List.of());
+    }
+
+    private SeededAssetRequestSlot seededAssetRequestSlot(String assetTitle, int index) {
+        int slotIndex = Math.max(0, index);
+        return switch (safeText(assetTitle)) {
+            case "Camping Gear Kit" -> slotIndex % 2 == 0
+                    ? new SeededAssetRequestSlot("Forest Basecamp Weekend", "Camp Setup", "Apr 18 5:00 PM - Apr 20 12:00 PM", "2026-04-18T15:00:00.000Z", "2026-04-20T10:00:00.000Z")
+                    : new SeededAssetRequestSlot("Forest Basecamp Weekend", "Night Watch", "Apr 19 8:00 PM - Apr 20 10:00 AM", "2026-04-19T18:00:00.000Z", "2026-04-20T08:00:00.000Z");
+            case "Game Night Box" -> slotIndex % 2 == 0
+                    ? new SeededAssetRequestSlot("Indoor Strategy Social", "Board Game Lounge", "May 2 7:30 PM - 12:00 AM", "2026-05-02T17:30:00.000Z", "2026-05-02T22:00:00.000Z")
+                    : new SeededAssetRequestSlot("Indoor Strategy Social", "Late Table Finals", "May 2 10:00 PM - May 3 2:30 AM", "2026-05-02T20:00:00.000Z", "2026-05-03T00:30:00.000Z");
+            case "South Congress Loft" -> slotIndex % 2 == 0
+                    ? new SeededAssetRequestSlot("Austin Host Meetup", "Weekend Stay", "Jun 12 4:00 PM - Jun 14 1:00 PM", "2026-06-12T14:00:00.000Z", "2026-06-14T11:00:00.000Z")
+                    : new SeededAssetRequestSlot("Austin Host Meetup", "Overflow Rooms", "Jun 13 7:00 PM - Jun 14 12:00 PM", "2026-06-13T17:00:00.000Z", "2026-06-14T10:00:00.000Z");
+            case "Eastside Guest Room" -> slotIndex % 2 == 0
+                    ? new SeededAssetRequestSlot("Sunrise Photo Walk", "Overnight Stay", "Jul 3 8:00 PM - Jul 4 11:00 AM", "2026-07-03T18:00:00.000Z", "2026-07-04T09:00:00.000Z")
+                    : new SeededAssetRequestSlot("Sunrise Photo Walk", "Second Night", "Jul 4 8:00 PM - Jul 5 11:00 AM", "2026-07-04T18:00:00.000Z", "2026-07-05T09:00:00.000Z");
+            case "City-to-Lake SUV" -> switch (slotIndex % 3) {
+                case 0 -> new SeededAssetRequestSlot("Lake Cleanup Trip", "Departure Ride", "May 9 9:30 AM - 12:30 PM", "2026-05-09T07:30:00.000Z", "2026-05-09T10:30:00.000Z");
+                case 1 -> new SeededAssetRequestSlot("Lake Cleanup Trip", "Return Ride", "May 9 6:00 PM - 9:00 PM", "2026-05-09T16:00:00.000Z", "2026-05-09T19:00:00.000Z");
+                default -> new SeededAssetRequestSlot("Trail Weekend", "Gear Shuttle", "May 16 11:00 AM - 2:30 PM", "2026-05-16T09:00:00.000Z", "2026-05-16T12:30:00.000Z");
+            };
+            case "Airport Shuttle Hatchback" -> switch (slotIndex % 3) {
+                case 0 -> new SeededAssetRequestSlot("Late Arrival Crew", "Airport Pickup", "Aug 21 11:30 PM - Aug 22 1:45 AM", "2026-08-21T21:30:00.000Z", "2026-08-21T23:45:00.000Z");
+                case 1 -> new SeededAssetRequestSlot("Late Arrival Crew", "Hotel Dropoff", "Aug 22 2:00 AM - 3:15 AM", "2026-08-22T00:00:00.000Z", "2026-08-22T01:15:00.000Z");
+                default -> new SeededAssetRequestSlot("Night Market Run", "Pickup Loop", "Aug 28 8:30 PM - 11:00 PM", "2026-08-28T18:30:00.000Z", "2026-08-28T21:00:00.000Z");
+            };
+            default -> null;
+        };
+    }
+
+    private String fallbackSeededRequestedAtIso(String startAtIso, int index) {
+        try {
+            Instant start = Instant.parse(startAtIso);
+            return start.minusSeconds((long) (index + 2) * 24 * 60 * 60).toString();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private String slugifySeededRequestValue(String value) {
+        String normalized = safeText(value).toLowerCase().replaceAll("[^a-z0-9]+", "-");
+        return normalized.replaceAll("(^-|-$)", "");
+    }
+
+    private boolean hasRequestBookingContent(AssetRequestBookingRecord booking) {
+        return booking != null
+                && (StringUtils.hasText(booking.eventId())
+                || StringUtils.hasText(booking.eventTitle())
+                || StringUtils.hasText(booking.subEventId())
+                || StringUtils.hasText(booking.subEventTitle())
+                || StringUtils.hasText(booking.slotKey())
+                || StringUtils.hasText(booking.slotLabel())
+                || StringUtils.hasText(booking.timeframe())
+                || StringUtils.hasText(booking.startAtIso())
+                || StringUtils.hasText(booking.endAtIso())
+                || booking.quantity() != null
+                || booking.totalAmount() != null
+                || StringUtils.hasText(booking.currency())
+                || !normalizeStrings(booking.acceptedPolicyIds()).isEmpty());
+    }
+
+    private record SeededAssetRequestSlot(
+            String eventTitle,
+            String subEventTitle,
+            String timeframe,
+            String startAtIso,
+            String endAtIso) {
     }
 
     private List<AssetPolicyRecord> safePolicies(List<AssetPolicyRecord> policies) {
@@ -775,6 +1005,14 @@ public class AssetsService {
         return value == null ? null : Math.max(0, (int) Math.floor(value.doubleValue()));
     }
 
+    private Double safeNullableDouble(Object value) {
+        if (!(value instanceof Number number)) {
+            return null;
+        }
+        double normalized = number.doubleValue();
+        return Double.isFinite(normalized) ? Math.max(0d, normalized) : null;
+    }
+
     private String normalizeExternalUrl(String value) {
         String trimmed = safeText(value);
         if (!StringUtils.hasText(trimmed)) {
@@ -812,6 +1050,10 @@ public class AssetsService {
     private String normalizeAssetType(String type) {
         String normalizedType = safeText(type);
         return ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
+    }
+
+    private String normalizeAssetRequestKind(String kind) {
+        return "manual".equals(safeText(kind)) ? "manual" : "borrow";
     }
 
     private String normalizeRequestStatus(String status) {

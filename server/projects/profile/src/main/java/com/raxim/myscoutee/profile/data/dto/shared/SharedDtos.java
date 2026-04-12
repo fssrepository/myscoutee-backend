@@ -40,7 +40,8 @@ public final class SharedDtos {
             String id,
             String trigger,
             Integer offsetValue,
-            String specificDate,
+            String specificDateStart,
+            String specificDateEnd,
             PricingActionDto action,
             String appliesTo,
             List<String> slotIds) {
@@ -209,6 +210,22 @@ public final class SharedDtos {
             Boolean required) {
     }
 
+    public record AssetRequestBookingDto(
+            String eventId,
+            String eventTitle,
+            String subEventId,
+            String subEventTitle,
+            String slotKey,
+            String slotLabel,
+            String timeframe,
+            String startAtIso,
+            String endAtIso,
+            Integer quantity,
+            Double totalAmount,
+            String currency,
+            List<String> acceptedPolicyIds) {
+    }
+
     public record AssetMemberRequestDto(
             String id,
             String userId,
@@ -216,7 +233,10 @@ public final class SharedDtos {
             String initials,
             String gender,
             String status,
-            String note) {
+            String note,
+            String requestKind,
+            String requestedAtIso,
+            AssetRequestBookingDto booking) {
     }
 
     public record AssetCardDto(
@@ -226,6 +246,7 @@ public final class SharedDtos {
             String subtitle,
             String city,
             Integer capacityTotal,
+            Integer quantity,
             String details,
             String imageUrl,
             String sourceLink,

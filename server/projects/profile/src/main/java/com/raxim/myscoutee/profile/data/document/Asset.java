@@ -32,6 +32,7 @@ public class Asset {
     private String subtitle;
     private String city;
     private Integer capacityTotal;
+    private Integer quantity;
     private String details;
     private String imageUrl;
     private String sourceLink;
@@ -115,6 +116,14 @@ public class Asset {
 
     public void setCapacityTotal(Integer capacityTotal) {
         this.capacityTotal = capacityTotal;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public String getDetails() {
@@ -220,7 +229,26 @@ public class Asset {
             String initials,
             String gender,
             String status,
-            String note) {
+            String note,
+            String requestKind,
+            String requestedAtIso,
+            AssetRequestBookingRecord booking) {
+    }
+
+    public record AssetRequestBookingRecord(
+            String eventId,
+            String eventTitle,
+            String subEventId,
+            String subEventTitle,
+            String slotKey,
+            String slotLabel,
+            String timeframe,
+            String startAtIso,
+            String endAtIso,
+            Integer quantity,
+            Double totalAmount,
+            String currency,
+            List<String> acceptedPolicyIds) {
     }
 
     public record AssetPolicyRecord(
