@@ -17,7 +17,3 @@ git config --global user.password {personal access token - Profile -> Settings -
 gradle build
 docker compose build --no-cache
 docker compose up
-
-1) i18n - introduce internalisation
-2) Stripe/Barion integration stub (backend) - configure payment enabled
-3) server side - http tests
