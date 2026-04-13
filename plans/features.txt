@@ -17,3 +17,6 @@ git config --global user.password {personal access token - Profile -> Settings -
 gradle build
 docker compose build --no-cache
 docker compose up
+
+1) toggle on pricing - scrolling is flickering (asset + the price editor itself)
+2) http test
