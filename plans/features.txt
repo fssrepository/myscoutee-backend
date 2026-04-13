@@ -1,8 +1,8 @@
 cloudflare - caching images (so won't need to use google cloud bandwith)
-https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
 
-Commands
---------
+sudo ufw allow 'Nginx Full' (firewall check for 80/443)
+ssh -L 5005:localhost:5005 your-user@myscoutee.com (debug port)
+
 
 ng serve --ssl
 ng serve --host 0.0.0.0 --port 4200

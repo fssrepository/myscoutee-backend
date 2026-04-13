@@ -31,12 +31,14 @@ services:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      LETSENCRYPT_ENABLED: ${LETSENCRYPT_ENABLED:-false}
+      DOMAIN: ${DOMAIN:-myscoutee.com}
     #  WAIT_FOR: profilemanagement:8080
     ports:
       - 80:80
       - 443:443
-      - 27017-27019:27017-27019
-      - 5005:5005
+      - 127.0.0.1:27017-27019:27017-27019
+      - 127.0.0.1:5005:5005
     volumes:
       - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
       - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
