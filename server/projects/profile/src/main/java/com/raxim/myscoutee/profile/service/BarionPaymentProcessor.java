@@ -64,6 +64,7 @@ public class BarionPaymentProcessor implements PaymentProcessor {
         );
 
         try {
+            @SuppressWarnings("unchecked")
             Map<String, Object> response = restTemplate.postForObject(barionUrl, barionRequest, Map.class);
             if (response != null && response.containsKey("GatewayUrl")) {
                 return new EventCheckoutSessionDto(

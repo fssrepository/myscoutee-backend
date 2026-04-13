@@ -1838,59 +1838,6 @@ public class ActivitiesEventsService {
         };
     }
 
-    private void normalizeEventDateRange(ActivityEvent document) {
-        if (document == null) {
-            return;
-        }
-        LocalDateTime start = toLocalDateTime(document.getStartAtIso());
-        LocalDateTime end = toLocalDateTime(document.getEndAtIso());
-        if (start == null || end == null) {
-            return;
-        }
-
-        LocalDateTime boundaryEnd = eventFrequencyBoundaryEnd(start, document.getFrequency());
-        if (boundaryEnd != null && end.isAfter(boundaryEnd)) {
-            end = boundaryEnd;
-        }
-        if (boundaryEnd != null && !start.isBefore(boundaryEnd)) {
-            start = boundaryEnd.minusMinutes(1L);
-        }
-        if (!end.isAfter(start)) {
-            LocalDateTime nextEnd = start.plusHours(1L);
-            end = boundaryEnd != null && nextEnd.isAfter(boundaryEnd) ? boundaryEnd : nextEnd;
-            if (!end.isAfter(start)) {
-                start = end.minusMinutes(1L);
-            }
-        }
-
-        document.setStartAtIso(start.toInstant(ZoneOffset.UTC).toString());
-        document.setEndAtIso(end.toInstant(ZoneOffset.UTC).toString());
-    }
-
-    private LocalDateTime eventFrequencyBoundaryEnd(LocalDateTime start, String frequency) {
-        if (start == null) {
-            return null;
-        }
-        String normalizedFrequency = normalizeEventFrequency(frequency);
-        LocalDate boundaryDate = switch (normalizedFrequency) {
-            case "Daily" -> start.toLocalDate();
-            case "Weekly" -> endOfWeekSunday(start.toLocalDate());
-            case "Bi-weekly" -> endOfWeekSunday(start.toLocalDate()).plusWeeks(1L);
-            case "Monthly" -> start.toLocalDate().withDayOfMonth(start.toLocalDate().lengthOfMonth());
-            case "Yearly" -> start.toLocalDate().withDayOfYear(start.toLocalDate().lengthOfYear());
-            default -> null;
-        };
-        return boundaryDate == null ? null : boundaryDate.atTime(23, 59);
-    }
-
-    private LocalDate endOfWeekSunday(LocalDate date) {
-        if (date == null) {
-            return null;
-        }
-        long daysToSunday = 7L - date.getDayOfWeek().getValue();
-        return date.plusDays(daysToSunday);
-    }
-
     private int safeSortableInt(long value) {
         if (value > Integer.MAX_VALUE) {
             return Integer.MAX_VALUE;
