@@ -3,9 +3,7 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 Bugs
 ----
 1) http - backend test
-2) on mobile something is not working (assets opening from chat - 
-loading is red + assets explore date range picker is bleeding out)
-3) chat - maybe it shouldn't smooth scroll, as it confuses the user
+2) event-resource-popup after progressbar 1500ms, there is a 1 sec stuck
 
 Commands
 --------
