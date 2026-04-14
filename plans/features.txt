@@ -4,6 +4,7 @@ Bugs
 ----
 1) http - backend test
 2) event-resource-popup after progressbar 1500ms, there is a 1 sec stuck (indexeddb insert shouldn't happen)
+probably even seeding logic is there and not in the bootstrap
 
 Commands
 --------
