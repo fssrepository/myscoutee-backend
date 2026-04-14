@@ -3,7 +3,7 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 Bugs
 ----
 1) http - backend test
-2) event-resource-popup after progressbar 1500ms, there is a 1 sec stuck
+2) event-resource-popup after progressbar 1500ms, there is a 1 sec stuck (indexeddb insert shouldn't happen)
 
 Commands
 --------
