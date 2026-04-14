@@ -23,3 +23,7 @@ git config --global user.password {personal access token - Profile -> Settings -
 gradle build
 docker compose build --no-cache
 docker compose up
+
+adb kill-server
+adb start-server
+adb devices
