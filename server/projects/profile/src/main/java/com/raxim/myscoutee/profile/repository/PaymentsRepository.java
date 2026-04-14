@@ -1,0 +1,9 @@
+package com.raxim.myscoutee.profile.repository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import com.raxim.myscoutee.profile.data.document.Payment;
+import java.util.Optional;
+
+public interface PaymentsRepository extends MongoRepository<Payment, String> {
+    Optional<Payment> findByGatewaySessionId(String gatewaySessionId);
+}

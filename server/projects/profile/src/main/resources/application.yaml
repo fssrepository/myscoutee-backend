@@ -3,3 +3,10 @@ spring:
     active: ${SPRING_DEV:dev}
   main:
     allow-bean-definition-overriding: true
+
+payment:
+  enablePay: ${PAYMENT_ENABLE_PAY:false}
+  stripe:
+    apiKey: ${PAYMENT_STRIPE_API_KEY:}
+  barion:
+    apiKey: ${PAYMENT_BARION_API_KEY:}

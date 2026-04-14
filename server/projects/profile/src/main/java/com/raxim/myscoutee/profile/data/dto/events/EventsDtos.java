@@ -39,7 +39,11 @@ public final class EventsDtos {
             String userId,
             String type,
             String sourceId,
-            String slotSourceId) {
+            String slotSourceId,
+            List<String> optionalSubEventIds,
+            List<EventCheckoutAssetSelectionDto> assetSelections,
+            List<String> acceptedPolicyIds,
+            String paymentSessionId) {
     }
 
     public record EventFeedbackAnswerSubmitDto(
@@ -174,6 +178,7 @@ public final class EventsDtos {
             Integer capacityTotal,
             Integer capacityMin,
             Integer capacityMax,
+            Integer capacityTotalActual,
             Boolean autoInviter,
             String frequency,
             Boolean ticketing,
@@ -200,5 +205,41 @@ public final class EventsDtos {
             List<String> topics,
             List<SubEventFormItemDto> subEvents,
             String subEventsDisplayMode) {
+    }
+
+    public record EventCheckoutRequestDto(
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            List<String> optionalSubEventIds,
+            List<EventCheckoutAssetSelectionDto> assetSelections,
+            List<String> acceptedPolicyIds,
+            List<EventCheckoutLineItemDto> lineItems,
+            Double totalAmount,
+            String currency) {
+    }
+
+    public record EventCheckoutAssetSelectionDto(
+            String subEventId,
+            String resourceType) {
+    }
+
+    public record EventCheckoutLineItemDto(
+            String id,
+            String kind,
+            String label,
+            String detail,
+            Double amount,
+            String currency) {
+    }
+
+    public record EventCheckoutSessionDto(
+            String id,
+            String provider,
+            String mode,
+            String status,
+            Double amount,
+            String currency,
+            String paymentUrl) {
     }
 }
