@@ -4,8 +4,7 @@ Bugs
 ----
 1) http - backend test
 
-a) event/event feedback screens is making too many queries
-b) fix the contacts
+a) fix the contacts/report user/send feedback
 
 Commands
 --------
