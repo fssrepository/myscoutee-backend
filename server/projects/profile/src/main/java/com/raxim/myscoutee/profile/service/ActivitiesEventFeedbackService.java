@@ -128,11 +128,7 @@ public class ActivitiesEventFeedbackService {
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(normalizedEventId)) {
             return null;
         }
-        boolean ownsEventRecord = activityEventsRepository.findByOwnerUserId(userId).stream()
-                .filter(Objects::nonNull)
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .anyMatch(normalizedEventId::equals);
+        boolean ownsEventRecord = activityEventsRepository.existsByOwnerUserIdAndSourceId(userId, normalizedEventId);
         return ownsEventRecord ? userId : null;
     }
 
