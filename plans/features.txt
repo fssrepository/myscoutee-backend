@@ -5,6 +5,7 @@ Bugs
 1) http - backend test
 
 a) fix the contacts/report user/send feedback
+b) connected/unconnected --- too many queries
 
 Commands
 --------
