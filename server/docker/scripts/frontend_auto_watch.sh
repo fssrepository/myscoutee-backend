@@ -6,6 +6,9 @@ SYNC_SCRIPT="${SYNC_SCRIPT:-/scripts/sync_frontend_assets.sh}"
 BUILD_MODE="${FRONTEND_BUILD_MODE:-dev}"
 BUILD_OUTPUT_DIR="${FRONTEND_SOURCE_DIR:-${FRONTEND_ROOT}/dev}"
 BUILD_LOG_FILE="${BUILD_LOG_FILE:-}"
+FRONTEND_ACTIVITIES_DATA_SOURCE="${FRONTEND_ACTIVITIES_DATA_SOURCE:-}"
+ENV_OVERRIDE_TARGET_FILE=""
+ENV_OVERRIDE_BACKUP_FILE=""
 
 if [[ ! -d "${FRONTEND_ROOT}" ]]; then
   echo "Error: frontend root not found: ${FRONTEND_ROOT}" >&2
@@ -18,6 +21,51 @@ if [[ ! -d node_modules ]]; then
   echo "Error: frontend/node_modules is missing. Run npm install in the frontend workspace first." >&2
   exit 1
 fi
+
+resolve_environment_file() {
+  case "${BUILD_MODE}" in
+    dev)
+      printf '%s\n' "${FRONTEND_ROOT}/src/environments/environment.development.ts"
+      ;;
+    prod)
+      printf '%s\n' "${FRONTEND_ROOT}/src/environments/environment.production.ts"
+      ;;
+    *)
+      printf '%s\n' "${FRONTEND_ROOT}/src/environments/environment.ts"
+      ;;
+  esac
+}
+
+apply_frontend_environment_overrides() {
+  if [[ -z "${FRONTEND_ACTIVITIES_DATA_SOURCE}" ]]; then
+    return 0
+  fi
+
+  if [[ "${FRONTEND_ACTIVITIES_DATA_SOURCE}" != "demo" && "${FRONTEND_ACTIVITIES_DATA_SOURCE}" != "http" ]]; then
+    echo "Error: FRONTEND_ACTIVITIES_DATA_SOURCE must be 'demo' or 'http'." >&2
+    exit 1
+  fi
+
+  ENV_OVERRIDE_TARGET_FILE="$(resolve_environment_file)"
+  if [[ ! -f "${ENV_OVERRIDE_TARGET_FILE}" ]]; then
+    echo "Error: environment file not found: ${ENV_OVERRIDE_TARGET_FILE}" >&2
+    exit 1
+  fi
+
+  ENV_OVERRIDE_BACKUP_FILE="$(mktemp)"
+  cp "${ENV_OVERRIDE_TARGET_FILE}" "${ENV_OVERRIDE_BACKUP_FILE}"
+
+  perl -0pi -e "s/activitiesDataSource:\\s*'(?:demo|http)'\\s+as\\s+'demo'\\s*\\|\\s*'http'/activitiesDataSource: '${FRONTEND_ACTIVITIES_DATA_SOURCE}' as 'demo' | 'http'/" "${ENV_OVERRIDE_TARGET_FILE}"
+
+  echo "Applied frontend override: activitiesDataSource=${FRONTEND_ACTIVITIES_DATA_SOURCE} (${ENV_OVERRIDE_TARGET_FILE})"
+}
+
+restore_frontend_environment_overrides() {
+  if [[ -n "${ENV_OVERRIDE_BACKUP_FILE}" && -f "${ENV_OVERRIDE_BACKUP_FILE}" && -n "${ENV_OVERRIDE_TARGET_FILE}" ]]; then
+    cp "${ENV_OVERRIDE_BACKUP_FILE}" "${ENV_OVERRIDE_TARGET_FILE}"
+    rm -f "${ENV_OVERRIDE_BACKUP_FILE}" || true
+  fi
+}
 
 wait_for_host_port() {
   local host_port="$1"
@@ -76,6 +124,7 @@ cleanup() {
   if [[ -n "${BUILD_LOG_FILE:-}" && -f "${BUILD_LOG_FILE}" ]]; then
     rm -f "${BUILD_LOG_FILE}" || true
   fi
+  restore_frontend_environment_overrides
 }
 trap cleanup EXIT INT TERM
 
@@ -84,6 +133,8 @@ if [[ -z "${BUILD_LOG_FILE}" ]]; then
 else
   : > "${BUILD_LOG_FILE}"
 fi
+
+apply_frontend_environment_overrides
 
 echo "Starting Angular watch build in ${FRONTEND_ROOT}..."
 NG_BUILD_MAX_WORKERS="${NG_BUILD_MAX_WORKERS:-12}" npm run watch > >(tee -a "${BUILD_LOG_FILE}") 2>&1 &

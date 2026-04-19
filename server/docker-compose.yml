@@ -166,6 +166,7 @@ services:
     environment:
       FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
+      FRONTEND_ACTIVITIES_DATA_SOURCE: http
       NGINX_HTML_DIR: /workspace/nginx-html
       NG_BUILD_MAX_WORKERS: "12"
       WAIT_FOR_HOSTS: "profilemanagement:8080"
