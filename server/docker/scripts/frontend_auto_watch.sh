@@ -123,7 +123,7 @@ apply_route_mode_override() {
   fi
 
   local route_mode_file
-  local target_line
+  local target_fragment
 
   route_mode_file="$(resolve_route_mode_file)"
   if [[ ! -f "${route_mode_file}" ]]; then
@@ -131,30 +131,35 @@ apply_route_mode_override() {
     exit 1
   fi
 
-  target_line="    return environment.activitiesDataSource !== 'http' && !routeConfig.http && (this.sessionService.currentSession()?.kind === 'demo' || !environment.loginEnabled);"
+  target_fragment="environment.activitiesDataSource !== 'http'"
   ROUTE_MODE_FILE="${route_mode_file}" node <<'NODE'
 const fs = require('fs');
 
 const routeModeFile = process.env.ROUTE_MODE_FILE;
-const originalLine = "    return !routeConfig.http && (this.sessionService.currentSession()?.kind === 'demo' || !environment.loginEnabled);";
-const targetLine = "    return environment.activitiesDataSource !== 'http' && !routeConfig.http && (this.sessionService.currentSession()?.kind === 'demo' || !environment.loginEnabled);";
+const targetFragment = "environment.activitiesDataSource !== 'http'";
+const originalPattern = /return\s+!routeConfig\.http\s+&&\s+\(this\.sessionService\.currentSession\(\)\?\.kind === 'demo' \|\| !environment\.loginEnabled\);/;
+const replacement = [
+  "return environment.activitiesDataSource !== 'http'",
+  "      && !routeConfig.http",
+  "      && (this.sessionService.currentSession()?.kind === 'demo' || !environment.loginEnabled);"
+].join('\n');
 
 if (!routeModeFile) {
   process.exit(2);
 }
 
 const source = fs.readFileSync(routeModeFile, 'utf8');
-if (source.includes(targetLine)) {
+if (source.includes(targetFragment)) {
   process.exit(0);
 }
-if (!source.includes(originalLine)) {
+if (!originalPattern.test(source)) {
   process.exit(3);
 }
 
-fs.writeFileSync(routeModeFile, source.replace(originalLine, targetLine));
+fs.writeFileSync(routeModeFile, source.replace(originalPattern, replacement));
 NODE
 
-  if ! grep -Fq "${target_line}" "${route_mode_file}"; then
+  if ! grep -Fq "${target_fragment}" "${route_mode_file}"; then
     echo "Error: unable to force backend route mode in ${route_mode_file}." >&2
     exit 1
   fi

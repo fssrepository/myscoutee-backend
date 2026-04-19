@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -40,6 +41,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserGameFilterPreferen
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserImpressionsDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserImpressionsSectionDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserPersonalityTraitDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
@@ -542,6 +544,41 @@ public class HomeUserProfileService {
                 .toList();
     }
 
+    public List<DemoUserListItemDto> queryDemoUserListItems() {
+        return usersRepository.findAll().stream()
+                .filter(this::isUsableUserDocument)
+                .sorted(userComparator())
+                .map(this::toDemoUserListItemDto)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public List<UserDto> queryUsersByIds(Collection<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<String> normalizedUserIds = userIds.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (normalizedUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        Map<String, Users> usersById = usersRepository.findByUserIdIn(normalizedUserIds).stream()
+                .filter(this::isUsableUserDocument)
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+
+        return normalizedUserIds.stream()
+                .map(usersById::get)
+                .filter(Objects::nonNull)
+                .map(this::toUserDto)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
     public UserDto toUserDto(Users user) {
         if (user == null) {
             return null;
@@ -571,6 +608,18 @@ public class HomeUserProfileService {
                 resolveMergedUserImpressions(user),
                 resolveProfileStatus(user),
                 toUserActivitiesDto(user.getActivities()));
+    }
+
+    private DemoUserListItemDto toDemoUserListItemDto(Users user) {
+        if (user == null) {
+            return null;
+        }
+        return new DemoUserListItemDto(
+                normalizeId(user.getId()),
+                nullToEmpty(user.getName()),
+                nullToEmpty(user.getCity()),
+                nullToEmpty(user.getInitials()),
+                normalizeUserListGender(user.getGender()));
     }
 
     public Users resolveCurrentUser(String requestedUserId) {
@@ -634,6 +683,10 @@ public class HomeUserProfileService {
                 || user.getAge() != null
                 || user.getLocationCoordinates() != null
                 || !normalizeStrings(user.getImages()).isEmpty();
+    }
+
+    private String normalizeUserListGender(String gender) {
+        return "man".equalsIgnoreCase(safeText(gender)) ? "man" : "woman";
     }
 
     private UserGameFilterPreferencesDto queryStoredFilterPreferences(String userId) {

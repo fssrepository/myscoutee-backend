@@ -6,9 +6,11 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.ActivityRatePageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.RateMenuItemDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRateRecordDto;
@@ -84,7 +87,7 @@ public class UserRatesService {
         String mode = normalizeMode(modeValue);
         String direction = normalizeDisplayDirection(directionValue);
         if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(mode) || !StringUtils.hasText(direction)) {
-            return new ActivityRatePageResponseDto(List.of(), 0, null);
+            return new ActivityRatePageResponseDto(List.of(), 0, null, List.of());
         }
 
         String sort = normalizeQuerySort(sortValue);
@@ -93,7 +96,7 @@ public class UserRatesService {
         long rangeStartMs = parseIsoMillis(rangeStartIso, 0L);
         long rangeEndMs = parseIsoMillis(rangeEndIso, Long.MAX_VALUE);
         if (rangeStartMs > rangeEndMs) {
-            return new ActivityRatePageResponseDto(List.of(), 0, null);
+            return new ActivityRatePageResponseDto(List.of(), 0, null, List.of());
         }
 
         List<ActivityRateProjection> projections = dedupeActivityRateProjections(userRatesRepository
@@ -117,8 +120,9 @@ public class UserRatesService {
         String nextCursor = endIndex < items.size() && !pageItems.isEmpty()
                 ? serializeCursor(pageItems.get(pageItems.size() - 1))
                 : null;
+        List<UserDto> users = homeUserProfileService.queryUsersByIds(resolveDisplayUserIds(pageItems));
 
-        return new ActivityRatePageResponseDto(pageItems, items.size(), nextCursor);
+        return new ActivityRatePageResponseDto(pageItems, items.size(), nextCursor, users);
     }
 
     public UserRatesSyncResponseDto sync(UserRatesSyncRequestDto request) {
@@ -154,6 +158,26 @@ public class UserRatesService {
                 continue;
             }
             target.put(record.getId(), record);
+        }
+    }
+
+    private Set<String> resolveDisplayUserIds(List<RateMenuItemDto> items) {
+        Set<String> userIds = new LinkedHashSet<>();
+        for (RateMenuItemDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            addUserId(userIds, item.userId());
+            addUserId(userIds, item.secondaryUserId());
+            addUserId(userIds, item.bridgeUserId());
+        }
+        return userIds;
+    }
+
+    private void addUserId(Set<String> target, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (StringUtils.hasText(normalizedUserId)) {
+            target.add(normalizedUserId);
         }
     }
 

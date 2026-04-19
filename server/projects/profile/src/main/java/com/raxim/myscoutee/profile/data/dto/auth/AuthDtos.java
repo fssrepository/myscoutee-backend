@@ -160,6 +160,14 @@ public final class AuthDtos {
             boolean locationRequired) {
     }
 
+    public record DemoUserListItemDto(
+            String id,
+            String name,
+            String city,
+            String initials,
+            String gender) {
+    }
+
     public record UserRealtimeLongPollResponseDto(
             String userId,
             UserRealtimeCountersDto counters,
