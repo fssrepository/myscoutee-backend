@@ -16,10 +16,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
@@ -48,10 +51,13 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class ActivitiesEventsService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
+    private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
+    private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
 
     private final ActivityEventsRepository activityEventsRepository;
     private final UsersRepository usersRepository;
@@ -990,9 +996,18 @@ public class ActivitiesEventsService {
                 .append("spherical", true)
                 .append("key", "locationGeo"));
 
-        List<Document> rawDocuments = mongoTemplate.getCollection(mongoTemplate.getCollectionName(ActivityEvent.class))
-                .aggregate(List.of(geoNearStage))
-                .into(new ArrayList<>());
+        List<Document> rawDocuments;
+        try {
+            rawDocuments = mongoTemplate.getCollection(mongoTemplate.getCollectionName(ActivityEvent.class))
+                    .aggregate(List.of(geoNearStage))
+                    .into(new ArrayList<>());
+        } catch (RuntimeException exception) {
+            if (isMissingGeoNearIndex(exception)) {
+                logMissingEventGeoIndexWarning();
+                return List.of();
+            }
+            throw exception;
+        }
 
         List<ActivityEvent> ordered = new ArrayList<>();
         for (Document rawDocument : rawDocuments) {
@@ -1002,6 +1017,25 @@ public class ActivitiesEventsService {
             }
         }
         return ordered;
+    }
+
+    private boolean isMissingGeoNearIndex(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof com.mongodb.MongoCommandException commandException
+                    && commandException.getErrorCode() == MONGO_NO_QUERY_EXECUTION_PLANS_CODE
+                    && safeText(commandException.getErrorMessage()).contains("$geoNear")) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private void logMissingEventGeoIndexWarning() {
+        if (MISSING_EVENT_GEO_INDEX_WARNING_LOGGED.compareAndSet(false, true)) {
+            LOGGER.warn("Missing 2dsphere index for events.locationGeo. Falling back to non-geo event ordering.");
+        }
     }
 
     private boolean hasTrackedUserParticipation(ActivityEvent record, String userId) {
