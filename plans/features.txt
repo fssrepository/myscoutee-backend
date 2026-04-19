@@ -4,6 +4,9 @@ Bugs
 ----
 1) http - backend test
 
+a) event/event feedback screens is making too many queries
+b) fix the contacts
+
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)
