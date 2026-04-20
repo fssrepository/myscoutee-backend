@@ -8,14 +8,21 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonMultiPolygon;
@@ -23,6 +30,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.geo.GeoJsonPolygon;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -44,6 +52,9 @@ public class CountryPartitionService {
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search";
     private static final String NOMINATIM_USER_AGENT = "myscoutee-backend-country-partitions/1.0";
     private static final int DEFAULT_COUNTRY_SPECIFICITY = 100;
+    private static final String COUNTRY_PARTITION_KEY_INDEX = "country_partition_key";
+    private static final String COUNTRY_PARTITION_CODE_INDEX = "country_partition_code";
+    private static final String COUNTRY_PARTITION_GEOMETRY_INDEX = "country_partition_geometry";
     private static final String HUNGARY_COUNTRY_NAME = "Hungary";
     private static final String HUNGARY_COUNTRY_CODE = "HU";
     private static final String HUNGARY_PARTITION_KEY = "country:hu";
@@ -66,12 +77,14 @@ public class CountryPartitionService {
         this.mongoTemplate.indexOps(CountryPartition.class)
                 .createIndex(new GeospatialIndex("geometry")
                         .typed(GeoSpatialIndexType.GEO_2DSPHERE)
-                        .named("country_partition_geometry"));
+                        .named(COUNTRY_PARTITION_GEOMETRY_INDEX));
     }
 
     @PostConstruct
     public void bootstrapDefaultCountryPartitions() {
         try {
+            normalizeCountryPartitionsCollection();
+            ensureCountryPartitionIndexes();
             ensureCountryImported(HUNGARY_COUNTRY_NAME, HUNGARY_COUNTRY_CODE, HUNGARY_PARTITION_KEY);
         } catch (RuntimeException exception) {
             LOGGER.warn("Unable to bootstrap default country partition for {}.", HUNGARY_COUNTRY_NAME, exception);
@@ -93,7 +106,7 @@ public class CountryPartitionService {
             throw new IllegalArgumentException("Country name is required for OpenStreetMap import.");
         }
 
-        CountryPartition existing = countryPartitionsRepository.findByPartitionKey(normalizedPartitionKey).orElse(null);
+        CountryPartition existing = findCanonicalPartitionByPartitionKey(normalizedPartitionKey);
         if (existing != null && existing.getGeometry() != null) {
             return existing;
         }
@@ -112,7 +125,260 @@ public class CountryPartitionService {
         document.setSpecificity(DEFAULT_COUNTRY_SPECIFICITY);
         document.setImportedAtIso(Instant.now().toString());
         document.setGeometry(toMultiPolygon(match.path("geojson")));
+        normalizeCountryPartitionDocument(document);
         return countryPartitionsRepository.save(document);
+    }
+
+    private void normalizeCountryPartitionsCollection() {
+        for (CountryPartition partition : countryPartitionsRepository.findAll()) {
+            if (normalizeCountryPartitionDocument(partition)) {
+                countryPartitionsRepository.save(partition);
+            }
+        }
+
+        deduplicateCountryPartitions(
+                countryPartitionsRepository.findAll(),
+                CountryPartition::getPartitionKey,
+                value -> value,
+                "partitionKey");
+        deduplicateCountryPartitions(
+                countryPartitionsRepository.findAll(),
+                CountryPartition::getCountryCode,
+                this::normalizeCountryCode,
+                "countryCode");
+    }
+
+    private void deduplicateCountryPartitions(
+            List<CountryPartition> partitions,
+            Function<CountryPartition, String> fieldExtractor,
+            Function<String, String> fieldNormalizer,
+            String fieldName) {
+        Map<String, List<CountryPartition>> partitionsByField = new LinkedHashMap<>();
+        for (CountryPartition partition : partitions) {
+            String normalizedFieldValue = fieldNormalizer.apply(fieldExtractor.apply(partition));
+            if ("countryCode".equals(fieldName) && !StringUtils.hasText(normalizedFieldValue)) {
+                continue;
+            }
+            partitionsByField.computeIfAbsent(normalizedFieldValue, ignored -> new ArrayList<>()).add(partition);
+        }
+
+        for (Map.Entry<String, List<CountryPartition>> entry : partitionsByField.entrySet()) {
+            List<CountryPartition> duplicatePartitions = entry.getValue();
+            if (duplicatePartitions.size() < 2) {
+                continue;
+            }
+            consolidateCountryPartitionGroup(fieldName, entry.getKey(), duplicatePartitions);
+        }
+    }
+
+    private CountryPartition findCanonicalPartitionByPartitionKey(String partitionKey) {
+        List<CountryPartition> matchingPartitions = mongoTemplate.find(
+                Query.query(Criteria.where("partitionKey").is(partitionKey)),
+                CountryPartition.class);
+        if (matchingPartitions.isEmpty()) {
+            return null;
+        }
+        if (matchingPartitions.size() == 1) {
+            CountryPartition partition = matchingPartitions.get(0);
+            if (normalizeCountryPartitionDocument(partition)) {
+                return countryPartitionsRepository.save(partition);
+            }
+            return partition;
+        }
+        return consolidateCountryPartitionGroup("partitionKey", partitionKey, matchingPartitions);
+    }
+
+    private CountryPartition consolidateCountryPartitionGroup(
+            String fieldName,
+            String fieldValue,
+            List<CountryPartition> partitions) {
+        CountryPartition canonical = selectCanonicalCountryPartition(partitions);
+        List<CountryPartition> redundantPartitions = new ArrayList<>();
+        for (CountryPartition partition : partitions) {
+            if (isSameCountryPartition(canonical, partition)) {
+                continue;
+            }
+            mergeCountryPartition(canonical, partition);
+            redundantPartitions.add(partition);
+        }
+
+        if (!StringUtils.hasText(canonical.getId())) {
+            canonical.setId(new ObjectId().toHexString());
+        }
+        normalizeCountryPartitionDocument(canonical);
+        CountryPartition savedCanonical = countryPartitionsRepository.save(canonical);
+        if (!redundantPartitions.isEmpty()) {
+            countryPartitionsRepository.deleteAll(redundantPartitions);
+            LOGGER.warn(
+                    "Normalized {} duplicate countryPartitions records for {}='{}' by keeping id={}.",
+                    redundantPartitions.size(),
+                    fieldName,
+                    fieldValue,
+                    savedCanonical.getId());
+        }
+        return savedCanonical;
+    }
+
+    private CountryPartition selectCanonicalCountryPartition(List<CountryPartition> partitions) {
+        return partitions.stream()
+                .max(Comparator
+                        .comparing((CountryPartition partition) -> partition.getGeometry() != null)
+                        .thenComparing(partition -> partition.getSpecificity() == null ? Integer.MIN_VALUE : partition.getSpecificity())
+                        .thenComparing(partition -> parseImportedAtIso(partition.getImportedAtIso()))
+                        .thenComparing(partition -> StringUtils.hasText(partition.getCountryCode()))
+                        .thenComparing(partition -> StringUtils.hasText(partition.getDisplayName()))
+                        .thenComparing(partition -> safeText(partition.getId())))
+                .orElseThrow(() -> new IllegalStateException("Country partition group must not be empty."));
+    }
+
+    private void mergeCountryPartition(CountryPartition target, CountryPartition source) {
+        if (!StringUtils.hasText(target.getPartitionKey()) && StringUtils.hasText(source.getPartitionKey())) {
+            target.setPartitionKey(source.getPartitionKey());
+        }
+        if (!StringUtils.hasText(target.getCountryCode()) && StringUtils.hasText(source.getCountryCode())) {
+            target.setCountryCode(source.getCountryCode());
+        }
+        if (!StringUtils.hasText(target.getCountryName()) && StringUtils.hasText(source.getCountryName())) {
+            target.setCountryName(source.getCountryName());
+        }
+        if (!StringUtils.hasText(target.getDisplayName()) && StringUtils.hasText(source.getDisplayName())) {
+            target.setDisplayName(source.getDisplayName());
+        }
+        if (!StringUtils.hasText(target.getSource()) && StringUtils.hasText(source.getSource())) {
+            target.setSource(source.getSource());
+        }
+        if (!StringUtils.hasText(target.getOsmType()) && StringUtils.hasText(source.getOsmType())) {
+            target.setOsmType(source.getOsmType());
+        }
+        if (target.getOsmId() == null && source.getOsmId() != null) {
+            target.setOsmId(source.getOsmId());
+        }
+        if (target.getSpecificity() == null
+                || (source.getSpecificity() != null && source.getSpecificity() > target.getSpecificity())) {
+            target.setSpecificity(source.getSpecificity());
+        }
+        if (target.getGeometry() == null && source.getGeometry() != null) {
+            target.setGeometry(source.getGeometry());
+        }
+        if (parseImportedAtIso(source.getImportedAtIso()).isAfter(parseImportedAtIso(target.getImportedAtIso()))) {
+            target.setImportedAtIso(source.getImportedAtIso());
+        } else if (!StringUtils.hasText(target.getImportedAtIso()) && StringUtils.hasText(source.getImportedAtIso())) {
+            target.setImportedAtIso(source.getImportedAtIso());
+        }
+    }
+
+    private boolean isSameCountryPartition(CountryPartition left, CountryPartition right) {
+        if (left == right) {
+            return true;
+        }
+        return Objects.equals(left.getId(), right.getId());
+    }
+
+    private boolean normalizeCountryPartitionDocument(CountryPartition partition) {
+        boolean changed = false;
+
+        String normalizedCountryCode = normalizeCountryCode(partition.getCountryCode());
+        if (!Objects.equals(normalizedCountryCode, partition.getCountryCode())) {
+            partition.setCountryCode(normalizedCountryCode);
+            changed = true;
+        }
+
+        String normalizedCountryName = safeText(partition.getCountryName());
+        if (!Objects.equals(normalizedCountryName, partition.getCountryName())) {
+            partition.setCountryName(normalizedCountryName);
+            changed = true;
+        }
+
+        String normalizedPartitionKey = safeText(partition.getPartitionKey());
+        if (!StringUtils.hasText(normalizedPartitionKey)
+                && (StringUtils.hasText(normalizedCountryCode) || StringUtils.hasText(normalizedCountryName))) {
+            normalizedPartitionKey = defaultPartitionKey(normalizedCountryName, normalizedCountryCode);
+        }
+        if (!Objects.equals(normalizedPartitionKey, partition.getPartitionKey())) {
+            partition.setPartitionKey(normalizedPartitionKey);
+            changed = true;
+        }
+
+        String normalizedDisplayName = safeText(partition.getDisplayName());
+        if (!Objects.equals(normalizedDisplayName, partition.getDisplayName())) {
+            partition.setDisplayName(normalizedDisplayName);
+            changed = true;
+        }
+
+        String normalizedSource = safeText(partition.getSource());
+        if (!Objects.equals(normalizedSource, partition.getSource())) {
+            partition.setSource(normalizedSource);
+            changed = true;
+        }
+
+        String normalizedOsmType = safeText(partition.getOsmType());
+        if (!Objects.equals(normalizedOsmType, partition.getOsmType())) {
+            partition.setOsmType(normalizedOsmType);
+            changed = true;
+        }
+
+        String normalizedImportedAtIso = safeText(partition.getImportedAtIso());
+        if (!Objects.equals(normalizedImportedAtIso, partition.getImportedAtIso())) {
+            partition.setImportedAtIso(normalizedImportedAtIso);
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private void ensureCountryPartitionIndexes() {
+        dropConflictingCountryPartitionIndex("partitionKey", COUNTRY_PARTITION_KEY_INDEX, true, false);
+        dropConflictingCountryPartitionIndex("countryCode", COUNTRY_PARTITION_CODE_INDEX, true, true);
+        mongoTemplate.indexOps(CountryPartition.class)
+                .createIndex(new Index()
+                        .on("partitionKey", Sort.Direction.ASC)
+                        .unique()
+                        .named(COUNTRY_PARTITION_KEY_INDEX));
+        mongoTemplate.indexOps(CountryPartition.class)
+                .createIndex(new Index()
+                        .on("countryCode", Sort.Direction.ASC)
+                        .unique()
+                        .sparse()
+                        .named(COUNTRY_PARTITION_CODE_INDEX));
+    }
+
+    private void dropConflictingCountryPartitionIndex(
+            String fieldName,
+            String expectedIndexName,
+            boolean expectedUnique,
+            boolean expectedSparse) {
+        String collectionName = mongoTemplate.getCollectionName(CountryPartition.class);
+        for (Document index : mongoTemplate.getCollection(collectionName).listIndexes()) {
+            String name = index.getString("name");
+            if (!StringUtils.hasText(name) || "_id_".equals(name)) {
+                continue;
+            }
+
+            Document keyDocument = index.get("key", Document.class);
+            if (keyDocument == null || keyDocument.size() != 1 || !keyDocument.containsKey(fieldName)) {
+                continue;
+            }
+
+            boolean unique = Boolean.TRUE.equals(index.getBoolean("unique"));
+            boolean sparse = Boolean.TRUE.equals(index.getBoolean("sparse"));
+            if (expectedIndexName.equals(name) && unique == expectedUnique && sparse == expectedSparse) {
+                continue;
+            }
+
+            mongoTemplate.getCollection(collectionName).dropIndex(name);
+            LOGGER.warn("Dropped conflicting index {} on countryPartitions.{}.", name, fieldName);
+        }
+    }
+
+    private Instant parseImportedAtIso(String importedAtIso) {
+        if (!StringUtils.hasText(importedAtIso)) {
+            return Instant.EPOCH;
+        }
+        try {
+            return Instant.parse(importedAtIso);
+        } catch (DateTimeParseException ignored) {
+            return Instant.EPOCH;
+        }
     }
 
     private CountryPartition resolvePartition(LocationCoordinatesDto coordinates) {

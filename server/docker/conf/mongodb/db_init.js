@@ -22,6 +22,19 @@ const requiredCollections = [
     }
   });
 
+  portalDb.countryPartitions.createIndex(
+    { partitionKey: 1 },
+    { name: 'country_partition_key', unique: true }
+  );
+  portalDb.countryPartitions.createIndex(
+    { countryCode: 1 },
+    { name: 'country_partition_code', unique: true, sparse: true }
+  );
+  portalDb.countryPartitions.createIndex(
+    { geometry: '2dsphere' },
+    { name: 'country_partition_geometry' }
+  );
+
   if (!portalDb.getUser('guest')) {
     portalDb.createUser({
       user: 'guest',

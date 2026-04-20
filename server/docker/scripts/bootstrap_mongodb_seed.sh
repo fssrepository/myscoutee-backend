@@ -7,9 +7,17 @@ BOOTSTRAP_DB_NAME="${MONGO_BOOTSTRAP_DATABASE:-demo_db}"
 DATA_DIR="${MONGO_BOOTSTRAP_DATA_DIR:-${SERVER_ROOT}/data/mongodb/demo-data-v8}"
 SEED_DIR="${MONGO_BOOTSTRAP_SEED_DIR:-${SERVER_ROOT}/docker/conf/mongodb/${BOOTSTRAP_DB_NAME}}"
 SEED_HASH_FILE="${SERVER_ROOT}/data/mongodb/.${BOOTSTRAP_DB_NAME}_seed_hash"
-SEED_FILES=(
-  "${SERVER_ROOT}/docker/conf/mongodb/db_init.js"
-  "${SERVER_ROOT}/docker/conf/mongodb/mongo_import.sh"
+MONGO_INIT_ROOT="${SERVER_ROOT}/docker/conf/mongodb"
+SEED_FILES=()
+
+while IFS= read -r init_file; do
+  SEED_FILES+=("${init_file}")
+done < <(
+  find "${MONGO_INIT_ROOT}" \
+    -type f \
+    ! -path "${MONGO_INIT_ROOT}/demo_db/*" \
+    ! -path "${MONGO_INIT_ROOT}/myscoutee_db/*" \
+    | sort
 )
 
 while IFS= read -r seed_file; do
@@ -23,7 +31,12 @@ if docker ps --format '{{.Names}}' | grep -qx 'mongodb'; then
   exit 1
 fi
 
-if [ ${#SEED_FILES[@]} -le 2 ]; then
+if [ ${#SEED_FILES[@]} -eq 0 ]; then
+  echo "No Mongo init files found under ${MONGO_INIT_ROOT}. Nothing to bootstrap." >&2
+  exit 1
+fi
+
+if ! find "${SEED_DIR}" -maxdepth 1 -type f -name '*.json' -print -quit | grep -q .; then
   echo "No JSON seed files found in ${SEED_DIR}. Nothing to bootstrap." >&2
   exit 1
 fi
