@@ -334,7 +334,7 @@ public class HomeUserProfileService {
     }
 
     public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
-        Users currentUser = resolveCurrentUser(null);
+        Users currentUser = resolveCurrentUser(request == null ? null : request.userId());
         String userId = normalizeId(currentUser == null ? null : currentUser.getId());
         if (!StringUtils.hasText(userId) || request == null) {
             return new UserSubmitActionResponseDto(false, "Unable to send feedback.");
@@ -357,7 +357,7 @@ public class HomeUserProfileService {
     }
 
     public UserSubmitActionResponseDto submitReport(UserReportUserSubmitRequestDto request) {
-        Users currentUser = resolveCurrentUser(null);
+        Users currentUser = resolveCurrentUser(request == null ? null : request.userId());
         String userId = normalizeId(currentUser == null ? null : currentUser.getId());
         if (!StringUtils.hasText(userId) || request == null) {
             return new UserSubmitActionResponseDto(false, "Unable to submit report.");
@@ -421,15 +421,19 @@ public class HomeUserProfileService {
     }
 
     public List<GameSocialCardCandidate> querySeparatedFriendCards(String activeUserId) {
+        return querySeparatedFriendCards(activeUserId, orderedUsers(), buildActivitySocialGraph());
+    }
+
+    List<GameSocialCardCandidate> querySeparatedFriendCards(
+            String activeUserId,
+            List<Users> users,
+            ActivitySocialGraph graph) {
         String normalizedUserId = normalizeId(activeUserId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
 
-        ActivitySocialGraph graph = buildActivitySocialGraph();
-        List<Users> users = orderedUsers();
-        Map<String, Users> usersById = users.stream()
-                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+        Map<String, Users> usersById = indexUsersById(users);
         List<String> neighbors = new ArrayList<>(graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of()));
         neighbors.sort((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)));
 
@@ -471,12 +475,19 @@ public class HomeUserProfileService {
     }
 
     public List<GameSocialCardCandidate> queryFriendsInCommonCards(String activeUserId) {
+        return queryFriendsInCommonCards(activeUserId, orderedUsers(), buildActivitySocialGraph());
+    }
+
+    List<GameSocialCardCandidate> queryFriendsInCommonCards(
+            String activeUserId,
+            List<Users> users,
+            ActivitySocialGraph graph) {
         String normalizedUserId = normalizeId(activeUserId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
 
-        ActivitySocialGraph graph = buildActivitySocialGraph();
+        Map<String, Users> usersById = indexUsersById(users);
         Set<String> activeNeighbors = graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
         if (activeNeighbors.isEmpty()) {
             return List.of();
@@ -484,7 +495,7 @@ public class HomeUserProfileService {
 
         Set<String> ratedUserIds = queryRatedGameCardUserIds(normalizedUserId);
         List<GameSocialCardCandidate> candidates = new ArrayList<>();
-        for (Users user : orderedUsers()) {
+        for (Users user : users) {
             String candidateUserId = normalizeId(user.getId());
             if (!StringUtils.hasText(candidateUserId)
                     || normalizedUserId.equals(candidateUserId)
@@ -500,7 +511,7 @@ public class HomeUserProfileService {
 
             List<String> bridges = activeNeighbors.stream()
                     .filter(candidateNeighbors::contains)
-                    .sorted((left, right) -> compareUsersForSuggestions(findUser(left), findUser(right)))
+                    .sorted((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)))
                     .toList();
             if (bridges.isEmpty()) {
                 continue;
@@ -508,7 +519,7 @@ public class HomeUserProfileService {
 
             String bridgeUserId = bridges.stream()
                     .max(Comparator
-                            .comparingDouble((String bridgeId) -> resolveUserAffinity(findUser(bridgeId)))
+                            .comparingDouble((String bridgeId) -> resolveUserAffinity(usersById.get(bridgeId)))
                             .thenComparing(bridgeId -> bridgeId))
                     .orElse(bridges.get(0));
             String eventName = firstNonBlank(
@@ -542,6 +553,14 @@ public class HomeUserProfileService {
                 .map(this::toUserDto)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    List<Users> queryOrderedUserRecords() {
+        return orderedUsers();
+    }
+
+    ActivitySocialGraph queryActivitySocialGraph() {
+        return buildActivitySocialGraph();
     }
 
     public List<DemoUserListItemDto> queryDemoUserListItems() {
@@ -580,6 +599,14 @@ public class HomeUserProfileService {
     }
 
     public UserDto toUserDto(Users user) {
+        return toUserDto(user, true);
+    }
+
+    UserDto toGameCardUserDto(Users user) {
+        return toUserDto(user, false);
+    }
+
+    private UserDto toUserDto(Users user, boolean includeImpressions) {
         if (user == null) {
             return null;
         }
@@ -605,7 +632,7 @@ public class HomeUserProfileService {
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
                 nullToEmpty(user.getPartitionKey()),
                 normalizeStrings(user.getImages()),
-                resolveMergedUserImpressions(user),
+                includeImpressions ? resolveMergedUserImpressions(user) : null,
                 resolveProfileStatus(user),
                 toUserActivitiesDto(user.getActivities()));
     }
@@ -673,6 +700,12 @@ public class HomeUserProfileService {
     private Comparator<Users> userComparator() {
         return Comparator.comparing(Users::getAffinity, Comparator.nullsLast(Comparator.reverseOrder()))
                 .thenComparing(user -> normalizeId(user.getId()));
+    }
+
+    private Map<String, Users> indexUsersById(List<Users> users) {
+        return (users == null ? List.<Users>of() : users).stream()
+                .filter(Objects::nonNull)
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
     }
 
     private boolean isUsableUserDocument(Users user) {
@@ -1724,7 +1757,7 @@ public class HomeUserProfileService {
             Double score) {
     }
 
-    private record ActivitySocialGraph(
+    record ActivitySocialGraph(
             Map<String, Set<String>> neighborsByUserId,
             Map<String, String> latestEventNameByEdgeKey) {
         private boolean hasDirectEdge(String leftUserId, String rightUserId) {

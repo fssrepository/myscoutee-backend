@@ -182,12 +182,14 @@ public final class AuthDtos {
     }
 
     public record UserFeedbackSubmitRequestDto(
+            String userId,
             String category,
             String subject,
             String details) {
     }
 
     public record UserReportUserSubmitRequestDto(
+            String userId,
             String handle,
             String reason,
             String details) {
