@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -61,7 +62,7 @@ public class HomeGameCardsService {
         String nextCursor = endExclusive < filteredUsers.size() ? String.valueOf(endExclusive) : null;
 
         List<UserDto> users = page.stream()
-                .map(homeUserProfileService::toUserDto)
+                .map(homeUserProfileService::toGameCardUserDto)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -201,7 +202,7 @@ public class HomeGameCardsService {
         String nextCursor = endExclusive < filteredCards.size() ? String.valueOf(endExclusive) : null;
 
         Set<String> referencedUserIds = page.stream()
-                .flatMap(card -> List.of(card.userId(), card.secondaryUserId(), card.bridgeUserId()).stream())
+                .flatMap(card -> Stream.of(card.userId(), card.secondaryUserId(), card.bridgeUserId()))
                 .filter(StringUtils::hasText)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         List<UserDto> users = referencedUserIds.stream()

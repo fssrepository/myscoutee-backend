@@ -80148,5 +80148,120 @@
     "secondaryRelatedUserId": "7822c5f99eff99d63abe8933",
     "met": false,
     "affinityScore": 266807
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12001"
+    },
+    "syncKey": "aab53df4-daf8-55ca-bb8e-1a6ce1e41f01",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-18T18:30:00Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-03-18T18:30:00Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7",
+    "ownerUserId": "bf057de7c586eede7e84bdc7",
+    "scoreGiven": 8,
+    "scoreReceived": 7,
+    "eventName": "Connector Supper Club",
+    "ownerLocation": {
+      "latitude": 30.2672,
+      "longitude": -97.7431
+    },
+    "relatedUserId": "b29df68956f3fe15e04558de",
+    "met": true,
+    "affinityScore": 498120
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12002"
+    },
+    "syncKey": "3e6d9f25-c77d-56d3-8fcb-7c8f28d2af02",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-20T19:00:00Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-03-20T19:00:00Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7",
+    "ownerUserId": "bf057de7c586eede7e84bdc7",
+    "scoreGiven": 7,
+    "scoreReceived": 8,
+    "eventName": "Sunset Hosting Workshop",
+    "ownerLocation": {
+      "latitude": 30.2672,
+      "longitude": -97.7431
+    },
+    "relatedUserId": "1b1c70be2349b3359a8f6f94",
+    "met": true,
+    "affinityScore": 462880
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12003"
+    },
+    "syncKey": "6f064452-c6ca-5b87-988f-b31aa1f2b103",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-22T20:15:00Z",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2026-03-22T20:15:00Z",
+    "updatedUser": "b29df68956f3fe15e04558de",
+    "ownerUserId": "b29df68956f3fe15e04558de",
+    "scoreGiven": 8,
+    "scoreReceived": 7,
+    "eventName": "Mountain Mixer Relay",
+    "ownerLocation": {
+      "latitude": 41.8781,
+      "longitude": -87.6298
+    },
+    "relatedUserId": "178e8d0cbe164fa3fede5884",
+    "met": true,
+    "affinityScore": 441560
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12004"
+    },
+    "syncKey": "c9d8cb1d-1da0-5280-86d6-c879263f7b04",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-24T21:00:00Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-03-24T21:00:00Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94",
+    "ownerUserId": "1b1c70be2349b3359a8f6f94",
+    "scoreGiven": 9,
+    "scoreReceived": 6,
+    "eventName": "Cross-City Weekend Planning",
+    "ownerLocation": {
+      "latitude": 32.7157,
+      "longitude": -117.1611
+    },
+    "relatedUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "met": true,
+    "affinityScore": 409240
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12005"
+    },
+    "syncKey": "8fb00b2a-d454-51e8-b8cf-579031193405",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-26T17:45:00Z",
+    "createdUser": "178e8d0cbe164fa3fede5884",
+    "updatedDate": "2026-03-26T17:45:00Z",
+    "updatedUser": "178e8d0cbe164fa3fede5884",
+    "ownerUserId": "178e8d0cbe164fa3fede5884",
+    "scoreGiven": 7,
+    "scoreReceived": 7,
+    "eventName": "Connector Brunch Sprint",
+    "ownerLocation": {
+      "latitude": 39.7392,
+      "longitude": -104.9903
+    },
+    "relatedUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "met": true,
+    "affinityScore": 387610
   }
 ]

@@ -193,8 +193,9 @@ public class HomeUserProfileService {
         }
 
         UserDto userDto = toUserDto(user);
-        int filterCount = queryGameStackUserRecords(resolvedUserId).size();
-        UserGameFilterPreferencesDto filterPreferences = resolveFilterPreferences(resolvedUserId);
+        UserMenuCountersDto menuCounters = buildMenuCounters(user);
+        int filterCount = menuCounters.game();
+        UserGameFilterPreferencesDto filterPreferences = resolveFilterPreferences(resolvedUserId, user);
 
         return new UserByIdResponseDto(
                 userDto.id(),
@@ -223,7 +224,7 @@ public class HomeUserProfileService {
                 userDto.activities(),
                 filterCount,
                 filterPreferences,
-                buildMenuCounters(user));
+                menuCounters);
     }
 
     public UserRealtimeLongPollResponseDto queryRealtimeSnapshot(UserRealtimeLongPollRequestDto request) {
@@ -272,13 +273,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = findUser(resolvedUserId);
-        if (user == null) {
-            return null;
-        }
-
-        UserGameFilterPreferencesDto filterPreferences = queryStoredFilterPreferences(resolvedUserId);
-        return filterPreferences != null ? filterPreferences : buildDefaultFilterPreferences(user);
+        return resolveFilterPreferences(resolvedUserId, findUser(resolvedUserId));
     }
 
     public void saveUserFilterPreferences(String requestedUserId, UserGameFilterPreferencesDto preferences) {
@@ -548,7 +543,6 @@ public class HomeUserProfileService {
     public List<UserDto> queryDemoUsers() {
         return orderedUsers().stream()
                 .map(this::syncComputedUserActivities)
-                .map(this::syncComputedUserPartition)
                 .filter(Objects::nonNull)
                 .map(this::toUserDto)
                 .filter(Objects::nonNull)
@@ -691,10 +685,17 @@ public class HomeUserProfileService {
     private List<Users> orderedUsers() {
         return usersRepository.findAll().stream()
                 .filter(this::isUsableUserDocument)
-                .map(this::syncComputedUserPartition)
                 .filter(Objects::nonNull)
                 .sorted(userComparator())
                 .toList();
+    }
+
+    private UserGameFilterPreferencesDto resolveFilterPreferences(String resolvedUserId, Users user) {
+        if (!StringUtils.hasText(resolvedUserId) || user == null) {
+            return null;
+        }
+        UserGameFilterPreferencesDto filterPreferences = queryStoredFilterPreferences(resolvedUserId);
+        return filterPreferences != null ? filterPreferences : buildDefaultFilterPreferences(user);
     }
 
     private Comparator<Users> userComparator() {
@@ -782,6 +783,10 @@ public class HomeUserProfileService {
 
         for (UserRate record : userRatesRepository.findAll()) {
             if (!"activity-rate".equals(normalizeId(record.getSource()).toLowerCase())) {
+                continue;
+            }
+            if (!Boolean.TRUE.equals(record.getMet())
+                    && !StringUtils.hasText(normalizeOptionalText(record.getEventName()))) {
                 continue;
             }
             String ownerUserId = normalizeId(record.getOwnerUserId());
@@ -988,9 +993,13 @@ public class HomeUserProfileService {
             return null;
         }
 
+        if (StringUtils.hasText(safeText(user.getPartitionKey()))) {
+            return user;
+        }
+
         String resolvedPartitionKey = resolveStoredPartitionKey(
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
-                user.getPartitionKey(),
+                null,
                 user);
         if (Objects.equals(nullToEmpty(user.getPartitionKey()), nullToEmpty(resolvedPartitionKey))) {
             return user;
