@@ -80263,5 +80263,74 @@
     "relatedUserId": "cdd937e0adcbd1a5e38f3ceb",
     "met": true,
     "affinityScore": 387610
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12006"
+    },
+    "syncKey": "b18f8858-c8bd-5df8-9cbc-1ad4d79e5006",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-28T18:10:00Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-03-28T18:10:00Z",
+    "updatedUser": "23820c1e76d3bd843f61c799",
+    "ownerUserId": "23820c1e76d3bd843f61c799",
+    "scoreGiven": 8,
+    "scoreReceived": 7,
+    "eventName": "Harbor Connector Sprint",
+    "ownerLocation": {
+      "latitude": 47.5004928,
+      "longitude": 19.0742528
+    },
+    "relatedUserId": "bf057de7c586eede7e84bdc7",
+    "met": true,
+    "affinityScore": 476220
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12007"
+    },
+    "syncKey": "4bb3da31-c6b1-517d-ac72-14f9f4ecb007",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-29T19:25:00Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-03-29T19:25:00Z",
+    "updatedUser": "23820c1e76d3bd843f61c799",
+    "ownerUserId": "23820c1e76d3bd843f61c799",
+    "scoreGiven": 7,
+    "scoreReceived": 8,
+    "eventName": "Riverside Hosting Exchange",
+    "ownerLocation": {
+      "latitude": 47.5004928,
+      "longitude": 19.0742528
+    },
+    "relatedUserId": "178e8d0cbe164fa3fede5884",
+    "met": true,
+    "affinityScore": 452870
+  },
+  {
+    "_id": {
+      "$oid": "5d7f3a9c41e84f2cb6d12008"
+    },
+    "syncKey": "7bcadfb8-f72d-5f8c-a7b8-f17bb9d54008",
+    "mode": "single",
+    "source": "activity-rate",
+    "createdDate": "2026-03-30T20:40:00Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-03-30T20:40:00Z",
+    "updatedUser": "23820c1e76d3bd843f61c799",
+    "ownerUserId": "23820c1e76d3bd843f61c799",
+    "scoreGiven": 9,
+    "scoreReceived": 7,
+    "eventName": "Bridge Dinner Relay",
+    "ownerLocation": {
+      "latitude": 47.5004928,
+      "longitude": 19.0742528
+    },
+    "relatedUserId": "ed4924c22a5240a54e48c0b5",
+    "met": true,
+    "affinityScore": 489540
   }
 ]

@@ -587,7 +587,7 @@ public class HomeUserProfileService {
         return normalizedUserIds.stream()
                 .map(usersById::get)
                 .filter(Objects::nonNull)
-                .map(this::toUserDto)
+                .map(this::toGameCardUserDto)
                 .filter(Objects::nonNull)
                 .toList();
     }
