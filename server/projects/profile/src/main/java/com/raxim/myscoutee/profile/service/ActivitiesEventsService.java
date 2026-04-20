@@ -163,7 +163,15 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryInvitations(String requestedUserId) {
-        return queryItemsByFilter(new EventsFilterRequestDto(requestedUserId, "invitations", "all", null, null, null, null, null));
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) {
+            return List.of();
+        }
+        return queryDirectScopedRecords(viewer, "invitations", "all").stream()
+                .map(record -> toEventRecordDto(record, viewer))
+                .filter(Objects::nonNull)
+                .sorted(listItemComparator())
+                .toList();
     }
 
     public List<EventRecordDto> queryAttending(String requestedUserId) {
@@ -189,29 +197,40 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        try {
-            ACTIVE_CONTEXT.set(buildQueryContext(viewer));
-            return queryUserRecords(viewer).stream()
-                    .filter(record -> TYPE_HOSTING.equals(normalizeType(record.getType())))
-                    .map(record -> toEventRecordDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .sorted(listItemComparator())
-                    .toList();
-        } finally {
-            ACTIVE_CONTEXT.remove();
-        }
+        return queryDirectScopedRecords(viewer, "my-events", "all").stream()
+                .map(record -> toEventRecordDto(record, viewer))
+                .filter(Objects::nonNull)
+                .sorted(listItemComparator())
+                .toList();
     }
 
     public List<EventRecordDto> queryTrash(String requestedUserId) {
-        return queryItemsByFilter(new EventsFilterRequestDto(requestedUserId, "trash", "all", null, null, null, null, null));
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) {
+            return List.of();
+        }
+        return queryDirectScopedRecords(viewer, "trash", "all").stream()
+                .map(record -> toEventRecordDto(record, viewer))
+                .filter(Objects::nonNull)
+                .sorted(listItemComparator())
+                .toList();
     }
 
     public List<EventRecordDto> queryItemsByFilter(EventsFilterRequestDto request) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return List.of();
         }
+        String filter = normalizeEventScopeFilter(request == null ? null : request.filter());
+        String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        if (usesDirectOwnerScope(filter)) {
+            return queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
+                    .map(record -> toEventRecordDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(listItemComparator())
+                    .toList();
+        }
+        materializeSlotOccurrences();
         try {
             ACTIVE_CONTEXT.set(buildQueryContext(viewer));
             return queryFilteredRecords(viewer, request).stream()
@@ -225,11 +244,16 @@ public class ActivitiesEventsService {
     }
 
     public EventsExplorePageDto queryActivitiesEventPage(EventsFilterRequestDto request) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
+        String filter = normalizeEventScopeFilter(request == null ? null : request.filter());
+        String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        if (usesDirectOwnerScope(filter)) {
+            return pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request);
+        }
+        materializeSlotOccurrences();
         try {
             ACTIVE_CONTEXT.set(buildQueryContext(viewer));
 
@@ -495,6 +519,132 @@ public class ActivitiesEventsService {
                 .toList();
 
         return concat(directRecords, membershipRecords);
+    }
+
+    private EventsExplorePageDto pageDirectScopedRecords(
+            ViewerContext viewer,
+            String filter,
+            String hostingPublicationFilter,
+            EventsFilterRequestDto request) {
+        String secondaryFilter = normalizeActivitiesSecondaryFilter(request == null ? null : request.secondaryFilter());
+        String view = normalizeActivitiesView(request == null ? null : request.view());
+        String sort = normalizeActivitiesSort(request == null ? null : request.sort(), view, secondaryFilter);
+        Integer requestedLimit = request == null ? null : request.limit();
+        int limit = normalizeLimit(requestedLimit, 10);
+
+        List<EventProjection> sorted = queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
+                .map(record -> toProjection(record, viewer))
+                .filter(Objects::nonNull)
+                .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
+                .toList();
+
+        if ("week".equals(view) || "month".equals(view)) {
+            return new EventsExplorePageDto(sorted.stream().map(EventProjection::item).toList(), sorted.size(), null);
+        }
+
+        String cursor = request == null ? null : request.cursor();
+        int startIndex = resolveCursorStartIndex(sorted, cursor);
+        int endIndex = Math.min(sorted.size(), startIndex + limit);
+        List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
+                .map(EventProjection::item)
+                .toList();
+        String nextCursor = endIndex < sorted.size() && !records.isEmpty()
+                ? serializeCursor(records.get(records.size() - 1))
+                : null;
+        return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+    }
+
+    private boolean usesDirectOwnerScope(String filter) {
+        return "invitations".equals(filter)
+                || "my-events".equals(filter)
+                || "drafts".equals(filter)
+                || "trash".equals(filter);
+    }
+
+    private List<ActivityEvent> queryDirectScopedRecords(
+            ViewerContext viewer,
+            String filter,
+            String hostingPublicationFilter) {
+        if (viewer == null || !StringUtils.hasText(viewer.userId())) {
+            return List.of();
+        }
+
+        List<ActivityEvent> directOwnerRecords = queryDirectOwnerRecords(viewer.userId());
+        List<ActivityEvent> invitations = queryInvitationScopeRecords(directOwnerRecords);
+        List<ActivityEvent> myEvents = queryMyEventScopeRecords(viewer, directOwnerRecords);
+        List<ActivityEvent> drafts = myEvents.stream()
+                .filter(record -> Boolean.FALSE.equals(record.getPublished()))
+                .toList();
+
+        return switch (filter) {
+            case "invitations" -> invitations;
+            case "my-events" -> "drafts".equals(hostingPublicationFilter) ? drafts : myEvents;
+            case "drafts" -> drafts;
+            case "trash" -> directOwnerRecords.stream()
+                    .filter(record -> Boolean.TRUE.equals(record.getIsTrashed()))
+                    .sorted(directRecordComparator())
+                    .toList();
+            default -> List.of();
+        };
+    }
+
+    private List<ActivityEvent> queryDirectOwnerRecords(String ownerUserId) {
+        return activityEventsRepository.findByOwnerUserId(ownerUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private List<ActivityEvent> queryInvitationScopeRecords(List<ActivityEvent> directOwnerRecords) {
+        LinkedHashMap<String, ActivityEvent> invitationRecordsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : directOwnerRecords) {
+            if (!Boolean.TRUE.equals(record.getIsInvitation()) || Boolean.TRUE.equals(record.getIsTrashed())) {
+                continue;
+            }
+            invitationRecordsBySourceId.put(normalizeId(record.getSourceId()), record);
+        }
+        return new ArrayList<>(invitationRecordsBySourceId.values()).stream()
+                .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private List<ActivityEvent> queryMyEventScopeRecords(ViewerContext viewer, List<ActivityEvent> directOwnerRecords) {
+        LinkedHashMap<String, ActivityEvent> myEventRecordsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : directOwnerRecords) {
+            if (Boolean.TRUE.equals(record.getIsTrashed())) {
+                continue;
+            }
+            if (TYPE_HOSTING.equals(normalizeType(record.getType()))) {
+                myEventRecordsBySourceId.put(normalizeId(record.getSourceId()), record);
+                continue;
+            }
+            if (TYPE_EVENTS.equals(normalizeType(record.getType())) && isViewerAdmin(record, viewer.userId())) {
+                myEventRecordsBySourceId.put(normalizeId(record.getSourceId()), buildHostingProjection(viewer.userId(), record));
+            }
+        }
+        return new ArrayList<>(myEventRecordsBySourceId.values()).stream()
+                .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private ActivityEvent buildHostingProjection(String viewerUserId, ActivityEvent source) {
+        ActivityEvent projection = cloneDocument(source);
+        projection.setOwnerUserId(viewerUserId);
+        projection.setType(TYPE_HOSTING);
+        projection.setIsHosting(true);
+        projection.setIsInvitation(false);
+        projection.setIsAdmin(true);
+        projection.setAdmins(resolveAdminUserIds(source.getSourceId(), source.getCreatorUserId()));
+        projection.normalizeLifecycleState();
+        return projection;
+    }
+
+    private Comparator<ActivityEvent> directRecordComparator() {
+        return Comparator.comparing((ActivityEvent record) -> toSortableDate(record == null ? null : record.getStartAtIso()))
+                .thenComparing(record -> normalizeId(record == null ? null : record.getSourceId()), Comparator.nullsLast(String::compareTo));
     }
 
     private List<ActivityEvent> computePreferredEventRecords(List<ActivityEvent> records) {

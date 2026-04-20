@@ -4,8 +4,8 @@ Bugs
 ----
 1) http - backend test
 
-a) fix the contacts/report user/send feedback
-b) connected/unconnected --- too many queries
+a) rating on home screen - does not show up on activity rates
+b) if json file is changing the mongodb is reimport on the fly on dev
 
 Commands
 --------

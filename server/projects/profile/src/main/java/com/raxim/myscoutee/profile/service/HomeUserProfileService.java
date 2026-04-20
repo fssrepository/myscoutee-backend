@@ -559,7 +559,7 @@ public class HomeUserProfileService {
 
     public List<DemoUserListItemDto> queryDemoUserListItems() {
         return usersRepository.findAll().stream()
-                .filter(this::isUsableUserDocument)
+                .filter(this::isSelectableDemoUserDocument)
                 .sorted(userComparator())
                 .map(this::toDemoUserListItemDto)
                 .filter(Objects::nonNull)
@@ -717,6 +717,11 @@ public class HomeUserProfileService {
                 || user.getAge() != null
                 || user.getLocationCoordinates() != null
                 || !normalizeStrings(user.getImages()).isEmpty();
+    }
+
+    private boolean isSelectableDemoUserDocument(Users user) {
+        return isUsableUserDocument(user)
+                && !"deleted".equals(resolveProfileStatus(user));
     }
 
     private String normalizeUserListGender(String gender) {

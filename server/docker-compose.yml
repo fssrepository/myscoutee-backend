@@ -33,7 +33,6 @@ services:
       - 80:80
       - 443:443
       - 27017-27019:27017-27019
-      - 5005:5005
     volumes:
       - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
       - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
@@ -106,13 +105,25 @@ services:
     image: ${MYSCOUTEE_IMAGE}
     pull_policy: build
     build:
-       context: projects/profile
-       args:
-         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      context: .
+      dockerfile: docker/images/profilemanagement-hot/Dockerfile
+      args:
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
     hostname: myscoutee
+    working_dir: /workspace
+    user: "${UID:-1000}:${GID:-1000}"
+    command:
+      - sh
+      - -lc
+      - BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; if [ "$${PROFILEMANAGEMENT_HOT_RELOAD}" = "true" ]; then ./gradlew :projects:profile:classes --continuous & fi; exec ./gradlew $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
     environment:
+      HOME: /workspace
+      GRADLE_USER_HOME: /workspace/.gradle
+      PROFILEMANAGEMENT_HOT_RELOAD: "${PROFILEMANAGEMENT_HOT_RELOAD:-true}"
+      PROFILEMANAGEMENT_DEBUG_PORT: "${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
       SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_DEVTOOLS_RESTART_ENABLED: "${PROFILEMANAGEMENT_HOT_RELOAD:-true}"
       SPRING_MONGODB_URI: "mongodb://guest:guest@mongodb:27017/${MONGO_DEMO_DATABASE}?authSource=${MONGO_DEMO_DATABASE}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_DEMO_DATABASE}"
@@ -133,11 +144,11 @@ services:
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
-      JAVA_TOOL_OPTIONS: >
-              --enable-native-access=ALL-UNNAMED
-              -Xdebug
-              -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
+    ports:
+      - "${PROFILEMANAGEMENT_DEBUG_PORT:-5005}:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
     volumes:
+      - ./:/workspace
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:

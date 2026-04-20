@@ -59876,5 +59876,5974 @@
       "eb1ca0b761885bb0763e2929"
     ],
     "status": "active"
+  },
+  {
+    "_id": {
+      "$oid": "9cff773a194eced322ce2f76"
+    },
+    "syncKey": "http-hosting-1b1c70be2349b3359a8f6f94",
+    "sourceId": "9cff773a194eced322ce2f76",
+    "ownerUserId": "1b1c70be2349b3359a8f6f94",
+    "type": "hosting",
+    "avatar": "MS",
+    "title": "San Diego Host Circle MS",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 4 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "1b1c70be2349b3359a8f6f94",
+    "creatorName": "Maya Stone",
+    "creatorInitials": "MS",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-04T19:00:00.000Z",
+    "endAtIso": "2026-05-04T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-1b1c70be2349b3359a8f6f94/1200/700",
+    "sourceLink": "https://example.com/hosting/1b1c70be2349b3359a8f6f94/9cff773a194eced322ce2f76",
+    "location": "San Diego host venue",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 63,
+    "affinity": 440843,
+    "createdDate": "2026-05-01T19:00:00.000Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-05-01T19:00:00.000Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94",
+    "admins": [
+      "1b1c70be2349b3359a8f6f94"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "2dac502b623e8c4372985060"
+    },
+    "syncKey": "http-invitation-1b1c70be2349b3359a8f6f94",
+    "sourceId": "2dac502b623e8c4372985060",
+    "ownerUserId": "1b1c70be2349b3359a8f6f94",
+    "type": "invitations",
+    "avatar": "LP",
+    "title": "San Diego Afterwork Loop",
+    "subtitle": "Lina",
+    "timeframe": "May 5 · 5:30 PM - 7:00 PM",
+    "inviter": "Lina Park",
+    "trashedAtIso": null,
+    "creatorUserId": "178e8d0cbe164fa3fede5884",
+    "creatorName": "Lina Park",
+    "creatorInitials": "LP",
+    "creatorGender": "woman",
+    "creatorCity": "Denver",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-05T17:30:00.000Z",
+    "endAtIso": "2026-05-05T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-1b1c70be2349b3359a8f6f94/1200/700",
+    "sourceLink": "https://example.com/invitation/1b1c70be2349b3359a8f6f94/2dac502b623e8c4372985060",
+    "location": "San Diego meetup point",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 61,
+    "affinity": 444724,
+    "createdDate": "2026-05-03T17:30:00.000Z",
+    "createdUser": "178e8d0cbe164fa3fede5884",
+    "updatedDate": "2026-05-03T17:30:00.000Z",
+    "updatedUser": "178e8d0cbe164fa3fede5884",
+    "admins": [
+      "178e8d0cbe164fa3fede5884"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "a5f172c53194f5e4a926fce6"
+    },
+    "syncKey": "http-hosting-178e8d0cbe164fa3fede5884",
+    "sourceId": "a5f172c53194f5e4a926fce6",
+    "ownerUserId": "178e8d0cbe164fa3fede5884",
+    "type": "hosting",
+    "avatar": "LP",
+    "title": "Denver Host Circle LP",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 5 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "178e8d0cbe164fa3fede5884",
+    "creatorName": "Lina Park",
+    "creatorInitials": "LP",
+    "creatorGender": "woman",
+    "creatorCity": "Denver",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-05T18:00:00.000Z",
+    "endAtIso": "2026-05-05T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-178e8d0cbe164fa3fede5884/1200/700",
+    "sourceLink": "https://example.com/hosting/178e8d0cbe164fa3fede5884/a5f172c53194f5e4a926fce6",
+    "location": "Denver host venue",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 64,
+    "affinity": 444724,
+    "createdDate": "2026-05-02T18:00:00.000Z",
+    "createdUser": "178e8d0cbe164fa3fede5884",
+    "updatedDate": "2026-05-02T18:00:00.000Z",
+    "updatedUser": "178e8d0cbe164fa3fede5884",
+    "admins": [
+      "178e8d0cbe164fa3fede5884"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "311a4988b2f1516db46f96d8"
+    },
+    "syncKey": "http-invitation-178e8d0cbe164fa3fede5884",
+    "sourceId": "311a4988b2f1516db46f96d8",
+    "ownerUserId": "178e8d0cbe164fa3fede5884",
+    "type": "invitations",
+    "avatar": "IB",
+    "title": "Denver Afterwork Loop",
+    "subtitle": "Iris",
+    "timeframe": "May 6 · 6:30 PM - 8:30 PM",
+    "inviter": "Iris Bloom",
+    "trashedAtIso": null,
+    "creatorUserId": "f4b2ebd8f56628ab7df58221",
+    "creatorName": "Iris Bloom",
+    "creatorInitials": "IB",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-06T18:30:00.000Z",
+    "endAtIso": "2026-05-06T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-178e8d0cbe164fa3fede5884/1200/700",
+    "sourceLink": "https://example.com/invitation/178e8d0cbe164fa3fede5884/311a4988b2f1516db46f96d8",
+    "location": "Denver meetup point",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 62,
+    "affinity": 620130,
+    "createdDate": "2026-05-04T18:30:00.000Z",
+    "createdUser": "f4b2ebd8f56628ab7df58221",
+    "updatedDate": "2026-05-04T18:30:00.000Z",
+    "updatedUser": "f4b2ebd8f56628ab7df58221",
+    "admins": [
+      "f4b2ebd8f56628ab7df58221"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "0c3759ae2131de23f3a6c6e4"
+    },
+    "syncKey": "http-hosting-f4b2ebd8f56628ab7df58221",
+    "sourceId": "0c3759ae2131de23f3a6c6e4",
+    "ownerUserId": "f4b2ebd8f56628ab7df58221",
+    "type": "hosting",
+    "avatar": "IB",
+    "title": "Miami Host Circle IB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 6 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "f4b2ebd8f56628ab7df58221",
+    "creatorName": "Iris Bloom",
+    "creatorInitials": "IB",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-06T19:00:00.000Z",
+    "endAtIso": "2026-05-06T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-f4b2ebd8f56628ab7df58221/1200/700",
+    "sourceLink": "https://example.com/hosting/f4b2ebd8f56628ab7df58221/0c3759ae2131de23f3a6c6e4",
+    "location": "Miami host venue",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 65,
+    "affinity": 620130,
+    "createdDate": "2026-05-03T19:00:00.000Z",
+    "createdUser": "f4b2ebd8f56628ab7df58221",
+    "updatedDate": "2026-05-03T19:00:00.000Z",
+    "updatedUser": "f4b2ebd8f56628ab7df58221",
+    "admins": [
+      "f4b2ebd8f56628ab7df58221"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "e4027e7821cd5b932fc489a6"
+    },
+    "syncKey": "http-invitation-f4b2ebd8f56628ab7df58221",
+    "sourceId": "e4027e7821cd5b932fc489a6",
+    "ownerUserId": "f4b2ebd8f56628ab7df58221",
+    "type": "invitations",
+    "avatar": "NH",
+    "title": "Miami Afterwork Loop",
+    "subtitle": "Noah",
+    "timeframe": "May 7 · 7:30 PM - 10:00 PM",
+    "inviter": "Noah Hart",
+    "trashedAtIso": null,
+    "creatorUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "creatorName": "Noah Hart",
+    "creatorInitials": "NH",
+    "creatorGender": "man",
+    "creatorCity": "New York",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-07T19:30:00.000Z",
+    "endAtIso": "2026-05-07T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-f4b2ebd8f56628ab7df58221/1200/700",
+    "sourceLink": "https://example.com/invitation/f4b2ebd8f56628ab7df58221/e4027e7821cd5b932fc489a6",
+    "location": "Miami meetup point",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 63,
+    "affinity": 305793,
+    "createdDate": "2026-05-05T19:30:00.000Z",
+    "createdUser": "cdd937e0adcbd1a5e38f3ceb",
+    "updatedDate": "2026-05-05T19:30:00.000Z",
+    "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
+    "admins": [
+      "cdd937e0adcbd1a5e38f3ceb"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "bce7664b36a0a3d127f6fbc9"
+    },
+    "syncKey": "http-hosting-cdd937e0adcbd1a5e38f3ceb",
+    "sourceId": "bce7664b36a0a3d127f6fbc9",
+    "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "type": "hosting",
+    "avatar": "NH",
+    "title": "New York Host Circle NH",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 7 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "creatorName": "Noah Hart",
+    "creatorInitials": "NH",
+    "creatorGender": "man",
+    "creatorCity": "New York",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-07T18:00:00.000Z",
+    "endAtIso": "2026-05-07T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-cdd937e0adcbd1a5e38f3ceb/1200/700",
+    "sourceLink": "https://example.com/hosting/cdd937e0adcbd1a5e38f3ceb/bce7664b36a0a3d127f6fbc9",
+    "location": "New York host venue",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 66,
+    "affinity": 305793,
+    "createdDate": "2026-05-04T18:00:00.000Z",
+    "createdUser": "cdd937e0adcbd1a5e38f3ceb",
+    "updatedDate": "2026-05-04T18:00:00.000Z",
+    "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
+    "admins": [
+      "cdd937e0adcbd1a5e38f3ceb"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "858bae8114f76bfecea7ea2a"
+    },
+    "syncKey": "http-invitation-cdd937e0adcbd1a5e38f3ceb",
+    "sourceId": "858bae8114f76bfecea7ea2a",
+    "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+    "type": "invitations",
+    "avatar": "ER",
+    "title": "New York Afterwork Loop",
+    "subtitle": "Evan",
+    "timeframe": "May 8 · 5:30 PM - 7:00 PM",
+    "inviter": "Evan Reed",
+    "trashedAtIso": null,
+    "creatorUserId": "1d7d3545ba5e0f1d63918589",
+    "creatorName": "Evan Reed",
+    "creatorInitials": "ER",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-08T17:30:00.000Z",
+    "endAtIso": "2026-05-08T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-cdd937e0adcbd1a5e38f3ceb/1200/700",
+    "sourceLink": "https://example.com/invitation/cdd937e0adcbd1a5e38f3ceb/858bae8114f76bfecea7ea2a",
+    "location": "New York meetup point",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 64,
+    "affinity": 443988,
+    "createdDate": "2026-05-06T17:30:00.000Z",
+    "createdUser": "1d7d3545ba5e0f1d63918589",
+    "updatedDate": "2026-05-06T17:30:00.000Z",
+    "updatedUser": "1d7d3545ba5e0f1d63918589",
+    "admins": [
+      "1d7d3545ba5e0f1d63918589"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "97b49c33599da22886b075f4"
+    },
+    "syncKey": "http-hosting-1d7d3545ba5e0f1d63918589",
+    "sourceId": "97b49c33599da22886b075f4",
+    "ownerUserId": "1d7d3545ba5e0f1d63918589",
+    "type": "hosting",
+    "avatar": "ER",
+    "title": "Boston Host Circle ER",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 8 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "1d7d3545ba5e0f1d63918589",
+    "creatorName": "Evan Reed",
+    "creatorInitials": "ER",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-08T19:00:00.000Z",
+    "endAtIso": "2026-05-08T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-1d7d3545ba5e0f1d63918589/1200/700",
+    "sourceLink": "https://example.com/hosting/1d7d3545ba5e0f1d63918589/97b49c33599da22886b075f4",
+    "location": "Boston host venue",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 67,
+    "affinity": 443988,
+    "createdDate": "2026-05-05T19:00:00.000Z",
+    "createdUser": "1d7d3545ba5e0f1d63918589",
+    "updatedDate": "2026-05-05T19:00:00.000Z",
+    "updatedUser": "1d7d3545ba5e0f1d63918589",
+    "admins": [
+      "1d7d3545ba5e0f1d63918589"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "44627b437c4eb852e5405967"
+    },
+    "syncKey": "http-invitation-1d7d3545ba5e0f1d63918589",
+    "sourceId": "44627b437c4eb852e5405967",
+    "ownerUserId": "1d7d3545ba5e0f1d63918589",
+    "type": "invitations",
+    "avatar": "KM",
+    "title": "Boston Afterwork Loop",
+    "subtitle": "Kai",
+    "timeframe": "May 9 · 6:30 PM - 8:30 PM",
+    "inviter": "Kai Morgan",
+    "trashedAtIso": null,
+    "creatorUserId": "7822c5f99eff99d63abe8933",
+    "creatorName": "Kai Morgan",
+    "creatorInitials": "KM",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-09T18:30:00.000Z",
+    "endAtIso": "2026-05-09T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-1d7d3545ba5e0f1d63918589/1200/700",
+    "sourceLink": "https://example.com/invitation/1d7d3545ba5e0f1d63918589/44627b437c4eb852e5405967",
+    "location": "Boston meetup point",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 65,
+    "affinity": 227821,
+    "createdDate": "2026-05-07T18:30:00.000Z",
+    "createdUser": "7822c5f99eff99d63abe8933",
+    "updatedDate": "2026-05-07T18:30:00.000Z",
+    "updatedUser": "7822c5f99eff99d63abe8933",
+    "admins": [
+      "7822c5f99eff99d63abe8933"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "34761996f2c3cec923165c34"
+    },
+    "syncKey": "http-hosting-7822c5f99eff99d63abe8933",
+    "sourceId": "34761996f2c3cec923165c34",
+    "ownerUserId": "7822c5f99eff99d63abe8933",
+    "type": "hosting",
+    "avatar": "KM",
+    "title": "Portland Host Circle KM",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 9 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "7822c5f99eff99d63abe8933",
+    "creatorName": "Kai Morgan",
+    "creatorInitials": "KM",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-09T18:00:00.000Z",
+    "endAtIso": "2026-05-09T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-7822c5f99eff99d63abe8933/1200/700",
+    "sourceLink": "https://example.com/hosting/7822c5f99eff99d63abe8933/34761996f2c3cec923165c34",
+    "location": "Portland host venue",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 68,
+    "affinity": 227821,
+    "createdDate": "2026-05-06T18:00:00.000Z",
+    "createdUser": "7822c5f99eff99d63abe8933",
+    "updatedDate": "2026-05-06T18:00:00.000Z",
+    "updatedUser": "7822c5f99eff99d63abe8933",
+    "admins": [
+      "7822c5f99eff99d63abe8933"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "73b7ed59619be9f682cad45a"
+    },
+    "syncKey": "http-invitation-7822c5f99eff99d63abe8933",
+    "sourceId": "73b7ed59619be9f682cad45a",
+    "ownerUserId": "7822c5f99eff99d63abe8933",
+    "type": "invitations",
+    "avatar": "LH",
+    "title": "Portland Afterwork Loop",
+    "subtitle": "Luca",
+    "timeframe": "May 10 · 7:30 PM - 10:00 PM",
+    "inviter": "Luca Hale",
+    "trashedAtIso": null,
+    "creatorUserId": "d182041b8a54132d5168034f",
+    "creatorName": "Luca Hale",
+    "creatorInitials": "LH",
+    "creatorGender": "man",
+    "creatorCity": "Los Angeles",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-10T19:30:00.000Z",
+    "endAtIso": "2026-05-10T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-7822c5f99eff99d63abe8933/1200/700",
+    "sourceLink": "https://example.com/invitation/7822c5f99eff99d63abe8933/73b7ed59619be9f682cad45a",
+    "location": "Portland meetup point",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 66,
+    "affinity": 522709,
+    "createdDate": "2026-05-08T19:30:00.000Z",
+    "createdUser": "d182041b8a54132d5168034f",
+    "updatedDate": "2026-05-08T19:30:00.000Z",
+    "updatedUser": "d182041b8a54132d5168034f",
+    "admins": [
+      "d182041b8a54132d5168034f"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "1a3e19a819b09e6bd9bd0a2c"
+    },
+    "syncKey": "http-hosting-d182041b8a54132d5168034f",
+    "sourceId": "1a3e19a819b09e6bd9bd0a2c",
+    "ownerUserId": "d182041b8a54132d5168034f",
+    "type": "hosting",
+    "avatar": "LH",
+    "title": "Los Angeles Host Circle LH",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 10 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "d182041b8a54132d5168034f",
+    "creatorName": "Luca Hale",
+    "creatorInitials": "LH",
+    "creatorGender": "man",
+    "creatorCity": "Los Angeles",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-10T19:00:00.000Z",
+    "endAtIso": "2026-05-10T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-d182041b8a54132d5168034f/1200/700",
+    "sourceLink": "https://example.com/hosting/d182041b8a54132d5168034f/1a3e19a819b09e6bd9bd0a2c",
+    "location": "Los Angeles host venue",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 69,
+    "affinity": 522709,
+    "createdDate": "2026-05-07T19:00:00.000Z",
+    "createdUser": "d182041b8a54132d5168034f",
+    "updatedDate": "2026-05-07T19:00:00.000Z",
+    "updatedUser": "d182041b8a54132d5168034f",
+    "admins": [
+      "d182041b8a54132d5168034f"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "c19a9b3baf9e6b7e19fdcbb1"
+    },
+    "syncKey": "http-invitation-d182041b8a54132d5168034f",
+    "sourceId": "c19a9b3baf9e6b7e19fdcbb1",
+    "ownerUserId": "d182041b8a54132d5168034f",
+    "type": "invitations",
+    "avatar": "TL",
+    "title": "Los Angeles Afterwork Loop",
+    "subtitle": "Theo",
+    "timeframe": "May 11 · 5:30 PM - 7:00 PM",
+    "inviter": "Theo Lane",
+    "trashedAtIso": null,
+    "creatorUserId": "d04cd419e735549e3f312977",
+    "creatorName": "Theo Lane",
+    "creatorInitials": "TL",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-11T17:30:00.000Z",
+    "endAtIso": "2026-05-11T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-d182041b8a54132d5168034f/1200/700",
+    "sourceLink": "https://example.com/invitation/d182041b8a54132d5168034f/c19a9b3baf9e6b7e19fdcbb1",
+    "location": "Los Angeles meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 67,
+    "affinity": 398080,
+    "createdDate": "2026-05-09T17:30:00.000Z",
+    "createdUser": "d04cd419e735549e3f312977",
+    "updatedDate": "2026-05-09T17:30:00.000Z",
+    "updatedUser": "d04cd419e735549e3f312977",
+    "admins": [
+      "d04cd419e735549e3f312977"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "285c84a6cc58b78dfdd1477c"
+    },
+    "syncKey": "http-hosting-d04cd419e735549e3f312977",
+    "sourceId": "285c84a6cc58b78dfdd1477c",
+    "ownerUserId": "d04cd419e735549e3f312977",
+    "type": "hosting",
+    "avatar": "TL",
+    "title": "Nashville Host Circle TL",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 11 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "d04cd419e735549e3f312977",
+    "creatorName": "Theo Lane",
+    "creatorInitials": "TL",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-11T18:00:00.000Z",
+    "endAtIso": "2026-05-11T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-d04cd419e735549e3f312977/1200/700",
+    "sourceLink": "https://example.com/hosting/d04cd419e735549e3f312977/285c84a6cc58b78dfdd1477c",
+    "location": "Nashville host venue",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 70,
+    "affinity": 398080,
+    "createdDate": "2026-05-08T18:00:00.000Z",
+    "createdUser": "d04cd419e735549e3f312977",
+    "updatedDate": "2026-05-08T18:00:00.000Z",
+    "updatedUser": "d04cd419e735549e3f312977",
+    "admins": [
+      "d04cd419e735549e3f312977"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "cbc9998ad15a3c6f8f91575b"
+    },
+    "syncKey": "http-invitation-d04cd419e735549e3f312977",
+    "sourceId": "cbc9998ad15a3c6f8f91575b",
+    "ownerUserId": "d04cd419e735549e3f312977",
+    "type": "invitations",
+    "avatar": "MG",
+    "title": "Nashville Afterwork Loop",
+    "subtitle": "Milo",
+    "timeframe": "May 12 · 6:30 PM - 8:30 PM",
+    "inviter": "Milo Grant",
+    "trashedAtIso": null,
+    "creatorUserId": "eb1ca0b761885bb0763e2929",
+    "creatorName": "Milo Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Phoenix",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-12T18:30:00.000Z",
+    "endAtIso": "2026-05-12T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-d04cd419e735549e3f312977/1200/700",
+    "sourceLink": "https://example.com/invitation/d04cd419e735549e3f312977/cbc9998ad15a3c6f8f91575b",
+    "location": "Nashville meetup point",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 68,
+    "affinity": 329173,
+    "createdDate": "2026-05-10T18:30:00.000Z",
+    "createdUser": "eb1ca0b761885bb0763e2929",
+    "updatedDate": "2026-05-10T18:30:00.000Z",
+    "updatedUser": "eb1ca0b761885bb0763e2929",
+    "admins": [
+      "eb1ca0b761885bb0763e2929"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "6c9db589cceea886017ca9c9"
+    },
+    "syncKey": "http-hosting-eb1ca0b761885bb0763e2929",
+    "sourceId": "6c9db589cceea886017ca9c9",
+    "ownerUserId": "eb1ca0b761885bb0763e2929",
+    "type": "hosting",
+    "avatar": "MG",
+    "title": "Phoenix Host Circle MG",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 12 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "eb1ca0b761885bb0763e2929",
+    "creatorName": "Milo Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Phoenix",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-12T19:00:00.000Z",
+    "endAtIso": "2026-05-12T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-eb1ca0b761885bb0763e2929/1200/700",
+    "sourceLink": "https://example.com/hosting/eb1ca0b761885bb0763e2929/6c9db589cceea886017ca9c9",
+    "location": "Phoenix host venue",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 71,
+    "affinity": 329173,
+    "createdDate": "2026-05-09T19:00:00.000Z",
+    "createdUser": "eb1ca0b761885bb0763e2929",
+    "updatedDate": "2026-05-09T19:00:00.000Z",
+    "updatedUser": "eb1ca0b761885bb0763e2929",
+    "admins": [
+      "eb1ca0b761885bb0763e2929"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "141f6f9ca589a4fecd5881a4"
+    },
+    "syncKey": "http-invitation-eb1ca0b761885bb0763e2929",
+    "sourceId": "141f6f9ca589a4fecd5881a4",
+    "ownerUserId": "eb1ca0b761885bb0763e2929",
+    "type": "invitations",
+    "avatar": "OR",
+    "title": "Phoenix Afterwork Loop",
+    "subtitle": "Olivia",
+    "timeframe": "May 13 · 7:30 PM - 10:00 PM",
+    "inviter": "Olivia Rivera",
+    "trashedAtIso": null,
+    "creatorUserId": "fcad6954169063f106a7a240",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-13T19:30:00.000Z",
+    "endAtIso": "2026-05-13T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-eb1ca0b761885bb0763e2929/1200/700",
+    "sourceLink": "https://example.com/invitation/eb1ca0b761885bb0763e2929/141f6f9ca589a4fecd5881a4",
+    "location": "Phoenix meetup point",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 69,
+    "affinity": 432507,
+    "createdDate": "2026-05-11T19:30:00.000Z",
+    "createdUser": "fcad6954169063f106a7a240",
+    "updatedDate": "2026-05-11T19:30:00.000Z",
+    "updatedUser": "fcad6954169063f106a7a240",
+    "admins": [
+      "fcad6954169063f106a7a240"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "084280cdec4a61f21c48d7db"
+    },
+    "syncKey": "http-hosting-fcad6954169063f106a7a240",
+    "sourceId": "084280cdec4a61f21c48d7db",
+    "ownerUserId": "fcad6954169063f106a7a240",
+    "type": "hosting",
+    "avatar": "OR",
+    "title": "Chicago Host Circle OR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 13 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "fcad6954169063f106a7a240",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-13T18:00:00.000Z",
+    "endAtIso": "2026-05-13T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-fcad6954169063f106a7a240/1200/700",
+    "sourceLink": "https://example.com/hosting/fcad6954169063f106a7a240/084280cdec4a61f21c48d7db",
+    "location": "Chicago host venue",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 72,
+    "affinity": 432507,
+    "createdDate": "2026-05-10T18:00:00.000Z",
+    "createdUser": "fcad6954169063f106a7a240",
+    "updatedDate": "2026-05-10T18:00:00.000Z",
+    "updatedUser": "fcad6954169063f106a7a240",
+    "admins": [
+      "fcad6954169063f106a7a240"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "14d2afd839a096acce18db7c"
+    },
+    "syncKey": "http-invitation-fcad6954169063f106a7a240",
+    "sourceId": "14d2afd839a096acce18db7c",
+    "ownerUserId": "fcad6954169063f106a7a240",
+    "type": "invitations",
+    "avatar": "MG",
+    "title": "Chicago Afterwork Loop",
+    "subtitle": "Mason",
+    "timeframe": "May 14 · 5:30 PM - 7:00 PM",
+    "inviter": "Mason Grant",
+    "trashedAtIso": null,
+    "creatorUserId": "2d520f3c98b0440c1556f4af",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-14T17:30:00.000Z",
+    "endAtIso": "2026-05-14T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-fcad6954169063f106a7a240/1200/700",
+    "sourceLink": "https://example.com/invitation/fcad6954169063f106a7a240/14d2afd839a096acce18db7c",
+    "location": "Chicago meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 70,
+    "affinity": 499225,
+    "createdDate": "2026-05-12T17:30:00.000Z",
+    "createdUser": "2d520f3c98b0440c1556f4af",
+    "updatedDate": "2026-05-12T17:30:00.000Z",
+    "updatedUser": "2d520f3c98b0440c1556f4af",
+    "admins": [
+      "2d520f3c98b0440c1556f4af"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "f97b6382b64e6cb645c23863"
+    },
+    "syncKey": "http-hosting-2d520f3c98b0440c1556f4af",
+    "sourceId": "f97b6382b64e6cb645c23863",
+    "ownerUserId": "2d520f3c98b0440c1556f4af",
+    "type": "hosting",
+    "avatar": "MG",
+    "title": "Denver Host Circle MG",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 14 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "2d520f3c98b0440c1556f4af",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-14T19:00:00.000Z",
+    "endAtIso": "2026-05-14T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-2d520f3c98b0440c1556f4af/1200/700",
+    "sourceLink": "https://example.com/hosting/2d520f3c98b0440c1556f4af/f97b6382b64e6cb645c23863",
+    "location": "Denver host venue",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 73,
+    "affinity": 499225,
+    "createdDate": "2026-05-11T19:00:00.000Z",
+    "createdUser": "2d520f3c98b0440c1556f4af",
+    "updatedDate": "2026-05-11T19:00:00.000Z",
+    "updatedUser": "2d520f3c98b0440c1556f4af",
+    "admins": [
+      "2d520f3c98b0440c1556f4af"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "efeb68b9bcecda7f38f2c377"
+    },
+    "syncKey": "http-invitation-2d520f3c98b0440c1556f4af",
+    "sourceId": "efeb68b9bcecda7f38f2c377",
+    "ownerUserId": "2d520f3c98b0440c1556f4af",
+    "type": "invitations",
+    "avatar": "LS",
+    "title": "Denver Afterwork Loop",
+    "subtitle": "Lina",
+    "timeframe": "May 15 · 6:30 PM - 8:30 PM",
+    "inviter": "Lina Stone",
+    "trashedAtIso": null,
+    "creatorUserId": "0216b1ceb256d6f2c89073b8",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-15T18:30:00.000Z",
+    "endAtIso": "2026-05-15T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-2d520f3c98b0440c1556f4af/1200/700",
+    "sourceLink": "https://example.com/invitation/2d520f3c98b0440c1556f4af/efeb68b9bcecda7f38f2c377",
+    "location": "Denver meetup point",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 71,
+    "affinity": 581523,
+    "createdDate": "2026-05-13T18:30:00.000Z",
+    "createdUser": "0216b1ceb256d6f2c89073b8",
+    "updatedDate": "2026-05-13T18:30:00.000Z",
+    "updatedUser": "0216b1ceb256d6f2c89073b8",
+    "admins": [
+      "0216b1ceb256d6f2c89073b8"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "5c85d853ff82694f0b17619c"
+    },
+    "syncKey": "http-hosting-0216b1ceb256d6f2c89073b8",
+    "sourceId": "5c85d853ff82694f0b17619c",
+    "ownerUserId": "0216b1ceb256d6f2c89073b8",
+    "type": "hosting",
+    "avatar": "LS",
+    "title": "Miami Host Circle LS",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 15 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "0216b1ceb256d6f2c89073b8",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-15T18:00:00.000Z",
+    "endAtIso": "2026-05-15T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-0216b1ceb256d6f2c89073b8/1200/700",
+    "sourceLink": "https://example.com/hosting/0216b1ceb256d6f2c89073b8/5c85d853ff82694f0b17619c",
+    "location": "Miami host venue",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 74,
+    "affinity": 581523,
+    "createdDate": "2026-05-12T18:00:00.000Z",
+    "createdUser": "0216b1ceb256d6f2c89073b8",
+    "updatedDate": "2026-05-12T18:00:00.000Z",
+    "updatedUser": "0216b1ceb256d6f2c89073b8",
+    "admins": [
+      "0216b1ceb256d6f2c89073b8"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "17a704fd94f4a356a154361d"
+    },
+    "syncKey": "http-invitation-0216b1ceb256d6f2c89073b8",
+    "sourceId": "17a704fd94f4a356a154361d",
+    "ownerUserId": "0216b1ceb256d6f2c89073b8",
+    "type": "invitations",
+    "avatar": "OH",
+    "title": "Miami Afterwork Loop",
+    "subtitle": "Owen",
+    "timeframe": "May 16 · 7:30 PM - 10:00 PM",
+    "inviter": "Owen Hale",
+    "trashedAtIso": null,
+    "creatorUserId": "eac11b0685f9799953a40dd4",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-16T19:30:00.000Z",
+    "endAtIso": "2026-05-16T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-0216b1ceb256d6f2c89073b8/1200/700",
+    "sourceLink": "https://example.com/invitation/0216b1ceb256d6f2c89073b8/17a704fd94f4a356a154361d",
+    "location": "Miami meetup point",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 72,
+    "affinity": 440843,
+    "createdDate": "2026-05-14T19:30:00.000Z",
+    "createdUser": "eac11b0685f9799953a40dd4",
+    "updatedDate": "2026-05-14T19:30:00.000Z",
+    "updatedUser": "eac11b0685f9799953a40dd4",
+    "admins": [
+      "eac11b0685f9799953a40dd4"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "7b064f54fd2fb3991907755b"
+    },
+    "syncKey": "http-hosting-eac11b0685f9799953a40dd4",
+    "sourceId": "7b064f54fd2fb3991907755b",
+    "ownerUserId": "eac11b0685f9799953a40dd4",
+    "type": "hosting",
+    "avatar": "OH",
+    "title": "Boston Host Circle OH",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 16 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "eac11b0685f9799953a40dd4",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-16T19:00:00.000Z",
+    "endAtIso": "2026-05-16T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-eac11b0685f9799953a40dd4/1200/700",
+    "sourceLink": "https://example.com/hosting/eac11b0685f9799953a40dd4/7b064f54fd2fb3991907755b",
+    "location": "Boston host venue",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 75,
+    "affinity": 440843,
+    "createdDate": "2026-05-13T19:00:00.000Z",
+    "createdUser": "eac11b0685f9799953a40dd4",
+    "updatedDate": "2026-05-13T19:00:00.000Z",
+    "updatedUser": "eac11b0685f9799953a40dd4",
+    "admins": [
+      "eac11b0685f9799953a40dd4"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "eb5f77beaed711ec6252eca6"
+    },
+    "syncKey": "http-invitation-eac11b0685f9799953a40dd4",
+    "sourceId": "eb5f77beaed711ec6252eca6",
+    "ownerUserId": "eac11b0685f9799953a40dd4",
+    "type": "invitations",
+    "avatar": "CB",
+    "title": "Boston Afterwork Loop",
+    "subtitle": "Chloe",
+    "timeframe": "May 17 · 5:30 PM - 7:00 PM",
+    "inviter": "Chloe Brooks",
+    "trashedAtIso": null,
+    "creatorUserId": "7313a9379f60200cba7b9f71",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-17T17:30:00.000Z",
+    "endAtIso": "2026-05-17T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-eac11b0685f9799953a40dd4/1200/700",
+    "sourceLink": "https://example.com/invitation/eac11b0685f9799953a40dd4/eb5f77beaed711ec6252eca6",
+    "location": "Boston meetup point",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 73,
+    "affinity": 444724,
+    "createdDate": "2026-05-15T17:30:00.000Z",
+    "createdUser": "7313a9379f60200cba7b9f71",
+    "updatedDate": "2026-05-15T17:30:00.000Z",
+    "updatedUser": "7313a9379f60200cba7b9f71",
+    "admins": [
+      "7313a9379f60200cba7b9f71"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "58197e02d49d107d6f3e3247"
+    },
+    "syncKey": "http-hosting-7313a9379f60200cba7b9f71",
+    "sourceId": "58197e02d49d107d6f3e3247",
+    "ownerUserId": "7313a9379f60200cba7b9f71",
+    "type": "hosting",
+    "avatar": "CB",
+    "title": "Phoenix Host Circle CB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 17 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "7313a9379f60200cba7b9f71",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-17T18:00:00.000Z",
+    "endAtIso": "2026-05-17T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-7313a9379f60200cba7b9f71/1200/700",
+    "sourceLink": "https://example.com/hosting/7313a9379f60200cba7b9f71/58197e02d49d107d6f3e3247",
+    "location": "Phoenix host venue",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 76,
+    "affinity": 444724,
+    "createdDate": "2026-05-14T18:00:00.000Z",
+    "createdUser": "7313a9379f60200cba7b9f71",
+    "updatedDate": "2026-05-14T18:00:00.000Z",
+    "updatedUser": "7313a9379f60200cba7b9f71",
+    "admins": [
+      "7313a9379f60200cba7b9f71"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "2ae9b99646c30d4cc886ed05"
+    },
+    "syncKey": "http-invitation-7313a9379f60200cba7b9f71",
+    "sourceId": "2ae9b99646c30d4cc886ed05",
+    "ownerUserId": "7313a9379f60200cba7b9f71",
+    "type": "invitations",
+    "avatar": "LR",
+    "title": "Phoenix Afterwork Loop",
+    "subtitle": "Leo",
+    "timeframe": "May 18 · 6:30 PM - 8:30 PM",
+    "inviter": "Leo Reed",
+    "trashedAtIso": null,
+    "creatorUserId": "f6f22ba0a6f14cfcf4585d47",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-18T18:30:00.000Z",
+    "endAtIso": "2026-05-18T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-7313a9379f60200cba7b9f71/1200/700",
+    "sourceLink": "https://example.com/invitation/7313a9379f60200cba7b9f71/2ae9b99646c30d4cc886ed05",
+    "location": "Phoenix meetup point",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 74,
+    "affinity": 620130,
+    "createdDate": "2026-05-16T18:30:00.000Z",
+    "createdUser": "f6f22ba0a6f14cfcf4585d47",
+    "updatedDate": "2026-05-16T18:30:00.000Z",
+    "updatedUser": "f6f22ba0a6f14cfcf4585d47",
+    "admins": [
+      "f6f22ba0a6f14cfcf4585d47"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "0fe7821a10e273d40bb2e88f"
+    },
+    "syncKey": "http-hosting-f6f22ba0a6f14cfcf4585d47",
+    "sourceId": "0fe7821a10e273d40bb2e88f",
+    "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
+    "type": "hosting",
+    "avatar": "LR",
+    "title": "Nashville Host Circle LR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 18 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "f6f22ba0a6f14cfcf4585d47",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-18T19:00:00.000Z",
+    "endAtIso": "2026-05-18T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-f6f22ba0a6f14cfcf4585d47/1200/700",
+    "sourceLink": "https://example.com/hosting/f6f22ba0a6f14cfcf4585d47/0fe7821a10e273d40bb2e88f",
+    "location": "Nashville host venue",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 77,
+    "affinity": 620130,
+    "createdDate": "2026-05-15T19:00:00.000Z",
+    "createdUser": "f6f22ba0a6f14cfcf4585d47",
+    "updatedDate": "2026-05-15T19:00:00.000Z",
+    "updatedUser": "f6f22ba0a6f14cfcf4585d47",
+    "admins": [
+      "f6f22ba0a6f14cfcf4585d47"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "de8e52b3fbd2306bd54c65be"
+    },
+    "syncKey": "http-invitation-f6f22ba0a6f14cfcf4585d47",
+    "sourceId": "de8e52b3fbd2306bd54c65be",
+    "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
+    "type": "invitations",
+    "avatar": "AB",
+    "title": "Nashville Afterwork Loop",
+    "subtitle": "Ava",
+    "timeframe": "May 19 · 7:30 PM - 10:00 PM",
+    "inviter": "Ava Baker",
+    "trashedAtIso": null,
+    "creatorUserId": "0c3ab5da9af33d4e688e809c",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-19T19:30:00.000Z",
+    "endAtIso": "2026-05-19T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-f6f22ba0a6f14cfcf4585d47/1200/700",
+    "sourceLink": "https://example.com/invitation/f6f22ba0a6f14cfcf4585d47/de8e52b3fbd2306bd54c65be",
+    "location": "Nashville meetup point",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 75,
+    "affinity": 305793,
+    "createdDate": "2026-05-17T19:30:00.000Z",
+    "createdUser": "0c3ab5da9af33d4e688e809c",
+    "updatedDate": "2026-05-17T19:30:00.000Z",
+    "updatedUser": "0c3ab5da9af33d4e688e809c",
+    "admins": [
+      "0c3ab5da9af33d4e688e809c"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "f3308d680adf984a3dafffc0"
+    },
+    "syncKey": "http-hosting-0c3ab5da9af33d4e688e809c",
+    "sourceId": "f3308d680adf984a3dafffc0",
+    "ownerUserId": "0c3ab5da9af33d4e688e809c",
+    "type": "hosting",
+    "avatar": "AB",
+    "title": "San Diego Host Circle AB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 19 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "0c3ab5da9af33d4e688e809c",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-19T18:00:00.000Z",
+    "endAtIso": "2026-05-19T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-0c3ab5da9af33d4e688e809c/1200/700",
+    "sourceLink": "https://example.com/hosting/0c3ab5da9af33d4e688e809c/f3308d680adf984a3dafffc0",
+    "location": "San Diego host venue",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 78,
+    "affinity": 305793,
+    "createdDate": "2026-05-16T18:00:00.000Z",
+    "createdUser": "0c3ab5da9af33d4e688e809c",
+    "updatedDate": "2026-05-16T18:00:00.000Z",
+    "updatedUser": "0c3ab5da9af33d4e688e809c",
+    "admins": [
+      "0c3ab5da9af33d4e688e809c"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "9b48387e0cb9242e53344022"
+    },
+    "syncKey": "http-invitation-0c3ab5da9af33d4e688e809c",
+    "sourceId": "9b48387e0cb9242e53344022",
+    "ownerUserId": "0c3ab5da9af33d4e688e809c",
+    "type": "invitations",
+    "avatar": "AT",
+    "title": "San Diego Afterwork Loop",
+    "subtitle": "Alex",
+    "timeframe": "May 20 · 5:30 PM - 7:00 PM",
+    "inviter": "Alex Turner",
+    "trashedAtIso": null,
+    "creatorUserId": "76da95a9109da485555c0d25",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-20T17:30:00.000Z",
+    "endAtIso": "2026-05-20T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-0c3ab5da9af33d4e688e809c/1200/700",
+    "sourceLink": "https://example.com/invitation/0c3ab5da9af33d4e688e809c/9b48387e0cb9242e53344022",
+    "location": "San Diego meetup point",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 58,
+    "affinity": 443988,
+    "createdDate": "2026-05-18T17:30:00.000Z",
+    "createdUser": "76da95a9109da485555c0d25",
+    "updatedDate": "2026-05-18T17:30:00.000Z",
+    "updatedUser": "76da95a9109da485555c0d25",
+    "admins": [
+      "76da95a9109da485555c0d25"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "60f945ddb253dfe11e63e2df"
+    },
+    "syncKey": "http-hosting-76da95a9109da485555c0d25",
+    "sourceId": "60f945ddb253dfe11e63e2df",
+    "ownerUserId": "76da95a9109da485555c0d25",
+    "type": "hosting",
+    "avatar": "AT",
+    "title": "Portland Host Circle AT",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 20 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "76da95a9109da485555c0d25",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-20T19:00:00.000Z",
+    "endAtIso": "2026-05-20T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-76da95a9109da485555c0d25/1200/700",
+    "sourceLink": "https://example.com/hosting/76da95a9109da485555c0d25/60f945ddb253dfe11e63e2df",
+    "location": "Portland host venue",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 79,
+    "affinity": 443988,
+    "createdDate": "2026-05-17T19:00:00.000Z",
+    "createdUser": "76da95a9109da485555c0d25",
+    "updatedDate": "2026-05-17T19:00:00.000Z",
+    "updatedUser": "76da95a9109da485555c0d25",
+    "admins": [
+      "76da95a9109da485555c0d25"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "9cd96e044b8d7e418e573d46"
+    },
+    "syncKey": "http-invitation-76da95a9109da485555c0d25",
+    "sourceId": "9cd96e044b8d7e418e573d46",
+    "ownerUserId": "76da95a9109da485555c0d25",
+    "type": "invitations",
+    "avatar": "EP",
+    "title": "Portland Afterwork Loop",
+    "subtitle": "Emma",
+    "timeframe": "May 21 · 6:30 PM - 8:30 PM",
+    "inviter": "Emma Parker",
+    "trashedAtIso": null,
+    "creatorUserId": "0b8e5df4ec85d858c304a350",
+    "creatorName": "Emma Parker",
+    "creatorInitials": "EP",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-21T18:30:00.000Z",
+    "endAtIso": "2026-05-21T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-76da95a9109da485555c0d25/1200/700",
+    "sourceLink": "https://example.com/invitation/76da95a9109da485555c0d25/9cd96e044b8d7e418e573d46",
+    "location": "Portland meetup point",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 59,
+    "affinity": 227821,
+    "createdDate": "2026-05-19T18:30:00.000Z",
+    "createdUser": "0b8e5df4ec85d858c304a350",
+    "updatedDate": "2026-05-19T18:30:00.000Z",
+    "updatedUser": "0b8e5df4ec85d858c304a350",
+    "admins": [
+      "0b8e5df4ec85d858c304a350"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "f632439f160593177a3b3ba1"
+    },
+    "syncKey": "http-hosting-0b8e5df4ec85d858c304a350",
+    "sourceId": "f632439f160593177a3b3ba1",
+    "ownerUserId": "0b8e5df4ec85d858c304a350",
+    "type": "hosting",
+    "avatar": "EP",
+    "title": "Austin Host Circle EP",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 21 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "0b8e5df4ec85d858c304a350",
+    "creatorName": "Emma Parker",
+    "creatorInitials": "EP",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-21T18:00:00.000Z",
+    "endAtIso": "2026-05-21T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-0b8e5df4ec85d858c304a350/1200/700",
+    "sourceLink": "https://example.com/hosting/0b8e5df4ec85d858c304a350/f632439f160593177a3b3ba1",
+    "location": "Austin host venue",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 60,
+    "affinity": 227821,
+    "createdDate": "2026-05-18T18:00:00.000Z",
+    "createdUser": "0b8e5df4ec85d858c304a350",
+    "updatedDate": "2026-05-18T18:00:00.000Z",
+    "updatedUser": "0b8e5df4ec85d858c304a350",
+    "admins": [
+      "0b8e5df4ec85d858c304a350"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "49a90c78693a3c3b2d7efbad"
+    },
+    "syncKey": "http-invitation-0b8e5df4ec85d858c304a350",
+    "sourceId": "49a90c78693a3c3b2d7efbad",
+    "ownerUserId": "0b8e5df4ec85d858c304a350",
+    "type": "invitations",
+    "avatar": "NL",
+    "title": "Austin Afterwork Loop",
+    "subtitle": "Noah",
+    "timeframe": "May 22 · 7:30 PM - 10:00 PM",
+    "inviter": "Noah Lane",
+    "trashedAtIso": null,
+    "creatorUserId": "4da20eb049179e73d4757808",
+    "creatorName": "Noah Lane",
+    "creatorInitials": "NL",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-22T19:30:00.000Z",
+    "endAtIso": "2026-05-22T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-0b8e5df4ec85d858c304a350/1200/700",
+    "sourceLink": "https://example.com/invitation/0b8e5df4ec85d858c304a350/49a90c78693a3c3b2d7efbad",
+    "location": "Austin meetup point",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 60,
+    "affinity": 522709,
+    "createdDate": "2026-05-20T19:30:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-05-20T19:30:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808",
+    "admins": [
+      "4da20eb049179e73d4757808"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "c2b9bb630a300a1da4d999a2"
+    },
+    "syncKey": "http-hosting-4da20eb049179e73d4757808",
+    "sourceId": "c2b9bb630a300a1da4d999a2",
+    "ownerUserId": "4da20eb049179e73d4757808",
+    "type": "hosting",
+    "avatar": "NL",
+    "title": "Seattle Host Circle NL",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 22 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "4da20eb049179e73d4757808",
+    "creatorName": "Noah Lane",
+    "creatorInitials": "NL",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-22T19:00:00.000Z",
+    "endAtIso": "2026-05-22T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-4da20eb049179e73d4757808/1200/700",
+    "sourceLink": "https://example.com/hosting/4da20eb049179e73d4757808/c2b9bb630a300a1da4d999a2",
+    "location": "Seattle host venue",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 61,
+    "affinity": 522709,
+    "createdDate": "2026-05-19T19:00:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-05-19T19:00:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808",
+    "admins": [
+      "4da20eb049179e73d4757808"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "6d44ec32089a053999b4df4a"
+    },
+    "syncKey": "http-invitation-4da20eb049179e73d4757808",
+    "sourceId": "6d44ec32089a053999b4df4a",
+    "ownerUserId": "4da20eb049179e73d4757808",
+    "type": "invitations",
+    "avatar": "OR",
+    "title": "Seattle Afterwork Loop",
+    "subtitle": "Olivia",
+    "timeframe": "May 23 · 5:30 PM - 7:00 PM",
+    "inviter": "Olivia Rivera",
+    "trashedAtIso": null,
+    "creatorUserId": "9184901a15076d32ea8b626f",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-23T17:30:00.000Z",
+    "endAtIso": "2026-05-23T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-4da20eb049179e73d4757808/1200/700",
+    "sourceLink": "https://example.com/invitation/4da20eb049179e73d4757808/6d44ec32089a053999b4df4a",
+    "location": "Seattle meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 61,
+    "affinity": 398080,
+    "createdDate": "2026-05-21T17:30:00.000Z",
+    "createdUser": "9184901a15076d32ea8b626f",
+    "updatedDate": "2026-05-21T17:30:00.000Z",
+    "updatedUser": "9184901a15076d32ea8b626f",
+    "admins": [
+      "9184901a15076d32ea8b626f"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "4364533fc508c87ad54a285a"
+    },
+    "syncKey": "http-hosting-9184901a15076d32ea8b626f",
+    "sourceId": "4364533fc508c87ad54a285a",
+    "ownerUserId": "9184901a15076d32ea8b626f",
+    "type": "hosting",
+    "avatar": "OR",
+    "title": "Chicago Host Circle OR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 23 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "9184901a15076d32ea8b626f",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-23T18:00:00.000Z",
+    "endAtIso": "2026-05-23T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-9184901a15076d32ea8b626f/1200/700",
+    "sourceLink": "https://example.com/hosting/9184901a15076d32ea8b626f/4364533fc508c87ad54a285a",
+    "location": "Chicago host venue",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 62,
+    "affinity": 398080,
+    "createdDate": "2026-05-20T18:00:00.000Z",
+    "createdUser": "9184901a15076d32ea8b626f",
+    "updatedDate": "2026-05-20T18:00:00.000Z",
+    "updatedUser": "9184901a15076d32ea8b626f",
+    "admins": [
+      "9184901a15076d32ea8b626f"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "1e6c4e6581b41084d51e1376"
+    },
+    "syncKey": "http-invitation-9184901a15076d32ea8b626f",
+    "sourceId": "1e6c4e6581b41084d51e1376",
+    "ownerUserId": "9184901a15076d32ea8b626f",
+    "type": "invitations",
+    "avatar": "MG",
+    "title": "Chicago Afterwork Loop",
+    "subtitle": "Mason",
+    "timeframe": "May 24 · 6:30 PM - 8:30 PM",
+    "inviter": "Mason Grant",
+    "trashedAtIso": null,
+    "creatorUserId": "e1dccfc3443239865c6ac69a",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-24T18:30:00.000Z",
+    "endAtIso": "2026-05-24T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-9184901a15076d32ea8b626f/1200/700",
+    "sourceLink": "https://example.com/invitation/9184901a15076d32ea8b626f/1e6c4e6581b41084d51e1376",
+    "location": "Chicago meetup point",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 62,
+    "affinity": 329173,
+    "createdDate": "2026-05-22T18:30:00.000Z",
+    "createdUser": "e1dccfc3443239865c6ac69a",
+    "updatedDate": "2026-05-22T18:30:00.000Z",
+    "updatedUser": "e1dccfc3443239865c6ac69a",
+    "admins": [
+      "e1dccfc3443239865c6ac69a"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "84bf423635d13ef305a85cef"
+    },
+    "syncKey": "http-hosting-e1dccfc3443239865c6ac69a",
+    "sourceId": "84bf423635d13ef305a85cef",
+    "ownerUserId": "e1dccfc3443239865c6ac69a",
+    "type": "hosting",
+    "avatar": "MG",
+    "title": "Denver Host Circle MG",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 24 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "e1dccfc3443239865c6ac69a",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-24T19:00:00.000Z",
+    "endAtIso": "2026-05-24T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-e1dccfc3443239865c6ac69a/1200/700",
+    "sourceLink": "https://example.com/hosting/e1dccfc3443239865c6ac69a/84bf423635d13ef305a85cef",
+    "location": "Denver host venue",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 63,
+    "affinity": 329173,
+    "createdDate": "2026-05-21T19:00:00.000Z",
+    "createdUser": "e1dccfc3443239865c6ac69a",
+    "updatedDate": "2026-05-21T19:00:00.000Z",
+    "updatedUser": "e1dccfc3443239865c6ac69a",
+    "admins": [
+      "e1dccfc3443239865c6ac69a"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "b70c4694ecc370e775accdda"
+    },
+    "syncKey": "http-invitation-e1dccfc3443239865c6ac69a",
+    "sourceId": "b70c4694ecc370e775accdda",
+    "ownerUserId": "e1dccfc3443239865c6ac69a",
+    "type": "invitations",
+    "avatar": "LS",
+    "title": "Denver Afterwork Loop",
+    "subtitle": "Lina",
+    "timeframe": "May 25 · 7:30 PM - 10:00 PM",
+    "inviter": "Lina Stone",
+    "trashedAtIso": null,
+    "creatorUserId": "4b5bad1292fb6db05dc0e455",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-25T19:30:00.000Z",
+    "endAtIso": "2026-05-25T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-e1dccfc3443239865c6ac69a/1200/700",
+    "sourceLink": "https://example.com/invitation/e1dccfc3443239865c6ac69a/b70c4694ecc370e775accdda",
+    "location": "Denver meetup point",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 63,
+    "affinity": 432507,
+    "createdDate": "2026-05-23T19:30:00.000Z",
+    "createdUser": "4b5bad1292fb6db05dc0e455",
+    "updatedDate": "2026-05-23T19:30:00.000Z",
+    "updatedUser": "4b5bad1292fb6db05dc0e455",
+    "admins": [
+      "4b5bad1292fb6db05dc0e455"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "09bfb34bc05f05e314c67d06"
+    },
+    "syncKey": "http-hosting-4b5bad1292fb6db05dc0e455",
+    "sourceId": "09bfb34bc05f05e314c67d06",
+    "ownerUserId": "4b5bad1292fb6db05dc0e455",
+    "type": "hosting",
+    "avatar": "LS",
+    "title": "Miami Host Circle LS",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 1 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "4b5bad1292fb6db05dc0e455",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-01T18:00:00.000Z",
+    "endAtIso": "2026-05-01T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-4b5bad1292fb6db05dc0e455/1200/700",
+    "sourceLink": "https://example.com/hosting/4b5bad1292fb6db05dc0e455/09bfb34bc05f05e314c67d06",
+    "location": "Miami host venue",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 64,
+    "affinity": 432507,
+    "createdDate": "2026-04-28T18:00:00.000Z",
+    "createdUser": "4b5bad1292fb6db05dc0e455",
+    "updatedDate": "2026-04-28T18:00:00.000Z",
+    "updatedUser": "4b5bad1292fb6db05dc0e455",
+    "admins": [
+      "4b5bad1292fb6db05dc0e455"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "f5c1ea48cee02c5694c2cd38"
+    },
+    "syncKey": "http-invitation-4b5bad1292fb6db05dc0e455",
+    "sourceId": "f5c1ea48cee02c5694c2cd38",
+    "ownerUserId": "4b5bad1292fb6db05dc0e455",
+    "type": "invitations",
+    "avatar": "OH",
+    "title": "Miami Afterwork Loop",
+    "subtitle": "Owen",
+    "timeframe": "May 2 · 5:30 PM - 7:00 PM",
+    "inviter": "Owen Hale",
+    "trashedAtIso": null,
+    "creatorUserId": "ed4924c22a5240a54e48c0b5",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-02T17:30:00.000Z",
+    "endAtIso": "2026-05-02T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-4b5bad1292fb6db05dc0e455/1200/700",
+    "sourceLink": "https://example.com/invitation/4b5bad1292fb6db05dc0e455/f5c1ea48cee02c5694c2cd38",
+    "location": "Miami meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 64,
+    "affinity": 499225,
+    "createdDate": "2026-04-30T17:30:00.000Z",
+    "createdUser": "ed4924c22a5240a54e48c0b5",
+    "updatedDate": "2026-04-30T17:30:00.000Z",
+    "updatedUser": "ed4924c22a5240a54e48c0b5",
+    "admins": [
+      "ed4924c22a5240a54e48c0b5"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "1f73c75edf8c6246a5ef2eaa"
+    },
+    "syncKey": "http-hosting-ed4924c22a5240a54e48c0b5",
+    "sourceId": "1f73c75edf8c6246a5ef2eaa",
+    "ownerUserId": "ed4924c22a5240a54e48c0b5",
+    "type": "hosting",
+    "avatar": "OH",
+    "title": "Boston Host Circle OH",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 2 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "ed4924c22a5240a54e48c0b5",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-02T19:00:00.000Z",
+    "endAtIso": "2026-05-02T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-ed4924c22a5240a54e48c0b5/1200/700",
+    "sourceLink": "https://example.com/hosting/ed4924c22a5240a54e48c0b5/1f73c75edf8c6246a5ef2eaa",
+    "location": "Boston host venue",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 65,
+    "affinity": 499225,
+    "createdDate": "2026-04-29T19:00:00.000Z",
+    "createdUser": "ed4924c22a5240a54e48c0b5",
+    "updatedDate": "2026-04-29T19:00:00.000Z",
+    "updatedUser": "ed4924c22a5240a54e48c0b5",
+    "admins": [
+      "ed4924c22a5240a54e48c0b5"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "ac781dc5e9e97786f04c1a24"
+    },
+    "syncKey": "http-invitation-ed4924c22a5240a54e48c0b5",
+    "sourceId": "ac781dc5e9e97786f04c1a24",
+    "ownerUserId": "ed4924c22a5240a54e48c0b5",
+    "type": "invitations",
+    "avatar": "CB",
+    "title": "Boston Afterwork Loop",
+    "subtitle": "Chloe",
+    "timeframe": "May 3 · 6:30 PM - 8:30 PM",
+    "inviter": "Chloe Brooks",
+    "trashedAtIso": null,
+    "creatorUserId": "a0fb804ad6f347d6a9dab526",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-03T18:30:00.000Z",
+    "endAtIso": "2026-05-03T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-ed4924c22a5240a54e48c0b5/1200/700",
+    "sourceLink": "https://example.com/invitation/ed4924c22a5240a54e48c0b5/ac781dc5e9e97786f04c1a24",
+    "location": "Boston meetup point",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 65,
+    "affinity": 581523,
+    "createdDate": "2026-05-01T18:30:00.000Z",
+    "createdUser": "a0fb804ad6f347d6a9dab526",
+    "updatedDate": "2026-05-01T18:30:00.000Z",
+    "updatedUser": "a0fb804ad6f347d6a9dab526",
+    "admins": [
+      "a0fb804ad6f347d6a9dab526"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "a62d0ec470bd2e363bcda856"
+    },
+    "syncKey": "http-hosting-a0fb804ad6f347d6a9dab526",
+    "sourceId": "a62d0ec470bd2e363bcda856",
+    "ownerUserId": "a0fb804ad6f347d6a9dab526",
+    "type": "hosting",
+    "avatar": "CB",
+    "title": "Phoenix Host Circle CB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 3 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "a0fb804ad6f347d6a9dab526",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-03T18:00:00.000Z",
+    "endAtIso": "2026-05-03T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-a0fb804ad6f347d6a9dab526/1200/700",
+    "sourceLink": "https://example.com/hosting/a0fb804ad6f347d6a9dab526/a62d0ec470bd2e363bcda856",
+    "location": "Phoenix host venue",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 66,
+    "affinity": 581523,
+    "createdDate": "2026-04-30T18:00:00.000Z",
+    "createdUser": "a0fb804ad6f347d6a9dab526",
+    "updatedDate": "2026-04-30T18:00:00.000Z",
+    "updatedUser": "a0fb804ad6f347d6a9dab526",
+    "admins": [
+      "a0fb804ad6f347d6a9dab526"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "428ef2511b6dcbb13384ff17"
+    },
+    "syncKey": "http-invitation-a0fb804ad6f347d6a9dab526",
+    "sourceId": "428ef2511b6dcbb13384ff17",
+    "ownerUserId": "a0fb804ad6f347d6a9dab526",
+    "type": "invitations",
+    "avatar": "LR",
+    "title": "Phoenix Afterwork Loop",
+    "subtitle": "Leo",
+    "timeframe": "May 4 · 7:30 PM - 10:00 PM",
+    "inviter": "Leo Reed",
+    "trashedAtIso": null,
+    "creatorUserId": "0f9350e50f1ffc3cf002b7ed",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-04T19:30:00.000Z",
+    "endAtIso": "2026-05-04T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-a0fb804ad6f347d6a9dab526/1200/700",
+    "sourceLink": "https://example.com/invitation/a0fb804ad6f347d6a9dab526/428ef2511b6dcbb13384ff17",
+    "location": "Phoenix meetup point",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 66,
+    "affinity": 440843,
+    "createdDate": "2026-05-02T19:30:00.000Z",
+    "createdUser": "0f9350e50f1ffc3cf002b7ed",
+    "updatedDate": "2026-05-02T19:30:00.000Z",
+    "updatedUser": "0f9350e50f1ffc3cf002b7ed",
+    "admins": [
+      "0f9350e50f1ffc3cf002b7ed"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "4febfb52ff00324e9a15061f"
+    },
+    "syncKey": "http-hosting-0f9350e50f1ffc3cf002b7ed",
+    "sourceId": "4febfb52ff00324e9a15061f",
+    "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
+    "type": "hosting",
+    "avatar": "LR",
+    "title": "Nashville Host Circle LR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 4 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "0f9350e50f1ffc3cf002b7ed",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-04T19:00:00.000Z",
+    "endAtIso": "2026-05-04T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-0f9350e50f1ffc3cf002b7ed/1200/700",
+    "sourceLink": "https://example.com/hosting/0f9350e50f1ffc3cf002b7ed/4febfb52ff00324e9a15061f",
+    "location": "Nashville host venue",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 67,
+    "affinity": 440843,
+    "createdDate": "2026-05-01T19:00:00.000Z",
+    "createdUser": "0f9350e50f1ffc3cf002b7ed",
+    "updatedDate": "2026-05-01T19:00:00.000Z",
+    "updatedUser": "0f9350e50f1ffc3cf002b7ed",
+    "admins": [
+      "0f9350e50f1ffc3cf002b7ed"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "d9ea8b88031b3af211dcb3c4"
+    },
+    "syncKey": "http-invitation-0f9350e50f1ffc3cf002b7ed",
+    "sourceId": "d9ea8b88031b3af211dcb3c4",
+    "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
+    "type": "invitations",
+    "avatar": "AB",
+    "title": "Nashville Afterwork Loop",
+    "subtitle": "Ava",
+    "timeframe": "May 5 · 5:30 PM - 7:00 PM",
+    "inviter": "Ava Baker",
+    "trashedAtIso": null,
+    "creatorUserId": "9d3ba3d74edabe4695e6d3f9",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-05T17:30:00.000Z",
+    "endAtIso": "2026-05-05T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-0f9350e50f1ffc3cf002b7ed/1200/700",
+    "sourceLink": "https://example.com/invitation/0f9350e50f1ffc3cf002b7ed/d9ea8b88031b3af211dcb3c4",
+    "location": "Nashville meetup point",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 67,
+    "affinity": 444724,
+    "createdDate": "2026-05-03T17:30:00.000Z",
+    "createdUser": "9d3ba3d74edabe4695e6d3f9",
+    "updatedDate": "2026-05-03T17:30:00.000Z",
+    "updatedUser": "9d3ba3d74edabe4695e6d3f9",
+    "admins": [
+      "9d3ba3d74edabe4695e6d3f9"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "d379b3aac54c8085c7ca4831"
+    },
+    "syncKey": "http-hosting-9d3ba3d74edabe4695e6d3f9",
+    "sourceId": "d379b3aac54c8085c7ca4831",
+    "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
+    "type": "hosting",
+    "avatar": "AB",
+    "title": "San Diego Host Circle AB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 5 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "9d3ba3d74edabe4695e6d3f9",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-05T18:00:00.000Z",
+    "endAtIso": "2026-05-05T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-9d3ba3d74edabe4695e6d3f9/1200/700",
+    "sourceLink": "https://example.com/hosting/9d3ba3d74edabe4695e6d3f9/d379b3aac54c8085c7ca4831",
+    "location": "San Diego host venue",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 68,
+    "affinity": 444724,
+    "createdDate": "2026-05-02T18:00:00.000Z",
+    "createdUser": "9d3ba3d74edabe4695e6d3f9",
+    "updatedDate": "2026-05-02T18:00:00.000Z",
+    "updatedUser": "9d3ba3d74edabe4695e6d3f9",
+    "admins": [
+      "9d3ba3d74edabe4695e6d3f9"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "e84d50c25ca939399f467b1b"
+    },
+    "syncKey": "http-invitation-9d3ba3d74edabe4695e6d3f9",
+    "sourceId": "e84d50c25ca939399f467b1b",
+    "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
+    "type": "invitations",
+    "avatar": "AT",
+    "title": "San Diego Afterwork Loop",
+    "subtitle": "Alex",
+    "timeframe": "May 6 · 6:30 PM - 8:30 PM",
+    "inviter": "Alex Turner",
+    "trashedAtIso": null,
+    "creatorUserId": "8f6ff3752a1f0912cd63e912",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-06T18:30:00.000Z",
+    "endAtIso": "2026-05-06T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-9d3ba3d74edabe4695e6d3f9/1200/700",
+    "sourceLink": "https://example.com/invitation/9d3ba3d74edabe4695e6d3f9/e84d50c25ca939399f467b1b",
+    "location": "San Diego meetup point",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 68,
+    "affinity": 620130,
+    "createdDate": "2026-05-04T18:30:00.000Z",
+    "createdUser": "8f6ff3752a1f0912cd63e912",
+    "updatedDate": "2026-05-04T18:30:00.000Z",
+    "updatedUser": "8f6ff3752a1f0912cd63e912",
+    "admins": [
+      "8f6ff3752a1f0912cd63e912"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "ac04f0df822be9832c542289"
+    },
+    "syncKey": "http-hosting-8f6ff3752a1f0912cd63e912",
+    "sourceId": "ac04f0df822be9832c542289",
+    "ownerUserId": "8f6ff3752a1f0912cd63e912",
+    "type": "hosting",
+    "avatar": "AT",
+    "title": "Portland Host Circle AT",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 6 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "8f6ff3752a1f0912cd63e912",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-06T19:00:00.000Z",
+    "endAtIso": "2026-05-06T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-8f6ff3752a1f0912cd63e912/1200/700",
+    "sourceLink": "https://example.com/hosting/8f6ff3752a1f0912cd63e912/ac04f0df822be9832c542289",
+    "location": "Portland host venue",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 69,
+    "affinity": 620130,
+    "createdDate": "2026-05-03T19:00:00.000Z",
+    "createdUser": "8f6ff3752a1f0912cd63e912",
+    "updatedDate": "2026-05-03T19:00:00.000Z",
+    "updatedUser": "8f6ff3752a1f0912cd63e912",
+    "admins": [
+      "8f6ff3752a1f0912cd63e912"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "2fe18816d7152f393b55d973"
+    },
+    "syncKey": "http-invitation-8f6ff3752a1f0912cd63e912",
+    "sourceId": "2fe18816d7152f393b55d973",
+    "ownerUserId": "8f6ff3752a1f0912cd63e912",
+    "type": "invitations",
+    "avatar": "EP",
+    "title": "Portland Afterwork Loop",
+    "subtitle": "Emma",
+    "timeframe": "May 7 · 7:30 PM - 10:00 PM",
+    "inviter": "Emma Parker",
+    "trashedAtIso": null,
+    "creatorUserId": "b0971e779dbdb71f9327eabb",
+    "creatorName": "Emma Parker",
+    "creatorInitials": "EP",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-07T19:30:00.000Z",
+    "endAtIso": "2026-05-07T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-8f6ff3752a1f0912cd63e912/1200/700",
+    "sourceLink": "https://example.com/invitation/8f6ff3752a1f0912cd63e912/2fe18816d7152f393b55d973",
+    "location": "Portland meetup point",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 69,
+    "affinity": 305793,
+    "createdDate": "2026-05-05T19:30:00.000Z",
+    "createdUser": "b0971e779dbdb71f9327eabb",
+    "updatedDate": "2026-05-05T19:30:00.000Z",
+    "updatedUser": "b0971e779dbdb71f9327eabb",
+    "admins": [
+      "b0971e779dbdb71f9327eabb"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "5eb753669add7c3a92746c0c"
+    },
+    "syncKey": "http-hosting-b0971e779dbdb71f9327eabb",
+    "sourceId": "5eb753669add7c3a92746c0c",
+    "ownerUserId": "b0971e779dbdb71f9327eabb",
+    "type": "hosting",
+    "avatar": "EP",
+    "title": "Austin Host Circle EP",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 7 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "b0971e779dbdb71f9327eabb",
+    "creatorName": "Emma Parker",
+    "creatorInitials": "EP",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-07T18:00:00.000Z",
+    "endAtIso": "2026-05-07T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-b0971e779dbdb71f9327eabb/1200/700",
+    "sourceLink": "https://example.com/hosting/b0971e779dbdb71f9327eabb/5eb753669add7c3a92746c0c",
+    "location": "Austin host venue",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 70,
+    "affinity": 305793,
+    "createdDate": "2026-05-04T18:00:00.000Z",
+    "createdUser": "b0971e779dbdb71f9327eabb",
+    "updatedDate": "2026-05-04T18:00:00.000Z",
+    "updatedUser": "b0971e779dbdb71f9327eabb",
+    "admins": [
+      "b0971e779dbdb71f9327eabb"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "c7c497325a325bf51b48a8e2"
+    },
+    "syncKey": "http-invitation-b0971e779dbdb71f9327eabb",
+    "sourceId": "c7c497325a325bf51b48a8e2",
+    "ownerUserId": "b0971e779dbdb71f9327eabb",
+    "type": "invitations",
+    "avatar": "NL",
+    "title": "Austin Afterwork Loop",
+    "subtitle": "Noah",
+    "timeframe": "May 8 · 5:30 PM - 7:00 PM",
+    "inviter": "Noah Lane",
+    "trashedAtIso": null,
+    "creatorUserId": "af0436815ab38f4864dd1e24",
+    "creatorName": "Noah Lane",
+    "creatorInitials": "NL",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-08T17:30:00.000Z",
+    "endAtIso": "2026-05-08T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-b0971e779dbdb71f9327eabb/1200/700",
+    "sourceLink": "https://example.com/invitation/b0971e779dbdb71f9327eabb/c7c497325a325bf51b48a8e2",
+    "location": "Austin meetup point",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 70,
+    "affinity": 443988,
+    "createdDate": "2026-05-06T17:30:00.000Z",
+    "createdUser": "af0436815ab38f4864dd1e24",
+    "updatedDate": "2026-05-06T17:30:00.000Z",
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "admins": [
+      "af0436815ab38f4864dd1e24"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "f20e647502851dcdf2b69815"
+    },
+    "syncKey": "http-hosting-af0436815ab38f4864dd1e24",
+    "sourceId": "f20e647502851dcdf2b69815",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "type": "hosting",
+    "avatar": "NL",
+    "title": "Seattle Host Circle NL",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 8 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "af0436815ab38f4864dd1e24",
+    "creatorName": "Noah Lane",
+    "creatorInitials": "NL",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-08T19:00:00.000Z",
+    "endAtIso": "2026-05-08T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-af0436815ab38f4864dd1e24/1200/700",
+    "sourceLink": "https://example.com/hosting/af0436815ab38f4864dd1e24/f20e647502851dcdf2b69815",
+    "location": "Seattle host venue",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 71,
+    "affinity": 443988,
+    "createdDate": "2026-05-05T19:00:00.000Z",
+    "createdUser": "af0436815ab38f4864dd1e24",
+    "updatedDate": "2026-05-05T19:00:00.000Z",
+    "updatedUser": "af0436815ab38f4864dd1e24",
+    "admins": [
+      "af0436815ab38f4864dd1e24"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "c26098b5a12e5d6e46b76f9e"
+    },
+    "syncKey": "http-invitation-af0436815ab38f4864dd1e24",
+    "sourceId": "c26098b5a12e5d6e46b76f9e",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "type": "invitations",
+    "avatar": "OR",
+    "title": "Seattle Afterwork Loop",
+    "subtitle": "Olivia",
+    "timeframe": "May 9 · 6:30 PM - 8:30 PM",
+    "inviter": "Olivia Rivera",
+    "trashedAtIso": null,
+    "creatorUserId": "d94ebcdf7bf9c8f33bb3f32c",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-09T18:30:00.000Z",
+    "endAtIso": "2026-05-09T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-af0436815ab38f4864dd1e24/1200/700",
+    "sourceLink": "https://example.com/invitation/af0436815ab38f4864dd1e24/c26098b5a12e5d6e46b76f9e",
+    "location": "Seattle meetup point",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 71,
+    "affinity": 227821,
+    "createdDate": "2026-05-07T18:30:00.000Z",
+    "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
+    "updatedDate": "2026-05-07T18:30:00.000Z",
+    "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
+    "admins": [
+      "d94ebcdf7bf9c8f33bb3f32c"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "b786f55b9577df19ce78be4a"
+    },
+    "syncKey": "http-hosting-d94ebcdf7bf9c8f33bb3f32c",
+    "sourceId": "b786f55b9577df19ce78be4a",
+    "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
+    "type": "hosting",
+    "avatar": "OR",
+    "title": "Chicago Host Circle OR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 9 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "d94ebcdf7bf9c8f33bb3f32c",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-09T18:00:00.000Z",
+    "endAtIso": "2026-05-09T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-d94ebcdf7bf9c8f33bb3f32c/1200/700",
+    "sourceLink": "https://example.com/hosting/d94ebcdf7bf9c8f33bb3f32c/b786f55b9577df19ce78be4a",
+    "location": "Chicago host venue",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 72,
+    "affinity": 227821,
+    "createdDate": "2026-05-06T18:00:00.000Z",
+    "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
+    "updatedDate": "2026-05-06T18:00:00.000Z",
+    "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
+    "admins": [
+      "d94ebcdf7bf9c8f33bb3f32c"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "849faa75c31a2e4efdeeb6eb"
+    },
+    "syncKey": "http-invitation-d94ebcdf7bf9c8f33bb3f32c",
+    "sourceId": "849faa75c31a2e4efdeeb6eb",
+    "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
+    "type": "invitations",
+    "avatar": "MG",
+    "title": "Chicago Afterwork Loop",
+    "subtitle": "Mason",
+    "timeframe": "May 10 · 7:30 PM - 10:00 PM",
+    "inviter": "Mason Grant",
+    "trashedAtIso": null,
+    "creatorUserId": "904ee3c526298f6921cde3f3",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-10T19:30:00.000Z",
+    "endAtIso": "2026-05-10T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-d94ebcdf7bf9c8f33bb3f32c/1200/700",
+    "sourceLink": "https://example.com/invitation/d94ebcdf7bf9c8f33bb3f32c/849faa75c31a2e4efdeeb6eb",
+    "location": "Chicago meetup point",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 72,
+    "affinity": 522709,
+    "createdDate": "2026-05-08T19:30:00.000Z",
+    "createdUser": "904ee3c526298f6921cde3f3",
+    "updatedDate": "2026-05-08T19:30:00.000Z",
+    "updatedUser": "904ee3c526298f6921cde3f3",
+    "admins": [
+      "904ee3c526298f6921cde3f3"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "1fb14e059cd3300d9fbdefc4"
+    },
+    "syncKey": "http-hosting-904ee3c526298f6921cde3f3",
+    "sourceId": "1fb14e059cd3300d9fbdefc4",
+    "ownerUserId": "904ee3c526298f6921cde3f3",
+    "type": "hosting",
+    "avatar": "MG",
+    "title": "Denver Host Circle MG",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 10 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "904ee3c526298f6921cde3f3",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-10T19:00:00.000Z",
+    "endAtIso": "2026-05-10T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-904ee3c526298f6921cde3f3/1200/700",
+    "sourceLink": "https://example.com/hosting/904ee3c526298f6921cde3f3/1fb14e059cd3300d9fbdefc4",
+    "location": "Denver host venue",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 73,
+    "affinity": 522709,
+    "createdDate": "2026-05-07T19:00:00.000Z",
+    "createdUser": "904ee3c526298f6921cde3f3",
+    "updatedDate": "2026-05-07T19:00:00.000Z",
+    "updatedUser": "904ee3c526298f6921cde3f3",
+    "admins": [
+      "904ee3c526298f6921cde3f3"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "e14b86c338e1ce5e5b0a46ad"
+    },
+    "syncKey": "http-invitation-904ee3c526298f6921cde3f3",
+    "sourceId": "e14b86c338e1ce5e5b0a46ad",
+    "ownerUserId": "904ee3c526298f6921cde3f3",
+    "type": "invitations",
+    "avatar": "LS",
+    "title": "Denver Afterwork Loop",
+    "subtitle": "Lina",
+    "timeframe": "May 11 · 5:30 PM - 7:00 PM",
+    "inviter": "Lina Stone",
+    "trashedAtIso": null,
+    "creatorUserId": "4a008502646a200488911f45",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-11T17:30:00.000Z",
+    "endAtIso": "2026-05-11T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-904ee3c526298f6921cde3f3/1200/700",
+    "sourceLink": "https://example.com/invitation/904ee3c526298f6921cde3f3/e14b86c338e1ce5e5b0a46ad",
+    "location": "Denver meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 73,
+    "affinity": 398080,
+    "createdDate": "2026-05-09T17:30:00.000Z",
+    "createdUser": "4a008502646a200488911f45",
+    "updatedDate": "2026-05-09T17:30:00.000Z",
+    "updatedUser": "4a008502646a200488911f45",
+    "admins": [
+      "4a008502646a200488911f45"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "936c9c7ae72d13a8718cc0b4"
+    },
+    "syncKey": "http-hosting-4a008502646a200488911f45",
+    "sourceId": "936c9c7ae72d13a8718cc0b4",
+    "ownerUserId": "4a008502646a200488911f45",
+    "type": "hosting",
+    "avatar": "LS",
+    "title": "Miami Host Circle LS",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 11 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "4a008502646a200488911f45",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-11T18:00:00.000Z",
+    "endAtIso": "2026-05-11T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-4a008502646a200488911f45/1200/700",
+    "sourceLink": "https://example.com/hosting/4a008502646a200488911f45/936c9c7ae72d13a8718cc0b4",
+    "location": "Miami host venue",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 74,
+    "affinity": 398080,
+    "createdDate": "2026-05-08T18:00:00.000Z",
+    "createdUser": "4a008502646a200488911f45",
+    "updatedDate": "2026-05-08T18:00:00.000Z",
+    "updatedUser": "4a008502646a200488911f45",
+    "admins": [
+      "4a008502646a200488911f45"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "d96fcb4f7bf121a4b40c612e"
+    },
+    "syncKey": "http-invitation-4a008502646a200488911f45",
+    "sourceId": "d96fcb4f7bf121a4b40c612e",
+    "ownerUserId": "4a008502646a200488911f45",
+    "type": "invitations",
+    "avatar": "OH",
+    "title": "Miami Afterwork Loop",
+    "subtitle": "Owen",
+    "timeframe": "May 12 · 6:30 PM - 8:30 PM",
+    "inviter": "Owen Hale",
+    "trashedAtIso": null,
+    "creatorUserId": "e904dad402b47dd2cdaa8bec",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-12T18:30:00.000Z",
+    "endAtIso": "2026-05-12T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-4a008502646a200488911f45/1200/700",
+    "sourceLink": "https://example.com/invitation/4a008502646a200488911f45/d96fcb4f7bf121a4b40c612e",
+    "location": "Miami meetup point",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 74,
+    "affinity": 329173,
+    "createdDate": "2026-05-10T18:30:00.000Z",
+    "createdUser": "e904dad402b47dd2cdaa8bec",
+    "updatedDate": "2026-05-10T18:30:00.000Z",
+    "updatedUser": "e904dad402b47dd2cdaa8bec",
+    "admins": [
+      "e904dad402b47dd2cdaa8bec"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "a967e7ec48e63dc2da6544f6"
+    },
+    "syncKey": "http-hosting-e904dad402b47dd2cdaa8bec",
+    "sourceId": "a967e7ec48e63dc2da6544f6",
+    "ownerUserId": "e904dad402b47dd2cdaa8bec",
+    "type": "hosting",
+    "avatar": "OH",
+    "title": "Boston Host Circle OH",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 12 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "e904dad402b47dd2cdaa8bec",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-12T19:00:00.000Z",
+    "endAtIso": "2026-05-12T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-e904dad402b47dd2cdaa8bec/1200/700",
+    "sourceLink": "https://example.com/hosting/e904dad402b47dd2cdaa8bec/a967e7ec48e63dc2da6544f6",
+    "location": "Boston host venue",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 75,
+    "affinity": 329173,
+    "createdDate": "2026-05-09T19:00:00.000Z",
+    "createdUser": "e904dad402b47dd2cdaa8bec",
+    "updatedDate": "2026-05-09T19:00:00.000Z",
+    "updatedUser": "e904dad402b47dd2cdaa8bec",
+    "admins": [
+      "e904dad402b47dd2cdaa8bec"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "ec8fd21139ef7841497d603b"
+    },
+    "syncKey": "http-invitation-e904dad402b47dd2cdaa8bec",
+    "sourceId": "ec8fd21139ef7841497d603b",
+    "ownerUserId": "e904dad402b47dd2cdaa8bec",
+    "type": "invitations",
+    "avatar": "CB",
+    "title": "Boston Afterwork Loop",
+    "subtitle": "Chloe",
+    "timeframe": "May 13 · 7:30 PM - 10:00 PM",
+    "inviter": "Chloe Brooks",
+    "trashedAtIso": null,
+    "creatorUserId": "25f4744ead36d038064d62c3",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-13T19:30:00.000Z",
+    "endAtIso": "2026-05-13T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-e904dad402b47dd2cdaa8bec/1200/700",
+    "sourceLink": "https://example.com/invitation/e904dad402b47dd2cdaa8bec/ec8fd21139ef7841497d603b",
+    "location": "Boston meetup point",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 75,
+    "affinity": 432507,
+    "createdDate": "2026-05-11T19:30:00.000Z",
+    "createdUser": "25f4744ead36d038064d62c3",
+    "updatedDate": "2026-05-11T19:30:00.000Z",
+    "updatedUser": "25f4744ead36d038064d62c3",
+    "admins": [
+      "25f4744ead36d038064d62c3"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "fbf697675e93b6cec1e395bb"
+    },
+    "syncKey": "http-hosting-25f4744ead36d038064d62c3",
+    "sourceId": "fbf697675e93b6cec1e395bb",
+    "ownerUserId": "25f4744ead36d038064d62c3",
+    "type": "hosting",
+    "avatar": "CB",
+    "title": "Phoenix Host Circle CB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 13 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "25f4744ead36d038064d62c3",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-13T18:00:00.000Z",
+    "endAtIso": "2026-05-13T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-25f4744ead36d038064d62c3/1200/700",
+    "sourceLink": "https://example.com/hosting/25f4744ead36d038064d62c3/fbf697675e93b6cec1e395bb",
+    "location": "Phoenix host venue",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 76,
+    "affinity": 432507,
+    "createdDate": "2026-05-10T18:00:00.000Z",
+    "createdUser": "25f4744ead36d038064d62c3",
+    "updatedDate": "2026-05-10T18:00:00.000Z",
+    "updatedUser": "25f4744ead36d038064d62c3",
+    "admins": [
+      "25f4744ead36d038064d62c3"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "8652eee4a133fddf5c66f53c"
+    },
+    "syncKey": "http-invitation-25f4744ead36d038064d62c3",
+    "sourceId": "8652eee4a133fddf5c66f53c",
+    "ownerUserId": "25f4744ead36d038064d62c3",
+    "type": "invitations",
+    "avatar": "LR",
+    "title": "Phoenix Afterwork Loop",
+    "subtitle": "Leo",
+    "timeframe": "May 14 · 5:30 PM - 7:00 PM",
+    "inviter": "Leo Reed",
+    "trashedAtIso": null,
+    "creatorUserId": "c100132b3ae88b47890def59",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-14T17:30:00.000Z",
+    "endAtIso": "2026-05-14T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-25f4744ead36d038064d62c3/1200/700",
+    "sourceLink": "https://example.com/invitation/25f4744ead36d038064d62c3/8652eee4a133fddf5c66f53c",
+    "location": "Phoenix meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 58,
+    "affinity": 499225,
+    "createdDate": "2026-05-12T17:30:00.000Z",
+    "createdUser": "c100132b3ae88b47890def59",
+    "updatedDate": "2026-05-12T17:30:00.000Z",
+    "updatedUser": "c100132b3ae88b47890def59",
+    "admins": [
+      "c100132b3ae88b47890def59"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "33299674c5a9d3e2fbf9dca9"
+    },
+    "syncKey": "http-hosting-c100132b3ae88b47890def59",
+    "sourceId": "33299674c5a9d3e2fbf9dca9",
+    "ownerUserId": "c100132b3ae88b47890def59",
+    "type": "hosting",
+    "avatar": "LR",
+    "title": "Nashville Host Circle LR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 14 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "c100132b3ae88b47890def59",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-14T19:00:00.000Z",
+    "endAtIso": "2026-05-14T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-c100132b3ae88b47890def59/1200/700",
+    "sourceLink": "https://example.com/hosting/c100132b3ae88b47890def59/33299674c5a9d3e2fbf9dca9",
+    "location": "Nashville host venue",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 77,
+    "affinity": 499225,
+    "createdDate": "2026-05-11T19:00:00.000Z",
+    "createdUser": "c100132b3ae88b47890def59",
+    "updatedDate": "2026-05-11T19:00:00.000Z",
+    "updatedUser": "c100132b3ae88b47890def59",
+    "admins": [
+      "c100132b3ae88b47890def59"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "5b92de01a5adddd869ba8b0b"
+    },
+    "syncKey": "http-invitation-c100132b3ae88b47890def59",
+    "sourceId": "5b92de01a5adddd869ba8b0b",
+    "ownerUserId": "c100132b3ae88b47890def59",
+    "type": "invitations",
+    "avatar": "AB",
+    "title": "Nashville Afterwork Loop",
+    "subtitle": "Ava",
+    "timeframe": "May 15 · 6:30 PM - 8:30 PM",
+    "inviter": "Ava Baker",
+    "trashedAtIso": null,
+    "creatorUserId": "c033e546ef7c928fb8cf073b",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-15T18:30:00.000Z",
+    "endAtIso": "2026-05-15T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-c100132b3ae88b47890def59/1200/700",
+    "sourceLink": "https://example.com/invitation/c100132b3ae88b47890def59/5b92de01a5adddd869ba8b0b",
+    "location": "Nashville meetup point",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 59,
+    "affinity": 581523,
+    "createdDate": "2026-05-13T18:30:00.000Z",
+    "createdUser": "c033e546ef7c928fb8cf073b",
+    "updatedDate": "2026-05-13T18:30:00.000Z",
+    "updatedUser": "c033e546ef7c928fb8cf073b",
+    "admins": [
+      "c033e546ef7c928fb8cf073b"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "bab6277cff8a7e7a9781472c"
+    },
+    "syncKey": "http-hosting-c033e546ef7c928fb8cf073b",
+    "sourceId": "bab6277cff8a7e7a9781472c",
+    "ownerUserId": "c033e546ef7c928fb8cf073b",
+    "type": "hosting",
+    "avatar": "AB",
+    "title": "San Diego Host Circle AB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 15 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "c033e546ef7c928fb8cf073b",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-15T18:00:00.000Z",
+    "endAtIso": "2026-05-15T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-c033e546ef7c928fb8cf073b/1200/700",
+    "sourceLink": "https://example.com/hosting/c033e546ef7c928fb8cf073b/bab6277cff8a7e7a9781472c",
+    "location": "San Diego host venue",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 78,
+    "affinity": 581523,
+    "createdDate": "2026-05-12T18:00:00.000Z",
+    "createdUser": "c033e546ef7c928fb8cf073b",
+    "updatedDate": "2026-05-12T18:00:00.000Z",
+    "updatedUser": "c033e546ef7c928fb8cf073b",
+    "admins": [
+      "c033e546ef7c928fb8cf073b"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "2a6977798a4b6c3ef708a616"
+    },
+    "syncKey": "http-invitation-c033e546ef7c928fb8cf073b",
+    "sourceId": "2a6977798a4b6c3ef708a616",
+    "ownerUserId": "c033e546ef7c928fb8cf073b",
+    "type": "invitations",
+    "avatar": "AT",
+    "title": "San Diego Afterwork Loop",
+    "subtitle": "Alex",
+    "timeframe": "May 16 · 7:30 PM - 10:00 PM",
+    "inviter": "Alex Turner",
+    "trashedAtIso": null,
+    "creatorUserId": "ec342d9af3f2cfd6adfd4ee5",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-16T19:30:00.000Z",
+    "endAtIso": "2026-05-16T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-c033e546ef7c928fb8cf073b/1200/700",
+    "sourceLink": "https://example.com/invitation/c033e546ef7c928fb8cf073b/2a6977798a4b6c3ef708a616",
+    "location": "San Diego meetup point",
+    "locationCoordinates": {
+      "latitude": 47.6182,
+      "longitude": -122.3369
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3369,
+        47.6182
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 60,
+    "affinity": 440843,
+    "createdDate": "2026-05-14T19:30:00.000Z",
+    "createdUser": "ec342d9af3f2cfd6adfd4ee5",
+    "updatedDate": "2026-05-14T19:30:00.000Z",
+    "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
+    "admins": [
+      "ec342d9af3f2cfd6adfd4ee5"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "58aa9a000b4fe45f868f1cd5"
+    },
+    "syncKey": "http-hosting-ec342d9af3f2cfd6adfd4ee5",
+    "sourceId": "58aa9a000b4fe45f868f1cd5",
+    "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
+    "type": "hosting",
+    "avatar": "AT",
+    "title": "Portland Host Circle AT",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 16 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "ec342d9af3f2cfd6adfd4ee5",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-16T19:00:00.000Z",
+    "endAtIso": "2026-05-16T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-ec342d9af3f2cfd6adfd4ee5/1200/700",
+    "sourceLink": "https://example.com/hosting/ec342d9af3f2cfd6adfd4ee5/58aa9a000b4fe45f868f1cd5",
+    "location": "Portland host venue",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 79,
+    "affinity": 440843,
+    "createdDate": "2026-05-13T19:00:00.000Z",
+    "createdUser": "ec342d9af3f2cfd6adfd4ee5",
+    "updatedDate": "2026-05-13T19:00:00.000Z",
+    "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
+    "admins": [
+      "ec342d9af3f2cfd6adfd4ee5"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "7c954b01ddf32b128d09c9f6"
+    },
+    "syncKey": "http-invitation-ec342d9af3f2cfd6adfd4ee5",
+    "sourceId": "7c954b01ddf32b128d09c9f6",
+    "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
+    "type": "invitations",
+    "avatar": "EP",
+    "title": "Portland Afterwork Loop",
+    "subtitle": "Emma",
+    "timeframe": "May 17 · 5:30 PM - 7:00 PM",
+    "inviter": "Emma Parker",
+    "trashedAtIso": null,
+    "creatorUserId": "931a01221376d8e28a068fe8",
+    "creatorName": "Emma Parker",
+    "creatorInitials": "EP",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-17T17:30:00.000Z",
+    "endAtIso": "2026-05-17T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-ec342d9af3f2cfd6adfd4ee5/1200/700",
+    "sourceLink": "https://example.com/invitation/ec342d9af3f2cfd6adfd4ee5/7c954b01ddf32b128d09c9f6",
+    "location": "Portland meetup point",
+    "locationCoordinates": {
+      "latitude": 32.7289,
+      "longitude": -117.1659
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -117.1659,
+        32.7289
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 61,
+    "affinity": 444724,
+    "createdDate": "2026-05-15T17:30:00.000Z",
+    "createdUser": "931a01221376d8e28a068fe8",
+    "updatedDate": "2026-05-15T17:30:00.000Z",
+    "updatedUser": "931a01221376d8e28a068fe8",
+    "admins": [
+      "931a01221376d8e28a068fe8"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "0f54103718f2886ead05ed29"
+    },
+    "syncKey": "http-hosting-931a01221376d8e28a068fe8",
+    "sourceId": "0f54103718f2886ead05ed29",
+    "ownerUserId": "931a01221376d8e28a068fe8",
+    "type": "hosting",
+    "avatar": "EP",
+    "title": "Austin Host Circle EP",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 17 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "931a01221376d8e28a068fe8",
+    "creatorName": "Emma Parker",
+    "creatorInitials": "EP",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-17T18:00:00.000Z",
+    "endAtIso": "2026-05-17T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-931a01221376d8e28a068fe8/1200/700",
+    "sourceLink": "https://example.com/hosting/931a01221376d8e28a068fe8/0f54103718f2886ead05ed29",
+    "location": "Austin host venue",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 60,
+    "affinity": 444724,
+    "createdDate": "2026-05-14T18:00:00.000Z",
+    "createdUser": "931a01221376d8e28a068fe8",
+    "updatedDate": "2026-05-14T18:00:00.000Z",
+    "updatedUser": "931a01221376d8e28a068fe8",
+    "admins": [
+      "931a01221376d8e28a068fe8"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "d3f1977740b3ad64b246eea5"
+    },
+    "syncKey": "http-invitation-931a01221376d8e28a068fe8",
+    "sourceId": "d3f1977740b3ad64b246eea5",
+    "ownerUserId": "931a01221376d8e28a068fe8",
+    "type": "invitations",
+    "avatar": "NL",
+    "title": "Austin Afterwork Loop",
+    "subtitle": "Noah",
+    "timeframe": "May 18 · 6:30 PM - 8:30 PM",
+    "inviter": "Noah Lane",
+    "trashedAtIso": null,
+    "creatorUserId": "23820c1e76d3bd843f61c799",
+    "creatorName": "Noah Lane",
+    "creatorInitials": "NL",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-18T18:30:00.000Z",
+    "endAtIso": "2026-05-18T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-931a01221376d8e28a068fe8/1200/700",
+    "sourceLink": "https://example.com/invitation/931a01221376d8e28a068fe8/d3f1977740b3ad64b246eea5",
+    "location": "Austin meetup point",
+    "locationCoordinates": {
+      "latitude": 39.7536,
+      "longitude": -104.9951
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -104.9951,
+        39.7536
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 62,
+    "affinity": 620130,
+    "createdDate": "2026-05-16T18:30:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-05-16T18:30:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799",
+    "admins": [
+      "23820c1e76d3bd843f61c799"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "f260f450643e752d226b4253"
+    },
+    "syncKey": "http-hosting-23820c1e76d3bd843f61c799",
+    "sourceId": "f260f450643e752d226b4253",
+    "ownerUserId": "23820c1e76d3bd843f61c799",
+    "type": "hosting",
+    "avatar": "NL",
+    "title": "Seattle Host Circle NL",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 18 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "23820c1e76d3bd843f61c799",
+    "creatorName": "Noah Lane",
+    "creatorInitials": "NL",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-18T19:00:00.000Z",
+    "endAtIso": "2026-05-18T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-23820c1e76d3bd843f61c799/1200/700",
+    "sourceLink": "https://example.com/hosting/23820c1e76d3bd843f61c799/f260f450643e752d226b4253",
+    "location": "Seattle host venue",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 61,
+    "affinity": 620130,
+    "createdDate": "2026-05-15T19:00:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-05-15T19:00:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799",
+    "admins": [
+      "23820c1e76d3bd843f61c799"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "60cd64b444e23989dd8c4692"
+    },
+    "syncKey": "http-invitation-23820c1e76d3bd843f61c799",
+    "sourceId": "60cd64b444e23989dd8c4692",
+    "ownerUserId": "23820c1e76d3bd843f61c799",
+    "type": "invitations",
+    "avatar": "OR",
+    "title": "Seattle Afterwork Loop",
+    "subtitle": "Olivia",
+    "timeframe": "May 19 · 7:30 PM - 10:00 PM",
+    "inviter": "Olivia Rivera",
+    "trashedAtIso": null,
+    "creatorUserId": "63bae8417bd352e5013c2e93",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-19T19:30:00.000Z",
+    "endAtIso": "2026-05-19T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-23820c1e76d3bd843f61c799/1200/700",
+    "sourceLink": "https://example.com/invitation/23820c1e76d3bd843f61c799/60cd64b444e23989dd8c4692",
+    "location": "Seattle meetup point",
+    "locationCoordinates": {
+      "latitude": 25.7773,
+      "longitude": -80.1966
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -80.1966,
+        25.7773
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 63,
+    "affinity": 305793,
+    "createdDate": "2026-05-17T19:30:00.000Z",
+    "createdUser": "63bae8417bd352e5013c2e93",
+    "updatedDate": "2026-05-17T19:30:00.000Z",
+    "updatedUser": "63bae8417bd352e5013c2e93",
+    "admins": [
+      "63bae8417bd352e5013c2e93"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "8ee99e518eafa34c000ce8e0"
+    },
+    "syncKey": "http-hosting-63bae8417bd352e5013c2e93",
+    "sourceId": "8ee99e518eafa34c000ce8e0",
+    "ownerUserId": "63bae8417bd352e5013c2e93",
+    "type": "hosting",
+    "avatar": "OR",
+    "title": "Chicago Host Circle OR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 19 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "63bae8417bd352e5013c2e93",
+    "creatorName": "Olivia Rivera",
+    "creatorInitials": "OR",
+    "creatorGender": "woman",
+    "creatorCity": "Chicago",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-19T18:00:00.000Z",
+    "endAtIso": "2026-05-19T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-63bae8417bd352e5013c2e93/1200/700",
+    "sourceLink": "https://example.com/hosting/63bae8417bd352e5013c2e93/8ee99e518eafa34c000ce8e0",
+    "location": "Chicago host venue",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 62,
+    "affinity": 305793,
+    "createdDate": "2026-05-16T18:00:00.000Z",
+    "createdUser": "63bae8417bd352e5013c2e93",
+    "updatedDate": "2026-05-16T18:00:00.000Z",
+    "updatedUser": "63bae8417bd352e5013c2e93",
+    "admins": [
+      "63bae8417bd352e5013c2e93"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "4ee4bc188839c1790f385e0c"
+    },
+    "syncKey": "http-invitation-63bae8417bd352e5013c2e93",
+    "sourceId": "4ee4bc188839c1790f385e0c",
+    "ownerUserId": "63bae8417bd352e5013c2e93",
+    "type": "invitations",
+    "avatar": "MG",
+    "title": "Chicago Afterwork Loop",
+    "subtitle": "Mason",
+    "timeframe": "May 20 · 5:30 PM - 7:00 PM",
+    "inviter": "Mason Grant",
+    "trashedAtIso": null,
+    "creatorUserId": "41f4659dbd75a03abc20cd6d",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-20T17:30:00.000Z",
+    "endAtIso": "2026-05-20T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-63bae8417bd352e5013c2e93/1200/700",
+    "sourceLink": "https://example.com/invitation/63bae8417bd352e5013c2e93/4ee4bc188839c1790f385e0c",
+    "location": "Chicago meetup point",
+    "locationCoordinates": {
+      "latitude": 30.284,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.284
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 64,
+    "affinity": 443988,
+    "createdDate": "2026-05-18T17:30:00.000Z",
+    "createdUser": "41f4659dbd75a03abc20cd6d",
+    "updatedDate": "2026-05-18T17:30:00.000Z",
+    "updatedUser": "41f4659dbd75a03abc20cd6d",
+    "admins": [
+      "41f4659dbd75a03abc20cd6d"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "eb98328f45571f5217996beb"
+    },
+    "syncKey": "http-hosting-41f4659dbd75a03abc20cd6d",
+    "sourceId": "eb98328f45571f5217996beb",
+    "ownerUserId": "41f4659dbd75a03abc20cd6d",
+    "type": "hosting",
+    "avatar": "MG",
+    "title": "Denver Host Circle MG",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 20 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "41f4659dbd75a03abc20cd6d",
+    "creatorName": "Mason Grant",
+    "creatorInitials": "MG",
+    "creatorGender": "man",
+    "creatorCity": "Denver",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-20T19:00:00.000Z",
+    "endAtIso": "2026-05-20T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-41f4659dbd75a03abc20cd6d/1200/700",
+    "sourceLink": "https://example.com/hosting/41f4659dbd75a03abc20cd6d/eb98328f45571f5217996beb",
+    "location": "Denver host venue",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 63,
+    "affinity": 443988,
+    "createdDate": "2026-05-17T19:00:00.000Z",
+    "createdUser": "41f4659dbd75a03abc20cd6d",
+    "updatedDate": "2026-05-17T19:00:00.000Z",
+    "updatedUser": "41f4659dbd75a03abc20cd6d",
+    "admins": [
+      "41f4659dbd75a03abc20cd6d"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "3d7a875a619d5271cc662a0e"
+    },
+    "syncKey": "http-invitation-41f4659dbd75a03abc20cd6d",
+    "sourceId": "3d7a875a619d5271cc662a0e",
+    "ownerUserId": "41f4659dbd75a03abc20cd6d",
+    "type": "invitations",
+    "avatar": "LS",
+    "title": "Denver Afterwork Loop",
+    "subtitle": "Lina",
+    "timeframe": "May 21 · 6:30 PM - 8:30 PM",
+    "inviter": "Lina Stone",
+    "trashedAtIso": null,
+    "creatorUserId": "af70e41dbe826cbd7d8b3500",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-21T18:30:00.000Z",
+    "endAtIso": "2026-05-21T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-41f4659dbd75a03abc20cd6d/1200/700",
+    "sourceLink": "https://example.com/invitation/41f4659dbd75a03abc20cd6d/3d7a875a619d5271cc662a0e",
+    "location": "Denver meetup point",
+    "locationCoordinates": {
+      "latitude": 42.3433,
+      "longitude": -71.0625
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -71.0625,
+        42.3433
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 65,
+    "affinity": 227821,
+    "createdDate": "2026-05-19T18:30:00.000Z",
+    "createdUser": "af70e41dbe826cbd7d8b3500",
+    "updatedDate": "2026-05-19T18:30:00.000Z",
+    "updatedUser": "af70e41dbe826cbd7d8b3500",
+    "admins": [
+      "af70e41dbe826cbd7d8b3500"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "1790d13d7e9a6278a02bf042"
+    },
+    "syncKey": "http-hosting-af70e41dbe826cbd7d8b3500",
+    "sourceId": "1790d13d7e9a6278a02bf042",
+    "ownerUserId": "af70e41dbe826cbd7d8b3500",
+    "type": "hosting",
+    "avatar": "LS",
+    "title": "Miami Host Circle LS",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 21 · 6:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "af70e41dbe826cbd7d8b3500",
+    "creatorName": "Lina Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "woman",
+    "creatorCity": "Miami",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-21T18:00:00.000Z",
+    "endAtIso": "2026-05-21T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-af70e41dbe826cbd7d8b3500/1200/700",
+    "sourceLink": "https://example.com/hosting/af70e41dbe826cbd7d8b3500/1790d13d7e9a6278a02bf042",
+    "location": "Miami host venue",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 64,
+    "affinity": 227821,
+    "createdDate": "2026-05-18T18:00:00.000Z",
+    "createdUser": "af70e41dbe826cbd7d8b3500",
+    "updatedDate": "2026-05-18T18:00:00.000Z",
+    "updatedUser": "af70e41dbe826cbd7d8b3500",
+    "admins": [
+      "af70e41dbe826cbd7d8b3500"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "bb3ef65f0403fef956341cbc"
+    },
+    "syncKey": "http-invitation-af70e41dbe826cbd7d8b3500",
+    "sourceId": "bb3ef65f0403fef956341cbc",
+    "ownerUserId": "af70e41dbe826cbd7d8b3500",
+    "type": "invitations",
+    "avatar": "OH",
+    "title": "Miami Afterwork Loop",
+    "subtitle": "Owen",
+    "timeframe": "May 22 · 7:30 PM - 10:00 PM",
+    "inviter": "Owen Hale",
+    "trashedAtIso": null,
+    "creatorUserId": "0cc9990d08304ab26ee67784",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-22T19:30:00.000Z",
+    "endAtIso": "2026-05-22T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-af70e41dbe826cbd7d8b3500/1200/700",
+    "sourceLink": "https://example.com/invitation/af70e41dbe826cbd7d8b3500/bb3ef65f0403fef956341cbc",
+    "location": "Miami meetup point",
+    "locationCoordinates": {
+      "latitude": 45.4996,
+      "longitude": -122.682
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.682,
+        45.4996
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 66,
+    "affinity": 522709,
+    "createdDate": "2026-05-20T19:30:00.000Z",
+    "createdUser": "0cc9990d08304ab26ee67784",
+    "updatedDate": "2026-05-20T19:30:00.000Z",
+    "updatedUser": "0cc9990d08304ab26ee67784",
+    "admins": [
+      "0cc9990d08304ab26ee67784"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "d5a5e12f02dc331f3f26c54d"
+    },
+    "syncKey": "http-hosting-0cc9990d08304ab26ee67784",
+    "sourceId": "d5a5e12f02dc331f3f26c54d",
+    "ownerUserId": "0cc9990d08304ab26ee67784",
+    "type": "hosting",
+    "avatar": "OH",
+    "title": "Boston Host Circle OH",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 22 · 7:00 PM - 9:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "0cc9990d08304ab26ee67784",
+    "creatorName": "Owen Hale",
+    "creatorInitials": "OH",
+    "creatorGender": "man",
+    "creatorCity": "Boston",
+    "visibility": "Public",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-22T19:00:00.000Z",
+    "endAtIso": "2026-05-22T21:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-0cc9990d08304ab26ee67784/1200/700",
+    "sourceLink": "https://example.com/hosting/0cc9990d08304ab26ee67784/d5a5e12f02dc331f3f26c54d",
+    "location": "Boston host venue",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 17,
+    "capacityTotal": 17,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.6,
+    "relevance": 65,
+    "affinity": 522709,
+    "createdDate": "2026-05-19T19:00:00.000Z",
+    "createdUser": "0cc9990d08304ab26ee67784",
+    "updatedDate": "2026-05-19T19:00:00.000Z",
+    "updatedUser": "0cc9990d08304ab26ee67784",
+    "admins": [
+      "0cc9990d08304ab26ee67784"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "8628d0a27a02aac0511565bd"
+    },
+    "syncKey": "http-invitation-0cc9990d08304ab26ee67784",
+    "sourceId": "8628d0a27a02aac0511565bd",
+    "ownerUserId": "0cc9990d08304ab26ee67784",
+    "type": "invitations",
+    "avatar": "CB",
+    "title": "Boston Afterwork Loop",
+    "subtitle": "Chloe",
+    "timeframe": "May 23 · 5:30 PM - 7:00 PM",
+    "inviter": "Chloe Brooks",
+    "trashedAtIso": null,
+    "creatorUserId": "e76d63199eff33a6945cb797",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-23T17:30:00.000Z",
+    "endAtIso": "2026-05-23T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-0cc9990d08304ab26ee67784/1200/700",
+    "sourceLink": "https://example.com/invitation/0cc9990d08304ab26ee67784/8628d0a27a02aac0511565bd",
+    "location": "Boston meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2792,
+      "longitude": -97.7599
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7599,
+        30.2792
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 67,
+    "affinity": 398080,
+    "createdDate": "2026-05-21T17:30:00.000Z",
+    "createdUser": "e76d63199eff33a6945cb797",
+    "updatedDate": "2026-05-21T17:30:00.000Z",
+    "updatedUser": "e76d63199eff33a6945cb797",
+    "admins": [
+      "e76d63199eff33a6945cb797"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "e1af06ef61a111f767037ddb"
+    },
+    "syncKey": "http-hosting-e76d63199eff33a6945cb797",
+    "sourceId": "e1af06ef61a111f767037ddb",
+    "ownerUserId": "e76d63199eff33a6945cb797",
+    "type": "hosting",
+    "avatar": "CB",
+    "title": "Phoenix Host Circle CB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 23 · 6:00 PM - 8:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "e76d63199eff33a6945cb797",
+    "creatorName": "Chloe Brooks",
+    "creatorInitials": "CB",
+    "creatorGender": "woman",
+    "creatorCity": "Phoenix",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-23T18:00:00.000Z",
+    "endAtIso": "2026-05-23T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-e76d63199eff33a6945cb797/1200/700",
+    "sourceLink": "https://example.com/hosting/e76d63199eff33a6945cb797/e1af06ef61a111f767037ddb",
+    "location": "Phoenix host venue",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 8,
+    "capacityMax": 18,
+    "capacityTotal": 18,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.8,
+    "relevance": 66,
+    "affinity": 398080,
+    "createdDate": "2026-05-20T18:00:00.000Z",
+    "createdUser": "e76d63199eff33a6945cb797",
+    "updatedDate": "2026-05-20T18:00:00.000Z",
+    "updatedUser": "e76d63199eff33a6945cb797",
+    "admins": [
+      "e76d63199eff33a6945cb797"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "39d7da512a8c9c36b026bdf2"
+    },
+    "syncKey": "http-invitation-e76d63199eff33a6945cb797",
+    "sourceId": "39d7da512a8c9c36b026bdf2",
+    "ownerUserId": "e76d63199eff33a6945cb797",
+    "type": "invitations",
+    "avatar": "LR",
+    "title": "Phoenix Afterwork Loop",
+    "subtitle": "Leo",
+    "timeframe": "May 24 · 6:30 PM - 8:30 PM",
+    "inviter": "Leo Reed",
+    "trashedAtIso": null,
+    "creatorUserId": "f01086c19a00a6f46b6d41a7",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-24T18:30:00.000Z",
+    "endAtIso": "2026-05-24T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-e76d63199eff33a6945cb797/1200/700",
+    "sourceLink": "https://example.com/invitation/e76d63199eff33a6945cb797/39d7da512a8c9c36b026bdf2",
+    "location": "Phoenix meetup point",
+    "locationCoordinates": {
+      "latitude": 36.1759,
+      "longitude": -86.7984
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -86.7984,
+        36.1759
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 11,
+    "capacityTotal": 11,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.2,
+    "relevance": 68,
+    "affinity": 329173,
+    "createdDate": "2026-05-22T18:30:00.000Z",
+    "createdUser": "f01086c19a00a6f46b6d41a7",
+    "updatedDate": "2026-05-22T18:30:00.000Z",
+    "updatedUser": "f01086c19a00a6f46b6d41a7",
+    "admins": [
+      "f01086c19a00a6f46b6d41a7"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "54d4805e535277a5cf0b6260"
+    },
+    "syncKey": "http-hosting-f01086c19a00a6f46b6d41a7",
+    "sourceId": "54d4805e535277a5cf0b6260",
+    "ownerUserId": "f01086c19a00a6f46b6d41a7",
+    "type": "hosting",
+    "avatar": "LR",
+    "title": "Nashville Host Circle LR",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 24 · 7:00 PM - 10:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "f01086c19a00a6f46b6d41a7",
+    "creatorName": "Leo Reed",
+    "creatorInitials": "LR",
+    "creatorGender": "man",
+    "creatorCity": "Nashville",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-24T19:00:00.000Z",
+    "endAtIso": "2026-05-24T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-f01086c19a00a6f46b6d41a7/1200/700",
+    "sourceLink": "https://example.com/hosting/f01086c19a00a6f46b6d41a7/54d4805e535277a5cf0b6260",
+    "location": "Nashville host venue",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 9,
+    "capacityMax": 19,
+    "capacityTotal": 19,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8,
+    "relevance": 67,
+    "affinity": 329173,
+    "createdDate": "2026-05-21T19:00:00.000Z",
+    "createdUser": "f01086c19a00a6f46b6d41a7",
+    "updatedDate": "2026-05-21T19:00:00.000Z",
+    "updatedUser": "f01086c19a00a6f46b6d41a7",
+    "admins": [
+      "f01086c19a00a6f46b6d41a7"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "44db7ec86ba3df4d0dc54fc2"
+    },
+    "syncKey": "http-invitation-f01086c19a00a6f46b6d41a7",
+    "sourceId": "44db7ec86ba3df4d0dc54fc2",
+    "ownerUserId": "f01086c19a00a6f46b6d41a7",
+    "type": "invitations",
+    "avatar": "AB",
+    "title": "Nashville Afterwork Loop",
+    "subtitle": "Ava",
+    "timeframe": "May 25 · 7:30 PM - 10:00 PM",
+    "inviter": "Ava Baker",
+    "trashedAtIso": null,
+    "creatorUserId": "f7bcd28c65ea349b4ee7aed2",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-25T19:30:00.000Z",
+    "endAtIso": "2026-05-25T22:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-f01086c19a00a6f46b6d41a7/1200/700",
+    "sourceLink": "https://example.com/invitation/f01086c19a00a6f46b6d41a7/44db7ec86ba3df4d0dc54fc2",
+    "location": "Nashville meetup point",
+    "locationCoordinates": {
+      "latitude": 33.4628,
+      "longitude": -112.0908
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -112.0908,
+        33.4628
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7.4,
+    "relevance": 69,
+    "affinity": 432507,
+    "createdDate": "2026-05-23T19:30:00.000Z",
+    "createdUser": "f7bcd28c65ea349b4ee7aed2",
+    "updatedDate": "2026-05-23T19:30:00.000Z",
+    "updatedUser": "f7bcd28c65ea349b4ee7aed2",
+    "admins": [
+      "f7bcd28c65ea349b4ee7aed2"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "4da716b41a61824673a3de6b"
+    },
+    "syncKey": "http-hosting-f7bcd28c65ea349b4ee7aed2",
+    "sourceId": "4da716b41a61824673a3de6b",
+    "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
+    "type": "hosting",
+    "avatar": "AB",
+    "title": "San Diego Host Circle AB",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 1 · 6:00 PM - 8:00 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "f7bcd28c65ea349b4ee7aed2",
+    "creatorName": "Ava Baker",
+    "creatorInitials": "AB",
+    "creatorGender": "woman",
+    "creatorCity": "San Diego",
+    "visibility": "Friends only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-01T18:00:00.000Z",
+    "endAtIso": "2026-05-01T20:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-f7bcd28c65ea349b4ee7aed2/1200/700",
+    "sourceLink": "https://example.com/hosting/f7bcd28c65ea349b4ee7aed2/4da716b41a61824673a3de6b",
+    "location": "San Diego host venue",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Wellness"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.2,
+    "relevance": 68,
+    "affinity": 432507,
+    "createdDate": "2026-04-28T18:00:00.000Z",
+    "createdUser": "f7bcd28c65ea349b4ee7aed2",
+    "updatedDate": "2026-04-28T18:00:00.000Z",
+    "updatedUser": "f7bcd28c65ea349b4ee7aed2",
+    "admins": [
+      "f7bcd28c65ea349b4ee7aed2"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "71d42f676270baedebc3b051"
+    },
+    "syncKey": "http-invitation-f7bcd28c65ea349b4ee7aed2",
+    "sourceId": "71d42f676270baedebc3b051",
+    "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
+    "type": "invitations",
+    "avatar": "AT",
+    "title": "San Diego Afterwork Loop",
+    "subtitle": "Alex",
+    "timeframe": "May 2 · 5:30 PM - 7:00 PM",
+    "inviter": "Alex Turner",
+    "trashedAtIso": null,
+    "creatorUserId": "b5e2db6882d989d8532af12c",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Invitation only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-02T17:30:00.000Z",
+    "endAtIso": "2026-05-02T19:00:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-f7bcd28c65ea349b4ee7aed2/1200/700",
+    "sourceLink": "https://example.com/invitation/f7bcd28c65ea349b4ee7aed2/71d42f676270baedebc3b051",
+    "location": "San Diego meetup point",
+    "locationCoordinates": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -97.7479,
+        30.2768
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 13,
+    "capacityTotal": 13,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#CoffeeMeetup"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 6.8,
+    "relevance": 70,
+    "affinity": 499225,
+    "createdDate": "2026-04-30T17:30:00.000Z",
+    "createdUser": "b5e2db6882d989d8532af12c",
+    "updatedDate": "2026-04-30T17:30:00.000Z",
+    "updatedUser": "b5e2db6882d989d8532af12c",
+    "admins": [
+      "b5e2db6882d989d8532af12c"
+    ],
+    "status": "invitation"
+  },
+  {
+    "_id": {
+      "$oid": "d82a1da1668db593b5a69887"
+    },
+    "syncKey": "http-hosting-b5e2db6882d989d8532af12c",
+    "sourceId": "d82a1da1668db593b5a69887",
+    "ownerUserId": "b5e2db6882d989d8532af12c",
+    "type": "hosting",
+    "avatar": "AT",
+    "title": "Portland Host Circle AT",
+    "subtitle": "Hosted meetup with rotating intros, light structure, and easy rejoin flow.",
+    "timeframe": "May 2 · 7:00 PM - 9:30 PM",
+    "trashedAtIso": null,
+    "creatorUserId": "b5e2db6882d989d8532af12c",
+    "creatorName": "Alex Turner",
+    "creatorInitials": "AT",
+    "creatorGender": "man",
+    "creatorCity": "Portland",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-05-02T19:00:00.000Z",
+    "endAtIso": "2026-05-02T21:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-hosting-b5e2db6882d989d8532af12c/1200/700",
+    "sourceLink": "https://example.com/hosting/b5e2db6882d989d8532af12c/d82a1da1668db593b5a69887",
+    "location": "Portland host venue",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 7,
+    "capacityMax": 15,
+    "capacityTotal": 15,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
+    "topics": [
+      "#Community",
+      "#Meetup",
+      "#Networking"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 8.4,
+    "relevance": 69,
+    "affinity": 499225,
+    "createdDate": "2026-04-29T19:00:00.000Z",
+    "createdUser": "b5e2db6882d989d8532af12c",
+    "updatedDate": "2026-04-29T19:00:00.000Z",
+    "updatedUser": "b5e2db6882d989d8532af12c",
+    "admins": [
+      "b5e2db6882d989d8532af12c"
+    ],
+    "status": "hosting"
+  },
+  {
+    "_id": {
+      "$oid": "99f08b152a5eb13f1f6c3e77"
+    },
+    "syncKey": "http-invitation-b5e2db6882d989d8532af12c",
+    "sourceId": "99f08b152a5eb13f1f6c3e77",
+    "ownerUserId": "b5e2db6882d989d8532af12c",
+    "type": "invitations",
+    "avatar": "FA",
+    "title": "Portland Afterwork Loop",
+    "subtitle": "Farkas",
+    "timeframe": "May 3 · 6:30 PM - 8:30 PM",
+    "inviter": "Farkas Anna",
+    "trashedAtIso": null,
+    "creatorUserId": "bf057de7c586eede7e84bdc7",
+    "creatorName": "Farkas Anna",
+    "creatorInitials": "FA",
+    "creatorGender": "woman",
+    "creatorCity": "Austin",
+    "visibility": "Invitation only",
+    "blindMode": "Blind Event",
+    "startAtIso": "2026-05-03T18:30:00.000Z",
+    "endAtIso": "2026-05-03T20:30:00.000Z",
+    "imageUrl": "https://picsum.photos/seed/http-invitation-b5e2db6882d989d8532af12c/1200/700",
+    "sourceLink": "https://example.com/invitation/b5e2db6882d989d8532af12c/99f08b152a5eb13f1f6c3e77",
+    "location": "Portland meetup point",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 5,
+    "capacityMax": 14,
+    "capacityTotal": 14,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
+    "topics": [
+      "#Social",
+      "#Friends",
+      "#Culture"
+    ],
+    "subEvents": [],
+    "subEventsDisplayMode": "Casual",
+    "rating": 7,
+    "relevance": 71,
+    "affinity": 432507,
+    "createdDate": "2026-05-01T18:30:00.000Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-05-01T18:30:00.000Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7",
+    "admins": [
+      "bf057de7c586eede7e84bdc7"
+    ],
+    "status": "invitation"
   }
 ]
