@@ -53,18 +53,7 @@ public class UserRatesService {
             return List.of();
         }
 
-        Map<String, UserRate> recordsById = new LinkedHashMap<>();
-        addRecords(recordsById, userRatesRepository.findByOwnerUserIdAndSource(ownerUserId, SOURCE_ACTIVITY_RATE));
-        addRecords(recordsById, userRatesRepository.findBySourceAndFromUserId(SOURCE_GAME_CARD, ownerUserId));
-        addRecords(recordsById, userRatesRepository.findBySourceAndToUserId(SOURCE_GAME_CARD, ownerUserId));
-        addRecords(recordsById, userRatesRepository.findBySourceAndModeAndOwnerUserId(SOURCE_GAME_CARD, "pair", ownerUserId));
-
-        List<RateMenuItemDto> dedupedItems = dedupeRateItems(recordsById.values().stream()
-                .map(record -> toRateMenuItem(record, currentUser))
-                .filter(Objects::nonNull)
-                .toList());
-
-        return dedupedItems.stream()
+        return queryNormalizedRateItems(currentUser, ownerUserId).stream()
                 .sorted(Comparator
                         .comparing((RateMenuItemDto item) -> rateDateMillis(item.happenedAt()), Comparator.reverseOrder())
                         .thenComparing(item -> safeText(item.id())))
@@ -99,18 +88,17 @@ public class UserRatesService {
             return new ActivityRatePageResponseDto(List.of(), 0, null, List.of());
         }
 
-        List<ActivityRateProjection> projections = dedupeActivityRateProjections(userRatesRepository
-                .findByOwnerUserIdAndSourceAndMode(ownerUserId, SOURCE_ACTIVITY_RATE, mode)
-                .stream()
-                .map(record -> toActivityRateProjection(record, currentUser))
+        List<RatePageProjection> projections = queryNormalizedRateItems(currentUser, ownerUserId).stream()
+                .filter(item -> matchesRequestedMode(item, mode))
+                .filter(item -> direction.equals(item.direction()))
+                .filter(item -> isWithinRange(item, rangeStartMs, rangeEndMs))
+                .map(this::toRatePageProjection)
                 .filter(Objects::nonNull)
-                .filter(projection -> direction.equals(projection.item().direction()))
-                .filter(projection -> isWithinRange(projection.item(), rangeStartMs, rangeEndMs))
-                .toList());
+                .toList();
 
-        List<RateMenuItemDto> items = projections.stream()
-                .sorted(activityRateComparator(sort, groupDirection, innerOrder))
-                .map(ActivityRateProjection::item)
+        List<RateMenuItemDto> items = dedupeRatePageProjections(projections).stream()
+                .sorted(ratePageComparator(sort, groupDirection, innerOrder))
+                .map(RatePageProjection::item)
                 .toList();
 
         int startIndex = resolveCursorStartIndex(items, cursor);
@@ -150,6 +138,19 @@ public class UserRatesService {
             userRatesRepository.saveAll(normalizedRates);
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
+    }
+
+    private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId) {
+        Map<String, UserRate> recordsById = new LinkedHashMap<>();
+        addRecords(recordsById, userRatesRepository.findByOwnerUserIdAndSource(ownerUserId, SOURCE_ACTIVITY_RATE));
+        addRecords(recordsById, userRatesRepository.findBySourceAndFromUserId(SOURCE_GAME_CARD, ownerUserId));
+        addRecords(recordsById, userRatesRepository.findBySourceAndToUserId(SOURCE_GAME_CARD, ownerUserId));
+        addRecords(recordsById, userRatesRepository.findBySourceAndModeAndOwnerUserId(SOURCE_GAME_CARD, "pair", ownerUserId));
+
+        return dedupeRateItems(recordsById.values().stream()
+                .map(record -> toRateMenuItem(record, currentUser))
+                .filter(Objects::nonNull)
+                .toList());
     }
 
     private void addRecords(Map<String, UserRate> target, List<UserRate> records) {
@@ -195,13 +196,13 @@ public class UserRatesService {
         return new ArrayList<>(deduped.values());
     }
 
-    private List<ActivityRateProjection> dedupeActivityRateProjections(List<ActivityRateProjection> projections) {
-        Map<String, ActivityRateProjection> deduped = new LinkedHashMap<>();
-        for (ActivityRateProjection projection : projections) {
+    private List<RatePageProjection> dedupeRatePageProjections(List<RatePageProjection> projections) {
+        Map<String, RatePageProjection> deduped = new LinkedHashMap<>();
+        for (RatePageProjection projection : projections) {
             if (projection == null || projection.item() == null || !StringUtils.hasText(safeText(projection.item().id()))) {
                 continue;
             }
-            ActivityRateProjection existing = deduped.get(projection.item().id());
+            RatePageProjection existing = deduped.get(projection.item().id());
             if (existing == null || projection.happenedAtMs() >= existing.happenedAtMs()) {
                 deduped.put(projection.item().id(), projection);
             }
@@ -435,61 +436,82 @@ public class UserRatesService {
                 distance.metersExact());
     }
 
-    private ActivityRateProjection toActivityRateProjection(UserRate record, Users currentUser) {
-        RateMenuItemDto item = toActivityRateMenuItem(record, currentUser);
+    private RatePageProjection toRatePageProjection(RateMenuItemDto item) {
         if (item == null) {
             return null;
         }
         int distanceMeters = exactDistanceMeters(item.distanceMetersExact(), item.distanceKm());
-        return new ActivityRateProjection(
+        return new RatePageProjection(
                 item,
-                normalizeAffinityScore(record.getAffinityScore()),
+                resolveRateRelevanceScore(item),
                 dayStartMillis(item.happenedAt()),
                 rateDateMillis(item.happenedAt()),
                 distanceBucketMeters(item.distanceMetersExact(), item.distanceKm()),
                 distanceMeters);
     }
 
-    private Comparator<ActivityRateProjection> activityRateComparator(String sort, String groupDirection, String innerOrder) {
+    private Comparator<RatePageProjection> ratePageComparator(String sort, String groupDirection, String innerOrder) {
         if ("distance".equals(sort)) {
             return Comparator
-                    .comparingInt(ActivityRateProjection::distanceBucketMeters)
-                    .thenComparing(activityRateInnerComparator(innerOrder))
-                    .thenComparingInt(ActivityRateProjection::distanceMetersExact)
+                    .comparingInt(RatePageProjection::distanceBucketMeters)
+                    .thenComparing(ratePageInnerComparator(innerOrder))
+                    .thenComparingInt(RatePageProjection::distanceMetersExact)
                     .thenComparing(projection -> safeText(projection.item().id()));
         }
 
         String effectiveInnerOrder = "relevance".equals(sort) ? "relevant" : innerOrder;
-        Comparator<ActivityRateProjection> dayComparator = "asc".equals(groupDirection)
-                ? Comparator.comparingLong(ActivityRateProjection::dayStartMs)
-                : Comparator.comparingLong(ActivityRateProjection::dayStartMs).reversed();
+        Comparator<RatePageProjection> dayComparator = "asc".equals(groupDirection)
+                ? Comparator.comparingLong(RatePageProjection::dayStartMs)
+                : Comparator.comparingLong(RatePageProjection::dayStartMs).reversed();
         return dayComparator
-                .thenComparing(activityRateInnerComparator(effectiveInnerOrder));
+                .thenComparing(ratePageInnerComparator(effectiveInnerOrder));
     }
 
-    private Comparator<ActivityRateProjection> activityRateInnerComparator(String innerOrder) {
+    private Comparator<RatePageProjection> ratePageInnerComparator(String innerOrder) {
         if ("past".equals(innerOrder)) {
             return Comparator
-                    .comparingLong(ActivityRateProjection::happenedAtMs)
-                    .thenComparing(ActivityRateProjection::affinityScore, Comparator.reverseOrder())
+                    .comparingLong(RatePageProjection::happenedAtMs)
+                    .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder())
                     .thenComparing(projection -> safeText(projection.item().id()));
         }
         if ("relevant".equals(innerOrder)) {
             return Comparator
-                    .comparingDouble(ActivityRateProjection::affinityScore)
+                    .comparingDouble(RatePageProjection::relevanceScore)
                     .reversed()
-                    .thenComparing(ActivityRateProjection::happenedAtMs, Comparator.reverseOrder())
+                    .thenComparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder())
                     .thenComparing(projection -> safeText(projection.item().id()));
         }
         return Comparator
-                .comparing(ActivityRateProjection::happenedAtMs, Comparator.reverseOrder())
-                .thenComparing(ActivityRateProjection::affinityScore, Comparator.reverseOrder())
+                .comparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder())
+                .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder())
                 .thenComparing(projection -> safeText(projection.item().id()));
     }
 
     private boolean isWithinRange(RateMenuItemDto item, long rangeStartMs, long rangeEndMs) {
         long happenedAtMs = rateDateMillis(item.happenedAt());
         return happenedAtMs >= rangeStartMs && happenedAtMs <= rangeEndMs;
+    }
+
+    private boolean matchesRequestedMode(RateMenuItemDto item, String mode) {
+        if (item == null || !StringUtils.hasText(mode)) {
+            return false;
+        }
+        if ("pair".equals(mode)) {
+            return "pair".equals(normalizeId(item.mode()));
+        }
+        return "individual".equals(normalizeId(item.mode()));
+    }
+
+    private double resolveRateRelevanceScore(RateMenuItemDto item) {
+        if (item == null) {
+            return 0d;
+        }
+        int scoreGiven = normalizeScore(item.scoreGiven());
+        int scoreReceived = normalizeScore(item.scoreReceived());
+        if ("mutual".equals(normalizeDisplayDirection(item.direction()))) {
+            return scoreGiven + scoreReceived;
+        }
+        return scoreGiven > 0 ? scoreGiven : 5d;
     }
 
     private int resolveCursorStartIndex(List<RateMenuItemDto> items, String cursor) {
@@ -1009,9 +1031,9 @@ public class UserRatesService {
         return value == null ? "" : value;
     }
 
-    private record ActivityRateProjection(
+    private record RatePageProjection(
             RateMenuItemDto item,
-            double affinityScore,
+            double relevanceScore,
             long dayStartMs,
             long happenedAtMs,
             int distanceBucketMeters,

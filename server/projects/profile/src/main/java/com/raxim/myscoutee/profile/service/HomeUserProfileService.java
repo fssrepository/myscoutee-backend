@@ -407,7 +407,7 @@ public class HomeUserProfileService {
             return List.of();
         }
 
-        Set<String> ratedUserIds = queryRatedGameCardUserIds(normalizedUserId);
+        Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
         return orderedUsers().stream()
                 .filter(Objects::nonNull)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
@@ -432,7 +432,7 @@ public class HomeUserProfileService {
         List<String> neighbors = new ArrayList<>(graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of()));
         neighbors.sort((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)));
 
-        Set<String> ratedPairKeys = queryRatedGameCardPairKeys(normalizedUserId);
+        Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId);
         List<GameSocialCardCandidate> candidates = new ArrayList<>();
         for (int leftIndex = 0; leftIndex < neighbors.size(); leftIndex += 1) {
             String leftUserId = neighbors.get(leftIndex);
@@ -488,7 +488,7 @@ public class HomeUserProfileService {
             return List.of();
         }
 
-        Set<String> ratedUserIds = queryRatedGameCardUserIds(normalizedUserId);
+        Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
         List<GameSocialCardCandidate> candidates = new ArrayList<>();
         for (Users user : users) {
             String candidateUserId = normalizeId(user.getId());
@@ -737,7 +737,7 @@ public class HomeUserProfileService {
                 .orElse(null);
     }
 
-    private Set<String> queryRatedGameCardUserIds(String raterUserId) {
+    private Set<String> queryRatedUserIds(String raterUserId) {
         Set<String> ratedUserIds = new LinkedHashSet<>();
         if (!StringUtils.hasText(raterUserId)) {
             return ratedUserIds;
@@ -760,10 +760,18 @@ public class HomeUserProfileService {
                 ratedUserIds.add(secondUserId);
             }
         }
+
+        for (UserRate record : userRatesRepository.findByOwnerUserIdAndSource(raterUserId, "activity-rate")) {
+            if (!hasOwnRecordedActivityRate(record, raterUserId)) {
+                continue;
+            }
+            addRatedUserId(ratedUserIds, raterUserId, record.getRelatedUserId());
+            addRatedUserId(ratedUserIds, raterUserId, record.getSecondaryRelatedUserId());
+        }
         return ratedUserIds;
     }
 
-    private Set<String> queryRatedGameCardPairKeys(String raterUserId) {
+    private Set<String> queryRatedPairKeys(String raterUserId) {
         Set<String> ratedPairKeys = new LinkedHashSet<>();
         if (!StringUtils.hasText(raterUserId)) {
             return ratedPairKeys;
@@ -778,7 +786,39 @@ public class HomeUserProfileService {
             }
             ratedPairKeys.add(pairKey(firstUserId, secondUserId));
         }
+
+        for (UserRate record : userRatesRepository.findByOwnerUserIdAndSourceAndMode(raterUserId, "activity-rate", "pair")) {
+            if (!hasOwnRecordedActivityRate(record, raterUserId)) {
+                continue;
+            }
+            String firstUserId = normalizeId(record.getRelatedUserId());
+            String secondUserId = normalizeId(record.getSecondaryRelatedUserId());
+            if (!StringUtils.hasText(firstUserId)
+                    || !StringUtils.hasText(secondUserId)
+                    || firstUserId.equals(secondUserId)) {
+                continue;
+            }
+            ratedPairKeys.add(pairKey(firstUserId, secondUserId));
+        }
         return ratedPairKeys;
+    }
+
+    private void addRatedUserId(Set<String> ratedUserIds, String ownerUserId, String candidateUserId) {
+        String normalizedCandidateUserId = normalizeId(candidateUserId);
+        if (StringUtils.hasText(normalizedCandidateUserId) && !ownerUserId.equals(normalizedCandidateUserId)) {
+            ratedUserIds.add(normalizedCandidateUserId);
+        }
+    }
+
+    private boolean hasOwnRecordedActivityRate(UserRate record, String ownerUserId) {
+        if (record == null || !ownerUserId.equals(normalizeId(record.getOwnerUserId()))) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(record.getMet())) {
+            return true;
+        }
+        Integer scoreGiven = record.getScoreGiven();
+        return scoreGiven != null && scoreGiven > 0;
     }
 
     private ActivitySocialGraph buildActivitySocialGraph() {
