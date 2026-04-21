@@ -4,11 +4,6 @@ Bugs
 ----
 1) http - backend test
 
-b) if json file is changing the mongodb is reimport on the fly on dev
-c) myscoutee production db should be empty - that one shouldn't populate, just if there is any static data basics,
-which is needed to run the app
-d) data cleanup - to really show that it's connected in mongodb
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

@@ -763,10 +763,6 @@ public class AssetsService {
         return "Public";
     }
 
-    private String resolveOwnerName(String ownerUserId) {
-        return resolveOwnerName(ownerUserId, Map.of());
-    }
-
     private String resolveOwnerName(String ownerUserId, Map<String, String> ownerNamesByUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         if (!StringUtils.hasText(normalizedOwnerUserId)) {

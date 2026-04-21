@@ -11,7 +11,6 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerDto;

@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "userRates")
 @CompoundIndexes({
-        @CompoundIndex(name = "user_rate_lane_owner", def = "{'ownerUserId': 1, 'source': 1, 'mode': 1, 'createdDate': -1}"),
-        @CompoundIndex(name = "user_rate_game_card_from", def = "{'source': 1, 'fromUserId': 1}"),
-        @CompoundIndex(name = "user_rate_game_card_to", def = "{'source': 1, 'toUserId': 1}"),
-        @CompoundIndex(name = "user_rate_game_card_pair_owner", def = "{'source': 1, 'mode': 1, 'ownerUserId': 1}")
+        @CompoundIndex(name = "user_rate_owner_mode_updated", def = "{'source': 1, 'ownerUserId': 1, 'mode': 1, 'updatedDate': -1}"),
+        @CompoundIndex(name = "user_rate_primary_lookup", def = "{'source': 1, 'relatedUserId': 1, 'updatedDate': -1}"),
+        @CompoundIndex(name = "user_rate_secondary_lookup", def = "{'source': 1, 'secondaryRelatedUserId': 1, 'updatedDate': -1}", sparse = true),
+        @CompoundIndex(name = "user_rate_owner_primary_mode", def = "{'source': 1, 'ownerUserId': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1, 'mode': 1}")
 })
 public class UserRate {
     @Id

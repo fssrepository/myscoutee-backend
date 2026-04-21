@@ -13,8 +13,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import jakarta.annotation.PostConstruct;
 
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -36,14 +42,23 @@ public class UserRatesService {
     private final UserRatesRepository userRatesRepository;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final MongoTemplate mongoTemplate;
 
     public UserRatesService(
             UserRatesRepository userRatesRepository,
             UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService) {
+            HomeUserProfileService homeUserProfileService,
+            MongoTemplate mongoTemplate) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    @PostConstruct
+    void normalizePersistedUserRates() {
+        migrateLegacyGameCardRates();
+        ensureCanonicalUserRateIndexes();
     }
 
     public List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId) {
@@ -140,12 +155,119 @@ public class UserRatesService {
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
     }
 
+    private void migrateLegacyGameCardRates() {
+        List<UserRate> legacyRecords = userRatesRepository.findBySource(SOURCE_GAME_CARD);
+        if (legacyRecords.isEmpty()) {
+            return;
+        }
+        List<UserRate> changedRecords = legacyRecords.stream()
+                .filter(this::applyCanonicalGameCardShape)
+                .toList();
+        if (!changedRecords.isEmpty()) {
+            userRatesRepository.saveAll(changedRecords);
+        }
+    }
+
+    private boolean applyCanonicalGameCardShape(UserRate record) {
+        if (record == null || !SOURCE_GAME_CARD.equals(normalizeSource(record.getSource()))) {
+            return false;
+        }
+        String mode = normalizeMode(record.getMode());
+        if (!StringUtils.hasText(mode)) {
+            return false;
+        }
+        String canonicalOwnerUserId = "pair".equals(mode)
+                ? normalizeOptionalId(record.getOwnerUserId())
+                : normalizeOptionalId(record.getFromUserId());
+        String relatedUserId = "pair".equals(mode)
+                ? normalizeOptionalId(record.getFromUserId())
+                : normalizeOptionalId(record.getToUserId());
+        String secondaryRelatedUserId = "pair".equals(mode)
+                ? normalizeOptionalId(record.getToUserId())
+                : null;
+        Integer normalizedRate = normalizeRate(record.getRate(), false);
+        if (!StringUtils.hasText(canonicalOwnerUserId)
+                || !StringUtils.hasText(relatedUserId)
+                || canonicalOwnerUserId.equals(relatedUserId)
+                || normalizedRate == null) {
+            return false;
+        }
+        if ("pair".equals(mode) && (!StringUtils.hasText(secondaryRelatedUserId) || relatedUserId.equals(secondaryRelatedUserId))) {
+            return false;
+        }
+        record.setSource(SOURCE_ACTIVITY_RATE);
+        record.setOwnerUserId(canonicalOwnerUserId);
+        record.setOwnerLocation(resolveLocationSnapshot(canonicalOwnerUserId));
+        record.setRelatedUserId(relatedUserId);
+        record.setSecondaryRelatedUserId(secondaryRelatedUserId);
+        record.setScoreGiven(normalizedRate);
+        record.setScoreReceived(0);
+        record.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
+        record.setMet(false);
+        record.setEventName(normalizeOptionalText(record.getEventName()));
+        record.setFromUserId(null);
+        record.setToUserId(null);
+        record.setRate(null);
+        if (!StringUtils.hasText(normalizeOptionalId(record.getCreatedUser()))) {
+            record.setCreatedUser(canonicalOwnerUserId);
+        }
+        if (!StringUtils.hasText(normalizeOptionalId(record.getUpdatedUser()))) {
+            record.setUpdatedUser(canonicalOwnerUserId);
+        }
+        return true;
+    }
+
+    private void ensureCanonicalUserRateIndexes() {
+        var indexOps = mongoTemplate.indexOps(UserRate.class);
+        Set<String> existingIndexNames = indexOps.getIndexInfo().stream()
+                .map(IndexInfo::getName)
+                .filter(Objects::nonNull)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_from");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_to");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_pair_owner");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_lane_owner");
+
+        indexOps.createIndex(new Index()
+                .named("user_rate_owner_mode_updated")
+                .on("source", Sort.Direction.ASC)
+                .on("ownerUserId", Sort.Direction.ASC)
+                .on("mode", Sort.Direction.ASC)
+                .on("updatedDate", Sort.Direction.DESC));
+        indexOps.createIndex(new Index()
+                .named("user_rate_primary_lookup")
+                .on("source", Sort.Direction.ASC)
+                .on("relatedUserId", Sort.Direction.ASC)
+                .on("updatedDate", Sort.Direction.DESC));
+        indexOps.createIndex(new Index()
+                .named("user_rate_secondary_lookup")
+                .on("source", Sort.Direction.ASC)
+                .on("secondaryRelatedUserId", Sort.Direction.ASC)
+                .on("updatedDate", Sort.Direction.DESC)
+                .sparse());
+        indexOps.createIndex(new Index()
+                .named("user_rate_owner_primary_mode")
+                .on("source", Sort.Direction.ASC)
+                .on("ownerUserId", Sort.Direction.ASC)
+                .on("relatedUserId", Sort.Direction.ASC)
+                .on("secondaryRelatedUserId", Sort.Direction.ASC)
+                .on("mode", Sort.Direction.ASC));
+    }
+
+    private void dropIndexIfPresent(
+            org.springframework.data.mongodb.core.index.IndexOperations indexOps,
+            Set<String> existingIndexNames,
+            String indexName) {
+        if (!existingIndexNames.contains(indexName)) {
+            return;
+        }
+        indexOps.dropIndex(indexName);
+    }
+
     private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId) {
         Map<String, UserRate> recordsById = new LinkedHashMap<>();
-        addRecords(recordsById, userRatesRepository.findByOwnerUserIdAndSource(ownerUserId, SOURCE_ACTIVITY_RATE));
-        addRecords(recordsById, userRatesRepository.findBySourceAndFromUserId(SOURCE_GAME_CARD, ownerUserId));
-        addRecords(recordsById, userRatesRepository.findBySourceAndToUserId(SOURCE_GAME_CARD, ownerUserId));
-        addRecords(recordsById, userRatesRepository.findBySourceAndModeAndOwnerUserId(SOURCE_GAME_CARD, "pair", ownerUserId));
+        addRecords(recordsById, userRatesRepository.findRelevantBySourceAndUserIds(SOURCE_ACTIVITY_RATE, List.of(ownerUserId)));
 
         return dedupeRateItems(recordsById.values().stream()
                 .map(record -> toRateMenuItem(record, currentUser))
@@ -250,7 +372,7 @@ public class UserRatesService {
         if (SOURCE_ACTIVITY_RATE.equals(source)) {
             return normalizeActivityRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
         }
-        return normalizeGameCardRecord(document, rate, mode, fromUserId, toUserId);
+        return normalizeGameCardRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
     }
 
     private UserRate normalizeActivityRateRecord(
@@ -299,141 +421,123 @@ public class UserRatesService {
             UserRate document,
             UserRateRecordDto rate,
             String mode,
+            String ownerUserId,
             String fromUserId,
             String toUserId) {
-        if (!StringUtils.hasText(fromUserId)
-                || !StringUtils.hasText(toUserId)
-                || fromUserId.equals(toUserId)) {
+        String canonicalOwnerUserId = "pair".equals(mode)
+                ? normalizeOptionalId(ownerUserId)
+                : normalizeOptionalId(fromUserId);
+        String relatedUserId = "pair".equals(mode)
+                ? normalizeOptionalId(fromUserId)
+                : normalizeOptionalId(toUserId);
+        String secondaryRelatedUserId = "pair".equals(mode)
+                ? normalizeOptionalId(toUserId)
+                : null;
+        if (!StringUtils.hasText(canonicalOwnerUserId)
+                || !StringUtils.hasText(relatedUserId)
+                || canonicalOwnerUserId.equals(relatedUserId)) {
+            return null;
+        }
+        if ("pair".equals(mode) && (!StringUtils.hasText(secondaryRelatedUserId) || relatedUserId.equals(secondaryRelatedUserId))) {
             return null;
         }
         Integer normalizedRate = normalizeRate(rate.rate(), false);
         if (normalizedRate == null) {
             return null;
         }
-        document.setFromUserId(fromUserId);
-        document.setToUserId(toUserId);
-        document.setRate(normalizedRate);
-        document.setRelatedUserId(null);
-        document.setSecondaryRelatedUserId(null);
-        document.setScoreGiven(null);
-        document.setScoreReceived(null);
-        document.setAffinityScore(null);
-        document.setMet(null);
-        document.setEventName(null);
+        document.setSource(SOURCE_ACTIVITY_RATE);
+        document.setOwnerUserId(canonicalOwnerUserId);
+        document.setOwnerLocation(resolveLocationSnapshot(canonicalOwnerUserId));
+        document.setFromUserId(null);
+        document.setToUserId(null);
+        document.setRate(null);
+        document.setRelatedUserId(relatedUserId);
+        document.setSecondaryRelatedUserId(secondaryRelatedUserId);
+        document.setScoreGiven(normalizedRate);
+        document.setScoreReceived(0);
+        document.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
+        document.setMet(false);
+        document.setEventName(normalizeOptionalText(rate.eventName()));
         return document;
     }
 
     private RateMenuItemDto toRateMenuItem(UserRate record, Users currentUser) {
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
-        if (record == null || !StringUtils.hasText(ownerUserId)) {
+        if (record == null || currentUser == null) {
             return null;
         }
         String source = normalizeSource(record.getSource());
-        if (SOURCE_ACTIVITY_RATE.equals(source)) {
-            return toActivityRateMenuItem(record, currentUser);
+        if (!SOURCE_ACTIVITY_RATE.equals(source)) {
+            return null;
         }
-        if (SOURCE_GAME_CARD.equals(source)) {
-            return toGameCardRateMenuItem(record, currentUser);
-        }
-        return null;
+        return toActivityRateMenuItem(record, currentUser);
     }
 
     private RateMenuItemDto toActivityRateMenuItem(UserRate record, Users currentUser) {
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        String currentUserId = normalizeOptionalId(currentUser == null ? null : currentUser.getId());
         String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
-        String direction = deriveActivityDirection(record, ownerUserId);
-        if (!StringUtils.hasText(direction)
-                || !StringUtils.hasText(recordOwnerUserId)
-                || !recordOwnerUserId.equals(ownerUserId)) {
+        if (currentUserId == null || recordOwnerUserId == null) {
+            return null;
+        }
+        final String resolvedCurrentUserId = currentUserId;
+
+        boolean isOwnerView = resolvedCurrentUserId.equals(recordOwnerUserId);
+        boolean isParticipantView = matchesActivityParticipant(record, resolvedCurrentUserId);
+        if (!isOwnerView && !isParticipantView) {
+            return null;
+        }
+
+        String direction = isOwnerView
+                ? deriveActivityDirection(record, resolvedCurrentUserId)
+                : deriveParticipantActivityDirection(record, resolvedCurrentUserId);
+        if (!StringUtils.hasText(direction)) {
             return null;
         }
 
         String displayId = resolveResponseId(record);
         String happenedAt = normalizeDate(record.getCreatedDate(), normalizeDate(record.getUpdatedDate(), Instant.now().toString()));
-        int scoreGiven = normalizeScore(record.getScoreGiven());
-        int scoreReceived = normalizeScore(record.getScoreReceived());
+        int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven()) : 0;
+        int scoreReceived = isOwnerView
+                ? normalizeScore(record.getScoreReceived())
+                : resolveParticipantIncomingScore(record);
         String eventName = StringUtils.hasText(normalizeOptionalText(record.getEventName()))
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
         RateDistance distance = resolveActivityDistance(currentUser, record.getOwnerLocation());
         String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), direction);
-        String bridgeUserId = resolvePairBridgeUserId(record, ownerUserId, socialContext);
+        String bridgeUserId = resolvePairBridgeUserId(record, resolvedCurrentUserId, socialContext);
         Integer bridgeCount = resolvePairBridgeCount(socialContext);
 
         if ("pair".equals(normalizeMode(record.getMode()))) {
             String primaryUserId = normalizeOptionalId(record.getRelatedUserId());
             String secondaryUserId = normalizeOptionalId(record.getSecondaryRelatedUserId());
             if (!StringUtils.hasText(primaryUserId)
-                        || !StringUtils.hasText(secondaryUserId)
-                        || primaryUserId.equals(secondaryUserId)) {
+                    || !StringUtils.hasText(secondaryUserId)
+                    || primaryUserId.equals(secondaryUserId)) {
                 return null;
+            }
+            if (!isOwnerView) {
+                String participantOtherUserId = resolveParticipantOtherUserId(record, resolvedCurrentUserId);
+                if (!StringUtils.hasText(participantOtherUserId)) {
+                    return null;
+                }
+                return new RateMenuItemDto(displayId, participantOtherUserId, resolvedCurrentUserId, "pair", direction,
+                        socialContext, bridgeUserId, bridgeCount,
+                        scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
                     socialContext, bridgeUserId, bridgeCount,
                     scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
         }
 
-        String relatedUserId = normalizeOptionalId(record.getRelatedUserId());
-        if (!StringUtils.hasText(relatedUserId)) {
+        String relatedUserId = isOwnerView
+                ? normalizeOptionalId(record.getRelatedUserId())
+                : recordOwnerUserId;
+        if (!StringUtils.hasText(relatedUserId) || currentUserId.equals(relatedUserId)) {
             return null;
         }
         return new RateMenuItemDto(displayId, relatedUserId, null, "individual", direction,
                 null, null, null,
                 scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
-    }
-
-    private RateMenuItemDto toGameCardRateMenuItem(UserRate record, Users currentUser) {
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
-        if (!StringUtils.hasText(ownerUserId)) {
-            return null;
-        }
-        final String resolvedOwnerUserId = Objects.requireNonNull(ownerUserId);
-        String recordMode = normalizeMode(record.getMode());
-        String happenedAt = normalizeDate(record.getCreatedDate(), normalizeDate(record.getUpdatedDate(), Instant.now().toString()));
-        int normalizedScore = normalizeScore(record.getRate());
-        RateDistance distance = resolveGameCardDistance(record, currentUser);
-
-        if ("pair".equals(recordMode)) {
-            String firstUserId = normalizeId(record.getFromUserId());
-            String secondUserId = normalizeId(record.getToUserId());
-            if (!StringUtils.hasText(firstUserId)
-                    || !StringUtils.hasText(secondUserId)
-                    || firstUserId.equals(secondUserId)) {
-                return null;
-            }
-            String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
-            if (resolvedOwnerUserId.equals(recordOwnerUserId)) {
-                return new RateMenuItemDto(resolveResponseId(record), firstUserId, secondUserId, "pair", "given",
-                        "separated-friends", null, 2,
-                        normalizedScore, 0, "Pair rate", happenedAt, distance.kilometers(), distance.metersExact());
-            }
-            if (firstUserId.equals(resolvedOwnerUserId) || secondUserId.equals(resolvedOwnerUserId)) {
-                String otherUserId = firstUserId.equals(resolvedOwnerUserId) ? secondUserId : firstUserId;
-                return new RateMenuItemDto(resolveResponseId(record), otherUserId, resolvedOwnerUserId, "pair", "received",
-                        "friends-in-common", recordOwnerUserId, 1,
-                        0, normalizedScore, "Pair rate", happenedAt, distance.kilometers(), distance.metersExact());
-            }
-            return null;
-        }
-
-        boolean isGiven = resolvedOwnerUserId.equals(normalizeId(record.getFromUserId()));
-        boolean isReceived = resolvedOwnerUserId.equals(normalizeId(record.getToUserId()));
-        if (!isGiven && !isReceived) {
-            return null;
-        }
-        String counterpartyUserId = isGiven ? normalizeId(record.getToUserId()) : normalizeId(record.getFromUserId());
-        if (!StringUtils.hasText(counterpartyUserId)) {
-            return null;
-        }
-        return new RateMenuItemDto(resolveResponseId(record), counterpartyUserId, null, "individual",
-                isGiven ? "given" : "received",
-                null, null, null,
-                isGiven ? normalizedScore : 0,
-                isReceived ? normalizedScore : 0,
-                "Single rate",
-                happenedAt,
-                distance.kilometers(),
-                distance.metersExact());
     }
 
     private RatePageProjection toRatePageProjection(RateMenuItemDto item) {
@@ -726,6 +830,50 @@ public class UserRatesService {
         return null;
     }
 
+    private String deriveParticipantActivityDirection(UserRate record, String currentUserId) {
+        if (record == null || !StringUtils.hasText(currentUserId) || !matchesActivityParticipant(record, currentUserId)) {
+            return null;
+        }
+        if (Boolean.TRUE.equals(record.getMet())) {
+            return "met";
+        }
+        if (normalizeScore(record.getScoreGiven()) > 0 || normalizeScore(record.getScoreReceived()) > 0) {
+            return "received";
+        }
+        return null;
+    }
+
+    private boolean matchesActivityParticipant(UserRate record, String currentUserId) {
+        if (record == null || !StringUtils.hasText(currentUserId)) {
+            return false;
+        }
+        return currentUserId.equals(normalizeOptionalId(record.getRelatedUserId()))
+                || currentUserId.equals(normalizeOptionalId(record.getSecondaryRelatedUserId()));
+    }
+
+    private int resolveParticipantIncomingScore(UserRate record) {
+        int scoreGiven = normalizeScore(record == null ? null : record.getScoreGiven());
+        if (scoreGiven > 0) {
+            return scoreGiven;
+        }
+        return normalizeScore(record == null ? null : record.getScoreReceived());
+    }
+
+    private String resolveParticipantOtherUserId(UserRate record, String currentUserId) {
+        String primaryUserId = normalizeOptionalId(record == null ? null : record.getRelatedUserId());
+        String secondaryUserId = normalizeOptionalId(record == null ? null : record.getSecondaryRelatedUserId());
+        if (!StringUtils.hasText(currentUserId)) {
+            return null;
+        }
+        if (currentUserId.equals(primaryUserId)) {
+            return secondaryUserId;
+        }
+        if (currentUserId.equals(secondaryUserId)) {
+            return primaryUserId;
+        }
+        return null;
+    }
+
     private String resolvePairSocialContext(String mode, String direction) {
         if (!"pair".equals(mode)) {
             return null;
@@ -909,40 +1057,6 @@ public class UserRatesService {
         return distanceBetween(origin, ownerLocation);
     }
 
-    private RateDistance resolveGameCardDistance(UserRate record, Users currentUser) {
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
-        if (!StringUtils.hasText(ownerUserId)) {
-            return ZERO_DISTANCE;
-        }
-        final String resolvedOwnerUserId = Objects.requireNonNull(ownerUserId);
-        UserRate.LocationSnapshot origin = resolveCurrentUserLocation(currentUser);
-        if (origin == null) {
-            return ZERO_DISTANCE;
-        }
-        String firstUserId = normalizeId(record.getFromUserId());
-        String secondUserId = normalizeId(record.getToUserId());
-        if ("pair".equals(normalizeMode(record.getMode()))) {
-            String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
-            if (resolvedOwnerUserId.equals(recordOwnerUserId)) {
-                return distanceBetween(origin, record.getOwnerLocation());
-            }
-            if (firstUserId.equals(resolvedOwnerUserId)) {
-                return distanceBetween(origin, record.getOwnerLocation());
-            }
-            if (secondUserId.equals(resolvedOwnerUserId)) {
-                return distanceBetween(origin, record.getOwnerLocation());
-            }
-            return ZERO_DISTANCE;
-        }
-        if (resolvedOwnerUserId.equals(firstUserId)) {
-            return distanceBetween(origin, record.getOwnerLocation());
-        }
-        if (resolvedOwnerUserId.equals(secondUserId)) {
-            return distanceBetween(origin, record.getOwnerLocation());
-        }
-        return ZERO_DISTANCE;
-    }
-
     private UserRate.LocationSnapshot resolveCurrentUserLocation(Users currentUser) {
         if (currentUser == null || currentUser.getLocationCoordinates() == null) {
             return null;
@@ -979,13 +1093,6 @@ public class UserRatesService {
         double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
         int meters = Math.max(0, (int) Math.round(earthRadiusMeters * c));
         return new RateDistance(meters / 1000d, meters);
-    }
-
-    private static double normalizeAffinityScore(Double value) {
-        if (value == null || !Double.isFinite(value)) {
-            return 0d;
-        }
-        return Math.max(0d, value);
     }
 
     private static int exactDistanceMeters(Integer distanceMetersExact, Double distanceKm) {

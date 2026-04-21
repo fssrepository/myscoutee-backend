@@ -743,24 +743,6 @@ public class HomeUserProfileService {
             return ratedUserIds;
         }
 
-        for (UserRate record : userRatesRepository.findBySourceAndFromUserId("game-card", raterUserId)) {
-            String ratedUserId = normalizeId(record.getToUserId());
-            if (StringUtils.hasText(ratedUserId) && !raterUserId.equals(ratedUserId)) {
-                ratedUserIds.add(ratedUserId);
-            }
-        }
-
-        for (UserRate record : userRatesRepository.findBySourceAndModeAndOwnerUserId("game-card", "pair", raterUserId)) {
-            String firstUserId = normalizeId(record.getFromUserId());
-            String secondUserId = normalizeId(record.getToUserId());
-            if (StringUtils.hasText(firstUserId) && !raterUserId.equals(firstUserId)) {
-                ratedUserIds.add(firstUserId);
-            }
-            if (StringUtils.hasText(secondUserId) && !raterUserId.equals(secondUserId)) {
-                ratedUserIds.add(secondUserId);
-            }
-        }
-
         for (UserRate record : userRatesRepository.findByOwnerUserIdAndSource(raterUserId, "activity-rate")) {
             if (!hasOwnRecordedActivityRate(record, raterUserId)) {
                 continue;
@@ -776,17 +758,6 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(raterUserId)) {
             return ratedPairKeys;
         }
-        for (UserRate record : userRatesRepository.findBySourceAndModeAndOwnerUserId("game-card", "pair", raterUserId)) {
-            String firstUserId = normalizeId(record.getFromUserId());
-            String secondUserId = normalizeId(record.getToUserId());
-            if (!StringUtils.hasText(firstUserId)
-                    || !StringUtils.hasText(secondUserId)
-                    || firstUserId.equals(secondUserId)) {
-                continue;
-            }
-            ratedPairKeys.add(pairKey(firstUserId, secondUserId));
-        }
-
         for (UserRate record : userRatesRepository.findByOwnerUserIdAndSourceAndMode(raterUserId, "activity-rate", "pair")) {
             if (!hasOwnRecordedActivityRate(record, raterUserId)) {
                 continue;

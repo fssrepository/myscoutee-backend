@@ -56,8 +56,11 @@ public class ProfileImageSeedImportService {
                 break;
             }
             scannedUsers += 1;
+            if (user == null) {
+                continue;
+            }
 
-            String userId = safeText(user == null ? null : user.getId());
+            String userId = safeText(user.getId());
             if (!StringUtils.hasText(userId)) {
                 continue;
             }
