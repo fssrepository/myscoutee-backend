@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
     List<ActivityEvent> findByOwnerUserId(String ownerUserId);
 
     List<ActivityEvent> findBySourceId(String sourceId);
+
+    List<ActivityEvent> findBySourceIdIn(Collection<String> sourceIds);
 
     boolean existsByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 

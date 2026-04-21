@@ -516,6 +516,7 @@ public class AssetsService {
                 sourceId,
                 normalizeId(event.getOwnerUserId()),
                 safeText(event.getType()),
+                safeText(event.getStatus()),
                 safeText(event.getAvatar()),
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),

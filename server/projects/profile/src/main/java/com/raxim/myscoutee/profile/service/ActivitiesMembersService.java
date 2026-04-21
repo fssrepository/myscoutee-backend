@@ -130,6 +130,20 @@ public class ActivitiesMembersService {
         return snapshot != null && snapshot.hasParticipation(userId);
     }
 
+    public Set<String> findTrackedEventSourceIdsForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
     /**
      * Builds member snapshots for all given events in bulk using only 2 DB queries total
      * (one for members, one for resources) instead of N queries per event.

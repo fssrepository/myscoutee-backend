@@ -100,6 +100,7 @@ public final class EventsDtos {
             String id,
             String userId,
             String type,
+            String status,
             String avatar,
             String title,
             String subtitle,

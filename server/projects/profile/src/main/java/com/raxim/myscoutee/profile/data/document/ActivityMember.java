@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @CompoundIndexes({
         @CompoundIndex(name = "activity_member_owner_user", def = "{'ownerType': 1, 'ownerId': 1, 'userId': 1}", unique = true),
         @CompoundIndex(name = "activity_member_owner_action", def = "{'ownerType': 1, 'ownerId': 1, 'actionAtIso': -1}"),
-        @CompoundIndex(name = "activity_member_owner_status", def = "{'ownerType': 1, 'ownerId': 1, 'status': 1, 'actionAtIso': -1}")
+        @CompoundIndex(name = "activity_member_owner_status", def = "{'ownerType': 1, 'ownerId': 1, 'status': 1, 'actionAtIso': -1}"),
+        @CompoundIndex(name = "activity_member_user_action", def = "{'ownerType': 1, 'userId': 1, 'actionAtIso': -1}")
 })
 public class ActivityMember {
     @Id

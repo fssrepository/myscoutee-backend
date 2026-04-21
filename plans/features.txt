@@ -5,9 +5,7 @@ Bugs
 1) http - backend test
 
 a) chat scroll up (loading at top, somehow should make the inplace load what facebook does)
-b) event / event feedback mongo db is not normalized (json also) - the query takes too much time
-(probably not the artificial delay is the problem)
-c) pricing policy/reimbursement for late leave - pricing panel
+b) pricing policy/reimbursement for late leave - pricing panel
 
 Commands
 --------
