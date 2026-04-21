@@ -10,6 +10,82 @@ mongo_username="${MONGO_IMPORT_USERNAME:-guest}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-guest}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions}"
+
+json_file_has_documents() {
+  local jsonfile="$1"
+
+  grep -q '{' "${jsonfile}"
+}
+
+database_has_wildcard_seed_rule() {
+  local target_db="$1"
+  local old_ifs="${IFS}"
+  local db_rules=()
+
+  IFS=';'
+  read -r -a db_rules <<< "${allowed_collections_by_db}"
+  IFS="${old_ifs}"
+
+  local db_rule
+  for db_rule in "${db_rules[@]}"; do
+    local rule_db="${db_rule%%:*}"
+    local collections_csv="${db_rule#*:}"
+
+    if [ "${rule_db}" != "${target_db}" ]; then
+      continue
+    fi
+
+    local collection_rules=()
+    IFS=','
+    read -r -a collection_rules <<< "${collections_csv}"
+    IFS="${old_ifs}"
+
+    local allowed_collection
+    for allowed_collection in "${collection_rules[@]}"; do
+      if [ "${allowed_collection}" = "*" ]; then
+        return 0
+      fi
+    done
+  done
+
+  return 1
+}
+
+collection_is_seed_managed() {
+  local target_db="$1"
+  local collection_name="$2"
+  local old_ifs="${IFS}"
+  local db_rules=()
+
+  IFS=';'
+  read -r -a db_rules <<< "${allowed_collections_by_db}"
+  IFS="${old_ifs}"
+
+  local db_rule
+  for db_rule in "${db_rules[@]}"; do
+    local rule_db="${db_rule%%:*}"
+    local collections_csv="${db_rule#*:}"
+
+    if [ "${rule_db}" != "${target_db}" ]; then
+      continue
+    fi
+
+    local collection_rules=()
+    IFS=','
+    read -r -a collection_rules <<< "${collections_csv}"
+    IFS="${old_ifs}"
+
+    local allowed_collection
+    for allowed_collection in "${collection_rules[@]}"; do
+      if [ "${allowed_collection}" = "*" ] || [ "${allowed_collection}" = "${collection_name}" ]; then
+        return 0
+      fi
+    done
+  done
+
+  return 1
+}
 
 clear_collection() {
   local target_db="$1"
@@ -32,15 +108,26 @@ import_json_file() {
   local collection_name
   collection_name="$(basename "${jsonfile}" .json)"
 
-  if [ "${replace_collections}" = "true" ]; then
-    clear_collection "${target_db}" "${collection_name}"
+  if ! collection_is_seed_managed "${target_db}" "${collection_name}"; then
+    echo "Skipping runtime-managed collection ${target_db}.${collection_name}; seed import is disabled for this collection."
+    return 0
   fi
 
   # All seed files are JSON arrays of documents. If the file contains no object
   # start at all, it is just an empty array like "[]", which mongoimport rejects.
-  if ! grep -q '{' "${jsonfile}"; then
+  if ! json_file_has_documents "${jsonfile}"; then
+    if [ "${replace_collections}" = "true" ] && database_has_wildcard_seed_rule "${target_db}"; then
+      clear_collection "${target_db}" "${collection_name}"
+      echo "Cleared ${target_db}.${collection_name} because the seed file ${jsonfile} is empty."
+      return 0
+    fi
+
     echo "Skipping empty JSON array seed ${jsonfile}"
     return 0
+  fi
+
+  if [ "${replace_collections}" = "true" ]; then
+    clear_collection "${target_db}" "${collection_name}"
   fi
 
   mongoimport \
