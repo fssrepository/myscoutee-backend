@@ -4,6 +4,58 @@ set -euo pipefail
 db_name="${MONGO_APP_DATABASE:-${MONGO_INITDB_DATABASE:-demo_db}}"
 seed_dir_name="${MONGO_SEED_DIRECTORY:-${db_name}}"
 seed_root="/docker-entrypoint-initdb.d"
+mongo_host="${MONGO_IMPORT_HOST:-127.0.0.1}"
+mongo_port="${MONGO_IMPORT_PORT:-27017}"
+mongo_username="${MONGO_IMPORT_USERNAME:-guest}"
+mongo_password="${MONGO_IMPORT_PASSWORD:-guest}"
+replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
+single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
+
+clear_collection() {
+  local target_db="$1"
+  local collection_name="$2"
+
+  mongosh \
+    --host "${mongo_host}" \
+    --port "${mongo_port}" \
+    --username "${mongo_username}" \
+    --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" \
+    --quiet \
+    "${target_db}" \
+    --eval "db.getCollection('${collection_name}').deleteMany({})" >/dev/null
+}
+
+import_json_file() {
+  local target_db="$1"
+  local jsonfile="$2"
+  local collection_name
+  collection_name="$(basename "${jsonfile}" .json)"
+
+  if [ "${replace_collections}" = "true" ]; then
+    clear_collection "${target_db}" "${collection_name}"
+  fi
+
+  # All seed files are JSON arrays of documents. If the file contains no object
+  # start at all, it is just an empty array like "[]", which mongoimport rejects.
+  if ! grep -q '{' "${jsonfile}"; then
+    echo "Skipping empty JSON array seed ${jsonfile}"
+    return 0
+  fi
+
+  mongoimport \
+    -h "${mongo_host}" \
+    --port "${mongo_port}" \
+    -d "${target_db}" \
+    -c "${collection_name}" \
+    -u "${mongo_username}" \
+    -p "${mongo_password}" \
+    --mode=upsert \
+    --upsertFields _id \
+    --file "$jsonfile" \
+    --jsonArray \
+    --type json
+}
 
 import_seed_directory() {
   local target_db="$1"
@@ -16,25 +68,26 @@ import_seed_directory() {
   fi
 
   find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
-    # All seed files are JSON arrays of documents. If the file contains no object
-    # start at all, it is just an empty array like "[]", which mongoimport rejects.
-    if ! grep -q '{' "${jsonfile}"; then
-      echo "Skipping empty JSON array seed ${jsonfile}"
-      continue
-    fi
-
-    mongoimport \
-      -h 127.0.0.1 \
-      -d "${target_db}" \
-      -u guest \
-      -p guest \
-      --mode=upsert \
-      --upsertFields _id \
-      --file "$jsonfile" \
-      --jsonArray \
-      --type json
+    import_json_file "${target_db}" "${jsonfile}"
   done
 }
+
+import_single_file() {
+  local target_db="$1"
+  local jsonfile="$2"
+
+  if [ ! -f "${jsonfile}" ]; then
+    echo "Seed file ${jsonfile} does not exist, skipping mongoimport."
+    exit 0
+  fi
+
+  import_json_file "${target_db}" "${jsonfile}"
+}
+
+if [ -n "${single_file}" ]; then
+  import_single_file "${db_name}" "${single_file}"
+  exit 0
+fi
 
 if [ "${MONGO_IMPORT_ALL_SEED_DATABASES:-false}" = "true" ]; then
   import_seed_directory "demo_db" "demo_db"

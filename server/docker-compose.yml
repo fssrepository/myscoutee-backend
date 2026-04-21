@@ -75,6 +75,60 @@ services:
       - myscoutee
     #ports:
     #  - 27017-27019:27017-27019
+  mongodb-sync:
+    image: ${MONGODB_SYNC_IMAGE}
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: docker/images/mongodb-sync/Dockerfile
+      args:
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    container_name: mongodb-sync
+    hostname: mongodb-sync
+    command: >
+      bash -lc '
+      watch_roots="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db";
+      debounce_seconds="$${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}";
+      wait_for_mongo() {
+        until mongosh --host mongodb --port 27017 --username guest --password guest --authenticationDatabase demo_db --quiet demo_db --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; do
+          sleep 2;
+        done;
+      };
+      import_all() {
+        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME=guest MONGO_IMPORT_PASSWORD=guest MONGO_IMPORT_ALL_SEED_DATABASES=true MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
+      };
+      import_file() {
+        changed_file="$$1";
+        case "$$changed_file" in
+          */demo_db/*.json) target_db="demo_db" ;;
+          */myscoutee_db/*.json) target_db="myscoutee_db" ;;
+          *) return 0 ;;
+        esac;
+        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME=guest MONGO_IMPORT_PASSWORD=guest MONGO_APP_DATABASE="$$target_db" MONGO_IMPORT_SINGLE_FILE="$$changed_file" MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
+      };
+      wait_for_mongo;
+      import_all;
+      while changed_file=$$(inotifywait -q -r -e close_write,create,move --format "%w%f" $$watch_roots); do
+        changed_files="$$changed_file";
+        while next_file=$$(inotifywait -q -r -t "$$debounce_seconds" -e close_write,create,move --format "%w%f" $$watch_roots 2>/dev/null); do
+          changed_files="$${changed_files}
+      $${next_file}";
+        done;
+        printf "%s\n" "$$changed_files" | sed "/^[[:space:]]*$$/d" | sort -u | while read -r file; do
+          import_file "$$file";
+        done;
+      done'
+    environment:
+      MONGODB_SEED_SYNC_DEBOUNCE_SECONDS: "${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}"
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./docker/conf/mongodb:/docker-entrypoint-initdb.d:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
   redis:
     image: ${REDIS_IMAGE}
     container_name: redis
