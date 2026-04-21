@@ -30,3 +30,5 @@ docker compose up
 adb kill-server
 adb start-server
 adb devices
+
+Ctrl+Shift+P → Java: Clean Java Language Server Workspace
