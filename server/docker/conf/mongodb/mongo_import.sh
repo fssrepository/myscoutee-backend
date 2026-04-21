@@ -3,29 +3,183 @@ set -euo pipefail
 
 db_name="${MONGO_APP_DATABASE:-${MONGO_INITDB_DATABASE:-demo_db}}"
 seed_dir_name="${MONGO_SEED_DIRECTORY:-${db_name}}"
-seed_dir="/docker-entrypoint-initdb.d/${seed_dir_name}"
+seed_root="/docker-entrypoint-initdb.d"
+mongo_host="${MONGO_IMPORT_HOST:-127.0.0.1}"
+mongo_port="${MONGO_IMPORT_PORT:-27017}"
+mongo_username="${MONGO_IMPORT_USERNAME:-guest}"
+mongo_password="${MONGO_IMPORT_PASSWORD:-guest}"
+replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
+single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions}"
 
-if [ ! -d "${seed_dir}" ]; then
-  echo "Seed directory ${seed_dir} does not exist, skipping mongoimport."
-  exit 0
-fi
+json_file_has_documents() {
+  local jsonfile="$1"
 
-find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
+  grep -q '{' "${jsonfile}"
+}
+
+database_has_wildcard_seed_rule() {
+  local target_db="$1"
+  local old_ifs="${IFS}"
+  local db_rules=()
+
+  IFS=';'
+  read -r -a db_rules <<< "${allowed_collections_by_db}"
+  IFS="${old_ifs}"
+
+  local db_rule
+  for db_rule in "${db_rules[@]}"; do
+    local rule_db="${db_rule%%:*}"
+    local collections_csv="${db_rule#*:}"
+
+    if [ "${rule_db}" != "${target_db}" ]; then
+      continue
+    fi
+
+    local collection_rules=()
+    IFS=','
+    read -r -a collection_rules <<< "${collections_csv}"
+    IFS="${old_ifs}"
+
+    local allowed_collection
+    for allowed_collection in "${collection_rules[@]}"; do
+      if [ "${allowed_collection}" = "*" ]; then
+        return 0
+      fi
+    done
+  done
+
+  return 1
+}
+
+collection_is_seed_managed() {
+  local target_db="$1"
+  local collection_name="$2"
+  local old_ifs="${IFS}"
+  local db_rules=()
+
+  IFS=';'
+  read -r -a db_rules <<< "${allowed_collections_by_db}"
+  IFS="${old_ifs}"
+
+  local db_rule
+  for db_rule in "${db_rules[@]}"; do
+    local rule_db="${db_rule%%:*}"
+    local collections_csv="${db_rule#*:}"
+
+    if [ "${rule_db}" != "${target_db}" ]; then
+      continue
+    fi
+
+    local collection_rules=()
+    IFS=','
+    read -r -a collection_rules <<< "${collections_csv}"
+    IFS="${old_ifs}"
+
+    local allowed_collection
+    for allowed_collection in "${collection_rules[@]}"; do
+      if [ "${allowed_collection}" = "*" ] || [ "${allowed_collection}" = "${collection_name}" ]; then
+        return 0
+      fi
+    done
+  done
+
+  return 1
+}
+
+clear_collection() {
+  local target_db="$1"
+  local collection_name="$2"
+
+  mongosh \
+    --host "${mongo_host}" \
+    --port "${mongo_port}" \
+    --username "${mongo_username}" \
+    --password "${mongo_password}" \
+    --authenticationDatabase "${target_db}" \
+    --quiet \
+    "${target_db}" \
+    --eval "db.getCollection('${collection_name}').deleteMany({})" >/dev/null
+}
+
+import_json_file() {
+  local target_db="$1"
+  local jsonfile="$2"
+  local collection_name
+  collection_name="$(basename "${jsonfile}" .json)"
+
+  if ! collection_is_seed_managed "${target_db}" "${collection_name}"; then
+    echo "Skipping runtime-managed collection ${target_db}.${collection_name}; seed import is disabled for this collection."
+    return 0
+  fi
+
   # All seed files are JSON arrays of documents. If the file contains no object
   # start at all, it is just an empty array like "[]", which mongoimport rejects.
-  if ! grep -q '{' "${jsonfile}"; then
+  if ! json_file_has_documents "${jsonfile}"; then
+    if [ "${replace_collections}" = "true" ] && database_has_wildcard_seed_rule "${target_db}"; then
+      clear_collection "${target_db}" "${collection_name}"
+      echo "Cleared ${target_db}.${collection_name} because the seed file ${jsonfile} is empty."
+      return 0
+    fi
+
     echo "Skipping empty JSON array seed ${jsonfile}"
-    continue
+    return 0
+  fi
+
+  if [ "${replace_collections}" = "true" ]; then
+    clear_collection "${target_db}" "${collection_name}"
   fi
 
   mongoimport \
-    -h 127.0.0.1 \
-    -d "${db_name}" \
-    -u guest \
-    -p guest \
+    -h "${mongo_host}" \
+    --port "${mongo_port}" \
+    -d "${target_db}" \
+    -c "${collection_name}" \
+    -u "${mongo_username}" \
+    -p "${mongo_password}" \
     --mode=upsert \
     --upsertFields _id \
     --file "$jsonfile" \
     --jsonArray \
     --type json
- done
+}
+
+import_seed_directory() {
+  local target_db="$1"
+  local target_seed_dir_name="$2"
+  local seed_dir="${seed_root}/${target_seed_dir_name}"
+
+  if [ ! -d "${seed_dir}" ]; then
+    echo "Seed directory ${seed_dir} does not exist, skipping mongoimport."
+    return 0
+  fi
+
+  find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
+    import_json_file "${target_db}" "${jsonfile}"
+  done
+}
+
+import_single_file() {
+  local target_db="$1"
+  local jsonfile="$2"
+
+  if [ ! -f "${jsonfile}" ]; then
+    echo "Seed file ${jsonfile} does not exist, skipping mongoimport."
+    exit 0
+  fi
+
+  import_json_file "${target_db}" "${jsonfile}"
+}
+
+if [ -n "${single_file}" ]; then
+  import_single_file "${db_name}" "${single_file}"
+  exit 0
+fi
+
+if [ "${MONGO_IMPORT_ALL_SEED_DATABASES:-false}" = "true" ]; then
+  import_seed_directory "demo_db" "demo_db"
+  import_seed_directory "myscoutee_db" "myscoutee_db"
+  exit 0
+fi
+
+import_seed_directory "${db_name}" "${seed_dir_name}"

@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFilterPreferencesRequestDto;
@@ -42,8 +43,8 @@ public class AuthController {
     }
 
     @GetMapping("/demo-users")
-    public List<UserDto> queryDemoUsers() {
-        return homeUserProfileService.queryDemoUsers();
+    public List<DemoUserListItemDto> queryDemoUsers() {
+        return homeUserProfileService.queryDemoUserListItems();
     }
 
     @GetMapping("/me")

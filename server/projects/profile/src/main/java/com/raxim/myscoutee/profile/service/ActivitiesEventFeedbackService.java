@@ -11,7 +11,6 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerDto;
@@ -128,11 +127,7 @@ public class ActivitiesEventFeedbackService {
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(normalizedEventId)) {
             return null;
         }
-        boolean ownsEventRecord = activityEventsRepository.findByOwnerUserId(userId).stream()
-                .filter(Objects::nonNull)
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .anyMatch(normalizedEventId::equals);
+        boolean ownsEventRecord = activityEventsRepository.existsByOwnerUserIdAndSourceId(userId, normalizedEventId);
         return ownsEventRecord ? userId : null;
     }
 

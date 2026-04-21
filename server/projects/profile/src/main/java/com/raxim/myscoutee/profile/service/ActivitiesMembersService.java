@@ -130,6 +130,198 @@ public class ActivitiesMembersService {
         return snapshot != null && snapshot.hasParticipation(userId);
     }
 
+    public Set<String> findTrackedEventSourceIdsForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
+    /**
+     * Builds member snapshots for all given events in bulk using only 2 DB queries total
+     * (one for members, one for resources) instead of N queries per event.
+     */
+    public Map<String, OwnerMembersSnapshot> buildBatchEventSnapshots(
+            Map<String, ActivityEvent> preferredEventBySourceId) {
+        if (preferredEventBySourceId == null || preferredEventBySourceId.isEmpty()) {
+            return Map.of();
+        }
+
+        Set<String> allSourceIds = new LinkedHashSet<>();
+        for (Map.Entry<String, ActivityEvent> entry : preferredEventBySourceId.entrySet()) {
+            if (StringUtils.hasText(entry.getKey())) {
+                allSourceIds.add(entry.getKey());
+            }
+        }
+        if (allSourceIds.isEmpty()) {
+            return Map.of();
+        }
+
+        // Bulk load all event members (one query)
+        Map<String, List<ActivityMember>> membersByOwnerId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, allSourceIds)) {
+            if (member == null) continue;
+            String ownerId = normalizeId(member.getOwnerId());
+            if (StringUtils.hasText(ownerId)) {
+                membersByOwnerId.computeIfAbsent(ownerId, k -> new ArrayList<>()).add(member);
+            }
+        }
+
+        // Bulk load all sub-event resources (one query)
+        Map<String, List<ActivitySubEventResource>> resourcesByOwnerId = new LinkedHashMap<>();
+        for (ActivitySubEventResource resource : activitySubEventResourcesRepository.findByOwnerIdIn(allSourceIds)) {
+            if (resource == null) continue;
+            String ownerId = normalizeId(resource.getOwnerId());
+            if (StringUtils.hasText(ownerId)) {
+                resourcesByOwnerId.computeIfAbsent(ownerId, k -> new ArrayList<>()).add(resource);
+            }
+        }
+
+        // Build all snapshots from pre-loaded data
+        Map<String, OwnerMembersSnapshot> result = new LinkedHashMap<>();
+        for (String sourceId : allSourceIds) {
+            ActivityEvent eventRecord = preferredEventBySourceId.get(sourceId);
+            List<ActivityMember> rawMembers = membersByOwnerId.getOrDefault(sourceId, List.of())
+                    .stream().filter(Objects::nonNull).toList();
+
+            // Bootstrap if empty (matches loadOwnerDocuments behavior)
+            if (rawMembers.isEmpty() && eventRecord != null) {
+                List<ActivityMember> bootstrapped = bootstrapEventMembers(eventRecord);
+                if (!bootstrapped.isEmpty()) {
+                    activityMembersRepository.saveAll(bootstrapped);
+                    rawMembers = bootstrapped;
+                }
+            }
+
+            List<ActivitySubEventResource> resources = resourcesByOwnerId.getOrDefault(sourceId, List.of());
+            List<ActivityMember> merged = mergeDerivedEventMembersBatch(sourceId, rawMembers, eventRecord, resources);
+            result.put(sourceId, toOwnerSnapshotBatch(OWNER_TYPE_EVENT, sourceId, merged, eventRecord, resources));
+        }
+        return result;
+    }
+
+    private List<ActivityMember> mergeDerivedEventMembersBatch(
+            String eventId,
+            List<ActivityMember> members,
+            ActivityEvent eventRecord,
+            List<ActivitySubEventResource> resources) {
+        String defaultActionAtIso = normalizeDateTime(
+                eventRecord == null ? null : eventRecord.getStartAtIso(),
+                Instant.now().toString());
+        String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
+        String createdByUserId = eventRecord == null ? null : normalizeId(eventRecord.getCreatorUserId());
+        Map<String, ActivityMember> visibleByUserId = new LinkedHashMap<>();
+        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
+            if (member == null || STATUS_DELETED.equals(normalizeStatus(member.getStatus()))) {
+                continue;
+            }
+            String memberUserId = normalizeId(member.getUserId());
+            if (!StringUtils.hasText(memberUserId)) {
+                continue;
+            }
+            visibleByUserId.put(memberUserId, cloneMember(member));
+        }
+
+        Set<String> adminUserIds = resolveEventAdminUserIds(eventRecord);
+        for (String adminUserId : adminUserIds) {
+            upsertDerivedEventMember(visibleByUserId, eventId, adminUserId, "Admin", defaultActionAtIso, metWhere, createdByUserId);
+        }
+
+        Map<String, String> managerActionAtByUserId = resolveEventManagerActionAtFromResources(resources);
+        for (Map.Entry<String, String> managerEntry : managerActionAtByUserId.entrySet()) {
+            if (adminUserIds.contains(managerEntry.getKey())) {
+                continue;
+            }
+            upsertDerivedEventMember(
+                    visibleByUserId,
+                    eventId,
+                    managerEntry.getKey(),
+                    "Manager",
+                    normalizeDateTime(managerEntry.getValue(), defaultActionAtIso),
+                    metWhere,
+                    createdByUserId);
+        }
+
+        return new ArrayList<>(visibleByUserId.values());
+    }
+
+    private Map<String, String> resolveEventManagerActionAtFromResources(List<ActivitySubEventResource> resources) {
+        LinkedHashMap<String, String> managerActionAtByUserId = new LinkedHashMap<>();
+        for (ActivitySubEventResource resource : resources == null ? List.<ActivitySubEventResource>of() : resources) {
+            if (resource == null || !hasManagedEventAssets(resource)) {
+                continue;
+            }
+            String actionAtIso = deriveManagedEventActionAt(resource);
+            for (String managerUserId : resolveManagedUserIds(resource)) {
+                String currentActionAtIso = managerActionAtByUserId.get(managerUserId);
+                if (toSortableDate(actionAtIso) >= toSortableDate(currentActionAtIso)) {
+                    managerActionAtByUserId.put(managerUserId, actionAtIso);
+                }
+            }
+        }
+        return managerActionAtByUserId;
+    }
+
+    private OwnerMembersSnapshot toOwnerSnapshotBatch(
+            String ownerType,
+            String ownerId,
+            List<ActivityMember> members,
+            ActivityEvent eventRecord,
+            List<ActivitySubEventResource> resources) {
+        List<ActivityMember> ordered = members.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
+                .sorted(Comparator.comparing(ActivityMember::getActionAtIso, Comparator.nullsLast(String::compareTo)))
+                .toList();
+        List<String> acceptedUserIds = ordered.stream()
+                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        List<String> pendingUserIds = ordered.stream()
+                .filter(member -> "pending".equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        Set<String> eventAdminUserIds = resolveEventAdminUserIds(eventRecord);
+        Map<String, String> managersByUserId = resolveEventManagerActionAtFromResources(resources);
+        Set<String> adminUserIds = ordered.stream()
+                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .filter(member -> {
+                    String role = safeText(member.getRole());
+                    if ("Admin".equals(role) || "Manager".equals(role) || "Member".equals(role)) {
+                        return ADMIN_ROLES.contains(role);
+                    }
+                    String userId = normalizeId(member.getUserId());
+                    if (eventAdminUserIds.contains(userId)) return true;
+                    return managersByUserId.containsKey(userId) && ADMIN_ROLES.contains("Manager");
+                })
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Integer capacityTotal = eventRecord == null ? null : eventRecord.getCapacityTotal();
+        return new OwnerMembersSnapshot(
+                ownerType,
+                ownerId,
+                ordered,
+                acceptedUserIds,
+                pendingUserIds,
+                adminUserIds,
+                capacityTotal);
+    }
+
     public void replace(ActivityMembersReplaceRequestDto request) {
         if (request == null || request.owner() == null) {
             return;

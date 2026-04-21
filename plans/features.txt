@@ -3,8 +3,9 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 Bugs
 ----
 1) http - backend test
-2) event-resource-popup after progressbar 1500ms, there is a 1 sec stuck (indexeddb insert shouldn't happen)
-probably even seeding logic is there and not in the bootstrap
+
+a) chat scroll up (loading at top, somehow should make the inplace load what facebook does)
+b) pricing policy/reimbursement for late leave - pricing panel
 
 Commands
 --------
@@ -28,3 +29,5 @@ docker compose up
 adb kill-server
 adb start-server
 adb devices
+
+Ctrl+Shift+P → Java: Clean Java Language Server Workspace

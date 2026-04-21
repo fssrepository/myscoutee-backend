@@ -34,13 +34,30 @@ public class MediaStorageService {
         if (!isEnabled() || image == null || image.isEmpty()) {
             return null;
         }
+        try {
+            return storeImageBytes(scope, ownerId, entityId, image.getOriginalFilename(), image.getContentType(), image.getBytes());
+        } catch (IOException | RuntimeException ex) {
+            return null;
+        }
+    }
+
+    public String storeImageBytes(
+            String scope,
+            String ownerId,
+            String entityId,
+            String originalFilename,
+            String contentTypeValue,
+            byte[] bytes) {
+        if (!isEnabled() || bytes == null || bytes.length == 0) {
+            return null;
+        }
         String normalizedScope = normalizeScope(scope);
         String normalizedOwnerId = sanitizeSegment(ownerId);
         String normalizedEntityId = sanitizeSegment(entityId);
         if (!StringUtils.hasText(normalizedScope) || !StringUtils.hasText(normalizedOwnerId)) {
             return null;
         }
-        String contentType = normalizeContentType(image.getContentType());
+        String contentType = normalizeContentType(contentTypeValue);
         if (!contentType.startsWith("image/")) {
             return null;
         }
@@ -49,10 +66,10 @@ public class MediaStorageService {
                     normalizedScope,
                     normalizedOwnerId,
                     StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
-                    Instant.now().toEpochMilli() + "-" + UUID.randomUUID() + resolveExtension(image.getOriginalFilename(), contentType));
-            objectStoreClient.putObject(properties.getBucket(), objectKey, contentType, image.getBytes());
+                    Instant.now().toEpochMilli() + "-" + UUID.randomUUID() + resolveExtension(originalFilename, contentType));
+            objectStoreClient.putObject(properties.getBucket(), objectKey, contentType, bytes);
             return "/media/public?key=" + UriUtils.encodeQueryParam(objectKey, StandardCharsets.UTF_8);
-        } catch (IOException | RuntimeException ex) {
+        } catch (RuntimeException ex) {
             return null;
         }
     }

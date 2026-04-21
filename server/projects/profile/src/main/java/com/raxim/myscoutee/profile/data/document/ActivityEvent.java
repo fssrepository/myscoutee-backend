@@ -21,8 +21,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
 @CompoundIndexes({
         @CompoundIndex(name = "event_owner_type_source", def = "{'ownerUserId': 1, 'type': 1, 'sourceId': 1}", unique = true),
         @CompoundIndex(name = "event_owner_type", def = "{'ownerUserId': 1, 'type': 1, 'startAtIso': 1}"),
+        @CompoundIndex(name = "event_owner_source", def = "{'ownerUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1, 'type': 1}"),
-        @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}")
+        @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
+        @CompoundIndex(name = "event_explore_candidates", def = "{'type': 1, 'published': 1, 'isInvitation': 1, 'isTrashed': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}")
 })
 public class ActivityEvent {
     private static final String TYPE_EVENTS = "events";

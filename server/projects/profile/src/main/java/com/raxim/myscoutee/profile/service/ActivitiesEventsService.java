@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.text.Normalizer;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,14 +13,18 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
@@ -48,10 +53,14 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class ActivitiesEventsService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
+    private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
+    private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
+    private static final ThreadLocal<EventQueryContext> ACTIVE_CONTEXT = new ThreadLocal<>();
 
     private final ActivityEventsRepository activityEventsRepository;
     private final UsersRepository usersRepository;
@@ -73,6 +82,104 @@ public class ActivitiesEventsService {
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
+    }
+
+    private EventQueryContext buildQueryContext(ViewerContext viewer) {
+        List<ActivityEvent> allEvents = activityEventsRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .toList();
+
+        List<ActivityEvent> mergedEvents;
+        if (viewer != null && viewer.locationCoordinates() != null) {
+            List<ActivityEvent> geoOrdered = geoOrderedEventDocuments(viewer.locationCoordinates());
+            if (geoOrdered.isEmpty()) {
+                mergedEvents = allEvents;
+            } else {
+                LinkedHashMap<String, ActivityEvent> merged = new LinkedHashMap<>();
+                for (ActivityEvent record : geoOrdered) {
+                    String documentId = normalizeId(record == null ? null : record.getId());
+                    if (StringUtils.hasText(documentId)) {
+                        merged.put(documentId, record);
+                    }
+                }
+                for (ActivityEvent record : allEvents) {
+                    String documentId = normalizeId(record == null ? null : record.getId());
+                    if (StringUtils.hasText(documentId) && !merged.containsKey(documentId)) {
+                        merged.put(documentId, record);
+                    }
+                }
+                mergedEvents = new ArrayList<>(merged.values());
+            }
+        } else {
+            mergedEvents = allEvents;
+        }
+
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : computePreferredEventRecords(allEvents)) {
+            preferredBySourceId.put(normalizeId(record.getSourceId()), record);
+        }
+
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
+                activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId);
+
+        return new EventQueryContext(
+                allEvents,
+                mergedEvents,
+                new LinkedHashMap<>(snapshotsBySourceId),
+                viewer == null ? Set.of() : activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
+    }
+
+    private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
+        if (viewer == null || !StringUtils.hasText(viewer.userId())) {
+            return new EventQueryContext(List.of(), List.of(), new LinkedHashMap<>(), Set.of());
+        }
+
+        List<ActivityEvent> directOwnerRecords = queryDirectOwnerRecords(viewer.userId());
+        Set<String> directSourceIds = directOwnerRecords.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+
+        Set<String> membershipSourceIds = new LinkedHashSet<>(activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
+        membershipSourceIds.removeAll(directSourceIds);
+
+        List<ActivityEvent> membershipRecords = loadEventDocumentsBySourceIds(membershipSourceIds);
+        List<ActivityEvent> scopedEvents = new ArrayList<>(directOwnerRecords.size() + membershipRecords.size());
+        scopedEvents.addAll(directOwnerRecords);
+        scopedEvents.addAll(membershipRecords);
+
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : computePreferredEventRecords(scopedEvents)) {
+            preferredBySourceId.put(normalizeId(record.getSourceId()), record);
+        }
+
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
+                activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId);
+        return new EventQueryContext(
+                scopedEvents,
+                scopedEvents,
+                new LinkedHashMap<>(snapshotsBySourceId),
+                activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
+    }
+
+    private EventQueryContext buildExploreQueryContext(ViewerContext viewer) {
+        List<ActivityEvent> allEvents = queryCanonicalExploreRecords();
+        LinkedHashSet<String> trackedSourceIds = new LinkedHashSet<>();
+        if (viewer != null && StringUtils.hasText(viewer.userId())) {
+            trackedSourceIds.addAll(activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
+            queryDirectOwnerRecords(viewer.userId()).stream()
+                    .map(ActivityEvent::getSourceId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .forEach(trackedSourceIds::add);
+        }
+        return new EventQueryContext(
+                allEvents,
+                allEvents,
+                new LinkedHashMap<>(),
+                trackedSourceIds);
     }
 
     public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
@@ -101,15 +208,28 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        return queryUserRecords(viewer).stream()
+        try {
+            ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
+            return queryUserRecords(viewer).stream()
+                    .map(record -> toEventRecordDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(listItemComparator())
+                    .toList();
+        } finally {
+            ACTIVE_CONTEXT.remove();
+        }
+    }
+
+    public List<EventRecordDto> queryInvitations(String requestedUserId) {
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) {
+            return List.of();
+        }
+        return queryDirectScopedRecords(viewer, "invitations", "all").stream()
                 .map(record -> toEventRecordDto(record, viewer))
                 .filter(Objects::nonNull)
                 .sorted(listItemComparator())
                 .toList();
-    }
-
-    public List<EventRecordDto> queryInvitations(String requestedUserId) {
-        return queryItemsByFilter(new EventsFilterRequestDto(requestedUserId, "invitations", "all", null, null, null, null, null));
     }
 
     public List<EventRecordDto> queryAttending(String requestedUserId) {
@@ -117,12 +237,17 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        return queryUserRecords(viewer).stream()
-                .filter(record -> TYPE_EVENTS.equals(normalizeType(record.getType())))
-                .map(record -> toEventRecordDto(record, viewer))
-                .filter(Objects::nonNull)
-                .sorted(listItemComparator())
-                .toList();
+        try {
+            ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
+            return queryUserRecords(viewer).stream()
+                    .filter(record -> TYPE_EVENTS.equals(normalizeType(record.getType())))
+                    .map(record -> toEventRecordDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(listItemComparator())
+                    .toList();
+        } finally {
+            ACTIVE_CONTEXT.remove();
+        }
     }
 
     public List<EventRecordDto> queryHosting(String requestedUserId) {
@@ -130,8 +255,7 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        return queryUserRecords(viewer).stream()
-                .filter(record -> TYPE_HOSTING.equals(normalizeType(record.getType())))
+        return queryDirectScopedRecords(viewer, "my-events", "all").stream()
                 .map(record -> toEventRecordDto(record, viewer))
                 .filter(Objects::nonNull)
                 .sorted(listItemComparator())
@@ -139,55 +263,88 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryTrash(String requestedUserId) {
-        return queryItemsByFilter(new EventsFilterRequestDto(requestedUserId, "trash", "all", null, null, null, null, null));
-    }
-
-    public List<EventRecordDto> queryItemsByFilter(EventsFilterRequestDto request) {
-        materializeSlotOccurrences();
-        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
         }
-        return queryFilteredRecords(viewer, request).stream()
+        return queryDirectScopedRecords(viewer, "trash", "all").stream()
                 .map(record -> toEventRecordDto(record, viewer))
                 .filter(Objects::nonNull)
                 .sorted(listItemComparator())
                 .toList();
     }
 
-    public EventsExplorePageDto queryActivitiesEventPage(EventsFilterRequestDto request) {
+    public List<EventRecordDto> queryItemsByFilter(EventsFilterRequestDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        if (viewer == null) {
+            return List.of();
+        }
+        String filter = normalizeEventScopeFilter(request == null ? null : request.filter());
+        String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        if (usesDirectOwnerScope(filter)) {
+            return queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
+                    .map(record -> toEventRecordDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(listItemComparator())
+                    .toList();
+        }
         materializeSlotOccurrences();
+        try {
+            ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
+            return queryFilteredRecords(viewer, request).stream()
+                    .map(record -> toEventRecordDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(listItemComparator())
+                    .toList();
+        } finally {
+            ACTIVE_CONTEXT.remove();
+        }
+    }
+
+    public EventsExplorePageDto queryActivitiesEventPage(EventsFilterRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
-
-        String secondaryFilter = normalizeActivitiesSecondaryFilter(request == null ? null : request.secondaryFilter());
-        String view = normalizeActivitiesView(request == null ? null : request.view());
-        String sort = normalizeActivitiesSort(request == null ? null : request.sort(), view, secondaryFilter);
-        Integer requestedLimit = request == null ? null : request.limit();
-        int limit = normalizeLimit(requestedLimit, 10);
-
-        List<EventProjection> sorted = queryFilteredRecords(viewer, request).stream()
-                .map(record -> toProjection(record, viewer))
-                .filter(Objects::nonNull)
-                .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
-                .toList();
-
-        if ("week".equals(view) || "month".equals(view)) {
-            return new EventsExplorePageDto(sorted.stream().map(EventProjection::item).toList(), sorted.size(), null);
+        String filter = normalizeEventScopeFilter(request == null ? null : request.filter());
+        String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        if (usesDirectOwnerScope(filter)) {
+            return pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request);
         }
+        materializeSlotOccurrences();
+        try {
+            ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
 
-        String cursor = request == null ? null : request.cursor();
-        int startIndex = resolveCursorStartIndex(sorted, cursor);
-        int endIndex = Math.min(sorted.size(), startIndex + limit);
-        List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
-                .map(EventProjection::item)
-                .toList();
-        String nextCursor = endIndex < sorted.size() && !records.isEmpty()
-                ? serializeCursor(records.get(records.size() - 1))
-                : null;
-        return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+            String secondaryFilter = normalizeActivitiesSecondaryFilter(request == null ? null : request.secondaryFilter());
+            String view = normalizeActivitiesView(request == null ? null : request.view());
+            String sort = normalizeActivitiesSort(request == null ? null : request.sort(), view, secondaryFilter);
+            Integer requestedLimit = request == null ? null : request.limit();
+            int limit = normalizeLimit(requestedLimit, 10);
+
+            List<EventProjection> sorted = queryFilteredRecords(viewer, request).stream()
+                    .map(record -> toProjection(record, viewer))
+                    .filter(Objects::nonNull)
+                    .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
+                    .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
+                    .toList();
+
+            if ("week".equals(view) || "month".equals(view)) {
+                return new EventsExplorePageDto(sorted.stream().map(EventProjection::item).toList(), sorted.size(), null);
+            }
+
+            String cursor = request == null ? null : request.cursor();
+            int startIndex = resolveCursorStartIndex(sorted, cursor);
+            int endIndex = Math.min(sorted.size(), startIndex + limit);
+            List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
+                    .map(EventProjection::item)
+                    .toList();
+            String nextCursor = endIndex < sorted.size() && !records.isEmpty()
+                    ? serializeCursor(records.get(records.size() - 1))
+                    : null;
+            return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+        } finally {
+            ACTIVE_CONTEXT.remove();
+        }
     }
 
     public List<EventRecordDto> queryExploreItems(String requestedUserId) {
@@ -196,13 +353,20 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        return computeExploreRecords(viewer).stream()
-                .map(record -> toEventRecordDto(record, viewer))
-                .filter(Objects::nonNull)
-                .sorted(Comparator
-                        .comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
-                        .thenComparing(item -> safeText(item.id())))
-                .toList();
+        try {
+            ACTIVE_CONTEXT.set(buildExploreQueryContext(viewer));
+            List<ActivityEvent> records = computeExploreRecords(viewer);
+            prefetchSnapshotsForRecords(records);
+            return records.stream()
+                    .map(record -> toEventRecordDto(record, viewer))
+                    .filter(Objects::nonNull)
+                    .sorted(Comparator
+                            .comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
+                            .thenComparing(item -> safeText(item.id())))
+                    .toList();
+        } finally {
+            ACTIVE_CONTEXT.remove();
+        }
     }
 
     public EventsExplorePageDto queryEventExplorePage(EventsExploreQueryDto request) {
@@ -211,36 +375,44 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
+        try {
+            ACTIVE_CONTEXT.set(buildExploreQueryContext(viewer));
 
-        String order = normalizeExploreOrder(request == null ? null : request.order());
-        String view = normalizeExploreView(request == null ? null : request.view());
-        String topic = normalizeTopic(request == null ? null : request.topic());
-        Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
-        Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
-        Integer requestedLimit = request == null ? null : request.limit();
-        boolean friendsOnly = Boolean.TRUE.equals(requestedFriendsOnly);
-        boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
-        int limit = normalizeLimit(requestedLimit, 10);
+            String order = normalizeExploreOrder(request == null ? null : request.order());
+            String view = normalizeExploreView(request == null ? null : request.view());
+            String topic = normalizeTopic(request == null ? null : request.topic());
+            Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
+            Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
+            Integer requestedLimit = request == null ? null : request.limit();
+            boolean friendsOnly = Boolean.TRUE.equals(requestedFriendsOnly);
+            boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
+            int limit = normalizeLimit(requestedLimit, 10);
 
-        List<EventProjection> sorted = computeExploreRecords(viewer).stream()
-                .map(record -> toProjection(record, viewer))
-                .filter(Objects::nonNull)
-                .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
-                .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
-                .filter(projection -> !StringUtils.hasText(topic) || hasTopic(projection.record(), topic))
-                .sorted((left, right) -> compareExploreProjection(left, right, order, view))
-                .toList();
+            List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
+            prefetchSnapshotsForRecords(exploreRecords);
 
-        String cursor = request == null ? null : request.cursor();
-        int startIndex = resolveCursorStartIndex(sorted, cursor);
-        int endIndex = Math.min(sorted.size(), startIndex + limit);
-        List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
-                .map(EventProjection::item)
-                .toList();
-        String nextCursor = endIndex < sorted.size() && !records.isEmpty()
-                ? serializeCursor(records.get(records.size() - 1))
-                : null;
-        return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+            List<EventProjection> sorted = exploreRecords.stream()
+                    .map(record -> toProjection(record, viewer))
+                    .filter(Objects::nonNull)
+                    .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
+                    .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
+                    .filter(projection -> !StringUtils.hasText(topic) || hasTopic(projection.record(), topic))
+                    .sorted((left, right) -> compareExploreProjection(left, right, order, view))
+                    .toList();
+
+            String cursor = request == null ? null : request.cursor();
+            int startIndex = resolveCursorStartIndex(sorted, cursor);
+            int endIndex = Math.min(sorted.size(), startIndex + limit);
+            List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
+                    .map(EventProjection::item)
+                    .toList();
+            String nextCursor = endIndex < sorted.size() && !records.isEmpty()
+                    ? serializeCursor(records.get(records.size() - 1))
+                    : null;
+            return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+        } finally {
+            ACTIVE_CONTEXT.remove();
+        }
     }
 
     public void trash(EventActionRequestDto request) {
@@ -271,10 +443,7 @@ public class ActivitiesEventsService {
         }
         final String requestedSourceId = Objects.requireNonNull(sourceId);
 
-        ActivityEvent preferred = computePreferredEventRecords(allEventDocuments()).stream()
-                .filter(record -> requestedSourceId.equals(normalizeId(record.getSourceId())))
-                .findFirst()
-                .orElse(null);
+        ActivityEvent preferred = findPreferredEventRecord(requestedSourceId);
         if (preferred == null) {
             return null;
         }
@@ -284,9 +453,8 @@ public class ActivitiesEventsService {
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
-            ActivityEvent slotRecord = computePreferredEventRecords(allEventDocuments()).stream()
+            ActivityEvent slotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
                     .filter(this::isGeneratedSlotRecord)
-                    .filter(record -> requestedSlotSourceId.equals(normalizeId(record.getSourceId())))
                     .findFirst()
                     .orElse(null);
             if (slotRecord != null) {
@@ -413,6 +581,143 @@ public class ActivitiesEventsService {
         return concat(directRecords, membershipRecords);
     }
 
+    private EventsExplorePageDto pageDirectScopedRecords(
+            ViewerContext viewer,
+            String filter,
+            String hostingPublicationFilter,
+            EventsFilterRequestDto request) {
+        String secondaryFilter = normalizeActivitiesSecondaryFilter(request == null ? null : request.secondaryFilter());
+        String view = normalizeActivitiesView(request == null ? null : request.view());
+        String sort = normalizeActivitiesSort(request == null ? null : request.sort(), view, secondaryFilter);
+        Integer requestedLimit = request == null ? null : request.limit();
+        int limit = normalizeLimit(requestedLimit, 10);
+
+        List<EventProjection> sorted = queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
+                .map(record -> toProjection(record, viewer))
+                .filter(Objects::nonNull)
+                .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
+                .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
+                .toList();
+
+        if ("week".equals(view) || "month".equals(view)) {
+            return new EventsExplorePageDto(sorted.stream().map(EventProjection::item).toList(), sorted.size(), null);
+        }
+
+        String cursor = request == null ? null : request.cursor();
+        int startIndex = resolveCursorStartIndex(sorted, cursor);
+        int endIndex = Math.min(sorted.size(), startIndex + limit);
+        List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
+                .map(EventProjection::item)
+                .toList();
+        String nextCursor = endIndex < sorted.size() && !records.isEmpty()
+                ? serializeCursor(records.get(records.size() - 1))
+                : null;
+        return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+    }
+
+    private boolean usesDirectOwnerScope(String filter) {
+        return "invitations".equals(filter)
+                || "my-events".equals(filter)
+                || "drafts".equals(filter)
+                || "trash".equals(filter);
+    }
+
+    private List<ActivityEvent> queryDirectScopedRecords(
+            ViewerContext viewer,
+            String filter,
+            String hostingPublicationFilter) {
+        if (viewer == null || !StringUtils.hasText(viewer.userId())) {
+            return List.of();
+        }
+
+        List<ActivityEvent> directOwnerRecords = queryDirectOwnerRecords(viewer.userId());
+        List<ActivityEvent> invitations = queryInvitationScopeRecords(directOwnerRecords);
+        List<ActivityEvent> myEvents = queryMyEventScopeRecords(viewer, directOwnerRecords);
+        List<ActivityEvent> drafts = myEvents.stream()
+                .filter(record -> Boolean.FALSE.equals(record.getPublished()))
+                .toList();
+
+        return switch (filter) {
+            case "invitations" -> invitations;
+            case "my-events" -> "drafts".equals(hostingPublicationFilter) ? drafts : myEvents;
+            case "drafts" -> drafts;
+            case "trash" -> directOwnerRecords.stream()
+                    .filter(record -> Boolean.TRUE.equals(record.getIsTrashed()))
+                    .sorted(directRecordComparator())
+                    .toList();
+            default -> List.of();
+        };
+    }
+
+    private List<ActivityEvent> queryDirectOwnerRecords(String ownerUserId) {
+        return activityEventsRepository.findByOwnerUserId(ownerUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private List<ActivityEvent> queryCanonicalExploreRecords() {
+        return activityEventsRepository.findCanonicalExploreCandidates(TYPE_EVENTS).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .filter(this::isCanonicalExploreRecord)
+                .toList();
+    }
+
+    private List<ActivityEvent> queryInvitationScopeRecords(List<ActivityEvent> directOwnerRecords) {
+        LinkedHashMap<String, ActivityEvent> invitationRecordsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : directOwnerRecords) {
+            if (!Boolean.TRUE.equals(record.getIsInvitation()) || Boolean.TRUE.equals(record.getIsTrashed())) {
+                continue;
+            }
+            invitationRecordsBySourceId.put(normalizeId(record.getSourceId()), record);
+        }
+        return new ArrayList<>(invitationRecordsBySourceId.values()).stream()
+                .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private List<ActivityEvent> queryMyEventScopeRecords(ViewerContext viewer, List<ActivityEvent> directOwnerRecords) {
+        LinkedHashMap<String, ActivityEvent> myEventRecordsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : directOwnerRecords) {
+            if (Boolean.TRUE.equals(record.getIsTrashed())) {
+                continue;
+            }
+            if (TYPE_HOSTING.equals(normalizeType(record.getType()))) {
+                myEventRecordsBySourceId.put(normalizeId(record.getSourceId()), record);
+                continue;
+            }
+            if (TYPE_EVENTS.equals(normalizeType(record.getType())) && isViewerAdmin(record, viewer.userId())) {
+                myEventRecordsBySourceId.put(normalizeId(record.getSourceId()), buildHostingProjection(viewer.userId(), record));
+            }
+        }
+        return new ArrayList<>(myEventRecordsBySourceId.values()).stream()
+                .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private ActivityEvent buildHostingProjection(String viewerUserId, ActivityEvent source) {
+        ActivityEvent projection = cloneDocument(source);
+        projection.setOwnerUserId(viewerUserId);
+        projection.setType(TYPE_HOSTING);
+        projection.setIsHosting(true);
+        projection.setIsInvitation(false);
+        projection.setIsAdmin(true);
+        projection.setAdmins(resolveAdminUserIds(source.getSourceId(), source.getCreatorUserId()));
+        projection.normalizeLifecycleState();
+        return projection;
+    }
+
+    private Comparator<ActivityEvent> directRecordComparator() {
+        return Comparator.comparing((ActivityEvent record) -> toSortableDate(record == null ? null : record.getStartAtIso()))
+                .thenComparing(record -> normalizeId(record == null ? null : record.getSourceId()), Comparator.nullsLast(String::compareTo));
+    }
+
     private List<ActivityEvent> computePreferredEventRecords(List<ActivityEvent> records) {
         Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
         for (ActivityEvent record : records) {
@@ -487,7 +792,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean shouldIncludeExploreRecord(ActivityEvent record, String activeUserId) {
-        if (record == null || isGeneratedSlotRecord(record) || Boolean.TRUE.equals(record.getIsTrashed()) || Boolean.TRUE.equals(record.getIsInvitation())) {
+        if (record == null || !isCanonicalExploreRecord(record)) {
             return false;
         }
         if (Boolean.FALSE.equals(record.getPublished())) {
@@ -504,6 +809,22 @@ public class ActivitiesEventsService {
             return false;
         }
         return !"Friends only".equals(visibility) || isFriendOfActiveUser(normalizeId(record.getCreatorUserId()), activeUserId);
+    }
+
+    private boolean isCanonicalExploreRecord(ActivityEvent record) {
+        if (record == null) {
+            return false;
+        }
+        if (!TYPE_EVENTS.equals(normalizeType(record.getType()))) {
+            return false;
+        }
+        if (isGeneratedSlotRecord(record)) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(record.getIsTrashed()) || Boolean.TRUE.equals(record.getIsInvitation())) {
+            return false;
+        }
+        return StringUtils.hasText(normalizeId(record.getSourceId()));
     }
 
     private boolean shouldPreferExploreRecord(ActivityEvent next, ActivityEvent current) {
@@ -525,6 +846,7 @@ public class ActivitiesEventsService {
             return null;
         }
         long startAtMs = toSortableDate(item.startAtIso());
+        long endAtMs = resolveProjectionEndAtMs(item, startAtMs);
         Integer distanceMetersExact = resolveDistanceMetersExact(viewer.locationCoordinates(), record);
         return new EventProjection(
                 record,
@@ -532,10 +854,33 @@ public class ActivitiesEventsService {
                 distanceMetersExact == null ? Integer.MAX_VALUE : distanceMetersExact,
                 Math.max(0d, safeDouble(item.relevance())),
                 startAtMs,
+                endAtMs,
                 dateOnly(startAtMs),
                 Math.abs(Math.max(0, normalizeCount(record.getAffinity())) - viewer.affinity()),
                 -Math.max(0, (int) Math.round(safeDouble(item.rating()) * 100d)),
-                startAtMs < System.currentTimeMillis());
+                endAtMs < System.currentTimeMillis());
+    }
+
+    private boolean matchesActivitiesSecondaryFilter(EventProjection projection, String secondaryFilter) {
+        if (projection == null) {
+            return false;
+        }
+        return switch (secondaryFilter) {
+            case "past" -> projection.past();
+            case "recent", "relevant" -> !projection.past();
+            default -> true;
+        };
+    }
+
+    private long resolveProjectionEndAtMs(EventRecordDto item, long fallbackStartAtMs) {
+        if (item == null) {
+            return fallbackStartAtMs;
+        }
+        long endAtMs = toSortableDate(item.endAtIso());
+        if (endAtMs > 0L) {
+            return endAtMs;
+        }
+        return fallbackStartAtMs;
     }
 
     private EventRecordDto toEventRecordDto(ActivityEvent record, ViewerContext viewer) {
@@ -550,6 +895,7 @@ public class ActivitiesEventsService {
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
                 normalizeType(record.getType()),
+                safeText(record.getStatus()),
                 safeText(record.getAvatar()),
                 safeText(record.getTitle()),
                 safeText(record.getSubtitle()),
@@ -764,10 +1110,7 @@ public class ActivitiesEventsService {
         if (TYPE_INVITATIONS.equals(normalizeType(type))) {
             return null;
         }
-        ActivityEvent preferred = computePreferredEventRecords(allEventDocuments()).stream()
-                .filter(record -> sourceId.equals(normalizeId(record.getSourceId())))
-                .findFirst()
-                .orElse(null);
+        ActivityEvent preferred = findPreferredEventRecord(sourceId);
         if (preferred == null) {
             return null;
         }
@@ -946,6 +1289,10 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> allEventDocuments() {
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        if (ctx != null) {
+            return ctx.allEvents();
+        }
         return activityEventsRepository.findAll().stream()
                 .filter(Objects::nonNull)
                 .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
@@ -953,6 +1300,10 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> allEventDocuments(ViewerContext viewer) {
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        if (ctx != null) {
+            return ctx.mergedEvents();
+        }
         if (viewer == null || viewer.locationCoordinates() == null) {
             return allEventDocuments();
         }
@@ -988,25 +1339,63 @@ public class ActivitiesEventsService {
         Document geoNearStage = new Document("$geoNear", new Document("near", toGeoJsonDocument(viewerPoint))
                 .append("distanceField", "distanceSortValue")
                 .append("spherical", true)
-                .append("key", "locationGeo"));
+                .append("key", "locationGeo")
+                .append("query", new Document("type", TYPE_EVENTS)
+                        .append("generated", new Document("$ne", true))
+                        .append("isInvitation", new Document("$ne", true))
+                        .append("isTrashed", new Document("$ne", true))
+                        .append("published", new Document("$ne", false))));
 
-        List<Document> rawDocuments = mongoTemplate.getCollection(mongoTemplate.getCollectionName(ActivityEvent.class))
-                .aggregate(List.of(geoNearStage))
-                .into(new ArrayList<>());
+        List<Document> rawDocuments;
+        try {
+            rawDocuments = mongoTemplate.getCollection(mongoTemplate.getCollectionName(ActivityEvent.class))
+                    .aggregate(List.of(geoNearStage))
+                    .into(new ArrayList<>());
+        } catch (RuntimeException exception) {
+            if (isMissingGeoNearIndex(exception)) {
+                logMissingEventGeoIndexWarning();
+                return List.of();
+            }
+            throw exception;
+        }
 
         List<ActivityEvent> ordered = new ArrayList<>();
         for (Document rawDocument : rawDocuments) {
             ActivityEvent record = readGeoOrderedDocument(rawDocument);
-            if (record != null && StringUtils.hasText(normalizeId(record.getSourceId()))) {
+            if (record != null && isCanonicalExploreRecord(record)) {
                 ordered.add(record);
             }
         }
         return ordered;
     }
 
+    private boolean isMissingGeoNearIndex(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof com.mongodb.MongoCommandException commandException
+                    && commandException.getErrorCode() == MONGO_NO_QUERY_EXECUTION_PLANS_CODE
+                    && safeText(commandException.getErrorMessage()).contains("$geoNear")) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private void logMissingEventGeoIndexWarning() {
+        if (MISSING_EVENT_GEO_INDEX_WARNING_LOGGED.compareAndSet(false, true)) {
+            LOGGER.warn("Missing 2dsphere index for events.locationGeo. Falling back to non-geo event ordering.");
+        }
+    }
+
     private boolean hasTrackedUserParticipation(ActivityEvent record, String userId) {
         if (record == null || !StringUtils.hasText(userId)) {
             return false;
+        }
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        String sourceId = normalizeId(record.getSourceId());
+        if (ctx != null && StringUtils.hasText(sourceId) && ctx.trackedEventSourceIds().contains(sourceId)) {
+            return true;
         }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
         if (snapshot != null) {
@@ -1050,16 +1439,68 @@ public class ActivitiesEventsService {
         return viewerUserId.equals(normalizeId(record.getCreatorUserId()));
     }
 
+    private ActivityEvent findPreferredEventRecord(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+        return computePreferredEventRecords(loadEventDocumentsBySourceIds(List.of(normalizedSourceId))).stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    private List<ActivityEvent> loadEventDocumentsBySourceIds(Collection<String> sourceIds) {
+        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        if (normalizedSourceIds.isEmpty()) {
+            return List.of();
+        }
+        return activityEventsRepository.findBySourceIdIn(normalizedSourceIds).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .toList();
+    }
+
     private ActivitiesMembersService.OwnerMembersSnapshot resolveMembersSnapshot(ActivityEvent record) {
         if (record == null || !StringUtils.hasText(normalizeId(record.getSourceId()))) {
             return null;
         }
-        return activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(record.getSourceId()));
+        return resolveSnapshot(normalizeId(record.getSourceId()));
+    }
+
+    private ActivitiesMembersService.OwnerMembersSnapshot resolveSnapshot(String sourceId) {
+        if (!StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        if (ctx != null) {
+            return ctx.snapshotsBySourceId().get(sourceId);
+        }
+        return activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
+    }
+
+    private void prefetchSnapshotsForRecords(Collection<ActivityEvent> records) {
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        if (ctx == null || records == null || records.isEmpty()) {
+            return;
+        }
+        Map<String, ActivityEvent> missingPreferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : computePreferredEventRecords(records.stream().filter(Objects::nonNull).toList())) {
+            String sourceId = normalizeId(record.getSourceId());
+            if (StringUtils.hasText(sourceId) && !ctx.snapshotsBySourceId().containsKey(sourceId)) {
+                missingPreferredBySourceId.put(sourceId, record);
+            }
+        }
+        if (missingPreferredBySourceId.isEmpty()) {
+            return;
+        }
+        ctx.snapshotsBySourceId().putAll(activitiesMembersService.buildBatchEventSnapshots(missingPreferredBySourceId));
     }
 
     private List<String> resolveAdminUserIds(String sourceId, String creatorUserId) {
         LinkedHashSet<String> adminUserIds = new LinkedHashSet<>();
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(sourceId));
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveSnapshot(normalizeId(sourceId));
         if (snapshot != null) {
             adminUserIds.addAll(snapshot.adminUserIds());
         }
@@ -1225,7 +1666,13 @@ public class ActivitiesEventsService {
     }
 
     private String normalizeTopic(String value) {
-        return safeText(value).replaceFirst("^#+", "");
+        String normalized = safeText(value).replaceFirst("^#+\\s*", "");
+        if (!StringUtils.hasText(normalized)) {
+            return "";
+        }
+        return Normalizer.normalize(normalized.toLowerCase(Locale.ROOT), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .trim();
     }
 
     private int normalizeLimit(Integer value, int fallback) {
@@ -1924,9 +2371,17 @@ public class ActivitiesEventsService {
             int distanceMeters,
             double relevanceValue,
             long startAtMs,
+            long endAtMs,
             long dayMs,
             int affinityGap,
             int ratingValue,
             boolean past) {
+    }
+
+    private record EventQueryContext(
+            List<ActivityEvent> allEvents,
+            List<ActivityEvent> mergedEvents,
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+            Set<String> trackedEventSourceIds) {
     }
 }

@@ -2,6 +2,8 @@ package com.raxim.myscoutee.profile.data.dto.rates;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+
 public final class RatesDtos {
     private RatesDtos() {
     }
@@ -26,7 +28,8 @@ public final class RatesDtos {
     public record ActivityRatePageResponseDto(
             List<RateMenuItemDto> items,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            List<UserDto> users) {
     }
 
     public record UserRateRecordDto(

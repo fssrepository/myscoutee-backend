@@ -1,9 +1,13 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -58,7 +62,7 @@ public class HomeGameCardsService {
         String nextCursor = endExclusive < filteredUsers.size() ? String.valueOf(endExclusive) : null;
 
         List<UserDto> users = page.stream()
-                .map(homeUserProfileService::toUserDto)
+                .map(homeUserProfileService::toGameCardUserDto)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -177,12 +181,16 @@ public class HomeGameCardsService {
             String rightQuery,
             String cursor,
             Integer pageSizeValue) {
-        List<UserDto> allUsers = homeUserProfileService.queryDemoUsers();
+        List<Users> allUserRecords = homeUserProfileService.queryOrderedUserRecords();
+        Map<String, Users> usersById = allUserRecords.stream()
+                .filter(Objects::nonNull)
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeUserId(user.getId()), user), Map::putAll);
+        HomeUserProfileService.ActivitySocialGraph socialGraph = homeUserProfileService.queryActivitySocialGraph();
         List<HomeUserProfileService.GameSocialCardCandidate> filteredCards = ("separated-friends".equals(mode)
-                ? homeUserProfileService.querySeparatedFriendCards(userId)
-                : homeUserProfileService.queryFriendsInCommonCards(userId))
+                ? homeUserProfileService.querySeparatedFriendCards(userId, allUserRecords, socialGraph)
+                : homeUserProfileService.queryFriendsInCommonCards(userId, allUserRecords, socialGraph))
                 .stream()
-                .filter(card -> matchesSocialQuery(allUsers, card, leftQuery, rightQuery))
+                .filter(card -> matchesSocialQuery(usersById, card, leftQuery, rightQuery))
                 .toList();
 
         int pageSize = resolvePageSize(pageSizeValue);
@@ -194,11 +202,13 @@ public class HomeGameCardsService {
         String nextCursor = endExclusive < filteredCards.size() ? String.valueOf(endExclusive) : null;
 
         Set<String> referencedUserIds = page.stream()
-                .flatMap(card -> List.of(card.userId(), card.secondaryUserId(), card.bridgeUserId()).stream())
+                .flatMap(card -> Stream.of(card.userId(), card.secondaryUserId(), card.bridgeUserId()))
                 .filter(StringUtils::hasText)
-                .collect(Collectors.toSet());
-        List<UserDto> users = allUsers.stream()
-                .filter(user -> referencedUserIds.contains(user.id()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        List<UserDto> users = referencedUserIds.stream()
+                .map(usersById::get)
+                .filter(Objects::nonNull)
+                .map(homeUserProfileService::toGameCardUserDto)
                 .toList();
         List<UserGameSocialCardDto> socialCards = page.stream()
                 .map(card -> new UserGameSocialCardDto(
@@ -220,28 +230,25 @@ public class HomeGameCardsService {
     }
 
     private boolean matchesSocialQuery(
-            List<UserDto> users,
+            Map<String, Users> usersById,
             HomeUserProfileService.GameSocialCardCandidate card,
             String leftQuery,
             String rightQuery) {
         if (card == null) {
             return false;
         }
-        return matchesSocialSide(users, card.userId(), card.eventName(), leftQuery)
-                && matchesSocialSide(users, resolveRightSideUserId(card), card.eventName(), rightQuery);
+        return matchesSocialSide(usersById, card.userId(), card.eventName(), leftQuery)
+                && matchesSocialSide(usersById, resolveRightSideUserId(card), card.eventName(), rightQuery);
     }
 
-    private boolean matchesSocialSide(List<UserDto> users, String userId, String eventName, String query) {
+    private boolean matchesSocialSide(Map<String, Users> usersById, String userId, String eventName, String query) {
         String normalizedQuery = normalize(query);
         if (!StringUtils.hasText(normalizedQuery)) {
             return true;
         }
-        UserDto user = users.stream()
-                .filter(candidate -> Objects.equals(candidate.id(), userId))
-                .findFirst()
-                .orElse(null);
-        if (containsQuery(user == null ? null : user.name(), normalizedQuery)
-                || containsQuery(user == null ? null : user.city(), normalizedQuery)
+        Users user = usersById.get(normalizeUserId(userId));
+        if (containsQuery(user == null ? null : user.getName(), normalizedQuery)
+                || containsQuery(user == null ? null : user.getCity(), normalizedQuery)
                 || containsQuery(eventName, normalizedQuery)) {
             return true;
         }
@@ -257,6 +264,10 @@ public class HomeGameCardsService {
 
     private boolean containsQuery(String value, String query) {
         return normalize(value).contains(query);
+    }
+
+    private String normalizeUserId(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private String normalizeMode(String value) {

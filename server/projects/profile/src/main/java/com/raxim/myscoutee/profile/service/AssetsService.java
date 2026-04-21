@@ -79,9 +79,10 @@ public class AssetsService {
             return List.of();
         }
 
-        ensureOwnerAssetsBootstrapped(normalizedUserId);
-        return assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(normalizedUserId).stream()
-                .map(this::toDto)
+        List<Asset> assets = queryOwnerAssets(normalizedUserId);
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        return assets.stream()
+                .map(asset -> toDto(asset, ownerNamesByUserId))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -515,6 +516,7 @@ public class AssetsService {
                 sourceId,
                 normalizeId(event.getOwnerUserId()),
                 safeText(event.getType()),
+                safeText(event.getStatus()),
                 safeText(event.getAvatar()),
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),
@@ -612,7 +614,43 @@ public class AssetsService {
         return "accepted";
     }
 
+    private List<Asset> queryOwnerAssets(String ownerUserId) {
+        List<Asset> existingAssets = assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(ownerUserId);
+        if (!existingAssets.isEmpty()) {
+            return existingAssets;
+        }
+
+        ensureOwnerAssetsBootstrapped(ownerUserId);
+        return assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(ownerUserId);
+    }
+
+    private Map<String, String> resolveOwnerNamesByUserId(List<Asset> assets) {
+        List<String> ownerUserIds = (assets == null ? List.<Asset>of() : assets).stream()
+                .map(asset -> normalizeId(asset == null ? null : asset.getOwnerUserId()))
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (ownerUserIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, Users> usersById = usersRepository.findByUserIdIn(ownerUserIds).stream()
+                .filter(Objects::nonNull)
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getUserId()), user), Map::putAll);
+
+        Map<String, String> ownerNamesByUserId = new LinkedHashMap<>();
+        for (String ownerUserId : ownerUserIds) {
+            Users owner = usersById.get(ownerUserId);
+            ownerNamesByUserId.put(ownerUserId, owner == null ? null : safeText(owner.getName()));
+        }
+        return ownerNamesByUserId;
+    }
+
     private AssetCardDto toDto(Asset asset) {
+        return toDto(asset, Map.of());
+    }
+
+    private AssetCardDto toDto(Asset asset, Map<String, String> ownerNamesByUserId) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
@@ -639,7 +677,7 @@ public class AssetsService {
                 clonePricing(asset.getPricing()),
                 normalizeVisibility(asset.getVisibility()),
                 normalizeId(asset.getOwnerUserId()),
-                resolveOwnerName(asset.getOwnerUserId()),
+                resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset));
     }
 
@@ -726,10 +764,13 @@ public class AssetsService {
         return "Public";
     }
 
-    private String resolveOwnerName(String ownerUserId) {
+    private String resolveOwnerName(String ownerUserId, Map<String, String> ownerNamesByUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         if (!StringUtils.hasText(normalizedOwnerUserId)) {
             return null;
+        }
+        if (ownerNamesByUserId != null && ownerNamesByUserId.containsKey(normalizedOwnerUserId)) {
+            return ownerNamesByUserId.get(normalizedOwnerUserId);
         }
         return usersRepository.findByUserId(normalizedOwnerUserId)
                 .map(Users::getName)

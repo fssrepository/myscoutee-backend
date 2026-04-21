@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,8 @@ public interface ActivitySubEventResourcesRepository extends MongoRepository<Act
     Optional<ActivitySubEventResource> findByRecordId(String recordId);
 
     List<ActivitySubEventResource> findByOwnerId(String ownerId);
+
+    List<ActivitySubEventResource> findByOwnerIdIn(Collection<String> ownerIds);
 
     Optional<ActivitySubEventResource> findByOwnerIdAndSubEventIdAndAssetOwnerUserId(
             String ownerId,

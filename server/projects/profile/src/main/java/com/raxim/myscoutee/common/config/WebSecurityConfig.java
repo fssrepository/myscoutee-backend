@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
+import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
 import com.raxim.myscoutee.common.config.firebase.FirebaseService;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 
@@ -38,7 +39,8 @@ public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class)
+        http.addFilterBefore(sessionMongoRoutingFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(tokenAuthorizationFilter(), SessionMongoRoutingFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers(
                             "/health",
@@ -74,6 +76,10 @@ public class WebSecurityConfig {
 
     private FirebaseFilter tokenAuthorizationFilter() {
         return new FirebaseFilter(firebaseService, configProperties);
+    }
+
+    private SessionMongoRoutingFilter sessionMongoRoutingFilter() {
+        return new SessionMongoRoutingFilter();
     }
 
     @Bean
