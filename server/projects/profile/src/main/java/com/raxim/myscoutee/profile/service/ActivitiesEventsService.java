@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.text.Normalizer;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -163,42 +165,21 @@ public class ActivitiesEventsService {
     }
 
     private EventQueryContext buildExploreQueryContext(ViewerContext viewer) {
-        List<ActivityEvent> allEvents = activityEventsRepository.findAll().stream()
-                .filter(Objects::nonNull)
-                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
-                .filter(this::isCanonicalExploreRecord)
-                .toList();
-        List<ActivityEvent> mergedEvents = viewer != null && viewer.locationCoordinates() != null
-                ? mergeGeoOrderedEvents(allEvents, viewer.locationCoordinates())
-                : allEvents;
+        List<ActivityEvent> allEvents = queryCanonicalExploreRecords();
+        LinkedHashSet<String> trackedSourceIds = new LinkedHashSet<>();
+        if (viewer != null && StringUtils.hasText(viewer.userId())) {
+            trackedSourceIds.addAll(activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
+            queryDirectOwnerRecords(viewer.userId()).stream()
+                    .map(ActivityEvent::getSourceId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .forEach(trackedSourceIds::add);
+        }
         return new EventQueryContext(
                 allEvents,
-                mergedEvents,
+                allEvents,
                 new LinkedHashMap<>(),
-                viewer == null ? Set.of() : activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
-    }
-
-    private List<ActivityEvent> mergeGeoOrderedEvents(
-            List<ActivityEvent> allEvents,
-            LocationCoordinatesDto viewerCoordinates) {
-        List<ActivityEvent> geoOrdered = geoOrderedEventDocuments(viewerCoordinates);
-        if (geoOrdered.isEmpty()) {
-            return allEvents;
-        }
-        LinkedHashMap<String, ActivityEvent> merged = new LinkedHashMap<>();
-        for (ActivityEvent record : geoOrdered) {
-            String documentId = normalizeId(record == null ? null : record.getId());
-            if (StringUtils.hasText(documentId)) {
-                merged.put(documentId, record);
-            }
-        }
-        for (ActivityEvent record : allEvents) {
-            String documentId = normalizeId(record == null ? null : record.getId());
-            if (StringUtils.hasText(documentId) && !merged.containsKey(documentId)) {
-                merged.put(documentId, record);
-            }
-        }
-        return new ArrayList<>(merged.values());
+                trackedSourceIds);
     }
 
     public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
@@ -675,6 +656,16 @@ public class ActivitiesEventsService {
                 .map(this::cloneDocument)
                 .peek(ActivityEvent::normalizeLifecycleState)
                 .sorted(directRecordComparator())
+                .toList();
+    }
+
+    private List<ActivityEvent> queryCanonicalExploreRecords() {
+        return activityEventsRepository.findCanonicalExploreCandidates(TYPE_EVENTS).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .filter(this::isCanonicalExploreRecord)
                 .toList();
     }
 
@@ -1675,7 +1666,13 @@ public class ActivitiesEventsService {
     }
 
     private String normalizeTopic(String value) {
-        return safeText(value).replaceFirst("^#+", "");
+        String normalized = safeText(value).replaceFirst("^#+\\s*", "");
+        if (!StringUtils.hasText(normalized)) {
+            return "";
+        }
+        return Normalizer.normalize(normalized.toLowerCase(Locale.ROOT), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .trim();
     }
 
     private int normalizeLimit(Integer value, int fallback) {
