@@ -4,16 +4,8 @@ Bugs
 ----
 1) http - backend test
 
-a) chat scroll up (loading at top, somehow should make the inplace load what facebook does)
-
-you can edit frontend also in-place (no separate workspace)
-1) event explore/event screen should prefetch activity members by page only
-pls. add the current active member id list to the events.json as embedded + sync logic, 
-when someone became active or deleted, so we can improve efficiency
-there could be other bottlenecks, which makes the query slow (create indexes)
-2) event explore - frontend does some hiding after the fetch from http, pls. improve the backend query so it won't be needed for http
-3) activity event member badges on card is not in sync on http mode with the member screen count
-even if there would be programatic error, it's events.json - memeber count mismatch i feel
+a) chat message popup - pls. eliminate the noticeable artifitial scroll down
+pls. figure out different approach to be able to retain the visible elements in place instead
 
 Commands
 --------
