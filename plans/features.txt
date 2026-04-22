@@ -6,10 +6,12 @@ Bugs
 
 a) chat scroll up (loading at top, somehow should make the inplace load what facebook does)
 b) pricing policy/reimbursement for late leave - pls. introduce for asset also
-c) event explore - even backend should filter - what the frontend does eliviate the need to hide elements
+
+1) event explore/event screen might prefetches activity members - pls. add the current active member id list to the event as embedded,
+so we can improve efficiency (it's documentum oriented db) - event/event explore prefetches activity members, pls. make sure it's only by page
+2) event explore - even backend should filter also on http, what the frontend does eliviate the need to hide elements
 as it was mostly for indexeddb on the fly
-d) event/event explore prefetches activity members, pls. make sure it's only by page
-e) activity event - members card is not in sync with the member page
+3) activity event - members card is not in sync with the member screen count
 
 Commands
 --------
