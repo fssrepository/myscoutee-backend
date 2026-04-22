@@ -7,6 +7,7 @@ Bugs
 chat message window - recent message and chat list item is not in sync
 message + member count
 sending message, seems not inserted to db also (http) - when closing and opening the chat message window
+demo does not apply reverse flex it seems - http behaving differently
 
 Commands
 --------
