@@ -279,8 +279,6 @@ public class EventParticipationTicketService {
         next.setPricing(preferred.getPricing());
         next.setAcceptedMembers(Math.max(normalizeCount(preferred.getAcceptedMembers()), snapshot.acceptedMemberUserIds().size()));
         next.setPendingMembers(Math.max(normalizeCount(preferred.getPendingMembers()), snapshot.pendingMemberUserIds().size()));
-        next.setAcceptedMemberUserIds(new ArrayList<>(snapshot.acceptedMemberUserIds()));
-        next.setPendingMemberUserIds(new ArrayList<>(snapshot.pendingMemberUserIds()));
         next.setTopics(new ArrayList<>(normalizeStrings(preferred.getTopics())));
         next.setSubEvents(cloneSubEvents(preferred.getSubEvents()));
         next.setSubEventsDisplayMode(safeText(preferred.getSubEventsDisplayMode()));

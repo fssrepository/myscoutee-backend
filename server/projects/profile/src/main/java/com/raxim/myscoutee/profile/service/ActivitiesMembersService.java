@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -119,37 +118,6 @@ public class ActivitiesMembersService {
                 normalizedOwnerType,
                 normalizedOwnerId,
                 mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)));
-    }
-
-    public void syncCanonicalEventMembers(String eventId) {
-        String normalizedEventId = normalizeId(eventId);
-        if (!StringUtils.hasText(normalizedEventId)) {
-            return;
-        }
-
-        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
-        if (snapshot == null) {
-            return;
-        }
-
-        List<ActivityEvent> sourceDocuments = activityEventsRepository.findBySourceId(normalizedEventId).stream()
-                .filter(Objects::nonNull)
-                .toList();
-
-        List<ActivityEvent> updated = new ArrayList<>();
-        for (ActivityEvent document : sourceDocuments) {
-            if (Boolean.TRUE.equals(document.getIsInvitation())) {
-                continue;
-            }
-            ActivityEvent next = cloneCanonicalEvent(document);
-            next.setAcceptedMemberUserIds(snapshot.acceptedMemberUserIds());
-            next.setPendingMemberUserIds(snapshot.pendingMemberUserIds());
-            updated.add(next);
-        }
-
-        if (!updated.isEmpty()) {
-            activityEventsRepository.saveAll(updated);
-        }
     }
 
     public boolean hasAcceptedAdminRole(String ownerType, String ownerId, String userId) {
@@ -449,7 +417,6 @@ public class ActivitiesMembersService {
                     .removeManagedResourcesForRemovedEventMembers(ownerId, removedVisibleMembers, actorUserId, nowIso);
             clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
-            syncCanonicalEventMembers(ownerId);
         }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
@@ -553,7 +520,6 @@ public class ActivitiesMembersService {
             activityMembersRepository.saveAll(membersToSave);
         }
         eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
-        syncCanonicalEventMembers(ownerId);
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
@@ -595,7 +561,6 @@ public class ActivitiesMembersService {
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
-            syncCanonicalEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
     }
@@ -656,7 +621,6 @@ public class ActivitiesMembersService {
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
-            syncCanonicalEventMembers(normalizedEventId);
         }
         return newlyInvitedUserIds;
     }
@@ -1642,18 +1606,6 @@ public class ActivitiesMembersService {
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
         clone.setUpdatedUser(source.getUpdatedUser());
-        return clone;
-    }
-
-    private ActivityEvent cloneCanonicalEvent(ActivityEvent source) {
-        ActivityEvent clone = new ActivityEvent();
-        BeanUtils.copyProperties(source, clone);
-        if (source.getAdmins() != null) {
-            clone.setAdmins(new ArrayList<>(source.getAdmins()));
-        }
-        if (source.getTopics() != null) {
-            clone.setTopics(new ArrayList<>(source.getTopics()));
-        }
         return clone;
     }
 
