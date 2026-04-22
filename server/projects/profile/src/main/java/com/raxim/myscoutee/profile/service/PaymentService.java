@@ -91,6 +91,37 @@ public class PaymentService {
             String slotSourceId,
             String bookingStartAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
+        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, cancellationPolicy);
+    }
+
+    public void recordAssetBooking(
+            String paymentSessionId,
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String bookingStartAtIso,
+            PricingCancellationPolicyDto cancellationPolicy) {
+        recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, cancellationPolicy);
+    }
+
+    public void cancelAssetBooking(
+            String paymentSessionId,
+            String fallbackBookingStartAtIso,
+            PricingCancellationPolicyDto fallbackCancellationPolicy) {
+        Payment payment = findByAnySessionId(paymentSessionId).orElse(null);
+        if (payment == null) {
+            return;
+        }
+        cancelBooking(payment, fallbackBookingStartAtIso, fallbackCancellationPolicy);
+    }
+
+    private void recordBooking(
+            String paymentSessionId,
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String bookingStartAtIso,
+            PricingCancellationPolicyDto cancellationPolicy) {
         Payment payment = findByAnySessionId(paymentSessionId).orElse(null);
         if (payment == null) {
             return;
@@ -109,8 +140,10 @@ public class PaymentService {
         payment.setSlotSourceId(normalizeId(slotSourceId));
         payment.setBookingStartAtIso(hasText(bookingStartAtIso) ? bookingStartAtIso.trim() : payment.getBookingStartAtIso());
         payment.setCancellationPolicy(cancellationPolicy);
+        if (!BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus())) || !hasText(payment.getJoinedAtIso())) {
+            payment.setJoinedAtIso(nowIso());
+        }
         payment.setBookingStatus(BOOKING_STATUS_JOINED);
-        payment.setJoinedAtIso(nowIso());
         if (!hasText(payment.getRefundStatus())) {
             payment.setRefundStatus(REFUND_STATUS_NONE);
         }
@@ -136,6 +169,20 @@ public class PaymentService {
                 .max(Comparator.comparing(item -> sortableIso(item.getJoinedAtIso() != null ? item.getJoinedAtIso() : item.getCreatedDate())))
                 .orElse(null);
         if (payment == null) {
+            return;
+        }
+        cancelBooking(payment, fallbackBookingStartAtIso, fallbackCancellationPolicy);
+    }
+
+    private void cancelBooking(
+            Payment payment,
+            String fallbackBookingStartAtIso,
+            PricingCancellationPolicyDto fallbackCancellationPolicy) {
+        if (payment == null) {
+            return;
+        }
+        if (BOOKING_STATUS_CANCELLED.equals(safeText(payment.getBookingStatus()))
+                || REFUND_STATUS_FULL.equals(safeText(payment.getRefundStatus()))) {
             return;
         }
 

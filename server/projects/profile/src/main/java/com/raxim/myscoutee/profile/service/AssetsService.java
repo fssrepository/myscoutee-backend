@@ -45,6 +45,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookin
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -57,6 +58,7 @@ public class AssetsService {
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
+    private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
     private final AssetSourceRefreshProperties assetSourceRefreshProperties;
 
@@ -64,11 +66,13 @@ public class AssetsService {
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
             EventParticipationTicketService eventParticipationTicketService,
+            PaymentService paymentService,
             MongoTemplate mongoTemplate,
             AssetSourceRefreshProperties assetSourceRefreshProperties) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
+        this.paymentService = paymentService;
         this.mongoTemplate = mongoTemplate;
         this.assetSourceRefreshProperties = assetSourceRefreshProperties;
     }
@@ -308,7 +312,78 @@ public class AssetsService {
             return null;
         }
         assetsRepository.save(saved);
+        syncAssetRequestPayments(existing, saved);
         return toDto(saved);
+    }
+
+    private void syncAssetRequestPayments(Asset existing, Asset saved) {
+        if (saved == null) {
+            return;
+        }
+
+        PricingCancellationPolicyDto nextCancellationPolicy = saved.getPricing() == null
+                ? null
+                : saved.getPricing().cancellationPolicy();
+        PricingCancellationPolicyDto previousCancellationPolicy = existing == null || existing.getPricing() == null
+                ? nextCancellationPolicy
+                : existing.getPricing().cancellationPolicy();
+
+        Map<String, AssetRequestRecord> previousByRequestId = new LinkedHashMap<>();
+        for (AssetRequestRecord request : safeRequests(existing == null ? null : existing.getRequests())) {
+            String requestId = normalizeId(request == null ? null : request.id());
+            if (StringUtils.hasText(requestId)) {
+                previousByRequestId.put(requestId, request);
+            }
+        }
+
+        Map<String, AssetRequestRecord> nextByRequestId = new LinkedHashMap<>();
+        for (AssetRequestRecord request : safeRequests(saved.getRequests())) {
+            String requestId = normalizeId(request == null ? null : request.id());
+            if (StringUtils.hasText(requestId)) {
+                nextByRequestId.put(requestId, request);
+            }
+        }
+
+        for (AssetRequestRecord nextRequest : nextByRequestId.values()) {
+            String nextPaymentSessionId = assetRequestPaymentSessionId(nextRequest);
+            if (!StringUtils.hasText(nextPaymentSessionId)) {
+                continue;
+            }
+
+            AssetRequestRecord previousRequest = previousByRequestId.get(normalizeId(nextRequest.id()));
+            String previousPaymentSessionId = assetRequestPaymentSessionId(previousRequest);
+            if (StringUtils.hasText(previousPaymentSessionId) && !nextPaymentSessionId.equals(previousPaymentSessionId)) {
+                paymentService.cancelAssetBooking(
+                        previousPaymentSessionId,
+                        assetRequestBookingStartAtIso(previousRequest),
+                        previousCancellationPolicy);
+            }
+
+            if (!nextPaymentSessionId.equals(previousPaymentSessionId)) {
+                paymentService.recordAssetBooking(
+                        nextPaymentSessionId,
+                        normalizeId(nextRequest.userId()),
+                        normalizeId(saved.getAssetId()),
+                        assetRequestBookingSlotSourceId(nextRequest),
+                        assetRequestBookingStartAtIso(nextRequest),
+                        nextCancellationPolicy);
+            }
+        }
+
+        for (AssetRequestRecord previousRequest : previousByRequestId.values()) {
+            String previousRequestId = normalizeId(previousRequest == null ? null : previousRequest.id());
+            if (StringUtils.hasText(previousRequestId) && nextByRequestId.containsKey(previousRequestId)) {
+                continue;
+            }
+            String previousPaymentSessionId = assetRequestPaymentSessionId(previousRequest);
+            if (!StringUtils.hasText(previousPaymentSessionId)) {
+                continue;
+            }
+            paymentService.cancelAssetBooking(
+                    previousPaymentSessionId,
+                    assetRequestBookingStartAtIso(previousRequest),
+                    previousCancellationPolicy);
+        }
     }
 
     private void ensureOwnerAssetsBootstrapped(String ownerUserId) {
@@ -925,7 +1000,9 @@ public class AssetsService {
                 nullableCount(booking.quantity()),
                 booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
                 safeNullableText(booking.currency()),
-                normalizeStrings(booking.acceptedPolicyIds()));
+                normalizeStrings(booking.acceptedPolicyIds()),
+                normalizeId(booking.paymentSessionId()),
+                Boolean.TRUE.equals(booking.inventoryApplied()) ? Boolean.TRUE : null);
     }
 
     private AssetRequestBookingRecord readLegacyRequestBooking(Object rawBooking) {
@@ -946,7 +1023,9 @@ public class AssetsService {
                 nullableCount(booking.get("quantity") instanceof Number number ? number : null),
                 safeNullableDouble(booking.get("totalAmount")),
                 safeNullableText(booking.getString("currency")),
-                normalizeStrings(booking.get("acceptedPolicyIds"))));
+                normalizeStrings(booking.get("acceptedPolicyIds")),
+                normalizeId(booking.getString("paymentSessionId")),
+                booking.get("inventoryApplied") instanceof Boolean flag && flag ? Boolean.TRUE : null));
     }
 
     private AssetRequestBookingRecord normalizeRequestBooking(AssetRequestBookingDto booking) {
@@ -966,7 +1045,9 @@ public class AssetsService {
                 nullableCount(booking.quantity()),
                 booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
                 safeNullableText(booking.currency()),
-                normalizeStrings(booking.acceptedPolicyIds()));
+                normalizeStrings(booking.acceptedPolicyIds()),
+                normalizeId(booking.paymentSessionId()),
+                Boolean.TRUE.equals(booking.inventoryApplied()) ? Boolean.TRUE : null);
         return hasRequestBookingContent(normalized) ? normalized : null;
     }
 
@@ -987,7 +1068,9 @@ public class AssetsService {
                 nullableCount(booking.quantity()),
                 booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
                 safeNullableText(booking.currency()),
-                normalizeStrings(booking.acceptedPolicyIds()));
+                normalizeStrings(booking.acceptedPolicyIds()),
+                normalizeId(booking.paymentSessionId()),
+                Boolean.TRUE.equals(booking.inventoryApplied()) ? Boolean.TRUE : null);
     }
 
     private AssetRequestBookingDto fallbackSeededRequestBooking(Asset asset, int index) {
@@ -1011,7 +1094,9 @@ public class AssetsService {
                 1,
                 null,
                 null,
-                List.of());
+                List.of(),
+                null,
+                null);
     }
 
     private SeededAssetRequestSlot seededAssetRequestSlot(String assetTitle, int index) {
@@ -1071,7 +1156,28 @@ public class AssetsService {
                 || booking.quantity() != null
                 || booking.totalAmount() != null
                 || StringUtils.hasText(booking.currency())
-                || !normalizeStrings(booking.acceptedPolicyIds()).isEmpty());
+                || !normalizeStrings(booking.acceptedPolicyIds()).isEmpty()
+                || StringUtils.hasText(booking.paymentSessionId())
+                || Boolean.TRUE.equals(booking.inventoryApplied()));
+    }
+
+    private String assetRequestPaymentSessionId(AssetRequestRecord request) {
+        return normalizeId(request == null || request.booking() == null ? null : request.booking().paymentSessionId());
+    }
+
+    private String assetRequestBookingStartAtIso(AssetRequestRecord request) {
+        return safeNullableText(request == null || request.booking() == null ? null : request.booking().startAtIso());
+    }
+
+    private String assetRequestBookingSlotSourceId(AssetRequestRecord request) {
+        if (request == null || request.booking() == null) {
+            return null;
+        }
+        String slotKey = safeNullableText(request.booking().slotKey());
+        if (StringUtils.hasText(slotKey)) {
+            return slotKey;
+        }
+        return normalizeId(request.booking().subEventId());
     }
 
     private record SeededAssetRequestSlot(
