@@ -140,6 +140,10 @@ public class ActivitiesChatService {
     }
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text) {
+        return sendMessage(chatId, requestedUserId, text, null);
+    }
+
+    public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text, String clientId) {
         String userId = requireResolvedUserId(requestedUserId);
         String normalizedText = normalizeText(text);
         if (!StringUtils.hasText(normalizedText)) {
@@ -148,7 +152,7 @@ public class ActivitiesChatService {
 
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users sender = findUser(userId);
-        ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText);
+        ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId);
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         for (ActivityChat existing : snapshot.chatDocuments()) {
             ActivityChat next = copyChat(existing);
@@ -494,6 +498,7 @@ public class ActivitiesChatService {
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
         return new ChatMessageDto(
                 message == null ? "" : safeText(message.getId()),
+                message == null ? "" : safeText(message.getClientId()),
                 senderId,
                 message == null ? "" : safeText(message.getSender()),
                 senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials()),
@@ -513,10 +518,11 @@ public class ActivitiesChatService {
                 record == null ? "man" : normalizeGender(record.getGender()));
     }
 
-    private ChatMessageRecord buildMessageRecord(Users sender, String senderUserId, String text) {
+    private ChatMessageRecord buildMessageRecord(Users sender, String senderUserId, String text, String clientId) {
         Instant sentAt = Instant.now();
         ChatMessageRecord message = new ChatMessageRecord();
         message.setId(UUID.randomUUID().toString());
+        message.setClientId(normalizeText(clientId));
         message.setSender(resolveUserName(sender, senderUserId));
         message.setSenderAvatar(buildSenderAvatarRecord(sender, senderUserId));
         message.setText(text);
@@ -532,6 +538,7 @@ public class ActivitiesChatService {
         return ChatStreamEvent.message(
                 chatId,
                 messageRecord.getId(),
+                safeText(messageRecord.getClientId()),
                 senderAvatar == null ? "" : safeText(senderAvatar.getId()),
                 safeText(messageRecord.getSender()),
                 senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
@@ -641,6 +648,7 @@ public class ActivitiesChatService {
     private ChatMessageRecord copyMessageRecord(ChatMessageRecord source) {
         ChatMessageRecord copy = new ChatMessageRecord();
         copy.setId(source.getId());
+        copy.setClientId(source.getClientId());
         copy.setSender(source.getSender());
         copy.setSenderAvatar(copySenderAvatarRecord(source.getSenderAvatar()));
         copy.setText(source.getText());

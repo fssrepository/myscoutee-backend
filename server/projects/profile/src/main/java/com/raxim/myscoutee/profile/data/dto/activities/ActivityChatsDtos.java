@@ -37,6 +37,7 @@ public final class ActivityChatsDtos {
 
     public record ChatMessageDto(
             String id,
+            String clientId,
             String senderId,
             String senderName,
             String senderInitials,
@@ -77,6 +78,7 @@ public final class ActivityChatsDtos {
 
     public record ChatSocketRequestDto(
             String type,
+            String clientId,
             String text,
             Boolean typing,
             List<String> messageIds) {
