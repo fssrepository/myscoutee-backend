@@ -4,8 +4,9 @@ Bugs
 ----
 1) http - backend test
 
-a) chat message popup - pls. eliminate the noticeable artifitial scroll down
-pls. figure out different approach to be able to retain the visible elements in place instead
+1) chat message popup - pls. eliminate the noticeable artifitial scroll down while scrolling up on pagination (initial scroll to bottom is not a problem)
+when older message arrives, the top element shuld be only slightly down from the initial top most position
+the smoothest way - probably the reverse column order (flex)
 
 Commands
 --------
