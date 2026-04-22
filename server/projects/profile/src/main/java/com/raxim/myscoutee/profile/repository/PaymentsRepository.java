@@ -5,5 +5,7 @@ import com.raxim.myscoutee.profile.data.document.Payment;
 import java.util.Optional;
 
 public interface PaymentsRepository extends MongoRepository<Payment, String> {
+    Optional<Payment> findByCheckoutSessionId(String checkoutSessionId);
     Optional<Payment> findByGatewaySessionId(String gatewaySessionId);
+    java.util.List<Payment> findByUserIdAndSourceId(String userId, String sourceId);
 }

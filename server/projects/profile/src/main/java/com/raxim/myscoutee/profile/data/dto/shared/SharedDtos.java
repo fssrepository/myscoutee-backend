@@ -47,6 +47,19 @@ public final class SharedDtos {
             List<String> slotIds) {
     }
 
+    public record PricingCancellationRuleDto(
+            String id,
+            String offsetUnit,
+            Integer offsetValue,
+            String refundKind,
+            Double refundValue) {
+    }
+
+    public record PricingCancellationPolicyDto(
+            Boolean enabled,
+            List<PricingCancellationRuleDto> rules) {
+    }
+
     public record PricingPromoCodeDto(
             String id,
             String code,
@@ -75,6 +88,7 @@ public final class SharedDtos {
             List<PricingDemandRuleDto> demandRules,
             Boolean timeRulesEnabled,
             List<PricingTimeRuleDto> timeRules,
+            PricingCancellationPolicyDto cancellationPolicy,
             Boolean slotPricingEnabled,
             List<PricingSlotOverrideDto> slotOverrides,
             PricingAudienceSettingsDto audience) {

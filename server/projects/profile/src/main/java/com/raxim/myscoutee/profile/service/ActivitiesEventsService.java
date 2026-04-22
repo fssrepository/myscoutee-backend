@@ -67,6 +67,7 @@ public class ActivitiesEventsService {
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
+    private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
@@ -75,12 +76,14 @@ public class ActivitiesEventsService {
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
             EventParticipationTicketService eventParticipationTicketService,
+            PaymentService paymentService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
+        this.paymentService = paymentService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -418,6 +421,7 @@ public class ActivitiesEventsService {
     }
 
     public void trash(EventActionRequestDto request) {
+        maybeApplyLeaveCancellationRefund(request);
         updateItemState(request, current -> {
             current.setIsTrashed(true);
             current.setTrashedAtIso(Instant.now().toString());
@@ -462,12 +466,72 @@ public class ActivitiesEventsService {
             if (slotRecord != null) {
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
                 activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord);
+                recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                 return toEventRecordDto(buildMembershipProjection(viewer.userId(), slotRecord), viewer);
             }
         }
 
         activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
+        recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), preferred), viewer);
+    }
+
+    private void recordJoinPayment(
+            EventActionRequestDto request,
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String bookingStartAtIso,
+            ActivityEvent preferred) {
+        String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
+        if (!StringUtils.hasText(paymentSessionId)) {
+            return;
+        }
+        paymentService.recordEventJoin(
+                paymentSessionId,
+                userId,
+                sourceId,
+                slotSourceId,
+                bookingStartAtIso,
+                preferred == null || preferred.getPricing() == null ? null : preferred.getPricing().cancellationPolicy());
+    }
+
+    private void maybeApplyLeaveCancellationRefund(EventActionRequestDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String requestType = request == null ? null : normalizeType(request.type());
+        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (viewer == null || !TYPE_EVENTS.equals(requestType) || !StringUtils.hasText(sourceId)) {
+            return;
+        }
+
+        ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        if (preferred == null) {
+            return;
+        }
+        if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
+            return;
+        }
+
+        String fallbackStartAtIso = resolveRequestedBookingStartAtIso(preferred, request == null ? null : request.slotSourceId());
+        paymentService.cancelEventBooking(
+                viewer.userId(),
+                sourceId,
+                fallbackStartAtIso,
+                preferred.getPricing() == null ? null : preferred.getPricing().cancellationPolicy());
+    }
+
+    private String resolveRequestedBookingStartAtIso(ActivityEvent preferred, String slotSourceId) {
+        String normalizedSlotSourceId = normalizeId(slotSourceId);
+        if (StringUtils.hasText(normalizedSlotSourceId)) {
+            ActivityEvent slotRecord = loadEventDocumentsBySourceIds(List.of(normalizedSlotSourceId)).stream()
+                    .filter(this::isGeneratedSlotRecord)
+                    .findFirst()
+                    .orElse(null);
+            if (slotRecord != null && StringUtils.hasText(slotRecord.getStartAtIso())) {
+                return slotRecord.getStartAtIso();
+            }
+        }
+        return preferred == null ? null : preferred.getStartAtIso();
     }
 
     public void sync(ActivitiesEventSyncPayloadDto request) {
@@ -510,6 +574,19 @@ public class ActivitiesEventsService {
         activityEventsRepository.saveAll(documentsToSave);
         materializeSlotOccurrences();
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
+        String paymentSessionId = normalizeId(request.paymentSessionId());
+        if (StringUtils.hasText(paymentSessionId) && TYPE_EVENTS.equals(targetType)) {
+            String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
+                    ? request.nextSlot().startAtIso()
+                    : request.startAt();
+            paymentService.recordEventJoin(
+                    paymentSessionId,
+                    null,
+                    sourceId,
+                    request.nextSlot() == null ? null : normalizeId(request.nextSlot().id()),
+                    bookingStartAtIso,
+                    request.pricing() == null ? null : request.pricing().cancellationPolicy());
+        }
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {

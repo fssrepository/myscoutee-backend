@@ -5,8 +5,7 @@ Bugs
 1) http - backend test
 
 a) chat scroll up (loading at top, somehow should make the inplace load what facebook does)
-b) event explore is making double/tripple load
-c) pricing policy/reimbursement for late leave - pricing panel
+b) pricing policy/reimbursement for late leave - pls. introduce for asset also
 
 Commands
 --------
