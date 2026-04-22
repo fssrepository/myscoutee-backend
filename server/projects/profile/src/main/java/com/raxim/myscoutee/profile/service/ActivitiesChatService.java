@@ -68,7 +68,7 @@ public class ActivitiesChatService {
             return List.of();
         }
         ensureOwnerCopiesForUser(userId);
-        return activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId).stream()
+        return uniqueOwnerChats(activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryDto)
                 .toList();
@@ -99,7 +99,7 @@ public class ActivitiesChatService {
             return new ChatPageResponseDto(List.of(), 0, null);
         }
 
-        List<ChatSummaryProjection> projections = activityChatsRepository.findByOwnerUserId(userId).stream()
+        List<ChatSummaryProjection> projections = uniqueOwnerChats(activityChatsRepository.findByOwnerUserId(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryProjection)
                 .filter(Objects::nonNull)
@@ -303,6 +303,27 @@ public class ActivitiesChatService {
 
     private void ensureOwnerCopiesForUser(String userId) {
         ensureOwnerCopies(activityChatsRepository.findByMemberIdsContaining(userId));
+    }
+
+    private List<ActivityChat> uniqueOwnerChats(List<ActivityChat> chatDocuments) {
+        if (chatDocuments == null || chatDocuments.isEmpty()) {
+            return List.of();
+        }
+        Map<String, ActivityChat> uniqueByChatId = new LinkedHashMap<>();
+        for (ActivityChat chat : chatDocuments) {
+            if (chat == null) {
+                continue;
+            }
+            String chatId = normalizeId(chat.getChatId());
+            if (!StringUtils.hasText(chatId)) {
+                continue;
+            }
+            ActivityChat current = uniqueByChatId.get(chatId);
+            if (current == null || sortableDate(chat.getDateIso()) > sortableDate(current.getDateIso())) {
+                uniqueByChatId.put(chatId, chat);
+            }
+        }
+        return new ArrayList<>(uniqueByChatId.values());
     }
 
     private List<ActivityChat> ensureOwnerCopies(List<ActivityChat> chatDocuments) {
