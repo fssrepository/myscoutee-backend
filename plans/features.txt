@@ -5,14 +5,15 @@ Bugs
 1) http - backend test
 
 a) chat scroll up (loading at top, somehow should make the inplace load what facebook does)
-b) pricing policy/reimbursement for late leave - pls. introduce for asset also
 
-1) event explore/event screen might prefetches activity members - pls. add the current active member id list to the event as embedded,
-so we can improve efficiency (it's documentum oriented db) - event/event explore prefetches activity members, pls. make sure it's only by page
-check other bottlenecks and try to resolve inthis way regarding to event - not sure why is that slow
-2) event explore - even backend should filter also on http, what the frontend does eliviate the need to hide elements
-as it was mostly for indexeddb on the fly
-3) activity event - members card is not in sync with the member screen count
+you can edit frontend also in-place (no separate workspace)
+1) event explore/event screen should prefetch activity members by page only
+pls. add the current active member id list to the events.json as embedded + sync logic, 
+when someone became active or deleted, so we can improve efficiency
+there could be other bottlenecks, which makes the query slow (create indexes)
+2) event explore - frontend does some hiding after the fetch from http, pls. improve the backend query so it won't be needed for http
+3) activity event member badges on card is not in sync on http mode with the member screen count
+even if there would be programatic error, it's events.json - memeber count mismatch i feel
 
 Commands
 --------

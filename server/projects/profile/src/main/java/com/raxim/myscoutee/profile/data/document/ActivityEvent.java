@@ -21,10 +21,12 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
 @CompoundIndexes({
         @CompoundIndex(name = "event_owner_type_source", def = "{'ownerUserId': 1, 'type': 1, 'sourceId': 1}", unique = true),
         @CompoundIndex(name = "event_owner_type", def = "{'ownerUserId': 1, 'type': 1, 'startAtIso': 1}"),
+        @CompoundIndex(name = "event_owner_type_status_start", def = "{'ownerUserId': 1, 'type': 1, 'status': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_owner_source", def = "{'ownerUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1, 'type': 1}"),
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
-        @CompoundIndex(name = "event_explore_candidates_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}")
+        @CompoundIndex(name = "event_explore_candidates_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_explore_feed_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'published': 1, 'startAtIso': 1, 'sourceId': 1}")
 })
 public class ActivityEvent {
     private static final String TYPE_EVENTS = "events";
@@ -89,6 +91,8 @@ public class ActivityEvent {
     private String eventType;
     private Integer acceptedMembers;
     private Integer pendingMembers;
+    private List<String> acceptedMemberUserIds;
+    private List<String> pendingMemberUserIds;
     private List<String> topics = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String subEventsDisplayMode;
@@ -245,6 +249,21 @@ public class ActivityEvent {
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }
     public void setPendingMembers(Integer pendingMembers) { this.pendingMembers = pendingMembers; }
+    public List<String> getAcceptedMemberUserIds() {
+        return acceptedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(acceptedMemberUserIds);
+    }
+    public void setAcceptedMemberUserIds(List<String> acceptedMemberUserIds) {
+        this.acceptedMemberUserIds = acceptedMemberUserIds == null ? null : new ArrayList<>(acceptedMemberUserIds);
+    }
+    public List<String> getPendingMemberUserIds() {
+        return pendingMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingMemberUserIds);
+    }
+    public void setPendingMemberUserIds(List<String> pendingMemberUserIds) {
+        this.pendingMemberUserIds = pendingMemberUserIds == null ? null : new ArrayList<>(pendingMemberUserIds);
+    }
+    public boolean hasEmbeddedMemberUserIds() {
+        return acceptedMemberUserIds != null || pendingMemberUserIds != null;
+    }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }

@@ -20,7 +20,7 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
 
     List<ActivityEvent> findBySourceIdIn(Collection<String> sourceIds);
 
-    @Query("{ 'type': ?0, 'status': 'active', 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
+    @Query("{ 'type': ?0, 'status': 'active', 'generated': { $ne: true }, 'published': { $ne: false }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findCanonicalExploreCandidates(String type);
 
     boolean existsByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);

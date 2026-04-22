@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -33,14 +34,17 @@ public class ActivitiesResourcesService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final AssetsService assetsService;
     private final MongoTemplate mongoTemplate;
+    private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             AssetsService assetsService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.assetsService = assetsService;
         this.mongoTemplate = mongoTemplate;
+        this.activitiesMembersServiceProvider = activitiesMembersServiceProvider;
     }
 
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
@@ -81,6 +85,7 @@ public class ActivitiesResourcesService {
         next.setUpdatedUser(assetOwnerUserId);
 
         ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
+        refreshEventParticipationProjection(ownerId);
         return toDto(filterToOwnedAssets(saved));
     }
 
@@ -130,6 +135,7 @@ public class ActivitiesResourcesService {
         }
         if (!changedRecords.isEmpty()) {
             activitySubEventResourcesRepository.saveAll(changedRecords);
+            refreshEventParticipationProjection(normalizedOwnerId);
         }
         return removedAssignedAssetIds;
     }
@@ -172,7 +178,9 @@ public class ActivitiesResourcesService {
         record.setCreatedUser(assetOwnerUserId);
         record.setUpdatedDate(normalizeDateTime(legacy.getString("updatedAtIso"), record.getCreatedDate()));
         record.setUpdatedUser(assetOwnerUserId);
-        return activitySubEventResourcesRepository.save(record);
+        ActivitySubEventResource saved = activitySubEventResourcesRepository.save(record);
+        refreshEventParticipationProjection(ownerId);
+        return saved;
     }
 
     private ActivitySubEventResource filterToOwnedAssets(ActivitySubEventResource source) {
@@ -717,6 +725,14 @@ public class ActivitiesResourcesService {
             return firstValue;
         }
         return safeText(second);
+    }
+
+    private void refreshEventParticipationProjection(String ownerId) {
+        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
+        if (activitiesMembersService == null) {
+            return;
+        }
+        activitiesMembersService.refreshEventParticipationProjection(ownerId);
     }
 
     private record ResourceCleanupResult(

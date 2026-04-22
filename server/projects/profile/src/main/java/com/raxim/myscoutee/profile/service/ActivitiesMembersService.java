@@ -130,6 +130,10 @@ public class ActivitiesMembersService {
         return snapshot != null && snapshot.hasParticipation(userId);
     }
 
+    public void refreshEventParticipationProjection(String eventId) {
+        refreshEmbeddedEventMembers(eventId);
+    }
+
     public Set<String> findTrackedEventSourceIdsForUser(String userId) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
@@ -417,6 +421,7 @@ public class ActivitiesMembersService {
                     .removeManagedResourcesForRemovedEventMembers(ownerId, removedVisibleMembers, actorUserId, nowIso);
             clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
+            refreshEmbeddedEventMembers(ownerId);
         }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
@@ -520,6 +525,7 @@ public class ActivitiesMembersService {
             activityMembersRepository.saveAll(membersToSave);
         }
         eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
+        refreshEmbeddedEventMembers(ownerId);
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
@@ -561,6 +567,7 @@ public class ActivitiesMembersService {
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
+            refreshEmbeddedEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
     }
@@ -621,6 +628,7 @@ public class ActivitiesMembersService {
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
+            refreshEmbeddedEventMembers(normalizedEventId);
         }
         return newlyInvitedUserIds;
     }
@@ -1127,9 +1135,13 @@ public class ActivitiesMembersService {
         String updatedDate = normalizeDateTime(record.getUpdatedDate(), createdDate);
         LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
         LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
+        acceptedUserIds.addAll(normalizeUserIds(record.getAcceptedMemberUserIds()));
+        pendingUserIds.addAll(normalizeUserIds(record.getPendingMemberUserIds()));
         if (StringUtils.hasText(creatorUserId)) {
             acceptedUserIds.add(creatorUserId);
+            pendingUserIds.remove(creatorUserId);
         }
+        pendingUserIds.removeAll(acceptedUserIds);
 
         List<ActivityMember> nextDocuments = new ArrayList<>();
         for (String userId : acceptedUserIds) {
@@ -1517,6 +1529,46 @@ public class ActivitiesMembersService {
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, member));
         return next;
+    }
+
+    private void refreshEmbeddedEventMembers(String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return;
+        }
+
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (documents.isEmpty()) {
+            return;
+        }
+
+        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        List<String> acceptedMemberUserIds = snapshot == null ? List.of() : snapshot.acceptedMemberUserIds();
+        List<String> pendingMemberUserIds = snapshot == null ? List.of() : snapshot.pendingMemberUserIds();
+        int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
+        int pendingMembers = snapshot == null ? 0 : snapshot.pendingMembers();
+
+        List<ActivityEvent> documentsToSave = new ArrayList<>();
+        for (ActivityEvent document : documents) {
+            if (document == null) {
+                continue;
+            }
+            document.setAcceptedMemberUserIds(acceptedMemberUserIds);
+            document.setPendingMemberUserIds(pendingMemberUserIds);
+            document.setAcceptedMembers(acceptedMembers);
+            document.setPendingMembers(pendingMembers);
+            document.setCapacityTotal(Math.max(
+                    acceptedMembers,
+                    snapshot == null || snapshot.capacityTotal() == null
+                            ? Math.max(acceptedMembers, document.getCapacityTotal() == null ? 0 : document.getCapacityTotal())
+                            : snapshot.capacityTotal()));
+            documentsToSave.add(document);
+        }
+        if (!documentsToSave.isEmpty()) {
+            activityEventsRepository.saveAll(documentsToSave);
+        }
     }
 
     private String normalizeStatus(String status) {

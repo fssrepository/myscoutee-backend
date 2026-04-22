@@ -87,52 +87,6 @@ public class ActivitiesEventsService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    private EventQueryContext buildQueryContext(ViewerContext viewer) {
-        List<ActivityEvent> allEvents = activityEventsRepository.findAll().stream()
-                .filter(Objects::nonNull)
-                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
-                .toList();
-
-        List<ActivityEvent> mergedEvents;
-        if (viewer != null && viewer.locationCoordinates() != null) {
-            List<ActivityEvent> geoOrdered = geoOrderedEventDocuments(viewer.locationCoordinates());
-            if (geoOrdered.isEmpty()) {
-                mergedEvents = allEvents;
-            } else {
-                LinkedHashMap<String, ActivityEvent> merged = new LinkedHashMap<>();
-                for (ActivityEvent record : geoOrdered) {
-                    String documentId = normalizeId(record == null ? null : record.getId());
-                    if (StringUtils.hasText(documentId)) {
-                        merged.put(documentId, record);
-                    }
-                }
-                for (ActivityEvent record : allEvents) {
-                    String documentId = normalizeId(record == null ? null : record.getId());
-                    if (StringUtils.hasText(documentId) && !merged.containsKey(documentId)) {
-                        merged.put(documentId, record);
-                    }
-                }
-                mergedEvents = new ArrayList<>(merged.values());
-            }
-        } else {
-            mergedEvents = allEvents;
-        }
-
-        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : computePreferredEventRecords(allEvents)) {
-            preferredBySourceId.put(normalizeId(record.getSourceId()), record);
-        }
-
-        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
-                activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId);
-
-        return new EventQueryContext(
-                allEvents,
-                mergedEvents,
-                new LinkedHashMap<>(snapshotsBySourceId),
-                viewer == null ? Set.of() : activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
-    }
-
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
             return new EventQueryContext(List.of(), List.of(), new LinkedHashMap<>(), Set.of());
@@ -153,17 +107,10 @@ public class ActivitiesEventsService {
         scopedEvents.addAll(directOwnerRecords);
         scopedEvents.addAll(membershipRecords);
 
-        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : computePreferredEventRecords(scopedEvents)) {
-            preferredBySourceId.put(normalizeId(record.getSourceId()), record);
-        }
-
-        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
-                activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId);
         return new EventQueryContext(
                 scopedEvents,
                 scopedEvents,
-                new LinkedHashMap<>(snapshotsBySourceId),
+                new LinkedHashMap<>(),
                 activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
     }
 
@@ -359,7 +306,6 @@ public class ActivitiesEventsService {
         try {
             ACTIVE_CONTEXT.set(buildExploreQueryContext(viewer));
             List<ActivityEvent> records = computeExploreRecords(viewer);
-            prefetchSnapshotsForRecords(records);
             return records.stream()
                     .map(record -> toEventRecordDto(record, viewer))
                     .filter(Objects::nonNull)
@@ -393,12 +339,10 @@ public class ActivitiesEventsService {
             String cursor = request == null ? null : request.cursor();
 
             List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
-            prefetchSnapshotsForRecords(exploreRecords);
 
             List<EventProjection> sorted = exploreRecords.stream()
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
-                    // Membership snapshots are available after prefetch, so exclude tracked events here too.
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
                     .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
@@ -550,6 +494,8 @@ public class ActivitiesEventsService {
         }
 
         activitiesMembersService.sync(request);
+        ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
 
         String targetType = normalizeTargetType(request.target());
         if (!StringUtils.hasText(targetType)) {
@@ -557,7 +503,7 @@ public class ActivitiesEventsService {
         }
 
         Users creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
-        ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, targetType);
+        ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, targetType, syncedMembersSnapshot);
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         documentsToSave.add(baseRecord);
         if (TYPE_HOSTING.equals(targetType)) {
@@ -1216,7 +1162,8 @@ public class ActivitiesEventsService {
             Users creator,
             String actorUserId,
             String sourceId,
-            String targetType) {
+            String targetType,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
         String ownerUserId = normalizeId(request.creatorUserId());
         if (!StringUtils.hasText(ownerUserId)) {
             ownerUserId = actorUserId;
@@ -1244,6 +1191,8 @@ public class ActivitiesEventsService {
         boolean slotEvent = generated
                 || "slot".equalsIgnoreCase(requestedEventType)
                 || StringUtils.hasText(parentEventId);
+        List<String> acceptedMemberUserIds = resolveSyncedAcceptedMemberUserIds(request, existing, ownerUserId, syncedMembersSnapshot);
+        List<String> pendingMemberUserIds = resolveSyncedPendingMemberUserIds(request, existing, acceptedMemberUserIds, syncedMembersSnapshot);
 
         document.setId(resolveExistingId(ownerUserId, targetType, sourceId, existing));
         document.setSyncKey(resolveExistingSyncKey(ownerUserId, targetType, sourceId, existing == null ? request.syncKey() : existing.getSyncKey()));
@@ -1286,7 +1235,7 @@ public class ActivitiesEventsService {
         document.setLocationGeo(toGeoPoint(document.getLocationCoordinates()));
         document.setCapacityMin(nullableCount(request.capacityMin()));
         document.setCapacityMax(nullableCount(request.capacityMax()));
-        document.setCapacityTotal(resolveCapacityTotal(request, existing));
+        document.setCapacityTotal(resolveCapacityTotal(request, existing, acceptedMemberUserIds, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
         document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
@@ -1297,14 +1246,16 @@ public class ActivitiesEventsService {
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
         document.setEventType(slotEvent ? "slot" : "main");
-        document.setAcceptedMembers(resolveAcceptedMembers(request));
-        document.setPendingMembers(resolvePendingMembers(request));
+        document.setAcceptedMemberUserIds(acceptedMemberUserIds);
+        document.setPendingMemberUserIds(pendingMemberUserIds);
+        document.setAcceptedMembers(resolveAcceptedMembers(request, acceptedMemberUserIds, syncedMembersSnapshot));
+        document.setPendingMembers(resolvePendingMembers(request, pendingMemberUserIds, syncedMembersSnapshot));
         document.setTopics(normalizeStrings(request.topics()));
         document.setSubEvents(cloneSubEvents(request.subEvents()));
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setRelevance(existing == null ? 0d : safeDouble(existing.getRelevance()));
-        document.setAffinity(resolveAffinity(existing, creator, request.acceptedMemberUserIds()));
+        document.setAffinity(resolveAffinity(existing, creator, acceptedMemberUserIds));
         document.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
@@ -1330,19 +1281,79 @@ public class ActivitiesEventsService {
         return values.stream().mapToDouble(Double::doubleValue).average().orElse(0d);
     }
 
-    private int resolveAcceptedMembers(ActivitiesEventSyncPayloadDto request) {
-        return Math.max(normalizeCount(request.acceptedMembers()), normalizeIds(request.acceptedMemberUserIds()).size());
+    private List<String> resolveSyncedAcceptedMemberUserIds(
+            ActivitiesEventSyncPayloadDto request,
+            ActivityEvent existing,
+            String ownerUserId,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        if (syncedMembersSnapshot != null) {
+            return new ArrayList<>(syncedMembersSnapshot.acceptedMemberUserIds());
+        }
+        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>(normalizeIds(request.acceptedMemberUserIds()));
+        if (acceptedMemberUserIds.isEmpty() && existing != null && existing.hasEmbeddedMemberUserIds()) {
+            acceptedMemberUserIds.addAll(normalizeIds(existing.getAcceptedMemberUserIds()));
+        }
+        String creatorUserId = normalizeId(request.creatorUserId());
+        if (!StringUtils.hasText(creatorUserId) && existing != null) {
+            creatorUserId = normalizeId(existing.getCreatorUserId());
+        }
+        if (!StringUtils.hasText(creatorUserId)) {
+            creatorUserId = normalizeId(ownerUserId);
+        }
+        if (StringUtils.hasText(creatorUserId)) {
+            acceptedMemberUserIds.add(creatorUserId);
+        }
+        return new ArrayList<>(acceptedMemberUserIds);
     }
 
-    private int resolvePendingMembers(ActivitiesEventSyncPayloadDto request) {
-        return Math.max(normalizeCount(request.pendingMembers()), normalizeIds(request.pendingMemberUserIds()).size());
+    private List<String> resolveSyncedPendingMemberUserIds(
+            ActivitiesEventSyncPayloadDto request,
+            ActivityEvent existing,
+            List<String> acceptedMemberUserIds,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        if (syncedMembersSnapshot != null) {
+            return new ArrayList<>(syncedMembersSnapshot.pendingMemberUserIds());
+        }
+        LinkedHashSet<String> pendingMemberUserIds = new LinkedHashSet<>(normalizeIds(request.pendingMemberUserIds()));
+        if (pendingMemberUserIds.isEmpty() && existing != null && existing.hasEmbeddedMemberUserIds()) {
+            pendingMemberUserIds.addAll(normalizeIds(existing.getPendingMemberUserIds()));
+        }
+        pendingMemberUserIds.removeAll(new LinkedHashSet<>(acceptedMemberUserIds));
+        return new ArrayList<>(pendingMemberUserIds);
     }
 
-    private int resolveCapacityTotal(ActivitiesEventSyncPayloadDto request, ActivityEvent existing) {
-        int acceptedMembers = resolveAcceptedMembers(request);
+    private int resolveAcceptedMembers(
+            ActivitiesEventSyncPayloadDto request,
+            List<String> acceptedMemberUserIds,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        if (syncedMembersSnapshot != null) {
+            return syncedMembersSnapshot.acceptedMembers();
+        }
+        return Math.max(normalizeCount(request.acceptedMembers()), acceptedMemberUserIds.size());
+    }
+
+    private int resolvePendingMembers(
+            ActivitiesEventSyncPayloadDto request,
+            List<String> pendingMemberUserIds,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        if (syncedMembersSnapshot != null) {
+            return syncedMembersSnapshot.pendingMembers();
+        }
+        return Math.max(normalizeCount(request.pendingMembers()), pendingMemberUserIds.size());
+    }
+
+    private int resolveCapacityTotal(
+            ActivitiesEventSyncPayloadDto request,
+            ActivityEvent existing,
+            List<String> acceptedMemberUserIds,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        int acceptedMembers = resolveAcceptedMembers(request, acceptedMemberUserIds, syncedMembersSnapshot);
         int requestedCapacity = Math.max(normalizeCount(request.capacityTotal()), Math.max(nullableCount(request.capacityMax()) == null ? 0 : nullableCount(request.capacityMax()), acceptedMembers));
         if (requestedCapacity > 0) {
             return requestedCapacity;
+        }
+        if (syncedMembersSnapshot != null && syncedMembersSnapshot.capacityTotal() != null) {
+            return Math.max(acceptedMembers, syncedMembersSnapshot.capacityTotal());
         }
         return Math.max(acceptedMembers, existing == null ? 0 : normalizeCount(existing.getCapacityTotal()));
     }
@@ -1474,10 +1485,6 @@ public class ActivitiesEventsService {
         if (ctx != null && StringUtils.hasText(sourceId) && ctx.trackedEventSourceIds().contains(sourceId)) {
             return true;
         }
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
-        if (snapshot != null) {
-            return snapshot.hasParticipation(userId);
-        }
         return resolveAcceptedMemberUserIds(record).contains(userId)
                 || resolvePendingMemberUserIds(record).contains(userId);
     }
@@ -1557,24 +1564,6 @@ public class ActivitiesEventsService {
         return activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
     }
 
-    private void prefetchSnapshotsForRecords(Collection<ActivityEvent> records) {
-        EventQueryContext ctx = ACTIVE_CONTEXT.get();
-        if (ctx == null || records == null || records.isEmpty()) {
-            return;
-        }
-        Map<String, ActivityEvent> missingPreferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : computePreferredEventRecords(records.stream().filter(Objects::nonNull).toList())) {
-            String sourceId = normalizeId(record.getSourceId());
-            if (StringUtils.hasText(sourceId) && !ctx.snapshotsBySourceId().containsKey(sourceId)) {
-                missingPreferredBySourceId.put(sourceId, record);
-            }
-        }
-        if (missingPreferredBySourceId.isEmpty()) {
-            return;
-        }
-        ctx.snapshotsBySourceId().putAll(activitiesMembersService.buildBatchEventSnapshots(missingPreferredBySourceId));
-    }
-
     private List<String> resolveAdminUserIds(String sourceId, String creatorUserId) {
         LinkedHashSet<String> adminUserIds = new LinkedHashSet<>();
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveSnapshot(normalizeId(sourceId));
@@ -1589,11 +1578,17 @@ public class ActivitiesEventsService {
     }
 
     private List<String> resolveAcceptedMemberUserIds(ActivityEvent record) {
+        if (record != null && record.hasEmbeddedMemberUserIds()) {
+            return new ArrayList<>(normalizeIds(record.getAcceptedMemberUserIds()));
+        }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
         return snapshot == null ? fallbackAcceptedMemberUserIds(record) : new ArrayList<>(snapshot.acceptedMemberUserIds());
     }
 
     private List<String> resolvePendingMemberUserIds(ActivityEvent record) {
+        if (record != null && record.hasEmbeddedMemberUserIds()) {
+            return new ArrayList<>(normalizeIds(record.getPendingMemberUserIds()));
+        }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
         return snapshot == null ? List.of() : new ArrayList<>(snapshot.pendingMemberUserIds());
     }
@@ -1666,6 +1661,8 @@ public class ActivitiesEventsService {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
         clone.setAdmins(new ArrayList<>(normalizeIds(source.getAdmins())));
+        clone.setAcceptedMemberUserIds(source.hasEmbeddedMemberUserIds() ? source.getAcceptedMemberUserIds() : null);
+        clone.setPendingMemberUserIds(source.hasEmbeddedMemberUserIds() ? source.getPendingMemberUserIds() : null);
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
@@ -2096,6 +2093,8 @@ public class ActivitiesEventsService {
         next.setEventType("slot");
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
+        next.setAcceptedMemberUserIds(existing == null ? List.of() : existing.getAcceptedMemberUserIds());
+        next.setPendingMemberUserIds(existing == null ? List.of() : existing.getPendingMemberUserIds());
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
