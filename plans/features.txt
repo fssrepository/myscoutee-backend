@@ -4,13 +4,6 @@ Bugs
 ----
 1) http - backend test
 
-1) chat message popup - pls. eliminate the noticeable artifitial scroll down while scrolling up on pagination 
-(initial scroll to bottom is not a problem - howver on flex reverse order is not needed - as the top=0 is the bottom of the scrollable area)
-when older message arrives, the top element shuld be only slightly down from the initial top most position
-the smoothest way - probably the reverse column order (flex)
-pls. take care about the items/groupheader are in reveresed order, if you change to reverse flex column order
-pls. take care about that the pagination logic also should be changed the reverse order accrodingly
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)
