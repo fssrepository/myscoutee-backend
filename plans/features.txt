@@ -4,12 +4,11 @@ Bugs
 ----
 1) http - backend test
 
-chat message window - recent message and chat list item is not in sync
-message + member count
 sending message, seems not inserted to db also (http) - when closing and opening the chat message window
-demo should apply reverse flex, shouldn't behave differently than http
-
 chat list does show the latest message, but the chat message window looses it after reopening
+the group header is also changing on the fly (todays date)
+
+demo should apply reverse flex, shouldn't behave differently than http
 
 Commands
 --------
