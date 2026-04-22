@@ -393,12 +393,10 @@ public class ActivitiesEventsService {
             String cursor = request == null ? null : request.cursor();
 
             List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
-            prefetchSnapshotsForRecords(exploreRecords);
 
             List<EventProjection> sorted = exploreRecords.stream()
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
-                    // Membership snapshots are available after prefetch, so exclude tracked events here too.
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
                     .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
@@ -1299,6 +1297,8 @@ public class ActivitiesEventsService {
         document.setEventType(slotEvent ? "slot" : "main");
         document.setAcceptedMembers(resolveAcceptedMembers(request));
         document.setPendingMembers(resolvePendingMembers(request));
+        document.setAcceptedMemberUserIds(request.acceptedMemberUserIds());
+        document.setPendingMemberUserIds(request.pendingMemberUserIds());
         document.setTopics(normalizeStrings(request.topics()));
         document.setSubEvents(cloneSubEvents(request.subEvents()));
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
@@ -1589,11 +1589,17 @@ public class ActivitiesEventsService {
     }
 
     private List<String> resolveAcceptedMemberUserIds(ActivityEvent record) {
+        if (record != null && record.getAcceptedMemberUserIds() != null && !record.getAcceptedMemberUserIds().isEmpty()) {
+            return new ArrayList<>(record.getAcceptedMemberUserIds());
+        }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
         return snapshot == null ? fallbackAcceptedMemberUserIds(record) : new ArrayList<>(snapshot.acceptedMemberUserIds());
     }
 
     private List<String> resolvePendingMemberUserIds(ActivityEvent record) {
+        if (record != null && record.getPendingMemberUserIds() != null && !record.getPendingMemberUserIds().isEmpty()) {
+            return new ArrayList<>(record.getPendingMemberUserIds());
+        }
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
         return snapshot == null ? List.of() : new ArrayList<>(snapshot.pendingMemberUserIds());
     }

@@ -8,6 +8,7 @@ a) chat scroll up (loading at top, somehow should make the inplace load what fac
 b) pricing policy/reimbursement for late leave - pls. introduce for asset also
 c) event explore - even backend should filter - what the frontend does eliviate the need to hide elements
 as it was mostly for indexeddb on the fly
+d) event/event explore prefetches activity members, pls. make sure it's only by page
 
 Commands
 --------
