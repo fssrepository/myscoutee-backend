@@ -35,6 +35,39 @@ const requiredCollections = [
     { name: 'country_partition_geometry' }
   );
 
+  portalDb.events.createIndex(
+    { syncKey: 1 },
+    { name: 'event_sync_key', unique: true, sparse: true }
+  );
+  portalDb.events.createIndex(
+    { ownerUserId: 1, type: 1, sourceId: 1 },
+    { name: 'event_owner_type_source', unique: true }
+  );
+  portalDb.events.createIndex(
+    { ownerUserId: 1, type: 1, startAtIso: 1 },
+    { name: 'event_owner_type' }
+  );
+  portalDb.events.createIndex(
+    { ownerUserId: 1, sourceId: 1 },
+    { name: 'event_owner_source' }
+  );
+  portalDb.events.createIndex(
+    { sourceId: 1, type: 1 },
+    { name: 'event_source_lookup' }
+  );
+  portalDb.events.createIndex(
+    { status: 1, creatorUserId: 1, visibility: 1 },
+    { name: 'event_explore_visibility' }
+  );
+  portalDb.events.createIndex(
+    { type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 },
+    { name: 'event_explore_candidates_status' }
+  );
+  portalDb.events.createIndex(
+    { locationGeo: '2dsphere' },
+    { name: 'event_location_geo' }
+  );
+
   if (!portalDb.getUser('guest')) {
     portalDb.createUser({
       user: 'guest',

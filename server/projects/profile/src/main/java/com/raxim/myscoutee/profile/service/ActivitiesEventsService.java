@@ -387,6 +387,7 @@ public class ActivitiesEventsService {
             boolean friendsOnly = Boolean.TRUE.equals(requestedFriendsOnly);
             boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
             int limit = normalizeLimit(requestedLimit, 10);
+            String cursor = request == null ? null : request.cursor();
 
             List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
             prefetchSnapshotsForRecords(exploreRecords);
@@ -402,7 +403,6 @@ public class ActivitiesEventsService {
                     .sorted((left, right) -> compareExploreProjection(left, right, order, view))
                     .toList();
 
-            String cursor = request == null ? null : request.cursor();
             int startIndex = resolveCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
@@ -1343,10 +1343,8 @@ public class ActivitiesEventsService {
                 .append("spherical", true)
                 .append("key", "locationGeo")
                 .append("query", new Document("type", TYPE_EVENTS)
-                        .append("generated", new Document("$ne", true))
-                        .append("isInvitation", new Document("$ne", true))
-                        .append("isTrashed", new Document("$ne", true))
-                        .append("published", new Document("$ne", false))));
+                        .append("status", "active")
+                        .append("generated", new Document("$ne", true))));
 
         List<Document> rawDocuments;
         try {
