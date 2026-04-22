@@ -394,6 +394,8 @@ public class ActivitiesEventsService {
             List<EventProjection> sorted = exploreRecords.stream()
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
+                    // Membership snapshots are available after prefetch, so exclude tracked events here too.
+                    .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
                     .filter(projection -> !openSpotsOnly || exploreHasOpenSpots(projection.record()))
                     .filter(projection -> !StringUtils.hasText(topic) || hasTopic(projection.record(), topic))
