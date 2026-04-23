@@ -4,11 +4,6 @@ Bugs
 ----
 1) http - backend test
 
-when you message has been sent and closing down the chat message popup,
-the group header is also changing on the fly (todays date)
-
-demo should apply reverse flex, shouldn't behave differently than http
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)
