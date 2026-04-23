@@ -4,7 +4,8 @@ Bugs
 ----
 1) http - backend test
 
-eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.
+a) home - ratings - load is hanging (3-4 times on unconnected), filter might not applied etc.
+b) eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.
 720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
