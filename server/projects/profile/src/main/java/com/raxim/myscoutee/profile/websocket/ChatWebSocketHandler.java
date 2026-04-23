@@ -70,7 +70,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if (!StringUtils.hasText(request.text())) {
             return;
         }
-        activitiesChatService.sendMessage(chatId, userId, request.text());
+        activitiesChatService.sendMessage(chatId, userId, request.text(), request.clientId());
     }
 
     @Override

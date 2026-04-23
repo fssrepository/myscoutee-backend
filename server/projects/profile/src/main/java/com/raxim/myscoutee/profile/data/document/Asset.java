@@ -257,7 +257,9 @@ public class Asset {
             Integer quantity,
             Double totalAmount,
             String currency,
-            List<String> acceptedPolicyIds) {
+            List<String> acceptedPolicyIds,
+            String paymentSessionId,
+            Boolean inventoryApplied) {
     }
 
     public record AssetPolicyRecord(

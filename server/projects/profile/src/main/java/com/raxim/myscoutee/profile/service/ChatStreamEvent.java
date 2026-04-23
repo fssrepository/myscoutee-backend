@@ -13,6 +13,7 @@ public record ChatStreamEvent(
         String type,
         String chatId,
         String id,
+        String clientId,
         String senderId,
         String senderName,
         String senderInitials,
@@ -27,6 +28,7 @@ public record ChatStreamEvent(
     public static ChatStreamEvent message(
             String chatId,
             String id,
+            String clientId,
             String senderId,
             String senderName,
             String senderInitials,
@@ -38,6 +40,7 @@ public record ChatStreamEvent(
                 "message",
                 chatId,
                 id,
+                clientId,
                 senderId,
                 senderName,
                 senderInitials,
@@ -61,6 +64,7 @@ public record ChatStreamEvent(
                 "typing",
                 chatId,
                 null,
+                null,
                 senderId,
                 senderName,
                 senderInitials,
@@ -83,6 +87,7 @@ public record ChatStreamEvent(
         return new ChatStreamEvent(
                 "read",
                 chatId,
+                null,
                 null,
                 senderId,
                 null,
@@ -128,6 +133,7 @@ public record ChatStreamEvent(
                 chatId,
                 new ChatMessageDto(
                         id,
+                        clientId,
                         senderId,
                         senderName,
                         senderInitials,

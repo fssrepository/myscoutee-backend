@@ -190,6 +190,7 @@ public final class EventsDtos {
             String slotTemplateId,
             Boolean generated,
             String eventType,
+            EventSlotOccurrenceDto nextSlot,
             String visibility,
             String blindMode,
             Boolean published,
@@ -205,7 +206,8 @@ public final class EventsDtos {
             List<String> pendingMemberUserIds,
             List<String> topics,
             List<SubEventFormItemDto> subEvents,
-            String subEventsDisplayMode) {
+            String subEventsDisplayMode,
+            String paymentSessionId) {
     }
 
     public record EventCheckoutRequestDto(

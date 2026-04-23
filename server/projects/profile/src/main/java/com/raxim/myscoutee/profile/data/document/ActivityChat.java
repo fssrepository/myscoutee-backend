@@ -179,6 +179,7 @@ public class ActivityChat {
 
     public static class ChatMessageRecord {
         private String id;
+        private String clientId;
         private String sender;
         private ChatAvatarRecord senderAvatar;
         private String text;
@@ -193,6 +194,14 @@ public class ActivityChat {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getClientId() {
+            return clientId;
+        }
+
+        public void setClientId(String clientId) {
+            this.clientId = clientId;
         }
 
         public String getSender() {

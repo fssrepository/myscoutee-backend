@@ -102,6 +102,36 @@ clear_collection() {
     --eval "db.getCollection('${collection_name}').deleteMany({})" >/dev/null
 }
 
+ensure_collection_indexes() {
+  local target_db="$1"
+  local collection_name="$2"
+
+  case "${collection_name}" in
+    events)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('events').createIndex({ syncKey: 1 }, { name: 'event_sync_key', unique: true, sparse: true });
+db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, sourceId: 1 }, { name: 'event_owner_type_source', unique: true });
+db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, startAtIso: 1 }, { name: 'event_owner_type' });
+db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, status: 1, startAtIso: 1 }, { name: 'event_owner_type_status_start' });
+db.getCollection('events').createIndex({ ownerUserId: 1, sourceId: 1 }, { name: 'event_owner_source' });
+db.getCollection('events').createIndex({ sourceId: 1, type: 1 }, { name: 'event_source_lookup' });
+db.getCollection('events').createIndex({ status: 1, creatorUserId: 1, visibility: 1 }, { name: 'event_explore_visibility' });
+db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 }, { name: 'event_explore_candidates_status' });
+db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_explore_feed_status' });
+db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });
+" >/dev/null
+      ;;
+  esac
+}
+
 import_json_file() {
   local target_db="$1"
   local jsonfile="$2"
@@ -118,6 +148,7 @@ import_json_file() {
   if ! json_file_has_documents "${jsonfile}"; then
     if [ "${replace_collections}" = "true" ] && database_has_wildcard_seed_rule "${target_db}"; then
       clear_collection "${target_db}" "${collection_name}"
+      ensure_collection_indexes "${target_db}" "${collection_name}"
       echo "Cleared ${target_db}.${collection_name} because the seed file ${jsonfile} is empty."
       return 0
     fi
@@ -142,6 +173,8 @@ import_json_file() {
     --file "$jsonfile" \
     --jsonArray \
     --type json
+
+  ensure_collection_indexes "${target_db}" "${collection_name}"
 }
 
 import_seed_directory() {

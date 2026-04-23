@@ -68,7 +68,7 @@ public class ActivitiesChatService {
             return List.of();
         }
         ensureOwnerCopiesForUser(userId);
-        return activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId).stream()
+        return uniqueOwnerChats(activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryDto)
                 .toList();
@@ -99,7 +99,7 @@ public class ActivitiesChatService {
             return new ChatPageResponseDto(List.of(), 0, null);
         }
 
-        List<ChatSummaryProjection> projections = activityChatsRepository.findByOwnerUserId(userId).stream()
+        List<ChatSummaryProjection> projections = uniqueOwnerChats(activityChatsRepository.findByOwnerUserId(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryProjection)
                 .filter(Objects::nonNull)
@@ -140,6 +140,10 @@ public class ActivitiesChatService {
     }
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text) {
+        return sendMessage(chatId, requestedUserId, text, null);
+    }
+
+    public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text, String clientId) {
         String userId = requireResolvedUserId(requestedUserId);
         String normalizedText = normalizeText(text);
         if (!StringUtils.hasText(normalizedText)) {
@@ -148,7 +152,7 @@ public class ActivitiesChatService {
 
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users sender = findUser(userId);
-        ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText);
+        ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId);
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         for (ActivityChat existing : snapshot.chatDocuments()) {
             ActivityChat next = copyChat(existing);
@@ -303,6 +307,27 @@ public class ActivitiesChatService {
 
     private void ensureOwnerCopiesForUser(String userId) {
         ensureOwnerCopies(activityChatsRepository.findByMemberIdsContaining(userId));
+    }
+
+    private List<ActivityChat> uniqueOwnerChats(List<ActivityChat> chatDocuments) {
+        if (chatDocuments == null || chatDocuments.isEmpty()) {
+            return List.of();
+        }
+        Map<String, ActivityChat> uniqueByChatId = new LinkedHashMap<>();
+        for (ActivityChat chat : chatDocuments) {
+            if (chat == null) {
+                continue;
+            }
+            String chatId = normalizeId(chat.getChatId());
+            if (!StringUtils.hasText(chatId)) {
+                continue;
+            }
+            ActivityChat current = uniqueByChatId.get(chatId);
+            if (current == null || sortableDate(chat.getDateIso()) > sortableDate(current.getDateIso())) {
+                uniqueByChatId.put(chatId, chat);
+            }
+        }
+        return new ArrayList<>(uniqueByChatId.values());
     }
 
     private List<ActivityChat> ensureOwnerCopies(List<ActivityChat> chatDocuments) {
@@ -473,6 +498,7 @@ public class ActivitiesChatService {
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
         return new ChatMessageDto(
                 message == null ? "" : safeText(message.getId()),
+                message == null ? "" : safeText(message.getClientId()),
                 senderId,
                 message == null ? "" : safeText(message.getSender()),
                 senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials()),
@@ -492,10 +518,11 @@ public class ActivitiesChatService {
                 record == null ? "man" : normalizeGender(record.getGender()));
     }
 
-    private ChatMessageRecord buildMessageRecord(Users sender, String senderUserId, String text) {
+    private ChatMessageRecord buildMessageRecord(Users sender, String senderUserId, String text, String clientId) {
         Instant sentAt = Instant.now();
         ChatMessageRecord message = new ChatMessageRecord();
         message.setId(UUID.randomUUID().toString());
+        message.setClientId(normalizeText(clientId));
         message.setSender(resolveUserName(sender, senderUserId));
         message.setSenderAvatar(buildSenderAvatarRecord(sender, senderUserId));
         message.setText(text);
@@ -511,6 +538,7 @@ public class ActivitiesChatService {
         return ChatStreamEvent.message(
                 chatId,
                 messageRecord.getId(),
+                safeText(messageRecord.getClientId()),
                 senderAvatar == null ? "" : safeText(senderAvatar.getId()),
                 safeText(messageRecord.getSender()),
                 senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
@@ -533,20 +561,41 @@ public class ActivitiesChatService {
     }
 
     private void publishChatEvent(ChatStreamEvent streamEvent) {
-        boolean published = chatStreamPublisher.publish(streamEvent);
-        if (!published) {
-            chatWebSocketSessionRegistry.broadcast(streamEvent);
-        }
+        // Always fan out to sockets on this node right away so the sender gets the
+        // persisted websocket echo even if Redis stream delivery is delayed.
+        chatWebSocketSessionRegistry.broadcast(streamEvent);
+        chatStreamPublisher.publish(streamEvent);
     }
 
     private ActivityChat findOwnerChat(List<ActivityChat> chats, String ownerUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
+        ActivityChat selected = null;
         for (ActivityChat chat : chats) {
-            if (chat != null && normalizedOwnerUserId.equals(normalizeId(chat.getOwnerUserId()))) {
-                return chat;
+            if (chat == null || !normalizedOwnerUserId.equals(normalizeId(chat.getOwnerUserId()))) {
+                continue;
+            }
+            if (selected == null) {
+                selected = chat;
+                continue;
+            }
+
+            long candidateDate = sortableDate(chat.getDateIso());
+            long selectedDate = sortableDate(selected.getDateIso());
+            if (candidateDate > selectedDate) {
+                selected = chat;
+                continue;
+            }
+            if (candidateDate < selectedDate) {
+                continue;
+            }
+
+            int candidateMessageCount = safeMessages(chat.getMessages()).size();
+            int selectedMessageCount = safeMessages(selected.getMessages()).size();
+            if (candidateMessageCount > selectedMessageCount) {
+                selected = chat;
             }
         }
-        return null;
+        return selected;
     }
 
     private boolean hasChatAccess(ActivityChat chat, String userId) {
@@ -620,6 +669,7 @@ public class ActivitiesChatService {
     private ChatMessageRecord copyMessageRecord(ChatMessageRecord source) {
         ChatMessageRecord copy = new ChatMessageRecord();
         copy.setId(source.getId());
+        copy.setClientId(source.getClientId());
         copy.setSender(source.getSender());
         copy.setSenderAvatar(copySenderAvatarRecord(source.getSenderAvatar()));
         copy.setText(source.getText());
