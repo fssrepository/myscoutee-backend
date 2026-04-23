@@ -561,20 +561,41 @@ public class ActivitiesChatService {
     }
 
     private void publishChatEvent(ChatStreamEvent streamEvent) {
-        boolean published = chatStreamPublisher.publish(streamEvent);
-        if (!published) {
-            chatWebSocketSessionRegistry.broadcast(streamEvent);
-        }
+        // Always fan out to sockets on this node right away so the sender gets the
+        // persisted websocket echo even if Redis stream delivery is delayed.
+        chatWebSocketSessionRegistry.broadcast(streamEvent);
+        chatStreamPublisher.publish(streamEvent);
     }
 
     private ActivityChat findOwnerChat(List<ActivityChat> chats, String ownerUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
+        ActivityChat selected = null;
         for (ActivityChat chat : chats) {
-            if (chat != null && normalizedOwnerUserId.equals(normalizeId(chat.getOwnerUserId()))) {
-                return chat;
+            if (chat == null || !normalizedOwnerUserId.equals(normalizeId(chat.getOwnerUserId()))) {
+                continue;
+            }
+            if (selected == null) {
+                selected = chat;
+                continue;
+            }
+
+            long candidateDate = sortableDate(chat.getDateIso());
+            long selectedDate = sortableDate(selected.getDateIso());
+            if (candidateDate > selectedDate) {
+                selected = chat;
+                continue;
+            }
+            if (candidateDate < selectedDate) {
+                continue;
+            }
+
+            int candidateMessageCount = safeMessages(chat.getMessages()).size();
+            int selectedMessageCount = safeMessages(selected.getMessages()).size();
+            if (candidateMessageCount > selectedMessageCount) {
+                selected = chat;
             }
         }
-        return null;
+        return selected;
     }
 
     private boolean hasChatAccess(ActivityChat chat, String userId) {
