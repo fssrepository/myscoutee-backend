@@ -12,6 +12,8 @@ but if the smaller one has an override rule that should be applied
 c) menu - red counter badges - when for example invitation deleted/accepted etc.
 d) assign car mobile - full screen popup (shouldn't be any border also)
 e) email - sendgrid, template for promotional emails
+f) stage swipe on full panel, not only the header
+g) pricing - all on/off toggle should be right hand side of the header
 
 Commands
 --------
