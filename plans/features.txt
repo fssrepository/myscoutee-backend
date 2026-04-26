@@ -11,6 +11,7 @@ naturally when you merge, anything which is in a lager width should be moved to 
 but if the smaller one has an override rule that should be applied
 c) menu - red counter badges - when for example invitation deleted/accepted etc.
 d) assign car mobile - full screen popup (shouldn't be any border also)
+e) email - sendgrid, template for promotional emails
 
 Commands
 --------
