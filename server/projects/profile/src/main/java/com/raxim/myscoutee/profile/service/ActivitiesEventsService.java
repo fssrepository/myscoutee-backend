@@ -110,7 +110,7 @@ public class ActivitiesEventsService {
         return new EventQueryContext(
                 scopedEvents,
                 scopedEvents,
-                new LinkedHashMap<>(),
+                buildMemberSnapshotMap(scopedEvents),
                 activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
     }
 
@@ -130,6 +130,20 @@ public class ActivitiesEventsService {
                 allEvents,
                 new LinkedHashMap<>(),
                 trackedSourceIds);
+    }
+
+    private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> buildMemberSnapshotMap(List<ActivityEvent> records) {
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : computePreferredEventRecords(records)) {
+            String sourceId = normalizeId(record.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                preferredBySourceId.put(sourceId, record);
+            }
+        }
+        if (preferredBySourceId.isEmpty()) {
+            return new LinkedHashMap<>();
+        }
+        return new LinkedHashMap<>(activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId));
     }
 
     public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
@@ -400,6 +414,7 @@ public class ActivitiesEventsService {
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
         }
+        boolean accepted = isConfirmedBooking(request);
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
@@ -408,16 +423,29 @@ public class ActivitiesEventsService {
                     .findFirst()
                     .orElse(null);
             if (slotRecord != null) {
-                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
-                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord);
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
+                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted);
                 recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
-                return toEventRecordDto(buildMembershipProjection(viewer.userId(), slotRecord), viewer);
+                ActivityEvent refreshedSlotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
+                        .filter(this::isGeneratedSlotRecord)
+                        .findFirst()
+                        .orElse(slotRecord);
+                return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshedSlotRecord), viewer);
             }
         }
 
-        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred);
+        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
         recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
-        return toEventRecordDto(buildMembershipProjection(viewer.userId(), preferred), viewer);
+        ActivityEvent refreshed = findPreferredEventRecord(sourceId);
+        return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
+    }
+
+    private boolean hasPaymentSession(EventActionRequestDto request) {
+        return StringUtils.hasText(request == null ? null : normalizeId(request.paymentSessionId()));
+    }
+
+    private boolean isConfirmedBooking(EventActionRequestDto request) {
+        return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed()) || hasPaymentSession(request);
     }
 
     private void recordJoinPayment(
@@ -550,9 +578,17 @@ public class ActivitiesEventsService {
         String hostingPublicationFilter = request == null ? "all" : normalizeHostingPublicationFilter(request.hostingPublicationFilter());
 
         List<ActivityEvent> userItems = queryUserRecords(viewer);
-        List<ActivityEvent> activeEventItems = userItems.stream()
+        List<ActivityEvent> memberEventItems = userItems.stream()
                 .filter(record -> TYPE_EVENTS.equals(normalizeType(record.getType())))
+                .filter(record -> !isViewerAdmin(record, viewer.userId()))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
+                .toList();
+        List<ActivityEvent> pendingEventItems = memberEventItems.stream()
+                .filter(record -> isPendingParticipation(record, viewer.userId()))
+                .toList();
+        List<ActivityEvent> activeEventItems = memberEventItems.stream()
+                .filter(record -> hasAcceptedParticipation(record, viewer.userId()))
                 .toList();
         List<ActivityEvent> invitationItems = userItems.stream()
                 .filter(record -> Boolean.TRUE.equals(record.getIsInvitation()))
@@ -568,7 +604,8 @@ public class ActivitiesEventsService {
                 .toList();
 
         return switch (filter) {
-            case "all" -> concat(activeEventItems, invitationItems);
+            case "all" -> concat(concat(activeEventItems, pendingEventItems), concat(invitationItems, myEventItems));
+            case "pending" -> pendingEventItems;
             case "invitations" -> invitationItems;
             case "my-events" -> "drafts".equals(hostingPublicationFilter) ? draftItems : myEventItems;
             case "drafts" -> draftItems;
@@ -913,8 +950,12 @@ public class ActivitiesEventsService {
             return null;
         }
         Integer distanceMetersExact = resolveDistanceMetersExact(viewer == null ? null : viewer.locationCoordinates(), record);
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot = resolveMembersSnapshot(record);
         List<String> acceptedMemberUserIds = resolveAcceptedMemberUserIds(record);
         List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record);
+        int capacityTotal = membersSnapshot == null || membersSnapshot.capacityTotal() == null
+                ? normalizeCount(record.getCapacityTotal())
+                : Math.max(0, membersSnapshot.capacityTotal());
         List<EventSlotOccurrenceDto> upcomingSlots = resolveUpcomingSlotOccurrences(record);
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
@@ -952,7 +993,7 @@ public class ActivitiesEventsService {
                 cloneLocation(record.getLocationCoordinates()),
                 nullableCount(record.getCapacityMin()),
                 nullableCount(record.getCapacityMax()),
-                normalizeCount(record.getCapacityTotal()),
+                Math.max(acceptedMemberUserIds.size(), capacityTotal),
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
@@ -1489,6 +1530,23 @@ public class ActivitiesEventsService {
                 || resolvePendingMemberUserIds(record).contains(userId);
     }
 
+    private boolean hasAcceptedParticipation(ActivityEvent record, String userId) {
+        if (record == null || !StringUtils.hasText(userId) || isViewerAdmin(record, userId)) {
+            return false;
+        }
+        return resolveAcceptedMemberUserIds(record).contains(userId);
+    }
+
+    private boolean isPendingParticipation(ActivityEvent record, String userId) {
+        if (record == null || !StringUtils.hasText(userId) || isViewerAdmin(record, userId)) {
+            return false;
+        }
+        if (resolveAcceptedMemberUserIds(record).contains(userId)) {
+            return false;
+        }
+        return resolvePendingMemberUserIds(record).contains(userId);
+    }
+
     private boolean hasTopic(ActivityEvent record, String topic) {
         return normalizeStrings(record.getTopics()).stream()
                 .map(this::normalizeTopic)
@@ -1578,19 +1636,25 @@ public class ActivitiesEventsService {
     }
 
     private List<String> resolveAcceptedMemberUserIds(ActivityEvent record) {
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
+        if (snapshot != null) {
+            return new ArrayList<>(snapshot.acceptedMemberUserIds());
+        }
         if (record != null && record.hasEmbeddedMemberUserIds()) {
             return new ArrayList<>(normalizeIds(record.getAcceptedMemberUserIds()));
         }
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
-        return snapshot == null ? fallbackAcceptedMemberUserIds(record) : new ArrayList<>(snapshot.acceptedMemberUserIds());
+        return fallbackAcceptedMemberUserIds(record);
     }
 
     private List<String> resolvePendingMemberUserIds(ActivityEvent record) {
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
+        if (snapshot != null) {
+            return new ArrayList<>(snapshot.pendingMemberUserIds());
+        }
         if (record != null && record.hasEmbeddedMemberUserIds()) {
             return new ArrayList<>(normalizeIds(record.getPendingMemberUserIds()));
         }
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
-        return snapshot == null ? List.of() : new ArrayList<>(snapshot.pendingMemberUserIds());
+        return List.of();
     }
 
     private List<String> fallbackAcceptedMemberUserIds(ActivityEvent record) {
@@ -1688,7 +1752,7 @@ public class ActivitiesEventsService {
     private String normalizeEventScopeFilter(String value) {
         String normalized = safeText(value);
         return switch (normalized) {
-            case "all", "invitations", "my-events", "drafts", "trash" -> normalized;
+            case "all", "pending", "invitations", "my-events", "drafts", "trash" -> normalized;
             default -> "active-events";
         };
     }

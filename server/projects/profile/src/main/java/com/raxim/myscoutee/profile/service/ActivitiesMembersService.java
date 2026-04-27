@@ -529,6 +529,10 @@ public class ActivitiesMembersService {
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
+        return requestJoin(eventId, viewer, eventRecord, false);
+    }
+
+    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted) {
         String normalizedEventId = normalizeId(eventId);
         String viewerUserId = viewer == null ? null : normalizeId(viewer.getId());
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(viewerUserId)) {
@@ -554,12 +558,12 @@ public class ActivitiesMembersService {
             current.setCreatedDate(Instant.now().toString());
             current.setCreatedUser(viewerUserId);
         }
-        if (!ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
+        if (accepted || !ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
             String nowIso = Instant.now().toString();
             current.setRole(normalizeRole(current.getRole(), viewerUserId, OWNER_TYPE_EVENT, normalizedEventId));
-            current.setStatus("pending");
-            current.setPendingSource("member");
-            current.setRequestKind("join");
+            current.setStatus(accepted ? STATUS_ACCEPTED : "pending");
+            current.setPendingSource(accepted ? null : "member");
+            current.setRequestKind(accepted ? null : "join");
             current.setInvitedByUserId(null);
             current.setActionAtIso(nowIso);
             current.setMetAtIso(normalizeDateTime(current.getMetAtIso(), nowIso));

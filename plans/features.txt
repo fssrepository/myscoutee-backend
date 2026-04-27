@@ -9,9 +9,14 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-e) email - sendgrid (make it uniform, so other provider can be configured also), template for promotional emails
-how it works, there is a email template tabel and a rule when it needs to be sent - you have free hand on it, make it nicely
-async process is sending the emails to the users' email - make the emailing disabled with a variable
+f) feedback menu - own event menu item and you can see your events (it's similar to activity my events card 
+- the only thing is that you have a new menu item - feedbacks and a red counter on it -
+that should show a popup with the event panel at top, the stats how many was liking each options and message list, if someone has sent a written feedback also
+- (it's a list grouped by day)
+add organizer note menu item content should be inside the feedback carousel at the end (anything you to add to the organizer???)
+the add organizer manu item is loading the message, so you can update
+on the own event panel popup - the feedbacks are sorted in desc
+event feedback has default day grouping (nothing more) - the menu item should be above the progress bar (at the moment progress line are crossing)
 
 Commands
 --------

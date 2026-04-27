@@ -43,7 +43,8 @@ public final class EventsDtos {
             List<String> optionalSubEventIds,
             List<EventCheckoutAssetSelectionDto> assetSelections,
             List<String> acceptedPolicyIds,
-            String paymentSessionId) {
+            String paymentSessionId,
+            Boolean bookingConfirmed) {
     }
 
     public record EventFeedbackAnswerSubmitDto(
