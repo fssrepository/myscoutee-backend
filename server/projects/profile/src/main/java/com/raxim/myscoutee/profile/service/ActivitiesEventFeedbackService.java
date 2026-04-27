@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEntryDto;
@@ -28,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggl
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesEventFeedbackService {
@@ -35,16 +37,19 @@ public class ActivitiesEventFeedbackService {
     private final ActivityEventsRepository activityEventsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
+    private final UsersRepository usersRepository;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
             ActivityEventsRepository activityEventsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
-            EventFeedbackAnswersRepository eventFeedbackAnswersRepository) {
+            EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
+            UsersRepository usersRepository) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
+        this.usersRepository = usersRepository;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -85,6 +90,7 @@ public class ActivitiesEventFeedbackService {
         }
 
         Map<String, Map<String, ReceivedFeedbackEntryAccumulator>> entriesByEventId = new LinkedHashMap<>();
+        Set<String> viewerUserIds = new LinkedHashSet<>();
         for (EventFeedbackState state : eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(ownedEventIds)) {
             if (state == null) {
                 continue;
@@ -94,6 +100,7 @@ public class ActivitiesEventFeedbackService {
             if (!StringUtils.hasText(eventId) || !StringUtils.hasText(viewerUserId) || Objects.equals(userId, viewerUserId)) {
                 continue;
             }
+            viewerUserIds.add(viewerUserId);
             ReceivedFeedbackEntryAccumulator entry = ensureReceivedFeedbackEntry(entriesByEventId, eventId, viewerUserId);
             entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, state.getSubmittedAtIso());
             entry.updatedAtIso = firstNonBlank(entry.updatedAtIso, state.getUpdatedDate());
@@ -109,6 +116,7 @@ public class ActivitiesEventFeedbackService {
             if (!StringUtils.hasText(eventId) || !StringUtils.hasText(viewerUserId) || Objects.equals(userId, viewerUserId)) {
                 continue;
             }
+            viewerUserIds.add(viewerUserId);
             ReceivedFeedbackEntryAccumulator entry = ensureReceivedFeedbackEntry(entriesByEventId, eventId, viewerUserId);
             String submittedAtIso = safeText(answer.getSubmittedAtIso());
             entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, submittedAtIso);
@@ -116,6 +124,7 @@ public class ActivitiesEventFeedbackService {
             entry.answers.add(toAnswerDto(answer));
         }
 
+        Map<String, ViewerIdentity> viewerIdentitiesByUserId = buildViewerIdentities(viewerUserIds);
         List<EventFeedbackReceivedEventDto> receivedEvents = new ArrayList<>();
         for (String eventId : ownedEventIds) {
             Map<String, ReceivedFeedbackEntryAccumulator> eventEntries = entriesByEventId.get(eventId);
@@ -123,7 +132,7 @@ public class ActivitiesEventFeedbackService {
                 continue;
             }
             List<EventFeedbackReceivedEntryDto> entries = eventEntries.values().stream()
-                    .map(this::toReceivedEntryDto)
+                    .map(entry -> toReceivedEntryDto(entry, viewerIdentitiesByUserId.get(entry.viewerUserId)))
                     .filter(entry -> StringUtils.hasText(entry.organizerNote()) || !entry.answers().isEmpty())
                     .sorted((left, right) -> receivedEntrySortIso(right).compareTo(receivedEntrySortIso(left)))
                     .toList();
@@ -315,9 +324,52 @@ public class ActivitiesEventFeedbackService {
                 .computeIfAbsent(viewerUserId, ignored -> new ReceivedFeedbackEntryAccumulator(viewerUserId, eventId));
     }
 
-    private EventFeedbackReceivedEntryDto toReceivedEntryDto(ReceivedFeedbackEntryAccumulator entry) {
+    private Map<String, ViewerIdentity> buildViewerIdentities(Set<String> viewerUserIds) {
+        if (viewerUserIds == null || viewerUserIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, ViewerIdentity> identitiesByUserId = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(viewerUserIds)) {
+            if (user == null || !StringUtils.hasText(normalizeId(user.getUserId()))) {
+                continue;
+            }
+            String viewerUserId = normalizeId(user.getUserId());
+            String viewerName = safeText(user.getName());
+            identitiesByUserId.put(viewerUserId, new ViewerIdentity(
+                    StringUtils.hasText(viewerName) ? viewerName : viewerUserId,
+                    resolveUserInitials(user, viewerUserId),
+                    normalizeGender(user.getGender()),
+                    resolveUserImageUrl(user)));
+        }
+        for (String viewerUserId : viewerUserIds) {
+            if (!StringUtils.hasText(viewerUserId) || identitiesByUserId.containsKey(viewerUserId)) {
+                continue;
+            }
+            identitiesByUserId.put(viewerUserId, new ViewerIdentity(
+                    viewerUserId,
+                    initialsFromText(viewerUserId),
+                    "man",
+                    ""));
+        }
+        return identitiesByUserId;
+    }
+
+    private EventFeedbackReceivedEntryDto toReceivedEntryDto(
+            ReceivedFeedbackEntryAccumulator entry,
+            ViewerIdentity viewerIdentity) {
+        ViewerIdentity resolvedViewerIdentity = viewerIdentity == null
+                ? new ViewerIdentity(
+                        safeText(entry.viewerUserId),
+                        initialsFromText(entry.viewerUserId),
+                        "man",
+                        "")
+                : viewerIdentity;
         return new EventFeedbackReceivedEntryDto(
                 safeText(entry.viewerUserId),
+                safeText(resolvedViewerIdentity.name),
+                safeText(resolvedViewerIdentity.initials),
+                safeText(resolvedViewerIdentity.gender),
+                safeText(resolvedViewerIdentity.imageUrl),
                 safeText(entry.eventId),
                 safeText(entry.submittedAtIso),
                 safeText(entry.updatedAtIso),
@@ -360,6 +412,43 @@ public class ActivitiesEventFeedbackService {
         return value == null ? "" : value.trim();
     }
 
+    private String normalizeGender(String value) {
+        return "woman".equals(safeText(value)) ? "woman" : "man";
+    }
+
+    private String resolveUserImageUrl(Users user) {
+        if (user == null || user.getImages() == null || user.getImages().isEmpty()) {
+            return "";
+        }
+        return safeText(user.getImages().get(0));
+    }
+
+    private String resolveUserInitials(Users user, String fallbackUserId) {
+        if (user != null && StringUtils.hasText(safeText(user.getInitials()))) {
+            return safeText(user.getInitials());
+        }
+        String fallbackName = user == null ? "" : safeText(user.getName());
+        return initialsFromText(StringUtils.hasText(fallbackName) ? fallbackName : fallbackUserId);
+    }
+
+    private String initialsFromText(String value) {
+        String normalizedValue = safeText(value);
+        if (!StringUtils.hasText(normalizedValue)) {
+            return "";
+        }
+        String[] parts = normalizedValue.split("\\s+");
+        StringBuilder initials = new StringBuilder();
+        for (String part : parts) {
+            if (!part.isEmpty()) {
+                initials.append(Character.toUpperCase(part.charAt(0)));
+            }
+            if (initials.length() >= 2) {
+                break;
+            }
+        }
+        return initials.toString();
+    }
+
     private static final class ReceivedFeedbackEntryAccumulator {
         private final String viewerUserId;
         private final String eventId;
@@ -371,6 +460,20 @@ public class ActivitiesEventFeedbackService {
         private ReceivedFeedbackEntryAccumulator(String viewerUserId, String eventId) {
             this.viewerUserId = viewerUserId;
             this.eventId = eventId;
+        }
+    }
+
+    private static final class ViewerIdentity {
+        private final String name;
+        private final String initials;
+        private final String gender;
+        private final String imageUrl;
+
+        private ViewerIdentity(String name, String initials, String gender, String imageUrl) {
+            this.name = name;
+            this.initials = initials;
+            this.gender = gender;
+            this.imageUrl = imageUrl;
         }
     }
 }

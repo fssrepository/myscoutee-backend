@@ -82,6 +82,10 @@ public final class EventsDtos {
 
     public record EventFeedbackReceivedEntryDto(
             String viewerUserId,
+            String viewerName,
+            String viewerInitials,
+            String viewerGender,
+            String viewerImageUrl,
             String eventId,
             String submittedAtIso,
             String updatedAtIso,

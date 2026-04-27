@@ -88,5 +88,50 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-03-20T15:05:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000007"
+    },
+    "syncKey": "event-feedback-state-u4-seattle-host-circle",
+    "viewerUserId": "1b1c70be2349b3359a8f6f94",
+    "eventId": "f260f450643e752d226b4253",
+    "removed": false,
+    "submittedAtIso": "2026-05-18T22:18:00.000Z",
+    "organizerNote": "The host kept the room easy to enter and the rotations felt natural. I would add one sharper reset before the last conversation round.",
+    "createdDate": "2026-05-18T22:18:00.000Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-05-18T22:18:00.000Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000008"
+    },
+    "syncKey": "event-feedback-state-u2-seattle-host-circle",
+    "viewerUserId": "b29df68956f3fe15e04558de",
+    "eventId": "f260f450643e752d226b4253",
+    "removed": false,
+    "submittedAtIso": "2026-05-19T08:05:00.000Z",
+    "organizerNote": "The structure was clean and the host had a relaxed way of keeping things moving. A slightly clearer opener would make the first rotation even easier.",
+    "createdDate": "2026-05-19T08:05:00.000Z",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2026-05-19T08:05:00.000Z",
+    "updatedUser": "b29df68956f3fe15e04558de"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000009"
+    },
+    "syncKey": "event-feedback-state-u3-seattle-host-circle",
+    "viewerUserId": "9f3b3f085e23af6c89dbc432",
+    "eventId": "f260f450643e752d226b4253",
+    "removed": false,
+    "submittedAtIso": "2026-05-19T09:40:00.000Z",
+    "organizerNote": "The vibe stayed warm the whole night and the host made rejoining conversations easy. I would only tighten the transition into the final group mix.",
+    "createdDate": "2026-05-19T09:40:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-05-19T09:40:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
   }
 ]
