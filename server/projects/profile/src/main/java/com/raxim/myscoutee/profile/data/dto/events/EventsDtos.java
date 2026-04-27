@@ -80,6 +80,20 @@ public final class EventsDtos {
             Map<String, EventFeedbackAnswerDto> answersByCardId) {
     }
 
+    public record EventFeedbackReceivedEntryDto(
+            String viewerUserId,
+            String eventId,
+            String submittedAtIso,
+            String updatedAtIso,
+            String organizerNote,
+            List<EventFeedbackAnswerDto> answers) {
+    }
+
+    public record EventFeedbackReceivedEventDto(
+            String eventId,
+            List<EventFeedbackReceivedEntryDto> entries) {
+    }
+
     public record EventFeedbackSubmitRequestDto(
             String userId,
             String eventId,

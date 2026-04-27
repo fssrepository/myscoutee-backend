@@ -1,20 +1,26 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEntryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
@@ -51,6 +57,81 @@ public class ActivitiesEventFeedbackService {
                 .filter(Objects::nonNull)
                 .map(state -> toDto(state, answersByEventId.get(normalizeId(state.getEventId()))))
                 .toList();
+    }
+
+    public List<EventFeedbackReceivedEventDto> queryReceivedEvents(String requestedUserId) {
+        String userId = homeUserProfileService.resolveSelectedUserId(requestedUserId);
+        if (!StringUtils.hasText(userId)) {
+            return List.of();
+        }
+
+        Set<String> ownedEventIds = new LinkedHashSet<>();
+        for (ActivityEvent record : activityEventsRepository.findByOwnerUserId(userId)) {
+            if (record == null || Boolean.TRUE.equals(record.getIsInvitation()) || Boolean.TRUE.equals(record.getIsTrashed())) {
+                continue;
+            }
+            boolean viewerIsAdmin = Boolean.TRUE.equals(record.getIsAdmin())
+                    || Objects.equals(userId, normalizeId(record.getCreatorUserId()));
+            if (!viewerIsAdmin) {
+                continue;
+            }
+            String sourceId = normalizeId(record.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                ownedEventIds.add(sourceId);
+            }
+        }
+        if (ownedEventIds.isEmpty()) {
+            return List.of();
+        }
+
+        Map<String, Map<String, ReceivedFeedbackEntryAccumulator>> entriesByEventId = new LinkedHashMap<>();
+        for (EventFeedbackState state : eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(ownedEventIds)) {
+            if (state == null) {
+                continue;
+            }
+            String eventId = normalizeId(state.getEventId());
+            String viewerUserId = normalizeId(state.getViewerUserId());
+            if (!StringUtils.hasText(eventId) || !StringUtils.hasText(viewerUserId) || Objects.equals(userId, viewerUserId)) {
+                continue;
+            }
+            ReceivedFeedbackEntryAccumulator entry = ensureReceivedFeedbackEntry(entriesByEventId, eventId, viewerUserId);
+            entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, state.getSubmittedAtIso());
+            entry.updatedAtIso = firstNonBlank(entry.updatedAtIso, state.getUpdatedDate());
+            entry.organizerNote = safeText(state.getOrganizerNote());
+        }
+
+        for (EventFeedbackAnswer answer : eventFeedbackAnswersRepository.findByEventIdInOrderByEventIdAscSubmittedAtIsoDesc(ownedEventIds)) {
+            if (answer == null) {
+                continue;
+            }
+            String eventId = normalizeId(answer.getEventId());
+            String viewerUserId = normalizeId(answer.getViewerUserId());
+            if (!StringUtils.hasText(eventId) || !StringUtils.hasText(viewerUserId) || Objects.equals(userId, viewerUserId)) {
+                continue;
+            }
+            ReceivedFeedbackEntryAccumulator entry = ensureReceivedFeedbackEntry(entriesByEventId, eventId, viewerUserId);
+            String submittedAtIso = safeText(answer.getSubmittedAtIso());
+            entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, submittedAtIso);
+            entry.updatedAtIso = firstNonBlank(entry.updatedAtIso, submittedAtIso);
+            entry.answers.add(toAnswerDto(answer));
+        }
+
+        List<EventFeedbackReceivedEventDto> receivedEvents = new ArrayList<>();
+        for (String eventId : ownedEventIds) {
+            Map<String, ReceivedFeedbackEntryAccumulator> eventEntries = entriesByEventId.get(eventId);
+            if (eventEntries == null || eventEntries.isEmpty()) {
+                continue;
+            }
+            List<EventFeedbackReceivedEntryDto> entries = eventEntries.values().stream()
+                    .map(this::toReceivedEntryDto)
+                    .filter(entry -> StringUtils.hasText(entry.organizerNote()) || !entry.answers().isEmpty())
+                    .sorted((left, right) -> receivedEntrySortIso(right).compareTo(receivedEntrySortIso(left)))
+                    .toList();
+            if (!entries.isEmpty()) {
+                receivedEvents.add(new EventFeedbackReceivedEventDto(eventId, entries));
+            }
+        }
+        return receivedEvents;
     }
 
     public void submit(EventFeedbackSubmitRequestDto request) {
@@ -225,6 +306,43 @@ public class ActivitiesEventFeedbackService {
                 answersByCardId == null ? Map.of() : Map.copyOf(answersByCardId));
     }
 
+    private ReceivedFeedbackEntryAccumulator ensureReceivedFeedbackEntry(
+            Map<String, Map<String, ReceivedFeedbackEntryAccumulator>> entriesByEventId,
+            String eventId,
+            String viewerUserId) {
+        return entriesByEventId
+                .computeIfAbsent(eventId, ignored -> new LinkedHashMap<>())
+                .computeIfAbsent(viewerUserId, ignored -> new ReceivedFeedbackEntryAccumulator(viewerUserId, eventId));
+    }
+
+    private EventFeedbackReceivedEntryDto toReceivedEntryDto(ReceivedFeedbackEntryAccumulator entry) {
+        return new EventFeedbackReceivedEntryDto(
+                safeText(entry.viewerUserId),
+                safeText(entry.eventId),
+                safeText(entry.submittedAtIso),
+                safeText(entry.updatedAtIso),
+                safeText(entry.organizerNote),
+                List.copyOf(entry.answers));
+    }
+
+    private String receivedEntrySortIso(EventFeedbackReceivedEntryDto entry) {
+        String updatedAtIso = safeText(entry.updatedAtIso());
+        if (StringUtils.hasText(updatedAtIso)) {
+            return updatedAtIso;
+        }
+        String submittedAtIso = safeText(entry.submittedAtIso());
+        if (StringUtils.hasText(submittedAtIso)) {
+            return submittedAtIso;
+        }
+        for (EventFeedbackAnswerDto answer : entry.answers()) {
+            String answerIso = safeText(answer.submittedAtIso());
+            if (StringUtils.hasText(answerIso)) {
+                return answerIso;
+            }
+        }
+        return "";
+    }
+
     private String firstNonBlank(String first, String fallback) {
         String firstValue = safeText(first);
         if (StringUtils.hasText(firstValue)) {
@@ -240,5 +358,19 @@ public class ActivitiesEventFeedbackService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private static final class ReceivedFeedbackEntryAccumulator {
+        private final String viewerUserId;
+        private final String eventId;
+        private String submittedAtIso = "";
+        private String updatedAtIso = "";
+        private String organizerNote = "";
+        private final List<EventFeedbackAnswerDto> answers = new ArrayList<>();
+
+        private ReceivedFeedbackEntryAccumulator(String viewerUserId, String eventId) {
+            this.viewerUserId = viewerUserId;
+            this.eventId = eventId;
+        }
     }
 }
