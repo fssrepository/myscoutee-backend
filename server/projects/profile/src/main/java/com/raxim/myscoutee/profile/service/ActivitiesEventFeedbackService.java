@@ -60,6 +60,7 @@ public class ActivitiesEventFeedbackService {
         Map<String, Map<String, EventFeedbackAnswerDto>> answersByEventId = buildAnswersByEventId(userId);
         return eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc(userId).stream()
                 .filter(Objects::nonNull)
+                .sorted((left, right) -> stateSortIso(right).compareTo(stateSortIso(left)))
                 .map(state -> toDto(state, answersByEventId.get(normalizeId(state.getEventId()))))
                 .toList();
     }
@@ -154,6 +155,7 @@ public class ActivitiesEventFeedbackService {
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
         state.setRemoved(false);
         state.setSubmittedAtIso(nowIso);
+        state.setRemovedAtIso(null);
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
@@ -206,6 +208,7 @@ public class ActivitiesEventFeedbackService {
         String nowIso = Instant.now().toString();
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
         state.setRemoved(removed);
+        state.setRemovedAtIso(removed ? nowIso : null);
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
@@ -234,6 +237,7 @@ public class ActivitiesEventFeedbackService {
         state.setEventId(eventId);
         state.setRemoved(false);
         state.setSubmittedAtIso(null);
+        state.setRemovedAtIso(null);
         state.setOrganizerNote("");
         state.setCreatedDate(nowIso);
         state.setCreatedUser(userId);
@@ -311,8 +315,19 @@ public class ActivitiesEventFeedbackService {
                 normalizeId(state.getEventId()),
                 Boolean.TRUE.equals(state.getRemoved()),
                 safeText(state.getSubmittedAtIso()),
+                safeText(state.getRemovedAtIso()),
                 safeText(state.getOrganizerNote()),
                 answersByCardId == null ? Map.of() : Map.copyOf(answersByCardId));
+    }
+
+    private String stateSortIso(EventFeedbackState state) {
+        if (state == null) {
+            return "";
+        }
+        if (Boolean.TRUE.equals(state.getRemoved())) {
+            return firstNonBlank(state.getRemovedAtIso(), state.getUpdatedDate(), state.getSubmittedAtIso(), state.getCreatedDate());
+        }
+        return firstNonBlank(state.getSubmittedAtIso(), state.getUpdatedDate(), state.getCreatedDate());
     }
 
     private ReceivedFeedbackEntryAccumulator ensureReceivedFeedbackEntry(

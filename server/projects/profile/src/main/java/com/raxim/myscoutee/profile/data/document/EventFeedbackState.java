@@ -22,6 +22,7 @@ public class EventFeedbackState {
     private String eventId;
     private Boolean removed;
     private String submittedAtIso;
+    private String removedAtIso;
     private String organizerNote;
     private String createdDate;
     private String createdUser;
@@ -74,6 +75,14 @@ public class EventFeedbackState {
 
     public void setSubmittedAtIso(String submittedAtIso) {
         this.submittedAtIso = submittedAtIso;
+    }
+
+    public String getRemovedAtIso() {
+        return removedAtIso;
+    }
+
+    public void setRemovedAtIso(String removedAtIso) {
+        this.removedAtIso = removedAtIso;
     }
 
     public String getOrganizerNote() {

@@ -76,6 +76,7 @@ public final class EventsDtos {
             String eventId,
             Boolean removed,
             String submittedAtIso,
+            String removedAtIso,
             String organizerNote,
             Map<String, EventFeedbackAnswerDto> answersByCardId) {
     }
