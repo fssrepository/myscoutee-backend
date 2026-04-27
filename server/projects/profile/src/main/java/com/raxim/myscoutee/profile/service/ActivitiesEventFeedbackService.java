@@ -325,9 +325,11 @@ public class ActivitiesEventFeedbackService {
             return "";
         }
         if (Boolean.TRUE.equals(state.getRemoved())) {
-            return firstNonBlank(state.getRemovedAtIso(), state.getUpdatedDate(), state.getSubmittedAtIso(), state.getCreatedDate());
+            return firstNonBlank(
+                    state.getRemovedAtIso(),
+                    firstNonBlank(state.getUpdatedDate(), firstNonBlank(state.getSubmittedAtIso(), state.getCreatedDate())));
         }
-        return firstNonBlank(state.getSubmittedAtIso(), state.getUpdatedDate(), state.getCreatedDate());
+        return firstNonBlank(state.getSubmittedAtIso(), firstNonBlank(state.getUpdatedDate(), state.getCreatedDate()));
     }
 
     private ReceivedFeedbackEntryAccumulator ensureReceivedFeedbackEntry(
