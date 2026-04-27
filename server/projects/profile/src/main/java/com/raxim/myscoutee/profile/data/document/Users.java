@@ -18,6 +18,9 @@ public class Users {
     @Indexed(name = "users_user_id", unique = true)
     private String userId;
 
+    @Indexed(name = "users_email", sparse = true)
+    private String email;
+
     private String name;
     private Integer age;
     private String birthday;
@@ -75,6 +78,14 @@ public class Users {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {

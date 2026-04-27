@@ -187,7 +187,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId)));
+        Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
         if (user == null) {
             return null;
         }
@@ -233,7 +233,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId)));
+        Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
         if (user == null) {
             return null;
         }
@@ -303,7 +303,7 @@ public class HomeUserProfileService {
 
         Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
-        return toUserDto(syncComputedUserPartition(syncComputedUserActivities(saved)));
+        return toUserDto(syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved))));
     }
 
     public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
@@ -953,6 +953,7 @@ public class HomeUserProfileService {
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
         document.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey() : UUID.randomUUID().toString());
         document.setUserId(normalizeId(user.id()));
+        document.setEmail(resolveStoredEmail(normalizeId(user.id()), current == null ? null : current.getEmail()));
         document.setName(nullToEmpty(user.name()));
         document.setAge(normalizeCount(user.age()));
         document.setBirthday(nullToEmpty(user.birthday()));
@@ -988,6 +989,18 @@ public class HomeUserProfileService {
         document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
+    }
+
+    private Users syncCurrentUserEmail(Users user) {
+        if (user == null) {
+            return null;
+        }
+        String resolvedEmail = resolveAuthenticatedEmailForUser(normalizeId(user.getId()));
+        if (!StringUtils.hasText(resolvedEmail) || Objects.equals(safeText(user.getEmail()), resolvedEmail)) {
+            return user;
+        }
+        user.setEmail(resolvedEmail);
+        return usersRepository.save(user);
     }
 
     private Users syncComputedUserActivities(Users user) {
@@ -1040,6 +1053,32 @@ public class HomeUserProfileService {
         }
 
         return isSeedLikeHungaryUser(partitionOwner) ? DEFAULT_SEED_PARTITION_KEY : null;
+    }
+
+    private String resolveStoredEmail(String userId, String fallbackEmail) {
+        String resolvedPrincipalEmail = resolveAuthenticatedEmailForUser(userId);
+        if (StringUtils.hasText(resolvedPrincipalEmail)) {
+            return resolvedPrincipalEmail;
+        }
+        return safeText(fallbackEmail);
+    }
+
+    private String resolveAuthenticatedEmailForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return "";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)) {
+            return "";
+        }
+        String principalUserId = firebasePrincipal.getUser() != null
+                ? normalizeId(firebasePrincipal.getUser().getId())
+                : normalizeId(firebasePrincipal.getUserId());
+        if (!normalizedUserId.equals(principalUserId)) {
+            return "";
+        }
+        return safeText(firebasePrincipal.getEmail());
     }
 
     private boolean isSeedLikeHungaryUser(Users user) {

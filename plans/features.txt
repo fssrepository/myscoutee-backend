@@ -4,16 +4,14 @@ Bugs
 ----
 1) http - backend test
 
-a) home screen - pagination, how it works - as 10 cards needs to be preloaded (progressbar needs to show the loading) - analyze first, as it seems there is 3 cards wich are swapping each other
 b) eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.
 720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
-c) menu - red counter badges - when for example invitation deleted/accepted etc.
-d) assign car mobile - full screen popup (shouldn't be any border also)
-e) email - sendgrid, template for promotional emails
-f) stage swipe on full panel, not only the header
-g) pricing - all on/off toggle should be right hand side of the header
+
+e) email - sendgrid (make it uniform, so other provider can be configured also), template for promotional emails
+how it works, there is a email template tabel and a rule when it needs to be sent - you have free hand on it, make it nicely
+async process is sending the emails to the users' email - make the emailing disabled with a variable
 
 Commands
 --------

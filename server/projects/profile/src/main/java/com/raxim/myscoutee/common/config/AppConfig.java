@@ -16,6 +16,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
 import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
@@ -24,6 +25,7 @@ import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 @EnableConfigurationProperties({
         ConfigProperties.class,
         FirebaseProperties.class,
+        EmailProperties.class,
         MediaStorageProperties.class,
         AssetSourceRefreshProperties.class,
         RegionSecurityProperties.class
