@@ -1,8 +1,8 @@
-# Submodule Rule
+# FRONTEND WORKFLOW RULE
 
-Do not modify submodules directly from this parent repository workspace.
-If the submodule's standalone repository is available in the workspace, always modify that standalone repository.
-Use this parent repository only to update the submodule pointer after standalone repo changes.
+ALWAYS EDIT `frontend/` DIRECTLY FROM THIS WORKSPACE FOR THIS REPOSITORY.
+DO NOT SPEND TIME CHECKING WHETHER THERE IS A STANDALONE FRONTEND REPOSITORY OR WHETHER `frontend/` IS A SUBMODULE.
+ONLY DO THAT CHECK IF THE USER EXPLICITLY ASKS FOR IT.
 
 # Stop Command Rule
 
