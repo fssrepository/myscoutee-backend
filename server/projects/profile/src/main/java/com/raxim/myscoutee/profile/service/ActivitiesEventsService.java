@@ -440,12 +440,14 @@ public class ActivitiesEventsService {
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
     }
 
-    private boolean hasPaymentSession(EventActionRequestDto request) {
-        return StringUtils.hasText(request == null ? null : normalizeId(request.paymentSessionId()));
-    }
-
     private boolean isConfirmedBooking(EventActionRequestDto request) {
-        return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed()) || hasPaymentSession(request);
+        String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
+        if (StringUtils.hasText(paymentSessionId)) {
+            // A checkout session means the booking flow started, but we keep the
+            // membership pending until the server confirms the join separately.
+            return false;
+        }
+        return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed());
     }
 
     private void recordJoinPayment(

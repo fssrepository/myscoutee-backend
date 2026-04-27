@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
@@ -53,6 +54,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionRespon
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
@@ -68,6 +70,12 @@ public class HomeUserProfileService {
     private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
+    private static final String OWNER_TYPE_EVENT = "event";
+    private static final String TYPE_EVENTS = "events";
+    private static final String TYPE_HOSTING = "hosting";
+    private static final String TYPE_INVITATIONS = "invitations";
+    private static final String STATUS_ACCEPTED = "accepted";
+    private static final String STATUS_DELETED = "deleted";
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -143,6 +151,7 @@ public class HomeUserProfileService {
     private final UserRatesRepository userRatesRepository;
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
+    private final ActivityMembersRepository activityMembersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
@@ -158,6 +167,7 @@ public class HomeUserProfileService {
             UserRatesRepository userRatesRepository,
             ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
+            ActivityMembersRepository activityMembersRepository,
             EventParticipationTicketService eventParticipationTicketService,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
@@ -171,6 +181,7 @@ public class HomeUserProfileService {
         this.userRatesRepository = userRatesRepository;
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.activityMembersRepository = activityMembersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
@@ -1096,12 +1107,13 @@ public class HomeUserProfileService {
 
     private Users.UserActivitiesRecord buildComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
         List<ActivityEvent> eventRecords = queryEventRecords(userId);
+        EventMenuCounts eventMenuCounts = resolveEventMenuCounts(userId, eventRecords);
         return new Users.UserActivitiesRecord(
                 queryGameStackUserRecords(userId).size(),
                 countUnreadChats(userId),
-                countEventsByType(eventRecords, "invitations"),
-                countEventsByType(eventRecords, "events"),
-                countEventsByType(eventRecords, "hosting"),
+                eventMenuCounts.invitations(),
+                eventMenuCounts.activeEvents(),
+                eventMenuCounts.hosting(),
                 countTicketRecords(userId),
                 countPendingEventFeedback(userId, eventRecords));
     }
@@ -1125,11 +1137,109 @@ public class HomeUserProfileService {
                 .sum();
     }
 
-    private int countEventsByType(List<ActivityEvent> eventRecords, String type) {
-        return Math.toIntExact(eventRecords.stream()
-                .filter(record -> type.equals(safeText(record.getType())))
+    private EventMenuCounts resolveEventMenuCounts(String userId, List<ActivityEvent> directOwnerRecords) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new EventMenuCounts(0, 0, 0);
+        }
+
+        Map<String, ActivityEvent> preferredDirectRecordsBySourceId = preferredEventRecordsBySourceId(directOwnerRecords);
+        int invitations = Math.toIntExact(preferredDirectRecordsBySourceId.values().stream()
+                .filter(Objects::nonNull)
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> Boolean.TRUE.equals(record.getIsInvitation()) || TYPE_INVITATIONS.equals(safeText(record.getType())))
                 .count());
+        int hosting = Math.toIntExact(preferredDirectRecordsBySourceId.values().stream()
+                .filter(Objects::nonNull)
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> isHostingRecordForUser(record, normalizedUserId))
+                .count());
+        int activeEvents = countAcceptedMembershipEvents(normalizedUserId);
+        return new EventMenuCounts(invitations, activeEvents, hosting);
+    }
+
+    private int countAcceptedMembershipEvents(String userId) {
+        List<ActivityMember> acceptedMemberRecords = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !STATUS_DELETED.equals(safeText(member.getStatus())))
+                .filter(member -> STATUS_ACCEPTED.equals(safeText(member.getStatus())))
+                .toList();
+        if (acceptedMemberRecords.isEmpty()) {
+            return 0;
+        }
+
+        Set<String> sourceIds = acceptedMemberRecords.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (sourceIds.isEmpty()) {
+            return 0;
+        }
+
+        Map<String, ActivityEvent> preferredRecordsBySourceId = preferredEventRecordsBySourceId(
+                activityEventsRepository.findBySourceIdIn(sourceIds));
+        return Math.toIntExact(acceptedMemberRecords.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .map(preferredRecordsBySourceId::get)
+                .filter(Objects::nonNull)
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
+                .filter(record -> !isHostingRecordForUser(record, userId))
+                .count());
+    }
+
+    private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {
+        LinkedHashMap<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            if (record == null) {
+                continue;
+            }
+            String sourceId = normalizeId(record.getSourceId());
+            if (!StringUtils.hasText(sourceId)) {
+                continue;
+            }
+            ActivityEvent current = preferredBySourceId.get(sourceId);
+            if (current == null || shouldPreferEventRecord(record, current)) {
+                preferredBySourceId.put(sourceId, record);
+            }
+        }
+        return preferredBySourceId;
+    }
+
+    private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
+        if (Boolean.TRUE.equals(next.getIsInvitation()) && !Boolean.TRUE.equals(current.getIsInvitation())) {
+            return false;
+        }
+        if (!Boolean.TRUE.equals(next.getIsInvitation()) && Boolean.TRUE.equals(current.getIsInvitation())) {
+            return true;
+        }
+        if (Boolean.TRUE.equals(next.getIsHosting()) && !Boolean.TRUE.equals(current.getIsHosting())) {
+            return true;
+        }
+        if (!Boolean.TRUE.equals(next.getIsHosting()) && Boolean.TRUE.equals(current.getIsHosting())) {
+            return false;
+        }
+        return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
+    }
+
+    private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
+        if (record == null || !StringUtils.hasText(userId) || Boolean.TRUE.equals(record.getIsTrashed())) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(record.getIsHosting()) || TYPE_HOSTING.equals(safeText(record.getType()))) {
+            return true;
+        }
+        if (userId.equals(normalizeId(record.getCreatorUserId()))) {
+            return true;
+        }
+        return record.getAdmins().stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .anyMatch(userId::equals);
     }
 
     private int countTicketRecords(String userId) {
@@ -1840,5 +1950,11 @@ public class HomeUserProfileService {
     private record LegacyTraitBadgeSignal(
             String traitId,
             Integer percent) {
+    }
+
+    private record EventMenuCounts(
+            int invitations,
+            int activeEvents,
+            int hosting) {
     }
 }
