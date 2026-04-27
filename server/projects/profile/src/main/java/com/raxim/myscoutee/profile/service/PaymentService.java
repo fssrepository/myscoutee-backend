@@ -174,6 +174,18 @@ public class PaymentService {
         cancelBooking(payment, fallbackBookingStartAtIso, fallbackCancellationPolicy);
     }
 
+    public boolean hasPendingEventJoin(String userId, String sourceId) {
+        return findLatestOpenEventPayment(userId, sourceId)
+                .map(payment -> !BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus())))
+                .orElse(false);
+    }
+
+    public boolean hasJoinedEventJoin(String userId, String sourceId) {
+        return findLatestOpenEventPayment(userId, sourceId)
+                .map(payment -> BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus())))
+                .orElse(false);
+    }
+
     private void cancelBooking(
             Payment payment,
             String fallbackBookingStartAtIso,
@@ -213,6 +225,21 @@ public class PaymentService {
             payment.setStatus(REFUND_STATUS_FULL.equals(refund.status()) ? "refunded" : "partially_refunded");
         }
         paymentsRepository.save(payment);
+    }
+
+    private Optional<Payment> findLatestOpenEventPayment(String userId, String sourceId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!hasText(normalizedUserId) || !hasText(normalizedSourceId)) {
+            return Optional.empty();
+        }
+        return paymentsRepository.findByUserIdAndSourceId(normalizedUserId, normalizedSourceId).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> !BOOKING_STATUS_CANCELLED.equals(safeText(item.getBookingStatus())))
+                .filter(item -> !REFUND_STATUS_FULL.equals(safeText(item.getRefundStatus())))
+                .max(Comparator.comparing(item -> sortableIso(
+                        hasText(item.getJoinedAtIso()) ? item.getJoinedAtIso() : item.getCreatedDate()
+                )));
     }
 
     private PaymentProcessor resolveProcessor(String provider) {

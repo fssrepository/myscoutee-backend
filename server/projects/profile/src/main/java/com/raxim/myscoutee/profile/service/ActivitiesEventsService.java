@@ -204,7 +204,7 @@ public class ActivitiesEventsService {
         try {
             ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
             return queryUserRecords(viewer).stream()
-                    .filter(record -> TYPE_EVENTS.equals(normalizeType(record.getType())))
+                    .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
                     .map(record -> toEventRecordDto(record, viewer))
                     .filter(Objects::nonNull)
                     .sorted(listItemComparator())
@@ -288,7 +288,6 @@ public class ActivitiesEventsService {
             List<EventProjection> sorted = queryFilteredRecords(viewer, request).stream()
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
-                    .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
                     .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                     .toList();
 
@@ -425,7 +424,9 @@ public class ActivitiesEventsService {
             if (slotRecord != null) {
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
                 activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted);
-                recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
+                if (accepted) {
+                    recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
+                }
                 ActivityEvent refreshedSlotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
                         .filter(this::isGeneratedSlotRecord)
                         .findFirst()
@@ -435,7 +436,9 @@ public class ActivitiesEventsService {
         }
 
         activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
-        recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
+        if (accepted) {
+            recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
+        }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
     }
@@ -581,7 +584,7 @@ public class ActivitiesEventsService {
 
         List<ActivityEvent> userItems = queryUserRecords(viewer);
         List<ActivityEvent> memberEventItems = userItems.stream()
-                .filter(record -> TYPE_EVENTS.equals(normalizeType(record.getType())))
+                .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> !isViewerAdmin(record, viewer.userId()))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
                 .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
@@ -593,11 +596,11 @@ public class ActivitiesEventsService {
                 .filter(record -> hasAcceptedParticipation(record, viewer.userId()))
                 .toList();
         List<ActivityEvent> invitationItems = userItems.stream()
-                .filter(record -> Boolean.TRUE.equals(record.getIsInvitation()))
+                .filter(record -> TYPE_INVITATIONS.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
                 .toList();
         List<ActivityEvent> myEventItems = userItems.stream()
-                .filter(record -> TYPE_HOSTING.equals(normalizeType(record.getType())))
+                .filter(record -> TYPE_HOSTING.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> isViewerAdmin(record, viewer.userId()))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
                 .toList();
@@ -659,7 +662,6 @@ public class ActivitiesEventsService {
         List<EventProjection> sorted = queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
                 .map(record -> toProjection(record, viewer))
                 .filter(Objects::nonNull)
-                .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
                 .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                 .toList();
 
@@ -962,7 +964,7 @@ public class ActivitiesEventsService {
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
-                normalizeType(record.getType()),
+                resolveViewerScopedEventType(record, viewer == null ? null : viewer.userId()),
                 safeText(record.getStatus()),
                 safeText(record.getAvatar()),
                 safeText(record.getTitle()),
@@ -1093,10 +1095,10 @@ public class ActivitiesEventsService {
     }
 
     private int compareExploreProjection(EventProjection left, EventProjection right, String order, String view) {
-        List<Integer> leftTuple = buildExploreSortTuple(left, order, view);
-        List<Integer> rightTuple = buildExploreSortTuple(right, order, view);
+        List<Long> leftTuple = buildExploreSortTuple(left, order, view);
+        List<Long> rightTuple = buildExploreSortTuple(right, order, view);
         for (int index = 0; index < leftTuple.size(); index += 1) {
-            int delta = Integer.compare(leftTuple.get(index), rightTuple.get(index));
+            int delta = Long.compare(leftTuple.get(index), rightTuple.get(index));
             if (delta != 0) {
                 return delta;
             }
@@ -1104,14 +1106,14 @@ public class ActivitiesEventsService {
         return left.item().id().compareTo(right.item().id());
     }
 
-    private List<Integer> buildExploreSortTuple(EventProjection projection, String order, String view) {
-        int startAtMs = safeSortableInt(projection.startAtMs());
-        int dayMs = safeSortableInt(projection.dayMs());
-        int distanceMeters = projection.distanceMeters();
-        int ratingValue = projection.ratingValue();
-        int affinityGap = projection.affinityGap();
-        int isPast = projection.past() ? 1 : 0;
-        int pastPriority = projection.past() ? 0 : 1;
+    private List<Long> buildExploreSortTuple(EventProjection projection, String order, String view) {
+        long startAtMs = projection.startAtMs();
+        long dayMs = projection.dayMs();
+        long distanceMeters = projection.distanceMeters();
+        long ratingValue = projection.ratingValue();
+        long affinityGap = projection.affinityGap();
+        long isPast = projection.past() ? 1L : 0L;
+        long pastPriority = projection.past() ? 0L : 1L;
 
         if ("distance".equals(view)) {
             return switch (order) {
@@ -1536,7 +1538,10 @@ public class ActivitiesEventsService {
         if (record == null || !StringUtils.hasText(userId) || isViewerAdmin(record, userId)) {
             return false;
         }
-        return resolveAcceptedMemberUserIds(record).contains(userId);
+        if (!resolveAcceptedMemberUserIds(record).contains(userId)) {
+            return false;
+        }
+        return !hasPendingPaymentParticipation(record, userId);
     }
 
     private boolean isPendingParticipation(ActivityEvent record, String userId) {
@@ -1544,9 +1549,16 @@ public class ActivitiesEventsService {
             return false;
         }
         if (resolveAcceptedMemberUserIds(record).contains(userId)) {
-            return false;
+            return hasPendingPaymentParticipation(record, userId);
         }
         return resolvePendingMemberUserIds(record).contains(userId);
+    }
+
+    private boolean hasPendingPaymentParticipation(ActivityEvent record, String userId) {
+        if (record == null || !StringUtils.hasText(userId) || !Boolean.TRUE.equals(record.getTicketing())) {
+            return false;
+        }
+        return paymentService.hasPendingEventJoin(userId, normalizeId(record.getSourceId()));
     }
 
     private boolean hasTopic(ActivityEvent record, String topic) {
@@ -1581,6 +1593,19 @@ public class ActivitiesEventsService {
             return true;
         }
         return viewerUserId.equals(normalizeId(record.getCreatorUserId()));
+    }
+
+    private String resolveViewerScopedEventType(ActivityEvent record, String viewerUserId) {
+        if (record == null) {
+            return TYPE_EVENTS;
+        }
+        if (Boolean.TRUE.equals(record.getIsInvitation())) {
+            return TYPE_INVITATIONS;
+        }
+        if (Boolean.TRUE.equals(record.getIsHosting()) || isViewerAdmin(record, viewerUserId)) {
+            return TYPE_HOSTING;
+        }
+        return TYPE_EVENTS;
     }
 
     private ActivityEvent findPreferredEventRecord(String sourceId) {
@@ -2425,16 +2450,6 @@ public class ActivitiesEventsService {
             case "yearly", "annual", "annually" -> "Yearly";
             default -> "One-time";
         };
-    }
-
-    private int safeSortableInt(long value) {
-        if (value > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        if (value < Integer.MIN_VALUE) {
-            return Integer.MIN_VALUE;
-        }
-        return (int) value;
     }
 
     private String resolveCreatorName(String requestedName, Users creator) {
