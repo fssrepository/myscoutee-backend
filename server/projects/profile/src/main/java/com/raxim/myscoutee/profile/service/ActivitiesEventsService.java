@@ -413,7 +413,7 @@ public class ActivitiesEventsService {
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
         }
-        boolean accepted = isConfirmedBooking(request);
+        boolean accepted = isConfirmedBooking(request, preferred);
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
@@ -443,11 +443,14 @@ public class ActivitiesEventsService {
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
     }
 
-    private boolean isConfirmedBooking(EventActionRequestDto request) {
+    private boolean isConfirmedBooking(EventActionRequestDto request, ActivityEvent preferred) {
         String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId)) {
             // A checkout session means the booking flow started, but we keep the
             // membership pending until the server confirms the join separately.
+            return false;
+        }
+        if (!Boolean.TRUE.equals(preferred == null ? null : preferred.getTicketing())) {
             return false;
         }
         return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed());

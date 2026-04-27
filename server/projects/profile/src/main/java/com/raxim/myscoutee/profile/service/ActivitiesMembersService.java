@@ -539,7 +539,10 @@ public class ActivitiesMembersService {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
 
-        List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId, eventRecord);
+        List<ActivityMember> existing = mergeDerivedOwnerMembers(
+                OWNER_TYPE_EVENT,
+                normalizedEventId,
+                loadStoredOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId));
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
         for (ActivityMember member : existing) {
             if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
@@ -548,6 +551,12 @@ public class ActivitiesMembersService {
         }
 
         ActivityMember current = existingByUserId.get(viewerUserId);
+        if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
+            return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+        if (isDerivedMember(current)) {
+            current = null;
+        }
         if (current == null) {
             current = new ActivityMember();
             current.setId(new ObjectId().toHexString());
@@ -708,9 +717,7 @@ public class ActivitiesMembersService {
     }
 
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId, ActivityEvent fallbackEventRecord) {
-        List<ActivityMember> stored = activityMembersRepository.findByOwnerTypeAndOwnerId(ownerType, ownerId).stream()
-                .filter(Objects::nonNull)
-                .toList();
+        List<ActivityMember> stored = loadStoredOwnerDocuments(ownerType, ownerId);
         if (!stored.isEmpty()) {
             return stored;
         }
@@ -740,6 +747,12 @@ public class ActivitiesMembersService {
             return bootstrapped;
         }
         return List.of();
+    }
+
+    private List<ActivityMember> loadStoredOwnerDocuments(String ownerType, String ownerId) {
+        return activityMembersRepository.findByOwnerTypeAndOwnerId(ownerType, ownerId).stream()
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     private List<ActivityMember> mergeDerivedOwnerMembers(String ownerType, String ownerId, List<ActivityMember> members) {
@@ -805,6 +818,15 @@ public class ActivitiesMembersService {
 
         ActivityMember existing = membersByUserId.get(normalizedUserId);
         if (existing != null) {
+            String existingStatus = normalizeStatus(existing.getStatus());
+            if (STATUS_PENDING.equals(existingStatus)) {
+                existing.setActionAtIso(normalizeDateTime(existing.getActionAtIso(), actionAtIso));
+                existing.setMetAtIso(normalizeDateTime(existing.getMetAtIso(), existing.getActionAtIso()));
+                if (!StringUtils.hasText(safeText(existing.getMetWhere()))) {
+                    existing.setMetWhere(metWhere);
+                }
+                return;
+            }
             existing.setRole(role);
             existing.setStatus(STATUS_ACCEPTED);
             existing.setPendingSource(null);
@@ -838,6 +860,14 @@ public class ActivitiesMembersService {
         derived.setUpdatedDate(actionAtIso);
         derived.setUpdatedUser(StringUtils.hasText(createdByUserId) ? createdByUserId : normalizedUserId);
         membersByUserId.put(normalizedUserId, derived);
+    }
+
+    private boolean isDerivedMember(ActivityMember member) {
+        if (member == null) {
+            return false;
+        }
+        return safeText(member.getId()).startsWith("derived:")
+                || safeText(member.getSyncKey()).startsWith("derived:");
     }
 
     private Set<String> resolveEventAdminUserIds(ActivityEvent eventRecord) {
