@@ -1,1 +1,2 @@
 Never ever touch artificial delay.
+Never ever seed or bootstrap demo data from popup open, popup constructor, or popup lifecycle code. Demo seeding belongs only to bootstrap/session-init/services/repositories.

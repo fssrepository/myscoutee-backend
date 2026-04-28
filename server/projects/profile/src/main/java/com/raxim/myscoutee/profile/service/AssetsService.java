@@ -129,8 +129,10 @@ public class AssetsService {
                 .sorted(Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso())))
                 .toList();
 
-        List<EventRecordDto> visible = new ArrayList<>(ordered);
-        if (upcoming) {
+        List<EventRecordDto> visible = new ArrayList<>(ordered.stream()
+                .filter(item -> matchesTicketOrder(item, upcoming))
+                .toList());
+        if (!upcoming) {
             java.util.Collections.reverse(visible);
         }
 
@@ -1311,6 +1313,23 @@ public class AssetsService {
     private String normalizeDateTime(String value, String fallback) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
+    }
+
+    private boolean matchesTicketOrder(EventRecordDto item, boolean upcoming) {
+        long endAtMs = resolveTicketEndAtMs(item);
+        boolean past = endAtMs < System.currentTimeMillis();
+        return upcoming ? !past : past;
+    }
+
+    private long resolveTicketEndAtMs(EventRecordDto item) {
+        if (item == null) {
+            return Long.MIN_VALUE;
+        }
+        long endAtMs = toSortableDate(item.endAtIso());
+        if (endAtMs != Long.MIN_VALUE) {
+            return endAtMs;
+        }
+        return toSortableDate(item.startAtIso());
     }
 
     private long toSortableDate(String value) {

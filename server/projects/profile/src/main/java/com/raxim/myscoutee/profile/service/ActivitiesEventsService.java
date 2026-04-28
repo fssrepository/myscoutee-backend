@@ -288,6 +288,7 @@ public class ActivitiesEventsService {
             List<EventProjection> sorted = queryFilteredRecords(viewer, request).stream()
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
+                    .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
                     .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                     .toList();
 
@@ -665,6 +666,7 @@ public class ActivitiesEventsService {
         List<EventProjection> sorted = queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
                 .map(record -> toProjection(record, viewer))
                 .filter(Objects::nonNull)
+                .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
                 .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                 .toList();
 
