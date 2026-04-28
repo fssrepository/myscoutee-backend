@@ -416,6 +416,7 @@ public class ActivitiesMembersService {
             activityMembersRepository.saveAll(membersToSave);
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            clearHandledInvitationRecords(ownerId, nextDocuments);
             cascadeRemovedEventMembersFromAssignedAssets(ownerId, removedVisibleMembers, actorUserId, nowIso);
             Set<String> removedManagedAssetIds = activitiesResourcesService
                     .removeManagedResourcesForRemovedEventMembers(ownerId, removedVisibleMembers, actorUserId, nowIso);
@@ -524,6 +525,7 @@ public class ActivitiesMembersService {
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
         }
+        clearHandledInvitationRecords(ownerId, nextDocuments);
         eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
         refreshEmbeddedEventMembers(ownerId);
     }
@@ -580,6 +582,7 @@ public class ActivitiesMembersService {
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
+            clearHandledInvitationRecords(normalizedEventId, List.of(current));
             refreshEmbeddedEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
@@ -1456,6 +1459,7 @@ public class ActivitiesMembersService {
                 status,
                 pendingSource,
                 requestKind,
+                normalizeId(member.getInvitedByUserId()),
                 StringUtils.hasText(viewerUserId) && viewerUserId.equals(normalizeId(member.getInvitedByUserId())),
                 normalizeDateTime(member.getMetAtIso(), actionAtIso),
                 actionAtIso,
@@ -1639,16 +1643,72 @@ public class ActivitiesMembersService {
     }
 
     private String resolveInvitedByUserId(ActivityMemberEntryDto entry, ActivityMember current, String actorUserId) {
-        if (entry != null && Boolean.TRUE.equals(entry.invitedByActiveUser()) && StringUtils.hasText(actorUserId)) {
+        if (entry == null) {
+            return current != null && StringUtils.hasText(current.getInvitedByUserId())
+                    ? current.getInvitedByUserId().trim()
+                    : null;
+        }
+        String status = normalizeStatus(entry.status());
+        String pendingSource = resolvePendingSource(entry.pendingSource(), status);
+        String requestKind = resolveRequestKind(entry.requestKind(), status, pendingSource);
+        if (!STATUS_PENDING.equals(status) || !"invite".equals(requestKind)) {
+            return null;
+        }
+        String explicitInvitedByUserId = normalizeId(entry.invitedByUserId());
+        if (StringUtils.hasText(explicitInvitedByUserId)) {
+            return explicitInvitedByUserId;
+        }
+        if (Boolean.TRUE.equals(entry.invitedByActiveUser()) && StringUtils.hasText(actorUserId)) {
             return actorUserId;
         }
         if (current != null && StringUtils.hasText(current.getInvitedByUserId())) {
             return current.getInvitedByUserId().trim();
         }
-        if (entry != null && STATUS_PENDING.equals(normalizeStatus(entry.status())) && "invite".equals(resolveRequestKind(entry.requestKind(), normalizeStatus(entry.status()), resolvePendingSource(entry.pendingSource(), normalizeStatus(entry.status()))))) {
-            return actorUserId;
+        return StringUtils.hasText(actorUserId) ? actorUserId : null;
+    }
+
+    private void clearHandledInvitationRecords(String eventId, Collection<ActivityMember> members) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId) || members == null || members.isEmpty()) {
+            return;
         }
-        return null;
+        List<ActivityEvent> invitationRecordsToDelete = new ArrayList<>();
+        for (ActivityMember member : members) {
+            if (!shouldClearInvitationRecord(member)) {
+                continue;
+            }
+            String memberUserId = normalizeId(member.getUserId());
+            if (!StringUtils.hasText(memberUserId)) {
+                continue;
+            }
+            for (ActivityEvent record : activityEventsRepository.findByOwnerUserIdAndSourceId(memberUserId, normalizedEventId)) {
+                if (record == null) {
+                    continue;
+                }
+                if (Boolean.TRUE.equals(record.getIsInvitation()) || "invitations".equals(safeText(record.getType()))) {
+                    invitationRecordsToDelete.add(record);
+                }
+            }
+        }
+        if (!invitationRecordsToDelete.isEmpty()) {
+            activityEventsRepository.deleteAll(invitationRecordsToDelete);
+        }
+    }
+
+    private boolean shouldClearInvitationRecord(ActivityMember member) {
+        if (member == null) {
+            return false;
+        }
+        String status = normalizeStatus(member.getStatus());
+        if (STATUS_ACCEPTED.equals(status)) {
+            return true;
+        }
+        if (!STATUS_PENDING.equals(status)) {
+            return false;
+        }
+        String pendingSource = resolvePendingSource(member.getPendingSource(), status);
+        String requestKind = resolveRequestKind(member.getRequestKind(), status, pendingSource);
+        return "join".equals(requestKind);
     }
 
     private String resolveCreatedUser(ActivityMember member, String actorUserId) {
