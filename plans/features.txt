@@ -9,12 +9,6 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-1) the pending member counter badge is missing
-from the event explore cards
-2) open event just does mean that you can't see the members of the event, 
-however you can request join or book based on the rules 
-(pls. show the menu item accordingly on the event explore card)
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

@@ -75,6 +75,7 @@ public class HomeUserProfileService {
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
     private static final String STATUS_ACCEPTED = "accepted";
+    private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
@@ -369,6 +370,27 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Unable to submit report.");
         }
 
+        String targetUserId = normalizeId(request.targetUserId());
+        String eventId = normalizeId(request.eventId());
+        if (!StringUtils.hasText(targetUserId)
+                || !StringUtils.hasText(eventId)
+                || userId.equals(targetUserId)) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        }
+
+        ActivityEvent eventRecord = resolvePreferredEventRecord(eventId);
+        ActivityMember reporterMembership = resolveAcceptedReportMember(eventId, userId, eventRecord);
+        ActivityMember targetMembership = resolveAcceptedReportMember(eventId, targetUserId, eventRecord);
+        if (reporterMembership == null || targetMembership == null) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        }
+
+        String requestMemberEntryId = normalizeId(request.memberEntryId());
+        String resolvedTargetMemberEntryId = resolveActivityMemberEntryId(targetMembership);
+        if (StringUtils.hasText(requestMemberEntryId) && !requestMemberEntryId.equals(resolvedTargetMemberEntryId)) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        }
+
         String nowIso = Instant.now().toString();
         UserReportSubmission document = new UserReportSubmission();
         document.setId(new ObjectId().toHexString());
@@ -377,6 +399,15 @@ public class HomeUserProfileService {
         document.setHandle(safeText(request.handle()));
         document.setReason(safeText(request.reason()));
         document.setDetails(safeText(request.details()));
+        document.setTargetUserId(targetUserId);
+        document.setMemberEntryId(resolvedTargetMemberEntryId);
+        document.setEventId(eventId);
+        document.setEventTitle(normalizeOptionalText(firstNonBlank(
+                eventRecord == null ? null : eventRecord.getTitle(),
+                request.eventTitle())));
+        document.setEventStartAtIso(normalizeOptionalText(firstNonBlank(
+                eventRecord == null ? null : eventRecord.getStartAtIso(),
+                request.eventStartAtIso())));
         document.setCreatedDate(nowIso);
         document.setCreatedUser(userId);
         document.setUpdatedDate(nowIso);
@@ -1190,6 +1221,92 @@ public class HomeUserProfileService {
                 .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
                 .filter(record -> !isHostingRecordForUser(record, userId))
                 .count());
+    }
+
+    private ActivityEvent resolvePreferredEventRecord(String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return null;
+        }
+        return preferredEventRecordsBySourceId(activityEventsRepository.findBySourceId(normalizedEventId)).get(normalizedEventId);
+    }
+
+    private ActivityMember resolveAcceptedReportMember(String eventId, String userId, ActivityEvent eventRecord) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
+            return null;
+        }
+
+        ActivityMember storedMember = activityMembersRepository
+                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedEventId, normalizedUserId)
+                .orElse(null);
+        if (storedMember != null) {
+            return STATUS_ACCEPTED.equals(normalizeMemberStatus(storedMember.getStatus()))
+                    ? storedMember
+                    : null;
+        }
+
+        if (!isDerivedAcceptedEventAdmin(eventRecord, normalizedUserId)) {
+            return null;
+        }
+
+        ActivityMember derivedMember = new ActivityMember();
+        String derivedId = "derived:" + normalizedEventId + ":" + normalizedUserId;
+        String actionAtIso = firstNonBlank(
+                eventRecord == null ? null : eventRecord.getUpdatedDate(),
+                eventRecord == null ? null : eventRecord.getCreatedDate(),
+                eventRecord == null ? null : eventRecord.getStartAtIso(),
+                Instant.EPOCH.toString());
+        derivedMember.setId(derivedId);
+        derivedMember.setSyncKey(derivedId);
+        derivedMember.setOwnerType(OWNER_TYPE_EVENT);
+        derivedMember.setOwnerId(normalizedEventId);
+        derivedMember.setUserId(normalizedUserId);
+        derivedMember.setRole(normalizedUserId.equals(normalizeId(eventRecord == null ? null : eventRecord.getCreatorUserId()))
+                ? "Admin"
+                : "Manager");
+        derivedMember.setStatus(STATUS_ACCEPTED);
+        derivedMember.setActionAtIso(actionAtIso);
+        derivedMember.setMetAtIso(actionAtIso);
+        return derivedMember;
+    }
+
+    private boolean isDerivedAcceptedEventAdmin(ActivityEvent eventRecord, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (eventRecord == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
+            return true;
+        }
+        return eventRecord.getAdmins().stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .anyMatch(normalizedUserId::equals);
+    }
+
+    private String resolveActivityMemberEntryId(ActivityMember member) {
+        if (member == null) {
+            return null;
+        }
+        String syncKey = normalizeId(member.getSyncKey());
+        if (StringUtils.hasText(syncKey)) {
+            return syncKey;
+        }
+        String id = normalizeId(member.getId());
+        return StringUtils.hasText(id) ? id : null;
+    }
+
+    private String normalizeMemberStatus(String status) {
+        String normalizedStatus = safeText(status);
+        if (STATUS_PENDING.equals(normalizedStatus)) {
+            return STATUS_PENDING;
+        }
+        if (STATUS_DELETED.equals(normalizedStatus)) {
+            return STATUS_DELETED;
+        }
+        return STATUS_ACCEPTED;
     }
 
     private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {

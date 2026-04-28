@@ -192,7 +192,12 @@ public final class AuthDtos {
             String userId,
             String handle,
             String reason,
-            String details) {
+            String details,
+            String targetUserId,
+            String memberEntryId,
+            String eventId,
+            String eventTitle,
+            String eventStartAtIso) {
     }
 
     public record UserLogoutRequestDto(

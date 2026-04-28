@@ -21,6 +21,11 @@ public class UserReportSubmission {
     private String handle;
     private String reason;
     private String details;
+    private String targetUserId;
+    private String memberEntryId;
+    private String eventId;
+    private String eventTitle;
+    private String eventStartAtIso;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -76,6 +81,46 @@ public class UserReportSubmission {
 
     public String getCreatedDate() {
         return createdDate;
+    }
+
+    public String getTargetUserId() {
+        return targetUserId;
+    }
+
+    public void setTargetUserId(String targetUserId) {
+        this.targetUserId = targetUserId;
+    }
+
+    public String getMemberEntryId() {
+        return memberEntryId;
+    }
+
+    public void setMemberEntryId(String memberEntryId) {
+        this.memberEntryId = memberEntryId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventTitle() {
+        return eventTitle;
+    }
+
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
+    }
+
+    public String getEventStartAtIso() {
+        return eventStartAtIso;
+    }
+
+    public void setEventStartAtIso(String eventStartAtIso) {
+        this.eventStartAtIso = eventStartAtIso;
     }
 
     public void setCreatedDate(String createdDate) {
