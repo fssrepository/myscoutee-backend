@@ -176,6 +176,7 @@ public final class SharedDtos {
             String status,
             String pendingSource,
             String requestKind,
+            String invitedByUserId,
             Boolean invitedByActiveUser,
             String metAtIso,
             String actionAtIso,

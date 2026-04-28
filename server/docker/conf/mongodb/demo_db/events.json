@@ -54,8 +54,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 1,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#SelfDevelopment",
       "#Biohacking",
@@ -84607,9 +84607,14 @@
     "updatedDate": "2026-05-16T18:30:00.000Z",
     "updatedUser": "23820c1e76d3bd843f61c799",
     "acceptedMemberUserIds": [
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "1b1c70be2349b3359a8f6f94",
+      "b29df68956f3fe15e04558de",
+      "9f3b3f085e23af6c89dbc432"
     ],
-    "pendingMemberUserIds": []
+    "pendingMemberUserIds": [
+      "178e8d0cbe164fa3fede5884"
+    ]
   },
   {
     "_id": {

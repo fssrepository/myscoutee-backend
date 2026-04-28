@@ -43,7 +43,8 @@ public final class EventsDtos {
             List<String> optionalSubEventIds,
             List<EventCheckoutAssetSelectionDto> assetSelections,
             List<String> acceptedPolicyIds,
-            String paymentSessionId) {
+            String paymentSessionId,
+            Boolean bookingConfirmed) {
     }
 
     public record EventFeedbackAnswerSubmitDto(
@@ -75,8 +76,27 @@ public final class EventsDtos {
             String eventId,
             Boolean removed,
             String submittedAtIso,
+            String removedAtIso,
             String organizerNote,
             Map<String, EventFeedbackAnswerDto> answersByCardId) {
+    }
+
+    public record EventFeedbackReceivedEntryDto(
+            String viewerUserId,
+            String viewerName,
+            String viewerInitials,
+            String viewerGender,
+            String viewerImageUrl,
+            String eventId,
+            String submittedAtIso,
+            String updatedAtIso,
+            String organizerNote,
+            List<EventFeedbackAnswerDto> answers) {
+    }
+
+    public record EventFeedbackReceivedEventDto(
+            String eventId,
+            List<EventFeedbackReceivedEntryDto> entries) {
     }
 
     public record EventFeedbackSubmitRequestDto(

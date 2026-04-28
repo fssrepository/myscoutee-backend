@@ -16,6 +16,8 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
 
     List<ActivityEvent> findByOwnerUserId(String ownerUserId);
 
+    List<ActivityEvent> findByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
+
     List<ActivityEvent> findBySourceId(String sourceId);
 
     List<ActivityEvent> findBySourceIdIn(Collection<String> sourceIds);

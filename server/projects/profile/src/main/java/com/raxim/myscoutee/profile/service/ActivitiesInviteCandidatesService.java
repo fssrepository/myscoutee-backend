@@ -111,6 +111,7 @@ public class ActivitiesInviteCandidatesService {
                 "pending",
                 "admin",
                 "invite",
+                null,
                 true,
                 signal.metAtIso(),
                 signal.metAtIso(),

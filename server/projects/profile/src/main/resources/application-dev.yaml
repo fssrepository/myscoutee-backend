@@ -41,6 +41,22 @@ fcm:
   url: "https://fcm.googleapis.com/fcm/send"
   apiKey: ${FCM_API_KEY:}
 
+email:
+  enabled: ${EMAIL_ENABLED:false}
+  provider: ${EMAIL_PROVIDER:noop}
+  from-email: ${EMAIL_FROM_EMAIL:no-reply@myscoutee.local}
+  from-name: ${EMAIL_FROM_NAME:MyScoutee}
+  reply-to: ${EMAIL_REPLY_TO:support@myscoutee.local}
+  base-url: ${EMAIL_BASE_URL:http://localhost:4200}
+  sendgrid:
+    api-key: ${EMAIL_SENDGRID_API_KEY:}
+    endpoint: ${EMAIL_SENDGRID_ENDPOINT:https://api.sendgrid.com/v3/mail/send}
+  promotions:
+    enabled: ${EMAIL_PROMOTIONS_ENABLED:true}
+    planning-delay-ms: ${EMAIL_PROMOTIONS_PLANNING_DELAY_MS:3600000}
+    delivery-delay-ms: ${EMAIL_PROMOTIONS_DELIVERY_DELAY_MS:60000}
+    delivery-batch-size: ${EMAIL_PROMOTIONS_DELIVERY_BATCH_SIZE:25}
+
 spring:
   config:
     import: optional:file:./secrets/application-dev-secrets.yaml

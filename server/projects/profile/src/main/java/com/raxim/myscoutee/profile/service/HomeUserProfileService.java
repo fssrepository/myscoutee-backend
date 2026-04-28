@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
@@ -53,6 +54,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionRespon
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
@@ -68,6 +70,13 @@ public class HomeUserProfileService {
     private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
+    private static final String OWNER_TYPE_EVENT = "event";
+    private static final String TYPE_EVENTS = "events";
+    private static final String TYPE_HOSTING = "hosting";
+    private static final String TYPE_INVITATIONS = "invitations";
+    private static final String STATUS_ACCEPTED = "accepted";
+    private static final String STATUS_PENDING = "pending";
+    private static final String STATUS_DELETED = "deleted";
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -143,6 +152,7 @@ public class HomeUserProfileService {
     private final UserRatesRepository userRatesRepository;
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
+    private final ActivityMembersRepository activityMembersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
@@ -158,6 +168,7 @@ public class HomeUserProfileService {
             UserRatesRepository userRatesRepository,
             ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
+            ActivityMembersRepository activityMembersRepository,
             EventParticipationTicketService eventParticipationTicketService,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
@@ -171,6 +182,7 @@ public class HomeUserProfileService {
         this.userRatesRepository = userRatesRepository;
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.activityMembersRepository = activityMembersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
@@ -187,7 +199,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId)));
+        Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
         if (user == null) {
             return null;
         }
@@ -233,7 +245,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId)));
+        Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
         if (user == null) {
             return null;
         }
@@ -303,7 +315,7 @@ public class HomeUserProfileService {
 
         Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
-        return toUserDto(syncComputedUserPartition(syncComputedUserActivities(saved)));
+        return toUserDto(syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved))));
     }
 
     public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
@@ -358,6 +370,27 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Unable to submit report.");
         }
 
+        String targetUserId = normalizeId(request.targetUserId());
+        String eventId = normalizeId(request.eventId());
+        if (!StringUtils.hasText(targetUserId)
+                || !StringUtils.hasText(eventId)
+                || userId.equals(targetUserId)) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        }
+
+        ActivityEvent eventRecord = resolvePreferredEventRecord(eventId);
+        ActivityMember reporterMembership = resolveAcceptedReportMember(eventId, userId, eventRecord);
+        ActivityMember targetMembership = resolveAcceptedReportMember(eventId, targetUserId, eventRecord);
+        if (reporterMembership == null || targetMembership == null) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        }
+
+        String requestMemberEntryId = normalizeId(request.memberEntryId());
+        String resolvedTargetMemberEntryId = resolveActivityMemberEntryId(targetMembership);
+        if (StringUtils.hasText(requestMemberEntryId) && !requestMemberEntryId.equals(resolvedTargetMemberEntryId)) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        }
+
         String nowIso = Instant.now().toString();
         UserReportSubmission document = new UserReportSubmission();
         document.setId(new ObjectId().toHexString());
@@ -366,6 +399,15 @@ public class HomeUserProfileService {
         document.setHandle(safeText(request.handle()));
         document.setReason(safeText(request.reason()));
         document.setDetails(safeText(request.details()));
+        document.setTargetUserId(targetUserId);
+        document.setMemberEntryId(resolvedTargetMemberEntryId);
+        document.setEventId(eventId);
+        document.setEventTitle(normalizeOptionalText(firstNonBlank(
+                eventRecord == null ? null : eventRecord.getTitle(),
+                request.eventTitle())));
+        document.setEventStartAtIso(normalizeOptionalText(firstNonBlank(
+                eventRecord == null ? null : eventRecord.getStartAtIso(),
+                request.eventStartAtIso())));
         document.setCreatedDate(nowIso);
         document.setCreatedUser(userId);
         document.setUpdatedDate(nowIso);
@@ -953,6 +995,7 @@ public class HomeUserProfileService {
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
         document.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey() : UUID.randomUUID().toString());
         document.setUserId(normalizeId(user.id()));
+        document.setEmail(resolveStoredEmail(normalizeId(user.id()), current == null ? null : current.getEmail()));
         document.setName(nullToEmpty(user.name()));
         document.setAge(normalizeCount(user.age()));
         document.setBirthday(nullToEmpty(user.birthday()));
@@ -988,6 +1031,18 @@ public class HomeUserProfileService {
         document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
+    }
+
+    private Users syncCurrentUserEmail(Users user) {
+        if (user == null) {
+            return null;
+        }
+        String resolvedEmail = resolveAuthenticatedEmailForUser(normalizeId(user.getId()));
+        if (!StringUtils.hasText(resolvedEmail) || Objects.equals(safeText(user.getEmail()), resolvedEmail)) {
+            return user;
+        }
+        user.setEmail(resolvedEmail);
+        return usersRepository.save(user);
     }
 
     private Users syncComputedUserActivities(Users user) {
@@ -1042,6 +1097,32 @@ public class HomeUserProfileService {
         return isSeedLikeHungaryUser(partitionOwner) ? DEFAULT_SEED_PARTITION_KEY : null;
     }
 
+    private String resolveStoredEmail(String userId, String fallbackEmail) {
+        String resolvedPrincipalEmail = resolveAuthenticatedEmailForUser(userId);
+        if (StringUtils.hasText(resolvedPrincipalEmail)) {
+            return resolvedPrincipalEmail;
+        }
+        return safeText(fallbackEmail);
+    }
+
+    private String resolveAuthenticatedEmailForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return "";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)) {
+            return "";
+        }
+        String principalUserId = firebasePrincipal.getUser() != null
+                ? normalizeId(firebasePrincipal.getUser().getId())
+                : normalizeId(firebasePrincipal.getUserId());
+        if (!normalizedUserId.equals(principalUserId)) {
+            return "";
+        }
+        return safeText(firebasePrincipal.getEmail());
+    }
+
     private boolean isSeedLikeHungaryUser(Users user) {
         if (user == null) {
             return false;
@@ -1057,12 +1138,13 @@ public class HomeUserProfileService {
 
     private Users.UserActivitiesRecord buildComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
         List<ActivityEvent> eventRecords = queryEventRecords(userId);
+        EventMenuCounts eventMenuCounts = resolveEventMenuCounts(userId, eventRecords);
         return new Users.UserActivitiesRecord(
                 queryGameStackUserRecords(userId).size(),
                 countUnreadChats(userId),
-                countEventsByType(eventRecords, "invitations"),
-                countEventsByType(eventRecords, "events"),
-                countEventsByType(eventRecords, "hosting"),
+                eventMenuCounts.invitations(),
+                eventMenuCounts.activeEvents(),
+                eventMenuCounts.hosting(),
                 countTicketRecords(userId),
                 countPendingEventFeedback(userId, eventRecords));
     }
@@ -1086,11 +1168,195 @@ public class HomeUserProfileService {
                 .sum();
     }
 
-    private int countEventsByType(List<ActivityEvent> eventRecords, String type) {
-        return Math.toIntExact(eventRecords.stream()
-                .filter(record -> type.equals(safeText(record.getType())))
+    private EventMenuCounts resolveEventMenuCounts(String userId, List<ActivityEvent> directOwnerRecords) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new EventMenuCounts(0, 0, 0);
+        }
+
+        Map<String, ActivityEvent> preferredDirectRecordsBySourceId = preferredEventRecordsBySourceId(directOwnerRecords);
+        int invitations = Math.toIntExact(preferredDirectRecordsBySourceId.values().stream()
+                .filter(Objects::nonNull)
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> Boolean.TRUE.equals(record.getIsInvitation()) || TYPE_INVITATIONS.equals(safeText(record.getType())))
                 .count());
+        int hosting = Math.toIntExact(preferredDirectRecordsBySourceId.values().stream()
+                .filter(Objects::nonNull)
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> isHostingRecordForUser(record, normalizedUserId))
+                .count());
+        int activeEvents = countAcceptedMembershipEvents(normalizedUserId);
+        return new EventMenuCounts(invitations, activeEvents, hosting);
+    }
+
+    private int countAcceptedMembershipEvents(String userId) {
+        List<ActivityMember> acceptedMemberRecords = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !STATUS_DELETED.equals(safeText(member.getStatus())))
+                .filter(member -> STATUS_ACCEPTED.equals(safeText(member.getStatus())))
+                .toList();
+        if (acceptedMemberRecords.isEmpty()) {
+            return 0;
+        }
+
+        Set<String> sourceIds = acceptedMemberRecords.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (sourceIds.isEmpty()) {
+            return 0;
+        }
+
+        Map<String, ActivityEvent> preferredRecordsBySourceId = preferredEventRecordsBySourceId(
+                activityEventsRepository.findBySourceIdIn(sourceIds));
+        return Math.toIntExact(acceptedMemberRecords.stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .map(preferredRecordsBySourceId::get)
+                .filter(Objects::nonNull)
+                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
+                .filter(record -> !isHostingRecordForUser(record, userId))
+                .count());
+    }
+
+    private ActivityEvent resolvePreferredEventRecord(String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return null;
+        }
+        return preferredEventRecordsBySourceId(activityEventsRepository.findBySourceId(normalizedEventId)).get(normalizedEventId);
+    }
+
+    private ActivityMember resolveAcceptedReportMember(String eventId, String userId, ActivityEvent eventRecord) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
+            return null;
+        }
+
+        ActivityMember storedMember = activityMembersRepository
+                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedEventId, normalizedUserId)
+                .orElse(null);
+        if (storedMember != null) {
+            return STATUS_ACCEPTED.equals(normalizeMemberStatus(storedMember.getStatus()))
+                    ? storedMember
+                    : null;
+        }
+
+        if (!isDerivedAcceptedEventAdmin(eventRecord, normalizedUserId)) {
+            return null;
+        }
+
+        ActivityMember derivedMember = new ActivityMember();
+        String derivedId = "derived:" + normalizedEventId + ":" + normalizedUserId;
+        String actionAtIso = firstNonBlank(
+                eventRecord == null ? null : eventRecord.getUpdatedDate(),
+                eventRecord == null ? null : eventRecord.getCreatedDate(),
+                eventRecord == null ? null : eventRecord.getStartAtIso(),
+                Instant.EPOCH.toString());
+        derivedMember.setId(derivedId);
+        derivedMember.setSyncKey(derivedId);
+        derivedMember.setOwnerType(OWNER_TYPE_EVENT);
+        derivedMember.setOwnerId(normalizedEventId);
+        derivedMember.setUserId(normalizedUserId);
+        derivedMember.setRole(normalizedUserId.equals(normalizeId(eventRecord == null ? null : eventRecord.getCreatorUserId()))
+                ? "Admin"
+                : "Manager");
+        derivedMember.setStatus(STATUS_ACCEPTED);
+        derivedMember.setActionAtIso(actionAtIso);
+        derivedMember.setMetAtIso(actionAtIso);
+        return derivedMember;
+    }
+
+    private boolean isDerivedAcceptedEventAdmin(ActivityEvent eventRecord, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (eventRecord == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
+            return true;
+        }
+        return eventRecord.getAdmins().stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .anyMatch(normalizedUserId::equals);
+    }
+
+    private String resolveActivityMemberEntryId(ActivityMember member) {
+        if (member == null) {
+            return null;
+        }
+        String syncKey = normalizeId(member.getSyncKey());
+        if (StringUtils.hasText(syncKey)) {
+            return syncKey;
+        }
+        String id = normalizeId(member.getId());
+        return StringUtils.hasText(id) ? id : null;
+    }
+
+    private String normalizeMemberStatus(String status) {
+        String normalizedStatus = safeText(status);
+        if (STATUS_PENDING.equals(normalizedStatus)) {
+            return STATUS_PENDING;
+        }
+        if (STATUS_DELETED.equals(normalizedStatus)) {
+            return STATUS_DELETED;
+        }
+        return STATUS_ACCEPTED;
+    }
+
+    private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {
+        LinkedHashMap<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            if (record == null) {
+                continue;
+            }
+            String sourceId = normalizeId(record.getSourceId());
+            if (!StringUtils.hasText(sourceId)) {
+                continue;
+            }
+            ActivityEvent current = preferredBySourceId.get(sourceId);
+            if (current == null || shouldPreferEventRecord(record, current)) {
+                preferredBySourceId.put(sourceId, record);
+            }
+        }
+        return preferredBySourceId;
+    }
+
+    private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
+        if (Boolean.TRUE.equals(next.getIsInvitation()) && !Boolean.TRUE.equals(current.getIsInvitation())) {
+            return false;
+        }
+        if (!Boolean.TRUE.equals(next.getIsInvitation()) && Boolean.TRUE.equals(current.getIsInvitation())) {
+            return true;
+        }
+        if (Boolean.TRUE.equals(next.getIsHosting()) && !Boolean.TRUE.equals(current.getIsHosting())) {
+            return true;
+        }
+        if (!Boolean.TRUE.equals(next.getIsHosting()) && Boolean.TRUE.equals(current.getIsHosting())) {
+            return false;
+        }
+        return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
+    }
+
+    private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
+        if (record == null || !StringUtils.hasText(userId) || Boolean.TRUE.equals(record.getIsTrashed())) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(record.getIsHosting()) || TYPE_HOSTING.equals(safeText(record.getType()))) {
+            return true;
+        }
+        if (userId.equals(normalizeId(record.getCreatorUserId()))) {
+            return true;
+        }
+        return record.getAdmins().stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .anyMatch(userId::equals);
     }
 
     private int countTicketRecords(String userId) {
@@ -1801,5 +2067,11 @@ public class HomeUserProfileService {
     private record LegacyTraitBadgeSignal(
             String traitId,
             Integer percent) {
+    }
+
+    private record EventMenuCounts(
+            int invitations,
+            int activeEvents,
+            int hosting) {
     }
 }
