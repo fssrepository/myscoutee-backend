@@ -187,6 +187,7 @@ public class ActivityChat {
         private String sentAtIso;
         private Boolean mine;
         private List<ChatReadAvatarRecord> readBy = new ArrayList<>();
+        private List<ChatMessageAttachmentRecord> attachments = new ArrayList<>();
 
         public String getId() {
             return id;
@@ -259,6 +260,39 @@ public class ActivityChat {
         public void setReadBy(List<ChatReadAvatarRecord> readBy) {
             this.readBy = readBy == null ? new ArrayList<>() : readBy;
         }
+
+        public List<ChatMessageAttachmentRecord> getAttachments() {
+            return attachments;
+        }
+
+        public void setAttachments(List<ChatMessageAttachmentRecord> attachments) {
+            this.attachments = attachments == null ? new ArrayList<>() : attachments;
+        }
+    }
+
+    public static class ChatMessageAttachmentRecord {
+        private String id;
+        private String type;
+        private String title;
+        private String url;
+        private String previewUrl;
+        private String mimeType;
+        private Long sizeBytes;
+
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        public String getType() { return type; }
+        public void setType(String type) { this.type = type; }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getUrl() { return url; }
+        public void setUrl(String url) { this.url = url; }
+        public String getPreviewUrl() { return previewUrl; }
+        public void setPreviewUrl(String previewUrl) { this.previewUrl = previewUrl; }
+        public String getMimeType() { return mimeType; }
+        public void setMimeType(String mimeType) { this.mimeType = mimeType; }
+        public Long getSizeBytes() { return sizeBytes; }
+        public void setSizeBytes(Long sizeBytes) { this.sizeBytes = sizeBytes; }
     }
 
     public static class ChatAvatarRecord {

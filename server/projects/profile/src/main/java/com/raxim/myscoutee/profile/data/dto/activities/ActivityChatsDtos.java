@@ -45,7 +45,18 @@ public final class ActivityChatsDtos {
             String text,
             String sentAtIso,
             Boolean mine,
-            List<ChatReadAvatarDto> readBy) {
+            List<ChatReadAvatarDto> readBy,
+            List<ChatMessageAttachmentDto> attachments) {
+    }
+
+    public record ChatMessageAttachmentDto(
+            String id,
+            String type,
+            String title,
+            String url,
+            String previewUrl,
+            String mimeType,
+            Long sizeBytes) {
     }
 
     public record ChatTypingDto(
@@ -73,13 +84,15 @@ public final class ActivityChatsDtos {
     }
 
     public record ChatPostMessageRequestDto(
-            String text) {
+            String text,
+            List<ChatMessageAttachmentDto> attachments) {
     }
 
     public record ChatSocketRequestDto(
             String type,
             String clientId,
             String text,
+            List<ChatMessageAttachmentDto> attachments,
             Boolean typing,
             List<String> messageIds) {
     }

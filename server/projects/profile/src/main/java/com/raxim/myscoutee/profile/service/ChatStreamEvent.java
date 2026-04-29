@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageAttachmentDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadReceiptDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
@@ -21,6 +22,7 @@ public record ChatStreamEvent(
         String text,
         String sentAtIso,
         List<ChatReadAvatarDto> readBy,
+        List<ChatMessageAttachmentDto> attachments,
         Boolean typing,
         List<String> messageIds,
         String readAtIso) {
@@ -35,7 +37,8 @@ public record ChatStreamEvent(
             String senderGender,
             String text,
             String sentAtIso,
-            List<ChatReadAvatarDto> readBy) {
+            List<ChatReadAvatarDto> readBy,
+            List<ChatMessageAttachmentDto> attachments) {
         return new ChatStreamEvent(
                 "message",
                 chatId,
@@ -48,6 +51,7 @@ public record ChatStreamEvent(
                 text,
                 sentAtIso,
                 readBy,
+                attachments,
                 null,
                 null,
                 null);
@@ -72,6 +76,7 @@ public record ChatStreamEvent(
                 null,
                 null,
                 null,
+                null,
                 typing,
                 null,
                 null);
@@ -93,6 +98,7 @@ public record ChatStreamEvent(
                 null,
                 senderInitials,
                 senderGender,
+                null,
                 null,
                 null,
                 null,
@@ -141,7 +147,8 @@ public record ChatStreamEvent(
                         text,
                         sentAtIso,
                         Objects.equals(senderId, viewerUserId),
-                        readBy == null ? List.of() : List.copyOf(readBy)),
+                        readBy == null ? List.of() : List.copyOf(readBy),
+                        attachments == null ? List.of() : List.copyOf(attachments)),
                 null,
                 null);
     }

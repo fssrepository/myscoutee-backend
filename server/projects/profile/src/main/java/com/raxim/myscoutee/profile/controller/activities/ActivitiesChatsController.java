@@ -71,7 +71,7 @@ public class ActivitiesChatsController {
         if (request == null) {
             return null;
         }
-        return activitiesChatService.sendMessage(chatId, userId, request.text());
+        return activitiesChatService.sendMessage(chatId, userId, request.text(), null, request.attachments());
     }
 
     @PostMapping("/devices")

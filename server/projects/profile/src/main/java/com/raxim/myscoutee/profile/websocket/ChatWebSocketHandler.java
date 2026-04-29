@@ -67,10 +67,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if (!type.isEmpty() && !"message".equalsIgnoreCase(type)) {
             return;
         }
-        if (!StringUtils.hasText(request.text())) {
+        if (!StringUtils.hasText(request.text()) && (request.attachments() == null || request.attachments().isEmpty())) {
             return;
         }
-        activitiesChatService.sendMessage(chatId, userId, request.text(), request.clientId());
+        activitiesChatService.sendMessage(chatId, userId, request.text(), request.clientId(), request.attachments());
     }
 
     @Override
