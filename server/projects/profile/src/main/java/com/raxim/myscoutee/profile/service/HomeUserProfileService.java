@@ -233,6 +233,7 @@ public class HomeUserProfileService {
                 userDto.images(),
                 userDto.impressions(),
                 userDto.profileStatus(),
+                userDto.previousProfileStatus(),
                 userDto.deletedAtIso(),
                 userDto.activities(),
                 filterCount,
@@ -437,8 +438,10 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
         }
 
+        String previousProfileStatus = resolveProfileStatus(user);
         user.setStatus("D");
         user.setProfileStatus("deleted");
+        user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
         recordSessionAction(resolvedUserId, "delete", "status:D");
@@ -672,6 +675,7 @@ public class HomeUserProfileService {
                 normalizeStrings(user.getImages()),
                 includeImpressions ? resolveMergedUserImpressions(user) : null,
                 resolveProfileStatus(user),
+                nullToEmpty(user.getPreviousProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()),
                 toUserActivitiesDto(user.getActivities()));
     }
@@ -1030,11 +1034,20 @@ public class HomeUserProfileService {
         boolean reactivatingDeletedUser = current != null
                 && "D".equalsIgnoreCase(safeText(current.getStatus()))
                 && !"deleted".equals(safeText(user.profileStatus()));
+        String previousProfileStatus = current == null ? "" : safeText(current.getPreviousProfileStatus());
+        if ("deleted".equals(safeText(user.profileStatus()))) {
+            previousProfileStatus = StringUtils.hasText(user.previousProfileStatus())
+                    ? safeText(user.previousProfileStatus())
+                    : resolveProfileStatus(current);
+        } else if (reactivatingDeletedUser) {
+            previousProfileStatus = "";
+        }
         String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus())) && !reactivatingDeletedUser
                 ? current.getStatus()
                 : resolveStatusCode(user.profileStatus(), current == null ? null : current.getStatus());
         document.setStatus(status);
         document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
+        document.setPreviousProfileStatus(previousProfileStatus);
         document.setDeletedAtIso("D".equalsIgnoreCase(safeText(status))
                 ? (StringUtils.hasText(user.deletedAtIso()) ? user.deletedAtIso() : (current == null ? Instant.now().toString() : current.getDeletedAtIso()))
                 : null);
@@ -1473,14 +1486,18 @@ public class HomeUserProfileService {
     }
 
     private String resolveProfileStatus(String status, String fallbackProfileStatus) {
+        String normalizedProfileStatus = safeText(fallbackProfileStatus);
+        if ("blocked".equals(normalizedProfileStatus)) {
+            return "blocked";
+        }
         return switch (safeText(status)) {
             case "D" -> "deleted";
+            case "B" -> "blocked";
             case "I" -> "inactive";
             case "F" -> "friends only";
             case "H" -> "host only";
             case "A" -> "public";
             default -> {
-                String normalizedProfileStatus = safeText(fallbackProfileStatus);
                 yield StringUtils.hasText(normalizedProfileStatus) ? normalizedProfileStatus : "public";
             }
         };
@@ -1489,6 +1506,7 @@ public class HomeUserProfileService {
     private String resolveStatusCode(String profileStatus, String fallbackStatus) {
         return switch (safeText(profileStatus)) {
             case "deleted" -> "D";
+            case "blocked" -> "B";
             case "inactive" -> "I";
             case "friends only" -> "F";
             case "host only" -> "H";
