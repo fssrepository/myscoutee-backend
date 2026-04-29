@@ -814,7 +814,8 @@ public class ActivitiesChatService {
         String normalized = safeText(value);
         if ("event".equalsIgnoreCase(normalized)
                 || "subEvent".equalsIgnoreCase(normalized)
-                || "group".equalsIgnoreCase(normalized)) {
+                || "group".equalsIgnoreCase(normalized)
+                || "service".equalsIgnoreCase(normalized)) {
             return normalized;
         }
         return "all";
@@ -833,6 +834,9 @@ public class ActivitiesChatService {
         }
         if ("group".equalsIgnoreCase(contextFilter)) {
             return "groupSubEvent".equalsIgnoreCase(channelType);
+        }
+        if ("service".equalsIgnoreCase(contextFilter)) {
+            return "serviceEvent".equalsIgnoreCase(channelType);
         }
         return true;
     }
