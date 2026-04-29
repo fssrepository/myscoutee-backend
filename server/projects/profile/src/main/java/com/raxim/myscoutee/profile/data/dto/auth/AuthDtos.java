@@ -114,6 +114,7 @@ public final class AuthDtos {
             List<String> images,
             UserImpressionsDto impressions,
             String profileStatus,
+            String deletedAtIso,
             UserActivitiesDto activities) {
     }
 
@@ -141,6 +142,7 @@ public final class AuthDtos {
             List<String> images,
             UserImpressionsDto impressions,
             String profileStatus,
+            String deletedAtIso,
             UserActivitiesDto activities,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,

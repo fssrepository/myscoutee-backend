@@ -233,6 +233,7 @@ public class HomeUserProfileService {
                 userDto.images(),
                 userDto.impressions(),
                 userDto.profileStatus(),
+                userDto.deletedAtIso(),
                 userDto.activities(),
                 filterCount,
                 filterPreferences,
@@ -438,6 +439,7 @@ public class HomeUserProfileService {
 
         user.setStatus("D");
         user.setProfileStatus("deleted");
+        user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
         recordSessionAction(resolvedUserId, "delete", "status:D");
         return new UserSubmitActionResponseDto(true, null);
@@ -670,6 +672,7 @@ public class HomeUserProfileService {
                 normalizeStrings(user.getImages()),
                 includeImpressions ? resolveMergedUserImpressions(user) : null,
                 resolveProfileStatus(user),
+                nullToEmpty(user.getDeletedAtIso()),
                 toUserActivitiesDto(user.getActivities()));
     }
 
@@ -1024,11 +1027,17 @@ public class HomeUserProfileService {
                 current));
         document.setImages(normalizeStrings(user.images()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
-        String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus()))
+        boolean reactivatingDeletedUser = current != null
+                && "D".equalsIgnoreCase(safeText(current.getStatus()))
+                && !"deleted".equals(safeText(user.profileStatus()));
+        String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus())) && !reactivatingDeletedUser
                 ? current.getStatus()
                 : resolveStatusCode(user.profileStatus(), current == null ? null : current.getStatus());
         document.setStatus(status);
         document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
+        document.setDeletedAtIso("D".equalsIgnoreCase(safeText(status))
+                ? (StringUtils.hasText(user.deletedAtIso()) ? user.deletedAtIso() : (current == null ? Instant.now().toString() : current.getDeletedAtIso()))
+                : null);
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
     }
