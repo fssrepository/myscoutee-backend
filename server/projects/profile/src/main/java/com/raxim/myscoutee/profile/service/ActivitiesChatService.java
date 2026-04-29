@@ -216,6 +216,12 @@ public class ActivitiesChatService {
             message.setDeletedByUserId(userId);
             message.setDeletedByName(resolveUserName(user, userId));
             message.setReactions(new ArrayList<>());
+            message.setReadBy(new ArrayList<>());
+            message.setAttachments(new ArrayList<>());
+            message.setReplyTo(null);
+            message.setEditedAtIso(null);
+            message.setPinnedAtIso(null);
+            message.setPinnedByUserId(null);
         });
     }
 
@@ -650,6 +656,7 @@ public class ActivitiesChatService {
     private ChatMessageDto toMessageDto(ChatMessageRecord message, String viewerUserId) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
+        boolean deleted = StringUtils.hasText(message == null ? "" : message.getDeletedAtIso());
         return new ChatMessageDto(
                 message == null ? "" : safeText(message.getId()),
                 message == null ? "" : safeText(message.getClientId()),
@@ -657,23 +664,23 @@ public class ActivitiesChatService {
                 message == null ? "" : safeText(message.getSender()),
                 senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials()),
                 senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
-                message == null ? "" : safeText(message.getText()),
+                deleted ? "" : message == null ? "" : safeText(message.getText()),
                 message == null ? Instant.now().toString() : safeText(message.getSentAtIso()),
                 Objects.equals(senderId, normalizeId(viewerUserId)),
-                safeReadBy(message == null ? null : message.getReadBy()).stream()
+                deleted ? List.of() : safeReadBy(message == null ? null : message.getReadBy()).stream()
                         .map(this::toReadAvatarDto)
                         .toList(),
                 message == null ? "" : safeText(message.getDeletedAtIso()),
                 message == null ? "" : safeText(message.getDeletedByUserId()),
                 message == null ? "" : safeText(message.getDeletedByName()),
-                message == null ? "" : safeText(message.getEditedAtIso()),
-                message == null ? "" : safeText(message.getPinnedAtIso()),
-                message == null ? "" : safeText(message.getPinnedByUserId()),
-                toReplyDto(message == null ? null : message.getReplyTo()),
-                safeReactions(message == null ? null : message.getReactions()).stream()
+                deleted ? "" : message == null ? "" : safeText(message.getEditedAtIso()),
+                deleted ? "" : message == null ? "" : safeText(message.getPinnedAtIso()),
+                deleted ? "" : message == null ? "" : safeText(message.getPinnedByUserId()),
+                deleted ? null : toReplyDto(message == null ? null : message.getReplyTo()),
+                deleted ? List.of() : safeReactions(message == null ? null : message.getReactions()).stream()
                         .map(this::toReactionDto)
                         .toList(),
-                safeAttachments(message == null ? null : message.getAttachments()).stream()
+                deleted ? List.of() : safeAttachments(message == null ? null : message.getAttachments()).stream()
                         .map(this::toAttachmentDto)
                         .toList());
     }
