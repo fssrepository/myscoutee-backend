@@ -710,6 +710,11 @@ public class ActivitiesChatService {
                 record == null ? "" : safeText(record.getId()),
                 record == null ? "link" : safeText(record.getType()),
                 record == null ? "" : safeText(record.getTitle()),
+                record == null ? "" : safeText(record.getEntityId()),
+                record == null ? "" : safeText(record.getAssetType()),
+                record == null ? "" : safeText(record.getOwnerUserId()),
+                record == null ? "" : safeText(record.getSubtitle()),
+                record == null ? "" : safeText(record.getDescription()),
                 record == null ? "" : safeText(record.getUrl()),
                 record == null ? "" : safeText(record.getPreviewUrl()),
                 record == null ? "" : safeText(record.getMimeType()),
@@ -988,6 +993,11 @@ public class ActivitiesChatService {
             record.setId(StringUtils.hasText(attachment.id()) ? safeText(attachment.id()) : UUID.randomUUID().toString());
             record.setType(type);
             record.setTitle(title);
+            record.setEntityId(safeText(attachment.entityId()));
+            record.setAssetType(safeText(attachment.assetType()));
+            record.setOwnerUserId(safeText(attachment.ownerUserId()));
+            record.setSubtitle(safeText(attachment.subtitle()));
+            record.setDescription(safeText(attachment.description()));
             record.setUrl(url);
             record.setPreviewUrl(previewUrl);
             record.setMimeType(safeText(attachment.mimeType()));
@@ -1004,6 +1014,11 @@ public class ActivitiesChatService {
             copy.setId(attachment.getId());
             copy.setType(attachment.getType());
             copy.setTitle(attachment.getTitle());
+            copy.setEntityId(attachment.getEntityId());
+            copy.setAssetType(attachment.getAssetType());
+            copy.setOwnerUserId(attachment.getOwnerUserId());
+            copy.setSubtitle(attachment.getSubtitle());
+            copy.setDescription(attachment.getDescription());
             copy.setUrl(attachment.getUrl());
             copy.setPreviewUrl(attachment.getPreviewUrl());
             copy.setMimeType(attachment.getMimeType());

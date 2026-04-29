@@ -334,6 +334,11 @@ public class ActivityChat {
         private String id;
         private String type;
         private String title;
+        private String entityId;
+        private String assetType;
+        private String ownerUserId;
+        private String subtitle;
+        private String description;
         private String url;
         private String previewUrl;
         private String mimeType;
@@ -345,6 +350,16 @@ public class ActivityChat {
         public void setType(String type) { this.type = type; }
         public String getTitle() { return title; }
         public void setTitle(String title) { this.title = title; }
+        public String getEntityId() { return entityId; }
+        public void setEntityId(String entityId) { this.entityId = entityId; }
+        public String getAssetType() { return assetType; }
+        public void setAssetType(String assetType) { this.assetType = assetType; }
+        public String getOwnerUserId() { return ownerUserId; }
+        public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
+        public String getSubtitle() { return subtitle; }
+        public void setSubtitle(String subtitle) { this.subtitle = subtitle; }
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
         public String getUrl() { return url; }
         public void setUrl(String url) { this.url = url; }
         public String getPreviewUrl() { return previewUrl; }
