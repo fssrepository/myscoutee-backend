@@ -26,11 +26,15 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageRecord;
+import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageReactionRecord;
+import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageReplyRecord;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarRecord;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageAttachmentDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReactionDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
@@ -142,11 +146,11 @@ public class ActivitiesChatService {
     }
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text) {
-        return sendMessage(chatId, requestedUserId, text, null, List.of());
+        return sendMessage(chatId, requestedUserId, text, null, null, List.of());
     }
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text, String clientId) {
-        return sendMessage(chatId, requestedUserId, text, clientId, List.of());
+        return sendMessage(chatId, requestedUserId, text, clientId, null, List.of());
     }
 
     public ChatMessageDto sendMessage(
@@ -154,6 +158,7 @@ public class ActivitiesChatService {
             String requestedUserId,
             String text,
             String clientId,
+            ChatMessageReplyDto replyTo,
             List<ChatMessageAttachmentDto> attachments) {
         String userId = requireResolvedUserId(requestedUserId);
         String normalizedText = normalizeText(text);
@@ -164,7 +169,7 @@ public class ActivitiesChatService {
 
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users sender = findUser(userId);
-        ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId, normalizedAttachments);
+        ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         for (ActivityChat existing : snapshot.chatDocuments()) {
             ActivityChat next = copyChat(existing);
@@ -186,6 +191,67 @@ public class ActivitiesChatService {
         publishChatEvent(streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         return toMessageDto(messageRecord, userId);
+    }
+
+    public ChatMessageDto editMessage(String chatId, String requestedUserId, String messageId, String text) {
+        String normalizedText = normalizeText(text);
+        if (!StringUtils.hasText(normalizedText)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat message text is required.");
+        }
+        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+            requireOwnMessage(message, userId);
+            if (StringUtils.hasText(message.getDeletedAtIso())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deleted messages cannot be edited.");
+            }
+            message.setText(normalizedText);
+            message.setEditedAtIso(Instant.now().toString());
+        });
+    }
+
+    public ChatMessageDto deleteMessage(String chatId, String requestedUserId, String messageId) {
+        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+            requireOwnMessage(message, userId);
+            message.setText("");
+            message.setDeletedAtIso(Instant.now().toString());
+            message.setDeletedByUserId(userId);
+            message.setDeletedByName(resolveUserName(user, userId));
+            message.setReactions(new ArrayList<>());
+        });
+    }
+
+    public ChatMessageDto pinMessage(String chatId, String requestedUserId, String messageId, Boolean pinned) {
+        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+            if (Boolean.TRUE.equals(pinned)) {
+                message.setPinnedAtIso(Instant.now().toString());
+                message.setPinnedByUserId(userId);
+            } else {
+                message.setPinnedAtIso(null);
+                message.setPinnedByUserId(null);
+            }
+        });
+    }
+
+    public ChatMessageDto reactToMessage(String chatId, String requestedUserId, String messageId, String emoji) {
+        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+            String normalizedEmoji = normalizeText(emoji);
+            List<ChatMessageReactionRecord> reactions = new ArrayList<>();
+            for (ChatMessageReactionRecord reaction : safeReactions(message.getReactions())) {
+                if (!userId.equals(normalizeId(reaction.getUserId()))) {
+                    reactions.add(copyReactionRecords(List.of(reaction)).get(0));
+                }
+            }
+            if (StringUtils.hasText(normalizedEmoji)) {
+                ChatMessageReactionRecord reaction = new ChatMessageReactionRecord();
+                reaction.setEmoji(normalizedEmoji);
+                reaction.setUserId(userId);
+                reaction.setUserName(resolveUserName(user, userId));
+                reaction.setUserInitials(resolveUserInitials(user, userId));
+                reaction.setUserGender(resolveUserGender(user));
+                reaction.setReactedAtIso(Instant.now().toString());
+                reactions.add(reaction);
+            }
+            message.setReactions(reactions);
+        });
     }
 
     public void markMessagesRead(String chatId, String requestedUserId, List<String> messageIds) {
@@ -447,6 +513,82 @@ public class ActivitiesChatService {
                 readAtIso);
     }
 
+    private ChatMessageDto mutateMessage(
+            String chatId,
+            String requestedUserId,
+            String messageId,
+            ChatMessageMutator mutator) {
+        String userId = requireResolvedUserId(requestedUserId);
+        String normalizedMessageId = normalizeId(messageId);
+        if (!StringUtils.hasText(normalizedMessageId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message id is required.");
+        }
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Users user = findUser(userId);
+        List<ActivityChat> updatedDocuments = new ArrayList<>();
+        ChatMessageRecord updatedViewerMessage = null;
+        for (ActivityChat existing : snapshot.chatDocuments()) {
+            ActivityChat next = copyChat(existing);
+            List<ChatMessageRecord> nextMessages = new ArrayList<>();
+            boolean found = false;
+            for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
+                ChatMessageRecord nextMessage = copyMessageRecord(existingMessage);
+                if (normalizedMessageId.equals(normalizeId(nextMessage.getId()))) {
+                    mutator.apply(nextMessage, userId, user);
+                    found = true;
+                    if (userId.equals(normalizeId(existing.getOwnerUserId()))) {
+                        updatedViewerMessage = copyMessageRecord(nextMessage);
+                    }
+                }
+                nextMessages.add(nextMessage);
+            }
+            if (!found) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found.");
+            }
+            next.setMessages(nextMessages);
+            ChatMessageRecord latest = latestMessage(nextMessages);
+            if (latest != null) {
+                next.setLastMessage(chatMessageSummary(latest));
+                ChatAvatarRecord latestSender = latest.getSenderAvatar();
+                next.setLastSenderId(latestSender == null ? "" : normalizeId(latestSender.getId()));
+                next.setDateIso(latest.getSentAtIso());
+            }
+            updatedDocuments.add(next);
+        }
+        activityChatsRepository.saveAll(updatedDocuments);
+        if (updatedViewerMessage == null) {
+            updatedViewerMessage = updatedDocuments.stream()
+                    .filter(chat -> userId.equals(normalizeId(chat.getOwnerUserId())))
+                    .flatMap(chat -> safeMessages(chat.getMessages()).stream())
+                    .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                    .findFirst()
+                    .map(this::copyMessageRecord)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found."));
+        }
+        publishChatEvent(toStreamEvent(snapshot.chatId(), updatedViewerMessage));
+        return toMessageDto(updatedViewerMessage, userId);
+    }
+
+    private void requireOwnMessage(ChatMessageRecord message, String userId) {
+        ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
+        String senderId = senderAvatar == null ? "" : normalizeId(senderAvatar.getId());
+        if (!userId.equals(senderId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only your own messages can be changed.");
+        }
+    }
+
+    private ChatMessageRecord latestMessage(List<ChatMessageRecord> messages) {
+        return safeMessages(messages).stream()
+                .filter(Objects::nonNull)
+                .max(Comparator.comparing(message -> sortableDate(message.getSentAtIso())))
+                .orElse(null);
+    }
+
+    @FunctionalInterface
+    private interface ChatMessageMutator {
+        void apply(ChatMessageRecord message, String userId, Users user);
+    }
+
     private boolean addReader(ChatMessageRecord message, ChatReadAvatarRecord reader) {
         if (message == null || reader == null || !StringUtils.hasText(reader.getId())) {
             return false;
@@ -521,9 +663,39 @@ public class ActivitiesChatService {
                 safeReadBy(message == null ? null : message.getReadBy()).stream()
                         .map(this::toReadAvatarDto)
                         .toList(),
+                message == null ? "" : safeText(message.getDeletedAtIso()),
+                message == null ? "" : safeText(message.getDeletedByUserId()),
+                message == null ? "" : safeText(message.getDeletedByName()),
+                message == null ? "" : safeText(message.getEditedAtIso()),
+                message == null ? "" : safeText(message.getPinnedAtIso()),
+                message == null ? "" : safeText(message.getPinnedByUserId()),
+                toReplyDto(message == null ? null : message.getReplyTo()),
+                safeReactions(message == null ? null : message.getReactions()).stream()
+                        .map(this::toReactionDto)
+                        .toList(),
                 safeAttachments(message == null ? null : message.getAttachments()).stream()
                         .map(this::toAttachmentDto)
                         .toList());
+    }
+
+    private ChatMessageReplyDto toReplyDto(ChatMessageReplyRecord record) {
+        if (record == null || !StringUtils.hasText(record.getId())) {
+            return null;
+        }
+        return new ChatMessageReplyDto(
+                safeText(record.getId()),
+                safeText(record.getSender()),
+                safeText(record.getText()));
+    }
+
+    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record) {
+        return new ChatMessageReactionDto(
+                record == null ? "" : safeText(record.getEmoji()),
+                record == null ? "" : safeText(record.getUserId()),
+                record == null ? "" : safeText(record.getUserName()),
+                record == null ? "" : safeText(record.getUserInitials()),
+                record == null ? "man" : normalizeGender(record.getUserGender()),
+                record == null ? "" : safeText(record.getReactedAtIso()));
     }
 
     private ChatMessageAttachmentDto toAttachmentDto(ChatMessageAttachmentRecord record) {
@@ -538,6 +710,9 @@ public class ActivitiesChatService {
     }
 
     private String chatMessageSummary(ChatMessageRecord message) {
+        if (StringUtils.hasText(message == null ? "" : message.getDeletedAtIso())) {
+            return "Deleted a message";
+        }
         String text = message == null ? "" : safeText(message.getText());
         if (StringUtils.hasText(text)) {
             return text;
@@ -572,6 +747,7 @@ public class ActivitiesChatService {
             String senderUserId,
             String text,
             String clientId,
+            ChatMessageReplyRecord replyTo,
             List<ChatMessageAttachmentRecord> attachments) {
         Instant sentAt = Instant.now();
         ChatMessageRecord message = new ChatMessageRecord();
@@ -584,6 +760,8 @@ public class ActivitiesChatService {
         message.setSentAtIso(sentAt.toString());
         message.setMine(Boolean.FALSE);
         message.setReadBy(new ArrayList<>());
+        message.setReplyTo(copyReplyRecord(replyTo));
+        message.setReactions(new ArrayList<>());
         message.setAttachments(copyAttachmentRecords(attachments));
         return message;
     }
@@ -602,6 +780,16 @@ public class ActivitiesChatService {
                 safeText(messageRecord.getSentAtIso()),
                 safeReadBy(messageRecord.getReadBy()).stream()
                         .map(this::toReadAvatarDto)
+                        .toList(),
+                safeText(messageRecord.getDeletedAtIso()),
+                safeText(messageRecord.getDeletedByUserId()),
+                safeText(messageRecord.getDeletedByName()),
+                safeText(messageRecord.getEditedAtIso()),
+                safeText(messageRecord.getPinnedAtIso()),
+                safeText(messageRecord.getPinnedByUserId()),
+                toReplyDto(messageRecord.getReplyTo()),
+                safeReactions(messageRecord.getReactions()).stream()
+                        .map(this::toReactionDto)
                         .toList(),
                 safeAttachments(messageRecord.getAttachments()).stream()
                         .map(this::toAttachmentDto)
@@ -739,7 +927,37 @@ public class ActivitiesChatService {
             copiedReadBy.add(copyReadAvatarRecord(reader));
         }
         copy.setReadBy(copiedReadBy);
+        copy.setDeletedAtIso(source.getDeletedAtIso());
+        copy.setDeletedByUserId(source.getDeletedByUserId());
+        copy.setDeletedByName(source.getDeletedByName());
+        copy.setEditedAtIso(source.getEditedAtIso());
+        copy.setPinnedAtIso(source.getPinnedAtIso());
+        copy.setPinnedByUserId(source.getPinnedByUserId());
+        copy.setReplyTo(copyReplyRecord(source.getReplyTo()));
+        copy.setReactions(copyReactionRecords(source.getReactions()));
         copy.setAttachments(copyAttachmentRecords(source.getAttachments()));
+        return copy;
+    }
+
+    private ChatMessageReplyRecord normalizeReply(ChatMessageReplyDto replyTo) {
+        if (replyTo == null || !StringUtils.hasText(replyTo.id())) {
+            return null;
+        }
+        ChatMessageReplyRecord record = new ChatMessageReplyRecord();
+        record.setId(safeText(replyTo.id()));
+        record.setSender(safeText(replyTo.sender()));
+        record.setText(safeText(replyTo.text()));
+        return record;
+    }
+
+    private ChatMessageReplyRecord copyReplyRecord(ChatMessageReplyRecord source) {
+        if (source == null) {
+            return null;
+        }
+        ChatMessageReplyRecord copy = new ChatMessageReplyRecord();
+        copy.setId(source.getId());
+        copy.setSender(source.getSender());
+        copy.setText(source.getText());
         return copy;
     }
 
@@ -783,6 +1001,21 @@ public class ActivitiesChatService {
             copy.setPreviewUrl(attachment.getPreviewUrl());
             copy.setMimeType(attachment.getMimeType());
             copy.setSizeBytes(attachment.getSizeBytes());
+            copied.add(copy);
+        }
+        return copied;
+    }
+
+    private List<ChatMessageReactionRecord> copyReactionRecords(List<ChatMessageReactionRecord> reactions) {
+        List<ChatMessageReactionRecord> copied = new ArrayList<>();
+        for (ChatMessageReactionRecord reaction : safeReactions(reactions)) {
+            ChatMessageReactionRecord copy = new ChatMessageReactionRecord();
+            copy.setEmoji(reaction.getEmoji());
+            copy.setUserId(reaction.getUserId());
+            copy.setUserName(reaction.getUserName());
+            copy.setUserInitials(reaction.getUserInitials());
+            copy.setUserGender(reaction.getUserGender());
+            copy.setReactedAtIso(reaction.getReactedAtIso());
             copied.add(copy);
         }
         return copied;
@@ -900,6 +1133,10 @@ public class ActivitiesChatService {
 
     private List<ChatMessageAttachmentRecord> safeAttachments(List<ChatMessageAttachmentRecord> attachments) {
         return attachments == null ? List.of() : attachments;
+    }
+
+    private List<ChatMessageReactionRecord> safeReactions(List<ChatMessageReactionRecord> reactions) {
+        return reactions == null ? List.of() : reactions;
     }
 
     private int normalizeCount(Integer value) {

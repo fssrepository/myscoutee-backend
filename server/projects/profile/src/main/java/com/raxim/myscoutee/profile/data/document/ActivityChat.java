@@ -187,6 +187,14 @@ public class ActivityChat {
         private String sentAtIso;
         private Boolean mine;
         private List<ChatReadAvatarRecord> readBy = new ArrayList<>();
+        private String deletedAtIso;
+        private String deletedByUserId;
+        private String deletedByName;
+        private String editedAtIso;
+        private String pinnedAtIso;
+        private String pinnedByUserId;
+        private ChatMessageReplyRecord replyTo;
+        private List<ChatMessageReactionRecord> reactions = new ArrayList<>();
         private List<ChatMessageAttachmentRecord> attachments = new ArrayList<>();
 
         public String getId() {
@@ -261,6 +269,23 @@ public class ActivityChat {
             this.readBy = readBy == null ? new ArrayList<>() : readBy;
         }
 
+        public String getDeletedAtIso() { return deletedAtIso; }
+        public void setDeletedAtIso(String deletedAtIso) { this.deletedAtIso = deletedAtIso; }
+        public String getDeletedByUserId() { return deletedByUserId; }
+        public void setDeletedByUserId(String deletedByUserId) { this.deletedByUserId = deletedByUserId; }
+        public String getDeletedByName() { return deletedByName; }
+        public void setDeletedByName(String deletedByName) { this.deletedByName = deletedByName; }
+        public String getEditedAtIso() { return editedAtIso; }
+        public void setEditedAtIso(String editedAtIso) { this.editedAtIso = editedAtIso; }
+        public String getPinnedAtIso() { return pinnedAtIso; }
+        public void setPinnedAtIso(String pinnedAtIso) { this.pinnedAtIso = pinnedAtIso; }
+        public String getPinnedByUserId() { return pinnedByUserId; }
+        public void setPinnedByUserId(String pinnedByUserId) { this.pinnedByUserId = pinnedByUserId; }
+        public ChatMessageReplyRecord getReplyTo() { return replyTo; }
+        public void setReplyTo(ChatMessageReplyRecord replyTo) { this.replyTo = replyTo; }
+        public List<ChatMessageReactionRecord> getReactions() { return reactions; }
+        public void setReactions(List<ChatMessageReactionRecord> reactions) { this.reactions = reactions == null ? new ArrayList<>() : reactions; }
+
         public List<ChatMessageAttachmentRecord> getAttachments() {
             return attachments;
         }
@@ -268,6 +293,41 @@ public class ActivityChat {
         public void setAttachments(List<ChatMessageAttachmentRecord> attachments) {
             this.attachments = attachments == null ? new ArrayList<>() : attachments;
         }
+    }
+
+    public static class ChatMessageReplyRecord {
+        private String id;
+        private String sender;
+        private String text;
+
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        public String getSender() { return sender; }
+        public void setSender(String sender) { this.sender = sender; }
+        public String getText() { return text; }
+        public void setText(String text) { this.text = text; }
+    }
+
+    public static class ChatMessageReactionRecord {
+        private String emoji;
+        private String userId;
+        private String userName;
+        private String userInitials;
+        private String userGender;
+        private String reactedAtIso;
+
+        public String getEmoji() { return emoji; }
+        public void setEmoji(String emoji) { this.emoji = emoji; }
+        public String getUserId() { return userId; }
+        public void setUserId(String userId) { this.userId = userId; }
+        public String getUserName() { return userName; }
+        public void setUserName(String userName) { this.userName = userName; }
+        public String getUserInitials() { return userInitials; }
+        public void setUserInitials(String userInitials) { this.userInitials = userInitials; }
+        public String getUserGender() { return userGender; }
+        public void setUserGender(String userGender) { this.userGender = userGender; }
+        public String getReactedAtIso() { return reactedAtIso; }
+        public void setReactedAtIso(String reactedAtIso) { this.reactedAtIso = reactedAtIso; }
     }
 
     public static class ChatMessageAttachmentRecord {

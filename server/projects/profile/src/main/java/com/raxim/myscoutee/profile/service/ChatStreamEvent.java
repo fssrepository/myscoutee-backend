@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageAttachmentDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReactionDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadReceiptDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
@@ -22,6 +24,14 @@ public record ChatStreamEvent(
         String text,
         String sentAtIso,
         List<ChatReadAvatarDto> readBy,
+        String deletedAtIso,
+        String deletedByUserId,
+        String deletedByName,
+        String editedAtIso,
+        String pinnedAtIso,
+        String pinnedByUserId,
+        ChatMessageReplyDto replyTo,
+        List<ChatMessageReactionDto> reactions,
         List<ChatMessageAttachmentDto> attachments,
         Boolean typing,
         List<String> messageIds,
@@ -38,6 +48,14 @@ public record ChatStreamEvent(
             String text,
             String sentAtIso,
             List<ChatReadAvatarDto> readBy,
+            String deletedAtIso,
+            String deletedByUserId,
+            String deletedByName,
+            String editedAtIso,
+            String pinnedAtIso,
+            String pinnedByUserId,
+            ChatMessageReplyDto replyTo,
+            List<ChatMessageReactionDto> reactions,
             List<ChatMessageAttachmentDto> attachments) {
         return new ChatStreamEvent(
                 "message",
@@ -51,6 +69,14 @@ public record ChatStreamEvent(
                 text,
                 sentAtIso,
                 readBy,
+                deletedAtIso,
+                deletedByUserId,
+                deletedByName,
+                editedAtIso,
+                pinnedAtIso,
+                pinnedByUserId,
+                replyTo,
+                reactions,
                 attachments,
                 null,
                 null,
@@ -77,6 +103,14 @@ public record ChatStreamEvent(
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 typing,
                 null,
                 null);
@@ -98,6 +132,14 @@ public record ChatStreamEvent(
                 null,
                 senderInitials,
                 senderGender,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -148,6 +190,14 @@ public record ChatStreamEvent(
                         sentAtIso,
                         Objects.equals(senderId, viewerUserId),
                         readBy == null ? List.of() : List.copyOf(readBy),
+                        deletedAtIso,
+                        deletedByUserId,
+                        deletedByName,
+                        editedAtIso,
+                        pinnedAtIso,
+                        pinnedByUserId,
+                        replyTo,
+                        reactions == null ? List.of() : List.copyOf(reactions),
                         attachments == null ? List.of() : List.copyOf(attachments)),
                 null,
                 null);
