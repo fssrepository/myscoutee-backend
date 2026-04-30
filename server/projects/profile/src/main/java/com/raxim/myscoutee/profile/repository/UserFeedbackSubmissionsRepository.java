@@ -8,4 +8,6 @@ import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 
 public interface UserFeedbackSubmissionsRepository extends MongoRepository<UserFeedbackSubmission, String> {
     List<UserFeedbackSubmission> findByUserIdOrderByCreatedDateDesc(String userId);
+
+    List<UserFeedbackSubmission> findAllByOrderByCreatedDateDesc();
 }

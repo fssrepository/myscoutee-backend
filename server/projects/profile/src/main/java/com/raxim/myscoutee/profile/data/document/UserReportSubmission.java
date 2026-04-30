@@ -26,6 +26,13 @@ public class UserReportSubmission {
     private String eventId;
     private String eventTitle;
     private String eventStartAtIso;
+    private String sourceType;
+    private String sourceId;
+    private String sourceText;
+    private String chatId;
+    private String messageId;
+    private String assetId;
+    private String assetType;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -122,6 +129,21 @@ public class UserReportSubmission {
     public void setEventStartAtIso(String eventStartAtIso) {
         this.eventStartAtIso = eventStartAtIso;
     }
+
+    public String getSourceType() { return sourceType; }
+    public void setSourceType(String sourceType) { this.sourceType = sourceType; }
+    public String getSourceId() { return sourceId; }
+    public void setSourceId(String sourceId) { this.sourceId = sourceId; }
+    public String getSourceText() { return sourceText; }
+    public void setSourceText(String sourceText) { this.sourceText = sourceText; }
+    public String getChatId() { return chatId; }
+    public void setChatId(String chatId) { this.chatId = chatId; }
+    public String getMessageId() { return messageId; }
+    public void setMessageId(String messageId) { this.messageId = messageId; }
+    public String getAssetId() { return assetId; }
+    public void setAssetId(String assetId) { this.assetId = assetId; }
+    public String getAssetType() { return assetType; }
+    public void setAssetType(String assetType) { this.assetType = assetType; }
 
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;

@@ -8,4 +8,8 @@ import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 
 public interface UserReportSubmissionsRepository extends MongoRepository<UserReportSubmission, String> {
     List<UserReportSubmission> findByUserIdOrderByCreatedDateDesc(String userId);
+
+    List<UserReportSubmission> findAllByOrderByCreatedDateDesc();
+
+    List<UserReportSubmission> findByTargetUserIdOrderByCreatedDateDesc(String targetUserId);
 }

@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
@@ -393,6 +394,27 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
         }
 
+        String sourceType = normalizeOptionalText(request.sourceType());
+        String sourceId = normalizeOptionalText(request.sourceId());
+        String sourceText = normalizeOptionalText(request.sourceText());
+        String chatId = normalizeOptionalText(request.chatId());
+        String messageId = normalizeOptionalText(request.messageId());
+        String assetId = normalizeOptionalText(request.assetId());
+        String assetType = normalizeOptionalText(request.assetType());
+        ActivityChat.ChatMessageRecord reportedChatMessage = null;
+        if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
+            ActivityChat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
+            if (reportedChat == null) {
+                return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
+            }
+            reportedChatMessage = findChatMessage(reportedChat, messageId);
+            chatId = normalizeOptionalText(reportedChat.getChatId());
+            messageId = normalizeOptionalText(reportedChatMessage == null ? messageId : reportedChatMessage.getId());
+            sourceType = "chat";
+            sourceId = normalizeOptionalText(firstNonBlank(sourceId, messageId));
+            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChatMessage == null ? null : reportedChatMessage.getText()));
+        }
+
         String nowIso = Instant.now().toString();
         UserReportSubmission document = new UserReportSubmission();
         document.setId(new ObjectId().toHexString());
@@ -410,6 +432,13 @@ public class HomeUserProfileService {
         document.setEventStartAtIso(normalizeOptionalText(firstNonBlank(
                 eventRecord == null ? null : eventRecord.getStartAtIso(),
                 request.eventStartAtIso())));
+        document.setSourceType(sourceType);
+        document.setSourceId(sourceId);
+        document.setSourceText(sourceText);
+        document.setChatId(chatId);
+        document.setMessageId(messageId);
+        document.setAssetId(assetId);
+        document.setAssetType(assetType);
         document.setCreatedDate(nowIso);
         document.setCreatedUser(userId);
         document.setUpdatedDate(nowIso);
@@ -1306,6 +1335,56 @@ public class HomeUserProfileService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .anyMatch(normalizedUserId::equals);
+    }
+
+    private ActivityChat resolveReportableChat(
+            String reporterUserId,
+            String targetUserId,
+            String chatId,
+            String messageId) {
+        String normalizedReporterUserId = normalizeId(reporterUserId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedMessageId = normalizeId(messageId);
+        if (!StringUtils.hasText(normalizedReporterUserId)
+                || !StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(normalizedChatId)
+                || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        ActivityChat chat = activityChatsRepository
+                .findByOwnerUserIdAndChatId(normalizedReporterUserId, normalizedChatId)
+                .orElse(null);
+        if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
+            return null;
+        }
+        ActivityChat.ChatMessageRecord message = findChatMessage(chat, normalizedMessageId);
+        if (message == null || message.getSenderAvatar() == null) {
+            return null;
+        }
+        return normalizedTargetUserId.equals(normalizeId(message.getSenderAvatar().getId())) ? chat : null;
+    }
+
+    private boolean chatHasMember(ActivityChat chat, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (chat == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        return chat.getMemberIds().stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
+    }
+
+    private ActivityChat.ChatMessageRecord findChatMessage(ActivityChat chat, String messageId) {
+        String normalizedMessageId = normalizeId(messageId);
+        if (chat == null || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        return chat.getMessages().stream()
+                .filter(Objects::nonNull)
+                .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                .findFirst()
+                .orElse(null);
     }
 
     private String resolveActivityMemberEntryId(ActivityMember member) {

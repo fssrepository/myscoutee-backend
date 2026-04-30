@@ -201,7 +201,14 @@ public final class AuthDtos {
             String memberEntryId,
             String eventId,
             String eventTitle,
-            String eventStartAtIso) {
+            String eventStartAtIso,
+            String sourceType,
+            String sourceId,
+            String sourceText,
+            String chatId,
+            String messageId,
+            String assetId,
+            String assetType) {
     }
 
     public record UserLogoutRequestDto(
