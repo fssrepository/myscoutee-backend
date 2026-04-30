@@ -26,6 +26,7 @@ public class ShareTokensService {
     private static final Duration TOKEN_TTL = Duration.ofHours(24);
     private static final String KIND_EVENT = "event";
     private static final String KIND_ASSET = "asset";
+    private static final String KIND_ADMIN_HELP = "adminHelp";
 
     private final ShareTokensRepository shareTokensRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -43,7 +44,8 @@ public class ShareTokensService {
     public String createToken(ShareTokenCreateRequestDto request) {
         String kind = normalizeText(request == null ? null : request.kind());
         String entityId = normalizeText(request == null ? null : request.entityId());
-        if ((!KIND_EVENT.equals(kind) && !KIND_ASSET.equals(kind)) || !StringUtils.hasText(entityId)) {
+        if ((!KIND_EVENT.equals(kind) && !KIND_ASSET.equals(kind) && !KIND_ADMIN_HELP.equals(kind))
+                || !StringUtils.hasText(entityId)) {
             return "";
         }
         Instant now = Instant.now();
@@ -73,6 +75,9 @@ public class ShareTokensService {
         }
         if (KIND_ASSET.equals(shareToken.getKind())) {
             return resolveAsset(shareToken);
+        }
+        if (KIND_ADMIN_HELP.equals(shareToken.getKind())) {
+            return resolveAdminHelp(shareToken);
         }
         return null;
     }
@@ -111,6 +116,19 @@ public class ShareTokensService {
                 StringUtils.hasText(asset.getDetails()) ? asset.getDetails() : safeText(asset.getSubtitle()),
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()));
+    }
+
+    private ShareTokenResolvedItemDto resolveAdminHelp(ShareToken shareToken) {
+        return new ShareTokenResolvedItemDto(
+                KIND_ADMIN_HELP,
+                safeText(shareToken.getEntityId()),
+                null,
+                safeText(shareToken.getOwnerUserId()),
+                "Shared help view",
+                "MyScoutee support session",
+                "The user allowed MyScoutee admin to open their current app view.",
+                null,
+                safeText(shareToken.getEntityId()));
     }
 
     private ActivityEvent findEvent(String entityId) {

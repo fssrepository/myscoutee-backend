@@ -21,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import org.bson.types.ObjectId;
 
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
@@ -1110,7 +1112,16 @@ public class ActivitiesChatService {
     }
 
     private String resolveUserId(String requestedUserId) {
-        return normalizeId(homeUserProfileService.resolveSelectedUserId(requestedUserId));
+        String resolvedUserId = normalizeId(homeUserProfileService.resolveSelectedUserId(requestedUserId));
+        if (StringUtils.hasText(resolvedUserId)) {
+            return resolvedUserId;
+        }
+        String normalizedRequestedUserId = normalizeId(requestedUserId);
+        if (MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO
+                && normalizedRequestedUserId.startsWith("admin-demo-")) {
+            return normalizedRequestedUserId;
+        }
+        return "";
     }
 
     private String resolveUserName(Users user, String fallbackUserId) {
