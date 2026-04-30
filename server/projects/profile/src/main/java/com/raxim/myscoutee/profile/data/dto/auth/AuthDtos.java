@@ -114,6 +114,8 @@ public final class AuthDtos {
             List<String> images,
             UserImpressionsDto impressions,
             String profileStatus,
+            String previousProfileStatus,
+            String deletedAtIso,
             UserActivitiesDto activities) {
     }
 
@@ -141,6 +143,8 @@ public final class AuthDtos {
             List<String> images,
             UserImpressionsDto impressions,
             String profileStatus,
+            String previousProfileStatus,
+            String deletedAtIso,
             UserActivitiesDto activities,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,
@@ -197,7 +201,14 @@ public final class AuthDtos {
             String memberEntryId,
             String eventId,
             String eventTitle,
-            String eventStartAtIso) {
+            String eventStartAtIso,
+            String sourceType,
+            String sourceId,
+            String sourceText,
+            String chatId,
+            String messageId,
+            String assetId,
+            String assetType) {
     }
 
     public record UserLogoutRequestDto(

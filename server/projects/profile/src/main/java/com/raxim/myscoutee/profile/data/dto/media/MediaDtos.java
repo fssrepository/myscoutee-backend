@@ -9,4 +9,9 @@ public final class MediaDtos {
             String imageUrl,
             String url) {
     }
+
+    public record MediaUploadResponseDto(
+            Boolean uploaded,
+            String url) {
+    }
 }

@@ -45,7 +45,46 @@ public final class ActivityChatsDtos {
             String text,
             String sentAtIso,
             Boolean mine,
-            List<ChatReadAvatarDto> readBy) {
+            List<ChatReadAvatarDto> readBy,
+            String deletedAtIso,
+            String deletedByUserId,
+            String deletedByName,
+            String editedAtIso,
+            String pinnedAtIso,
+            String pinnedByUserId,
+            ChatMessageReplyDto replyTo,
+            List<ChatMessageReactionDto> reactions,
+            List<ChatMessageAttachmentDto> attachments) {
+    }
+
+    public record ChatMessageReplyDto(
+            String id,
+            String sender,
+            String text) {
+    }
+
+    public record ChatMessageReactionDto(
+            String emoji,
+            String userId,
+            String userName,
+            String userInitials,
+            String userGender,
+            String reactedAtIso) {
+    }
+
+    public record ChatMessageAttachmentDto(
+            String id,
+            String type,
+            String title,
+            String entityId,
+            String assetType,
+            String ownerUserId,
+            String subtitle,
+            String description,
+            String url,
+            String previewUrl,
+            String mimeType,
+            Long sizeBytes) {
     }
 
     public record ChatTypingDto(
@@ -73,13 +112,24 @@ public final class ActivityChatsDtos {
     }
 
     public record ChatPostMessageRequestDto(
-            String text) {
+            String text,
+            ChatMessageReplyDto replyTo,
+            List<ChatMessageAttachmentDto> attachments) {
+    }
+
+    public record ChatMessageMutationRequestDto(
+            String text,
+            Boolean pinned,
+            String emoji,
+            List<ChatMessageAttachmentDto> attachments) {
     }
 
     public record ChatSocketRequestDto(
             String type,
             String clientId,
             String text,
+            ChatMessageReplyDto replyTo,
+            List<ChatMessageAttachmentDto> attachments,
             Boolean typing,
             List<String> messageIds) {
     }

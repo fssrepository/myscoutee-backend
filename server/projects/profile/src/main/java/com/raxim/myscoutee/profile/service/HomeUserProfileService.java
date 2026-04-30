@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
@@ -233,6 +234,8 @@ public class HomeUserProfileService {
                 userDto.images(),
                 userDto.impressions(),
                 userDto.profileStatus(),
+                userDto.previousProfileStatus(),
+                userDto.deletedAtIso(),
                 userDto.activities(),
                 filterCount,
                 filterPreferences,
@@ -391,6 +394,27 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
         }
 
+        String sourceType = normalizeOptionalText(request.sourceType());
+        String sourceId = normalizeOptionalText(request.sourceId());
+        String sourceText = normalizeOptionalText(request.sourceText());
+        String chatId = normalizeOptionalText(request.chatId());
+        String messageId = normalizeOptionalText(request.messageId());
+        String assetId = normalizeOptionalText(request.assetId());
+        String assetType = normalizeOptionalText(request.assetType());
+        ActivityChat.ChatMessageRecord reportedChatMessage = null;
+        if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
+            ActivityChat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
+            if (reportedChat == null) {
+                return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
+            }
+            reportedChatMessage = findChatMessage(reportedChat, messageId);
+            chatId = normalizeOptionalText(reportedChat.getChatId());
+            messageId = normalizeOptionalText(reportedChatMessage == null ? messageId : reportedChatMessage.getId());
+            sourceType = "chat";
+            sourceId = normalizeOptionalText(firstNonBlank(sourceId, messageId));
+            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChatMessage == null ? null : reportedChatMessage.getText()));
+        }
+
         String nowIso = Instant.now().toString();
         UserReportSubmission document = new UserReportSubmission();
         document.setId(new ObjectId().toHexString());
@@ -408,6 +432,13 @@ public class HomeUserProfileService {
         document.setEventStartAtIso(normalizeOptionalText(firstNonBlank(
                 eventRecord == null ? null : eventRecord.getStartAtIso(),
                 request.eventStartAtIso())));
+        document.setSourceType(sourceType);
+        document.setSourceId(sourceId);
+        document.setSourceText(sourceText);
+        document.setChatId(chatId);
+        document.setMessageId(messageId);
+        document.setAssetId(assetId);
+        document.setAssetType(assetType);
         document.setCreatedDate(nowIso);
         document.setCreatedUser(userId);
         document.setUpdatedDate(nowIso);
@@ -436,8 +467,11 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
         }
 
+        String previousProfileStatus = resolveProfileStatus(user);
         user.setStatus("D");
         user.setProfileStatus("deleted");
+        user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
+        user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
         recordSessionAction(resolvedUserId, "delete", "status:D");
         return new UserSubmitActionResponseDto(true, null);
@@ -670,6 +704,8 @@ public class HomeUserProfileService {
                 normalizeStrings(user.getImages()),
                 includeImpressions ? resolveMergedUserImpressions(user) : null,
                 resolveProfileStatus(user),
+                nullToEmpty(user.getPreviousProfileStatus()),
+                nullToEmpty(user.getDeletedAtIso()),
                 toUserActivitiesDto(user.getActivities()));
     }
 
@@ -1024,11 +1060,26 @@ public class HomeUserProfileService {
                 current));
         document.setImages(normalizeStrings(user.images()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
-        String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus()))
+        boolean reactivatingDeletedUser = current != null
+                && "D".equalsIgnoreCase(safeText(current.getStatus()))
+                && !"deleted".equals(safeText(user.profileStatus()));
+        String previousProfileStatus = current == null ? "" : safeText(current.getPreviousProfileStatus());
+        if ("deleted".equals(safeText(user.profileStatus()))) {
+            previousProfileStatus = StringUtils.hasText(user.previousProfileStatus())
+                    ? safeText(user.previousProfileStatus())
+                    : resolveProfileStatus(current);
+        } else if (reactivatingDeletedUser) {
+            previousProfileStatus = "";
+        }
+        String status = current != null && "D".equalsIgnoreCase(safeText(current.getStatus())) && !reactivatingDeletedUser
                 ? current.getStatus()
                 : resolveStatusCode(user.profileStatus(), current == null ? null : current.getStatus());
         document.setStatus(status);
         document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
+        document.setPreviousProfileStatus(previousProfileStatus);
+        document.setDeletedAtIso("D".equalsIgnoreCase(safeText(status))
+                ? (StringUtils.hasText(user.deletedAtIso()) ? user.deletedAtIso() : (current == null ? Instant.now().toString() : current.getDeletedAtIso()))
+                : null);
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
     }
@@ -1286,6 +1337,56 @@ public class HomeUserProfileService {
                 .anyMatch(normalizedUserId::equals);
     }
 
+    private ActivityChat resolveReportableChat(
+            String reporterUserId,
+            String targetUserId,
+            String chatId,
+            String messageId) {
+        String normalizedReporterUserId = normalizeId(reporterUserId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedMessageId = normalizeId(messageId);
+        if (!StringUtils.hasText(normalizedReporterUserId)
+                || !StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(normalizedChatId)
+                || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        ActivityChat chat = activityChatsRepository
+                .findByOwnerUserIdAndChatId(normalizedReporterUserId, normalizedChatId)
+                .orElse(null);
+        if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
+            return null;
+        }
+        ActivityChat.ChatMessageRecord message = findChatMessage(chat, normalizedMessageId);
+        if (message == null || message.getSenderAvatar() == null) {
+            return null;
+        }
+        return normalizedTargetUserId.equals(normalizeId(message.getSenderAvatar().getId())) ? chat : null;
+    }
+
+    private boolean chatHasMember(ActivityChat chat, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (chat == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        return chat.getMemberIds().stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
+    }
+
+    private ActivityChat.ChatMessageRecord findChatMessage(ActivityChat chat, String messageId) {
+        String normalizedMessageId = normalizeId(messageId);
+        if (chat == null || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        return chat.getMessages().stream()
+                .filter(Objects::nonNull)
+                .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                .findFirst()
+                .orElse(null);
+    }
+
     private String resolveActivityMemberEntryId(ActivityMember member) {
         if (member == null) {
             return null;
@@ -1464,14 +1565,18 @@ public class HomeUserProfileService {
     }
 
     private String resolveProfileStatus(String status, String fallbackProfileStatus) {
+        String normalizedProfileStatus = safeText(fallbackProfileStatus);
+        if ("blocked".equals(normalizedProfileStatus)) {
+            return "blocked";
+        }
         return switch (safeText(status)) {
             case "D" -> "deleted";
+            case "B" -> "blocked";
             case "I" -> "inactive";
             case "F" -> "friends only";
             case "H" -> "host only";
             case "A" -> "public";
             default -> {
-                String normalizedProfileStatus = safeText(fallbackProfileStatus);
                 yield StringUtils.hasText(normalizedProfileStatus) ? normalizedProfileStatus : "public";
             }
         };
@@ -1480,6 +1585,7 @@ public class HomeUserProfileService {
     private String resolveStatusCode(String profileStatus, String fallbackStatus) {
         return switch (safeText(profileStatus)) {
             case "deleted" -> "D";
+            case "blocked" -> "B";
             case "inactive" -> "I";
             case "friends only" -> "F";
             case "host only" -> "H";

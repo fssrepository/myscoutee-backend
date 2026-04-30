@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaUploadResponseDto;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
 
@@ -38,6 +39,19 @@ public class MediaController {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Image upload unavailable.");
         }
         return new MediaImageUploadResponseDto(true, imageUrl, imageUrl);
+    }
+
+    @PostMapping(path = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public MediaUploadResponseDto uploadAudio(
+            @RequestParam("scope") String scope,
+            @RequestParam("ownerId") String ownerId,
+            @RequestParam(value = "entityId", required = false) String entityId,
+            @RequestParam("audio") MultipartFile audio) {
+        String audioUrl = mediaStorageService.storeAudio(scope, ownerId, entityId, audio);
+        if (audioUrl == null) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Audio upload unavailable.");
+        }
+        return new MediaUploadResponseDto(true, audioUrl);
     }
 
     @GetMapping("/public")

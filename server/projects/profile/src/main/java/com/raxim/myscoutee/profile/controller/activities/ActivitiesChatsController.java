@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageMutationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
@@ -71,7 +72,51 @@ public class ActivitiesChatsController {
         if (request == null) {
             return null;
         }
-        return activitiesChatService.sendMessage(chatId, userId, request.text());
+        return activitiesChatService.sendMessage(chatId, userId, request.text(), null, request.replyTo(), request.attachments());
+    }
+
+    @PostMapping("/{chatId}/messages/{messageId}/edit")
+    public ChatMessageDto editMessage(
+            @PathVariable("chatId") String chatId,
+            @PathVariable("messageId") String messageId,
+            @RequestBody ChatMessageMutationRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesChatService.editMessage(chatId, userId, messageId, request == null ? "" : request.text());
+    }
+
+    @PostMapping("/{chatId}/messages/{messageId}/delete")
+    public ChatMessageDto deleteMessage(
+            @PathVariable("chatId") String chatId,
+            @PathVariable("messageId") String messageId,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesChatService.deleteMessage(chatId, userId, messageId);
+    }
+
+    @PostMapping("/{chatId}/messages/{messageId}/pin")
+    public ChatMessageDto pinMessage(
+            @PathVariable("chatId") String chatId,
+            @PathVariable("messageId") String messageId,
+            @RequestBody ChatMessageMutationRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesChatService.pinMessage(chatId, userId, messageId, request != null && Boolean.TRUE.equals(request.pinned()));
+    }
+
+    @PostMapping("/{chatId}/messages/{messageId}/reaction")
+    public ChatMessageDto reactToMessage(
+            @PathVariable("chatId") String chatId,
+            @PathVariable("messageId") String messageId,
+            @RequestBody ChatMessageMutationRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesChatService.reactToMessage(chatId, userId, messageId, request == null ? "" : request.emoji());
+    }
+
+    @PostMapping("/{chatId}/messages/{messageId}/attachments")
+    public ChatMessageDto updateMessageAttachments(
+            @PathVariable("chatId") String chatId,
+            @PathVariable("messageId") String messageId,
+            @RequestBody ChatMessageMutationRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesChatService.updateMessageAttachments(chatId, userId, messageId, request == null ? null : request.attachments());
     }
 
     @PostMapping("/devices")

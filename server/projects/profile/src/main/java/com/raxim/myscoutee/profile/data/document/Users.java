@@ -45,6 +45,8 @@ public class Users {
     private UserImpressionsRecord impressions;
     private String status;
     private String profileStatus;
+    private String previousProfileStatus;
+    private String deletedAtIso;
     private UserActivitiesRecord activities;
     private List<UserDeviceRecord> devices = new ArrayList<>();
 
@@ -262,6 +264,22 @@ public class Users {
 
     public void setProfileStatus(String profileStatus) {
         this.profileStatus = profileStatus;
+    }
+
+    public String getPreviousProfileStatus() {
+        return previousProfileStatus;
+    }
+
+    public void setPreviousProfileStatus(String previousProfileStatus) {
+        this.previousProfileStatus = previousProfileStatus;
+    }
+
+    public String getDeletedAtIso() {
+        return deletedAtIso;
+    }
+
+    public void setDeletedAtIso(String deletedAtIso) {
+        this.deletedAtIso = deletedAtIso;
     }
 
     public String getStatus() {
