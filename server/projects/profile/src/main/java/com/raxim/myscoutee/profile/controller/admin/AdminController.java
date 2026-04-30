@@ -26,11 +26,6 @@ public class AdminController {
         return adminModerationService.dashboard(adminUserId);
     }
 
-    @PostMapping("/bootstrap")
-    public AdminDashboardDto bootstrap(@RequestBody(required = false) AdminActionRequestDto request) {
-        return adminModerationService.dashboard(request == null ? null : request.adminUserId());
-    }
-
     @PostMapping("/users/{userId}/warn")
     public AdminDashboardDto warn(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
         return adminModerationService.warn(userId, request);
