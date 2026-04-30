@@ -54,6 +54,7 @@ public final class AdminDtos {
             String id,
             String userId,
             String userName,
+            String userImageUrl,
             String category,
             String subject,
             String details,

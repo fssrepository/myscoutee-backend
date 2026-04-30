@@ -284,7 +284,18 @@ public class AdminModerationService {
     private AdminFeedbackDto toFeedback(UserFeedbackSubmission item, Map<String, Users> usersById) {
         Users user = usersById.get(normalize(item.getUserId()));
         return new AdminFeedbackDto(item.getId(), item.getUserId(), text(user == null ? null : user.getName(), "User"),
-                item.getCategory(), item.getSubject(), item.getDetails(), item.getCreatedDate());
+                firstImage(user), item.getCategory(), item.getSubject(), item.getDetails(), item.getCreatedDate());
+    }
+
+    private String firstImage(Users user) {
+        if (user == null || user.getImages() == null) {
+            return null;
+        }
+        return user.getImages().stream()
+                .map(this::normalize)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse(null);
     }
 
     private String normalize(String value) { return value == null ? "" : value.trim(); }
