@@ -110,6 +110,15 @@ public class ActivitiesChatsController {
         return activitiesChatService.reactToMessage(chatId, userId, messageId, request == null ? "" : request.emoji());
     }
 
+    @PostMapping("/{chatId}/messages/{messageId}/attachments")
+    public ChatMessageDto updateMessageAttachments(
+            @PathVariable("chatId") String chatId,
+            @PathVariable("messageId") String messageId,
+            @RequestBody ChatMessageMutationRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return activitiesChatService.updateMessageAttachments(chatId, userId, messageId, request == null ? null : request.attachments());
+    }
+
     @PostMapping("/devices")
     public void upsertDevice(
             @RequestBody ChatDeviceUpsertRequestDto request,

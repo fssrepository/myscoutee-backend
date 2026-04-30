@@ -120,7 +120,8 @@ public final class ActivityChatsDtos {
     public record ChatMessageMutationRequestDto(
             String text,
             Boolean pinned,
-            String emoji) {
+            String emoji,
+            List<ChatMessageAttachmentDto> attachments) {
     }
 
     public record ChatSocketRequestDto(

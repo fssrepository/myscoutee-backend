@@ -260,6 +260,19 @@ public class ActivitiesChatService {
         });
     }
 
+    public ChatMessageDto updateMessageAttachments(
+            String chatId,
+            String requestedUserId,
+            String messageId,
+            List<ChatMessageAttachmentDto> attachments) {
+        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+            if (StringUtils.hasText(message.getDeletedAtIso())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deleted messages cannot be updated.");
+            }
+            message.setAttachments(normalizeAttachments(attachments));
+        });
+    }
+
     public void markMessagesRead(String chatId, String requestedUserId, List<String> messageIds) {
         String userId = requireResolvedUserId(requestedUserId);
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
