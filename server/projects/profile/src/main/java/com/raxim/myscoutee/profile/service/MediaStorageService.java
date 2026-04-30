@@ -18,7 +18,7 @@ import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredOb
 
 @Service
 public class MediaStorageService {
-    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset");
+    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat");
 
     private final MediaStorageProperties properties;
     private final MediaObjectStoreClient objectStoreClient;
@@ -35,7 +35,18 @@ public class MediaStorageService {
             return null;
         }
         try {
-            return storeImageBytes(scope, ownerId, entityId, image.getOriginalFilename(), image.getContentType(), image.getBytes());
+            return storeMediaBytes(scope, ownerId, entityId, image.getOriginalFilename(), image.getContentType(), image.getBytes(), "image/");
+        } catch (IOException | RuntimeException ex) {
+            return null;
+        }
+    }
+
+    public String storeAudio(String scope, String ownerId, String entityId, MultipartFile audio) {
+        if (!isEnabled() || audio == null || audio.isEmpty()) {
+            return null;
+        }
+        try {
+            return storeMediaBytes(scope, ownerId, entityId, audio.getOriginalFilename(), audio.getContentType(), audio.getBytes(), "audio/");
         } catch (IOException | RuntimeException ex) {
             return null;
         }
@@ -58,7 +69,28 @@ public class MediaStorageService {
             return null;
         }
         String contentType = normalizeContentType(contentTypeValue);
-        if (!contentType.startsWith("image/")) {
+        return storeMediaBytes(scope, ownerId, entityId, originalFilename, contentTypeValue, bytes, "image/");
+    }
+
+    public String storeMediaBytes(
+            String scope,
+            String ownerId,
+            String entityId,
+            String originalFilename,
+            String contentTypeValue,
+            byte[] bytes,
+            String requiredContentTypePrefix) {
+        if (!isEnabled() || bytes == null || bytes.length == 0) {
+            return null;
+        }
+        String normalizedScope = normalizeScope(scope);
+        String normalizedOwnerId = sanitizeSegment(ownerId);
+        String normalizedEntityId = sanitizeSegment(entityId);
+        if (!StringUtils.hasText(normalizedScope) || !StringUtils.hasText(normalizedOwnerId)) {
+            return null;
+        }
+        String contentType = normalizeContentType(contentTypeValue);
+        if (!contentType.startsWith(safeText(requiredContentTypePrefix))) {
             return null;
         }
         try {
@@ -102,7 +134,9 @@ public class MediaStorageService {
     }
 
     private String normalizeContentType(String value) {
-        return safeText(value).toLowerCase(Locale.ROOT);
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        int parameterIndex = normalized.indexOf(';');
+        return parameterIndex >= 0 ? normalized.substring(0, parameterIndex).trim() : normalized;
     }
 
     private String sanitizeSegment(String value) {
@@ -120,7 +154,12 @@ public class MediaStorageService {
             case "image/png" -> ".png";
             case "image/webp" -> ".webp";
             case "image/gif" -> ".gif";
-            default -> ".jpg";
+            case "audio/mpeg" -> ".mp3";
+            case "audio/mp4", "audio/aac" -> ".m4a";
+            case "audio/ogg" -> ".ogg";
+            case "audio/webm" -> ".webm";
+            case "audio/wav", "audio/x-wav" -> ".wav";
+            default -> contentType.startsWith("audio/") ? ".audio" : ".jpg";
         };
     }
 
