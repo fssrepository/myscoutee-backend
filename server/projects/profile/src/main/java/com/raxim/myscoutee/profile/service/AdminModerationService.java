@@ -44,8 +44,10 @@ public class AdminModerationService {
             .ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
     private static final List<AdminUserDto> DEMO_ADMINS = List.of(
-            new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "ava.admin@myscoutee.local"),
-            new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "noel.admin@myscoutee.local"));
+            new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "ava.admin@myscoutee.local",
+                    "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()),
+            new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "noel.admin@myscoutee.local",
+                    "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()));
 
     private final ConfigProperties configProperties;
     private final UserReportSubmissionsRepository reportsRepository;
@@ -126,7 +128,11 @@ public class AdminModerationService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin demo access is restricted to demo data.");
         }
         String normalized = normalize(adminUserId);
-        return DEMO_ADMINS.stream().filter(admin -> admin.id().equals(normalized)).findFirst().orElse(DEMO_ADMINS.get(0));
+        AdminUserDto admin = DEMO_ADMINS.stream()
+                .filter(candidate -> candidate.id().equals(normalized))
+                .findFirst()
+                .orElse(DEMO_ADMINS.get(0));
+        return withStoredAdminProfile(admin);
     }
 
     private AdminUserDto resolveFirebaseAdmin() {
@@ -139,7 +145,32 @@ public class AdminModerationService {
         if (!StringUtils.hasText(email) || !StringUtils.hasText(configured) || !configured.equalsIgnoreCase(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
         }
-        return new AdminUserDto(email, email, initialsForEmail(email), email);
+        return withStoredAdminProfile(new AdminUserDto(
+                email,
+                email,
+                initialsForEmail(email),
+                email,
+                "Moderation workspace",
+                "Reviews reports, feedback, and support chats.",
+                List.of()));
+    }
+
+    private AdminUserDto withStoredAdminProfile(AdminUserDto admin) {
+        Users user = usersRepository.findByUserId(admin.id()).orElse(null);
+        if (user == null) {
+            return admin;
+        }
+        String name = text(user.getName(), admin.name());
+        String initials = text(user.getInitials(), admin.initials());
+        String headline = text(user.getHeadline(), admin.headline());
+        String about = text(user.getAbout(), admin.about());
+        List<String> images = user.getImages() == null
+                ? admin.images()
+                : user.getImages().stream()
+                        .map(this::normalize)
+                        .filter(StringUtils::hasText)
+                        .toList();
+        return new AdminUserDto(admin.id(), name, initials, admin.email(), headline, about, images);
     }
 
     private void ensureReportedUser(String targetUserId) {

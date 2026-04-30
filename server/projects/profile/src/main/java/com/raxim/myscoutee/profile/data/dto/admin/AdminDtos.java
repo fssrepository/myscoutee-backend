@@ -5,7 +5,14 @@ import java.util.List;
 public final class AdminDtos {
     private AdminDtos() {}
 
-    public record AdminUserDto(String id, String name, String initials, String email) {}
+    public record AdminUserDto(
+            String id,
+            String name,
+            String initials,
+            String email,
+            String headline,
+            String about,
+            List<String> images) {}
     public record AdminActionRequestDto(String adminUserId, String message) {}
     public record AdminChatMessageDto(
             String id,
