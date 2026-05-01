@@ -8,4 +8,6 @@ import com.raxim.myscoutee.profile.data.document.PrivacyConsent;
 
 public interface PrivacyConsentsRepository extends MongoRepository<PrivacyConsent, String> {
     Optional<PrivacyConsent> findByUserIdAndRevisionId(String userId, String revisionId);
+
+    Optional<PrivacyConsent> findTopByUserIdOrderByUpdatedAtIsoDesc(String userId);
 }

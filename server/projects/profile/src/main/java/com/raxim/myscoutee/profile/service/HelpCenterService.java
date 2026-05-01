@@ -208,10 +208,8 @@ public class HelpCenterService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedRevisionId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
         }
-        int minimumRevisionVersion = revisionVersion == null ? 0 : Math.max(0, revisionVersion);
         return privacyConsentsRepository.findByUserIdAndRevisionId(normalizedUserId, normalizedRevisionId)
-                .filter(consent -> minimumRevisionVersion <= 0
-                        || Math.max(0, consent.getRevisionVersion() == null ? 0 : consent.getRevisionVersion()) >= minimumRevisionVersion)
+                .or(() -> privacyConsentsRepository.findTopByUserIdOrderByUpdatedAtIsoDesc(normalizedUserId))
                 .map(this::toPrivacyConsentDto)
                 .orElse(null);
     }
