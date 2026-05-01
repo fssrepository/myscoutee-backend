@@ -87,9 +87,13 @@ public class AdminModerationService {
                 .map(entry -> toReportedUser(entry.getKey(), entry.getValue(), usersById))
                 .sorted(Comparator.comparing(AdminReportedUserDto::lastReportedAtIso, Comparator.nullsLast(String::compareTo)).reversed())
                 .toList();
+        List<AdminReportedUserDto> blockedUsers = usersRepository.findByProfileStatus("blocked").stream()
+                .map(user -> toBlockedUser(user, byTarget.getOrDefault(normalize(user.getId()), List.of()), usersById))
+                .toList();
         return new AdminDashboardDto(
                 admin,
                 reportedUsers,
+                blockedUsers,
                 feedback.stream().map(item -> toFeedback(item, usersById)).toList());
     }
 
@@ -117,6 +121,18 @@ public class AdminModerationService {
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
                 : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.");
+        return dashboard(admin.id());
+    }
+
+    public AdminDashboardDto unblock(String userId, AdminActionRequestDto request) {
+        String targetUserId = normalize(userId);
+        AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
+        Users user = usersRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blocked user not found."));
+        String previous = normalize(user.getPreviousProfileStatus());
+        user.setProfileStatus(StringUtils.hasText(previous) && !"blocked".equals(previous) ? previous : "public");
+        user.setPreviousProfileStatus(null);
+        usersRepository.save(user);
         return dashboard(admin.id());
     }
 
@@ -184,39 +200,108 @@ public class AdminModerationService {
         Instant now = Instant.now();
         String nowIso = now.toString();
         String chatId = "c-support-admin-" + targetUserId;
-        ActivityChat chat = chatsRepository.findByOwnerUserIdAndChatId(targetUserId, chatId).orElseGet(() -> {
+        String messageId = "m-admin-" + new ObjectId().toHexString();
+        Users targetUser = usersRepository.findByUserId(targetUserId).orElse(null);
+        ActivityChat.ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
+        ActivityChat.ChatMessageRecord userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
+        ActivityChat userChat = appendSupportMessageForOwner(
+                targetUserId,
+                chatId,
+                admin.initials(),
+                "MyScoutee Support",
+                List.of(targetUserId, admin.id()),
+                text,
+                admin.id(),
+                nowIso,
+                userMessage,
+                true);
+        ActivityChat.ChatReadAvatarRecord adminRead = readAvatar(admin.id(), admin.initials(), "woman");
+        ActivityChat.ChatMessageRecord adminMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, true,
+                List.of(adminRead));
+        ActivityChat adminChat = appendSupportMessageForOwner(
+                admin.id(),
+                chatId,
+                text(targetUser == null ? null : targetUser.getInitials(), "U"),
+                "MyScoutee Support · " + text(targetUser == null ? null : targetUser.getName(), "Reported user"),
+                List.of(targetUserId, admin.id()),
+                text,
+                admin.id(),
+                nowIso,
+                adminMessage,
+                false);
+        chatsRepository.save(userChat);
+        chatsRepository.save(adminChat);
+    }
+
+    private ActivityChat appendSupportMessageForOwner(
+            String ownerUserId,
+            String chatId,
+            String avatar,
+            String title,
+            List<String> memberIds,
+            String lastMessage,
+            String lastSenderId,
+            String dateIso,
+            ActivityChat.ChatMessageRecord message,
+            boolean unreadForOwner) {
+        ActivityChat chat = chatsRepository.findByOwnerUserIdAndChatId(ownerUserId, chatId).orElseGet(() -> {
             ActivityChat next = new ActivityChat();
             next.setMongoId(new ObjectId().toHexString());
             next.setChatId(chatId);
-            next.setOwnerUserId(targetUserId);
-            next.setAvatar(admin.initials());
-            next.setTitle("MyScoutee Support");
-            next.setMemberIds(List.of(targetUserId, admin.id()));
-            next.setUnread(1);
+            next.setOwnerUserId(ownerUserId);
+            next.setUnread(0);
             next.setChannelType("serviceEvent");
             return next;
         });
-        ActivityChat.ChatAvatarRecord avatar = new ActivityChat.ChatAvatarRecord();
-        avatar.setId(admin.id());
-        avatar.setInitials(admin.initials());
-        avatar.setGender("woman");
+        chat.setAvatar(avatar);
+        chat.setTitle(title);
+        chat.setMemberIds(memberIds);
+        chat.setChannelType("serviceEvent");
+        chat.setLastMessage(lastMessage);
+        chat.setLastSenderId(lastSenderId);
+        chat.setDateIso(dateIso);
+        chat.setUnread(unreadForOwner ? Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1) : 0);
+        List<ActivityChat.ChatMessageRecord> messages = new ArrayList<>(chat.getMessages());
+        messages.add(message);
+        chat.setMessages(messages);
+        return chat;
+    }
+
+    private ActivityChat.ChatMessageRecord supportMessage(
+            String messageId,
+            String sender,
+            ActivityChat.ChatAvatarRecord avatar,
+            String text,
+            Instant now,
+            String nowIso,
+            boolean mine,
+            List<ActivityChat.ChatReadAvatarRecord> readBy) {
         ActivityChat.ChatMessageRecord message = new ActivityChat.ChatMessageRecord();
-        message.setId("m-admin-" + new ObjectId().toHexString());
-        message.setSender(admin.name());
+        message.setId(messageId);
+        message.setSender(sender);
         message.setSenderAvatar(avatar);
         message.setText(text);
         message.setTime(CHAT_TIME_FORMAT.format(now));
         message.setSentAtIso(nowIso);
-        message.setMine(false);
-        message.setReadBy(List.of());
-        List<ActivityChat.ChatMessageRecord> messages = new ArrayList<>(chat.getMessages());
-        messages.add(message);
-        chat.setMessages(messages);
-        chat.setLastMessage(text);
-        chat.setLastSenderId(admin.id());
-        chat.setDateIso(nowIso);
-        chat.setUnread(Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1));
-        chatsRepository.save(chat);
+        message.setMine(mine);
+        message.setReadBy(readBy);
+        return message;
+    }
+
+    private ActivityChat.ChatAvatarRecord chatAvatar(String id, String initials, String gender) {
+        ActivityChat.ChatAvatarRecord avatar = new ActivityChat.ChatAvatarRecord();
+        avatar.setId(id);
+        avatar.setInitials(initials);
+        avatar.setGender(gender);
+        return avatar;
+    }
+
+    private ActivityChat.ChatReadAvatarRecord readAvatar(String id, String initials, String gender) {
+        ActivityChat.ChatReadAvatarRecord avatar = new ActivityChat.ChatReadAvatarRecord();
+        avatar.setId(id);
+        avatar.setInitials(initials);
+        avatar.setGender(gender);
+        return avatar;
     }
 
     private Map<String, Users> usersById(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
@@ -241,7 +326,22 @@ public class AdminModerationService {
                 text(user == null ? null : user.getInitials(), "??"),
                 text(user == null ? null : user.getGender(), "woman"),
                 text(user == null ? null : user.getCity(), ""),
+                firstImage(user),
                 text(user == null ? null : user.getProfileStatus(), "public"),
+                reports.size(),
+                reports.isEmpty() ? null : reports.get(0).getCreatedDate(),
+                reports.stream().map(report -> toReport(report, usersById)).toList());
+    }
+
+    private AdminReportedUserDto toBlockedUser(Users user, List<UserReportSubmission> reports, Map<String, Users> usersById) {
+        return new AdminReportedUserDto(
+                text(user.getId(), ""),
+                text(user.getName(), "Blocked user"),
+                text(user.getInitials(), "??"),
+                text(user.getGender(), "woman"),
+                text(user.getCity(), ""),
+                firstImage(user),
+                text(user.getProfileStatus(), "blocked"),
                 reports.size(),
                 reports.isEmpty() ? null : reports.get(0).getCreatedDate(),
                 reports.stream().map(report -> toReport(report, usersById)).toList());
@@ -251,8 +351,8 @@ public class AdminModerationService {
         Users reporter = usersById.get(normalize(report.getUserId()));
         ActivityChat chat = resolveReportedChat(report);
         return new AdminReportDto(report.getId(), report.getUserId(), text(reporter == null ? null : reporter.getName(), "Reporter"),
-                report.getTargetUserId(), report.getReason(), report.getDetails(), report.getEventId(), report.getEventTitle(),
-                report.getEventStartAtIso(), report.getSourceType(), report.getSourceId(), report.getSourceText(),
+                firstImage(reporter), report.getTargetUserId(), report.getHandle(), report.getReason(), report.getDetails(), report.getEventId(), report.getEventTitle(),
+                report.getEventStartAtIso(), report.getMemberEntryId(), report.getSourceType(), report.getSourceId(), report.getSourceText(),
                 report.getChatId(), report.getMessageId(), report.getAssetId(), report.getAssetType(),
                 chat == null ? null : chat.getTitle(),
                 chat == null ? List.of() : chat.getMessages().stream().map(this::toChatMessage).toList(),

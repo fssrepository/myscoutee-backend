@@ -26,6 +26,7 @@ public final class AdminDtos {
     public record AdminDashboardDto(
             AdminUserDto activeAdmin,
             List<AdminReportedUserDto> reportedUsers,
+            List<AdminReportedUserDto> blockedUsers,
             List<AdminFeedbackDto> feedback) {}
     public record AdminReportedUserDto(
             String userId,
@@ -33,6 +34,7 @@ public final class AdminDtos {
             String initials,
             String gender,
             String city,
+            String imageUrl,
             String profileStatus,
             Integer reportCount,
             String lastReportedAtIso,
@@ -41,12 +43,15 @@ public final class AdminDtos {
             String id,
             String reporterUserId,
             String reporterName,
+            String reporterImageUrl,
             String targetUserId,
+            String handle,
             String reason,
             String details,
             String eventId,
             String eventTitle,
             String eventStartAtIso,
+            String memberEntryId,
             String sourceType,
             String sourceId,
             String sourceText,

@@ -35,4 +35,9 @@ public class AdminController {
     public AdminDashboardDto block(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
         return adminModerationService.block(userId, request);
     }
+
+    @PostMapping("/users/{userId}/unblock")
+    public AdminDashboardDto unblock(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
+        return adminModerationService.unblock(userId, request);
+    }
 }
