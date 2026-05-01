@@ -1,0 +1,139 @@
+package com.raxim.myscoutee.profile.data.document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "ideaPosts")
+@CompoundIndexes({
+        @CompoundIndex(name = "idea_post_published_submitted", def = "{'published': 1, 'submittedAtIso': -1}"),
+        @CompoundIndex(name = "idea_post_featured_submitted", def = "{'featured': 1, 'published': 1, 'submittedAtIso': -1}")
+})
+public class IdeaPost {
+    @Id
+    private String id;
+
+    @Indexed(name = "idea_post_submitted_at")
+    private String submittedAtIso;
+
+    private String title;
+    private String excerpt;
+    private String contentHtml;
+    private String imageUrl;
+    private List<String> imageUrls = new ArrayList<>();
+    private Boolean featured;
+    private Boolean published;
+    private String createdDate;
+    private String createdUser;
+    private String updatedDate;
+    private String updatedUser;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getSubmittedAtIso() {
+        return submittedAtIso;
+    }
+
+    public void setSubmittedAtIso(String submittedAtIso) {
+        this.submittedAtIso = submittedAtIso;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+    }
+
+    public String getContentHtml() {
+        return contentHtml;
+    }
+
+    public void setContentHtml(String contentHtml) {
+        this.contentHtml = contentHtml;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls == null ? new ArrayList<>() : new ArrayList<>(imageUrls);
+    }
+
+    public Boolean getFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(Boolean featured) {
+        this.featured = featured;
+    }
+
+    public Boolean getPublished() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getCreatedUser() {
+        return createdUser;
+    }
+
+    public void setCreatedUser(String createdUser) {
+        this.createdUser = createdUser;
+    }
+
+    public String getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(String updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public String getUpdatedUser() {
+        return updatedUser;
+    }
+
+    public void setUpdatedUser(String updatedUser) {
+        this.updatedUser = updatedUser;
+    }
+}

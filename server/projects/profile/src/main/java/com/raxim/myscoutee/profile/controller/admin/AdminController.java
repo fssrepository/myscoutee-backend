@@ -14,18 +14,29 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
+import com.raxim.myscoutee.profile.service.IdeaPostsService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminModerationService adminModerationService;
     private final HelpCenterService helpCenterService;
+    private final IdeaPostsService ideaPostsService;
 
-    public AdminController(AdminModerationService adminModerationService, HelpCenterService helpCenterService) {
+    public AdminController(
+            AdminModerationService adminModerationService,
+            HelpCenterService helpCenterService,
+            IdeaPostsService ideaPostsService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
+        this.ideaPostsService = ideaPostsService;
     }
 
     @GetMapping("/dashboard")
@@ -94,5 +105,22 @@ public class AdminController {
             @PathVariable String revisionId,
             @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
         return helpCenterService.deleteRevision(revisionId, request, "privacy");
+    }
+
+    @GetMapping("/ideas")
+    public List<IdeaPostDto> ideas(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return ideaPostsService.adminPosts(adminUserId);
+    }
+
+    @PostMapping("/ideas")
+    public IdeaPostDto saveIdea(@RequestBody(required = false) IdeaPostSaveRequestDto request) {
+        return ideaPostsService.savePost(request);
+    }
+
+    @DeleteMapping("/ideas/{postId}")
+    public List<IdeaPostDto> deleteIdea(
+            @PathVariable String postId,
+            @RequestBody(required = false) IdeaPostAdminActionRequestDto request) {
+        return ideaPostsService.deletePost(postId, request);
     }
 }
