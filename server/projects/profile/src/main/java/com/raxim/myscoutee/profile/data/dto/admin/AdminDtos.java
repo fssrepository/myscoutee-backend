@@ -38,6 +38,8 @@ public final class AdminDtos {
             String profileStatus,
             Integer reportCount,
             String lastReportedAtIso,
+            Boolean hasSupportChat,
+            Integer supportChatUnread,
             List<AdminReportDto> reports) {}
     public record AdminReportDto(
             String id,

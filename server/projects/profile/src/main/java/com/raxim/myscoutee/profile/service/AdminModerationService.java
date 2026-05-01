@@ -84,11 +84,11 @@ public class AdminModerationService {
             }
         }
         List<AdminReportedUserDto> reportedUsers = byTarget.entrySet().stream()
-                .map(entry -> toReportedUser(entry.getKey(), entry.getValue(), usersById))
+                .map(entry -> toReportedUser(entry.getKey(), entry.getValue(), usersById, admin.id()))
                 .sorted(Comparator.comparing(AdminReportedUserDto::lastReportedAtIso, Comparator.nullsLast(String::compareTo)).reversed())
                 .toList();
         List<AdminReportedUserDto> blockedUsers = usersRepository.findByProfileStatus("blocked").stream()
-                .map(user -> toBlockedUser(user, byTarget.getOrDefault(normalize(user.getId()), List.of()), usersById))
+                .map(user -> toBlockedUser(user, byTarget.getOrDefault(normalize(user.getId()), List.of()), usersById, admin.id()))
                 .toList();
         return new AdminDashboardDto(
                 admin,
@@ -215,9 +215,8 @@ public class AdminModerationService {
                 nowIso,
                 userMessage,
                 true);
-        ActivityChat.ChatReadAvatarRecord adminRead = readAvatar(admin.id(), admin.initials(), "woman");
         ActivityChat.ChatMessageRecord adminMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, true,
-                List.of(adminRead));
+                List.of());
         ActivityChat adminChat = appendSupportMessageForOwner(
                 admin.id(),
                 chatId,
@@ -318,7 +317,7 @@ public class AdminModerationService {
         return users;
     }
 
-    private AdminReportedUserDto toReportedUser(String userId, List<UserReportSubmission> reports, Map<String, Users> usersById) {
+    private AdminReportedUserDto toReportedUser(String userId, List<UserReportSubmission> reports, Map<String, Users> usersById, String adminUserId) {
         Users user = usersById.get(userId);
         return new AdminReportedUserDto(
                 userId,
@@ -330,10 +329,12 @@ public class AdminModerationService {
                 text(user == null ? null : user.getProfileStatus(), "public"),
                 reports.size(),
                 reports.isEmpty() ? null : reports.get(0).getCreatedDate(),
+                supportChat(adminUserId, userId) != null,
+                supportChatUnread(adminUserId, userId),
                 reports.stream().map(report -> toReport(report, usersById)).toList());
     }
 
-    private AdminReportedUserDto toBlockedUser(Users user, List<UserReportSubmission> reports, Map<String, Users> usersById) {
+    private AdminReportedUserDto toBlockedUser(Users user, List<UserReportSubmission> reports, Map<String, Users> usersById, String adminUserId) {
         return new AdminReportedUserDto(
                 text(user.getId(), ""),
                 text(user.getName(), "Blocked user"),
@@ -344,7 +345,23 @@ public class AdminModerationService {
                 text(user.getProfileStatus(), "blocked"),
                 reports.size(),
                 reports.isEmpty() ? null : reports.get(0).getCreatedDate(),
+                supportChat(adminUserId, user.getId()) != null,
+                supportChatUnread(adminUserId, user.getId()),
                 reports.stream().map(report -> toReport(report, usersById)).toList());
+    }
+
+    private ActivityChat supportChat(String adminUserId, String targetUserId) {
+        String adminId = normalize(adminUserId);
+        String userId = normalize(targetUserId);
+        if (!StringUtils.hasText(adminId) || !StringUtils.hasText(userId)) {
+            return null;
+        }
+        return chatsRepository.findByOwnerUserIdAndChatId(adminId, "c-support-admin-" + userId).orElse(null);
+    }
+
+    private int supportChatUnread(String adminUserId, String targetUserId) {
+        ActivityChat chat = supportChat(adminUserId, targetUserId);
+        return chat == null ? 0 : Math.max(0, chat.getUnread() == null ? 0 : chat.getUnread());
     }
 
     private AdminReportDto toReport(UserReportSubmission report, Map<String, Users> usersById) {
