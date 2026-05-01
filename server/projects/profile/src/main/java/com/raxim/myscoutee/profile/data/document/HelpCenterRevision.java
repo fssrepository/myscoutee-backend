@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "helpCenterRevisions")
+@CompoundIndexes({
+        @CompoundIndex(name = "help_revision_document_version", def = "{'documentType': 1, 'version': -1}", unique = true),
+        @CompoundIndex(name = "help_revision_document_active", def = "{'documentType': 1, 'active': 1, 'version': -1}")
+})
 public class HelpCenterRevision {
     @Id
     private String id;
 
-    @Indexed(name = "help_revision_version", unique = true)
+    @Indexed(name = "help_revision_document_type")
+    private String documentType;
+
     private Integer version;
 
     @Indexed(name = "help_revision_active")
@@ -21,6 +29,7 @@ public class HelpCenterRevision {
     private String title;
     private String summary;
     private String description;
+    private String headerColor;
     private List<HelpCenterSection> sections = new ArrayList<>();
     private String createdDate;
     private String createdUser;
@@ -33,6 +42,7 @@ public class HelpCenterRevision {
         private String title;
         private String blurb;
         private String contentHtml;
+        private Boolean optional;
 
         public String getId() {
             return id;
@@ -73,6 +83,14 @@ public class HelpCenterRevision {
         public void setContentHtml(String contentHtml) {
             this.contentHtml = contentHtml;
         }
+
+        public Boolean getOptional() {
+            return optional;
+        }
+
+        public void setOptional(Boolean optional) {
+            this.optional = optional;
+        }
     }
 
     public String getId() {
@@ -81,6 +99,14 @@ public class HelpCenterRevision {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
 
     public Integer getVersion() {
@@ -121,6 +147,14 @@ public class HelpCenterRevision {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getHeaderColor() {
+        return headerColor;
+    }
+
+    public void setHeaderColor(String headerColor) {
+        this.headerColor = headerColor;
     }
 
     public List<HelpCenterSection> getSections() {

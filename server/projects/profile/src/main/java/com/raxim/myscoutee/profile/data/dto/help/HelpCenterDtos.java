@@ -10,14 +10,17 @@ public final class HelpCenterDtos {
             String icon,
             String title,
             String blurb,
-            String contentHtml) {}
+            String contentHtml,
+            Boolean optional) {}
 
     public record HelpCenterRevisionDto(
             String id,
+            String documentKind,
             Integer version,
             String title,
             String summary,
             String description,
+            String headerColor,
             List<HelpCenterSectionDto> sections,
             Boolean active,
             String createdAtIso,
@@ -27,6 +30,7 @@ public final class HelpCenterDtos {
 
     public record HelpCenterAuditEntryDto(
             String id,
+            String documentKind,
             String revisionId,
             Integer version,
             String action,
@@ -45,6 +49,7 @@ public final class HelpCenterDtos {
             String title,
             String summary,
             String description,
+            String headerColor,
             List<HelpCenterSectionDto> sections) {}
 
     public record HelpCenterAdminActionRequestDto(String actorUserId) {}

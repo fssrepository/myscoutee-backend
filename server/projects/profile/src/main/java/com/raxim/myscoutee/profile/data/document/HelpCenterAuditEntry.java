@@ -8,13 +8,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "helpCenterAudit")
 @CompoundIndexes({
         @CompoundIndex(name = "help_audit_created", def = "{'createdDate': -1}"),
-        @CompoundIndex(name = "help_audit_revision_created", def = "{'revisionId': 1, 'createdDate': -1}")
+        @CompoundIndex(name = "help_audit_revision_created", def = "{'revisionId': 1, 'createdDate': -1}"),
+        @CompoundIndex(name = "help_audit_document_created", def = "{'documentType': 1, 'createdDate': -1}")
 })
 public class HelpCenterAuditEntry {
     @Id
     private String id;
 
     private String revisionId;
+    private String documentType;
     private Integer version;
     private String action;
     private String actorUserId;
@@ -35,6 +37,14 @@ public class HelpCenterAuditEntry {
 
     public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
 
     public Integer getVersion() {

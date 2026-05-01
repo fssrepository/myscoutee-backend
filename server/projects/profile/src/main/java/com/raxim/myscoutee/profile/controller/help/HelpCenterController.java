@@ -8,7 +8,7 @@ import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateD
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 
 @RestController
-@RequestMapping("/help")
+@RequestMapping
 public class HelpCenterController {
     private final HelpCenterService helpCenterService;
 
@@ -16,8 +16,13 @@ public class HelpCenterController {
         this.helpCenterService = helpCenterService;
     }
 
-    @GetMapping("/active")
-    public HelpCenterStateDto active() {
+    @GetMapping("/help/active")
+    public HelpCenterStateDto activeHelp() {
         return helpCenterService.activeState();
+    }
+
+    @GetMapping("/privacy/active")
+    public HelpCenterStateDto activePrivacy() {
+        return helpCenterService.activeState("privacy");
     }
 }

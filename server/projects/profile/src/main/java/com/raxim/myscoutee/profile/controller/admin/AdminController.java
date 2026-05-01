@@ -53,9 +53,19 @@ public class AdminController {
         return helpCenterService.adminState(adminUserId);
     }
 
+    @GetMapping("/privacy")
+    public HelpCenterStateDto privacyState(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return helpCenterService.adminState(adminUserId, "privacy");
+    }
+
     @PostMapping("/help/revisions")
     public HelpCenterStateDto saveHelpRevision(@RequestBody(required = false) HelpCenterRevisionSaveRequestDto request) {
         return helpCenterService.saveRevision(request);
+    }
+
+    @PostMapping("/privacy/revisions")
+    public HelpCenterStateDto savePrivacyRevision(@RequestBody(required = false) HelpCenterRevisionSaveRequestDto request) {
+        return helpCenterService.saveRevision(request, "privacy");
     }
 
     @PostMapping("/help/revisions/{revisionId}/activate")
@@ -65,10 +75,24 @@ public class AdminController {
         return helpCenterService.activateRevision(revisionId, request);
     }
 
+    @PostMapping("/privacy/revisions/{revisionId}/activate")
+    public HelpCenterStateDto activatePrivacyRevision(
+            @PathVariable String revisionId,
+            @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
+        return helpCenterService.activateRevision(revisionId, request, "privacy");
+    }
+
     @DeleteMapping("/help/revisions/{revisionId}")
     public HelpCenterStateDto deleteHelpRevision(
             @PathVariable String revisionId,
             @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
         return helpCenterService.deleteRevision(revisionId, request);
+    }
+
+    @DeleteMapping("/privacy/revisions/{revisionId}")
+    public HelpCenterStateDto deletePrivacyRevision(
+            @PathVariable String revisionId,
+            @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
+        return helpCenterService.deleteRevision(revisionId, request, "privacy");
     }
 }
