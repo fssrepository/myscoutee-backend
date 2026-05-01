@@ -9,6 +9,9 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
+promotional email template editor on admin / idea (blog post) carousel cards editor on landing page (below the hero)
+admin can edit also - featured, showed more
+
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

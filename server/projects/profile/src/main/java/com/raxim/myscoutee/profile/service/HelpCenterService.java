@@ -32,14 +32,18 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.HelpCenterAuditEntry;
 import com.raxim.myscoutee.profile.data.document.HelpCenterRevision;
 import com.raxim.myscoutee.profile.data.document.HelpCenterRevision.HelpCenterSection;
+import com.raxim.myscoutee.profile.data.document.PrivacyConsent;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAuditEntryDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterSectionDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
+import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentDto;
+import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.HelpCenterAuditRepository;
 import com.raxim.myscoutee.profile.repository.HelpCenterRevisionsRepository;
+import com.raxim.myscoutee.profile.repository.PrivacyConsentsRepository;
 
 @Service
 public class HelpCenterService {
@@ -58,6 +62,7 @@ public class HelpCenterService {
     private final ConfigProperties configProperties;
     private final HelpCenterRevisionsRepository revisionsRepository;
     private final HelpCenterAuditRepository auditRepository;
+    private final PrivacyConsentsRepository privacyConsentsRepository;
     private final MongoTemplate mongoTemplate;
     private final ObjectMapper objectMapper;
     private final ResourceLoader resourceLoader;
@@ -66,12 +71,14 @@ public class HelpCenterService {
             ConfigProperties configProperties,
             HelpCenterRevisionsRepository revisionsRepository,
             HelpCenterAuditRepository auditRepository,
+            PrivacyConsentsRepository privacyConsentsRepository,
             MongoTemplate mongoTemplate,
             ObjectMapper objectMapper,
             ResourceLoader resourceLoader) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
+        this.privacyConsentsRepository = privacyConsentsRepository;
         this.mongoTemplate = mongoTemplate;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
@@ -193,6 +200,56 @@ public class HelpCenterService {
             });
         }
         return fullState(kind);
+    }
+
+    public PrivacyConsentDto privacyConsent(String userId, String revisionId, Integer revisionVersion) {
+        String normalizedUserId = normalize(userId);
+        String normalizedRevisionId = normalize(revisionId);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedRevisionId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
+        }
+        int minimumRevisionVersion = revisionVersion == null ? 0 : Math.max(0, revisionVersion);
+        return privacyConsentsRepository.findByUserIdAndRevisionId(normalizedUserId, normalizedRevisionId)
+                .filter(consent -> minimumRevisionVersion <= 0
+                        || Math.max(0, consent.getRevisionVersion() == null ? 0 : consent.getRevisionVersion()) >= minimumRevisionVersion)
+                .map(this::toPrivacyConsentDto)
+                .orElse(null);
+    }
+
+    public PrivacyConsentDto savePrivacyConsent(PrivacyConsentSaveRequestDto request) {
+        String userId = normalize(request == null ? null : request.userId());
+        String revisionId = normalize(request == null ? null : request.revisionId());
+        if (!StringUtils.hasText(userId) || !StringUtils.hasText(revisionId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
+        }
+
+        ensureDefaultRevision(DOCUMENT_PRIVACY);
+        HelpCenterRevision revision = revisionsRepository.findById(revisionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Privacy revision not found."));
+        if (!DOCUMENT_PRIVACY.equals(revisionKind(revision))) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Privacy revision not found.");
+        }
+
+        String nowIso = Instant.now().toString();
+        PrivacyConsent consent = privacyConsentsRepository.findByUserIdAndRevisionId(userId, revisionId)
+                .orElseGet(PrivacyConsent::new);
+        int revisionVersion = Math.max(1, revision.getVersion() == null ? 1 : revision.getVersion());
+        int currentConsentVersion = consent.getRevisionVersion() == null ? 0 : consent.getRevisionVersion();
+        if (!StringUtils.hasText(consent.getId())) {
+            consent.setId(new ObjectId().toHexString());
+        }
+        if (!StringUtils.hasText(consent.getAcceptedAtIso()) || currentConsentVersion < revisionVersion) {
+            consent.setAcceptedAtIso(nowIso);
+        }
+        consent.setUserId(userId);
+        consent.setRevisionId(revisionId);
+        consent.setRevisionVersion(revisionVersion);
+        consent.setApprovedOptionalSectionIds(normalizeOptionalConsentSectionIds(
+                request == null ? null : request.approvedOptionalSectionIds(),
+                revision));
+        consent.setUpdatedAtIso(nowIso);
+        consent.setSource(privacyConsentSource(request == null ? null : request.source()));
+        return toPrivacyConsentDto(privacyConsentsRepository.save(consent));
     }
 
     private HelpCenterStateDto fullState(String kind) {
@@ -562,6 +619,48 @@ public class HelpCenterService {
                 normalize(entry.getMessage()));
     }
 
+    private PrivacyConsentDto toPrivacyConsentDto(PrivacyConsent consent) {
+        return new PrivacyConsentDto(
+                normalize(consent.getId()),
+                normalize(consent.getUserId()),
+                normalize(consent.getRevisionId()),
+                Math.max(1, consent.getRevisionVersion() == null ? 1 : consent.getRevisionVersion()),
+                consent.getApprovedOptionalSectionIds() == null
+                        ? List.of()
+                        : consent.getApprovedOptionalSectionIds().stream()
+                                .map(this::normalize)
+                                .filter(StringUtils::hasText)
+                                .distinct()
+                                .sorted()
+                                .toList(),
+                normalize(consent.getAcceptedAtIso()),
+                normalize(consent.getUpdatedAtIso()),
+                privacyConsentSource(consent.getSource()));
+    }
+
+    private List<String> normalizeOptionalConsentSectionIds(List<String> sectionIds, HelpCenterRevision revision) {
+        Set<String> optionalSectionIds = new LinkedHashSet<>();
+        if (revision.getSections() != null) {
+            for (HelpCenterSection section : revision.getSections()) {
+                String sectionId = normalize(section == null ? null : section.getId());
+                if (StringUtils.hasText(sectionId) && section != null && Boolean.TRUE.equals(section.getOptional())) {
+                    optionalSectionIds.add(sectionId);
+                }
+            }
+        }
+        if (sectionIds == null || sectionIds.isEmpty() || optionalSectionIds.isEmpty()) {
+            return List.of();
+        }
+        Set<String> approvedIds = new LinkedHashSet<>();
+        for (String sectionId : sectionIds) {
+            String normalizedSectionId = normalize(sectionId);
+            if (optionalSectionIds.contains(normalizedSectionId)) {
+                approvedIds.add(normalizedSectionId);
+            }
+        }
+        return new ArrayList<>(approvedIds);
+    }
+
     private void audit(String action, String actorUserId, HelpCenterRevision revision, String message) {
         String kind = revisionKind(revision);
         HelpCenterAuditEntry entry = new HelpCenterAuditEntry();
@@ -715,5 +814,9 @@ public class HelpCenterService {
 
     private String normalize(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String privacyConsentSource(String value) {
+        return "entry".equals(normalize(value)) ? "entry" : "settings";
     }
 }

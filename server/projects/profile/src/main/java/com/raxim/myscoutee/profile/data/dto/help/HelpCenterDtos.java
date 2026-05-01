@@ -52,5 +52,22 @@ public final class HelpCenterDtos {
             String headerColor,
             List<HelpCenterSectionDto> sections) {}
 
+    public record PrivacyConsentDto(
+            String id,
+            String userId,
+            String revisionId,
+            Integer revisionVersion,
+            List<String> approvedOptionalSectionIds,
+            String acceptedAtIso,
+            String updatedAtIso,
+            String source) {}
+
+    public record PrivacyConsentSaveRequestDto(
+            String userId,
+            String revisionId,
+            Integer revisionVersion,
+            List<String> approvedOptionalSectionIds,
+            String source) {}
+
     public record HelpCenterAdminActionRequestDto(String actorUserId) {}
 }
