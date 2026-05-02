@@ -14,7 +14,7 @@ admin can edit also - featured, showed more
 
 internalization (hungarian language also)
 
-service worker trigger on new bundle
+service worker reload trigger on new bundle
 
 when login first time - registration carousel - onb-boarding (not sure about message, as the card does not show)
 the other thing is probably on rate a new menu item should be there to show profile editor in view mode for other users
