@@ -9,6 +9,16 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
+idea carousel cards editor on landing page (below the hero)
+admin can edit also - featured, showed more
+
+internalization (hungarian language also)
+
+service worker reload trigger on new bundle
+
+when login first time - registration carousel - onb-boarding (not sure about message, as the card does not show)
+the other thing is probably on rate a new menu item should be there to show profile editor in view mode for other users
+
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

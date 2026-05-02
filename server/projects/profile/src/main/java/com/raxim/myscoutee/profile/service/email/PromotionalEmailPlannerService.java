@@ -24,6 +24,7 @@ import com.raxim.myscoutee.profile.repository.EmailCampaignRulesRepository;
 import com.raxim.myscoutee.profile.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class PromotionalEmailPlannerService {
@@ -38,6 +39,7 @@ public class PromotionalEmailPlannerService {
     private final EmailTemplateRenderer emailTemplateRenderer;
     private final PromotionalEmailRuleEvaluator ruleEvaluator;
     private final EmailProviderGateway emailProviderGateway;
+    private final NotificationRuleRegistryService notificationRuleRegistryService;
 
     public PromotionalEmailPlannerService(
             EmailProperties emailProperties,
@@ -47,7 +49,8 @@ public class PromotionalEmailPlannerService {
             UsersRepository usersRepository,
             EmailTemplateRenderer emailTemplateRenderer,
             PromotionalEmailRuleEvaluator ruleEvaluator,
-            EmailProviderGateway emailProviderGateway) {
+            EmailProviderGateway emailProviderGateway,
+            NotificationRuleRegistryService notificationRuleRegistryService) {
         this.emailProperties = emailProperties;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.emailCampaignRulesRepository = emailCampaignRulesRepository;
@@ -56,14 +59,25 @@ public class PromotionalEmailPlannerService {
         this.emailTemplateRenderer = emailTemplateRenderer;
         this.ruleEvaluator = ruleEvaluator;
         this.emailProviderGateway = emailProviderGateway;
+        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Scheduled(fixedDelayString = "${email.promotions.planning-delay-ms:3600000}")
     public void planScheduledPromotionalEmails() {
-        if (!emailProperties.getPromotions().isEnabled() || !emailProperties.isEnabled()) {
+        if (!emailProperties.isEnabled()) {
+            return;
+        }
+        Instant now = Instant.now();
+        if (!notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_PROMOTIONAL_EMAIL_PLANNER, now)) {
             return;
         }
         int queued = planPendingPromotionalEmails();
+        notificationRuleRegistryService.recordRun(
+                NotificationRuleRegistryService.RULE_PROMOTIONAL_EMAIL_PLANNER,
+                queued,
+                "completed",
+                "Queued promotional email outbox rows.",
+                UPDATED_BY);
         if (queued > 0) {
             LOGGER.info("Queued {} promotional email(s).", queued);
         }

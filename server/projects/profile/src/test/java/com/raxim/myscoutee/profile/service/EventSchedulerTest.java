@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @ExtendWith(MockitoExtension.class)
 class EventSchedulerTest {
@@ -50,6 +51,8 @@ class EventSchedulerTest {
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     @Mock
     private EventInviteNotificationService eventInviteNotificationService;
+    @Mock
+    private NotificationRuleRegistryService notificationRuleRegistryService;
 
     @Test
     void generatePriorityPlansPersistsInvitesAndSendsNotifications() {
@@ -368,7 +371,8 @@ class EventSchedulerTest {
                 schedulerPlanMarkersRepository,
                 activitiesMembersService,
                 activitiesEventLeaderboardService,
-                eventInviteNotificationService);
+                eventInviteNotificationService,
+                notificationRuleRegistryService);
     }
 
     private Users user(String userId) {

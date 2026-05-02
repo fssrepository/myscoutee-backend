@@ -18,7 +18,7 @@ import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredOb
 
 @Service
 public class MediaStorageService {
-    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat");
+    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat", "idea");
 
     private final MediaStorageProperties properties;
     private final MediaObjectStoreClient objectStoreClient;
@@ -154,6 +154,7 @@ public class MediaStorageService {
             case "image/png" -> ".png";
             case "image/webp" -> ".webp";
             case "image/gif" -> ".gif";
+            case "image/svg+xml" -> ".svg";
             case "audio/mpeg" -> ".mp3";
             case "audio/mp4", "audio/aac" -> ".m4a";
             case "audio/ogg" -> ".ogg";
