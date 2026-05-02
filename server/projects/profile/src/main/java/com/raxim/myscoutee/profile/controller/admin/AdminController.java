@@ -123,4 +123,11 @@ public class AdminController {
             @RequestBody(required = false) IdeaPostAdminActionRequestDto request) {
         return ideaPostsService.deletePost(postId, request);
     }
+
+    @PostMapping("/ideas/{postId}/restore")
+    public IdeaPostDto restoreIdea(
+            @PathVariable String postId,
+            @RequestBody(required = false) IdeaPostAdminActionRequestDto request) {
+        return ideaPostsService.restorePost(postId, request);
+    }
 }

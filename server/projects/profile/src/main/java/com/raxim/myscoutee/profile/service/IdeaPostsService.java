@@ -56,6 +56,7 @@ public class IdeaPostsService {
     public List<IdeaPostDto> publicPosts() {
         ensureSeeded();
         return ideaPostsRepository.findByPublishedTrueOrderBySubmittedAtIsoDesc().stream()
+                .filter(post -> !Boolean.TRUE.equals(post.getTrashed()))
                 .map(this::toDto)
                 .toList();
     }
@@ -93,6 +94,9 @@ public class IdeaPostsService {
         post.setImageUrl(primaryImageUrl(request == null ? null : request.imageUrl(), post.getImageUrls()));
         post.setFeatured(request != null && Boolean.TRUE.equals(request.featured()));
         post.setPublished(request == null || !Boolean.FALSE.equals(request.published()));
+        post.setTrashed(false);
+        post.setTrashedAtIso(null);
+        post.setTrashedByUserId(null);
         post.setSubmittedAtIso(submittedAtIso(request == null ? null : request.submittedAtIso(), post.getSubmittedAtIso(), nowIso));
         post.setUpdatedDate(nowIso);
         post.setUpdatedUser(actorUserId);
@@ -100,14 +104,45 @@ public class IdeaPostsService {
     }
 
     public List<IdeaPostDto> deletePost(String postId, IdeaPostAdminActionRequestDto request) {
-        ensureAdmin(request == null ? null : request.actorUserId());
+        String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
         String normalizedPostId = normalize(postId);
         if (StringUtils.hasText(normalizedPostId)) {
-            ideaPostsRepository.findById(normalizedPostId).ifPresent(ideaPostsRepository::delete);
+            ideaPostsRepository.findById(normalizedPostId).ifPresent(post -> {
+                String nowIso = Instant.now().toString();
+                post.setFeatured(false);
+                post.setPublished(false);
+                post.setTrashed(true);
+                post.setTrashedAtIso(nowIso);
+                post.setTrashedByUserId(actorUserId);
+                post.setUpdatedDate(nowIso);
+                post.setUpdatedUser(actorUserId);
+                ideaPostsRepository.save(post);
+            });
         }
         return ideaPostsRepository.findAllByOrderBySubmittedAtIsoDesc().stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    public IdeaPostDto restorePost(String postId, IdeaPostAdminActionRequestDto request) {
+        String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
+        String normalizedPostId = normalize(postId);
+        IdeaPost post = StringUtils.hasText(normalizedPostId)
+                ? ideaPostsRepository.findById(normalizedPostId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found."))
+                : null;
+        if (post == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
+        }
+        String nowIso = Instant.now().toString();
+        post.setFeatured(false);
+        post.setPublished(false);
+        post.setTrashed(false);
+        post.setTrashedAtIso(null);
+        post.setTrashedByUserId(null);
+        post.setUpdatedDate(nowIso);
+        post.setUpdatedUser(actorUserId);
+        return toDto(ideaPostsRepository.save(post));
     }
 
     private void ensureSeeded() {
@@ -209,6 +244,9 @@ public class IdeaPostsService {
         post.setImageUrls(List.of(imageUrl));
         post.setFeatured(featured);
         post.setPublished(true);
+        post.setTrashed(false);
+        post.setTrashedAtIso(null);
+        post.setTrashedByUserId(null);
         post.setSubmittedAtIso(submittedAtIso);
         post.setCreatedDate(nowIso);
         post.setCreatedUser("system");
@@ -304,6 +342,9 @@ public class IdeaPostsService {
                                 .toList(),
                 Boolean.TRUE.equals(post.getFeatured()),
                 !Boolean.FALSE.equals(post.getPublished()),
+                Boolean.TRUE.equals(post.getTrashed()),
+                normalize(post.getTrashedAtIso()),
+                normalize(post.getTrashedByUserId()),
                 normalize(post.getSubmittedAtIso()),
                 normalize(post.getCreatedDate()),
                 normalize(post.getCreatedUser()),

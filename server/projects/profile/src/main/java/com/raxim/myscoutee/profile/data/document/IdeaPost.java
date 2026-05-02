@@ -12,7 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "ideaPosts")
 @CompoundIndexes({
         @CompoundIndex(name = "idea_post_published_submitted", def = "{'published': 1, 'submittedAtIso': -1}"),
-        @CompoundIndex(name = "idea_post_featured_submitted", def = "{'featured': 1, 'published': 1, 'submittedAtIso': -1}")
+        @CompoundIndex(name = "idea_post_featured_submitted", def = "{'featured': 1, 'published': 1, 'submittedAtIso': -1}"),
+        @CompoundIndex(name = "idea_post_trashed_submitted", def = "{'trashed': 1, 'submittedAtIso': -1}")
 })
 public class IdeaPost {
     @Id
@@ -28,6 +29,9 @@ public class IdeaPost {
     private List<String> imageUrls = new ArrayList<>();
     private Boolean featured;
     private Boolean published;
+    private Boolean trashed;
+    private String trashedAtIso;
+    private String trashedByUserId;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -103,6 +107,30 @@ public class IdeaPost {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public Boolean getTrashed() {
+        return trashed;
+    }
+
+    public void setTrashed(Boolean trashed) {
+        this.trashed = trashed;
+    }
+
+    public String getTrashedAtIso() {
+        return trashedAtIso;
+    }
+
+    public void setTrashedAtIso(String trashedAtIso) {
+        this.trashedAtIso = trashedAtIso;
+    }
+
+    public String getTrashedByUserId() {
+        return trashedByUserId;
+    }
+
+    public void setTrashedByUserId(String trashedByUserId) {
+        this.trashedByUserId = trashedByUserId;
     }
 
     public String getCreatedDate() {
