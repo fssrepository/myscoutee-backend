@@ -72,6 +72,10 @@ public class AdminModerationService {
         return dashboardFor(resolveAdmin(adminUserId));
     }
 
+    public AdminUserDto resolveAdminActor(String adminUserId) {
+        return resolveAdmin(adminUserId);
+    }
+
     private AdminDashboardDto dashboardFor(AdminUserDto admin) {
         List<UserReportSubmission> reports = reportsRepository.findAllByOrderByCreatedDateDesc();
         List<UserFeedbackSubmission> feedback = feedbackRepository.findAllByOrderByCreatedDateDesc();

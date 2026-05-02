@@ -45,6 +45,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class EventScheduler {
@@ -63,6 +64,7 @@ public class EventScheduler {
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventInviteNotificationService eventInviteNotificationService;
+    private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
@@ -77,7 +79,8 @@ public class EventScheduler {
             SchedulerPlanMarkersRepository schedulerPlanMarkersRepository,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
-            EventInviteNotificationService eventInviteNotificationService) {
+            EventInviteNotificationService eventInviteNotificationService,
+            NotificationRuleRegistryService notificationRuleRegistryService) {
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -85,17 +88,47 @@ public class EventScheduler {
         this.activitiesMembersService = activitiesMembersService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventInviteNotificationService = eventInviteNotificationService;
+        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Scheduled(fixedDelayString = "${events.scheduler.poll-delay-ms:900000}")
     public void runScheduledWrappers() {
-        if (!schedulerEnabled) {
+        if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
         }
 
-        generateRandomPlans();
-        generatePriorityPlans();
-        generateScorePlans();
+        Instant now = Instant.now();
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
+            List<GeneratedEventPlan> plans = generateRandomPlans();
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    plans.size(),
+                    "completed",
+                    "Generated random event group plans.",
+                    MARKER_UPDATED_BY);
+        }
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_PRIORITY_INVITER, now)) {
+            List<InviteBatchPlan> plans = generatePriorityPlans();
+            int invitedCount = plans.stream()
+                    .filter(Objects::nonNull)
+                    .mapToInt(plan -> plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
+                    .sum();
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_PRIORITY_INVITER,
+                    invitedCount,
+                    "completed",
+                    "Created priority invitation batches.",
+                    MARKER_UPDATED_BY);
+        }
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_SCORE_LEADERBOARD, now)) {
+            List<EventLeaderboardStateDto> states = generateScorePlans();
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_SCORE_LEADERBOARD,
+                    states.size(),
+                    "completed",
+                    "Materialized score leaderboard stages.",
+                    MARKER_UPDATED_BY);
+        }
     }
 
     public List<GeneratedEventPlan> generateRandomPlans() {

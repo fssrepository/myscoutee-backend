@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,6 +21,8 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationEmailQueueService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class ChatPushNotificationService {
@@ -30,18 +34,34 @@ public class ChatPushNotificationService {
     private final ConfigProperties configProperties;
     private final UsersRepository usersRepository;
     private final ChatWebSocketSessionRegistry sessionRegistry;
+    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final NotificationEmailQueueService notificationEmailQueueService;
 
     public ChatPushNotificationService(
             ConfigProperties configProperties,
             UsersRepository usersRepository,
-            ChatWebSocketSessionRegistry sessionRegistry) {
+            ChatWebSocketSessionRegistry sessionRegistry,
+            NotificationRuleRegistryService notificationRuleRegistryService,
+            NotificationEmailQueueService notificationEmailQueueService) {
         this.configProperties = configProperties;
         this.usersRepository = usersRepository;
         this.sessionRegistry = sessionRegistry;
+        this.notificationRuleRegistryService = notificationRuleRegistryService;
+        this.notificationEmailQueueService = notificationEmailQueueService;
     }
 
     public void notifyRecipients(List<ActivityChat> chatDocuments, ChatStreamEvent event) {
-        if (!configProperties.isFirebaseEnabled() || event == null || chatDocuments == null || chatDocuments.isEmpty()) {
+        if (event == null || chatDocuments == null || chatDocuments.isEmpty()) {
+            return;
+        }
+        boolean pushEnabled = configProperties.isFirebaseEnabled()
+                && notificationRuleRegistryService.isActionChannelEnabled(
+                        NotificationRuleRegistryService.RULE_CHAT_MESSAGE,
+                        NotificationRuleRegistryService.CHANNEL_PUSH);
+        boolean emailEnabled = notificationRuleRegistryService.isActionChannelEnabled(
+                NotificationRuleRegistryService.RULE_CHAT_MESSAGE,
+                NotificationRuleRegistryService.CHANNEL_EMAIL);
+        if (!pushEnabled && !emailEnabled) {
             return;
         }
 
@@ -58,61 +78,84 @@ public class ChatPushNotificationService {
                 continue;
             }
             Users user = usersRepository.findByUserId(userId).orElse(null);
-            if (user == null || user.getDevices() == null || user.getDevices().isEmpty()) {
+            if (user == null) {
                 continue;
             }
-            for (String firebaseToken : resolveFirebaseTokens(user)) {
-                try {
-                    Message.Builder messageBuilder = Message.builder()
-                            .setToken(firebaseToken)
-                            .putData("type", "chat-message")
-                            .putData("chatId", safeText(event.chatId()))
-                            .putData("messageId", safeText(event.id()))
-                            .putData("senderId", safeText(event.senderId()))
-                            .putData("senderName", safeText(event.senderName()))
-                            .putData("chatTitle", chatTitle)
-                            .putData("title", chatTitle)
-                            .putData("body", body)
-                            .putData("text", safeText(event.text()))
-                            .putData("icon", senderAvatarUrl)
-                            .putData("badge", APP_BADGE_URL)
-                            .putData("url", clickUrl)
-                            .putData("tag", notificationTag);
-                    WebpushNotification.Builder notificationBuilder = WebpushNotification.builder()
-                            .setTitle(chatTitle)
-                            .setBody(body)
-                            .setIcon(senderAvatarUrl)
-                            .setBadge(APP_BADGE_URL)
-                            .setTag(notificationTag)
-                            .setRenotify(true)
-                            .setRequireInteraction(false);
-                    if (timestampMillis > 0) {
-                        notificationBuilder.setTimestampMillis(timestampMillis);
+            if (pushEnabled && user.getDevices() != null && !user.getDevices().isEmpty()) {
+                for (String firebaseToken : resolveFirebaseTokens(user)) {
+                    try {
+                        Message.Builder messageBuilder = Message.builder()
+                                .setToken(firebaseToken)
+                                .putData("type", "chat-message")
+                                .putData("chatId", safeText(event.chatId()))
+                                .putData("messageId", safeText(event.id()))
+                                .putData("senderId", safeText(event.senderId()))
+                                .putData("senderName", safeText(event.senderName()))
+                                .putData("chatTitle", chatTitle)
+                                .putData("title", chatTitle)
+                                .putData("body", body)
+                                .putData("text", safeText(event.text()))
+                                .putData("icon", senderAvatarUrl)
+                                .putData("badge", APP_BADGE_URL)
+                                .putData("url", clickUrl)
+                                .putData("tag", notificationTag);
+                        WebpushNotification.Builder notificationBuilder = WebpushNotification.builder()
+                                .setTitle(chatTitle)
+                                .setBody(body)
+                                .setIcon(senderAvatarUrl)
+                                .setBadge(APP_BADGE_URL)
+                                .setTag(notificationTag)
+                                .setRenotify(true)
+                                .setRequireInteraction(false);
+                        if (timestampMillis > 0) {
+                            notificationBuilder.setTimestampMillis(timestampMillis);
+                        }
+                        messageBuilder.setWebpushConfig(WebpushConfig.builder()
+                                .putHeader("Urgency", "high")
+                                .putData("type", "chat-message")
+                                .putData("chatId", safeText(event.chatId()))
+                                .putData("messageId", safeText(event.id()))
+                                .putData("senderId", safeText(event.senderId()))
+                                .putData("senderName", safeText(event.senderName()))
+                                .putData("chatTitle", chatTitle)
+                                .putData("title", chatTitle)
+                                .putData("body", body)
+                                .putData("text", safeText(event.text()))
+                                .putData("icon", senderAvatarUrl)
+                                .putData("badge", APP_BADGE_URL)
+                                .putData("url", clickUrl)
+                                .putData("tag", notificationTag)
+                                .setFcmOptions(WebpushFcmOptions.withLink(clickUrl))
+                                .setNotification(notificationBuilder.build())
+                                .build());
+                        FirebaseMessaging.getInstance().sendAsync(messageBuilder.build());
+                    } catch (Exception exception) {
+                        LOGGER.warn("Unable to send Firebase chat notification to user {}.", userId, exception);
                     }
-                    messageBuilder.setWebpushConfig(WebpushConfig.builder()
-                            .putHeader("Urgency", "high")
-                            .putData("type", "chat-message")
-                            .putData("chatId", safeText(event.chatId()))
-                            .putData("messageId", safeText(event.id()))
-                            .putData("senderId", safeText(event.senderId()))
-                            .putData("senderName", safeText(event.senderName()))
-                            .putData("chatTitle", chatTitle)
-                            .putData("title", chatTitle)
-                            .putData("body", body)
-                            .putData("text", safeText(event.text()))
-                            .putData("icon", senderAvatarUrl)
-                            .putData("badge", APP_BADGE_URL)
-                            .putData("url", clickUrl)
-                            .putData("tag", notificationTag)
-                            .setFcmOptions(WebpushFcmOptions.withLink(clickUrl))
-                            .setNotification(notificationBuilder.build())
-                            .build());
-                    FirebaseMessaging.getInstance().sendAsync(messageBuilder.build());
-                } catch (Exception exception) {
-                    LOGGER.warn("Unable to send Firebase chat notification to user {}.", userId, exception);
                 }
             }
+            if (emailEnabled) {
+                notificationEmailQueueService.queueActionEmail(
+                        NotificationRuleRegistryService.RULE_CHAT_MESSAGE,
+                        userId,
+                        chatVariables(event, chatTitle, body, clickUrl),
+                        chatTitle,
+                        body);
+            }
         }
+    }
+
+    private Map<String, String> chatVariables(ChatStreamEvent event, String chatTitle, String body, String clickUrl) {
+        Map<String, String> variables = new LinkedHashMap<>();
+        variables.put("chat_id", safeText(event.chatId()));
+        variables.put("message_id", safeText(event.id()));
+        variables.put("sender_id", safeText(event.senderId()));
+        variables.put("sender_name", safeText(event.senderName()));
+        variables.put("chat_title", safeText(chatTitle));
+        variables.put("message_text", safeText(event.text()));
+        variables.put("notification_body", safeText(body));
+        variables.put("chat_url", safeText(clickUrl));
+        return variables;
     }
 
     private Set<String> resolveRecipientUserIds(List<ActivityChat> chatDocuments, String senderUserId) {

@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
@@ -20,6 +24,7 @@ import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveReques
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 import com.raxim.myscoutee.profile.service.IdeaPostsService;
+import com.raxim.myscoutee.profile.service.notifications.AdminNotificationService;
 
 import java.util.List;
 
@@ -29,14 +34,17 @@ public class AdminController {
     private final AdminModerationService adminModerationService;
     private final HelpCenterService helpCenterService;
     private final IdeaPostsService ideaPostsService;
+    private final AdminNotificationService adminNotificationService;
 
     public AdminController(
             AdminModerationService adminModerationService,
             HelpCenterService helpCenterService,
-            IdeaPostsService ideaPostsService) {
+            IdeaPostsService ideaPostsService,
+            AdminNotificationService adminNotificationService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
+        this.adminNotificationService = adminNotificationService;
     }
 
     @GetMapping("/dashboard")
@@ -57,6 +65,23 @@ public class AdminController {
     @PostMapping("/users/{userId}/unblock")
     public AdminDashboardDto unblock(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
         return adminModerationService.unblock(userId, request);
+    }
+
+    @GetMapping("/notifications")
+    public AdminNotificationCenterStateDto notifications(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminNotificationService.state(adminUserId);
+    }
+
+    @PostMapping("/notifications")
+    public AdminNotificationCenterStateDto saveNotifications(@RequestBody(required = false) AdminNotificationRuleSaveRequestDto request) {
+        return adminNotificationService.save(request);
+    }
+
+    @PostMapping("/notifications/{ruleKey}/run")
+    public AdminNotificationRuleRunResultDto runNotificationRule(
+            @PathVariable String ruleKey,
+            @RequestBody(required = false) AdminNotificationRuleRunRequestDto request) {
+        return adminNotificationService.run(ruleKey, request);
     }
 
     @GetMapping("/help")
