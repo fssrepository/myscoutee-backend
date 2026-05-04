@@ -14,8 +14,6 @@ internalization (hungarian language also) - i18n
 calendar table (week and month view) (only the calendar without data, naturally if you swipe fast, you stop the pending load and start the active one) should be generated without waiting for the db load
 (there is a delay also on scroll - should be native scroll and snap --- the swipe also shouldn't be swallowed by some area of the page - it should swipe)
 
-introduce waiting list, if the event is full and you are interested
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)
