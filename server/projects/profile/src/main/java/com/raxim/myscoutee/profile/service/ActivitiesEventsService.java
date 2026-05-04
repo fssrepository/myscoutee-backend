@@ -290,6 +290,7 @@ public class ActivitiesEventsService {
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
+                    .filter(projection -> matchesActivitiesCalendarRange(projection, request, view))
                     .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                     .toList();
 
@@ -691,6 +692,7 @@ public class ActivitiesEventsService {
                 .map(record -> toProjection(record, viewer))
                 .filter(Objects::nonNull)
                 .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
+                .filter(projection -> matchesActivitiesCalendarRange(projection, request, view))
                 .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                 .toList();
 
@@ -965,6 +967,29 @@ public class ActivitiesEventsService {
             case "recent", "relevant" -> !projection.past();
             default -> true;
         };
+    }
+
+    private boolean matchesActivitiesCalendarRange(
+            EventProjection projection,
+            EventsFilterRequestDto request,
+            String view) {
+        if (projection == null || (!"week".equals(view) && !"month".equals(view))) {
+            return true;
+        }
+        long rangeStartMs = toCalendarRangeBoundary(request == null ? null : request.rangeStart(), false);
+        long rangeEndMs = toCalendarRangeBoundary(request == null ? null : request.rangeEnd(), true);
+        if (rangeStartMs <= 0L || rangeEndMs <= 0L || rangeStartMs > rangeEndMs) {
+            return true;
+        }
+        return projection.startAtMs() <= rangeEndMs && projection.endAtMs() >= rangeStartMs;
+    }
+
+    private long toCalendarRangeBoundary(String value, boolean endOfDay) {
+        long parsed = toSortableDate(value);
+        if (parsed <= 0L || !StringUtils.hasText(value) || !value.trim().matches("\\d{4}-\\d{2}-\\d{2}")) {
+            return parsed;
+        }
+        return endOfDay ? parsed + ChronoUnit.DAYS.getDuration().toMillis() - 1L : parsed;
     }
 
     private long resolveProjectionEndAtMs(EventRecordDto item, long fallbackStartAtMs) {
@@ -2441,7 +2466,11 @@ public class ActivitiesEventsService {
             try {
                 return LocalDateTime.parse(value.trim()).toInstant(ZoneOffset.UTC).toEpochMilli();
             } catch (DateTimeParseException secondIgnored) {
-                return 0L;
+                try {
+                    return LocalDate.parse(value.trim()).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+                } catch (DateTimeParseException thirdIgnored) {
+                    return 0L;
+                }
             }
         }
     }

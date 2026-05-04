@@ -21,7 +21,10 @@ public final class EventsDtos {
             String sort,
             String view,
             Integer limit,
-            String cursor) {
+            String cursor,
+            String anchorDate,
+            String rangeStart,
+            String rangeEnd) {
     }
 
     public record EventsExploreQueryDto(
