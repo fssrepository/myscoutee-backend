@@ -1,0 +1,76 @@
+{
+  "documentType": "privacy",
+  "lang": "en",
+  "languageLabel": "English",
+  "version": 1,
+  "title": "Data privacy",
+  "summary": "Privacy first",
+  "description": "Before continuing, please review and accept how your data is used in MyScoutee.",
+  "headerColor": "amber",
+  "active": true,
+  "sections": [
+    {
+      "id": "privacy",
+      "icon": "policy",
+      "title": "Privacy",
+      "blurb": "How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).",
+      "contentHtml": "<p>How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).</p><p><strong>Last updated:</strong> February 1, 2026</p>"
+    },
+    {
+      "id": "contact-details",
+      "icon": "contact_mail",
+      "title": "Contact details",
+      "blurb": "Who to contact about privacy and data protection.",
+      "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee demo platform</li><li><strong>Support Email:</strong> privacy@myscoutee.app</li><li><strong>DPO Contact:</strong> dpo@myscoutee.app</li></ul>"
+    },
+    {
+      "id": "legal-basis",
+      "icon": "gavel",
+      "title": "Legal basis",
+      "blurb": "Why MyScoutee processes data for product and safety workflows.",
+      "contentHtml": "<ul><li>Contract performance for account and event features.</li><li>Legitimate interest for platform safety and abuse prevention.</li><li>Consent for optional profile details, precise location coordinates, and marketing communication.</li><li>Legal obligation for security logs and compliance records.</li></ul>"
+    },
+    {
+      "id": "your-rights",
+      "icon": "fact_check",
+      "title": "Your rights",
+      "blurb": "Rights available for your account and personal data.",
+      "contentHtml": "<h4>Access</h4><ul><li>Request a copy of your stored personal data.</li></ul><h4>Rectification</h4><ul><li>Correct inaccurate profile or account details.</li></ul><h4>Erasure</h4><ul><li>Request account and personal data deletion where legally possible.</li></ul><h4>Portability</h4><ul><li>Export your data in a commonly used machine-readable format.</li></ul><h4>Restriction / Objection</h4><ul><li>Limit or object to specific processing activities.</li></ul>"
+    },
+    {
+      "id": "data-categories",
+      "icon": "category",
+      "title": "Data categories",
+      "blurb": "Types of data MyScoutee may process.",
+      "contentHtml": "<h4>Account & Identity</h4><ul><li>Name</li><li>Birthday</li><li>Home city</li><li>Gender</li><li>Profile images</li></ul><h4>Location & Coordinates</h4><ul><li>Approximate location (city/region)</li><li>Precise GPS coordinates (latitude/longitude) when requested</li><li>Location update timestamps for event logistics</li></ul><h4>Activity Data</h4><ul><li>Chats</li><li>Invitations</li><li>Events</li><li>Hosting interactions</li><li>Ratings</li></ul><h4>Preference Data</h4><ul><li>Interests</li><li>Values</li><li>Visibility settings</li><li>Language preferences</li></ul><h4>Technical Data</h4><ul><li>Device/browser metadata</li><li>IP/log records</li><li>Session events</li></ul>"
+    },
+    {
+      "id": "purposes",
+      "icon": "tips_and_updates",
+      "title": "Purposes",
+      "blurb": "How data supports profile, event, chat, and trust features.",
+      "contentHtml": "<ul><li>Operate profile, chat, event, and hosting features.</li><li>Match relevant members and improve discovery quality.</li><li>Support location-based matching and distance-aware event coordination.</li><li>Detect abuse, spam, and suspicious platform activity.</li><li>Support account requests and compliance processes.</li></ul>"
+    },
+    {
+      "id": "retention",
+      "icon": "schedule",
+      "title": "Retention",
+      "blurb": "How long data is kept.",
+      "contentHtml": "<ul><li>Account profile data: retained while account is active.</li><li>Precise location coordinates: stored only for active location-enabled features and deleted when no longer required.</li><li>Safety and audit logs: retained based on legal/compliance needs.</li><li>Deleted accounts: data removed or anonymized after retention window.</li></ul>"
+    },
+    {
+      "id": "sharing",
+      "icon": "share",
+      "title": "Third-party sharing",
+      "blurb": "When data may be shared outside MyScoutee.",
+      "contentHtml": "<ul><li>Service providers for hosting, analytics, and support operations.</li><li>Authorities only when required by applicable law.</li><li>No sale of personal data.</li></ul>"
+    },
+    {
+      "id": "security",
+      "icon": "security",
+      "title": "Security",
+      "blurb": "Controls used to protect data.",
+      "contentHtml": "<ul><li>Role-based access control for internal tools.</li><li>Encrypted transport for data in transit.</li><li>Operational monitoring and incident response procedures.</li></ul>"
+    }
+  ]
+}

@@ -52,7 +52,7 @@ public class HelpCenterService {
     private static final String DOCUMENT_PRIVACY = "privacy";
     private static final String DEFAULT_LANG = "en";
     private static final String LEGACY_VERSION_INDEX = "help_revision_version";
-    private static final String DEFAULT_PRIVACY_SEED_RESOURCE = "classpath:mongo-seed/profile/helpCenterPrivacyDefault.json";
+    private static final String DEFAULT_SEED_RESOURCE_PREFIX = "classpath:mongo-seed/profile/helpCenter";
     private static final String DEFAULT_HELP_DESCRIPTION = "MyScoutee helps you plan events end-to-end: invite people, split into stages/groups, assign resources, and coordinate in context chats.";
     private static final String DEFAULT_PRIVACY_DESCRIPTION = "Before continuing, please review and accept how your data is used in MyScoutee.";
     private static final Safelist HELP_HTML_SAFELIST = Safelist.relaxed()
@@ -553,14 +553,12 @@ public class HelpCenterService {
 
     private HelpCenterRevision seedRevision(String kind, String lang) {
         String language = contentLang(lang);
-        if (DOCUMENT_PRIVACY.equals(kind) && DEFAULT_LANG.equals(language)) {
-            Resource resource = resourceLoader.getResource(DEFAULT_PRIVACY_SEED_RESOURCE);
-            if (resource.exists()) {
-                try (InputStream inputStream = resource.getInputStream()) {
-                    return objectMapper.readValue(inputStream, HelpCenterRevision.class);
-                } catch (IOException ignored) {
-                    // Fall back to the built-in seed if the JSON resource is unavailable or malformed.
-                }
+        Resource resource = resourceLoader.getResource(seedResourcePath(kind, language));
+        if (resource.exists()) {
+            try (InputStream inputStream = resource.getInputStream()) {
+                return objectMapper.readValue(inputStream, HelpCenterRevision.class);
+            } catch (IOException ignored) {
+                // Fall back to the built-in seed if the JSON resource is unavailable or malformed.
             }
         }
         HelpCenterRevision revision = new HelpCenterRevision();
@@ -574,6 +572,11 @@ public class HelpCenterService {
         revision.setHeaderColor("amber");
         revision.setSections(defaultSections(kind, language));
         return revision;
+    }
+
+    private String seedResourcePath(String kind, String lang) {
+        String documentName = DOCUMENT_PRIVACY.equals(kind) ? "Privacy" : "Help";
+        return DEFAULT_SEED_RESOURCE_PREFIX + documentName + "Default." + contentLang(lang) + ".json";
     }
 
     private HelpCenterSectionDto toSectionDtoForSeed(HelpCenterSection section) {

@@ -36,6 +36,18 @@
     "value": "Active"
   },
   {
+    "_id": "i18n-message-en-active-help-version",
+    "key": "active.help.version",
+    "lang": "en",
+    "value": "Active help v{version}"
+  },
+  {
+    "_id": "i18n-message-en-active-privacy-version",
+    "key": "active.privacy.version",
+    "lang": "en",
+    "value": "Active privacy v{version}"
+  },
+  {
     "_id": "i18n-message-en-active-recently",
     "key": "active.recently",
     "lang": "en",
@@ -52,6 +64,18 @@
     "key": "add.myscoutee.to.your.home.screen",
     "lang": "en",
     "value": "Add MyScoutee to your home screen"
+  },
+  {
+    "_id": "i18n-message-en-add-help-section",
+    "key": "add.help.section",
+    "lang": "en",
+    "value": "Add help section"
+  },
+  {
+    "_id": "i18n-message-en-add-privacy-section",
+    "key": "add.privacy.section",
+    "lang": "en",
+    "value": "Add privacy section"
   },
   {
     "_id": "i18n-message-en-add-to-home-screen",
@@ -396,6 +420,18 @@
     "value": "Create revision"
   },
   {
+    "_id": "i18n-message-en-create-revision-to-enable-help-popup",
+    "key": "create.revision.to.enable.help.popup",
+    "lang": "en",
+    "value": "Create a revision to enable the help popup."
+  },
+  {
+    "_id": "i18n-message-en-create-revision-to-enable-privacy-popup",
+    "key": "create.revision.to.enable.privacy.popup",
+    "lang": "en",
+    "value": "Create a revision to enable the privacy popup."
+  },
+  {
     "_id": "i18n-message-en-create-support-link",
     "key": "create.support.link",
     "lang": "en",
@@ -558,10 +594,40 @@
     "value": "Help"
   },
   {
+    "_id": "i18n-message-en-help-description",
+    "key": "help.description",
+    "lang": "en",
+    "value": "Help description"
+  },
+  {
+    "_id": "i18n-message-en-help-editor",
+    "key": "help.editor",
+    "lang": "en",
+    "value": "Help editor"
+  },
+  {
     "_id": "i18n-message-en-help-is-not-available",
     "key": "help.is.not.available",
     "lang": "en",
     "value": "Help is not available"
+  },
+  {
+    "_id": "i18n-message-en-help-popup-header",
+    "key": "help.popup.header",
+    "lang": "en",
+    "value": "Help popup header"
+  },
+  {
+    "_id": "i18n-message-en-help-revisions",
+    "key": "help.revisions",
+    "lang": "en",
+    "value": "Help revisions"
+  },
+  {
+    "_id": "i18n-message-en-help-section-title",
+    "key": "help.section.title",
+    "lang": "en",
+    "value": "Help section title"
   },
   {
     "_id": "i18n-message-en-help-topics",
@@ -696,6 +762,24 @@
     "value": "Invitation only"
   },
   {
+    "_id": "i18n-message-en-loading-article",
+    "key": "loading.article",
+    "lang": "en",
+    "value": "Loading article"
+  },
+  {
+    "_id": "i18n-message-en-loading-article-editor",
+    "key": "loading.article.editor",
+    "lang": "en",
+    "value": "Loading article editor"
+  },
+  {
+    "_id": "i18n-message-en-loading-articles",
+    "key": "loading.articles",
+    "lang": "en",
+    "value": "Loading articles"
+  },
+  {
     "_id": "i18n-message-en-loading-chats",
     "key": "loading.chats",
     "lang": "en",
@@ -714,10 +798,22 @@
     "value": "Loading experience"
   },
   {
+    "_id": "i18n-message-en-loading-help-revisions",
+    "key": "loading.help.revisions",
+    "lang": "en",
+    "value": "Loading help revisions"
+  },
+  {
     "_id": "i18n-message-en-loading-privacy-content",
     "key": "loading.privacy.content",
     "lang": "en",
     "value": "Loading privacy content"
+  },
+  {
+    "_id": "i18n-message-en-loading-privacy-revisions",
+    "key": "loading.privacy.revisions",
+    "lang": "en",
+    "value": "Loading privacy revisions"
   },
   {
     "_id": "i18n-message-en-loading-profile",
@@ -784,6 +880,30 @@
     "key": "my.events",
     "lang": "en",
     "value": "My Events"
+  },
+  {
+    "_id": "i18n-message-en-no-active-help-revision",
+    "key": "no.active.help.revision",
+    "lang": "en",
+    "value": "No active help revision"
+  },
+  {
+    "_id": "i18n-message-en-no-active-privacy-revision",
+    "key": "no.active.privacy.revision",
+    "lang": "en",
+    "value": "No active privacy revision"
+  },
+  {
+    "_id": "i18n-message-en-no-help-revisions",
+    "key": "no.help.revisions",
+    "lang": "en",
+    "value": "No help revisions"
+  },
+  {
+    "_id": "i18n-message-en-no-privacy-revisions",
+    "key": "no.privacy.revisions",
+    "lang": "en",
+    "value": "No privacy revisions"
   },
   {
     "_id": "i18n-message-en-admin-brand",
@@ -1236,6 +1356,18 @@
     "value": "Data privacy"
   },
   {
+    "_id": "i18n-message-en-privacy-description",
+    "key": "privacy.description",
+    "lang": "en",
+    "value": "Privacy description"
+  },
+  {
+    "_id": "i18n-message-en-privacy-editor",
+    "key": "privacy.editor",
+    "lang": "en",
+    "value": "Privacy editor"
+  },
+  {
     "_id": "i18n-message-en-privacy-content-is-not-available-right-now",
     "key": "privacy.content.is.not.available.right.now",
     "lang": "en",
@@ -1246,6 +1378,24 @@
     "key": "privacy.first",
     "lang": "en",
     "value": "Privacy first"
+  },
+  {
+    "_id": "i18n-message-en-privacy-popup-header",
+    "key": "privacy.popup.header",
+    "lang": "en",
+    "value": "Privacy popup header"
+  },
+  {
+    "_id": "i18n-message-en-privacy-revisions",
+    "key": "privacy.revisions",
+    "lang": "en",
+    "value": "Privacy revisions"
+  },
+  {
+    "_id": "i18n-message-en-privacy-section-title",
+    "key": "privacy.section.title",
+    "lang": "en",
+    "value": "Privacy section title"
   },
   {
     "_id": "i18n-message-en-privacy-sections",
@@ -3726,6 +3876,12 @@
     "value": "Publishing..."
   },
   {
+    "_id": "i18n-message-en-remove-help-section",
+    "key": "remove.help.section",
+    "lang": "en",
+    "value": "Remove help section"
+  },
+  {
     "_id": "i18n-message-en-remove-featured-article-question",
     "key": "remove.featured.article.question",
     "lang": "en",
@@ -3736,6 +3892,12 @@
     "key": "remove.image",
     "lang": "en",
     "value": "Remove image"
+  },
+  {
+    "_id": "i18n-message-en-remove-privacy-section",
+    "key": "remove.privacy.section",
+    "lang": "en",
+    "value": "Remove privacy section"
   },
   {
     "_id": "i18n-message-en-replace-image",
@@ -3804,6 +3966,12 @@
     "value": "Scam / fraud"
   },
   {
+    "_id": "i18n-message-en-sections-count",
+    "key": "sections.count",
+    "lang": "en",
+    "value": "{count} sections"
+  },
+  {
     "_id": "i18n-message-en-short-card-description",
     "key": "short.card.description",
     "lang": "en",
@@ -3828,10 +3996,46 @@
     "value": "Title"
   },
   {
+    "_id": "i18n-message-en-toggle-help-section",
+    "key": "toggle.help.section",
+    "lang": "en",
+    "value": "Toggle help section"
+  },
+  {
+    "_id": "i18n-message-en-toggle-privacy-section",
+    "key": "toggle.privacy.section",
+    "lang": "en",
+    "value": "Toggle privacy section"
+  },
+  {
     "_id": "i18n-message-en-trashed",
     "key": "trashed",
     "lang": "en",
     "value": "Trashed"
+  },
+  {
+    "_id": "i18n-message-en-unable-to-activate-help-revisions",
+    "key": "unable.to.activate.help.revisions",
+    "lang": "en",
+    "value": "Unable to activate help revision."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-activate-privacy-revisions",
+    "key": "unable.to.activate.privacy.revisions",
+    "lang": "en",
+    "value": "Unable to activate privacy revision."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-delete-help-revisions",
+    "key": "unable.to.delete.help.revisions",
+    "lang": "en",
+    "value": "Unable to delete help revision."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-delete-privacy-revisions",
+    "key": "unable.to.delete.privacy.revisions",
+    "lang": "en",
+    "value": "Unable to delete privacy revision."
   },
   {
     "_id": "i18n-message-en-unable-to-feature-article",
@@ -3844,6 +4048,18 @@
     "key": "unable.to.load.articles",
     "lang": "en",
     "value": "Unable to load articles."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-load-help-revisions",
+    "key": "unable.to.load.help.revisions",
+    "lang": "en",
+    "value": "Unable to load help revisions."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-load-privacy-revisions",
+    "key": "unable.to.load.privacy.revisions",
+    "lang": "en",
+    "value": "Unable to load privacy revisions."
   },
   {
     "_id": "i18n-message-en-unable-to-move-article-to-trash",
@@ -3862,6 +4078,18 @@
     "key": "unable.to.restore.article",
     "lang": "en",
     "value": "Unable to restore article."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-save-help-revisions",
+    "key": "unable.to.save.help.revisions",
+    "lang": "en",
+    "value": "Unable to save help revision."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-save-privacy-revisions",
+    "key": "unable.to.save.privacy.revisions",
+    "lang": "en",
+    "value": "Unable to save privacy revision."
   },
   {
     "_id": "i18n-message-en-unable-to-unfeature-article",
@@ -3990,6 +4218,18 @@
     "value": "Aktív"
   },
   {
+    "_id": "i18n-message-hu-active-help-version",
+    "key": "active.help.version",
+    "lang": "hu",
+    "value": "Aktív súgó v{version}"
+  },
+  {
+    "_id": "i18n-message-hu-active-privacy-version",
+    "key": "active.privacy.version",
+    "lang": "hu",
+    "value": "Aktív adatvédelem v{version}"
+  },
+  {
     "_id": "i18n-message-hu-active-recently",
     "key": "active.recently",
     "lang": "hu",
@@ -4006,6 +4246,18 @@
     "key": "add.myscoutee.to.your.home.screen",
     "lang": "hu",
     "value": "Add hozzá a MyScoutee-t a kezdőképernyőhöz"
+  },
+  {
+    "_id": "i18n-message-hu-add-help-section",
+    "key": "add.help.section",
+    "lang": "hu",
+    "value": "Súgó szakasz hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-add-privacy-section",
+    "key": "add.privacy.section",
+    "lang": "hu",
+    "value": "Adatvédelmi szakasz hozzáadása"
   },
   {
     "_id": "i18n-message-hu-add-to-home-screen",
@@ -4350,6 +4602,18 @@
     "value": "Verzió létrehozása"
   },
   {
+    "_id": "i18n-message-hu-create-revision-to-enable-help-popup",
+    "key": "create.revision.to.enable.help.popup",
+    "lang": "hu",
+    "value": "Hozz létre egy verziót a súgóablak engedélyezéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-create-revision-to-enable-privacy-popup",
+    "key": "create.revision.to.enable.privacy.popup",
+    "lang": "hu",
+    "value": "Hozz létre egy verziót az adatvédelmi ablak engedélyezéséhez."
+  },
+  {
     "_id": "i18n-message-hu-create-support-link",
     "key": "create.support.link",
     "lang": "hu",
@@ -4512,10 +4776,40 @@
     "value": "Segítség"
   },
   {
+    "_id": "i18n-message-hu-help-description",
+    "key": "help.description",
+    "lang": "hu",
+    "value": "Súgó leírása"
+  },
+  {
+    "_id": "i18n-message-hu-help-editor",
+    "key": "help.editor",
+    "lang": "hu",
+    "value": "Súgószerkesztő"
+  },
+  {
     "_id": "i18n-message-hu-help-is-not-available",
     "key": "help.is.not.available",
     "lang": "hu",
     "value": "A segítség nem érhető el"
+  },
+  {
+    "_id": "i18n-message-hu-help-popup-header",
+    "key": "help.popup.header",
+    "lang": "hu",
+    "value": "Súgóablak fejléce"
+  },
+  {
+    "_id": "i18n-message-hu-help-revisions",
+    "key": "help.revisions",
+    "lang": "hu",
+    "value": "Súgóverziók"
+  },
+  {
+    "_id": "i18n-message-hu-help-section-title",
+    "key": "help.section.title",
+    "lang": "hu",
+    "value": "Súgó szakaszcíme"
   },
   {
     "_id": "i18n-message-hu-help-topics",
@@ -4650,6 +4944,24 @@
     "value": "Csak meghívással"
   },
   {
+    "_id": "i18n-message-hu-loading-article",
+    "key": "loading.article",
+    "lang": "hu",
+    "value": "Cikk betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-loading-article-editor",
+    "key": "loading.article.editor",
+    "lang": "hu",
+    "value": "Cikkszerkesztő betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-loading-articles",
+    "key": "loading.articles",
+    "lang": "hu",
+    "value": "Cikkek betöltése"
+  },
+  {
     "_id": "i18n-message-hu-loading-chats",
     "key": "loading.chats",
     "lang": "hu",
@@ -4668,10 +4980,22 @@
     "value": "Tapasztalat betöltése"
   },
   {
+    "_id": "i18n-message-hu-loading-help-revisions",
+    "key": "loading.help.revisions",
+    "lang": "hu",
+    "value": "Súgóverziók betöltése"
+  },
+  {
     "_id": "i18n-message-hu-loading-privacy-content",
     "key": "loading.privacy.content",
     "lang": "hu",
     "value": "Adatvédelmi tartalom betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-loading-privacy-revisions",
+    "key": "loading.privacy.revisions",
+    "lang": "hu",
+    "value": "Adatvédelmi verziók betöltése"
   },
   {
     "_id": "i18n-message-hu-loading-profile",
@@ -4738,6 +5062,30 @@
     "key": "my.events",
     "lang": "hu",
     "value": "Eseményeim"
+  },
+  {
+    "_id": "i18n-message-hu-no-active-help-revision",
+    "key": "no.active.help.revision",
+    "lang": "hu",
+    "value": "Nincs aktív súgóverzió"
+  },
+  {
+    "_id": "i18n-message-hu-no-active-privacy-revision",
+    "key": "no.active.privacy.revision",
+    "lang": "hu",
+    "value": "Nincs aktív adatvédelmi verzió"
+  },
+  {
+    "_id": "i18n-message-hu-no-help-revisions",
+    "key": "no.help.revisions",
+    "lang": "hu",
+    "value": "Nincs súgóverzió"
+  },
+  {
+    "_id": "i18n-message-hu-no-privacy-revisions",
+    "key": "no.privacy.revisions",
+    "lang": "hu",
+    "value": "Nincs adatvédelmi verzió"
   },
   {
     "_id": "i18n-message-hu-admin-brand",
@@ -5190,6 +5538,18 @@
     "value": "Adatvédelem"
   },
   {
+    "_id": "i18n-message-hu-privacy-description",
+    "key": "privacy.description",
+    "lang": "hu",
+    "value": "Adatvédelmi leírás"
+  },
+  {
+    "_id": "i18n-message-hu-privacy-editor",
+    "key": "privacy.editor",
+    "lang": "hu",
+    "value": "Adatvédelmi szerkesztő"
+  },
+  {
     "_id": "i18n-message-hu-privacy-content-is-not-available-right-now",
     "key": "privacy.content.is.not.available.right.now",
     "lang": "hu",
@@ -5200,6 +5560,24 @@
     "key": "privacy.first",
     "lang": "hu",
     "value": "Első az adatvédelem"
+  },
+  {
+    "_id": "i18n-message-hu-privacy-popup-header",
+    "key": "privacy.popup.header",
+    "lang": "hu",
+    "value": "Adatvédelmi ablak fejléce"
+  },
+  {
+    "_id": "i18n-message-hu-privacy-revisions",
+    "key": "privacy.revisions",
+    "lang": "hu",
+    "value": "Adatvédelmi verziók"
+  },
+  {
+    "_id": "i18n-message-hu-privacy-section-title",
+    "key": "privacy.section.title",
+    "lang": "hu",
+    "value": "Adatvédelmi szakaszcím"
   },
   {
     "_id": "i18n-message-hu-privacy-sections",
@@ -7674,6 +8052,12 @@
     "value": "Közzététel..."
   },
   {
+    "_id": "i18n-message-hu-remove-help-section",
+    "key": "remove.help.section",
+    "lang": "hu",
+    "value": "Súgó szakasz eltávolítása"
+  },
+  {
     "_id": "i18n-message-hu-remove-featured-article-question",
     "key": "remove.featured.article.question",
     "lang": "hu",
@@ -7684,6 +8068,12 @@
     "key": "remove.image",
     "lang": "hu",
     "value": "Kép eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-remove-privacy-section",
+    "key": "remove.privacy.section",
+    "lang": "hu",
+    "value": "Adatvédelmi szakasz eltávolítása"
   },
   {
     "_id": "i18n-message-hu-replace-image",
@@ -7752,6 +8142,12 @@
     "value": "Átverés / csalás"
   },
   {
+    "_id": "i18n-message-hu-sections-count",
+    "key": "sections.count",
+    "lang": "hu",
+    "value": "{count} szakasz"
+  },
+  {
     "_id": "i18n-message-hu-short-card-description",
     "key": "short.card.description",
     "lang": "hu",
@@ -7776,10 +8172,46 @@
     "value": "Cím"
   },
   {
+    "_id": "i18n-message-hu-toggle-help-section",
+    "key": "toggle.help.section",
+    "lang": "hu",
+    "value": "Súgó szakasz nyitása vagy zárása"
+  },
+  {
+    "_id": "i18n-message-hu-toggle-privacy-section",
+    "key": "toggle.privacy.section",
+    "lang": "hu",
+    "value": "Adatvédelmi szakasz nyitása vagy zárása"
+  },
+  {
     "_id": "i18n-message-hu-trashed",
     "key": "trashed",
     "lang": "hu",
     "value": "Kukában"
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-activate-help-revisions",
+    "key": "unable.to.activate.help.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült aktiválni a súgóverziót."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-activate-privacy-revisions",
+    "key": "unable.to.activate.privacy.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült aktiválni az adatvédelmi verziót."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-delete-help-revisions",
+    "key": "unable.to.delete.help.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a súgóverziót."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-delete-privacy-revisions",
+    "key": "unable.to.delete.privacy.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült törölni az adatvédelmi verziót."
   },
   {
     "_id": "i18n-message-hu-unable-to-feature-article",
@@ -7792,6 +8224,18 @@
     "key": "unable.to.load.articles",
     "lang": "hu",
     "value": "Nem sikerült betölteni a cikkeket."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-load-help-revisions",
+    "key": "unable.to.load.help.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni a súgóverziókat."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-load-privacy-revisions",
+    "key": "unable.to.load.privacy.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni az adatvédelmi verziókat."
   },
   {
     "_id": "i18n-message-hu-unable-to-move-article-to-trash",
@@ -7810,6 +8254,18 @@
     "key": "unable.to.restore.article",
     "lang": "hu",
     "value": "Nem sikerült visszaállítani a cikket."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-save-help-revisions",
+    "key": "unable.to.save.help.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült menteni a súgóverziót."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-save-privacy-revisions",
+    "key": "unable.to.save.privacy.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült menteni az adatvédelmi verziót."
   },
   {
     "_id": "i18n-message-hu-unable-to-unfeature-article",
