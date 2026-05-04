@@ -90,6 +90,18 @@ public final class AuthDtos {
             Integer feedback) {
     }
 
+    public record ProfileDetailRowDto(
+            String label,
+            String value,
+            String privacy,
+            List<String> options) {
+    }
+
+    public record ProfileDetailGroupDto(
+            String title,
+            List<ProfileDetailRowDto> rows) {
+    }
+
     public record UserDto(
             String id,
             String name,
@@ -106,12 +118,14 @@ public final class AuthDtos {
             String hostTier,
             String traitLabel,
             Integer completion,
+            Integer profileFormVersion,
             String headline,
             String about,
             Double affinity,
             LocationCoordinatesDto locationCoordinates,
             String partitionKey,
             List<String> images,
+            List<ProfileDetailGroupDto> profileDetails,
             UserImpressionsDto impressions,
             String profileStatus,
             String previousProfileStatus,
@@ -135,12 +149,14 @@ public final class AuthDtos {
             String hostTier,
             String traitLabel,
             Integer completion,
+            Integer profileFormVersion,
             String headline,
             String about,
             Double affinity,
             LocationCoordinatesDto locationCoordinates,
             String partitionKey,
             List<String> images,
+            List<ProfileDetailGroupDto> profileDetails,
             UserImpressionsDto impressions,
             String profileStatus,
             String previousProfileStatus,
@@ -169,7 +185,12 @@ public final class AuthDtos {
             String name,
             String city,
             String initials,
-            String gender) {
+            String gender,
+            String statusText,
+            Integer completion,
+            Integer profileFormVersion,
+            String profileStatus,
+            String deletedAtIso) {
     }
 
     public record UserRealtimeLongPollResponseDto(
