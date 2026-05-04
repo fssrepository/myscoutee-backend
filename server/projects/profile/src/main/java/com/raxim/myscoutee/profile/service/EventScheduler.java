@@ -131,6 +131,14 @@ public class EventScheduler {
         }
     }
 
+    @Scheduled(fixedDelayString = "${events.waitlist.inviter-delay-ms:7200000}")
+    public void runWaitlistInviter() {
+        int invitedCount = activitiesMembersService.sweepEventWaitlists();
+        if (invitedCount > 0) {
+            LOGGER.info("Promoted {} event wait-list member(s) to invitations.", invitedCount);
+        }
+    }
+
     public List<GeneratedEventPlan> generateRandomPlans() {
         List<ActivityEvent> events = resolveCanonicalEvents();
         

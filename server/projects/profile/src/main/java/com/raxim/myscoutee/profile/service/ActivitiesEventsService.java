@@ -163,7 +163,8 @@ public class ActivitiesEventsService {
                         || StringUtils.hasText(request.view())
                         || request.friendsOnly() != null
                         || request.openSpotsOnly() != null
-                        || StringUtils.hasText(request.topic()));
+                        || StringUtils.hasText(request.topic())
+                        || (request.excludedSourceIds() != null && !request.excludedSourceIds().isEmpty()));
     }
 
     public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
@@ -351,10 +352,12 @@ public class ActivitiesEventsService {
             boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
             int limit = normalizeLimit(requestedLimit, 10);
             String cursor = request == null ? null : request.cursor();
+            Set<String> excludedSourceIds = new LinkedHashSet<>(normalizeIds(request == null ? null : request.excludedSourceIds()));
 
             List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
 
             List<EventProjection> sorted = exploreRecords.stream()
+                    .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
@@ -414,7 +417,8 @@ public class ActivitiesEventsService {
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
         }
-        boolean accepted = isConfirmedBooking(request, preferred);
+        boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
+        boolean accepted = !waitingList && isConfirmedBooking(request, preferred);
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
@@ -423,8 +427,10 @@ public class ActivitiesEventsService {
                     .findFirst()
                     .orElse(null);
             if (slotRecord != null) {
-                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
-                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted);
+                waitingList = waitingList || isRecordFull(slotRecord);
+                accepted = !waitingList && isConfirmedBooking(request, preferred);
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
+                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList);
                 if (accepted) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                 }
@@ -436,7 +442,7 @@ public class ActivitiesEventsService {
             }
         }
 
-        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
+        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
         if (accepted) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
         }
@@ -445,6 +451,9 @@ public class ActivitiesEventsService {
     }
 
     private boolean isConfirmedBooking(EventActionRequestDto request, ActivityEvent preferred) {
+        if (isWaitlistRequested(request)) {
+            return false;
+        }
         String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId)) {
             // A checkout session means the booking flow started, but we keep the
@@ -455,6 +464,21 @@ public class ActivitiesEventsService {
             return false;
         }
         return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed());
+    }
+
+    private boolean isWaitlistRequested(EventActionRequestDto request) {
+        return "waitlist".equals(safeText(request == null ? null : request.pendingReason()));
+    }
+
+    private boolean isRecordFull(ActivityEvent record) {
+        if (record == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(record.getCapacityTotal());
+        if (capacityTotal <= 0) {
+            return false;
+        }
+        return resolveAcceptedMemberUserIds(record).size() >= capacityTotal;
     }
 
     private void recordJoinPayment(

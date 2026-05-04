@@ -9,10 +9,11 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-internalization (hungarian language also)
+internalization (hungarian language also) - i18n
 
-calendar table (only the calendar without data, naturally if you swipe fast, you stop the pending load and start the active one) should be generated without waiting for the db load
-(there is a delay also on scroll - probably it's not native scrol and snap)
+calendar table (week and month view) (only the calendar without data, naturally if you swipe fast, you stop the pending load and start the active one) should be generated without waiting for the db load
+(there is a delay also on scroll - should be native scroll and snap --- the swipe also shouldn't be swallowed by some area of the page - it should swipe)
+
 introduce waiting list, if the event is full and you are interested
 
 Commands

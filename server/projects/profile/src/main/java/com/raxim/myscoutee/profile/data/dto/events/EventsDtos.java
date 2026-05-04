@@ -32,7 +32,8 @@ public final class EventsDtos {
             Boolean openSpotsOnly,
             String topic,
             Integer limit,
-            String cursor) {
+            String cursor,
+            List<String> excludedSourceIds) {
     }
 
     public record EventActionRequestDto(
@@ -44,7 +45,8 @@ public final class EventsDtos {
             List<EventCheckoutAssetSelectionDto> assetSelections,
             List<String> acceptedPolicyIds,
             String paymentSessionId,
-            Boolean bookingConfirmed) {
+            Boolean bookingConfirmed,
+            String pendingReason) {
     }
 
     public record EventFeedbackAnswerSubmitDto(
@@ -239,7 +241,8 @@ public final class EventsDtos {
             List<String> acceptedPolicyIds,
             List<EventCheckoutLineItemDto> lineItems,
             Double totalAmount,
-            String currency) {
+            String currency,
+            String pendingReason) {
     }
 
     public record EventCheckoutAssetSelectionDto(
