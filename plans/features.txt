@@ -11,8 +11,6 @@ but if the smaller one has an override rule that should be applied
 
 internalization (hungarian language also)
 
-service worker reload trigger on new bundle, when build a new prod server (backend) ,you need to build the ui in this way, but you shouldn't touch the dev server sync one
-
 calendar table (only the calendar without data, naturally if you swipe fast, you stop the pending load and start the active one) should be generated without waiting for the db load
 (there is a delay also on scroll - probably it's not native scrol and snap)
 introduce waiting list, if the event is full and you are interested
