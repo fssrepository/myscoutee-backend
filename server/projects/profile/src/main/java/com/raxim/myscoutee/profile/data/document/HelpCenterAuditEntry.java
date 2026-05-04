@@ -17,6 +17,8 @@ public class HelpCenterAuditEntry {
 
     private String revisionId;
     private String documentType;
+    private String lang;
+    private String languageLabel;
     private Integer version;
     private String action;
     private String actorUserId;
@@ -45,6 +47,22 @@ public class HelpCenterAuditEntry {
 
     public void setDocumentType(String documentType) {
         this.documentType = documentType;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getLanguageLabel() {
+        return languageLabel;
+    }
+
+    public void setLanguageLabel(String languageLabel) {
+        this.languageLabel = languageLabel;
     }
 
     public Integer getVersion() {

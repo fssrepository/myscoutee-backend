@@ -9,9 +9,6 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-internalization (hungarian language also) - i18n - fallback on english
-which shouldn't be loaded from the backend - so the page will be there, and won't be empty
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

@@ -10,7 +10,9 @@ const requiredCollections = [
   'eventFeedbackStates',
   'eventFeedbackAnswers',
   'userExperienceProfiles',
-  'countryPartitions'
+  'countryPartitions',
+  'i18n_bundles',
+  'i18n_messages'
 ];
 
 ['demo_db', 'myscoutee_db'].forEach(databaseName => {
@@ -72,6 +74,15 @@ const requiredCollections = [
   portalDb.userExperienceProfiles.createIndex(
     { userId: 1 },
     { name: 'user_experience_profiles_user_id', unique: true }
+  );
+
+  portalDb.i18n_bundles.createIndex(
+    { lang: 1 },
+    { name: 'i18n_bundles_lang', unique: true }
+  );
+  portalDb.i18n_messages.createIndex(
+    { key: 1, lang: 1 },
+    { name: 'i18n_messages_key_lang', unique: true }
   );
 
   if (!portalDb.getUser('guest')) {

@@ -11,6 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "ideaPosts")
 @CompoundIndexes({
+        @CompoundIndex(name = "idea_post_content_lang", def = "{'contentKey': 1, 'lang': 1}", unique = true),
+        @CompoundIndex(name = "idea_post_lang_submitted", def = "{'lang': 1, 'submittedAtIso': -1}"),
+        @CompoundIndex(name = "idea_post_lang_published_submitted", def = "{'lang': 1, 'published': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "idea_post_published_submitted", def = "{'published': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "idea_post_featured_submitted", def = "{'featured': 1, 'published': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "idea_post_trashed_submitted", def = "{'trashed': 1, 'submittedAtIso': -1}")
@@ -22,6 +25,12 @@ public class IdeaPost {
     @Indexed(name = "idea_post_submitted_at")
     private String submittedAtIso;
 
+    @Indexed(name = "idea_post_content_key")
+    private String contentKey;
+
+    @Indexed(name = "idea_post_lang")
+    private String lang;
+    private String languageLabel;
     private String title;
     private String excerpt;
     private String contentHtml;
@@ -51,6 +60,30 @@ public class IdeaPost {
 
     public void setSubmittedAtIso(String submittedAtIso) {
         this.submittedAtIso = submittedAtIso;
+    }
+
+    public String getContentKey() {
+        return contentKey;
+    }
+
+    public void setContentKey(String contentKey) {
+        this.contentKey = contentKey;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getLanguageLabel() {
+        return languageLabel;
+    }
+
+    public void setLanguageLabel(String languageLabel) {
+        this.languageLabel = languageLabel;
     }
 
     public String getTitle() {

@@ -5,6 +5,8 @@ import java.util.List;
 public final class HelpCenterDtos {
     private HelpCenterDtos() {}
 
+    public record ContentLanguageDto(String lang, String label) {}
+
     public record HelpCenterSectionDto(
             String id,
             String icon,
@@ -16,6 +18,8 @@ public final class HelpCenterDtos {
     public record HelpCenterRevisionDto(
             String id,
             String documentKind,
+            String lang,
+            String languageLabel,
             Integer version,
             String title,
             String summary,
@@ -31,6 +35,8 @@ public final class HelpCenterDtos {
     public record HelpCenterAuditEntryDto(
             String id,
             String documentKind,
+            String lang,
+            String languageLabel,
             String revisionId,
             Integer version,
             String action,
@@ -41,11 +47,13 @@ public final class HelpCenterDtos {
     public record HelpCenterStateDto(
             HelpCenterRevisionDto activeRevision,
             List<HelpCenterRevisionDto> revisions,
-            List<HelpCenterAuditEntryDto> auditTrail) {}
+            List<HelpCenterAuditEntryDto> auditTrail,
+            List<ContentLanguageDto> availableLanguages) {}
 
     public record HelpCenterRevisionSaveRequestDto(
             String actorUserId,
             String baseRevisionId,
+            String lang,
             String title,
             String summary,
             String description,

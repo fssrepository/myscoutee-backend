@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "helpCenterRevisions")
 @CompoundIndexes({
-        @CompoundIndex(name = "help_revision_document_version", def = "{'documentType': 1, 'version': -1}", unique = true),
-        @CompoundIndex(name = "help_revision_document_active", def = "{'documentType': 1, 'active': 1, 'version': -1}")
+        @CompoundIndex(name = "help_revision_document_lang_version", def = "{'documentType': 1, 'lang': 1, 'version': -1}", unique = true),
+        @CompoundIndex(name = "help_revision_document_lang_active", def = "{'documentType': 1, 'lang': 1, 'active': 1, 'version': -1}")
 })
 public class HelpCenterRevision {
     @Id
@@ -21,6 +21,9 @@ public class HelpCenterRevision {
     @Indexed(name = "help_revision_document_type")
     private String documentType;
 
+    @Indexed(name = "help_revision_lang")
+    private String lang;
+    private String languageLabel;
     private Integer version;
 
     @Indexed(name = "help_revision_active")
@@ -107,6 +110,22 @@ public class HelpCenterRevision {
 
     public void setDocumentType(String documentType) {
         this.documentType = documentType;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public String getLanguageLabel() {
+        return languageLabel;
+    }
+
+    public void setLanguageLabel(String languageLabel) {
+        this.languageLabel = languageLabel;
     }
 
     public Integer getVersion() {

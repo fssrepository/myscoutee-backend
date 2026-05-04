@@ -8,6 +8,9 @@ public final class IdeaPostDtos {
 
     public record IdeaPostDto(
             String id,
+            String contentKey,
+            String lang,
+            String languageLabel,
             String title,
             String excerpt,
             String contentHtml,
@@ -28,6 +31,8 @@ public final class IdeaPostDtos {
     public record IdeaPostSaveRequestDto(
             String actorUserId,
             String id,
+            String contentKey,
+            String lang,
             String title,
             String excerpt,
             String contentHtml,

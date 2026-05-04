@@ -85,13 +85,17 @@ public class AdminController {
     }
 
     @GetMapping("/help")
-    public HelpCenterStateDto helpState(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return helpCenterService.adminState(adminUserId);
+    public HelpCenterStateDto helpState(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.adminState(adminUserId, "help", lang);
     }
 
     @GetMapping("/privacy")
-    public HelpCenterStateDto privacyState(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return helpCenterService.adminState(adminUserId, "privacy");
+    public HelpCenterStateDto privacyState(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.adminState(adminUserId, "privacy", lang);
     }
 
     @PostMapping("/help/revisions")
@@ -133,8 +137,10 @@ public class AdminController {
     }
 
     @GetMapping("/ideas")
-    public List<IdeaPostDto> ideas(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return ideaPostsService.adminPosts(adminUserId);
+    public List<IdeaPostDto> ideas(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return ideaPostsService.adminPosts(adminUserId, lang);
     }
 
     @PostMapping("/ideas")

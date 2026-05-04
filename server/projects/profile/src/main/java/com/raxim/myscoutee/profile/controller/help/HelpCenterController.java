@@ -22,13 +22,13 @@ public class HelpCenterController {
     }
 
     @GetMapping("/help/active")
-    public HelpCenterStateDto activeHelp() {
-        return helpCenterService.activeState();
+    public HelpCenterStateDto activeHelp(@RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.activeState("help", lang);
     }
 
     @GetMapping("/privacy/active")
-    public HelpCenterStateDto activePrivacy() {
-        return helpCenterService.activeState("privacy");
+    public HelpCenterStateDto activePrivacy(@RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.activeState("privacy", lang);
     }
 
     @GetMapping("/privacy/consents")

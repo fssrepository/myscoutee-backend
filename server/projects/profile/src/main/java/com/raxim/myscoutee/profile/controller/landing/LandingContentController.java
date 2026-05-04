@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.controller.landing;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.LandingContentDto;
@@ -20,9 +21,9 @@ public class LandingContentController {
     }
 
     @GetMapping("/content")
-    public LandingContentDto content() {
+    public LandingContentDto content(@RequestParam(value = "lang", required = false) String lang) {
         return new LandingContentDto(
-                helpCenterService.activeState("privacy"),
-                ideaPostsService.publicPosts());
+                helpCenterService.activeState("privacy", lang),
+                ideaPostsService.publicPosts(lang));
     }
 }
