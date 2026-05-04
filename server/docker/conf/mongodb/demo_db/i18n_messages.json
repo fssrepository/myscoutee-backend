@@ -132,6 +132,12 @@
     "value": "Approval Required"
   },
   {
+    "_id": "i18n-message-en-approve-privacy",
+    "key": "approve.privacy",
+    "lang": "en",
+    "value": "Approve privacy"
+  },
+  {
     "_id": "i18n-message-en-approve-optional-privacy-section",
     "key": "approve.optional.privacy.section",
     "lang": "en",
@@ -894,6 +900,12 @@
     "value": "No active privacy revision"
   },
   {
+    "_id": "i18n-message-en-no-active-privacy-revision-has-been-published-yet",
+    "key": "no.active.privacy.revision.has.been.published.yet",
+    "lang": "en",
+    "value": "No active privacy revision has been published yet."
+  },
+  {
     "_id": "i18n-message-en-no-help-revisions",
     "key": "no.help.revisions",
     "lang": "en",
@@ -1380,6 +1392,30 @@
     "value": "Privacy first"
   },
   {
+    "_id": "i18n-message-en-privacy-approval-could-not-be-saved",
+    "key": "privacy.approval.could.not.be.saved",
+    "lang": "en",
+    "value": "Privacy approval could not be saved."
+  },
+  {
+    "_id": "i18n-message-en-privacy-choices-could-not-be-loaded",
+    "key": "privacy.choices.could.not.be.loaded",
+    "lang": "en",
+    "value": "Privacy choices could not be loaded."
+  },
+  {
+    "_id": "i18n-message-en-privacy-choices-could-not-be-saved",
+    "key": "privacy.choices.could.not.be.saved",
+    "lang": "en",
+    "value": "Privacy choices could not be saved."
+  },
+  {
+    "_id": "i18n-message-en-privacy-choices-saved",
+    "key": "privacy.choices.saved",
+    "lang": "en",
+    "value": "Privacy choices saved."
+  },
+  {
     "_id": "i18n-message-en-privacy-popup-header",
     "key": "privacy.popup.header",
     "lang": "en",
@@ -1392,6 +1428,12 @@
     "value": "Privacy revisions"
   },
   {
+    "_id": "i18n-message-en-privacy-section-approved",
+    "key": "privacy.section.approved",
+    "lang": "en",
+    "value": "Privacy section approved"
+  },
+  {
     "_id": "i18n-message-en-privacy-section-title",
     "key": "privacy.section.title",
     "lang": "en",
@@ -1402,6 +1444,18 @@
     "key": "privacy.sections",
     "lang": "en",
     "value": "Privacy sections"
+  },
+  {
+    "_id": "i18n-message-en-privacy-topics",
+    "key": "privacy.topics",
+    "lang": "en",
+    "value": "Privacy topics"
+  },
+  {
+    "_id": "i18n-message-en-privacy-is-not-available",
+    "key": "privacy.is.not.available",
+    "lang": "en",
+    "value": "Privacy is not available"
   },
   {
     "_id": "i18n-message-en-before-continuing-please-review-and-accept-how-your-data-is-used-in-mysc",
@@ -3954,10 +4008,22 @@
     "value": "Save article"
   },
   {
+    "_id": "i18n-message-en-save-choices",
+    "key": "save.choices",
+    "lang": "en",
+    "value": "Save choices"
+  },
+  {
     "_id": "i18n-message-en-save-contact",
     "key": "save.contact",
     "lang": "en",
     "value": "Save contact"
+  },
+  {
+    "_id": "i18n-message-en-saving",
+    "key": "saving",
+    "lang": "en",
+    "value": "Saving..."
   },
   {
     "_id": "i18n-message-en-scam-fraud",
@@ -4312,6 +4378,12 @@
     "key": "approval.required",
     "lang": "hu",
     "value": "Jóváhagyás szükséges"
+  },
+  {
+    "_id": "i18n-message-hu-approve-privacy",
+    "key": "approve.privacy",
+    "lang": "hu",
+    "value": "Adatvédelem elfogadása"
   },
   {
     "_id": "i18n-message-hu-approve-optional-privacy-section",
@@ -5076,6 +5148,12 @@
     "value": "Nincs aktív adatvédelmi verzió"
   },
   {
+    "_id": "i18n-message-hu-no-active-privacy-revision-has-been-published-yet",
+    "key": "no.active.privacy.revision.has.been.published.yet",
+    "lang": "hu",
+    "value": "Még nincs közzétett aktív adatvédelmi verzió."
+  },
+  {
     "_id": "i18n-message-hu-no-help-revisions",
     "key": "no.help.revisions",
     "lang": "hu",
@@ -5562,6 +5640,30 @@
     "value": "Első az adatvédelem"
   },
   {
+    "_id": "i18n-message-hu-privacy-approval-could-not-be-saved",
+    "key": "privacy.approval.could.not.be.saved",
+    "lang": "hu",
+    "value": "Nem sikerült menteni az adatvédelmi jóváhagyást."
+  },
+  {
+    "_id": "i18n-message-hu-privacy-choices-could-not-be-loaded",
+    "key": "privacy.choices.could.not.be.loaded",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni az adatvédelmi választásokat."
+  },
+  {
+    "_id": "i18n-message-hu-privacy-choices-could-not-be-saved",
+    "key": "privacy.choices.could.not.be.saved",
+    "lang": "hu",
+    "value": "Nem sikerült menteni az adatvédelmi választásokat."
+  },
+  {
+    "_id": "i18n-message-hu-privacy-choices-saved",
+    "key": "privacy.choices.saved",
+    "lang": "hu",
+    "value": "Adatvédelmi választások mentve."
+  },
+  {
     "_id": "i18n-message-hu-privacy-popup-header",
     "key": "privacy.popup.header",
     "lang": "hu",
@@ -5574,6 +5676,12 @@
     "value": "Adatvédelmi verziók"
   },
   {
+    "_id": "i18n-message-hu-privacy-section-approved",
+    "key": "privacy.section.approved",
+    "lang": "hu",
+    "value": "Adatvédelmi szakasz jóváhagyva"
+  },
+  {
     "_id": "i18n-message-hu-privacy-section-title",
     "key": "privacy.section.title",
     "lang": "hu",
@@ -5584,6 +5692,18 @@
     "key": "privacy.sections",
     "lang": "hu",
     "value": "Adatvédelmi szakaszok"
+  },
+  {
+    "_id": "i18n-message-hu-privacy-topics",
+    "key": "privacy.topics",
+    "lang": "hu",
+    "value": "Adatvédelmi témák"
+  },
+  {
+    "_id": "i18n-message-hu-privacy-is-not-available",
+    "key": "privacy.is.not.available",
+    "lang": "hu",
+    "value": "Az adatvédelem nem érhető el"
   },
   {
     "_id": "i18n-message-hu-before-continuing-please-review-and-accept-how-your-data-is-used-in-mysc",
@@ -8130,10 +8250,22 @@
     "value": "Cikk mentése"
   },
   {
+    "_id": "i18n-message-hu-save-choices",
+    "key": "save.choices",
+    "lang": "hu",
+    "value": "Választások mentése"
+  },
+  {
     "_id": "i18n-message-hu-save-contact",
     "key": "save.contact",
     "lang": "hu",
     "value": "Kapcsolat mentése"
+  },
+  {
+    "_id": "i18n-message-hu-saving",
+    "key": "saving",
+    "lang": "hu",
+    "value": "Mentés..."
   },
   {
     "_id": "i18n-message-hu-scam-fraud",

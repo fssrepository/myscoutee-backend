@@ -95,12 +95,14 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto activeState(String documentType, String lang) {
+        return activeState(documentType, lang, DEFAULT_LANG);
+    }
+
+    public HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage) {
         String kind = documentKind(documentType);
-        String language = contentLang(lang);
+        String language = requestContentLang(lang, acceptLanguage);
         ensureDefaultRevision(kind, language);
-        HelpCenterRevision active = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language).stream()
-                .filter(revision -> Boolean.TRUE.equals(revision.getActive()))
-                .max(Comparator.comparing(HelpCenterRevision::getVersion, Comparator.nullsLast(Integer::compareTo)))
+        HelpCenterRevision active = revisionsRepository.findFirstByDocumentTypeAndLangAndActiveTrueOrderByVersionDesc(kind, language)
                 .orElse(null);
         return new HelpCenterStateDto(
                 active == null ? null : toRevisionDto(active),
@@ -884,12 +886,33 @@ public class HelpCenterService {
     }
 
     private String contentLang(String value) {
+        return text(supportedContentLang(value), DEFAULT_LANG);
+    }
+
+    private String supportedContentLang(String value) {
         String normalized = normalize(value).toLowerCase(Locale.ROOT);
+        int semicolonIndex = normalized.indexOf(';');
+        if (semicolonIndex > 0) {
+            normalized = normalized.substring(0, semicolonIndex);
+        }
         int dashIndex = normalized.indexOf('-');
         if (dashIndex > 0) {
             normalized = normalized.substring(0, dashIndex);
         }
-        return "hu".equals(normalized) ? "hu" : DEFAULT_LANG;
+        return "hu".equals(normalized) || DEFAULT_LANG.equals(normalized) ? normalized : "";
+    }
+
+    private String requestContentLang(String explicitLang, String acceptLanguage) {
+        if (StringUtils.hasText(normalize(explicitLang))) {
+            return contentLang(explicitLang);
+        }
+        for (String candidate : normalize(acceptLanguage).split(",")) {
+            String supportedLang = supportedContentLang(candidate);
+            if (StringUtils.hasText(supportedLang)) {
+                return supportedLang;
+            }
+        }
+        return DEFAULT_LANG;
     }
 
     private String languageLabel(String lang) {

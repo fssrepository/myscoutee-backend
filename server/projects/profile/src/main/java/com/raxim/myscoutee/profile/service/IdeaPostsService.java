@@ -59,8 +59,12 @@ public class IdeaPostsService {
     }
 
     public List<IdeaPostDto> publicPosts(String lang) {
+        return publicPosts(lang, DEFAULT_LANG);
+    }
+
+    public List<IdeaPostDto> publicPosts(String lang, String acceptLanguage) {
         ensureSeeded();
-        String language = contentLang(lang);
+        String language = requestContentLang(lang, acceptLanguage);
         List<IdeaPost> posts = ideaPostsRepository.findByPublishedTrueAndLangOrderBySubmittedAtIsoDesc(language);
         if (posts.isEmpty() && !DEFAULT_LANG.equals(language)) {
             posts = ideaPostsRepository.findByPublishedTrueAndLangOrderBySubmittedAtIsoDesc(DEFAULT_LANG);
@@ -550,12 +554,33 @@ public class IdeaPostsService {
     }
 
     private String contentLang(String value) {
+        return text(supportedContentLang(value), DEFAULT_LANG);
+    }
+
+    private String supportedContentLang(String value) {
         String normalized = normalize(value).toLowerCase();
+        int semicolonIndex = normalized.indexOf(';');
+        if (semicolonIndex > 0) {
+            normalized = normalized.substring(0, semicolonIndex);
+        }
         int dashIndex = normalized.indexOf('-');
         if (dashIndex > 0) {
             normalized = normalized.substring(0, dashIndex);
         }
-        return "hu".equals(normalized) ? "hu" : DEFAULT_LANG;
+        return "hu".equals(normalized) || DEFAULT_LANG.equals(normalized) ? normalized : "";
+    }
+
+    private String requestContentLang(String explicitLang, String acceptLanguage) {
+        if (StringUtils.hasText(normalize(explicitLang))) {
+            return contentLang(explicitLang);
+        }
+        for (String candidate : normalize(acceptLanguage).split(",")) {
+            String supportedLang = supportedContentLang(candidate);
+            if (StringUtils.hasText(supportedLang)) {
+                return supportedLang;
+            }
+        }
+        return DEFAULT_LANG;
     }
 
     private String languageLabel(String lang) {
