@@ -108,6 +108,12 @@
     "value": "Admin workspace"
   },
   {
+    "_id": "i18n-message-en-admin-workspace-ready",
+    "key": "admin.workspace.ready",
+    "lang": "en",
+    "value": "Admin workspace ready"
+  },
+  {
     "_id": "i18n-message-en-all",
     "key": "all",
     "lang": "en",
@@ -442,6 +448,12 @@
     "key": "create.support.link",
     "lang": "en",
     "value": "Create support link"
+  },
+  {
+    "_id": "i18n-message-en-creating-moderation-records",
+    "key": "creating.moderation.records",
+    "lang": "en",
+    "value": "Creating moderation records"
   },
   {
     "_id": "i18n-message-en-delete",
@@ -1218,6 +1230,12 @@
     "value": "Open shared source"
   },
   {
+    "_id": "i18n-message-en-opening-admin-workspace",
+    "key": "opening.admin.workspace",
+    "lang": "en",
+    "value": "Opening admin workspace"
+  },
+  {
     "_id": "i18n-message-en-opening-demo-session",
     "key": "opening.demo.session",
     "lang": "en",
@@ -1228,6 +1246,12 @@
     "key": "opening.demo.session.1qf23n",
     "lang": "en",
     "value": "Opening demo session..."
+  },
+  {
+    "_id": "i18n-message-en-opening-myscoutee-as-the-user-sees-it",
+    "key": "opening.myscoutee.as.the.user.sees.it",
+    "lang": "en",
+    "value": "Opening MyScoutee as the user sees it"
   },
   {
     "_id": "i18n-message-en-opening-shared-user",
@@ -1300,6 +1324,18 @@
     "key": "preferences",
     "lang": "en",
     "value": "Preferences"
+  },
+  {
+    "_id": "i18n-message-en-preparing-admin-bootstrap",
+    "key": "preparing.admin.bootstrap",
+    "lang": "en",
+    "value": "Preparing admin bootstrap"
+  },
+  {
+    "_id": "i18n-message-en-preparing-admin-data",
+    "key": "preparing.admin.data",
+    "lang": "en",
+    "value": "Preparing admin data"
   },
   {
     "_id": "i18n-message-en-preparing-demo-data",
@@ -2022,6 +2058,12 @@
     "value": "Restoring admin workspace"
   },
   {
+    "_id": "i18n-message-en-resolving-reported-users",
+    "key": "resolving.reported.users",
+    "lang": "en",
+    "value": "Resolving reported users"
+  },
+  {
     "_id": "i18n-message-en-review-booking-and-pay",
     "key": "review.booking.and.pay",
     "lang": "en",
@@ -2092,6 +2134,12 @@
     "key": "select.admin.user",
     "lang": "en",
     "value": "Select admin user"
+  },
+  {
+    "_id": "i18n-message-en-select-an-admin-user",
+    "key": "select.an.admin.user",
+    "lang": "en",
+    "value": "Select an admin user"
   },
   {
     "_id": "i18n-message-en-select-a-slot-to-upload-an-image",
@@ -2364,6 +2412,12 @@
     "value": "Subject"
   },
   {
+    "_id": "i18n-message-en-support-link-unavailable",
+    "key": "support.link.unavailable",
+    "lang": "en",
+    "value": "Support link unavailable"
+  },
+  {
     "_id": "i18n-message-en-support-selected-the-user-from-the-service-chat-preparing-the-same-app-v",
     "key": "support.selected.the.user.from.the.service.chat.preparing.the.same.app.view.now",
     "lang": "en",
@@ -2386,6 +2440,12 @@
     "key": "these.fields.are.required.before.the.app.opens",
     "lang": "en",
     "value": "These fields are required before the app opens."
+  },
+  {
+    "_id": "i18n-message-en-this-shared-support-user-is-not-available-in-the-demo-selector",
+    "key": "this.shared.support.user.is.not.available.in.the.demo.selector",
+    "lang": "en",
+    "value": "This shared support user is not available in the demo selector."
   },
   {
     "_id": "i18n-message-en-this-support-link-expired-or-is-no-longer-available",
@@ -2440,6 +2500,12 @@
     "key": "unable.to.load.demo.users.right.now",
     "lang": "en",
     "value": "Unable to load demo users right now."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-open-admin-workspace",
+    "key": "unable.to.open.admin.workspace",
+    "lang": "en",
+    "value": "Unable to open admin workspace."
   },
   {
     "_id": "i18n-message-en-upload",
@@ -4230,6 +4296,156 @@
     "value": "Yes"
   },
   {
+    "_id": "i18n-message-en-about-me",
+    "key": "about.me",
+    "lang": "en",
+    "value": "About me"
+  },
+  {
+    "_id": "i18n-message-en-add",
+    "key": "add",
+    "lang": "en",
+    "value": "Add"
+  },
+  {
+    "_id": "i18n-message-en-clear",
+    "key": "clear",
+    "lang": "en",
+    "value": "Clear"
+  },
+  {
+    "_id": "i18n-message-en-communication",
+    "key": "communication",
+    "lang": "en",
+    "value": "Communication"
+  },
+  {
+    "_id": "i18n-message-en-date-range",
+    "key": "date.range",
+    "lang": "en",
+    "value": "Date range"
+  },
+  {
+    "_id": "i18n-message-en-description",
+    "key": "description",
+    "lang": "en",
+    "value": "Description"
+  },
+  {
+    "_id": "i18n-message-en-enter-a-date-range",
+    "key": "enter.a.date.range",
+    "lang": "en",
+    "value": "Enter a date range"
+  },
+  {
+    "_id": "i18n-message-en-entries",
+    "key": "entries",
+    "lang": "en",
+    "value": "entries"
+  },
+  {
+    "_id": "i18n-message-en-height",
+    "key": "height",
+    "lang": "en",
+    "value": "Height"
+  },
+  {
+    "_id": "i18n-message-en-identity",
+    "key": "identity",
+    "lang": "en",
+    "value": "Identity"
+  },
+  {
+    "_id": "i18n-message-en-images",
+    "key": "images",
+    "lang": "en",
+    "value": "images"
+  },
+  {
+    "_id": "i18n-message-en-leave-end-empty-for-present",
+    "key": "leave.end.empty.for.present",
+    "lang": "en",
+    "value": "Leave end empty for Present"
+  },
+  {
+    "_id": "i18n-message-en-next",
+    "key": "next",
+    "lang": "en",
+    "value": "Next"
+  },
+  {
+    "_id": "i18n-message-en-no-items-selected-yet",
+    "key": "no.items.selected.yet",
+    "lang": "en",
+    "value": "No items selected yet."
+  },
+  {
+    "_id": "i18n-message-en-no-photos",
+    "key": "no.photos",
+    "lang": "en",
+    "value": "No photos"
+  },
+  {
+    "_id": "i18n-message-en-orientation",
+    "key": "orientation",
+    "lang": "en",
+    "value": "Orientation"
+  },
+  {
+    "_id": "i18n-message-en-pets",
+    "key": "pets",
+    "lang": "en",
+    "value": "Pets"
+  },
+  {
+    "_id": "i18n-message-en-photos",
+    "key": "photos",
+    "lang": "en",
+    "value": "Photos"
+  },
+  {
+    "_id": "i18n-message-en-profile-image-slots",
+    "key": "profile.image.slots",
+    "lang": "en",
+    "value": "Profile image slots"
+  },
+  {
+    "_id": "i18n-message-en-profile-photo-review",
+    "key": "profile.photo.review",
+    "lang": "en",
+    "value": "Profile photo review"
+  },
+  {
+    "_id": "i18n-message-en-profile-photo-slot",
+    "key": "profile.photo.slot",
+    "lang": "en",
+    "value": "Profile photo slot"
+  },
+  {
+    "_id": "i18n-message-en-religion",
+    "key": "religion",
+    "lang": "en",
+    "value": "Religion"
+  },
+  {
+    "_id": "i18n-message-en-remove-experience",
+    "key": "remove.experience",
+    "lang": "en",
+    "value": "Remove experience"
+  },
+  {
+    "_id": "i18n-message-en-review",
+    "key": "review",
+    "lang": "en",
+    "value": "Review"
+  },
+  {
+    "_id": "i18n-message-en-skip",
+    "key": "skip",
+    "lang": "en",
+    "value": "Skip"
+  },
+  {
     "_id": "i18n-message-en-required",
     "key": "required",
     "lang": "en",
@@ -4354,6 +4570,12 @@
     "key": "admin.workspace",
     "lang": "hu",
     "value": "Admin munkatér"
+  },
+  {
+    "_id": "i18n-message-hu-admin-workspace-ready",
+    "key": "admin.workspace.ready",
+    "lang": "hu",
+    "value": "Admin munkatér készen áll"
   },
   {
     "_id": "i18n-message-hu-all",
@@ -4690,6 +4912,12 @@
     "key": "create.support.link",
     "lang": "hu",
     "value": "Támogatási link létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-creating-moderation-records",
+    "key": "creating.moderation.records",
+    "lang": "hu",
+    "value": "Moderációs rekordok létrehozása"
   },
   {
     "_id": "i18n-message-hu-delete",
@@ -5466,6 +5694,12 @@
     "value": "Megosztott forrás megnyitása"
   },
   {
+    "_id": "i18n-message-hu-opening-admin-workspace",
+    "key": "opening.admin.workspace",
+    "lang": "hu",
+    "value": "Admin munkatér megnyitása"
+  },
+  {
     "_id": "i18n-message-hu-opening-demo-session",
     "key": "opening.demo.session",
     "lang": "hu",
@@ -5476,6 +5710,12 @@
     "key": "opening.demo.session.1qf23n",
     "lang": "hu",
     "value": "Demo munkamenet megnyitása..."
+  },
+  {
+    "_id": "i18n-message-hu-opening-myscoutee-as-the-user-sees-it",
+    "key": "opening.myscoutee.as.the.user.sees.it",
+    "lang": "hu",
+    "value": "MyScoutee megnyitása úgy, ahogy a felhasználó látja"
   },
   {
     "_id": "i18n-message-hu-opening-shared-user",
@@ -5548,6 +5788,18 @@
     "key": "preferences",
     "lang": "hu",
     "value": "Preferenciák"
+  },
+  {
+    "_id": "i18n-message-hu-preparing-admin-bootstrap",
+    "key": "preparing.admin.bootstrap",
+    "lang": "hu",
+    "value": "Admin indítás előkészítése"
+  },
+  {
+    "_id": "i18n-message-hu-preparing-admin-data",
+    "key": "preparing.admin.data",
+    "lang": "hu",
+    "value": "Admin adatok előkészítése"
   },
   {
     "_id": "i18n-message-hu-preparing-demo-data",
@@ -6270,6 +6522,12 @@
     "value": "Demo választó újrapróbálása"
   },
   {
+    "_id": "i18n-message-hu-resolving-reported-users",
+    "key": "resolving.reported.users",
+    "lang": "hu",
+    "value": "Jelentett felhasználók azonosítása"
+  },
+  {
     "_id": "i18n-message-hu-review-booking-and-pay",
     "key": "review.booking.and.pay",
     "lang": "hu",
@@ -6340,6 +6598,12 @@
     "key": "select.admin.user",
     "lang": "hu",
     "value": "Admin felhasználó választása"
+  },
+  {
+    "_id": "i18n-message-hu-select-an-admin-user",
+    "key": "select.an.admin.user",
+    "lang": "hu",
+    "value": "Válassz admin felhasználót"
   },
   {
     "_id": "i18n-message-hu-select-a-slot-to-upload-an-image",
@@ -6612,6 +6876,12 @@
     "value": "Tárgy"
   },
   {
+    "_id": "i18n-message-hu-support-link-unavailable",
+    "key": "support.link.unavailable",
+    "lang": "hu",
+    "value": "A támogatási link nem érhető el"
+  },
+  {
     "_id": "i18n-message-hu-support-selected-the-user-from-the-service-chat-preparing-the-same-app-v",
     "key": "support.selected.the.user.from.the.service.chat.preparing.the.same.app.view.now",
     "lang": "hu",
@@ -6634,6 +6904,12 @@
     "key": "these.fields.are.required.before.the.app.opens",
     "lang": "hu",
     "value": "Ezek a mezők kötelezőek az alkalmazás megnyitása előtt."
+  },
+  {
+    "_id": "i18n-message-hu-this-shared-support-user-is-not-available-in-the-demo-selector",
+    "key": "this.shared.support.user.is.not.available.in.the.demo.selector",
+    "lang": "hu",
+    "value": "A megosztott támogatási felhasználó nem érhető el a demo választóban."
   },
   {
     "_id": "i18n-message-hu-this-support-link-expired-or-is-no-longer-available",
@@ -6688,6 +6964,12 @@
     "key": "unable.to.load.demo.users.right.now",
     "lang": "hu",
     "value": "Most nem lehet betölteni a demo felhasználókat."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-open-admin-workspace",
+    "key": "unable.to.open.admin.workspace",
+    "lang": "hu",
+    "value": "Nem sikerült megnyitni az admin munkateret."
   },
   {
     "_id": "i18n-message-hu-upload",
@@ -8476,6 +8758,156 @@
     "key": "yes",
     "lang": "hu",
     "value": "Igen"
+  },
+  {
+    "_id": "i18n-message-hu-about-me",
+    "key": "about.me",
+    "lang": "hu",
+    "value": "Rólam"
+  },
+  {
+    "_id": "i18n-message-hu-add",
+    "key": "add",
+    "lang": "hu",
+    "value": "Hozzáadás"
+  },
+  {
+    "_id": "i18n-message-hu-clear",
+    "key": "clear",
+    "lang": "hu",
+    "value": "Törlés"
+  },
+  {
+    "_id": "i18n-message-hu-communication",
+    "key": "communication",
+    "lang": "hu",
+    "value": "Kommunikáció"
+  },
+  {
+    "_id": "i18n-message-hu-date-range",
+    "key": "date.range",
+    "lang": "hu",
+    "value": "Dátumtartomány"
+  },
+  {
+    "_id": "i18n-message-hu-description",
+    "key": "description",
+    "lang": "hu",
+    "value": "Leírás"
+  },
+  {
+    "_id": "i18n-message-hu-enter-a-date-range",
+    "key": "enter.a.date.range",
+    "lang": "hu",
+    "value": "Adj meg egy dátumtartományt"
+  },
+  {
+    "_id": "i18n-message-hu-entries",
+    "key": "entries",
+    "lang": "hu",
+    "value": "bejegyzés"
+  },
+  {
+    "_id": "i18n-message-hu-height",
+    "key": "height",
+    "lang": "hu",
+    "value": "Magasság"
+  },
+  {
+    "_id": "i18n-message-hu-identity",
+    "key": "identity",
+    "lang": "hu",
+    "value": "Identitás"
+  },
+  {
+    "_id": "i18n-message-hu-images",
+    "key": "images",
+    "lang": "hu",
+    "value": "kép"
+  },
+  {
+    "_id": "i18n-message-hu-leave-end-empty-for-present",
+    "key": "leave.end.empty.for.present",
+    "lang": "hu",
+    "value": "Hagyd üresen a végét, ha jelenleg is tart"
+  },
+  {
+    "_id": "i18n-message-hu-next",
+    "key": "next",
+    "lang": "hu",
+    "value": "Tovább"
+  },
+  {
+    "_id": "i18n-message-hu-no-items-selected-yet",
+    "key": "no.items.selected.yet",
+    "lang": "hu",
+    "value": "Még nincs kiválasztott elem."
+  },
+  {
+    "_id": "i18n-message-hu-no-photos",
+    "key": "no.photos",
+    "lang": "hu",
+    "value": "Nincsenek fotók"
+  },
+  {
+    "_id": "i18n-message-hu-orientation",
+    "key": "orientation",
+    "lang": "hu",
+    "value": "Orientáció"
+  },
+  {
+    "_id": "i18n-message-hu-pets",
+    "key": "pets",
+    "lang": "hu",
+    "value": "Háziállatok"
+  },
+  {
+    "_id": "i18n-message-hu-photos",
+    "key": "photos",
+    "lang": "hu",
+    "value": "Fotók"
+  },
+  {
+    "_id": "i18n-message-hu-profile-image-slots",
+    "key": "profile.image.slots",
+    "lang": "hu",
+    "value": "Profilképhelyek"
+  },
+  {
+    "_id": "i18n-message-hu-profile-photo-review",
+    "key": "profile.photo.review",
+    "lang": "hu",
+    "value": "Profilfotók áttekintése"
+  },
+  {
+    "_id": "i18n-message-hu-profile-photo-slot",
+    "key": "profile.photo.slot",
+    "lang": "hu",
+    "value": "Profilfotó helye"
+  },
+  {
+    "_id": "i18n-message-hu-religion",
+    "key": "religion",
+    "lang": "hu",
+    "value": "Vallás"
+  },
+  {
+    "_id": "i18n-message-hu-remove-experience",
+    "key": "remove.experience",
+    "lang": "hu",
+    "value": "Tapasztalat eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-review",
+    "key": "review",
+    "lang": "hu",
+    "value": "Áttekintés"
+  },
+  {
+    "_id": "i18n-message-hu-skip",
+    "key": "skip",
+    "lang": "hu",
+    "value": "Kihagyás"
   },
   {
     "_id": "i18n-message-hu-required",
