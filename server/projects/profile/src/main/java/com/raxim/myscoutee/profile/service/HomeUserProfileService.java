@@ -74,7 +74,6 @@ public class HomeUserProfileService {
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
     private static final String STATUS_ACCEPTED = "accepted";

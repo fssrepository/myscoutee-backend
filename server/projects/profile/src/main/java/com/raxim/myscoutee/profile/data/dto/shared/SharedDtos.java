@@ -3,6 +3,8 @@ package com.raxim.myscoutee.profile.data.dto.shared;
 import java.util.List;
 import java.util.Map;
 
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+
 public final class SharedDtos {
     private SharedDtos() {
     }
@@ -182,7 +184,8 @@ public final class SharedDtos {
             String actionAtIso,
             String metWhere,
             Double relevance,
-            String avatarUrl) {
+            String avatarUrl,
+            UserDto profile) {
     }
 
     public record ActivityMembersSummaryDto(

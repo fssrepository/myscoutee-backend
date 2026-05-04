@@ -129,6 +129,19 @@ db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, publi
 db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });
 " >/dev/null
       ;;
+    userExperienceProfiles)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('userExperienceProfiles').createIndex({ userId: 1 }, { name: 'user_experience_profiles_user_id', unique: true });
+" >/dev/null
+      ;;
   esac
 }
 

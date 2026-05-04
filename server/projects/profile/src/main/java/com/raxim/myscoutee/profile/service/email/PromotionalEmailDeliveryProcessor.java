@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.profile.data.document.EmailOutboxItem;

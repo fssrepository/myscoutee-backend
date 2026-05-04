@@ -299,14 +299,6 @@ public class AdminModerationService {
         return avatar;
     }
 
-    private ActivityChat.ChatReadAvatarRecord readAvatar(String id, String initials, String gender) {
-        ActivityChat.ChatReadAvatarRecord avatar = new ActivityChat.ChatReadAvatarRecord();
-        avatar.setId(id);
-        avatar.setInitials(initials);
-        avatar.setGender(gender);
-        return avatar;
-    }
-
     private Map<String, Users> usersById(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
         List<String> ids = new ArrayList<>();
         reports.forEach(report -> {

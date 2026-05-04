@@ -9,6 +9,7 @@ const requiredCollections = [
   'events',
   'eventFeedbackStates',
   'eventFeedbackAnswers',
+  'userExperienceProfiles',
   'countryPartitions'
 ];
 
@@ -66,6 +67,11 @@ const requiredCollections = [
   portalDb.events.createIndex(
     { locationGeo: '2dsphere' },
     { name: 'event_location_geo' }
+  );
+
+  portalDb.userExperienceProfiles.createIndex(
+    { userId: 1 },
+    { name: 'user_experience_profiles_user_id', unique: true }
   );
 
   if (!portalDb.getUser('guest')) {

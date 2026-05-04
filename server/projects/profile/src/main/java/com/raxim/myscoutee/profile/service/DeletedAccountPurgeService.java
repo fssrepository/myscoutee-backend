@@ -67,7 +67,10 @@ public class DeletedAccountPurgeService {
                 changed = true;
             }
             for (ChatMessageRecord message : chat.getMessages()) {
-                ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
+                if (message == null) {
+                    continue;
+                }
+                ChatAvatarRecord senderAvatar = message.getSenderAvatar();
                 if (senderAvatar == null || !userId.equals(safeText(senderAvatar.getId()))) {
                     continue;
                 }

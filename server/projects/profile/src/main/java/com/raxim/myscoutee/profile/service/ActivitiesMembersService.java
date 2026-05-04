@@ -1465,7 +1465,8 @@ public class ActivitiesMembersService {
                 actionAtIso,
                 safeText(member.getMetWhere()),
                 user == null ? 0d : safeDouble(user.getAffinity()),
-                resolveAvatarUrl(user));
+                resolveAvatarUrl(user),
+                user == null ? null : homeUserProfileService.toGameCardUserDto(user));
     }
 
     private String resolveStoredRole(ActivityMember member, String ownerType, String ownerId) {
