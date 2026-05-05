@@ -6,6 +6,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
@@ -41,6 +46,11 @@ public class AdminNotificationService {
         thread.setDaemon(true);
         return thread;
     });
+    private final ScheduledExecutorService progressHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "admin-notification-progress");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public AdminNotificationService(
             NotificationRuleRegistryService notificationRuleRegistryService,
@@ -56,6 +66,7 @@ public class AdminNotificationService {
     @PreDestroy
     public void shutdown() {
         runExecutor.shutdownNow();
+        progressHeartbeatExecutor.shutdownNow();
     }
 
     public AdminNotificationCenterStateDto state(String adminUserId) {
@@ -138,14 +149,32 @@ public class AdminNotificationService {
     }
 
     private void runRandomEventGroups(String ruleKey, String adminUserId) {
+        AtomicInteger latestPercent = new AtomicInteger(0);
+        AtomicReference<String> latestDetail = new AtomicReference<>("Manual random event grouping started.");
+        Instant startedAt = Instant.now();
+        ScheduledFuture<?> heartbeat = progressHeartbeatExecutor.scheduleAtFixedRate(() -> {
+            long elapsedMillis = Math.max(1L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
+            int heartbeatPercent = Math.min(94, Math.max(1, (int) Math.floor(elapsedMillis / 500.0d) * 10));
+            int nextPercent = latestPercent.updateAndGet(value -> Math.max(value, heartbeatPercent));
+            long elapsedSeconds = Math.max(1L, java.time.Duration.between(startedAt, Instant.now()).toSeconds());
+            notificationRuleRegistryService.updateRunProgress(
+                    ruleKey,
+                    nextPercent,
+                    latestDetail.get() + " Running for " + elapsedSeconds + "s.",
+                    adminUserId);
+        }, 1, 1, TimeUnit.SECONDS);
         try {
-            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(progress ->
-                    notificationRuleRegistryService.updateRunProgress(ruleKey, progress.progressPercent(), progress.detail(), adminUserId));
+            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(progress -> {
+                latestDetail.set(progress.detail());
+                notificationRuleRegistryService.updateRunProgress(ruleKey, latestPercent.get(), progress.detail(), adminUserId);
+            });
             int affectedUsers = affectedUsers(plans);
             String detail = "Generated " + plans.size() + " random group plan(s) for " + affectedUsers + " user(s).";
             notificationRuleRegistryService.recordRun(ruleKey, affectedUsers, "completed", detail, adminUserId);
         } catch (Exception exception) {
             notificationRuleRegistryService.recordRun(ruleKey, 0, "failed", safeText(exception.getMessage()), adminUserId);
+        } finally {
+            heartbeat.cancel(false);
         }
     }
 

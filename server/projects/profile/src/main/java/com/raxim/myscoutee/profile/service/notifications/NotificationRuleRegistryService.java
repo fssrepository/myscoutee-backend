@@ -116,7 +116,7 @@ public class NotificationRuleRegistryService {
                 ? new NotificationRuleConfig.RunState()
                 : rule.getRunState();
         runState.setCurrentStatus("running");
-        runState.setProgressPercent(12);
+        runState.setProgressPercent(0);
         runState.setProgressDetail(firstNonBlank(detail, "Starting scheduled process."));
         runState.setStartedAtIso(nowIso);
         runState.setFinishedAtIso("");
