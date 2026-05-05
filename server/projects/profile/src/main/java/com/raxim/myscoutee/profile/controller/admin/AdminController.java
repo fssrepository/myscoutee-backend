@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
@@ -82,6 +83,13 @@ public class AdminController {
             @PathVariable String ruleKey,
             @RequestBody(required = false) AdminNotificationRuleRunRequestDto request) {
         return adminNotificationService.run(ruleKey, request);
+    }
+
+    @GetMapping("/notifications/{ruleKey}/runtime")
+    public AdminNotificationRuleDto notificationRuleRuntime(
+            @PathVariable String ruleKey,
+            @RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminNotificationService.ruleState(ruleKey, adminUserId);
     }
 
     @GetMapping("/help")

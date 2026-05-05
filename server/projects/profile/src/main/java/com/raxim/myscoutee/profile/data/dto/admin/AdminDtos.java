@@ -39,6 +39,7 @@ public final class AdminDtos {
             String triggerKind,
             Boolean enabled,
             Boolean manualRunEnabled,
+            Boolean adminManageable,
             Integer priority,
             AdminNotificationChannelsDto channels,
             AdminNotificationTimingDto timing,
@@ -70,6 +71,7 @@ public final class AdminDtos {
             String time,
             String timezone,
             String cronExpression,
+            String actionKey,
             Boolean enabled) {}
     public record AdminNotificationMessageDto(
             String pushTitle,

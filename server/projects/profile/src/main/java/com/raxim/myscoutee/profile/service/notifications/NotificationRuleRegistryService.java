@@ -34,9 +34,13 @@ public class NotificationRuleRegistryService {
             RULE_EVENT_RANDOM_GROUPS);
 
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
+    private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
 
-    public NotificationRuleRegistryService(NotificationRuleConfigsRepository notificationRuleConfigsRepository) {
+    public NotificationRuleRegistryService(
+            NotificationRuleConfigsRepository notificationRuleConfigsRepository,
+            AdminNotificationSocketSessionRegistry socketSessionRegistry) {
         this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
+        this.socketSessionRegistry = socketSessionRegistry;
     }
 
     public List<NotificationRuleConfig> rules() {
@@ -120,7 +124,9 @@ public class NotificationRuleRegistryService {
         rule.setRunState(runState);
         rule.setUpdatedDate(nowIso);
         rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        return notificationRuleConfigsRepository.save(rule);
+        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        return saved;
     }
 
     public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
@@ -152,7 +158,34 @@ public class NotificationRuleRegistryService {
         appendRunHistory(rule, startedAtIso, finishedAtIso, durationMillis, count, status, detail, actorUserId);
         rule.setUpdatedDate(finishedAtIso);
         rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        return notificationRuleConfigsRepository.save(rule);
+        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        return saved;
+    }
+
+    public NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {
+        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
+        if (rule == null) {
+            return null;
+        }
+        String nowIso = Instant.now().toString();
+        NotificationRuleConfig.RunState runState = rule.getRunState() == null
+                ? new NotificationRuleConfig.RunState()
+                : rule.getRunState();
+        runState.setCurrentStatus("running");
+        runState.setProgressPercent(clamp(progressPercent, 0, 99));
+        runState.setProgressDetail(firstNonBlank(detail, "Scheduled process is running."));
+        if (!StringUtils.hasText(runState.getStartedAtIso())) {
+            runState.setStartedAtIso(nowIso);
+        }
+        runState.setFinishedAtIso("");
+        runState.setDurationMillis(0L);
+        rule.setRunState(runState);
+        rule.setUpdatedDate(nowIso);
+        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        return saved;
     }
 
     public List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
@@ -245,6 +278,7 @@ public class NotificationRuleRegistryService {
         rule.setTriggerKind("scheduled_process");
         rule.setEnabled(enabled);
         rule.setManualRunEnabled(true);
+        rule.setAdminManageable(Boolean.TRUE);
         rule.setPriority(priority);
         NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
         channels.setPushEnabled(false);
@@ -287,6 +321,7 @@ public class NotificationRuleRegistryService {
         target.setTriggerKind(firstNonBlank(source.getTriggerKind(), target.getTriggerKind()));
         target.setEnabled(Boolean.TRUE.equals(source.getEnabled()));
         target.setManualRunEnabled(Boolean.TRUE.equals(source.getManualRunEnabled()));
+        target.setAdminManageable(resolveAdminManageable(source, target));
         target.setPriority(valueOrDefault(source.getPriority(), valueOrDefault(target.getPriority(), 1000)));
         target.setChannels(normalizeChannels(source.getChannels()));
         target.setTiming(normalizeTiming(source.getTiming(), source.getTriggerKind()));
@@ -301,6 +336,20 @@ public class NotificationRuleRegistryService {
         channels.setInAppEnabled(Boolean.TRUE.equals(source == null ? null : source.getInAppEnabled()));
         channels.setSupportChatEnabled(Boolean.TRUE.equals(source == null ? null : source.getSupportChatEnabled()));
         return channels;
+    }
+
+    private Boolean resolveAdminManageable(NotificationRuleConfig source, NotificationRuleConfig target) {
+        if (source != null && source.getAdminManageable() != null) {
+            return Boolean.TRUE.equals(source.getAdminManageable());
+        }
+        if (target != null && target.getAdminManageable() != null) {
+            return Boolean.TRUE.equals(target.getAdminManageable());
+        }
+        String ruleKey = safeText(source == null ? null : source.getRuleKey());
+        if (!StringUtils.hasText(ruleKey)) {
+            ruleKey = safeText(target == null ? null : target.getRuleKey());
+        }
+        return SCHEDULED_EVENT_RULES.contains(ruleKey);
     }
 
     private NotificationRuleConfig.Timing normalizeTiming(NotificationRuleConfig.Timing source, String triggerKind) {
@@ -352,6 +401,7 @@ public class NotificationRuleRegistryService {
                 slot.setTime(normalizeTime(item.getTime()));
                 slot.setTimezone(firstNonBlank(item.getTimezone(), "UTC"));
                 slot.setCronExpression(firstNonBlank(item.getCronExpression(), toSlotCron(slot)));
+                slot.setActionKey(safeText(item.getActionKey()));
                 slot.setEnabled(!Boolean.FALSE.equals(item.getEnabled()));
                 slots.add(slot);
             }
@@ -365,6 +415,7 @@ public class NotificationRuleRegistryService {
             slot.setTime(normalizeTime(fallbackTiming.getTime()));
             slot.setTimezone(firstNonBlank(fallbackTiming.getTimezone(), "UTC"));
             slot.setCronExpression(toSlotCron(slot));
+            slot.setActionKey("");
             slot.setEnabled(true);
             slots.add(slot);
         }

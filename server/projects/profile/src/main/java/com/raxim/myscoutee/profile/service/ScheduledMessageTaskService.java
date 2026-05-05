@@ -141,7 +141,7 @@ public class ScheduledMessageTaskService {
         taskExecutor.shutdownNow();
     }
 
-    @Scheduled(fixedDelayString = "${scheduled-messages.task-poll-delay-ms:60000}")
+    @Scheduled(fixedDelayString = "${scheduled-messages.task-poll-delay-ms:1800000}")
     public void runDueTasks() {
         reconcileLocalWorkersFromDb();
         Instant now = Instant.now();

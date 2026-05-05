@@ -2,9 +2,15 @@ package com.raxim.myscoutee.profile.service.notifications;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
+import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
@@ -30,6 +36,11 @@ public class AdminNotificationService {
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
+    private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
+        Thread thread = new Thread(runnable, "admin-notification-runner");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public AdminNotificationService(
             NotificationRuleRegistryService notificationRuleRegistryService,
@@ -42,9 +53,20 @@ public class AdminNotificationService {
         this.adminModerationService = adminModerationService;
     }
 
+    @PreDestroy
+    public void shutdown() {
+        runExecutor.shutdownNow();
+    }
+
     public AdminNotificationCenterStateDto state(String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
         return toState(notificationRuleRegistryService.rules());
+    }
+
+    public AdminNotificationRuleDto ruleState(String ruleKey, String adminUserId) {
+        adminModerationService.resolveAdminActor(adminUserId);
+        NotificationRuleConfig rule = notificationRuleRegistryService.findRule(ruleKey).orElse(null);
+        return rule == null ? null : toDto(rule);
     }
 
     public AdminNotificationCenterStateDto save(AdminNotificationRuleSaveRequestDto request) {
@@ -63,43 +85,83 @@ public class AdminNotificationService {
             return new AdminNotificationRuleRunResultDto(normalizedRuleKey, normalizedRuleKey, 0, "skipped",
                     "Rule was not found.", Instant.now().toString());
         }
-        String status = "completed";
-        String detail;
-        int affectedCount;
         try {
             notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id());
             switch (normalizedRuleKey) {
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
-                    affectedCount = eventScheduler.generateRandomPlans().size();
-                    detail = "Generated random event group plans.";
+                    runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id()));
+                    return new AdminNotificationRuleRunResultDto(
+                            normalizedRuleKey,
+                            safeText(rule.getLabel()),
+                            0,
+                            "running",
+                            "Manual random event grouping started.",
+                            Instant.now().toString());
                 }
                 default -> {
-                    affectedCount = 0;
-                    status = "skipped";
-                    detail = "This rule is action driven and has no manual worker.";
+                    NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
+                            normalizedRuleKey,
+                            0,
+                            "skipped",
+                            "This rule is action driven and has no manual worker.",
+                            admin.id());
+                    String ranAtIso = updated == null || updated.getRunState() == null
+                            ? Instant.now().toString()
+                            : updated.getRunState().getLastRunAtIso();
+                    return new AdminNotificationRuleRunResultDto(
+                            normalizedRuleKey,
+                            safeText(rule.getLabel()),
+                            0,
+                            "skipped",
+                            "This rule is action driven and has no manual worker.",
+                            ranAtIso);
                 }
             }
         } catch (Exception exception) {
-            affectedCount = 0;
-            status = "failed";
-            detail = safeText(exception.getMessage());
+            NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
+                    normalizedRuleKey,
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    admin.id());
+            String ranAtIso = updated == null || updated.getRunState() == null
+                    ? Instant.now().toString()
+                    : updated.getRunState().getLastRunAtIso();
+            return new AdminNotificationRuleRunResultDto(
+                    normalizedRuleKey,
+                    safeText(rule.getLabel()),
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    ranAtIso);
         }
-        NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
-                normalizedRuleKey,
-                affectedCount,
-                status,
-                detail,
-                admin.id());
-        String ranAtIso = updated == null || updated.getRunState() == null
-                ? Instant.now().toString()
-                : updated.getRunState().getLastRunAtIso();
-        return new AdminNotificationRuleRunResultDto(
-                normalizedRuleKey,
-                safeText(rule.getLabel()),
-                affectedCount,
-                status,
-                detail,
-                ranAtIso);
+    }
+
+    private void runRandomEventGroups(String ruleKey, String adminUserId) {
+        try {
+            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(progress ->
+                    notificationRuleRegistryService.updateRunProgress(ruleKey, progress.progressPercent(), progress.detail(), adminUserId));
+            int affectedUsers = affectedUsers(plans);
+            String detail = "Generated " + plans.size() + " random group plan(s) for " + affectedUsers + " user(s).";
+            notificationRuleRegistryService.recordRun(ruleKey, affectedUsers, "completed", detail, adminUserId);
+        } catch (Exception exception) {
+            notificationRuleRegistryService.recordRun(ruleKey, 0, "failed", safeText(exception.getMessage()), adminUserId);
+        }
+    }
+
+    private int affectedUsers(List<GeneratedEventPlan> plans) {
+        Set<String> userIds = new LinkedHashSet<>();
+        for (GeneratedEventPlan plan : plans == null ? List.<GeneratedEventPlan>of() : plans) {
+            if (plan == null || plan.memberUserIds() == null) {
+                continue;
+            }
+            for (String userId : plan.memberUserIds()) {
+                if (safeText(userId).length() > 0) {
+                    userIds.add(safeText(userId));
+                }
+            }
+        }
+        return userIds.size();
     }
 
     private AdminNotificationCenterStateDto toState(List<NotificationRuleConfig> rules) {
@@ -134,6 +196,7 @@ public class AdminNotificationService {
                 rule.getTriggerKind(),
                 rule.getEnabled(),
                 rule.getManualRunEnabled(),
+                adminManageable(rule),
                 rule.getPriority(),
                 new AdminNotificationChannelsDto(
                         channels.getPushEnabled(),
@@ -192,6 +255,7 @@ public class AdminNotificationService {
         rule.setTriggerKind(dto.triggerKind());
         rule.setEnabled(dto.enabled());
         rule.setManualRunEnabled(dto.manualRunEnabled());
+        rule.setAdminManageable(dto.adminManageable());
         rule.setPriority(dto.priority());
         AdminNotificationChannelsDto sourceChannels = dto.channels();
         NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
@@ -243,6 +307,7 @@ public class AdminNotificationService {
                 slot.getTime(),
                 slot.getTimezone(),
                 slot.getCronExpression(),
+                slot.getActionKey(),
                 slot.getEnabled());
     }
 
@@ -258,6 +323,7 @@ public class AdminNotificationService {
         slot.setTime(dto.time());
         slot.setTimezone(dto.timezone());
         slot.setCronExpression(dto.cronExpression());
+        slot.setActionKey(dto.actionKey());
         slot.setEnabled(dto.enabled());
         return slot;
     }
@@ -277,5 +343,12 @@ public class AdminNotificationService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private Boolean adminManageable(NotificationRuleConfig rule) {
+        if (rule != null && rule.getAdminManageable() != null) {
+            return Boolean.TRUE.equals(rule.getAdminManageable());
+        }
+        return NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS.equals(safeText(rule == null ? null : rule.getRuleKey()));
     }
 }

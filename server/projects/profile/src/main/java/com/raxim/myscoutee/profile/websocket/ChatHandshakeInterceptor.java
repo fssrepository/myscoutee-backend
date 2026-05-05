@@ -24,6 +24,14 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
             Map<String, Object> attributes) {
         var queryParams = UriComponentsBuilder.fromUri(request.getURI()).build().getQueryParams();
         String chatId = queryParams.getFirst("chatId");
+        String path = request.getURI() == null ? "" : request.getURI().getPath();
+        if (path != null && path.endsWith("/admin/notifications/ws")) {
+            String userId = queryParams.getFirst("userId");
+            if (StringUtils.hasText(userId)) {
+                attributes.put(USER_ID_ATTRIBUTE, userId.trim());
+            }
+            return true;
+        }
         if (!StringUtils.hasText(chatId)) {
             response.setStatusCode(HttpStatus.BAD_REQUEST);
             return false;

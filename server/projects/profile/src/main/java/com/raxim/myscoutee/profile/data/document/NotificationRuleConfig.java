@@ -25,6 +25,7 @@ public class NotificationRuleConfig {
     private String triggerKind;
     private Boolean enabled;
     private Boolean manualRunEnabled;
+    private Boolean adminManageable;
     private Integer priority;
     private DeliveryChannels channels = new DeliveryChannels();
     private Timing timing = new Timing();
@@ -115,6 +116,14 @@ public class NotificationRuleConfig {
 
     public void setManualRunEnabled(Boolean manualRunEnabled) {
         this.manualRunEnabled = manualRunEnabled;
+    }
+
+    public Boolean getAdminManageable() {
+        return adminManageable;
+    }
+
+    public void setAdminManageable(Boolean adminManageable) {
+        this.adminManageable = adminManageable;
     }
 
     public Integer getPriority() {
@@ -327,6 +336,7 @@ public class NotificationRuleConfig {
         private String time;
         private String timezone;
         private String cronExpression;
+        private String actionKey;
         private Boolean enabled;
 
         public String getId() {
@@ -383,6 +393,14 @@ public class NotificationRuleConfig {
 
         public void setCronExpression(String cronExpression) {
             this.cronExpression = cronExpression;
+        }
+
+        public String getActionKey() {
+            return actionKey;
+        }
+
+        public void setActionKey(String actionKey) {
+            this.actionKey = actionKey;
         }
 
         public Boolean getEnabled() {

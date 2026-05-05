@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -91,7 +93,7 @@ public class EventScheduler {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
-    @Scheduled(fixedDelayString = "${events.scheduler.poll-delay-ms:900000}")
+    @Scheduled(fixedDelayString = "${events.scheduler.poll-delay-ms:1800000}")
     public void runScheduledWrappers() {
         if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
@@ -122,6 +124,10 @@ public class EventScheduler {
     }
 
     public List<GeneratedEventPlan> generateRandomPlans() {
+        return generateRandomPlans(null);
+    }
+
+    public List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer) {
         List<ActivityEvent> events = resolveCanonicalEvents();
         
         // --- PHASE 1: PRE-FETCH (Sequential) ---
@@ -143,15 +149,20 @@ public class EventScheduler {
             snapshotsByEventId.put(eventId, snapshot);
             requiredUserIds.addAll(snapshot.acceptedMemberUserIds());
         }
+        publishRandomProgress(progressConsumer, 20, 0, snapshotsByEventId.size(), requiredUserIds.size(), "Loaded eligible random events.");
 
         // Single DB/Graph construction
         FGraph graph = buildGraphSnapshot(requiredUserIds);
         if (graph.getNodes().isEmpty()) {
+            publishRandomProgress(progressConsumer, 100, 0, snapshotsByEventId.size(), requiredUserIds.size(), "No candidate user graph was available.");
             return List.of();
         }
+        publishRandomProgress(progressConsumer, 30, 0, snapshotsByEventId.size(), requiredUserIds.size(), "Built candidate user graph.");
 
         // THREAD SAFETY: Synchronized list for parallel addition
         List<GeneratedEventPlan> plans = Collections.synchronizedList(new ArrayList<>());
+        int totalEvents = Math.max(1, snapshotsByEventId.size());
+        AtomicInteger processedEvents = new AtomicInteger(0);
 
         // --- PHASE 2: PARALLEL EXECUTION ---
         events.parallelStream().forEach(event -> {
@@ -182,9 +193,40 @@ public class EventScheduler {
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
             }
+            int processed = processedEvents.incrementAndGet();
+            int percent = 30 + Math.min(60, Math.round((processed * 60f) / totalEvents));
+            publishRandomProgress(
+                    progressConsumer,
+                    percent,
+                    processed,
+                    snapshotsByEventId.size(),
+                    requiredUserIds.size(),
+                    "Processed " + processed + "/" + snapshotsByEventId.size() + " random event(s), "
+                            + requiredUserIds.size() + " candidate user(s).");
         });
+        publishRandomProgress(progressConsumer, 96, snapshotsByEventId.size(), snapshotsByEventId.size(), requiredUserIds.size(), "Finalizing random event groups.");
         
         return plans;
+    }
+
+    public record RandomPlanProgress(
+            int progressPercent,
+            int processedEvents,
+            int totalEvents,
+            int candidateUsers,
+            String detail) {}
+
+    private void publishRandomProgress(
+            Consumer<RandomPlanProgress> progressConsumer,
+            int progressPercent,
+            int processedEvents,
+            int totalEvents,
+            int candidateUsers,
+            String detail) {
+        if (progressConsumer == null) {
+            return;
+        }
+        progressConsumer.accept(new RandomPlanProgress(progressPercent, processedEvents, totalEvents, candidateUsers, detail));
     }
 
 public List<InviteBatchPlan> generatePriorityPlans() {

@@ -58,6 +58,13 @@ email:
     delivery-delay-ms: ${EMAIL_PROMOTIONS_DELIVERY_DELAY_MS:60000}
     delivery-batch-size: ${EMAIL_PROMOTIONS_DELIVERY_BATCH_SIZE:25}
 
+events:
+  scheduler:
+    poll-delay-ms: ${EVENTS_SCHEDULER_POLL_DELAY_MS:1800000}
+
+scheduled-messages:
+  task-poll-delay-ms: ${SCHEDULED_MESSAGES_TASK_POLL_DELAY_MS:1800000}
+
 spring:
   config:
     import: optional:file:./secrets/application-dev-secrets.yaml
