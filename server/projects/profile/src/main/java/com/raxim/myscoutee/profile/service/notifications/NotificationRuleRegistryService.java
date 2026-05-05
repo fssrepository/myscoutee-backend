@@ -24,11 +24,14 @@ import com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository;
 
 @Service
 public class NotificationRuleRegistryService {
-    public static final String RULE_PROMOTIONAL_EMAIL_PLANNER = "promotional-email-planner";
     public static final String RULE_EVENT_RANDOM_GROUPS = "event-random-groups";
+    public static final String RULE_EVENT_STAGE_MATERIALIZER = "event-stage-materializer";
 
     private static final String SYSTEM_USER = "notification-registry";
-    private static final Set<String> SCHEDULED_EVENT_RULES = Set.of(RULE_EVENT_RANDOM_GROUPS);
+    private static final int RUN_HISTORY_LIMIT = 12;
+    private static final Set<String> SCHEDULED_EVENT_RULES = Set.of(
+            RULE_EVENT_RANDOM_GROUPS,
+            RULE_EVENT_STAGE_MATERIALIZER);
 
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
 
@@ -59,7 +62,7 @@ public class NotificationRuleRegistryService {
         String mode = safeText(timing.getMode()).toLowerCase();
         Instant resolvedNow = now == null ? Instant.now() : now;
         if ("interval".equals(mode)) {
-            int intervalMinutes = Math.max(1, valueOrDefault(timing.getIntervalMinutes(), 60));
+            int intervalMinutes = intervalMinutes(timing);
             Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
             return lastRunAt == null || !resolvedNow.isBefore(lastRunAt.plusSeconds(intervalMinutes * 60L));
         }
@@ -87,7 +90,7 @@ public class NotificationRuleRegistryService {
         return false;
     }
 
-    public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
+    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
@@ -96,13 +99,46 @@ public class NotificationRuleRegistryService {
         NotificationRuleConfig.RunState runState = rule.getRunState() == null
                 ? new NotificationRuleConfig.RunState()
                 : rule.getRunState();
-        runState.setLastRunAtIso(nowIso);
+        runState.setCurrentStatus("running");
+        runState.setProgressPercent(12);
+        runState.setProgressDetail(firstNonBlank(detail, "Starting scheduled process."));
+        runState.setStartedAtIso(nowIso);
+        runState.setFinishedAtIso("");
+        runState.setDurationMillis(0L);
+        rule.setRunState(runState);
+        rule.setUpdatedDate(nowIso);
+        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        return notificationRuleConfigsRepository.save(rule);
+    }
+
+    public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
+        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
+        if (rule == null) {
+            return null;
+        }
+        String finishedAtIso = Instant.now().toString();
+        NotificationRuleConfig.RunState runState = rule.getRunState() == null
+                ? new NotificationRuleConfig.RunState()
+                : rule.getRunState();
+        String startedAtIso = firstNonBlank(runState.getStartedAtIso(), finishedAtIso);
+        Instant startedAt = parseInstant(startedAtIso);
+        Instant finishedAt = parseInstant(finishedAtIso);
+        long durationMillis = startedAt == null || finishedAt == null
+                ? 0L
+                : Math.max(0L, finishedAt.toEpochMilli() - startedAt.toEpochMilli());
+        runState.setCurrentStatus(firstNonBlank(status, "completed"));
+        runState.setProgressPercent(100);
+        runState.setProgressDetail(safeText(detail));
+        runState.setFinishedAtIso(finishedAtIso);
+        runState.setDurationMillis(durationMillis);
+        runState.setLastRunAtIso(finishedAtIso);
         runState.setLastRunCount(Math.max(0, count));
         runState.setLastRunStatus(firstNonBlank(status, "completed"));
         runState.setLastRunDetail(safeText(detail));
         runState.setLastRunUser(firstNonBlank(actorUserId, SYSTEM_USER));
         rule.setRunState(runState);
-        rule.setUpdatedDate(nowIso);
+        appendRunHistory(rule, startedAtIso, finishedAtIso, durationMillis, count, status, detail, actorUserId);
+        rule.setUpdatedDate(finishedAtIso);
         rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
         return notificationRuleConfigsRepository.save(rule);
     }
@@ -148,23 +184,23 @@ public class NotificationRuleRegistryService {
         String nowIso = Instant.now().toString();
         return List.of(
                 scheduledRule(
-                        RULE_PROMOTIONAL_EMAIL_PLANNER,
-                        "Promotional email planner",
-                        "Scheduled",
-                        "email.promotional.plan",
-                        "Builds eligible email outbox rows from campaign rules.",
-                        100,
-                        true,
-                        true,
-                        60,
-                        nowIso),
-                scheduledRule(
                         RULE_EVENT_RANDOM_GROUPS,
-                        "Random group planner",
+                        "Random event",
                         "Scheduled",
                         "event.scheduler.random-groups",
-                        "Assigns accepted members into generated event groups.",
+                        "Assigns accepted event members into generated random groups.",
                         200,
+                        false,
+                        false,
+                        15,
+                        nowIso),
+                scheduledRule(
+                        RULE_EVENT_STAGE_MATERIALIZER,
+                        "Stage event",
+                        "Scheduled",
+                        "event.scheduler.stage-materializer",
+                        "Materializes generated groups for score and tournament stages.",
+                        210,
                         false,
                         false,
                         15,
@@ -218,8 +254,14 @@ public class NotificationRuleRegistryService {
         NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
         timing.setMode("interval");
         timing.setIntervalMinutes(intervalMinutes);
+        timing.setCronExpression(toIntervalCron(intervalMinutes));
         timing.setTimezone("UTC");
         rule.setTiming(timing);
+        NotificationRuleConfig.RunState runState = new NotificationRuleConfig.RunState();
+        runState.setCurrentStatus(enabled ? "idle" : "suspended");
+        runState.setProgressPercent(0);
+        runState.setProgressDetail(enabled ? "Ready for the next scheduled slot." : "Suspended by default.");
+        rule.setRunState(runState);
         return rule;
     }
 
@@ -272,6 +314,9 @@ public class NotificationRuleRegistryService {
         timing.setDayOfMonth(clamp(valueOrDefault(source == null ? null : source.getDayOfMonth(), 1), 1, 31));
         timing.setTime(normalizeTime(source == null ? null : source.getTime()));
         timing.setTimezone(firstNonBlank(source == null ? null : source.getTimezone(), "UTC"));
+        timing.setCronExpression(firstNonBlank(
+                source == null ? null : source.getCronExpression(),
+                toIntervalCron(timing.getIntervalMinutes())));
         return timing;
     }
 
@@ -331,6 +376,53 @@ public class NotificationRuleRegistryService {
         } catch (Exception exception) {
             return null;
         }
+    }
+
+    private void appendRunHistory(
+            NotificationRuleConfig rule,
+            String startedAtIso,
+            String finishedAtIso,
+            long durationMillis,
+            int processedCount,
+            String status,
+            String detail,
+            String actorUserId) {
+        List<NotificationRuleConfig.RunHistoryEntry> history = new ArrayList<>();
+        NotificationRuleConfig.RunHistoryEntry entry = new NotificationRuleConfig.RunHistoryEntry();
+        entry.setId(UUID.randomUUID().toString());
+        entry.setTrigger("scheduler".equals(safeText(actorUserId)) ? "scheduled" : "manual");
+        entry.setRunnerUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        entry.setStartedAtIso(startedAtIso);
+        entry.setFinishedAtIso(finishedAtIso);
+        entry.setDurationMillis(durationMillis);
+        entry.setProcessedCount(Math.max(0, processedCount));
+        entry.setStatus(firstNonBlank(status, "completed"));
+        entry.setDetail(safeText(detail));
+        history.add(entry);
+        if (rule.getRunHistory() != null) {
+            history.addAll(rule.getRunHistory().stream()
+                    .filter(existing -> existing != null && StringUtils.hasText(safeText(existing.getId())))
+                    .limit(RUN_HISTORY_LIMIT - 1L)
+                    .toList());
+        }
+        rule.setRunHistory(history);
+    }
+
+    private int intervalMinutes(NotificationRuleConfig.Timing timing) {
+        String cron = safeText(timing == null ? null : timing.getCronExpression());
+        if (cron.matches("^0\\s+0/\\d+\\s+\\*\\s+\\*\\s+\\*\\s+\\?$")) {
+            String value = cron.split("\\s+")[1].substring(2);
+            try {
+                return Math.max(1, Integer.parseInt(value));
+            } catch (NumberFormatException exception) {
+                return Math.max(1, valueOrDefault(timing.getIntervalMinutes(), 60));
+            }
+        }
+        return Math.max(1, valueOrDefault(timing == null ? null : timing.getIntervalMinutes(), 60));
+    }
+
+    private String toIntervalCron(Integer intervalMinutes) {
+        return "0 0/" + Math.max(1, valueOrDefault(intervalMinutes, 60)) + " * * * ?";
     }
 
     private String normalizeTime(String value) {

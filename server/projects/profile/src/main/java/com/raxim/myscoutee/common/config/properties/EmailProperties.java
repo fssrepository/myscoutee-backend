@@ -79,6 +79,7 @@ public class EmailProperties {
 
     public static class Promotions {
         private boolean enabled = true;
+        private long schedulerPollDelayMs = 60_000L;
         private long planningDelayMs = 3_600_000L;
         private long deliveryDelayMs = 60_000L;
         private int deliveryBatchSize = 25;
@@ -89,6 +90,14 @@ public class EmailProperties {
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        public long getSchedulerPollDelayMs() {
+            return schedulerPollDelayMs;
+        }
+
+        public void setSchedulerPollDelayMs(long schedulerPollDelayMs) {
+            this.schedulerPollDelayMs = schedulerPollDelayMs;
         }
 
         public long getPlanningDelayMs() {

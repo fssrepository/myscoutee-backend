@@ -1,5 +1,8 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,6 +30,7 @@ public class NotificationRuleConfig {
     private Timing timing = new Timing();
     private MessageTemplate message = new MessageTemplate();
     private RunState runState = new RunState();
+    private List<RunHistoryEntry> runHistory = new ArrayList<>();
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -152,6 +156,14 @@ public class NotificationRuleConfig {
         this.runState = runState == null ? new RunState() : runState;
     }
 
+    public List<RunHistoryEntry> getRunHistory() {
+        return runHistory;
+    }
+
+    public void setRunHistory(List<RunHistoryEntry> runHistory) {
+        this.runHistory = runHistory == null ? new ArrayList<>() : runHistory;
+    }
+
     public String getCreatedDate() {
         return createdDate;
     }
@@ -231,6 +243,7 @@ public class NotificationRuleConfig {
         private Integer dayOfMonth;
         private String time;
         private String timezone;
+        private String cronExpression;
 
         public String getMode() {
             return mode;
@@ -286,6 +299,14 @@ public class NotificationRuleConfig {
 
         public void setTimezone(String timezone) {
             this.timezone = timezone;
+        }
+
+        public String getCronExpression() {
+            return cronExpression;
+        }
+
+        public void setCronExpression(String cronExpression) {
+            this.cronExpression = cronExpression;
         }
     }
 
@@ -347,11 +368,65 @@ public class NotificationRuleConfig {
     }
 
     public static class RunState {
+        private String currentStatus;
+        private Integer progressPercent;
+        private String progressDetail;
+        private String startedAtIso;
+        private String finishedAtIso;
+        private Long durationMillis;
         private String lastRunAtIso;
         private String lastRunStatus;
         private String lastRunDetail;
         private Integer lastRunCount;
         private String lastRunUser;
+
+        public String getCurrentStatus() {
+            return currentStatus;
+        }
+
+        public void setCurrentStatus(String currentStatus) {
+            this.currentStatus = currentStatus;
+        }
+
+        public Integer getProgressPercent() {
+            return progressPercent;
+        }
+
+        public void setProgressPercent(Integer progressPercent) {
+            this.progressPercent = progressPercent;
+        }
+
+        public String getProgressDetail() {
+            return progressDetail;
+        }
+
+        public void setProgressDetail(String progressDetail) {
+            this.progressDetail = progressDetail;
+        }
+
+        public String getStartedAtIso() {
+            return startedAtIso;
+        }
+
+        public void setStartedAtIso(String startedAtIso) {
+            this.startedAtIso = startedAtIso;
+        }
+
+        public String getFinishedAtIso() {
+            return finishedAtIso;
+        }
+
+        public void setFinishedAtIso(String finishedAtIso) {
+            this.finishedAtIso = finishedAtIso;
+        }
+
+        public Long getDurationMillis() {
+            return durationMillis;
+        }
+
+        public void setDurationMillis(Long durationMillis) {
+            this.durationMillis = durationMillis;
+        }
 
         public String getLastRunAtIso() {
             return lastRunAtIso;
@@ -391,6 +466,90 @@ public class NotificationRuleConfig {
 
         public void setLastRunUser(String lastRunUser) {
             this.lastRunUser = lastRunUser;
+        }
+    }
+
+    public static class RunHistoryEntry {
+        private String id;
+        private String trigger;
+        private String runnerUser;
+        private String startedAtIso;
+        private String finishedAtIso;
+        private Long durationMillis;
+        private Integer processedCount;
+        private String status;
+        private String detail;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTrigger() {
+            return trigger;
+        }
+
+        public void setTrigger(String trigger) {
+            this.trigger = trigger;
+        }
+
+        public String getRunnerUser() {
+            return runnerUser;
+        }
+
+        public void setRunnerUser(String runnerUser) {
+            this.runnerUser = runnerUser;
+        }
+
+        public String getStartedAtIso() {
+            return startedAtIso;
+        }
+
+        public void setStartedAtIso(String startedAtIso) {
+            this.startedAtIso = startedAtIso;
+        }
+
+        public String getFinishedAtIso() {
+            return finishedAtIso;
+        }
+
+        public void setFinishedAtIso(String finishedAtIso) {
+            this.finishedAtIso = finishedAtIso;
+        }
+
+        public Long getDurationMillis() {
+            return durationMillis;
+        }
+
+        public void setDurationMillis(Long durationMillis) {
+            this.durationMillis = durationMillis;
+        }
+
+        public Integer getProcessedCount() {
+            return processedCount;
+        }
+
+        public void setProcessedCount(Integer processedCount) {
+            this.processedCount = processedCount;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getDetail() {
+            return detail;
+        }
+
+        public void setDetail(String detail) {
+            this.detail = detail;
         }
     }
 }

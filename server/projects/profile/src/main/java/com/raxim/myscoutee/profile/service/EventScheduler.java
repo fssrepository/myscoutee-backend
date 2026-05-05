@@ -99,12 +99,29 @@ public class EventScheduler {
 
         Instant now = Instant.now();
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
+            notificationRuleRegistryService.beginRun(
+                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    "Scheduled random grouping started.",
+                    MARKER_UPDATED_BY);
             List<GeneratedEventPlan> plans = generateRandomPlans();
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
                     plans.size(),
                     "completed",
                     "Generated random event group plans.",
+                    MARKER_UPDATED_BY);
+        }
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER, now)) {
+            notificationRuleRegistryService.beginRun(
+                    NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER,
+                    "Scheduled stage materialization started.",
+                    MARKER_UPDATED_BY);
+            List<EventLeaderboardStateDto> states = generateScorePlans();
+            notificationRuleRegistryService.recordRun(
+                    NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER,
+                    states.size(),
+                    "completed",
+                    "Materialized score and tournament stage groups.",
                     MARKER_UPDATED_BY);
         }
     }

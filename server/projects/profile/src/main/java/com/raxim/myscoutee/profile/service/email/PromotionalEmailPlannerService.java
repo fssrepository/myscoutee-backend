@@ -1,17 +1,27 @@
 package com.raxim.myscoutee.profile.service.email;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,27 +29,39 @@ import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.profile.data.document.EmailCampaignRule;
 import com.raxim.myscoutee.profile.data.document.EmailOutboxItem;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
+import com.raxim.myscoutee.profile.data.document.NotificationTemplate;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.EmailCampaignRulesRepository;
 import com.raxim.myscoutee.profile.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
+import com.raxim.myscoutee.profile.repository.NotificationTemplatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
-import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
+import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
+
+import jakarta.annotation.PreDestroy;
 
 @Service
 public class PromotionalEmailPlannerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PromotionalEmailPlannerService.class);
     private static final String UPDATED_BY = "email-planner";
+    private static final String OWNER_TYPE_EVENT = "event";
+    private static final String SCHEDULE_ONE_TIME = "one_time";
+    private static final String SCHEDULE_CRON = "cron";
 
     private final EmailProperties emailProperties;
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EmailCampaignRulesRepository emailCampaignRulesRepository;
     private final EmailOutboxRepository emailOutboxRepository;
     private final UsersRepository usersRepository;
+    private final NotificationTemplatesRepository notificationTemplatesRepository;
+    private final ActivitiesMembersService activitiesMembersService;
+    private final ScheduledNotificationDeliveryService scheduledNotificationDeliveryService;
+    private final ScheduledMessageAuditService scheduledMessageAuditService;
     private final EmailTemplateRenderer emailTemplateRenderer;
     private final PromotionalEmailRuleEvaluator ruleEvaluator;
     private final EmailProviderGateway emailProviderGateway;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final ExecutorService ruleExecutor = Executors.newVirtualThreadPerTaskExecutor();
+    private final Map<String, Future<?>> runningRuleTasks = new ConcurrentHashMap<>();
 
     public PromotionalEmailPlannerService(
             EmailProperties emailProperties,
@@ -47,92 +69,411 @@ public class PromotionalEmailPlannerService {
             EmailCampaignRulesRepository emailCampaignRulesRepository,
             EmailOutboxRepository emailOutboxRepository,
             UsersRepository usersRepository,
+            NotificationTemplatesRepository notificationTemplatesRepository,
+            ActivitiesMembersService activitiesMembersService,
+            ScheduledNotificationDeliveryService scheduledNotificationDeliveryService,
+            ScheduledMessageAuditService scheduledMessageAuditService,
             EmailTemplateRenderer emailTemplateRenderer,
             PromotionalEmailRuleEvaluator ruleEvaluator,
-            EmailProviderGateway emailProviderGateway,
-            NotificationRuleRegistryService notificationRuleRegistryService) {
+            EmailProviderGateway emailProviderGateway) {
         this.emailProperties = emailProperties;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.emailCampaignRulesRepository = emailCampaignRulesRepository;
         this.emailOutboxRepository = emailOutboxRepository;
         this.usersRepository = usersRepository;
+        this.notificationTemplatesRepository = notificationTemplatesRepository;
+        this.activitiesMembersService = activitiesMembersService;
+        this.scheduledNotificationDeliveryService = scheduledNotificationDeliveryService;
+        this.scheduledMessageAuditService = scheduledMessageAuditService;
         this.emailTemplateRenderer = emailTemplateRenderer;
         this.ruleEvaluator = ruleEvaluator;
         this.emailProviderGateway = emailProviderGateway;
-        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
-    @Scheduled(fixedDelayString = "${email.promotions.planning-delay-ms:3600000}")
+    @PreDestroy
+    public void shutdown() {
+        runningRuleTasks.values().forEach(task -> task.cancel(true));
+        ruleExecutor.shutdownNow();
+    }
+
+    @Scheduled(fixedDelayString = "${email.promotions.scheduler-poll-delay-ms:60000}")
     public void planScheduledPromotionalEmails() {
-        if (!emailProperties.isEnabled()) {
+        if (!promotionsEnabled()) {
+            cancelAllRunningTasks("Email promotions are disabled.");
             return;
         }
+
+        clearFinishedTasks();
         Instant now = Instant.now();
-        if (!notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_PROMOTIONAL_EMAIL_PLANNER, now)) {
-            return;
-        }
-        int queued = planPendingPromotionalEmails();
-        notificationRuleRegistryService.recordRun(
-                NotificationRuleRegistryService.RULE_PROMOTIONAL_EMAIL_PLANNER,
-                queued,
-                "completed",
-                "Queued promotional email outbox rows.",
-                UPDATED_BY);
-        if (queued > 0) {
-            LOGGER.info("Queued {} promotional email(s).", queued);
+        List<EmailCampaignRule> rules = emailCampaignRulesRepository.findAll();
+        cancelSuspendedRuleTasks(rules);
+        for (EmailCampaignRule rule : emailCampaignRulesRepository.findByEnabledTrueOrderByPriorityDescRuleKeyAsc()) {
+            if (rule == null || !isDue(rule, now) || isRuleRunning(rule)) {
+                continue;
+            }
+            startRuleWorker(rule);
         }
     }
 
     public int planPendingPromotionalEmails() {
-        if (!emailProperties.isEnabled()) {
+        if (!promotionsEnabled()) {
             return 0;
         }
+        Instant now = Instant.now();
+        int queued = 0;
         List<EmailCampaignRule> rules = emailCampaignRulesRepository.findByEnabledTrueOrderByPriorityDescRuleKeyAsc();
-        if (rules.isEmpty()) {
-            return 0;
-        }
-        Map<String, EmailTemplate> templatesByKey = new LinkedHashMap<>();
-        for (EmailTemplate template : emailTemplatesRepository.findByEnabledTrueOrderByTemplateKeyAsc()) {
-            if (template != null && StringUtils.hasText(template.getTemplateKey())) {
-                templatesByKey.put(template.getTemplateKey().trim(), template);
+        for (EmailCampaignRule rule : rules) {
+            if (isDue(rule, now)) {
+                String runId = scheduledMessageAuditService.beginRun(rule);
+                PlanningResult result = planRule(rule, runId);
+                String detail = result.detail();
+                scheduledMessageAuditService.finishRun(
+                        runId,
+                        result.affectedCount(),
+                        result.notificationCount(),
+                        result.emailQueuedCount(),
+                        result.failedCount(),
+                        "completed",
+                        detail);
+                markRuleFinished(safeText(rule.getRuleKey()), result.affectedCount(), "completed", detail);
+                queued += result.affectedCount();
             }
         }
-        if (templatesByKey.isEmpty()) {
-            return 0;
+        return queued;
+    }
+
+    private void startRuleWorker(EmailCampaignRule rule) {
+        String ruleKey = safeText(rule.getRuleKey());
+        if (!StringUtils.hasText(ruleKey)) {
+            return;
+        }
+        markRuleRunning(ruleKey);
+        Future<?> task = ruleExecutor.submit(() -> runRuleWorker(ruleKey));
+        runningRuleTasks.put(ruleKey, task);
+    }
+
+    private void runRuleWorker(String ruleKey) {
+        PlanningResult result = PlanningResult.empty();
+        String status = "completed";
+        String detail = "Queued scheduled email campaign.";
+        String runId = "";
+        try {
+            EmailCampaignRule rule = emailCampaignRulesRepository.findByRuleKey(ruleKey).orElse(null);
+            if (!isActive(rule)) {
+                status = "suspended";
+                detail = "Rule is disabled or suspended.";
+                return;
+            }
+            runId = scheduledMessageAuditService.beginRun(rule);
+            result = planRule(rule, runId);
+            detail = result.detail();
+            if (result.affectedCount() > 0) {
+                LOGGER.info("Affected {} user(s) for scheduled message rule {}.", result.affectedCount(), ruleKey);
+            }
+        } catch (Exception exception) {
+            status = Thread.currentThread().isInterrupted() ? "cancelled" : "failed";
+            detail = safeText(exception.getMessage());
+            if (!"cancelled".equals(status)) {
+                LOGGER.warn("Scheduled email campaign rule {} failed.", ruleKey, exception);
+            }
+        } finally {
+            runningRuleTasks.remove(ruleKey);
+            if (StringUtils.hasText(runId)) {
+                scheduledMessageAuditService.finishRun(
+                        runId,
+                        result.affectedCount(),
+                        result.notificationCount(),
+                        result.emailQueuedCount(),
+                        result.failedCount(),
+                        status,
+                        detail);
+            }
+            markRuleFinished(ruleKey, result.affectedCount(), status, detail);
+        }
+    }
+
+    private PlanningResult planRule(EmailCampaignRule rule, String runId) {
+        if (!promotionsEnabled() || !isActive(rule)) {
+            return PlanningResult.empty();
         }
 
         String nowIso = Instant.now().toString();
+        EmailTemplate emailTemplate = resolveEmailTemplate(rule);
+        NotificationTemplate notificationTemplate = resolveNotificationTemplate(rule);
+        if (emailTemplate == null && notificationTemplate == null) {
+            return PlanningResult.empty();
+        }
         List<EmailOutboxItem> itemsToQueue = new ArrayList<>();
-        for (Users user : usersRepository.findAll()) {
-            if (user == null || !StringUtils.hasText(safeText(user.getId())) || !StringUtils.hasText(safeText(user.getEmail()))) {
+        int notificationCount = 0;
+        int emailQueuedCount = 0;
+        int failedCount = 0;
+        for (Users user : resolveAudience(rule)) {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new IllegalStateException("Scheduled email campaign was cancelled.");
+            }
+            if (user == null || !StringUtils.hasText(safeText(user.getId()))) {
                 continue;
             }
-            for (EmailCampaignRule rule : rules) {
-                EmailTemplate template = templatesByKey.get(safeText(rule.getTemplateKey()));
-                if (template == null || !ruleEvaluator.qualifies(user, rule)) {
-                    continue;
-                }
-                List<EmailOutboxItem> history = emailOutboxRepository.findByUserIdAndRuleKeyOrderByCreatedDateDesc(
-                        safeText(user.getId()),
-                        safeText(rule.getRuleKey()));
-                if (hasReachedDeliveryLimit(rule, history) || isOnCooldown(rule, history, nowIso)) {
-                    continue;
-                }
-                Map<String, String> variables = ruleEvaluator.buildTemplateVariables(user, rule, emailProperties.getBaseUrl());
-                String subject = emailTemplateRenderer.renderSubject(template.getSubjectTemplate(), variables).trim();
-                String htmlBody = emailTemplateRenderer.renderHtml(template.getHtmlTemplate(), variables);
-                String textBody = emailTemplateRenderer.renderText(template.getTextTemplate(), variables);
-                if (!StringUtils.hasText(subject) || (!StringUtils.hasText(htmlBody) && !StringUtils.hasText(textBody))) {
-                    continue;
-                }
-                itemsToQueue.add(buildOutboxItem(user, rule, template, variables, subject, htmlBody, textBody, nowIso));
-                break;
+            if (!ruleEvaluator.qualifies(user, rule)) {
+                continue;
             }
+            Map<String, String> variables = ruleEvaluator.buildTemplateVariables(user, rule, emailProperties.getBaseUrl());
+            if (notificationTemplate != null
+                    && scheduledNotificationDeliveryService.send(user, notificationTemplate, variables, safeText(rule.getRuleKey()))) {
+                notificationCount += 1;
+                recordDelivery(runId, rule, user, "notification", "sent", "Firebase notification accepted.");
+                continue;
+            }
+            if (emailTemplate == null || !StringUtils.hasText(safeText(user.getEmail()))) {
+                failedCount += 1;
+                recordDelivery(runId, rule, user, "none", "skipped", "No reachable email fallback for qualified user.");
+                continue;
+            }
+            List<EmailOutboxItem> history = emailOutboxRepository.findByUserIdAndRuleKeyOrderByCreatedDateDesc(
+                    safeText(user.getId()),
+                    safeText(rule.getRuleKey()));
+            if (hasReachedDeliveryLimit(rule, history) || isOnCooldown(rule, history, nowIso)) {
+                continue;
+            }
+            String subject = emailTemplateRenderer.renderSubject(emailTemplate.getSubjectTemplate(), variables).trim();
+            String htmlBody = emailTemplateRenderer.renderHtml(emailTemplate.getHtmlTemplate(), variables);
+            String textBody = emailTemplateRenderer.renderText(emailTemplate.getTextTemplate(), variables);
+            if (!StringUtils.hasText(subject) || (!StringUtils.hasText(htmlBody) && !StringUtils.hasText(textBody))) {
+                failedCount += 1;
+                recordDelivery(runId, rule, user, "email", "failed", "Email template rendered empty content.");
+                continue;
+            }
+            itemsToQueue.add(buildOutboxItem(user, rule, emailTemplate, variables, subject, htmlBody, textBody, nowIso));
+            emailQueuedCount += 1;
+            recordDelivery(runId, rule, user, "email", "queued", "Email fallback queued.");
         }
         if (!itemsToQueue.isEmpty()) {
             emailOutboxRepository.saveAll(itemsToQueue);
         }
-        return itemsToQueue.size();
+        return new PlanningResult(notificationCount, emailQueuedCount, failedCount);
+    }
+
+    private EmailTemplate resolveEmailTemplate(EmailCampaignRule rule) {
+        String templateKey = safeText(rule == null ? null : rule.getTemplateKey());
+        if (!StringUtils.hasText(templateKey)) {
+            return null;
+        }
+        return emailTemplatesRepository.findByTemplateKey(templateKey)
+                .filter(template -> Boolean.TRUE.equals(template.getEnabled()))
+                .orElse(null);
+    }
+
+    private NotificationTemplate resolveNotificationTemplate(EmailCampaignRule rule) {
+        String templateKey = safeText(rule == null ? null : rule.getNotificationTemplateKey());
+        if (!StringUtils.hasText(templateKey)) {
+            return null;
+        }
+        return notificationTemplatesRepository.findByTemplateKey(templateKey)
+                .filter(template -> Boolean.TRUE.equals(template.getEnabled()))
+                .orElse(null);
+    }
+
+    private List<Users> resolveAudience(EmailCampaignRule rule) {
+        String eventId = safeText(rule == null ? null : rule.getEventId());
+        if (!StringUtils.hasText(eventId)) {
+            return usersRepository.findAll();
+        }
+
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        if (snapshot == null) {
+            return List.of();
+        }
+        String audienceScope = safeText(rule.getAudienceScope()).toLowerCase();
+        Set<String> userIds = new LinkedHashSet<>();
+        if (!"pending".equals(audienceScope)) {
+            userIds.addAll(snapshot.acceptedMemberUserIds());
+        }
+        if (!"accepted".equals(audienceScope)) {
+            userIds.addAll(snapshot.pendingMemberUserIds());
+        }
+        userIds.removeIf(userId -> !StringUtils.hasText(safeText(userId)));
+        return userIds.isEmpty() ? List.of() : usersRepository.findByUserIdIn(userIds);
+    }
+
+    private boolean isDue(EmailCampaignRule rule, Instant now) {
+        if (!isActive(rule)) {
+            return false;
+        }
+        String scheduleType = normalizeScheduleType(rule);
+        Instant resolvedNow = now == null ? Instant.now() : now;
+        if (SCHEDULE_ONE_TIME.equals(scheduleType)) {
+            Instant oneTimeAt = parseInstant(rule.getOneTimeAtIso());
+            return oneTimeAt != null && parseInstant(rule.getLastRunAtIso()) == null && !resolvedNow.isBefore(oneTimeAt);
+        }
+        if (SCHEDULE_CRON.equals(scheduleType)) {
+            Instant nextRun = resolveCronNextRun(rule, resolvedNow);
+            return nextRun != null && !resolvedNow.isBefore(nextRun);
+        }
+        Instant nextRun = parseInstant(rule.getNextRunAtIso());
+        if (nextRun == null) {
+            Instant lastRun = parseInstant(rule.getLastRunAtIso());
+            nextRun = lastRun == null
+                    ? Instant.EPOCH
+                    : lastRun.plusMillis(Math.max(60_000L, emailProperties.getPromotions().getPlanningDelayMs()));
+        }
+        return !resolvedNow.isBefore(nextRun);
+    }
+
+    private Instant resolveCronNextRun(EmailCampaignRule rule, Instant now) {
+        Instant configuredNext = parseInstant(rule.getNextRunAtIso());
+        if (configuredNext != null) {
+            return configuredNext;
+        }
+        Instant base = firstPresent(
+                parseInstant(rule.getLastRunAtIso()),
+                parseInstant(rule.getCreatedDate()),
+                now == null ? Instant.now() : now);
+        return nextCronAfter(rule, base);
+    }
+
+    private Instant nextRunAfterCompletion(EmailCampaignRule rule, Instant finishedAt) {
+        String scheduleType = normalizeScheduleType(rule);
+        if (SCHEDULE_ONE_TIME.equals(scheduleType)) {
+            return null;
+        }
+        if (SCHEDULE_CRON.equals(scheduleType)) {
+            return nextCronAfter(rule, finishedAt);
+        }
+        return finishedAt.plusMillis(Math.max(60_000L, emailProperties.getPromotions().getPlanningDelayMs()));
+    }
+
+    private Instant nextCronAfter(EmailCampaignRule rule, Instant after) {
+        String cronExpression = safeText(rule == null ? null : rule.getCronExpression());
+        if (!StringUtils.hasText(cronExpression)) {
+            return null;
+        }
+        try {
+            ZoneId zoneId = ZoneId.of(firstNonBlank(rule.getTimezone(), "UTC"));
+            ZonedDateTime next = CronExpression.parse(cronExpression).next((after == null ? Instant.now() : after).atZone(zoneId));
+            return next == null ? null : next.toInstant();
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private void clearFinishedTasks() {
+        runningRuleTasks.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().isDone() || entry.getValue().isCancelled());
+    }
+
+    private void cancelSuspendedRuleTasks(Collection<EmailCampaignRule> rules) {
+        if (rules == null || rules.isEmpty()) {
+            return;
+        }
+        for (EmailCampaignRule rule : rules) {
+            if (isActive(rule)) {
+                continue;
+            }
+            String ruleKey = safeText(rule == null ? null : rule.getRuleKey());
+            Future<?> task = runningRuleTasks.remove(ruleKey);
+            if (task != null) {
+                task.cancel(true);
+                markRuleFinished(ruleKey, 0, "suspended", "Rule was suspended while running.");
+            }
+        }
+    }
+
+    private void cancelAllRunningTasks(String detail) {
+        for (Map.Entry<String, Future<?>> entry : runningRuleTasks.entrySet()) {
+            Future<?> task = entry.getValue();
+            if (task != null) {
+                task.cancel(true);
+            }
+            markRuleFinished(entry.getKey(), 0, "suspended", detail);
+        }
+        runningRuleTasks.clear();
+    }
+
+    private boolean isRuleRunning(EmailCampaignRule rule) {
+        Future<?> task = runningRuleTasks.get(safeText(rule == null ? null : rule.getRuleKey()));
+        return task != null && !task.isDone() && !task.isCancelled();
+    }
+
+    private void markRuleRunning(String ruleKey) {
+        EmailCampaignRule rule = emailCampaignRulesRepository.findByRuleKey(ruleKey).orElse(null);
+        if (rule == null) {
+            return;
+        }
+        String nowIso = Instant.now().toString();
+        rule.setRunning(true);
+        rule.setLastRunStatus("running");
+        rule.setLastRunDetail("Scheduled rule worker started.");
+        rule.setUpdatedDate(nowIso);
+        rule.setUpdatedUser(UPDATED_BY);
+        emailCampaignRulesRepository.save(rule);
+    }
+
+    private void markRuleFinished(String ruleKey, int count, String status, String detail) {
+        EmailCampaignRule rule = emailCampaignRulesRepository.findByRuleKey(ruleKey).orElse(null);
+        if (rule == null) {
+            return;
+        }
+        Instant finishedAt = Instant.now();
+        Instant nextRun = nextRunAfterCompletion(rule, finishedAt);
+        rule.setRunning(false);
+        rule.setLastRunAtIso(finishedAt.toString());
+        rule.setNextRunAtIso(nextRun == null ? "" : nextRun.toString());
+        rule.setLastRunStatus(firstNonBlank(status, "completed"));
+        rule.setLastRunDetail(safeText(detail));
+        rule.setLastRunCount(Math.max(0, count));
+        rule.setUpdatedDate(finishedAt.toString());
+        rule.setUpdatedUser(UPDATED_BY);
+        emailCampaignRulesRepository.save(rule);
+    }
+
+    private boolean isActive(EmailCampaignRule rule) {
+        return rule != null && Boolean.TRUE.equals(rule.getEnabled()) && !Boolean.TRUE.equals(rule.getSuspended());
+    }
+
+    private boolean promotionsEnabled() {
+        return emailProperties.isEnabled() && emailProperties.getPromotions().isEnabled();
+    }
+
+    private String normalizeScheduleType(EmailCampaignRule rule) {
+        String scheduleType = safeText(rule == null ? null : rule.getScheduleType()).toLowerCase();
+        if (SCHEDULE_ONE_TIME.equals(scheduleType) || "one-time".equals(scheduleType) || "once".equals(scheduleType)) {
+            return SCHEDULE_ONE_TIME;
+        }
+        if (SCHEDULE_CRON.equals(scheduleType) || StringUtils.hasText(safeText(rule == null ? null : rule.getCronExpression()))) {
+            return SCHEDULE_CRON;
+        }
+        return "";
+    }
+
+    private void recordDelivery(
+            String runId,
+            EmailCampaignRule rule,
+            Users user,
+            String channel,
+            String status,
+            String detail) {
+        if (!StringUtils.hasText(safeText(runId))) {
+            return;
+        }
+        scheduledMessageAuditService.recordDelivery(runId, rule, user, channel, status, detail);
+    }
+
+    private record PlanningResult(
+            int notificationCount,
+            int emailQueuedCount,
+            int failedCount) {
+        static PlanningResult empty() {
+            return new PlanningResult(0, 0, 0);
+        }
+
+        int affectedCount() {
+            return notificationCount + emailQueuedCount;
+        }
+
+        String detail() {
+            return "Notifications sent: " + notificationCount
+                    + ", emails queued: " + emailQueuedCount
+                    + ", failed/skipped: " + failedCount + ".";
+        }
     }
 
     private EmailOutboxItem buildOutboxItem(
@@ -203,6 +544,32 @@ public class PromotionalEmailPlannerService {
         } catch (Exception exception) {
             return false;
         }
+    }
+
+    private Instant parseInstant(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return null;
+        }
+        try {
+            return Instant.parse(normalized);
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private Instant firstPresent(Instant first, Instant second, Instant third) {
+        if (first != null) {
+            return first;
+        }
+        if (second != null) {
+            return second;
+        }
+        return third;
+    }
+
+    private String firstNonBlank(String first, String second) {
+        return StringUtils.hasText(safeText(first)) ? safeText(first) : safeText(second);
     }
 
     private String safeText(String value) {

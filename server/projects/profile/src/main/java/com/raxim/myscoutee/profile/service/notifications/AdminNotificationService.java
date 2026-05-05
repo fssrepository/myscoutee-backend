@@ -14,6 +14,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRul
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunHistoryEntryDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTemplateOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTimingDto;
@@ -21,25 +22,21 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
-import com.raxim.myscoutee.profile.service.email.PromotionalEmailPlannerService;
 
 @Service
 public class AdminNotificationService {
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final EmailTemplatesRepository emailTemplatesRepository;
-    private final PromotionalEmailPlannerService promotionalEmailPlannerService;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
 
     public AdminNotificationService(
             NotificationRuleRegistryService notificationRuleRegistryService,
             EmailTemplatesRepository emailTemplatesRepository,
-            PromotionalEmailPlannerService promotionalEmailPlannerService,
             EventScheduler eventScheduler,
             AdminModerationService adminModerationService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailTemplatesRepository = emailTemplatesRepository;
-        this.promotionalEmailPlannerService = promotionalEmailPlannerService;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
     }
@@ -69,14 +66,15 @@ public class AdminNotificationService {
         String detail;
         int affectedCount;
         try {
+            notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id());
             switch (normalizedRuleKey) {
-                case NotificationRuleRegistryService.RULE_PROMOTIONAL_EMAIL_PLANNER -> {
-                    affectedCount = promotionalEmailPlannerService.planPendingPromotionalEmails();
-                    detail = "Queued promotional email outbox rows.";
-                }
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     affectedCount = eventScheduler.generateRandomPlans().size();
                     detail = "Generated random event group plans.";
+                }
+                case NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER -> {
+                    affectedCount = eventScheduler.generateScorePlans().size();
+                    detail = "Materialized score and tournament stage groups.";
                 }
                 default -> {
                     affectedCount = 0;
@@ -152,7 +150,8 @@ public class AdminNotificationService {
                         timing.getMonth(),
                         timing.getDayOfMonth(),
                         timing.getTime(),
-                        timing.getTimezone()),
+                        timing.getTimezone(),
+                        timing.getCronExpression()),
                 new AdminNotificationMessageDto(
                         message.getPushTitle(),
                         message.getPushBody(),
@@ -161,11 +160,20 @@ public class AdminNotificationService {
                         message.getEmailBody(),
                         message.getCtaPath()),
                 new AdminNotificationRunStateDto(
+                        runState.getCurrentStatus(),
+                        runState.getProgressPercent(),
+                        runState.getProgressDetail(),
+                        runState.getStartedAtIso(),
+                        runState.getFinishedAtIso(),
+                        runState.getDurationMillis(),
                         runState.getLastRunAtIso(),
                         runState.getLastRunStatus(),
                         runState.getLastRunDetail(),
                         runState.getLastRunCount(),
                         runState.getLastRunUser()),
+                rule.getRunHistory() == null ? List.of() : rule.getRunHistory().stream()
+                        .map(this::toRunHistoryEntry)
+                        .toList(),
                 rule.getUpdatedDate(),
                 rule.getUpdatedUser());
     }
@@ -201,6 +209,7 @@ public class AdminNotificationService {
         timing.setDayOfMonth(sourceTiming == null ? null : sourceTiming.dayOfMonth());
         timing.setTime(sourceTiming == null ? null : sourceTiming.time());
         timing.setTimezone(sourceTiming == null ? null : sourceTiming.timezone());
+        timing.setCronExpression(sourceTiming == null ? null : sourceTiming.cronExpression());
         rule.setTiming(timing);
         AdminNotificationMessageDto sourceMessage = dto.message();
         NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
@@ -220,6 +229,19 @@ public class AdminNotificationService {
                 template.getName(),
                 template.getCategory(),
                 template.getDescription());
+    }
+
+    private AdminNotificationRunHistoryEntryDto toRunHistoryEntry(NotificationRuleConfig.RunHistoryEntry entry) {
+        return new AdminNotificationRunHistoryEntryDto(
+                entry.getId(),
+                entry.getTrigger(),
+                entry.getRunnerUser(),
+                entry.getStartedAtIso(),
+                entry.getFinishedAtIso(),
+                entry.getDurationMillis(),
+                entry.getProcessedCount(),
+                entry.getStatus(),
+                entry.getDetail());
     }
 
     private String safeText(String value) {

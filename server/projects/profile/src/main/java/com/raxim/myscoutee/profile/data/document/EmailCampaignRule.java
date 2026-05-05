@@ -23,8 +23,22 @@ public class EmailCampaignRule {
     private String name;
     private String description;
     private String templateKey;
+    private String notificationTemplateKey;
     private String triggerType;
     private Boolean enabled;
+    private Boolean suspended;
+    private String scheduleType;
+    private String cronExpression;
+    private String timezone;
+    private String oneTimeAtIso;
+    private String audienceScope;
+    private String eventId;
+    private Boolean running;
+    private String lastRunAtIso;
+    private String nextRunAtIso;
+    private String lastRunStatus;
+    private String lastRunDetail;
+    private Integer lastRunCount;
     private Integer priority;
     private Integer cooldownHours;
     private Integer maxDeliveriesPerUser;
@@ -34,6 +48,8 @@ public class EmailCampaignRule {
     private Integer maxEventCount;
     private Integer minHostingCount;
     private Integer maxHostingCount;
+    private Integer minInactiveDays;
+    private Integer maxInactiveDays;
     private Boolean requirePublicProfile;
     private Boolean requireMissingRegisteredDevice;
     private List<String> countryCodes = new ArrayList<>();
@@ -92,6 +108,14 @@ public class EmailCampaignRule {
         this.templateKey = templateKey;
     }
 
+    public String getNotificationTemplateKey() {
+        return notificationTemplateKey;
+    }
+
+    public void setNotificationTemplateKey(String notificationTemplateKey) {
+        this.notificationTemplateKey = notificationTemplateKey;
+    }
+
     public String getTriggerType() {
         return triggerType;
     }
@@ -106,6 +130,110 @@ public class EmailCampaignRule {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Boolean getSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(Boolean suspended) {
+        this.suspended = suspended;
+    }
+
+    public String getScheduleType() {
+        return scheduleType;
+    }
+
+    public void setScheduleType(String scheduleType) {
+        this.scheduleType = scheduleType;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public String getOneTimeAtIso() {
+        return oneTimeAtIso;
+    }
+
+    public void setOneTimeAtIso(String oneTimeAtIso) {
+        this.oneTimeAtIso = oneTimeAtIso;
+    }
+
+    public String getAudienceScope() {
+        return audienceScope;
+    }
+
+    public void setAudienceScope(String audienceScope) {
+        this.audienceScope = audienceScope;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public Boolean getRunning() {
+        return running;
+    }
+
+    public void setRunning(Boolean running) {
+        this.running = running;
+    }
+
+    public String getLastRunAtIso() {
+        return lastRunAtIso;
+    }
+
+    public void setLastRunAtIso(String lastRunAtIso) {
+        this.lastRunAtIso = lastRunAtIso;
+    }
+
+    public String getNextRunAtIso() {
+        return nextRunAtIso;
+    }
+
+    public void setNextRunAtIso(String nextRunAtIso) {
+        this.nextRunAtIso = nextRunAtIso;
+    }
+
+    public String getLastRunStatus() {
+        return lastRunStatus;
+    }
+
+    public void setLastRunStatus(String lastRunStatus) {
+        this.lastRunStatus = lastRunStatus;
+    }
+
+    public String getLastRunDetail() {
+        return lastRunDetail;
+    }
+
+    public void setLastRunDetail(String lastRunDetail) {
+        this.lastRunDetail = lastRunDetail;
+    }
+
+    public Integer getLastRunCount() {
+        return lastRunCount;
+    }
+
+    public void setLastRunCount(Integer lastRunCount) {
+        this.lastRunCount = lastRunCount;
     }
 
     public Integer getPriority() {
@@ -178,6 +306,22 @@ public class EmailCampaignRule {
 
     public void setMaxHostingCount(Integer maxHostingCount) {
         this.maxHostingCount = maxHostingCount;
+    }
+
+    public Integer getMinInactiveDays() {
+        return minInactiveDays;
+    }
+
+    public void setMinInactiveDays(Integer minInactiveDays) {
+        this.minInactiveDays = minInactiveDays;
+    }
+
+    public Integer getMaxInactiveDays() {
+        return maxInactiveDays;
+    }
+
+    public void setMaxInactiveDays(Integer maxInactiveDays) {
+        this.maxInactiveDays = maxInactiveDays;
     }
 
     public Boolean getRequirePublicProfile() {

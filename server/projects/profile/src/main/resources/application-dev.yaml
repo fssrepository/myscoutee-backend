@@ -53,6 +53,7 @@ email:
     endpoint: ${EMAIL_SENDGRID_ENDPOINT:https://api.sendgrid.com/v3/mail/send}
   promotions:
     enabled: ${EMAIL_PROMOTIONS_ENABLED:true}
+    scheduler-poll-delay-ms: ${EMAIL_PROMOTIONS_SCHEDULER_POLL_DELAY_MS:60000}
     planning-delay-ms: ${EMAIL_PROMOTIONS_PLANNING_DELAY_MS:3600000}
     delivery-delay-ms: ${EMAIL_PROMOTIONS_DELIVERY_DELAY_MS:60000}
     delivery-batch-size: ${EMAIL_PROMOTIONS_DELIVERY_BATCH_SIZE:25}

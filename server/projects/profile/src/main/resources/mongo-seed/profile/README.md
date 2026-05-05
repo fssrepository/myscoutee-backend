@@ -18,6 +18,14 @@ mongoimport \
   --mode=upsert \
   --upsertFields=ruleKey \
   --file server/projects/profile/src/main/resources/mongo-seed/profile/emailCampaignRules.json
+
+mongoimport \
+  --db "$MONGODB_DATABASE" \
+  --collection notificationTemplates \
+  --jsonArray \
+  --mode=upsert \
+  --upsertFields=templateKey \
+  --file server/projects/profile/src/main/resources/mongo-seed/profile/notificationTemplates.json
 ```
 
 Template placeholders can use either `{{firstName}}` style tokens or `@user_first_name` style tokens.
