@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
@@ -22,7 +21,6 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
-import com.raxim.myscoutee.profile.service.email.PromotionalEmailDeliveryProcessor;
 import com.raxim.myscoutee.profile.service.email.PromotionalEmailPlannerService;
 
 @Service
@@ -30,7 +28,6 @@ public class AdminNotificationService {
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final PromotionalEmailPlannerService promotionalEmailPlannerService;
-    private final PromotionalEmailDeliveryProcessor promotionalEmailDeliveryProcessor;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
 
@@ -38,13 +35,11 @@ public class AdminNotificationService {
             NotificationRuleRegistryService notificationRuleRegistryService,
             EmailTemplatesRepository emailTemplatesRepository,
             PromotionalEmailPlannerService promotionalEmailPlannerService,
-            PromotionalEmailDeliveryProcessor promotionalEmailDeliveryProcessor,
             EventScheduler eventScheduler,
             AdminModerationService adminModerationService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.promotionalEmailPlannerService = promotionalEmailPlannerService;
-        this.promotionalEmailDeliveryProcessor = promotionalEmailDeliveryProcessor;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
     }
@@ -79,23 +74,9 @@ public class AdminNotificationService {
                     affectedCount = promotionalEmailPlannerService.planPendingPromotionalEmails();
                     detail = "Queued promotional email outbox rows.";
                 }
-                case NotificationRuleRegistryService.RULE_EMAIL_OUTBOX_DELIVERY -> {
-                    affectedCount = promotionalEmailDeliveryProcessor.processPendingDeliveries();
-                    detail = "Processed due email outbox rows.";
-                }
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     affectedCount = eventScheduler.generateRandomPlans().size();
                     detail = "Generated random event group plans.";
-                }
-                case NotificationRuleRegistryService.RULE_EVENT_PRIORITY_INVITER -> {
-                    affectedCount = eventScheduler.generatePriorityPlans().stream()
-                            .mapToInt(this::countInvitees)
-                            .sum();
-                    detail = "Created priority invitation batches.";
-                }
-                case NotificationRuleRegistryService.RULE_EVENT_SCORE_LEADERBOARD -> {
-                    affectedCount = eventScheduler.generateScorePlans().size();
-                    detail = "Materialized score leaderboard stages.";
                 }
                 default -> {
                     affectedCount = 0;
@@ -124,10 +105,6 @@ public class AdminNotificationService {
                 status,
                 detail,
                 ranAtIso);
-    }
-
-    private int countInvitees(InviteBatchPlan plan) {
-        return plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size();
     }
 
     private AdminNotificationCenterStateDto toState(List<NotificationRuleConfig> rules) {

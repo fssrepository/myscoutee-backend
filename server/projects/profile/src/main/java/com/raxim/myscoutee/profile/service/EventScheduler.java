@@ -107,28 +107,6 @@ public class EventScheduler {
                     "Generated random event group plans.",
                     MARKER_UPDATED_BY);
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_PRIORITY_INVITER, now)) {
-            List<InviteBatchPlan> plans = generatePriorityPlans();
-            int invitedCount = plans.stream()
-                    .filter(Objects::nonNull)
-                    .mapToInt(plan -> plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
-                    .sum();
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_PRIORITY_INVITER,
-                    invitedCount,
-                    "completed",
-                    "Created priority invitation batches.",
-                    MARKER_UPDATED_BY);
-        }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_SCORE_LEADERBOARD, now)) {
-            List<EventLeaderboardStateDto> states = generateScorePlans();
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_SCORE_LEADERBOARD,
-                    states.size(),
-                    "completed",
-                    "Materialized score leaderboard stages.",
-                    MARKER_UPDATED_BY);
-        }
     }
 
     @Scheduled(fixedDelayString = "${events.waitlist.inviter-delay-ms:7200000}")

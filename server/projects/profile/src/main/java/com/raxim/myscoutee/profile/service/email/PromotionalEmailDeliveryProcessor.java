@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.profile.data.document.EmailOutboxItem;
 import com.raxim.myscoutee.profile.repository.EmailOutboxRepository;
-import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class PromotionalEmailDeliveryProcessor {
@@ -27,19 +26,16 @@ public class PromotionalEmailDeliveryProcessor {
     private final EmailOutboxRepository emailOutboxRepository;
     private final MongoTemplate mongoTemplate;
     private final EmailProviderGateway emailProviderGateway;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
 
     public PromotionalEmailDeliveryProcessor(
             EmailProperties emailProperties,
             EmailOutboxRepository emailOutboxRepository,
             MongoTemplate mongoTemplate,
-            EmailProviderGateway emailProviderGateway,
-            NotificationRuleRegistryService notificationRuleRegistryService) {
+            EmailProviderGateway emailProviderGateway) {
         this.emailProperties = emailProperties;
         this.emailOutboxRepository = emailOutboxRepository;
         this.mongoTemplate = mongoTemplate;
         this.emailProviderGateway = emailProviderGateway;
-        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Scheduled(fixedDelayString = "${email.promotions.delivery-delay-ms:60000}")
@@ -47,17 +43,7 @@ public class PromotionalEmailDeliveryProcessor {
         if (!emailProperties.isEnabled()) {
             return;
         }
-        Instant now = Instant.now();
-        if (!notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EMAIL_OUTBOX_DELIVERY, now)) {
-            return;
-        }
         int sent = processPendingDeliveries();
-        notificationRuleRegistryService.recordRun(
-                NotificationRuleRegistryService.RULE_EMAIL_OUTBOX_DELIVERY,
-                sent,
-                "completed",
-                "Processed due email outbox rows.",
-                UPDATED_BY);
         if (sent > 0) {
             LOGGER.info("Sent {} promotional email(s).", sent);
         }

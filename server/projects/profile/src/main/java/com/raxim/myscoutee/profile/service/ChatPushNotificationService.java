@@ -1,10 +1,8 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -21,8 +19,6 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
-import com.raxim.myscoutee.profile.service.notifications.NotificationEmailQueueService;
-import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class ChatPushNotificationService {
@@ -34,34 +30,21 @@ public class ChatPushNotificationService {
     private final ConfigProperties configProperties;
     private final UsersRepository usersRepository;
     private final ChatWebSocketSessionRegistry sessionRegistry;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
-    private final NotificationEmailQueueService notificationEmailQueueService;
 
     public ChatPushNotificationService(
             ConfigProperties configProperties,
             UsersRepository usersRepository,
-            ChatWebSocketSessionRegistry sessionRegistry,
-            NotificationRuleRegistryService notificationRuleRegistryService,
-            NotificationEmailQueueService notificationEmailQueueService) {
+            ChatWebSocketSessionRegistry sessionRegistry) {
         this.configProperties = configProperties;
         this.usersRepository = usersRepository;
         this.sessionRegistry = sessionRegistry;
-        this.notificationRuleRegistryService = notificationRuleRegistryService;
-        this.notificationEmailQueueService = notificationEmailQueueService;
     }
 
     public void notifyRecipients(List<ActivityChat> chatDocuments, ChatStreamEvent event) {
         if (event == null || chatDocuments == null || chatDocuments.isEmpty()) {
             return;
         }
-        boolean pushEnabled = configProperties.isFirebaseEnabled()
-                && notificationRuleRegistryService.isActionChannelEnabled(
-                        NotificationRuleRegistryService.RULE_CHAT_MESSAGE,
-                        NotificationRuleRegistryService.CHANNEL_PUSH);
-        boolean emailEnabled = notificationRuleRegistryService.isActionChannelEnabled(
-                NotificationRuleRegistryService.RULE_CHAT_MESSAGE,
-                NotificationRuleRegistryService.CHANNEL_EMAIL);
-        if (!pushEnabled && !emailEnabled) {
+        if (!configProperties.isFirebaseEnabled()) {
             return;
         }
 
@@ -81,7 +64,7 @@ public class ChatPushNotificationService {
             if (user == null) {
                 continue;
             }
-            if (pushEnabled && user.getDevices() != null && !user.getDevices().isEmpty()) {
+            if (user.getDevices() != null && !user.getDevices().isEmpty()) {
                 for (String firebaseToken : resolveFirebaseTokens(user)) {
                     try {
                         Message.Builder messageBuilder = Message.builder()
@@ -134,28 +117,7 @@ public class ChatPushNotificationService {
                     }
                 }
             }
-            if (emailEnabled) {
-                notificationEmailQueueService.queueActionEmail(
-                        NotificationRuleRegistryService.RULE_CHAT_MESSAGE,
-                        userId,
-                        chatVariables(event, chatTitle, body, clickUrl),
-                        chatTitle,
-                        body);
-            }
         }
-    }
-
-    private Map<String, String> chatVariables(ChatStreamEvent event, String chatTitle, String body, String clickUrl) {
-        Map<String, String> variables = new LinkedHashMap<>();
-        variables.put("chat_id", safeText(event.chatId()));
-        variables.put("message_id", safeText(event.id()));
-        variables.put("sender_id", safeText(event.senderId()));
-        variables.put("sender_name", safeText(event.senderName()));
-        variables.put("chat_title", safeText(chatTitle));
-        variables.put("message_text", safeText(event.text()));
-        variables.put("notification_body", safeText(body));
-        variables.put("chat_url", safeText(clickUrl));
-        return variables;
     }
 
     private Set<String> resolveRecipientUserIds(List<ActivityChat> chatDocuments, String senderUserId) {

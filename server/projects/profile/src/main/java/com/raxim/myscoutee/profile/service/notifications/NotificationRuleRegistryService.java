@@ -24,25 +24,11 @@ import com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository;
 
 @Service
 public class NotificationRuleRegistryService {
-    public static final String RULE_CHAT_MESSAGE = "chat-message";
-    public static final String RULE_EVENT_INVITATION = "event-invitation";
-    public static final String RULE_EVENT_FEEDBACK_READY = "event-feedback-ready";
     public static final String RULE_PROMOTIONAL_EMAIL_PLANNER = "promotional-email-planner";
-    public static final String RULE_EMAIL_OUTBOX_DELIVERY = "email-outbox-delivery";
     public static final String RULE_EVENT_RANDOM_GROUPS = "event-random-groups";
-    public static final String RULE_EVENT_PRIORITY_INVITER = "event-priority-inviter";
-    public static final String RULE_EVENT_SCORE_LEADERBOARD = "event-score-leaderboard";
-
-    public static final String CHANNEL_PUSH = "push";
-    public static final String CHANNEL_EMAIL = "email";
-    public static final String CHANNEL_IN_APP = "in-app";
-    public static final String CHANNEL_SUPPORT_CHAT = "support-chat";
 
     private static final String SYSTEM_USER = "notification-registry";
-    private static final Set<String> SCHEDULED_EVENT_RULES = Set.of(
-            RULE_EVENT_RANDOM_GROUPS,
-            RULE_EVENT_PRIORITY_INVITER,
-            RULE_EVENT_SCORE_LEADERBOARD);
+    private static final Set<String> SCHEDULED_EVENT_RULES = Set.of(RULE_EVENT_RANDOM_GROUPS);
 
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
 
@@ -58,24 +44,6 @@ public class NotificationRuleRegistryService {
     public Optional<NotificationRuleConfig> findRule(String ruleKey) {
         ensureDefaultRules();
         return notificationRuleConfigsRepository.findByRuleKey(safeText(ruleKey));
-    }
-
-    public boolean isActionChannelEnabled(String ruleKey, String channel) {
-        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
-        if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
-            return false;
-        }
-        if (rule.getChannels() == null) {
-            return false;
-        }
-        String normalizedChannel = safeText(channel).toLowerCase();
-        return switch (normalizedChannel) {
-            case CHANNEL_PUSH -> Boolean.TRUE.equals(rule.getChannels().getPushEnabled());
-            case CHANNEL_EMAIL -> Boolean.TRUE.equals(rule.getChannels().getEmailEnabled());
-            case CHANNEL_IN_APP -> Boolean.TRUE.equals(rule.getChannels().getInAppEnabled());
-            case CHANNEL_SUPPORT_CHAT -> Boolean.TRUE.equals(rule.getChannels().getSupportChatEnabled());
-            default -> false;
-        };
     }
 
     public boolean shouldRunScheduledRule(String ruleKey, Instant now) {
@@ -179,49 +147,6 @@ public class NotificationRuleRegistryService {
     public List<NotificationRuleConfig> defaultRules() {
         String nowIso = Instant.now().toString();
         return List.of(
-                actionRule(
-                        RULE_CHAT_MESSAGE,
-                        "Chat message",
-                        "Action",
-                        "chat.message.created",
-                        "Notify offline recipients when a chat message arrives.",
-                        10,
-                        true,
-                        true,
-                        false,
-                        "New message from @sender_name",
-                        "@sender_name sent a message in @chat_title.",
-                        "/game"),
-                actionRule(
-                        RULE_EVENT_INVITATION,
-                        "Event invitation",
-                        "Action",
-                        "event.invitation.created",
-                        "Notify members when an organizer invites them to an event.",
-                        20,
-                        true,
-                        true,
-                        false,
-                        "You were invited to @event_title",
-                        "@event_title starts @event_start_at.",
-                        "/game"),
-                timedRule(
-                        RULE_EVENT_FEEDBACK_READY,
-                        "Event feedback ready",
-                        "Timed",
-                        "event.feedback.ready",
-                        "Yearly or manual feedback reminder rule for post-event feedback windows.",
-                        30,
-                        false,
-                        false,
-                        true,
-                        5,
-                        1,
-                        "09:00",
-                        "UTC",
-                        "Feedback is open for @event_title",
-                        "Share feedback for @event_title while it is fresh.",
-                        "/game"),
                 scheduledRule(
                         RULE_PROMOTIONAL_EMAIL_PLANNER,
                         "Promotional email planner",
@@ -234,45 +159,12 @@ public class NotificationRuleRegistryService {
                         60,
                         nowIso),
                 scheduledRule(
-                        RULE_EMAIL_OUTBOX_DELIVERY,
-                        "Email outbox delivery",
-                        "Scheduled",
-                        "email.outbox.deliver",
-                        "Sends pending email outbox rows that are due.",
-                        110,
-                        true,
-                        true,
-                        1,
-                        nowIso),
-                scheduledRule(
                         RULE_EVENT_RANDOM_GROUPS,
                         "Random group planner",
                         "Scheduled",
                         "event.scheduler.random-groups",
                         "Assigns accepted members into generated event groups.",
                         200,
-                        false,
-                        false,
-                        15,
-                        nowIso),
-                scheduledRule(
-                        RULE_EVENT_PRIORITY_INVITER,
-                        "Priority inviter",
-                        "Scheduled",
-                        "event.scheduler.priority-inviter",
-                        "Fills open event capacity with priority-based invitation batches.",
-                        210,
-                        false,
-                        false,
-                        15,
-                        nowIso),
-                scheduledRule(
-                        RULE_EVENT_SCORE_LEADERBOARD,
-                        "Score leaderboard materializer",
-                        "Scheduled",
-                        "event.scheduler.score-leaderboard",
-                        "Materializes generated groups for score and tournament stages.",
-                        220,
                         false,
                         false,
                         15,
@@ -295,80 +187,6 @@ public class NotificationRuleRegistryService {
         if (!missing.isEmpty()) {
             notificationRuleConfigsRepository.saveAll(missing);
         }
-    }
-
-    private NotificationRuleConfig actionRule(
-            String ruleKey,
-            String label,
-            String category,
-            String actionKey,
-            String description,
-            int priority,
-            boolean enabled,
-            boolean pushEnabled,
-            boolean emailEnabled,
-            String subject,
-            String body,
-            String ctaPath) {
-        NotificationRuleConfig rule = baseRule(ruleKey, Instant.now().toString());
-        rule.setLabel(label);
-        rule.setCategory(category);
-        rule.setDescription(description);
-        rule.setActionKey(actionKey);
-        rule.setTriggerKind("action");
-        rule.setEnabled(enabled);
-        rule.setManualRunEnabled(false);
-        rule.setPriority(priority);
-        NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
-        channels.setPushEnabled(pushEnabled);
-        channels.setEmailEnabled(emailEnabled);
-        channels.setInAppEnabled(false);
-        channels.setSupportChatEnabled(false);
-        rule.setChannels(channels);
-        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
-        timing.setMode("immediate");
-        timing.setDelayMinutes(0);
-        timing.setTimezone("UTC");
-        rule.setTiming(timing);
-        NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
-        message.setPushTitle(subject);
-        message.setPushBody(body);
-        message.setEmailSubject(subject);
-        message.setEmailBody(body);
-        message.setCtaPath(ctaPath);
-        rule.setMessage(message);
-        return rule;
-    }
-
-    private NotificationRuleConfig timedRule(
-            String ruleKey,
-            String label,
-            String category,
-            String actionKey,
-            String description,
-            int priority,
-            boolean enabled,
-            boolean pushEnabled,
-            boolean emailEnabled,
-            int month,
-            int dayOfMonth,
-            String time,
-            String timezone,
-            String subject,
-            String body,
-            String ctaPath) {
-        NotificationRuleConfig rule = actionRule(ruleKey, label, category, actionKey, description, priority, enabled,
-                pushEnabled, emailEnabled, subject, body, ctaPath);
-        rule.setTriggerKind("timed");
-        rule.setManualRunEnabled(true);
-        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
-        timing.setMode("yearly");
-        timing.setMonth(month);
-        timing.setDayOfMonth(dayOfMonth);
-        timing.setTime(time);
-        timing.setTimezone(timezone);
-        rule.setTiming(timing);
-        return rule;
     }
 
     private NotificationRuleConfig scheduledRule(
