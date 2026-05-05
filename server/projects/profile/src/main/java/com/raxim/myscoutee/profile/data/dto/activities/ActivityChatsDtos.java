@@ -108,7 +108,10 @@ public final class ActivityChatsDtos {
             String chatId,
             ChatMessageDto message,
             ChatTypingDto typing,
-            ChatReadReceiptDto read) {
+            ChatReadReceiptDto read,
+            String messageId,
+            String clientId,
+            String error) {
     }
 
     public record ChatPostMessageRequestDto(
@@ -126,10 +129,13 @@ public final class ActivityChatsDtos {
 
     public record ChatSocketRequestDto(
             String type,
+            String messageId,
             String clientId,
             String text,
             ChatMessageReplyDto replyTo,
             List<ChatMessageAttachmentDto> attachments,
+            Boolean pinned,
+            String emoji,
             Boolean typing,
             List<String> messageIds) {
     }

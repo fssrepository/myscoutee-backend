@@ -546,6 +546,14 @@ public class ActivitiesChatService {
         }
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users user = findUser(userId);
+        ChatMessageRecord targetMessageCandidate = findMessageById(snapshot.viewerChat(), normalizedMessageId);
+        if (targetMessageCandidate == null) {
+            targetMessageCandidate = findMessageById(snapshot.chatDocuments(), normalizedMessageId);
+        }
+        if (targetMessageCandidate == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found.");
+        }
+        final ChatMessageRecord targetMessage = targetMessageCandidate;
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         ChatMessageRecord updatedViewerMessage = null;
         for (ActivityChat existing : snapshot.chatDocuments()) {
@@ -554,7 +562,7 @@ public class ActivitiesChatService {
             boolean found = false;
             for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
                 ChatMessageRecord nextMessage = copyMessageRecord(existingMessage);
-                if (normalizedMessageId.equals(normalizeId(nextMessage.getId()))) {
+                if (isSameStoredChatMessage(nextMessage, targetMessage, normalizedMessageId)) {
                     mutator.apply(nextMessage, userId, user);
                     found = true;
                     if (userId.equals(normalizeId(existing.getOwnerUserId()))) {
@@ -562,9 +570,6 @@ public class ActivitiesChatService {
                     }
                 }
                 nextMessages.add(nextMessage);
-            }
-            if (!found) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found.");
             }
             next.setMessages(nextMessages);
             ChatMessageRecord latest = latestMessage(nextMessages);
@@ -579,15 +584,86 @@ public class ActivitiesChatService {
         activityChatsRepository.saveAll(updatedDocuments);
         if (updatedViewerMessage == null) {
             updatedViewerMessage = updatedDocuments.stream()
-                    .filter(chat -> userId.equals(normalizeId(chat.getOwnerUserId())))
                     .flatMap(chat -> safeMessages(chat.getMessages()).stream())
-                    .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                    .filter(message -> isSameStoredChatMessage(message, targetMessage, normalizedMessageId))
                     .findFirst()
                     .map(this::copyMessageRecord)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found."));
         }
         publishChatEvent(toStreamEvent(snapshot.chatId(), updatedViewerMessage));
         return toMessageDto(updatedViewerMessage, userId);
+    }
+
+    private ChatMessageRecord findMessageById(ActivityChat chat, String messageId) {
+        String normalizedMessageId = normalizeId(messageId);
+        if (chat == null || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        return safeMessages(chat.getMessages()).stream()
+                .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                .findFirst()
+                .map(this::copyMessageRecord)
+                .orElse(null);
+    }
+
+    private ChatMessageRecord findMessageById(List<ActivityChat> chats, String messageId) {
+        if (chats == null || chats.isEmpty()) {
+            return null;
+        }
+        for (ActivityChat chat : chats) {
+            ChatMessageRecord message = findMessageById(chat, messageId);
+            if (message != null) {
+                return message;
+            }
+        }
+        return null;
+    }
+
+    private boolean isSameStoredChatMessage(
+            ChatMessageRecord candidate,
+            ChatMessageRecord target,
+            String messageId) {
+        String normalizedMessageId = normalizeId(messageId);
+        if (candidate == null
+                || target == null
+                || !StringUtils.hasText(normalizedMessageId)
+                || !normalizedMessageId.equals(normalizeId(candidate.getId()))
+                || !normalizedMessageId.equals(normalizeId(target.getId()))) {
+            return false;
+        }
+
+        String candidateClientId = normalizeId(candidate.getClientId());
+        String targetClientId = normalizeId(target.getClientId());
+        if (StringUtils.hasText(candidateClientId)
+                && StringUtils.hasText(targetClientId)
+                && !candidateClientId.equals(targetClientId)) {
+            return false;
+        }
+
+        String candidateSenderId = messageSenderId(candidate);
+        String targetSenderId = messageSenderId(target);
+        if (StringUtils.hasText(candidateSenderId)
+                && StringUtils.hasText(targetSenderId)
+                && !candidateSenderId.equals(targetSenderId)) {
+            return false;
+        }
+
+        String candidateSentAtIso = normalizeText(candidate.getSentAtIso());
+        String targetSentAtIso = normalizeText(target.getSentAtIso());
+        if (StringUtils.hasText(candidateSentAtIso) && StringUtils.hasText(targetSentAtIso)) {
+            return candidateSentAtIso.equals(targetSentAtIso);
+        }
+
+        if (StringUtils.hasText(candidateClientId) && StringUtils.hasText(targetClientId)) {
+            return candidateClientId.equals(targetClientId);
+        }
+
+        return normalizeText(candidate.getText()).equals(normalizeText(target.getText()));
+    }
+
+    private String messageSenderId(ChatMessageRecord message) {
+        ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
+        return senderAvatar == null ? "" : normalizeId(senderAvatar.getId());
     }
 
     private void requireOwnMessage(ChatMessageRecord message, String userId) {

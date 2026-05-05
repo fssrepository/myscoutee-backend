@@ -178,6 +178,7 @@ public class ActivityChat {
     }
 
     public static class ChatMessageRecord {
+        @Field("id")
         private String id;
         private String clientId;
         private String sender;
@@ -296,6 +297,7 @@ public class ActivityChat {
     }
 
     public static class ChatMessageReplyRecord {
+        @Field("id")
         private String id;
         private String sender;
         private String text;
@@ -331,6 +333,7 @@ public class ActivityChat {
     }
 
     public static class ChatMessageAttachmentRecord {
+        @Field("id")
         private String id;
         private String type;
         private String title;
@@ -371,6 +374,7 @@ public class ActivityChat {
     }
 
     public static class ChatAvatarRecord {
+        @Field("id")
         private String id;
         private String initials;
         private String gender;
@@ -401,6 +405,7 @@ public class ActivityChat {
     }
 
     public static class ChatReadAvatarRecord {
+        @Field("id")
         private String id;
         private String initials;
         private String gender;
