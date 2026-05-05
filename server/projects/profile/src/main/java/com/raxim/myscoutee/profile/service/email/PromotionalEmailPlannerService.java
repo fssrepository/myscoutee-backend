@@ -5,7 +5,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -283,7 +282,7 @@ public class PromotionalEmailPlannerService {
         if (snapshot == null) {
             return List.of();
         }
-        String audienceScope = safeText(rule.getAudienceScope()).toLowerCase();
+        String audienceScope = safeText(rule == null ? null : rule.getAudienceScope()).toLowerCase();
         Set<String> userIds = new LinkedHashSet<>();
         if (!"pending".equals(audienceScope)) {
             userIds.addAll(snapshot.acceptedMemberUserIds());
@@ -348,7 +347,7 @@ public class PromotionalEmailPlannerService {
             return null;
         }
         try {
-            ZoneId zoneId = ZoneId.of(firstNonBlank(rule.getTimezone(), "UTC"));
+            ZoneId zoneId = ZoneId.of(firstNonBlank(rule == null ? null : rule.getTimezone(), "UTC"));
             ZonedDateTime next = CronExpression.parse(cronExpression).next((after == null ? Instant.now() : after).atZone(zoneId));
             return next == null ? null : next.toInstant();
         } catch (Exception exception) {

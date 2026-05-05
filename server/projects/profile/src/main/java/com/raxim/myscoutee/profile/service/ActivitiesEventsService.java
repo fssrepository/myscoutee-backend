@@ -68,6 +68,7 @@ public class ActivitiesEventsService {
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
+    private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
@@ -77,6 +78,7 @@ public class ActivitiesEventsService {
             ActivitiesMembersService activitiesMembersService,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
+            ScheduledMessageTaskService scheduledMessageTaskService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
@@ -84,6 +86,7 @@ public class ActivitiesEventsService {
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
+        this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -384,21 +387,24 @@ public class ActivitiesEventsService {
 
     public void trash(EventActionRequestDto request) {
         maybeApplyLeaveCancellationRefund(request);
-        updateItemState(request, current -> {
+        List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setIsTrashed(true);
             current.setTrashedAtIso(Instant.now().toString());
         });
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public void publish(EventActionRequestDto request) {
-        updateItemState(request, current -> current.setPublished(true));
+        List<ActivityEvent> updated = updateItemState(request, current -> current.setPublished(true));
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public void restore(EventActionRequestDto request) {
-        updateItemState(request, current -> {
+        List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setIsTrashed(false);
             current.setTrashedAtIso(null);
         });
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
@@ -580,6 +586,7 @@ public class ActivitiesEventsService {
             documentsToSave.add(eventsOverlay);
         }
         activityEventsRepository.saveAll(documentsToSave);
+        syncStageReminderTasksForSavedEvents(documentsToSave, actorUserId);
         materializeSlotOccurrences();
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
@@ -1188,11 +1195,11 @@ public class ActivitiesEventsService {
         };
     }
 
-    private void updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater) {
+    private List<ActivityEvent> updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
-            return;
+            return List.of();
         }
 
         String requestType = request == null ? null : request.type();
@@ -1200,7 +1207,7 @@ public class ActivitiesEventsService {
         if (documents.isEmpty()) {
             ActivityEvent overlay = buildUserStateOverlayRecord(viewer.userId(), requestType, sourceId);
             if (overlay == null) {
-                return;
+                return List.of();
             }
             documents = List.of(overlay);
         }
@@ -1215,7 +1222,38 @@ public class ActivitiesEventsService {
             next.normalizeLifecycleState();
             updated.add(next);
         }
-        activityEventsRepository.saveAll(updated);
+        return activityEventsRepository.saveAll(updated);
+    }
+
+    private void syncStageReminderTasksForSavedEvents(List<ActivityEvent> documents, String actorUserId) {
+        if (documents == null || documents.isEmpty()) {
+            return;
+        }
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent document : documents) {
+            if (document == null) {
+                continue;
+            }
+            String sourceId = normalizeId(document.getSourceId());
+            if (!StringUtils.hasText(sourceId) || Boolean.TRUE.equals(document.getGenerated())) {
+                continue;
+            }
+            ActivityEvent current = preferredBySourceId.get(sourceId);
+            if (current == null || TYPE_HOSTING.equals(document.getType())) {
+                preferredBySourceId.put(sourceId, document);
+            }
+        }
+        for (ActivityEvent event : preferredBySourceId.values()) {
+            String sourceId = normalizeId(event.getSourceId());
+            if (!StringUtils.hasText(sourceId)) {
+                continue;
+            }
+            if (Boolean.FALSE.equals(event.getPublished()) || Boolean.TRUE.equals(event.getIsTrashed())) {
+                scheduledMessageTaskService.suspendEventStageReminders(sourceId, actorUserId);
+            } else {
+                scheduledMessageTaskService.scheduleEventStageReminders(event, actorUserId);
+            }
+        }
     }
 
     private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String type, String sourceId) {

@@ -402,7 +402,7 @@ public class NotificationRuleRegistryService {
             try {
                 return Math.max(1, Integer.parseInt(value));
             } catch (NumberFormatException exception) {
-                return Math.max(1, valueOrDefault(timing.getIntervalMinutes(), 60));
+                return Math.max(1, valueOrDefault(timing == null ? null : timing.getIntervalMinutes(), 60));
             }
         }
         return Math.max(1, valueOrDefault(timing == null ? null : timing.getIntervalMinutes(), 60));
