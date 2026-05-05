@@ -25,13 +25,11 @@ import com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository;
 @Service
 public class NotificationRuleRegistryService {
     public static final String RULE_EVENT_RANDOM_GROUPS = "event-random-groups";
-    public static final String RULE_EVENT_STAGE_MATERIALIZER = "event-stage-materializer";
 
     private static final String SYSTEM_USER = "notification-registry";
     private static final int RUN_HISTORY_LIMIT = 12;
     private static final Set<String> SCHEDULED_EVENT_RULES = Set.of(
-            RULE_EVENT_RANDOM_GROUPS,
-            RULE_EVENT_STAGE_MATERIALIZER);
+            RULE_EVENT_RANDOM_GROUPS);
 
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
 
@@ -190,17 +188,6 @@ public class NotificationRuleRegistryService {
                         "event.scheduler.random-groups",
                         "Assigns accepted event members into generated random groups.",
                         200,
-                        false,
-                        false,
-                        15,
-                        nowIso),
-                scheduledRule(
-                        RULE_EVENT_STAGE_MATERIALIZER,
-                        "Stage event",
-                        "Scheduled",
-                        "event.scheduler.stage-materializer",
-                        "Materializes generated groups for score and tournament stages.",
-                        210,
                         false,
                         false,
                         15,

@@ -161,6 +161,7 @@ public class HomeUserProfileService {
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
     private final UserReportSubmissionsRepository userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
+    private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurityProperties regionSecurityProperties;
 
@@ -177,6 +178,7 @@ public class HomeUserProfileService {
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
             UserReportSubmissionsRepository userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
+            ScheduledMessageTaskService scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
             RegionSecurityProperties regionSecurityProperties) {
         this.usersRepository = usersRepository;
@@ -191,6 +193,7 @@ public class HomeUserProfileService {
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
         this.userSessionActionsRepository = userSessionActionsRepository;
+        this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.countryPartitionService = countryPartitionService;
         this.regionSecurityProperties = regionSecurityProperties;
     }
@@ -204,6 +207,9 @@ public class HomeUserProfileService {
         Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
         if (user == null) {
             return null;
+        }
+        if (!StringUtils.hasText(requestedUserId)) {
+            scheduledMessageTaskService.touchUserActivity(resolvedUserId);
         }
 
         UserDto userDto = toUserDto(user);

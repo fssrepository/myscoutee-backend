@@ -72,10 +72,6 @@ public class AdminNotificationService {
                     affectedCount = eventScheduler.generateRandomPlans().size();
                     detail = "Generated random event group plans.";
                 }
-                case NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER -> {
-                    affectedCount = eventScheduler.generateScorePlans().size();
-                    detail = "Materialized score and tournament stage groups.";
-                }
                 default -> {
                     affectedCount = 0;
                     status = "skipped";

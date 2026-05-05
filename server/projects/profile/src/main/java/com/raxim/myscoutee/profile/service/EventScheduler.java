@@ -111,19 +111,6 @@ public class EventScheduler {
                     "Generated random event group plans.",
                     MARKER_UPDATED_BY);
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER, now)) {
-            notificationRuleRegistryService.beginRun(
-                    NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER,
-                    "Scheduled stage materialization started.",
-                    MARKER_UPDATED_BY);
-            List<EventLeaderboardStateDto> states = generateScorePlans();
-            notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_STAGE_MATERIALIZER,
-                    states.size(),
-                    "completed",
-                    "Materialized score and tournament stage groups.",
-                    MARKER_UPDATED_BY);
-        }
     }
 
     @Scheduled(fixedDelayString = "${events.waitlist.inviter-delay-ms:7200000}")
