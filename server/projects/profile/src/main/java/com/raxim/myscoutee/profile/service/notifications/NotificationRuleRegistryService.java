@@ -188,6 +188,19 @@ public class NotificationRuleRegistryService {
         return saved;
     }
 
+    public void broadcastRunProgress(
+            String ruleKey,
+            NotificationRuleConfig.RunState runState,
+            List<NotificationRuleConfig.RunHistoryEntry> runHistory,
+            String actorUserId) {
+        socketSessionRegistry.broadcastRuleRuntime(
+                ruleKey,
+                runState,
+                runHistory,
+                Instant.now().toString(),
+                firstNonBlank(actorUserId, SYSTEM_USER));
+    }
+
     public List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
         ensureDefaultRules();
         if (incomingRules == null || incomingRules.isEmpty()) {

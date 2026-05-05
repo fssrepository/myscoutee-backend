@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,13 +40,30 @@ public class AdminNotificationSocketSessionRegistry {
         if (rule == null || sessions.isEmpty()) {
             return;
         }
+        broadcastRuleRuntime(
+                rule.getRuleKey(),
+                rule.getRunState(),
+                rule.getRunHistory(),
+                rule.getUpdatedDate(),
+                rule.getUpdatedUser());
+    }
+
+    public void broadcastRuleRuntime(
+            String ruleKey,
+            NotificationRuleConfig.RunState runState,
+            List<NotificationRuleConfig.RunHistoryEntry> runHistory,
+            String updatedDate,
+            String updatedUser) {
+        if (sessions.isEmpty()) {
+            return;
+        }
         Map<String, Object> payload = Map.of(
                 "type", "rule-runtime",
-                "ruleKey", safeText(rule.getRuleKey()),
-                "runState", rule.getRunState(),
-                "runHistory", rule.getRunHistory(),
-                "updatedDate", safeText(rule.getUpdatedDate()),
-                "updatedUser", safeText(rule.getUpdatedUser()));
+                "ruleKey", safeText(ruleKey),
+                "runState", runState == null ? new NotificationRuleConfig.RunState() : runState,
+                "runHistory", runHistory == null ? List.of() : runHistory,
+                "updatedDate", safeText(updatedDate),
+                "updatedUser", safeText(updatedUser));
         broadcast(payload);
     }
 
