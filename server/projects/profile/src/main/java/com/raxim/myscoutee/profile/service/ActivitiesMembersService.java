@@ -219,6 +219,41 @@ public class ActivitiesMembersService {
         return result;
     }
 
+    public Map<String, OwnerMembersSnapshot> buildBatchOwnerSnapshots(String ownerType, Collection<String> ownerIds) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        if (!StringUtils.hasText(normalizedOwnerType) || ownerIds == null || ownerIds.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> normalizedOwnerIds = ownerIds.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (normalizedOwnerIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, List<ActivityMember>> membersByOwnerId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(normalizedOwnerType, normalizedOwnerIds)) {
+            if (member == null) {
+                continue;
+            }
+            String ownerId = normalizeId(member.getOwnerId());
+            if (StringUtils.hasText(ownerId)) {
+                membersByOwnerId.computeIfAbsent(ownerId, key -> new ArrayList<>()).add(member);
+            }
+        }
+
+        Map<String, OwnerMembersSnapshot> result = new LinkedHashMap<>();
+        for (String ownerId : normalizedOwnerIds) {
+            List<ActivityMember> members = membersByOwnerId.getOrDefault(ownerId, List.of())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .toList();
+            result.put(ownerId, toOwnerSnapshot(normalizedOwnerType, ownerId, members));
+        }
+        return result;
+    }
+
     private List<ActivityMember> mergeDerivedEventMembersBatch(
             String eventId,
             List<ActivityMember> members,

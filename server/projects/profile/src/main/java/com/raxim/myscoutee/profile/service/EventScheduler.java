@@ -128,14 +128,16 @@ public class EventScheduler {
     }
 
     public List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer) {
-        List<ActivityEvent> events = resolveCanonicalEvents();
+        List<ActivityEvent> eventRecords = activityEventsRepository.findAll();
+        List<ActivityEvent> events = resolveCanonicalEvents(eventRecords);
+        Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
         AtomicInteger observedQueries = new AtomicInteger(1);
         publishRandomProgress(progressConsumer, 0, 0, events.size(), 0, observedQueries.get(), "Loaded " + events.size() + " event record(s).");
         
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
-        
+        Map<String, ActivityEvent> candidateEventsById = new LinkedHashMap<>();
         for (ActivityEvent event : events) {
             if (event == null || !Boolean.TRUE.equals(event.getPublished()) || safeSubEvents(event).isEmpty()) {
                 continue;
@@ -144,8 +146,21 @@ public class EventScheduler {
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
-            ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
-            int queryCount = observedQueries.incrementAndGet();
+            candidateEventsById.put(eventId, event);
+        }
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> batchSnapshotsByEventId =
+                activitiesMembersService.buildBatchEventSnapshots(candidateEventsById);
+        if (!candidateEventsById.isEmpty()) {
+            observedQueries.addAndGet(2);
+        }
+
+        for (ActivityEvent event : events) {
+            String eventId = normalizeId(event == null ? null : event.getSourceId());
+            if (!candidateEventsById.containsKey(eventId)) {
+                continue;
+            }
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot = batchSnapshotsByEventId.get(eventId);
+            int queryCount = observedQueries.get();
             if (snapshot == null || snapshot.acceptedMembers() < 2) {
                 publishRandomProgress(progressConsumer, 6, snapshotsByEventId.size(), events.size(), requiredUserIds.size(), queryCount,
                         "Queried " + queryCount + " backend lookup(s); event has no eligible accepted members.");
@@ -211,7 +226,7 @@ public class EventScheduler {
                         "Processing sub-event " + currentSubEvent + "/" + totalSubEvents + ".");
 
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
-                        eventId, subEventId, subEvent, acceptedUserIds, true, "random", observedQueries);
+                        eventId, subEventId, subEvent, acceptedUserIds, true, "random", observedQueries, eventDocumentsById);
                         
                 if (targets.isEmpty()) {
                     int processedSubEvent = processedSubEvents.incrementAndGet();
@@ -579,6 +594,17 @@ public List<InviteBatchPlan> generatePriorityPlans() {
         return new ArrayList<>(preferredBySourceId.values());
     }
 
+    private Map<String, List<ActivityEvent>> eventDocumentsBySourceId(List<ActivityEvent> records) {
+        Map<String, List<ActivityEvent>> documentsBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            String sourceId = normalizeId(record == null ? null : record.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                documentsBySourceId.computeIfAbsent(sourceId, key -> new ArrayList<>()).add(record);
+            }
+        }
+        return documentsBySourceId;
+    }
+
     private List<GroupAssignmentTarget> resolveGroupAssignmentTargets(
             String eventId,
             String subEventId,
@@ -597,10 +623,25 @@ public List<InviteBatchPlan> generatePriorityPlans() {
             boolean preserveAnchors,
             String wrapperType,
             AtomicInteger observedQueries) {
+        return resolveGroupAssignmentTargets(eventId, subEventId, subEvent, eligibleUserIds, preserveAnchors, wrapperType, observedQueries, null);
+    }
+
+    private List<GroupAssignmentTarget> resolveGroupAssignmentTargets(
+            String eventId,
+            String subEventId,
+            SubEventFormItemDto subEvent,
+            Collection<String> eligibleUserIds,
+            boolean preserveAnchors,
+            String wrapperType,
+            AtomicInteger observedQueries,
+            Map<String, List<ActivityEvent>> eventDocumentsById) {
+        List<ActivityEvent> eventDocuments = eventDocumentsById == null ? null : eventDocumentsById.get(normalizeId(eventId));
         List<SubEventGroupItemDto> groups = subEvent != null && subEvent.groups() != null && !subEvent.groups().isEmpty()
                 ? subEvent.groups().stream().filter(Objects::nonNull).toList()
-                : activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId);
-        if (subEvent == null || subEvent.groups() == null || subEvent.groups().isEmpty()) {
+                : eventDocuments == null
+                        ? activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId)
+                        : activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId, eventDocuments);
+        if ((subEvent == null || subEvent.groups() == null || subEvent.groups().isEmpty()) && eventDocuments == null) {
             incrementObservedQueries(observedQueries);
         }
         if (groups.isEmpty()) {
@@ -610,6 +651,15 @@ public List<InviteBatchPlan> generatePriorityPlans() {
 
         Set<String> eligibleUserIdSet = new LinkedHashSet<>(normalizeUserIds(eligibleUserIds));
         List<GroupAssignmentTarget> targets = new ArrayList<>();
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByGroupId = preserveAnchors
+                ? activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, groups.stream()
+                        .map(group -> normalizeId(group == null ? null : group.id()))
+                        .filter(StringUtils::hasText)
+                        .toList())
+                : Map.of();
+        if (preserveAnchors && !snapshotsByGroupId.isEmpty()) {
+            incrementObservedQueries(observedQueries);
+        }
         for (SubEventGroupItemDto group : groups) {
             String groupId = normalizeId(group == null ? null : group.id());
             Range groupRange = resolveGroupRange(subEvent, group);
@@ -619,8 +669,7 @@ public List<InviteBatchPlan> generatePriorityPlans() {
             }
             List<String> lockedUserIds = List.of();
             if (preserveAnchors) {
-                ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_GROUP, groupId);
-                incrementObservedQueries(observedQueries);
+                ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByGroupId.get(groupId);
                 lockedUserIds = snapshot == null
                         ? List.of()
                         : snapshot.acceptedMemberUserIds().stream()
@@ -767,10 +816,18 @@ public List<InviteBatchPlan> generatePriorityPlans() {
         }
 
         List<GeneratedEventPlan> syncedGroups = new ArrayList<>();
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByPlannedGroupId =
+                activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_GROUP, plannedGroups.stream()
+                        .map(GeneratedEventPlan::seedId)
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .toList());
+        if (!snapshotsByPlannedGroupId.isEmpty()) {
+            incrementObservedQueries(observedQueries);
+        }
         for (GeneratedEventPlan plannedGroup : plannedGroups) {
             List<String> normalizedPlannedUserIds = normalizeUserIds(plannedGroup.memberUserIds());
-            ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_GROUP, plannedGroup.seedId());
-            incrementObservedQueries(observedQueries);
+            ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = snapshotsByPlannedGroupId.get(normalizeId(plannedGroup.seedId()));
             if (hasSameAcceptedMembers(groupSnapshot, normalizedPlannedUserIds)) {
                 rememberPlanMarkerIfMissing(
                         wrapperType,
