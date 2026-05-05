@@ -15,6 +15,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRul
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunHistoryEntryDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationScheduleSlotDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTemplateOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTimingDto;
@@ -148,6 +149,9 @@ public class AdminNotificationService {
                         timing.getTime(),
                         timing.getTimezone(),
                         timing.getCronExpression()),
+                rule.getScheduleSlots() == null ? List.of() : rule.getScheduleSlots().stream()
+                        .map(this::toScheduleSlotDto)
+                        .toList(),
                 new AdminNotificationMessageDto(
                         message.getPushTitle(),
                         message.getPushBody(),
@@ -207,6 +211,9 @@ public class AdminNotificationService {
         timing.setTimezone(sourceTiming == null ? null : sourceTiming.timezone());
         timing.setCronExpression(sourceTiming == null ? null : sourceTiming.cronExpression());
         rule.setTiming(timing);
+        rule.setScheduleSlots(dto.scheduleSlots() == null ? List.of() : dto.scheduleSlots().stream()
+                .map(this::toScheduleSlotDocument)
+                .toList());
         AdminNotificationMessageDto sourceMessage = dto.message();
         NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
         message.setPushTitle(sourceMessage == null ? null : sourceMessage.pushTitle());
@@ -225,6 +232,34 @@ public class AdminNotificationService {
                 template.getName(),
                 template.getCategory(),
                 template.getDescription());
+    }
+
+    private AdminNotificationScheduleSlotDto toScheduleSlotDto(NotificationRuleConfig.ScheduleSlot slot) {
+        return new AdminNotificationScheduleSlotDto(
+                slot.getId(),
+                slot.getFrequency(),
+                slot.getDate(),
+                slot.getDayOfWeek(),
+                slot.getTime(),
+                slot.getTimezone(),
+                slot.getCronExpression(),
+                slot.getEnabled());
+    }
+
+    private NotificationRuleConfig.ScheduleSlot toScheduleSlotDocument(AdminNotificationScheduleSlotDto dto) {
+        NotificationRuleConfig.ScheduleSlot slot = new NotificationRuleConfig.ScheduleSlot();
+        if (dto == null) {
+            return slot;
+        }
+        slot.setId(dto.id());
+        slot.setFrequency(dto.frequency());
+        slot.setDate(dto.date());
+        slot.setDayOfWeek(dto.dayOfWeek());
+        slot.setTime(dto.time());
+        slot.setTimezone(dto.timezone());
+        slot.setCronExpression(dto.cronExpression());
+        slot.setEnabled(dto.enabled());
+        return slot;
     }
 
     private AdminNotificationRunHistoryEntryDto toRunHistoryEntry(NotificationRuleConfig.RunHistoryEntry entry) {

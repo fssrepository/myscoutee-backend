@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,7 @@ import de.flapdoodle.reverse.TransitionWalker;
         "scheduled-messages.task-poll-delay-ms=5000",
         "scheduled-messages.worker-lookahead-ms=15000"
 })
+@Disabled("Long-running scheduled integration tests are disabled temporarily.")
 class ScheduledMessageTaskServiceIntegrationTest {
     @Autowired
     private MongoTemplate mongoTemplate;

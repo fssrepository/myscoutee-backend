@@ -28,6 +28,7 @@ public class NotificationRuleConfig {
     private Integer priority;
     private DeliveryChannels channels = new DeliveryChannels();
     private Timing timing = new Timing();
+    private List<ScheduleSlot> scheduleSlots = new ArrayList<>();
     private MessageTemplate message = new MessageTemplate();
     private RunState runState = new RunState();
     private List<RunHistoryEntry> runHistory = new ArrayList<>();
@@ -138,6 +139,14 @@ public class NotificationRuleConfig {
 
     public void setTiming(Timing timing) {
         this.timing = timing == null ? new Timing() : timing;
+    }
+
+    public List<ScheduleSlot> getScheduleSlots() {
+        return scheduleSlots;
+    }
+
+    public void setScheduleSlots(List<ScheduleSlot> scheduleSlots) {
+        this.scheduleSlots = scheduleSlots == null ? new ArrayList<>() : scheduleSlots;
     }
 
     public MessageTemplate getMessage() {
@@ -307,6 +316,81 @@ public class NotificationRuleConfig {
 
         public void setCronExpression(String cronExpression) {
             this.cronExpression = cronExpression;
+        }
+    }
+
+    public static class ScheduleSlot {
+        private String id;
+        private String frequency;
+        private String date;
+        private Integer dayOfWeek;
+        private String time;
+        private String timezone;
+        private String cronExpression;
+        private Boolean enabled;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getFrequency() {
+            return frequency;
+        }
+
+        public void setFrequency(String frequency) {
+            this.frequency = frequency;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public Integer getDayOfWeek() {
+            return dayOfWeek;
+        }
+
+        public void setDayOfWeek(Integer dayOfWeek) {
+            this.dayOfWeek = dayOfWeek;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getTimezone() {
+            return timezone;
+        }
+
+        public void setTimezone(String timezone) {
+            this.timezone = timezone;
+        }
+
+        public String getCronExpression() {
+            return cronExpression;
+        }
+
+        public void setCronExpression(String cronExpression) {
+            this.cronExpression = cronExpression;
+        }
+
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(Boolean enabled) {
+            this.enabled = enabled;
         }
     }
 

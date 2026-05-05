@@ -42,6 +42,7 @@ public final class AdminDtos {
             Integer priority,
             AdminNotificationChannelsDto channels,
             AdminNotificationTimingDto timing,
+            List<AdminNotificationScheduleSlotDto> scheduleSlots,
             AdminNotificationMessageDto message,
             AdminNotificationRunStateDto runState,
             List<AdminNotificationRunHistoryEntryDto> runHistory,
@@ -61,6 +62,15 @@ public final class AdminDtos {
             String time,
             String timezone,
             String cronExpression) {}
+    public record AdminNotificationScheduleSlotDto(
+            String id,
+            String frequency,
+            String date,
+            Integer dayOfWeek,
+            String time,
+            String timezone,
+            String cronExpression,
+            Boolean enabled) {}
     public record AdminNotificationMessageDto(
             String pushTitle,
             String pushBody,

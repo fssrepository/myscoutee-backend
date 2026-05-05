@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.DayOfWeek;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -57,8 +59,20 @@ public class NotificationRuleRegistryService {
             return false;
         }
         NotificationRuleConfig.Timing timing = rule.getTiming() == null ? new NotificationRuleConfig.Timing() : rule.getTiming();
-        String mode = safeText(timing.getMode()).toLowerCase();
         Instant resolvedNow = now == null ? Instant.now() : now;
+        List<NotificationRuleConfig.ScheduleSlot> slots = normalizeScheduleSlots(rule.getScheduleSlots(), timing);
+        if (!slots.isEmpty()) {
+            Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
+            for (NotificationRuleConfig.ScheduleSlot slot : slots) {
+                Instant occurrence = slotOccurrence(slot, resolvedNow);
+                if (occurrence != null && !resolvedNow.isBefore(occurrence) && (lastRunAt == null || lastRunAt.isBefore(occurrence))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        String mode = safeText(timing.getMode()).toLowerCase();
         if ("interval".equals(mode)) {
             int intervalMinutes = intervalMinutes(timing);
             Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
@@ -276,6 +290,7 @@ public class NotificationRuleRegistryService {
         target.setPriority(valueOrDefault(source.getPriority(), valueOrDefault(target.getPriority(), 1000)));
         target.setChannels(normalizeChannels(source.getChannels()));
         target.setTiming(normalizeTiming(source.getTiming(), source.getTriggerKind()));
+        target.setScheduleSlots(normalizeScheduleSlots(source.getScheduleSlots(), target.getTiming()));
         target.setMessage(normalizeMessage(source.getMessage()));
     }
 
@@ -318,6 +333,44 @@ public class NotificationRuleRegistryService {
         return message;
     }
 
+    private List<NotificationRuleConfig.ScheduleSlot> normalizeScheduleSlots(
+            List<NotificationRuleConfig.ScheduleSlot> source,
+            NotificationRuleConfig.Timing fallbackTiming) {
+        List<NotificationRuleConfig.ScheduleSlot> slots = new ArrayList<>();
+        if (source != null) {
+            int index = 0;
+            for (NotificationRuleConfig.ScheduleSlot item : source) {
+                if (item == null) {
+                    continue;
+                }
+                NotificationRuleConfig.ScheduleSlot slot = new NotificationRuleConfig.ScheduleSlot();
+                String frequency = normalizeFrequency(item.getFrequency());
+                slot.setId(firstNonBlank(item.getId(), "run-window-" + (++index)));
+                slot.setFrequency(frequency);
+                slot.setDate(safeText(item.getDate()));
+                slot.setDayOfWeek(clamp(valueOrDefault(item.getDayOfWeek(), 1), 1, 7));
+                slot.setTime(normalizeTime(item.getTime()));
+                slot.setTimezone(firstNonBlank(item.getTimezone(), "UTC"));
+                slot.setCronExpression(firstNonBlank(item.getCronExpression(), toSlotCron(slot)));
+                slot.setEnabled(!Boolean.FALSE.equals(item.getEnabled()));
+                slots.add(slot);
+            }
+        }
+        if (slots.isEmpty() && fallbackTiming != null) {
+            NotificationRuleConfig.ScheduleSlot slot = new NotificationRuleConfig.ScheduleSlot();
+            slot.setId("run-window-default");
+            slot.setFrequency("daily");
+            slot.setDate("");
+            slot.setDayOfWeek(1);
+            slot.setTime(normalizeTime(fallbackTiming.getTime()));
+            slot.setTimezone(firstNonBlank(fallbackTiming.getTimezone(), "UTC"));
+            slot.setCronExpression(toSlotCron(slot));
+            slot.setEnabled(true);
+            slots.add(slot);
+        }
+        return slots;
+    }
+
     private List<NotificationRuleConfig> sorted(List<NotificationRuleConfig> rules) {
         return rules.stream()
                 .filter(rule -> rule != null && StringUtils.hasText(safeText(rule.getRuleKey())))
@@ -336,6 +389,75 @@ public class NotificationRuleRegistryService {
             LocalDate date = safeDate(zonedNow.getYear(), month, dayOfMonth);
             LocalTime time = LocalTime.parse(normalizeTime(timing.getTime()));
             return ZonedDateTime.of(date, time, zoneId).toInstant();
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private Instant slotOccurrence(NotificationRuleConfig.ScheduleSlot slot, Instant now) {
+        if (slot == null || Boolean.FALSE.equals(slot.getEnabled())) {
+            return null;
+        }
+        try {
+            ZoneId zoneId = ZoneId.of(firstNonBlank(slot.getTimezone(), "UTC"));
+            ZonedDateTime zonedNow = now.atZone(zoneId);
+            LocalTime time = LocalTime.parse(normalizeTime(slot.getTime()));
+            String frequency = normalizeFrequency(slot.getFrequency());
+            if ("one-time".equals(frequency)) {
+                LocalDate date = parseLocalDate(slot.getDate());
+                return date == null ? null : ZonedDateTime.of(date, time, zoneId).toInstant();
+            }
+            if ("weekly".equals(frequency)) {
+                int dayOfWeek = clamp(valueOrDefault(slot.getDayOfWeek(), 1), 1, 7);
+                LocalDate date = zonedNow.toLocalDate().with(DayOfWeek.of(dayOfWeek));
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    occurrence = occurrence.minusWeeks(1);
+                }
+                return occurrence.toInstant();
+            }
+            if ("bi-weekly".equals(frequency)) {
+                int dayOfWeek = clamp(valueOrDefault(slot.getDayOfWeek(), 1), 1, 7);
+                LocalDate anchor = parseLocalDate(slot.getDate());
+                if (anchor == null) {
+                    anchor = LocalDate.of(2026, 1, 5);
+                }
+                LocalDate date = zonedNow.toLocalDate().with(DayOfWeek.of(dayOfWeek));
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    occurrence = occurrence.minusWeeks(1);
+                }
+                if (Math.floorMod(ChronoUnit.WEEKS.between(anchor.with(DayOfWeek.of(dayOfWeek)), occurrence.toLocalDate()), 2) != 0) {
+                    occurrence = occurrence.minusWeeks(1);
+                }
+                return occurrence.toInstant();
+            }
+            if ("monthly".equals(frequency)) {
+                int dayOfMonth = parseLocalDate(slot.getDate()) == null ? 1 : parseLocalDate(slot.getDate()).getDayOfMonth();
+                LocalDate date = safeDate(zonedNow.getYear(), zonedNow.getMonthValue(), dayOfMonth);
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    ZonedDateTime previousMonth = zonedNow.minusMonths(1);
+                    occurrence = ZonedDateTime.of(safeDate(previousMonth.getYear(), previousMonth.getMonthValue(), dayOfMonth), time, zoneId);
+                }
+                return occurrence.toInstant();
+            }
+            if ("yearly".equals(frequency)) {
+                LocalDate parsedDate = parseLocalDate(slot.getDate());
+                int month = parsedDate == null ? 1 : parsedDate.getMonthValue();
+                int dayOfMonth = parsedDate == null ? 1 : parsedDate.getDayOfMonth();
+                LocalDate date = safeDate(zonedNow.getYear(), month, dayOfMonth);
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    occurrence = ZonedDateTime.of(safeDate(zonedNow.getYear() - 1, month, dayOfMonth), time, zoneId);
+                }
+                return occurrence.toInstant();
+            }
+            ZonedDateTime occurrence = ZonedDateTime.of(zonedNow.toLocalDate(), time, zoneId);
+            if (occurrence.isAfter(zonedNow)) {
+                occurrence = occurrence.minusDays(1);
+            }
+            return occurrence.toInstant();
         } catch (Exception exception) {
             return null;
         }
@@ -410,6 +532,53 @@ public class NotificationRuleRegistryService {
 
     private String toIntervalCron(Integer intervalMinutes) {
         return "0 0/" + Math.max(1, valueOrDefault(intervalMinutes, 60)) + " * * * ?";
+    }
+
+    private String toSlotCron(NotificationRuleConfig.ScheduleSlot slot) {
+        String[] timeParts = normalizeTime(slot == null ? null : slot.getTime()).split(":");
+        int hour = Integer.parseInt(timeParts[0]);
+        int minute = Integer.parseInt(timeParts[1]);
+        String frequency = normalizeFrequency(slot == null ? null : slot.getFrequency());
+        if ("one-time".equals(frequency)) {
+            LocalDate date = parseLocalDate(slot == null ? null : slot.getDate());
+            if (date == null) {
+                return "0 " + minute + " " + hour + " * * ?";
+            }
+            return "0 " + minute + " " + hour + " " + date.getDayOfMonth() + " " + date.getMonthValue() + " ?";
+        }
+        if ("weekly".equals(frequency)) {
+            int quartzDay = (clamp(valueOrDefault(slot == null ? null : slot.getDayOfWeek(), 1), 1, 7) % 7) + 1;
+            return "0 " + minute + " " + hour + " ? * " + quartzDay;
+        }
+        if ("bi-weekly".equals(frequency)) {
+            int quartzDay = (clamp(valueOrDefault(slot == null ? null : slot.getDayOfWeek(), 1), 1, 7) % 7) + 1;
+            return "0 " + minute + " " + hour + " ? * " + quartzDay;
+        }
+        if ("monthly".equals(frequency)) {
+            LocalDate date = parseLocalDate(slot == null ? null : slot.getDate());
+            int dayOfMonth = date == null ? 1 : date.getDayOfMonth();
+            return "0 " + minute + " " + hour + " " + dayOfMonth + " * ?";
+        }
+        if ("yearly".equals(frequency)) {
+            LocalDate date = parseLocalDate(slot == null ? null : slot.getDate());
+            int month = date == null ? 1 : date.getMonthValue();
+            int dayOfMonth = date == null ? 1 : date.getDayOfMonth();
+            return "0 " + minute + " " + hour + " " + dayOfMonth + " " + month + " ?";
+        }
+        return "0 " + minute + " " + hour + " * * ?";
+    }
+
+    private LocalDate parseLocalDate(String value) {
+        try {
+            return StringUtils.hasText(safeText(value)) ? LocalDate.parse(safeText(value)) : null;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private String normalizeFrequency(String value) {
+        String normalized = safeText(value).toLowerCase();
+        return Set.of("one-time", "daily", "weekly", "bi-weekly", "monthly", "yearly").contains(normalized) ? normalized : "daily";
     }
 
     private String normalizeTime(String value) {
