@@ -107,6 +107,21 @@ ensure_collection_indexes() {
   local collection_name="$2"
 
   case "${collection_name}" in
+    chats)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('chats').createIndex({ ownerUserId: 1, id: 1 }, { name: 'chat_owner_public_id', unique: true });
+db.getCollection('chats').createIndex({ id: 1 }, { name: 'chat_public_id_lookup' });
+db.getCollection('chats').createIndex({ ownerUserId: 1, dateIso: -1 }, { name: 'chat_owner_date' });
+" >/dev/null
+      ;;
     events)
       mongosh \
         --host "${mongo_host}" \

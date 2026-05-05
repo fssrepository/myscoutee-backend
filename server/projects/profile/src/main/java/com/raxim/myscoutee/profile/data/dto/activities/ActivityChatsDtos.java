@@ -9,7 +9,8 @@ public final class ActivityChatsDtos {
     public record ChatReadAvatarDto(
             String id,
             String initials,
-            String gender) {
+            String gender,
+            String imageUrl) {
     }
 
     public record ChatSummaryDto(
@@ -42,6 +43,7 @@ public final class ActivityChatsDtos {
             String senderName,
             String senderInitials,
             String senderGender,
+            String senderImageUrl,
             String text,
             String sentAtIso,
             Boolean mine,
