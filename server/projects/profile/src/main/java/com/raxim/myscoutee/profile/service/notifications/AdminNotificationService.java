@@ -37,10 +37,15 @@ import com.raxim.myscoutee.profile.service.EventScheduler;
 
 @Service
 public class AdminNotificationService {
+    private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
+    private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
+    private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
+
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
+    private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
     private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
         Thread thread = new Thread(runnable, "admin-notification-runner");
         thread.setDaemon(true);
@@ -89,25 +94,46 @@ public class AdminNotificationService {
     }
 
     public AdminNotificationRuleRunResultDto run(String ruleKey, AdminNotificationRuleRunRequestDto request) {
-        AdminUserDto admin = adminModerationService.resolveAdminActor(request == null ? null : request.adminUserId());
         String normalizedRuleKey = safeText(ruleKey);
-        NotificationRuleConfig rule = notificationRuleRegistryService.findRule(normalizedRuleKey).orElse(null);
-        if (rule == null) {
-            return new AdminNotificationRuleRunResultDto(normalizedRuleKey, normalizedRuleKey, 0, "skipped",
-                    "Rule was not found.", Instant.now().toString());
-        }
+        String requestedAdminUserId = safeText(request == null ? null : request.adminUserId());
+        RandomRunProgress progress = NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS.equals(normalizedRuleKey)
+                ? startRandomRunProgress(normalizedRuleKey, requestedAdminUserId)
+                : null;
+        NotificationRuleConfig rule = null;
         try {
-            NotificationRuleConfig startedRule = notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id());
+            AdminUserDto admin = adminModerationService.resolveAdminActor(requestedAdminUserId);
+            if (progress != null) {
+                progress.setAdminUserId(admin.id());
+            }
+            rule = notificationRuleRegistryService.findRule(normalizedRuleKey).orElse(null);
+            if (progress != null) {
+                progress.adoptRule(rule);
+            }
+            if (rule == null) {
+                if (progress != null) {
+                    progress.close();
+                }
+                return new AdminNotificationRuleRunResultDto(normalizedRuleKey, normalizedRuleKey, 0, "skipped",
+                        "Rule was not found.", Instant.now().toString());
+            }
+            NotificationRuleConfig startedRule = progress == null
+                    ? notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id())
+                    : notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id(), progress.startedAt());
+            if (progress != null) {
+                progress.adoptRule(startedRule);
+            }
             switch (normalizedRuleKey) {
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
-                    runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule));
+                    RandomRunProgress runProgress = progress;
+                    runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress));
+                    String startedAtIso = startedAtIso(startedRule);
                     return new AdminNotificationRuleRunResultDto(
                             normalizedRuleKey,
                             safeText(rule.getLabel()),
                             0,
                             "running",
                             "Manual random event grouping started.",
-                            Instant.now().toString());
+                            startedAtIso);
                 }
                 default -> {
                     NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
@@ -129,18 +155,22 @@ public class AdminNotificationService {
                 }
             }
         } catch (Exception exception) {
+            if (progress != null) {
+                progress.close();
+            }
             NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
                     normalizedRuleKey,
                     0,
                     "failed",
                     safeText(exception.getMessage()),
-                    admin.id());
+                    requestedAdminUserId,
+                    progress == null ? null : progress.startedAt());
             String ranAtIso = updated == null || updated.getRunState() == null
                     ? Instant.now().toString()
                     : updated.getRunState().getLastRunAtIso();
             return new AdminNotificationRuleRunResultDto(
                     normalizedRuleKey,
-                    safeText(rule.getLabel()),
+                    safeText(rule == null ? normalizedRuleKey : rule.getLabel()),
                     0,
                     "failed",
                     safeText(exception.getMessage()),
@@ -148,40 +178,155 @@ public class AdminNotificationService {
         }
     }
 
-    private void runRandomEventGroups(String ruleKey, String adminUserId, NotificationRuleConfig startedRule) {
-        AtomicInteger latestPercent = new AtomicInteger(0);
-        AtomicReference<String> latestDetail = new AtomicReference<>("Manual random event grouping started.");
-        Instant startedAt = Instant.now();
-        NotificationRuleConfig.RunState runtimeState = copyRunState(startedRule == null ? null : startedRule.getRunState());
-        if (safeText(runtimeState.getStartedAtIso()).isEmpty()) {
-            runtimeState.setStartedAtIso(startedAt.toString());
-        }
-        List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory = startedRule == null || startedRule.getRunHistory() == null
-                ? List.of()
-                : List.copyOf(startedRule.getRunHistory());
-        ScheduledFuture<?> heartbeat = progressHeartbeatExecutor.scheduleAtFixedRate(() -> {
-            long elapsedSeconds = Math.max(1L, java.time.Duration.between(startedAt, Instant.now()).toSeconds());
-            publishInMemoryRunProgress(
-                    ruleKey,
-                    adminUserId,
-                    runtimeState,
-                    runtimeHistory,
-                    latestPercent.get(),
-                    latestDetail.get() + " Running for " + elapsedSeconds + "s.",
-                    startedAt);
-        }, 1, 1, TimeUnit.SECONDS);
+    private void runRandomEventGroups(
+            String ruleKey,
+            String adminUserId,
+            NotificationRuleConfig startedRule,
+            RandomRunProgress progress) {
         try {
-            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(progress -> {
-                latestPercent.updateAndGet(value -> Math.max(value, progress.progressPercent()));
-                latestDetail.set(progress.detail());
+            if (progress != null) {
+                progress.setAdminUserId(adminUserId);
+                progress.adoptRule(startedRule);
+                progress.raiseTo(1, "Loading published random event records.");
+            }
+            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {
+                if (progress != null) {
+                    progress.raiseTo(planProgress.progressPercent(), planProgress.detail());
+                }
             });
             int affectedUsers = affectedUsers(plans);
             String detail = "Generated " + plans.size() + " random group plan(s) for " + affectedUsers + " user(s).";
-            notificationRuleRegistryService.recordRun(ruleKey, affectedUsers, "completed", detail, adminUserId);
+            notificationRuleRegistryService.recordRun(
+                    ruleKey,
+                    affectedUsers,
+                    "completed",
+                    detail,
+                    adminUserId,
+                    progress == null ? null : progress.startedAt());
         } catch (Exception exception) {
-            notificationRuleRegistryService.recordRun(ruleKey, 0, "failed", safeText(exception.getMessage()), adminUserId);
+            notificationRuleRegistryService.recordRun(
+                    ruleKey,
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    adminUserId,
+                    progress == null ? null : progress.startedAt());
         } finally {
+            if (progress != null) {
+                progress.close();
+            }
+        }
+    }
+
+    private RandomRunProgress startRandomRunProgress(String ruleKey, String adminUserId) {
+        return new RandomRunProgress(ruleKey, adminUserId);
+    }
+
+    private void recordRandomRunMillis(long elapsedMillis) {
+        if (elapsedMillis <= 0L) {
+            return;
+        }
+        int observedMillis = (int) clampExpectedRandomRunMillis(Math.round(elapsedMillis * 1.25d));
+        expectedRandomRunMillis.updateAndGet(current -> observedMillis > current
+                ? observedMillis
+                : (int) clampExpectedRandomRunMillis(Math.round((current * 0.8d) + (observedMillis * 0.2d))));
+    }
+
+    private long clampExpectedRandomRunMillis(long value) {
+        return Math.max(MIN_EXPECTED_RANDOM_RUN_MILLIS, Math.min(MAX_EXPECTED_RANDOM_RUN_MILLIS, value));
+    }
+
+    private class RandomRunProgress implements AutoCloseable {
+        private final String ruleKey;
+        private final Instant startedAt = Instant.now();
+        private final NotificationRuleConfig.RunState runtimeState = new NotificationRuleConfig.RunState();
+        private final long expectedMillis = clampExpectedRandomRunMillis(expectedRandomRunMillis.get());
+        private final AtomicInteger latestPercent = new AtomicInteger(0);
+        private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual random event grouping started.");
+        private volatile String adminUserId;
+        private volatile List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory = List.of();
+        private final ScheduledFuture<?> heartbeat;
+
+        RandomRunProgress(String ruleKey, String adminUserId) {
+            this.ruleKey = safeText(ruleKey);
+            this.adminUserId = safeText(adminUserId);
+            runtimeState.setCurrentStatus("running");
+            runtimeState.setProgressPercent(0);
+            runtimeState.setProgressDetail(latestDetail.get());
+            runtimeState.setStartedAtIso(startedAt.toString());
+            runtimeState.setFinishedAtIso("");
+            runtimeState.setDurationMillis(0L);
+            heartbeat = progressHeartbeatExecutor.scheduleAtFixedRate(this::tick, 0, 100, TimeUnit.MILLISECONDS);
+        }
+
+        Instant startedAt() {
+            return startedAt;
+        }
+
+        void setAdminUserId(String adminUserId) {
+            this.adminUserId = safeText(adminUserId);
+        }
+
+        void adoptRule(NotificationRuleConfig rule) {
+            if (rule == null) {
+                return;
+            }
+            runtimeHistory = rule.getRunHistory() == null ? List.of() : List.copyOf(rule.getRunHistory());
+            NotificationRuleConfig.RunState source = rule.getRunState();
+            if (source == null) {
+                return;
+            }
+            synchronized (runtimeState) {
+                runtimeState.setLastRunAtIso(source.getLastRunAtIso());
+                runtimeState.setLastRunStatus(source.getLastRunStatus());
+                runtimeState.setLastRunDetail(source.getLastRunDetail());
+                runtimeState.setLastRunCount(source.getLastRunCount());
+                runtimeState.setLastRunUser(source.getLastRunUser());
+                runtimeState.setCurrentStatus("running");
+                runtimeState.setStartedAtIso(startedAt.toString());
+                runtimeState.setFinishedAtIso("");
+                runtimeState.setProgressPercent(latestPercent.get());
+                runtimeState.setProgressDetail(latestDetail.get());
+            }
+        }
+
+        void raiseTo(int progressPercent, String detail) {
+            latestPercent.updateAndGet(current -> Math.max(current, Math.max(0, Math.min(99, progressPercent))));
+            String safeDetail = safeText(detail);
+            if (!safeDetail.isEmpty()) {
+                latestDetail.set(safeDetail);
+            }
+        }
+
+        private void tick() {
+            try {
+                latestPercent.updateAndGet(current -> Math.max(current, timedProgressPercent()));
+                long elapsedSeconds = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toSeconds());
+                publishInMemoryRunProgress(
+                        ruleKey,
+                        adminUserId,
+                        runtimeState,
+                        runtimeHistory,
+                        latestPercent.get(),
+                        latestDetail.get() + " Running for " + elapsedSeconds + "s.",
+                        startedAt);
+            } catch (Exception ignored) {
+                // Keep the progress heartbeat alive; the worker records the final run status.
+            }
+        }
+
+        private int timedProgressPercent() {
+            long elapsedMillis = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
+            if (elapsedMillis <= 0L) {
+                return latestPercent.get();
+            }
+            return Math.max(0, Math.min(96, (int) Math.ceil((96d * elapsedMillis) / Math.max(1L, expectedMillis))));
+        }
+
+        @Override
+        public void close() {
             heartbeat.cancel(false);
+            recordRandomRunMillis(java.time.Duration.between(startedAt, Instant.now()).toMillis());
         }
     }
 
@@ -194,6 +339,7 @@ public class AdminNotificationService {
             String detail,
             Instant startedAt) {
         synchronized (runtimeState) {
+            long elapsedMillis = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
             runtimeState.setCurrentStatus("running");
             runtimeState.setProgressPercent(Math.max(0, Math.min(99, progressPercent)));
             runtimeState.setProgressDetail(safeText(detail).isEmpty() ? "Scheduled process is running." : safeText(detail));
@@ -201,28 +347,16 @@ public class AdminNotificationService {
                     ? startedAt.toString()
                     : runtimeState.getStartedAtIso());
             runtimeState.setFinishedAtIso("");
-            runtimeState.setDurationMillis(0L);
+            runtimeState.setDurationMillis(elapsedMillis);
             notificationRuleRegistryService.broadcastRunProgress(ruleKey, runtimeState, runtimeHistory, adminUserId);
         }
     }
 
-    private NotificationRuleConfig.RunState copyRunState(NotificationRuleConfig.RunState source) {
-        NotificationRuleConfig.RunState copy = new NotificationRuleConfig.RunState();
-        if (source == null) {
-            return copy;
-        }
-        copy.setCurrentStatus(source.getCurrentStatus());
-        copy.setProgressPercent(source.getProgressPercent());
-        copy.setProgressDetail(source.getProgressDetail());
-        copy.setStartedAtIso(source.getStartedAtIso());
-        copy.setFinishedAtIso(source.getFinishedAtIso());
-        copy.setDurationMillis(source.getDurationMillis());
-        copy.setLastRunAtIso(source.getLastRunAtIso());
-        copy.setLastRunStatus(source.getLastRunStatus());
-        copy.setLastRunDetail(source.getLastRunDetail());
-        copy.setLastRunCount(source.getLastRunCount());
-        copy.setLastRunUser(source.getLastRunUser());
-        return copy;
+    private String startedAtIso(NotificationRuleConfig startedRule) {
+        String startedAtIso = safeText(startedRule == null || startedRule.getRunState() == null
+                ? null
+                : startedRule.getRunState().getStartedAtIso());
+        return startedAtIso.isEmpty() ? Instant.now().toString() : startedAtIso;
     }
 
     private int affectedUsers(List<GeneratedEventPlan> plans) {

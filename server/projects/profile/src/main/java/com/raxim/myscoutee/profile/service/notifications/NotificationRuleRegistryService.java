@@ -107,18 +107,23 @@ public class NotificationRuleRegistryService {
     }
 
     public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
+        return beginRun(ruleKey, detail, actorUserId, Instant.now());
+    }
+
+    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId, Instant startedAt) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
         }
         String nowIso = Instant.now().toString();
+        String startedAtIso = (startedAt == null ? Instant.now() : startedAt).toString();
         NotificationRuleConfig.RunState runState = rule.getRunState() == null
                 ? new NotificationRuleConfig.RunState()
                 : rule.getRunState();
         runState.setCurrentStatus("running");
         runState.setProgressPercent(0);
         runState.setProgressDetail(firstNonBlank(detail, "Starting scheduled process."));
-        runState.setStartedAtIso(nowIso);
+        runState.setStartedAtIso(startedAtIso);
         runState.setFinishedAtIso("");
         runState.setDurationMillis(0L);
         rule.setRunState(runState);
@@ -130,6 +135,16 @@ public class NotificationRuleRegistryService {
     }
 
     public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
+        return recordRun(ruleKey, count, status, detail, actorUserId, null);
+    }
+
+    public NotificationRuleConfig recordRun(
+            String ruleKey,
+            int count,
+            String status,
+            String detail,
+            String actorUserId,
+            Instant startedAtOverride) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
@@ -138,7 +153,9 @@ public class NotificationRuleRegistryService {
         NotificationRuleConfig.RunState runState = rule.getRunState() == null
                 ? new NotificationRuleConfig.RunState()
                 : rule.getRunState();
-        String startedAtIso = firstNonBlank(runState.getStartedAtIso(), finishedAtIso);
+        String startedAtIso = startedAtOverride == null
+                ? firstNonBlank(runState.getStartedAtIso(), finishedAtIso)
+                : startedAtOverride.toString();
         Instant startedAt = parseInstant(startedAtIso);
         Instant finishedAt = parseInstant(finishedAtIso);
         long durationMillis = startedAt == null || finishedAt == null

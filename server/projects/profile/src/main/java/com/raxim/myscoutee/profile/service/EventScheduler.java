@@ -150,6 +150,9 @@ public class EventScheduler {
         }
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> batchSnapshotsByEventId =
                 activitiesMembersService.buildBatchEventSnapshots(candidateEventsById);
+        if (batchSnapshotsByEventId == null) {
+            batchSnapshotsByEventId = Map.of();
+        }
         if (!candidateEventsById.isEmpty()) {
             observedQueries.addAndGet(2);
         }
@@ -657,6 +660,9 @@ public List<InviteBatchPlan> generatePriorityPlans() {
                         .filter(StringUtils::hasText)
                         .toList())
                 : Map.of();
+        if (snapshotsByGroupId == null) {
+            snapshotsByGroupId = Map.of();
+        }
         if (preserveAnchors && !snapshotsByGroupId.isEmpty()) {
             incrementObservedQueries(observedQueries);
         }
@@ -822,6 +828,9 @@ public List<InviteBatchPlan> generatePriorityPlans() {
                         .map(this::normalizeId)
                         .filter(StringUtils::hasText)
                         .toList());
+        if (snapshotsByPlannedGroupId == null) {
+            snapshotsByPlannedGroupId = Map.of();
+        }
         if (!snapshotsByPlannedGroupId.isEmpty()) {
             incrementObservedQueries(observedQueries);
         }
