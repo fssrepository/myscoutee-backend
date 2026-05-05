@@ -27,7 +27,6 @@ public class NotificationRuleRegistryService {
     public static final String RULE_CHAT_MESSAGE = "chat-message";
     public static final String RULE_EVENT_INVITATION = "event-invitation";
     public static final String RULE_EVENT_FEEDBACK_READY = "event-feedback-ready";
-    public static final String RULE_TICKET_SWAP_GRACE_CANCELLED = "ticket-swap-grace-cancelled";
     public static final String RULE_PROMOTIONAL_EMAIL_PLANNER = "promotional-email-planner";
     public static final String RULE_EMAIL_OUTBOX_DELIVERY = "email-outbox-delivery";
     public static final String RULE_EVENT_RANDOM_GROUPS = "event-random-groups";
@@ -222,19 +221,6 @@ public class NotificationRuleRegistryService {
                         "UTC",
                         "Feedback is open for @event_title",
                         "Share feedback for @event_title while it is fresh.",
-                        "/game"),
-                actionRule(
-                        RULE_TICKET_SWAP_GRACE_CANCELLED,
-                        "Ticket swap grace cancellation",
-                        "Action",
-                        "ticket.swap.grace.cancelled",
-                        "Fixed grace-window rule for future ticket replacement flows.",
-                        40,
-                        false,
-                        true,
-                        false,
-                        "Ticket spot released",
-                        "A ticket was cancelled close to the event start and can be reassigned.",
                         "/game"),
                 scheduledRule(
                         RULE_PROMOTIONAL_EMAIL_PLANNER,
