@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.email;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,7 +17,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 @Service
 public class PromotionalEmailRuleEvaluator {
     public boolean qualifies(Users user, EmailCampaignRule rule) {
-        if (user == null || rule == null || !isActiveProfile(user) || !StringUtils.hasText(safeText(user.getEmail()))) {
+        if (user == null || rule == null || !isActiveProfile(user)) {
             return false;
         }
         if (Boolean.TRUE.equals(rule.getRequirePublicProfile()) && !"public".equalsIgnoreCase(resolveProfileStatus(user))) {
@@ -26,6 +27,9 @@ public class PromotionalEmailRuleEvaluator {
             return false;
         }
         if (!matchesCountry(user, rule)) {
+            return false;
+        }
+        if (!matchesInactivity(user, rule)) {
             return false;
         }
         Users.UserActivitiesRecord activities = user.getActivities();
@@ -85,9 +89,56 @@ public class PromotionalEmailRuleEvaluator {
     boolean hasRegisteredDevice(Users user) {
         return (user == null ? List.<Users.UserDeviceRecord>of() : user.getDevices()).stream()
                 .filter(device -> device != null)
+                .filter(device -> !Boolean.FALSE.equals(device.getNotificationsEnabled()))
                 .map(Users.UserDeviceRecord::getFirebaseToken)
                 .map(this::safeText)
                 .anyMatch(StringUtils::hasText);
+    }
+
+    private boolean matchesInactivity(Users user, EmailCampaignRule rule) {
+        Integer minInactiveDays = rule == null ? null : rule.getMinInactiveDays();
+        Integer maxInactiveDays = rule == null ? null : rule.getMaxInactiveDays();
+        if (minInactiveDays == null && maxInactiveDays == null) {
+            return true;
+        }
+        Instant lastSeenAt = lastSeenAt(user);
+        if (lastSeenAt == null) {
+            return maxInactiveDays == null;
+        }
+        long inactiveDays = Math.max(0L, (Instant.now().toEpochMilli() - lastSeenAt.toEpochMilli()) / 86_400_000L);
+        if (minInactiveDays != null && inactiveDays < Math.max(0, minInactiveDays.intValue())) {
+            return false;
+        }
+        return maxInactiveDays == null || inactiveDays <= Math.max(0, maxInactiveDays.intValue());
+    }
+
+    private Instant lastSeenAt(Users user) {
+        Instant latest = null;
+        for (Users.UserDeviceRecord device : user == null ? List.<Users.UserDeviceRecord>of() : user.getDevices()) {
+            Instant candidate = firstInstant(device == null ? null : device.getLastSeenAtIso(),
+                    device == null ? null : device.getLastRegisteredAtIso());
+            if (candidate != null && (latest == null || candidate.isAfter(latest))) {
+                latest = candidate;
+            }
+        }
+        return latest;
+    }
+
+    private Instant firstInstant(String first, String second) {
+        Instant parsedFirst = parseInstant(first);
+        return parsedFirst == null ? parseInstant(second) : parsedFirst;
+    }
+
+    private Instant parseInstant(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return null;
+        }
+        try {
+            return Instant.parse(normalized);
+        } catch (Exception exception) {
+            return null;
+        }
     }
 
     private boolean matchesCountry(Users user, EmailCampaignRule rule) {

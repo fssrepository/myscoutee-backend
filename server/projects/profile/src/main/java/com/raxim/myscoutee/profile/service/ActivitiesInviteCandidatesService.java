@@ -117,7 +117,8 @@ public class ActivitiesInviteCandidatesService {
                 signal.metAtIso(),
                 signal.metWhere(),
                 signal.relevance(),
-                resolveAvatarUrl(user));
+                resolveAvatarUrl(user),
+                homeUserProfileService.toGameCardUserDto(user));
     }
 
     private CandidateSignal toSignal(UserRate rate, Users candidate) {

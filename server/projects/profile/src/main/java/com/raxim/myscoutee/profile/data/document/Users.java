@@ -35,6 +35,7 @@ public class Users {
     private String hostTier;
     private String traitLabel;
     private Integer completion;
+    private Integer profileFormVersion;
     private String headline;
     private String about;
     private Double affinity;
@@ -42,6 +43,7 @@ public class Users {
     @Indexed(name = "users_partition_key", sparse = true)
     private String partitionKey;
     private List<String> images = new ArrayList<>();
+    private List<ProfileDetailGroupRecord> profileDetails = new ArrayList<>();
     private UserImpressionsRecord impressions;
     private String status;
     private String profileStatus;
@@ -202,6 +204,14 @@ public class Users {
         this.completion = completion;
     }
 
+    public Integer getProfileFormVersion() {
+        return profileFormVersion;
+    }
+
+    public void setProfileFormVersion(Integer profileFormVersion) {
+        this.profileFormVersion = profileFormVersion;
+    }
+
     public String getHeadline() {
         return headline;
     }
@@ -248,6 +258,14 @@ public class Users {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public List<ProfileDetailGroupRecord> getProfileDetails() {
+        return profileDetails;
+    }
+
+    public void setProfileDetails(List<ProfileDetailGroupRecord> profileDetails) {
+        this.profileDetails = profileDetails == null ? new ArrayList<>() : profileDetails;
     }
 
     public UserImpressionsRecord getImpressions() {
@@ -319,6 +337,18 @@ public class Users {
             Integer hosting,
             Integer tickets,
             Integer feedback) {
+    }
+
+    public record ProfileDetailGroupRecord(
+            String title,
+            List<ProfileDetailRowRecord> rows) {
+    }
+
+    public record ProfileDetailRowRecord(
+            String label,
+            String value,
+            String privacy,
+            List<String> options) {
     }
 
     public static class UserDeviceRecord {

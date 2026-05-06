@@ -1,10 +1,8 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -21,8 +19,6 @@ import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
-import com.raxim.myscoutee.profile.service.notifications.NotificationEmailQueueService;
-import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
 @Service
 public class EventInviteNotificationService {
@@ -33,32 +29,19 @@ public class EventInviteNotificationService {
 
     private final ConfigProperties configProperties;
     private final UsersRepository usersRepository;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
-    private final NotificationEmailQueueService notificationEmailQueueService;
 
     public EventInviteNotificationService(
             ConfigProperties configProperties,
-            UsersRepository usersRepository,
-            NotificationRuleRegistryService notificationRuleRegistryService,
-            NotificationEmailQueueService notificationEmailQueueService) {
+            UsersRepository usersRepository) {
         this.configProperties = configProperties;
         this.usersRepository = usersRepository;
-        this.notificationRuleRegistryService = notificationRuleRegistryService;
-        this.notificationEmailQueueService = notificationEmailQueueService;
     }
 
     public void notifyInvitees(ActivityEvent event, List<String> invitedUserIds) {
         if (event == null || invitedUserIds == null || invitedUserIds.isEmpty()) {
             return;
         }
-        boolean pushEnabled = configProperties.isFirebaseEnabled()
-                && notificationRuleRegistryService.isActionChannelEnabled(
-                        NotificationRuleRegistryService.RULE_EVENT_INVITATION,
-                        NotificationRuleRegistryService.CHANNEL_PUSH);
-        boolean emailEnabled = notificationRuleRegistryService.isActionChannelEnabled(
-                NotificationRuleRegistryService.RULE_EVENT_INVITATION,
-                NotificationRuleRegistryService.CHANNEL_EMAIL);
-        if (!pushEnabled && !emailEnabled) {
+        if (!configProperties.isFirebaseEnabled()) {
             return;
         }
 
@@ -75,7 +58,7 @@ public class EventInviteNotificationService {
             if (user == null) {
                 continue;
             }
-            if (pushEnabled && user.getDevices() != null && !user.getDevices().isEmpty()) {
+            if (user.getDevices() != null && !user.getDevices().isEmpty()) {
                 for (String firebaseToken : resolveFirebaseTokens(user)) {
                     try {
                         Message.Builder messageBuilder = Message.builder()
@@ -126,26 +109,7 @@ public class EventInviteNotificationService {
                     }
                 }
             }
-            if (emailEnabled) {
-                notificationEmailQueueService.queueActionEmail(
-                        NotificationRuleRegistryService.RULE_EVENT_INVITATION,
-                        userId,
-                        eventInviteVariables(event, eventTitle, body, clickUrl),
-                        eventTitle,
-                        body);
-            }
         }
-    }
-
-    private Map<String, String> eventInviteVariables(ActivityEvent event, String eventTitle, String body, String clickUrl) {
-        Map<String, String> variables = new LinkedHashMap<>();
-        variables.put("event_id", safeText(event.getSourceId()));
-        variables.put("event_title", safeText(eventTitle));
-        variables.put("event_body", safeText(body));
-        variables.put("event_location", safeText(event.getLocation()));
-        variables.put("event_start_at", safeText(event.getStartAtIso()));
-        variables.put("event_url", safeText(clickUrl));
-        return variables;
     }
 
     private Set<String> resolveFirebaseTokens(Users user) {

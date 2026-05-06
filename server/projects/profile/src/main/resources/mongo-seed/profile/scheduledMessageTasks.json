@@ -1,0 +1,27 @@
+[
+  {
+    "_id": "scheduled-task-user-profile-inactive-30d-template",
+    "syncKey": "scheduled-task-user-profile-inactive-30d-template",
+    "taskKey": "template:user-profile-inactive-30d",
+    "actionKey": "user.profile.inactivate-after-inactivity",
+    "userId": null,
+    "eventId": null,
+    "subEventId": null,
+    "notificationTemplateKey": null,
+    "emailTemplateKey": null,
+    "dueAtIso": "2099-01-01T00:00:00Z",
+    "status": "scheduled",
+    "suspended": true,
+    "lastRunAtIso": null,
+    "lastRunStatus": null,
+    "lastRunDetail": null,
+    "lastRunCount": null,
+    "payload": {
+      "inactiveDays": "30"
+    },
+    "createdDate": "2026-05-05T00:00:00Z",
+    "createdUser": "scheduled-task-seed",
+    "updatedDate": "2026-05-05T00:00:00Z",
+    "updatedUser": "scheduled-task-seed"
+  }
+]

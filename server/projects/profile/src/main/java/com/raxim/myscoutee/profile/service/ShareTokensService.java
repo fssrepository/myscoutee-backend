@@ -42,8 +42,11 @@ public class ShareTokensService {
     }
 
     public String createToken(ShareTokenCreateRequestDto request) {
-        String kind = normalizeText(request == null ? null : request.kind());
-        String entityId = normalizeText(request == null ? null : request.entityId());
+        if (request == null) {
+            return "";
+        }
+        String kind = normalizeText(request.kind());
+        String entityId = normalizeText(request.entityId());
         if ((!KIND_EVENT.equals(kind) && !KIND_ASSET.equals(kind) && !KIND_ADMIN_HELP.equals(kind))
                 || !StringUtils.hasText(entityId)) {
             return "";

@@ -39,11 +39,14 @@ public final class AdminDtos {
             String triggerKind,
             Boolean enabled,
             Boolean manualRunEnabled,
+            Boolean adminManageable,
             Integer priority,
             AdminNotificationChannelsDto channels,
             AdminNotificationTimingDto timing,
+            List<AdminNotificationScheduleSlotDto> scheduleSlots,
             AdminNotificationMessageDto message,
             AdminNotificationRunStateDto runState,
+            List<AdminNotificationRunHistoryEntryDto> runHistory,
             String updatedDate,
             String updatedUser) {}
     public record AdminNotificationChannelsDto(
@@ -58,7 +61,18 @@ public final class AdminDtos {
             Integer month,
             Integer dayOfMonth,
             String time,
-            String timezone) {}
+            String timezone,
+            String cronExpression) {}
+    public record AdminNotificationScheduleSlotDto(
+            String id,
+            String frequency,
+            String date,
+            Integer dayOfWeek,
+            String time,
+            String timezone,
+            String cronExpression,
+            String actionKey,
+            Boolean enabled) {}
     public record AdminNotificationMessageDto(
             String pushTitle,
             String pushBody,
@@ -67,11 +81,27 @@ public final class AdminDtos {
             String emailBody,
             String ctaPath) {}
     public record AdminNotificationRunStateDto(
+            String currentStatus,
+            Integer progressPercent,
+            String progressDetail,
+            String startedAtIso,
+            String finishedAtIso,
+            Long durationMillis,
             String lastRunAtIso,
             String lastRunStatus,
             String lastRunDetail,
             Integer lastRunCount,
             String lastRunUser) {}
+    public record AdminNotificationRunHistoryEntryDto(
+            String id,
+            String trigger,
+            String runnerUser,
+            String startedAtIso,
+            String finishedAtIso,
+            Long durationMillis,
+            Integer processedCount,
+            String status,
+            String detail) {}
     public record AdminNotificationTemplateOptionDto(
             String templateKey,
             String name,

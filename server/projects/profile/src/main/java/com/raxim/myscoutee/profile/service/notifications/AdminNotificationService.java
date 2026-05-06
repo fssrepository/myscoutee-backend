@@ -2,10 +2,20 @@ package com.raxim.myscoutee.profile.service.notifications;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
+import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
@@ -15,6 +25,8 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRul
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunHistoryEntryDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationScheduleSlotDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRunStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTemplateOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTimingDto;
@@ -22,36 +34,55 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
-import com.raxim.myscoutee.profile.service.email.PromotionalEmailDeliveryProcessor;
-import com.raxim.myscoutee.profile.service.email.PromotionalEmailPlannerService;
 
 @Service
 public class AdminNotificationService {
+    private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
+    private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
+    private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
+
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final EmailTemplatesRepository emailTemplatesRepository;
-    private final PromotionalEmailPlannerService promotionalEmailPlannerService;
-    private final PromotionalEmailDeliveryProcessor promotionalEmailDeliveryProcessor;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
+    private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
+    private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
+        Thread thread = new Thread(runnable, "admin-notification-runner");
+        thread.setDaemon(true);
+        return thread;
+    });
+    private final ScheduledExecutorService progressHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "admin-notification-progress");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public AdminNotificationService(
             NotificationRuleRegistryService notificationRuleRegistryService,
             EmailTemplatesRepository emailTemplatesRepository,
-            PromotionalEmailPlannerService promotionalEmailPlannerService,
-            PromotionalEmailDeliveryProcessor promotionalEmailDeliveryProcessor,
             EventScheduler eventScheduler,
             AdminModerationService adminModerationService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailTemplatesRepository = emailTemplatesRepository;
-        this.promotionalEmailPlannerService = promotionalEmailPlannerService;
-        this.promotionalEmailDeliveryProcessor = promotionalEmailDeliveryProcessor;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        runExecutor.shutdownNow();
+        progressHeartbeatExecutor.shutdownNow();
     }
 
     public AdminNotificationCenterStateDto state(String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
         return toState(notificationRuleRegistryService.rules());
+    }
+
+    public AdminNotificationRuleDto ruleState(String ruleKey, String adminUserId) {
+        adminModerationService.resolveAdminActor(adminUserId);
+        NotificationRuleConfig rule = notificationRuleRegistryService.findRule(ruleKey).orElse(null);
+        return rule == null ? null : toDto(rule);
     }
 
     public AdminNotificationCenterStateDto save(AdminNotificationRuleSaveRequestDto request) {
@@ -63,71 +94,284 @@ public class AdminNotificationService {
     }
 
     public AdminNotificationRuleRunResultDto run(String ruleKey, AdminNotificationRuleRunRequestDto request) {
-        AdminUserDto admin = adminModerationService.resolveAdminActor(request == null ? null : request.adminUserId());
         String normalizedRuleKey = safeText(ruleKey);
-        NotificationRuleConfig rule = notificationRuleRegistryService.findRule(normalizedRuleKey).orElse(null);
-        if (rule == null) {
-            return new AdminNotificationRuleRunResultDto(normalizedRuleKey, normalizedRuleKey, 0, "skipped",
-                    "Rule was not found.", Instant.now().toString());
-        }
-        String status = "completed";
-        String detail;
-        int affectedCount;
+        String requestedAdminUserId = safeText(request == null ? null : request.adminUserId());
+        RandomRunProgress progress = NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS.equals(normalizedRuleKey)
+                ? startRandomRunProgress(normalizedRuleKey, requestedAdminUserId)
+                : null;
+        NotificationRuleConfig rule = null;
         try {
+            AdminUserDto admin = adminModerationService.resolveAdminActor(requestedAdminUserId);
+            if (progress != null) {
+                progress.setAdminUserId(admin.id());
+            }
+            rule = notificationRuleRegistryService.findRule(normalizedRuleKey).orElse(null);
+            if (progress != null) {
+                progress.adoptRule(rule);
+            }
+            if (rule == null) {
+                if (progress != null) {
+                    progress.close();
+                }
+                return new AdminNotificationRuleRunResultDto(normalizedRuleKey, normalizedRuleKey, 0, "skipped",
+                        "Rule was not found.", Instant.now().toString());
+            }
+            NotificationRuleConfig startedRule = progress == null
+                    ? notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id())
+                    : notificationRuleRegistryService.beginRun(normalizedRuleKey, "Manual start requested.", admin.id(), progress.startedAt());
+            if (progress != null) {
+                progress.adoptRule(startedRule);
+            }
             switch (normalizedRuleKey) {
-                case NotificationRuleRegistryService.RULE_PROMOTIONAL_EMAIL_PLANNER -> {
-                    affectedCount = promotionalEmailPlannerService.planPendingPromotionalEmails();
-                    detail = "Queued promotional email outbox rows.";
-                }
-                case NotificationRuleRegistryService.RULE_EMAIL_OUTBOX_DELIVERY -> {
-                    affectedCount = promotionalEmailDeliveryProcessor.processPendingDeliveries();
-                    detail = "Processed due email outbox rows.";
-                }
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
-                    affectedCount = eventScheduler.generateRandomPlans().size();
-                    detail = "Generated random event group plans.";
-                }
-                case NotificationRuleRegistryService.RULE_EVENT_PRIORITY_INVITER -> {
-                    affectedCount = eventScheduler.generatePriorityPlans().stream()
-                            .mapToInt(this::countInvitees)
-                            .sum();
-                    detail = "Created priority invitation batches.";
-                }
-                case NotificationRuleRegistryService.RULE_EVENT_SCORE_LEADERBOARD -> {
-                    affectedCount = eventScheduler.generateScorePlans().size();
-                    detail = "Materialized score leaderboard stages.";
+                    RandomRunProgress runProgress = progress;
+                    runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress));
+                    String startedAtIso = startedAtIso(startedRule);
+                    return new AdminNotificationRuleRunResultDto(
+                            normalizedRuleKey,
+                            safeText(rule.getLabel()),
+                            0,
+                            "running",
+                            "Manual random event grouping started.",
+                            startedAtIso);
                 }
                 default -> {
-                    affectedCount = 0;
-                    status = "skipped";
-                    detail = "This rule is action driven and has no manual worker.";
+                    NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
+                            normalizedRuleKey,
+                            0,
+                            "skipped",
+                            "This rule is action driven and has no manual worker.",
+                            admin.id());
+                    String ranAtIso = updated == null || updated.getRunState() == null
+                            ? Instant.now().toString()
+                            : updated.getRunState().getLastRunAtIso();
+                    return new AdminNotificationRuleRunResultDto(
+                            normalizedRuleKey,
+                            safeText(rule.getLabel()),
+                            0,
+                            "skipped",
+                            "This rule is action driven and has no manual worker.",
+                            ranAtIso);
                 }
             }
         } catch (Exception exception) {
-            affectedCount = 0;
-            status = "failed";
-            detail = safeText(exception.getMessage());
+            if (progress != null) {
+                progress.close();
+            }
+            NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
+                    normalizedRuleKey,
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    requestedAdminUserId,
+                    progress == null ? null : progress.startedAt());
+            String ranAtIso = updated == null || updated.getRunState() == null
+                    ? Instant.now().toString()
+                    : updated.getRunState().getLastRunAtIso();
+            return new AdminNotificationRuleRunResultDto(
+                    normalizedRuleKey,
+                    safeText(rule == null ? normalizedRuleKey : rule.getLabel()),
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    ranAtIso);
         }
-        NotificationRuleConfig updated = notificationRuleRegistryService.recordRun(
-                normalizedRuleKey,
-                affectedCount,
-                status,
-                detail,
-                admin.id());
-        String ranAtIso = updated == null || updated.getRunState() == null
-                ? Instant.now().toString()
-                : updated.getRunState().getLastRunAtIso();
-        return new AdminNotificationRuleRunResultDto(
-                normalizedRuleKey,
-                safeText(rule.getLabel()),
-                affectedCount,
-                status,
-                detail,
-                ranAtIso);
     }
 
-    private int countInvitees(InviteBatchPlan plan) {
-        return plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size();
+    private void runRandomEventGroups(
+            String ruleKey,
+            String adminUserId,
+            NotificationRuleConfig startedRule,
+            RandomRunProgress progress) {
+        try {
+            if (progress != null) {
+                progress.setAdminUserId(adminUserId);
+                progress.adoptRule(startedRule);
+                progress.raiseTo(1, "Loading published random event records.");
+            }
+            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {
+                if (progress != null) {
+                    progress.raiseTo(planProgress.progressPercent(), planProgress.detail());
+                }
+            });
+            int affectedUsers = affectedUsers(plans);
+            String detail = "Generated " + plans.size() + " random group plan(s) for " + affectedUsers + " user(s).";
+            notificationRuleRegistryService.recordRun(
+                    ruleKey,
+                    affectedUsers,
+                    "completed",
+                    detail,
+                    adminUserId,
+                    progress == null ? null : progress.startedAt());
+        } catch (Exception exception) {
+            notificationRuleRegistryService.recordRun(
+                    ruleKey,
+                    0,
+                    "failed",
+                    safeText(exception.getMessage()),
+                    adminUserId,
+                    progress == null ? null : progress.startedAt());
+        } finally {
+            if (progress != null) {
+                progress.close();
+            }
+        }
+    }
+
+    private RandomRunProgress startRandomRunProgress(String ruleKey, String adminUserId) {
+        return new RandomRunProgress(ruleKey, adminUserId);
+    }
+
+    private void recordRandomRunMillis(long elapsedMillis) {
+        if (elapsedMillis <= 0L) {
+            return;
+        }
+        int observedMillis = (int) clampExpectedRandomRunMillis(Math.round(elapsedMillis * 1.25d));
+        expectedRandomRunMillis.updateAndGet(current -> observedMillis > current
+                ? observedMillis
+                : (int) clampExpectedRandomRunMillis(Math.round((current * 0.8d) + (observedMillis * 0.2d))));
+    }
+
+    private long clampExpectedRandomRunMillis(long value) {
+        return Math.max(MIN_EXPECTED_RANDOM_RUN_MILLIS, Math.min(MAX_EXPECTED_RANDOM_RUN_MILLIS, value));
+    }
+
+    private class RandomRunProgress implements AutoCloseable {
+        private final String ruleKey;
+        private final Instant startedAt = Instant.now();
+        private final NotificationRuleConfig.RunState runtimeState = new NotificationRuleConfig.RunState();
+        private final long expectedMillis = clampExpectedRandomRunMillis(expectedRandomRunMillis.get());
+        private final AtomicInteger latestPercent = new AtomicInteger(0);
+        private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual random event grouping started.");
+        private volatile String adminUserId;
+        private volatile List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory = List.of();
+        private final ScheduledFuture<?> heartbeat;
+
+        RandomRunProgress(String ruleKey, String adminUserId) {
+            this.ruleKey = safeText(ruleKey);
+            this.adminUserId = safeText(adminUserId);
+            runtimeState.setCurrentStatus("running");
+            runtimeState.setProgressPercent(0);
+            runtimeState.setProgressDetail(latestDetail.get());
+            runtimeState.setStartedAtIso(startedAt.toString());
+            runtimeState.setFinishedAtIso("");
+            runtimeState.setDurationMillis(0L);
+            heartbeat = progressHeartbeatExecutor.scheduleAtFixedRate(this::tick, 0, 100, TimeUnit.MILLISECONDS);
+        }
+
+        Instant startedAt() {
+            return startedAt;
+        }
+
+        void setAdminUserId(String adminUserId) {
+            this.adminUserId = safeText(adminUserId);
+        }
+
+        void adoptRule(NotificationRuleConfig rule) {
+            if (rule == null) {
+                return;
+            }
+            runtimeHistory = rule.getRunHistory() == null ? List.of() : List.copyOf(rule.getRunHistory());
+            NotificationRuleConfig.RunState source = rule.getRunState();
+            if (source == null) {
+                return;
+            }
+            synchronized (runtimeState) {
+                runtimeState.setLastRunAtIso(source.getLastRunAtIso());
+                runtimeState.setLastRunStatus(source.getLastRunStatus());
+                runtimeState.setLastRunDetail(source.getLastRunDetail());
+                runtimeState.setLastRunCount(source.getLastRunCount());
+                runtimeState.setLastRunUser(source.getLastRunUser());
+                runtimeState.setCurrentStatus("running");
+                runtimeState.setStartedAtIso(startedAt.toString());
+                runtimeState.setFinishedAtIso("");
+                runtimeState.setProgressPercent(latestPercent.get());
+                runtimeState.setProgressDetail(latestDetail.get());
+            }
+        }
+
+        void raiseTo(int progressPercent, String detail) {
+            latestPercent.updateAndGet(current -> Math.max(current, Math.max(0, Math.min(99, progressPercent))));
+            String safeDetail = safeText(detail);
+            if (!safeDetail.isEmpty()) {
+                latestDetail.set(safeDetail);
+            }
+        }
+
+        private void tick() {
+            try {
+                latestPercent.updateAndGet(current -> Math.max(current, timedProgressPercent()));
+                long elapsedSeconds = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toSeconds());
+                publishInMemoryRunProgress(
+                        ruleKey,
+                        adminUserId,
+                        runtimeState,
+                        runtimeHistory,
+                        latestPercent.get(),
+                        latestDetail.get() + " Running for " + elapsedSeconds + "s.",
+                        startedAt);
+            } catch (Exception ignored) {
+                // Keep the progress heartbeat alive; the worker records the final run status.
+            }
+        }
+
+        private int timedProgressPercent() {
+            long elapsedMillis = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
+            if (elapsedMillis <= 0L) {
+                return latestPercent.get();
+            }
+            return Math.max(0, Math.min(96, (int) Math.ceil((96d * elapsedMillis) / Math.max(1L, expectedMillis))));
+        }
+
+        @Override
+        public void close() {
+            heartbeat.cancel(false);
+            recordRandomRunMillis(java.time.Duration.between(startedAt, Instant.now()).toMillis());
+        }
+    }
+
+    private void publishInMemoryRunProgress(
+            String ruleKey,
+            String adminUserId,
+            NotificationRuleConfig.RunState runtimeState,
+            List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory,
+            int progressPercent,
+            String detail,
+            Instant startedAt) {
+        synchronized (runtimeState) {
+            long elapsedMillis = Math.max(0L, java.time.Duration.between(startedAt, Instant.now()).toMillis());
+            runtimeState.setCurrentStatus("running");
+            runtimeState.setProgressPercent(Math.max(0, Math.min(99, progressPercent)));
+            runtimeState.setProgressDetail(safeText(detail).isEmpty() ? "Scheduled process is running." : safeText(detail));
+            runtimeState.setStartedAtIso(safeText(runtimeState.getStartedAtIso()).isEmpty()
+                    ? startedAt.toString()
+                    : runtimeState.getStartedAtIso());
+            runtimeState.setFinishedAtIso("");
+            runtimeState.setDurationMillis(elapsedMillis);
+            notificationRuleRegistryService.broadcastRunProgress(ruleKey, runtimeState, runtimeHistory, adminUserId);
+        }
+    }
+
+    private String startedAtIso(NotificationRuleConfig startedRule) {
+        String startedAtIso = safeText(startedRule == null || startedRule.getRunState() == null
+                ? null
+                : startedRule.getRunState().getStartedAtIso());
+        return startedAtIso.isEmpty() ? Instant.now().toString() : startedAtIso;
+    }
+
+    private int affectedUsers(List<GeneratedEventPlan> plans) {
+        Set<String> userIds = new LinkedHashSet<>();
+        for (GeneratedEventPlan plan : plans == null ? List.<GeneratedEventPlan>of() : plans) {
+            if (plan == null || plan.memberUserIds() == null) {
+                continue;
+            }
+            for (String userId : plan.memberUserIds()) {
+                if (safeText(userId).length() > 0) {
+                    userIds.add(safeText(userId));
+                }
+            }
+        }
+        return userIds.size();
     }
 
     private AdminNotificationCenterStateDto toState(List<NotificationRuleConfig> rules) {
@@ -162,6 +406,7 @@ public class AdminNotificationService {
                 rule.getTriggerKind(),
                 rule.getEnabled(),
                 rule.getManualRunEnabled(),
+                adminManageable(rule),
                 rule.getPriority(),
                 new AdminNotificationChannelsDto(
                         channels.getPushEnabled(),
@@ -175,7 +420,11 @@ public class AdminNotificationService {
                         timing.getMonth(),
                         timing.getDayOfMonth(),
                         timing.getTime(),
-                        timing.getTimezone()),
+                        timing.getTimezone(),
+                        timing.getCronExpression()),
+                rule.getScheduleSlots() == null ? List.of() : rule.getScheduleSlots().stream()
+                        .map(this::toScheduleSlotDto)
+                        .toList(),
                 new AdminNotificationMessageDto(
                         message.getPushTitle(),
                         message.getPushBody(),
@@ -184,11 +433,20 @@ public class AdminNotificationService {
                         message.getEmailBody(),
                         message.getCtaPath()),
                 new AdminNotificationRunStateDto(
+                        runState.getCurrentStatus(),
+                        runState.getProgressPercent(),
+                        runState.getProgressDetail(),
+                        runState.getStartedAtIso(),
+                        runState.getFinishedAtIso(),
+                        runState.getDurationMillis(),
                         runState.getLastRunAtIso(),
                         runState.getLastRunStatus(),
                         runState.getLastRunDetail(),
                         runState.getLastRunCount(),
                         runState.getLastRunUser()),
+                rule.getRunHistory() == null ? List.of() : rule.getRunHistory().stream()
+                        .map(this::toRunHistoryEntry)
+                        .toList(),
                 rule.getUpdatedDate(),
                 rule.getUpdatedUser());
     }
@@ -207,6 +465,7 @@ public class AdminNotificationService {
         rule.setTriggerKind(dto.triggerKind());
         rule.setEnabled(dto.enabled());
         rule.setManualRunEnabled(dto.manualRunEnabled());
+        rule.setAdminManageable(dto.adminManageable());
         rule.setPriority(dto.priority());
         AdminNotificationChannelsDto sourceChannels = dto.channels();
         NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
@@ -224,7 +483,11 @@ public class AdminNotificationService {
         timing.setDayOfMonth(sourceTiming == null ? null : sourceTiming.dayOfMonth());
         timing.setTime(sourceTiming == null ? null : sourceTiming.time());
         timing.setTimezone(sourceTiming == null ? null : sourceTiming.timezone());
+        timing.setCronExpression(sourceTiming == null ? null : sourceTiming.cronExpression());
         rule.setTiming(timing);
+        rule.setScheduleSlots(dto.scheduleSlots() == null ? List.of() : dto.scheduleSlots().stream()
+                .map(this::toScheduleSlotDocument)
+                .toList());
         AdminNotificationMessageDto sourceMessage = dto.message();
         NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
         message.setPushTitle(sourceMessage == null ? null : sourceMessage.pushTitle());
@@ -245,7 +508,57 @@ public class AdminNotificationService {
                 template.getDescription());
     }
 
+    private AdminNotificationScheduleSlotDto toScheduleSlotDto(NotificationRuleConfig.ScheduleSlot slot) {
+        return new AdminNotificationScheduleSlotDto(
+                slot.getId(),
+                slot.getFrequency(),
+                slot.getDate(),
+                slot.getDayOfWeek(),
+                slot.getTime(),
+                slot.getTimezone(),
+                slot.getCronExpression(),
+                slot.getActionKey(),
+                slot.getEnabled());
+    }
+
+    private NotificationRuleConfig.ScheduleSlot toScheduleSlotDocument(AdminNotificationScheduleSlotDto dto) {
+        NotificationRuleConfig.ScheduleSlot slot = new NotificationRuleConfig.ScheduleSlot();
+        if (dto == null) {
+            return slot;
+        }
+        slot.setId(dto.id());
+        slot.setFrequency(dto.frequency());
+        slot.setDate(dto.date());
+        slot.setDayOfWeek(dto.dayOfWeek());
+        slot.setTime(dto.time());
+        slot.setTimezone(dto.timezone());
+        slot.setCronExpression(dto.cronExpression());
+        slot.setActionKey(dto.actionKey());
+        slot.setEnabled(dto.enabled());
+        return slot;
+    }
+
+    private AdminNotificationRunHistoryEntryDto toRunHistoryEntry(NotificationRuleConfig.RunHistoryEntry entry) {
+        return new AdminNotificationRunHistoryEntryDto(
+                entry.getId(),
+                entry.getTrigger(),
+                entry.getRunnerUser(),
+                entry.getStartedAtIso(),
+                entry.getFinishedAtIso(),
+                entry.getDurationMillis(),
+                entry.getProcessedCount(),
+                entry.getStatus(),
+                entry.getDetail());
+    }
+
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private Boolean adminManageable(NotificationRuleConfig rule) {
+        if (rule != null && rule.getAdminManageable() != null) {
+            return Boolean.TRUE.equals(rule.getAdminManageable());
+        }
+        return NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS.equals(safeText(rule == null ? null : rule.getRuleKey()));
     }
 }

@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -18,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
-
-import org.bson.types.ObjectId;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -447,8 +446,17 @@ public class ActivitiesChatService {
                 continue;
             }
             ActivityChat baseChat = chatsWithSameId.get(0);
+            String chatId = normalizeId(baseChat.getChatId());
+            if (!StringUtils.hasText(chatId)) {
+                continue;
+            }
             Set<String> ownerUserIds = new LinkedHashSet<>();
             Set<String> participantUserIds = new LinkedHashSet<>();
+            for (ActivityChat chat : activityChatsRepository.findByChatId(chatId)) {
+                if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
+                    ownerUserIds.add(chat.getOwnerUserId().trim());
+                }
+            }
             for (ActivityChat chat : chatsWithSameId) {
                 if (StringUtils.hasText(chat.getOwnerUserId())) {
                     ownerUserIds.add(chat.getOwnerUserId().trim());
@@ -470,6 +478,7 @@ public class ActivitiesChatService {
                 ActivityChat createdChat = createOwnerCopy(baseChat, participantUserId);
                 created.add(createdChat);
                 chatsWithSameId.add(createdChat);
+                ownerUserIds.add(participantUserId);
             }
         }
         if (!created.isEmpty()) {
@@ -546,6 +555,14 @@ public class ActivitiesChatService {
         }
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users user = findUser(userId);
+        ChatMessageRecord targetMessageCandidate = findMessageById(snapshot.viewerChat(), normalizedMessageId);
+        if (targetMessageCandidate == null) {
+            targetMessageCandidate = findMessageById(snapshot.chatDocuments(), normalizedMessageId);
+        }
+        if (targetMessageCandidate == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found.");
+        }
+        final ChatMessageRecord targetMessage = targetMessageCandidate;
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         ChatMessageRecord updatedViewerMessage = null;
         for (ActivityChat existing : snapshot.chatDocuments()) {
@@ -554,7 +571,7 @@ public class ActivitiesChatService {
             boolean found = false;
             for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
                 ChatMessageRecord nextMessage = copyMessageRecord(existingMessage);
-                if (normalizedMessageId.equals(normalizeId(nextMessage.getId()))) {
+                if (isSameStoredChatMessage(nextMessage, targetMessage, normalizedMessageId)) {
                     mutator.apply(nextMessage, userId, user);
                     found = true;
                     if (userId.equals(normalizeId(existing.getOwnerUserId()))) {
@@ -562,9 +579,6 @@ public class ActivitiesChatService {
                     }
                 }
                 nextMessages.add(nextMessage);
-            }
-            if (!found) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found.");
             }
             next.setMessages(nextMessages);
             ChatMessageRecord latest = latestMessage(nextMessages);
@@ -579,15 +593,86 @@ public class ActivitiesChatService {
         activityChatsRepository.saveAll(updatedDocuments);
         if (updatedViewerMessage == null) {
             updatedViewerMessage = updatedDocuments.stream()
-                    .filter(chat -> userId.equals(normalizeId(chat.getOwnerUserId())))
                     .flatMap(chat -> safeMessages(chat.getMessages()).stream())
-                    .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                    .filter(message -> isSameStoredChatMessage(message, targetMessage, normalizedMessageId))
                     .findFirst()
                     .map(this::copyMessageRecord)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found."));
         }
         publishChatEvent(toStreamEvent(snapshot.chatId(), updatedViewerMessage));
         return toMessageDto(updatedViewerMessage, userId);
+    }
+
+    private ChatMessageRecord findMessageById(ActivityChat chat, String messageId) {
+        String normalizedMessageId = normalizeId(messageId);
+        if (chat == null || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        return safeMessages(chat.getMessages()).stream()
+                .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
+                .findFirst()
+                .map(this::copyMessageRecord)
+                .orElse(null);
+    }
+
+    private ChatMessageRecord findMessageById(List<ActivityChat> chats, String messageId) {
+        if (chats == null || chats.isEmpty()) {
+            return null;
+        }
+        for (ActivityChat chat : chats) {
+            ChatMessageRecord message = findMessageById(chat, messageId);
+            if (message != null) {
+                return message;
+            }
+        }
+        return null;
+    }
+
+    private boolean isSameStoredChatMessage(
+            ChatMessageRecord candidate,
+            ChatMessageRecord target,
+            String messageId) {
+        String normalizedMessageId = normalizeId(messageId);
+        if (candidate == null
+                || target == null
+                || !StringUtils.hasText(normalizedMessageId)
+                || !normalizedMessageId.equals(normalizeId(candidate.getId()))
+                || !normalizedMessageId.equals(normalizeId(target.getId()))) {
+            return false;
+        }
+
+        String candidateClientId = normalizeId(candidate.getClientId());
+        String targetClientId = normalizeId(target.getClientId());
+        if (StringUtils.hasText(candidateClientId)
+                && StringUtils.hasText(targetClientId)
+                && !candidateClientId.equals(targetClientId)) {
+            return false;
+        }
+
+        String candidateSenderId = messageSenderId(candidate);
+        String targetSenderId = messageSenderId(target);
+        if (StringUtils.hasText(candidateSenderId)
+                && StringUtils.hasText(targetSenderId)
+                && !candidateSenderId.equals(targetSenderId)) {
+            return false;
+        }
+
+        String candidateSentAtIso = normalizeText(candidate.getSentAtIso());
+        String targetSentAtIso = normalizeText(target.getSentAtIso());
+        if (StringUtils.hasText(candidateSentAtIso) && StringUtils.hasText(targetSentAtIso)) {
+            return candidateSentAtIso.equals(targetSentAtIso);
+        }
+
+        if (StringUtils.hasText(candidateClientId) && StringUtils.hasText(targetClientId)) {
+            return candidateClientId.equals(targetClientId);
+        }
+
+        return normalizeText(candidate.getText()).equals(normalizeText(target.getText()));
+    }
+
+    private String messageSenderId(ChatMessageRecord message) {
+        ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
+        return senderAvatar == null ? "" : normalizeId(senderAvatar.getId());
     }
 
     private void requireOwnMessage(ChatMessageRecord message, String userId) {
@@ -671,6 +756,7 @@ public class ActivitiesChatService {
     private ChatMessageDto toMessageDto(ChatMessageRecord message, String viewerUserId) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
+        Users sender = findUser(senderId);
         boolean deleted = StringUtils.hasText(message == null ? "" : message.getDeletedAtIso());
         return new ChatMessageDto(
                 message == null ? "" : safeText(message.getId()),
@@ -679,6 +765,7 @@ public class ActivitiesChatService {
                 message == null ? "" : safeText(message.getSender()),
                 senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials()),
                 senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
+                resolveUserImageUrl(sender),
                 deleted ? "" : message == null ? "" : safeText(message.getText()),
                 message == null ? Instant.now().toString() : safeText(message.getSentAtIso()),
                 Objects.equals(senderId, normalizeId(viewerUserId)),
@@ -763,10 +850,12 @@ public class ActivitiesChatService {
     }
 
     private ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record) {
+        String userId = record == null ? "" : safeText(record.getId());
         return new ChatReadAvatarDto(
-                record == null ? "" : safeText(record.getId()),
+                userId,
                 record == null ? "" : safeText(record.getInitials()),
-                record == null ? "man" : normalizeGender(record.getGender()));
+                record == null ? "man" : normalizeGender(record.getGender()),
+                resolveUserImageUrl(findUser(userId)));
     }
 
     private ChatMessageRecord buildMessageRecord(
@@ -803,6 +892,7 @@ public class ActivitiesChatService {
                 safeText(messageRecord.getSender()),
                 senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
                 senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
+                resolveUserImageUrl(findUser(senderAvatar == null ? "" : safeText(senderAvatar.getId()))),
                 safeText(messageRecord.getText()),
                 safeText(messageRecord.getSentAtIso()),
                 safeReadBy(messageRecord.getReadBy()).stream()
@@ -1145,6 +1235,17 @@ public class ActivitiesChatService {
         return normalizeGender(user == null ? null : user.getGender());
     }
 
+    private String resolveUserImageUrl(Users user) {
+        if (user == null || user.getImages() == null) {
+            return "";
+        }
+        return user.getImages().stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse("");
+    }
+
     private String buildInitials(String value) {
         String normalized = safeText(value);
         if (!StringUtils.hasText(normalized)) {
@@ -1336,7 +1437,8 @@ public class ActivitiesChatService {
     }
 
     private String buildMongoId(String ownerUserId, String chatId) {
-        return new ObjectId().toHexString();
+        String stableKey = normalizeId(ownerUserId) + "|" + normalizeId(chatId);
+        return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
     }
 
     private record ChatSummaryProjection(

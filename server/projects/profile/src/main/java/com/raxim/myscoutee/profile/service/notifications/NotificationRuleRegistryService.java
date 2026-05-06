@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.DayOfWeek;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -24,31 +26,21 @@ import com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository;
 
 @Service
 public class NotificationRuleRegistryService {
-    public static final String RULE_CHAT_MESSAGE = "chat-message";
-    public static final String RULE_EVENT_INVITATION = "event-invitation";
-    public static final String RULE_EVENT_FEEDBACK_READY = "event-feedback-ready";
-    public static final String RULE_TICKET_SWAP_GRACE_CANCELLED = "ticket-swap-grace-cancelled";
-    public static final String RULE_PROMOTIONAL_EMAIL_PLANNER = "promotional-email-planner";
-    public static final String RULE_EMAIL_OUTBOX_DELIVERY = "email-outbox-delivery";
     public static final String RULE_EVENT_RANDOM_GROUPS = "event-random-groups";
-    public static final String RULE_EVENT_PRIORITY_INVITER = "event-priority-inviter";
-    public static final String RULE_EVENT_SCORE_LEADERBOARD = "event-score-leaderboard";
-
-    public static final String CHANNEL_PUSH = "push";
-    public static final String CHANNEL_EMAIL = "email";
-    public static final String CHANNEL_IN_APP = "in-app";
-    public static final String CHANNEL_SUPPORT_CHAT = "support-chat";
 
     private static final String SYSTEM_USER = "notification-registry";
+    private static final int RUN_HISTORY_LIMIT = 12;
     private static final Set<String> SCHEDULED_EVENT_RULES = Set.of(
-            RULE_EVENT_RANDOM_GROUPS,
-            RULE_EVENT_PRIORITY_INVITER,
-            RULE_EVENT_SCORE_LEADERBOARD);
+            RULE_EVENT_RANDOM_GROUPS);
 
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
+    private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
 
-    public NotificationRuleRegistryService(NotificationRuleConfigsRepository notificationRuleConfigsRepository) {
+    public NotificationRuleRegistryService(
+            NotificationRuleConfigsRepository notificationRuleConfigsRepository,
+            AdminNotificationSocketSessionRegistry socketSessionRegistry) {
         this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
+        this.socketSessionRegistry = socketSessionRegistry;
     }
 
     public List<NotificationRuleConfig> rules() {
@@ -61,24 +53,6 @@ public class NotificationRuleRegistryService {
         return notificationRuleConfigsRepository.findByRuleKey(safeText(ruleKey));
     }
 
-    public boolean isActionChannelEnabled(String ruleKey, String channel) {
-        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
-        if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
-            return false;
-        }
-        if (rule.getChannels() == null) {
-            return false;
-        }
-        String normalizedChannel = safeText(channel).toLowerCase();
-        return switch (normalizedChannel) {
-            case CHANNEL_PUSH -> Boolean.TRUE.equals(rule.getChannels().getPushEnabled());
-            case CHANNEL_EMAIL -> Boolean.TRUE.equals(rule.getChannels().getEmailEnabled());
-            case CHANNEL_IN_APP -> Boolean.TRUE.equals(rule.getChannels().getInAppEnabled());
-            case CHANNEL_SUPPORT_CHAT -> Boolean.TRUE.equals(rule.getChannels().getSupportChatEnabled());
-            default -> false;
-        };
-    }
-
     public boolean shouldRunScheduledRule(String ruleKey, Instant now) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
@@ -89,10 +63,22 @@ public class NotificationRuleRegistryService {
             return false;
         }
         NotificationRuleConfig.Timing timing = rule.getTiming() == null ? new NotificationRuleConfig.Timing() : rule.getTiming();
-        String mode = safeText(timing.getMode()).toLowerCase();
         Instant resolvedNow = now == null ? Instant.now() : now;
+        List<NotificationRuleConfig.ScheduleSlot> slots = normalizeScheduleSlots(rule.getScheduleSlots(), timing);
+        if (!slots.isEmpty()) {
+            Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
+            for (NotificationRuleConfig.ScheduleSlot slot : slots) {
+                Instant occurrence = slotOccurrence(slot, resolvedNow);
+                if (occurrence != null && !resolvedNow.isBefore(occurrence) && (lastRunAt == null || lastRunAt.isBefore(occurrence))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        String mode = safeText(timing.getMode()).toLowerCase();
         if ("interval".equals(mode)) {
-            int intervalMinutes = Math.max(1, valueOrDefault(timing.getIntervalMinutes(), 60));
+            int intervalMinutes = intervalMinutes(timing);
             Instant lastRunAt = parseInstant(rule.getRunState() == null ? null : rule.getRunState().getLastRunAtIso());
             return lastRunAt == null || !resolvedNow.isBefore(lastRunAt.plusSeconds(intervalMinutes * 60L));
         }
@@ -120,7 +106,81 @@ public class NotificationRuleRegistryService {
         return false;
     }
 
+    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId) {
+        return beginRun(ruleKey, detail, actorUserId, Instant.now());
+    }
+
+    public NotificationRuleConfig beginRun(String ruleKey, String detail, String actorUserId, Instant startedAt) {
+        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
+        if (rule == null) {
+            return null;
+        }
+        String nowIso = Instant.now().toString();
+        String startedAtIso = (startedAt == null ? Instant.now() : startedAt).toString();
+        NotificationRuleConfig.RunState runState = rule.getRunState() == null
+                ? new NotificationRuleConfig.RunState()
+                : rule.getRunState();
+        runState.setCurrentStatus("running");
+        runState.setProgressPercent(0);
+        runState.setProgressDetail(firstNonBlank(detail, "Starting scheduled process."));
+        runState.setStartedAtIso(startedAtIso);
+        runState.setFinishedAtIso("");
+        runState.setDurationMillis(0L);
+        rule.setRunState(runState);
+        rule.setUpdatedDate(nowIso);
+        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        return saved;
+    }
+
     public NotificationRuleConfig recordRun(String ruleKey, int count, String status, String detail, String actorUserId) {
+        return recordRun(ruleKey, count, status, detail, actorUserId, null);
+    }
+
+    public NotificationRuleConfig recordRun(
+            String ruleKey,
+            int count,
+            String status,
+            String detail,
+            String actorUserId,
+            Instant startedAtOverride) {
+        NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
+        if (rule == null) {
+            return null;
+        }
+        String finishedAtIso = Instant.now().toString();
+        NotificationRuleConfig.RunState runState = rule.getRunState() == null
+                ? new NotificationRuleConfig.RunState()
+                : rule.getRunState();
+        String startedAtIso = startedAtOverride == null
+                ? firstNonBlank(runState.getStartedAtIso(), finishedAtIso)
+                : startedAtOverride.toString();
+        Instant startedAt = parseInstant(startedAtIso);
+        Instant finishedAt = parseInstant(finishedAtIso);
+        long durationMillis = startedAt == null || finishedAt == null
+                ? 0L
+                : Math.max(0L, finishedAt.toEpochMilli() - startedAt.toEpochMilli());
+        runState.setCurrentStatus(firstNonBlank(status, "completed"));
+        runState.setProgressPercent(100);
+        runState.setProgressDetail(safeText(detail));
+        runState.setFinishedAtIso(finishedAtIso);
+        runState.setDurationMillis(durationMillis);
+        runState.setLastRunAtIso(finishedAtIso);
+        runState.setLastRunCount(Math.max(0, count));
+        runState.setLastRunStatus(firstNonBlank(status, "completed"));
+        runState.setLastRunDetail(safeText(detail));
+        runState.setLastRunUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        rule.setRunState(runState);
+        appendRunHistory(rule, startedAtIso, finishedAtIso, durationMillis, count, status, detail, actorUserId);
+        rule.setUpdatedDate(finishedAtIso);
+        rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        return saved;
+    }
+
+    public NotificationRuleConfig updateRunProgress(String ruleKey, int progressPercent, String detail, String actorUserId) {
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         if (rule == null) {
             return null;
@@ -129,15 +189,33 @@ public class NotificationRuleRegistryService {
         NotificationRuleConfig.RunState runState = rule.getRunState() == null
                 ? new NotificationRuleConfig.RunState()
                 : rule.getRunState();
-        runState.setLastRunAtIso(nowIso);
-        runState.setLastRunCount(Math.max(0, count));
-        runState.setLastRunStatus(firstNonBlank(status, "completed"));
-        runState.setLastRunDetail(safeText(detail));
-        runState.setLastRunUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        runState.setCurrentStatus("running");
+        runState.setProgressPercent(clamp(progressPercent, 0, 99));
+        runState.setProgressDetail(firstNonBlank(detail, "Scheduled process is running."));
+        if (!StringUtils.hasText(runState.getStartedAtIso())) {
+            runState.setStartedAtIso(nowIso);
+        }
+        runState.setFinishedAtIso("");
+        runState.setDurationMillis(0L);
         rule.setRunState(runState);
         rule.setUpdatedDate(nowIso);
         rule.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-        return notificationRuleConfigsRepository.save(rule);
+        NotificationRuleConfig saved = notificationRuleConfigsRepository.save(rule);
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        return saved;
+    }
+
+    public void broadcastRunProgress(
+            String ruleKey,
+            NotificationRuleConfig.RunState runState,
+            List<NotificationRuleConfig.RunHistoryEntry> runHistory,
+            String actorUserId) {
+        socketSessionRegistry.broadcastRuleRuntime(
+                ruleKey,
+                runState,
+                runHistory,
+                Instant.now().toString(),
+                firstNonBlank(actorUserId, SYSTEM_USER));
     }
 
     public List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
@@ -180,113 +258,13 @@ public class NotificationRuleRegistryService {
     public List<NotificationRuleConfig> defaultRules() {
         String nowIso = Instant.now().toString();
         return List.of(
-                actionRule(
-                        RULE_CHAT_MESSAGE,
-                        "Chat message",
-                        "Action",
-                        "chat.message.created",
-                        "Notify offline recipients when a chat message arrives.",
-                        10,
-                        true,
-                        true,
-                        false,
-                        "New message from @sender_name",
-                        "@sender_name sent a message in @chat_title.",
-                        "/game"),
-                actionRule(
-                        RULE_EVENT_INVITATION,
-                        "Event invitation",
-                        "Action",
-                        "event.invitation.created",
-                        "Notify members when an organizer invites them to an event.",
-                        20,
-                        true,
-                        true,
-                        false,
-                        "You were invited to @event_title",
-                        "@event_title starts @event_start_at.",
-                        "/game"),
-                timedRule(
-                        RULE_EVENT_FEEDBACK_READY,
-                        "Event feedback ready",
-                        "Timed",
-                        "event.feedback.ready",
-                        "Yearly or manual feedback reminder rule for post-event feedback windows.",
-                        30,
-                        false,
-                        false,
-                        true,
-                        5,
-                        1,
-                        "09:00",
-                        "UTC",
-                        "Feedback is open for @event_title",
-                        "Share feedback for @event_title while it is fresh.",
-                        "/game"),
-                actionRule(
-                        RULE_TICKET_SWAP_GRACE_CANCELLED,
-                        "Ticket swap grace cancellation",
-                        "Action",
-                        "ticket.swap.grace.cancelled",
-                        "Fixed grace-window rule for future ticket replacement flows.",
-                        40,
-                        false,
-                        true,
-                        false,
-                        "Ticket spot released",
-                        "A ticket was cancelled close to the event start and can be reassigned.",
-                        "/game"),
-                scheduledRule(
-                        RULE_PROMOTIONAL_EMAIL_PLANNER,
-                        "Promotional email planner",
-                        "Scheduled",
-                        "email.promotional.plan",
-                        "Builds eligible email outbox rows from campaign rules.",
-                        100,
-                        true,
-                        true,
-                        60,
-                        nowIso),
-                scheduledRule(
-                        RULE_EMAIL_OUTBOX_DELIVERY,
-                        "Email outbox delivery",
-                        "Scheduled",
-                        "email.outbox.deliver",
-                        "Sends pending email outbox rows that are due.",
-                        110,
-                        true,
-                        true,
-                        1,
-                        nowIso),
                 scheduledRule(
                         RULE_EVENT_RANDOM_GROUPS,
-                        "Random group planner",
+                        "Random event",
                         "Scheduled",
                         "event.scheduler.random-groups",
-                        "Assigns accepted members into generated event groups.",
+                        "Assigns accepted event members into generated random groups.",
                         200,
-                        false,
-                        false,
-                        15,
-                        nowIso),
-                scheduledRule(
-                        RULE_EVENT_PRIORITY_INVITER,
-                        "Priority inviter",
-                        "Scheduled",
-                        "event.scheduler.priority-inviter",
-                        "Fills open event capacity with priority-based invitation batches.",
-                        210,
-                        false,
-                        false,
-                        15,
-                        nowIso),
-                scheduledRule(
-                        RULE_EVENT_SCORE_LEADERBOARD,
-                        "Score leaderboard materializer",
-                        "Scheduled",
-                        "event.scheduler.score-leaderboard",
-                        "Materializes generated groups for score and tournament stages.",
-                        220,
                         false,
                         false,
                         15,
@@ -311,80 +289,6 @@ public class NotificationRuleRegistryService {
         }
     }
 
-    private NotificationRuleConfig actionRule(
-            String ruleKey,
-            String label,
-            String category,
-            String actionKey,
-            String description,
-            int priority,
-            boolean enabled,
-            boolean pushEnabled,
-            boolean emailEnabled,
-            String subject,
-            String body,
-            String ctaPath) {
-        NotificationRuleConfig rule = baseRule(ruleKey, Instant.now().toString());
-        rule.setLabel(label);
-        rule.setCategory(category);
-        rule.setDescription(description);
-        rule.setActionKey(actionKey);
-        rule.setTriggerKind("action");
-        rule.setEnabled(enabled);
-        rule.setManualRunEnabled(false);
-        rule.setPriority(priority);
-        NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
-        channels.setPushEnabled(pushEnabled);
-        channels.setEmailEnabled(emailEnabled);
-        channels.setInAppEnabled(false);
-        channels.setSupportChatEnabled(false);
-        rule.setChannels(channels);
-        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
-        timing.setMode("immediate");
-        timing.setDelayMinutes(0);
-        timing.setTimezone("UTC");
-        rule.setTiming(timing);
-        NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
-        message.setPushTitle(subject);
-        message.setPushBody(body);
-        message.setEmailSubject(subject);
-        message.setEmailBody(body);
-        message.setCtaPath(ctaPath);
-        rule.setMessage(message);
-        return rule;
-    }
-
-    private NotificationRuleConfig timedRule(
-            String ruleKey,
-            String label,
-            String category,
-            String actionKey,
-            String description,
-            int priority,
-            boolean enabled,
-            boolean pushEnabled,
-            boolean emailEnabled,
-            int month,
-            int dayOfMonth,
-            String time,
-            String timezone,
-            String subject,
-            String body,
-            String ctaPath) {
-        NotificationRuleConfig rule = actionRule(ruleKey, label, category, actionKey, description, priority, enabled,
-                pushEnabled, emailEnabled, subject, body, ctaPath);
-        rule.setTriggerKind("timed");
-        rule.setManualRunEnabled(true);
-        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
-        timing.setMode("yearly");
-        timing.setMonth(month);
-        timing.setDayOfMonth(dayOfMonth);
-        timing.setTime(time);
-        timing.setTimezone(timezone);
-        rule.setTiming(timing);
-        return rule;
-    }
-
     private NotificationRuleConfig scheduledRule(
             String ruleKey,
             String label,
@@ -404,6 +308,7 @@ public class NotificationRuleRegistryService {
         rule.setTriggerKind("scheduled_process");
         rule.setEnabled(enabled);
         rule.setManualRunEnabled(true);
+        rule.setAdminManageable(Boolean.TRUE);
         rule.setPriority(priority);
         NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
         channels.setPushEnabled(false);
@@ -414,8 +319,14 @@ public class NotificationRuleRegistryService {
         NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
         timing.setMode("interval");
         timing.setIntervalMinutes(intervalMinutes);
+        timing.setCronExpression(toIntervalCron(intervalMinutes));
         timing.setTimezone("UTC");
         rule.setTiming(timing);
+        NotificationRuleConfig.RunState runState = new NotificationRuleConfig.RunState();
+        runState.setCurrentStatus(enabled ? "idle" : "suspended");
+        runState.setProgressPercent(0);
+        runState.setProgressDetail(enabled ? "Ready for the next scheduled slot." : "Suspended by default.");
+        rule.setRunState(runState);
         return rule;
     }
 
@@ -440,9 +351,11 @@ public class NotificationRuleRegistryService {
         target.setTriggerKind(firstNonBlank(source.getTriggerKind(), target.getTriggerKind()));
         target.setEnabled(Boolean.TRUE.equals(source.getEnabled()));
         target.setManualRunEnabled(Boolean.TRUE.equals(source.getManualRunEnabled()));
+        target.setAdminManageable(resolveAdminManageable(source, target));
         target.setPriority(valueOrDefault(source.getPriority(), valueOrDefault(target.getPriority(), 1000)));
         target.setChannels(normalizeChannels(source.getChannels()));
         target.setTiming(normalizeTiming(source.getTiming(), source.getTriggerKind()));
+        target.setScheduleSlots(normalizeScheduleSlots(source.getScheduleSlots(), target.getTiming()));
         target.setMessage(normalizeMessage(source.getMessage()));
     }
 
@@ -453,6 +366,20 @@ public class NotificationRuleRegistryService {
         channels.setInAppEnabled(Boolean.TRUE.equals(source == null ? null : source.getInAppEnabled()));
         channels.setSupportChatEnabled(Boolean.TRUE.equals(source == null ? null : source.getSupportChatEnabled()));
         return channels;
+    }
+
+    private Boolean resolveAdminManageable(NotificationRuleConfig source, NotificationRuleConfig target) {
+        if (source != null && source.getAdminManageable() != null) {
+            return Boolean.TRUE.equals(source.getAdminManageable());
+        }
+        if (target != null && target.getAdminManageable() != null) {
+            return Boolean.TRUE.equals(target.getAdminManageable());
+        }
+        String ruleKey = safeText(source == null ? null : source.getRuleKey());
+        if (!StringUtils.hasText(ruleKey)) {
+            ruleKey = safeText(target == null ? null : target.getRuleKey());
+        }
+        return SCHEDULED_EVENT_RULES.contains(ruleKey);
     }
 
     private NotificationRuleConfig.Timing normalizeTiming(NotificationRuleConfig.Timing source, String triggerKind) {
@@ -468,6 +395,9 @@ public class NotificationRuleRegistryService {
         timing.setDayOfMonth(clamp(valueOrDefault(source == null ? null : source.getDayOfMonth(), 1), 1, 31));
         timing.setTime(normalizeTime(source == null ? null : source.getTime()));
         timing.setTimezone(firstNonBlank(source == null ? null : source.getTimezone(), "UTC"));
+        timing.setCronExpression(firstNonBlank(
+                source == null ? null : source.getCronExpression(),
+                toIntervalCron(timing.getIntervalMinutes())));
         return timing;
     }
 
@@ -480,6 +410,46 @@ public class NotificationRuleRegistryService {
         message.setEmailBody(safeText(source == null ? null : source.getEmailBody()));
         message.setCtaPath(firstNonBlank(source == null ? null : source.getCtaPath(), "/game"));
         return message;
+    }
+
+    private List<NotificationRuleConfig.ScheduleSlot> normalizeScheduleSlots(
+            List<NotificationRuleConfig.ScheduleSlot> source,
+            NotificationRuleConfig.Timing fallbackTiming) {
+        List<NotificationRuleConfig.ScheduleSlot> slots = new ArrayList<>();
+        if (source != null) {
+            int index = 0;
+            for (NotificationRuleConfig.ScheduleSlot item : source) {
+                if (item == null) {
+                    continue;
+                }
+                NotificationRuleConfig.ScheduleSlot slot = new NotificationRuleConfig.ScheduleSlot();
+                String frequency = normalizeFrequency(item.getFrequency());
+                slot.setId(firstNonBlank(item.getId(), "run-window-" + (++index)));
+                slot.setFrequency(frequency);
+                slot.setDate(safeText(item.getDate()));
+                slot.setDayOfWeek(clamp(valueOrDefault(item.getDayOfWeek(), 1), 1, 7));
+                slot.setTime(normalizeTime(item.getTime()));
+                slot.setTimezone(firstNonBlank(item.getTimezone(), "UTC"));
+                slot.setCronExpression(firstNonBlank(item.getCronExpression(), toSlotCron(slot)));
+                slot.setActionKey(safeText(item.getActionKey()));
+                slot.setEnabled(!Boolean.FALSE.equals(item.getEnabled()));
+                slots.add(slot);
+            }
+        }
+        if (slots.isEmpty() && fallbackTiming != null) {
+            NotificationRuleConfig.ScheduleSlot slot = new NotificationRuleConfig.ScheduleSlot();
+            slot.setId("run-window-default");
+            slot.setFrequency("daily");
+            slot.setDate("");
+            slot.setDayOfWeek(1);
+            slot.setTime(normalizeTime(fallbackTiming.getTime()));
+            slot.setTimezone(firstNonBlank(fallbackTiming.getTimezone(), "UTC"));
+            slot.setCronExpression(toSlotCron(slot));
+            slot.setActionKey("");
+            slot.setEnabled(true);
+            slots.add(slot);
+        }
+        return slots;
     }
 
     private List<NotificationRuleConfig> sorted(List<NotificationRuleConfig> rules) {
@@ -500,6 +470,75 @@ public class NotificationRuleRegistryService {
             LocalDate date = safeDate(zonedNow.getYear(), month, dayOfMonth);
             LocalTime time = LocalTime.parse(normalizeTime(timing.getTime()));
             return ZonedDateTime.of(date, time, zoneId).toInstant();
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private Instant slotOccurrence(NotificationRuleConfig.ScheduleSlot slot, Instant now) {
+        if (slot == null || Boolean.FALSE.equals(slot.getEnabled())) {
+            return null;
+        }
+        try {
+            ZoneId zoneId = ZoneId.of(firstNonBlank(slot.getTimezone(), "UTC"));
+            ZonedDateTime zonedNow = now.atZone(zoneId);
+            LocalTime time = LocalTime.parse(normalizeTime(slot.getTime()));
+            String frequency = normalizeFrequency(slot.getFrequency());
+            if ("one-time".equals(frequency)) {
+                LocalDate date = parseLocalDate(slot.getDate());
+                return date == null ? null : ZonedDateTime.of(date, time, zoneId).toInstant();
+            }
+            if ("weekly".equals(frequency)) {
+                int dayOfWeek = clamp(valueOrDefault(slot.getDayOfWeek(), 1), 1, 7);
+                LocalDate date = zonedNow.toLocalDate().with(DayOfWeek.of(dayOfWeek));
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    occurrence = occurrence.minusWeeks(1);
+                }
+                return occurrence.toInstant();
+            }
+            if ("bi-weekly".equals(frequency)) {
+                int dayOfWeek = clamp(valueOrDefault(slot.getDayOfWeek(), 1), 1, 7);
+                LocalDate anchor = parseLocalDate(slot.getDate());
+                if (anchor == null) {
+                    anchor = LocalDate.of(2026, 1, 5);
+                }
+                LocalDate date = zonedNow.toLocalDate().with(DayOfWeek.of(dayOfWeek));
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    occurrence = occurrence.minusWeeks(1);
+                }
+                if (Math.floorMod(ChronoUnit.WEEKS.between(anchor.with(DayOfWeek.of(dayOfWeek)), occurrence.toLocalDate()), 2) != 0) {
+                    occurrence = occurrence.minusWeeks(1);
+                }
+                return occurrence.toInstant();
+            }
+            if ("monthly".equals(frequency)) {
+                int dayOfMonth = parseLocalDate(slot.getDate()) == null ? 1 : parseLocalDate(slot.getDate()).getDayOfMonth();
+                LocalDate date = safeDate(zonedNow.getYear(), zonedNow.getMonthValue(), dayOfMonth);
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    ZonedDateTime previousMonth = zonedNow.minusMonths(1);
+                    occurrence = ZonedDateTime.of(safeDate(previousMonth.getYear(), previousMonth.getMonthValue(), dayOfMonth), time, zoneId);
+                }
+                return occurrence.toInstant();
+            }
+            if ("yearly".equals(frequency)) {
+                LocalDate parsedDate = parseLocalDate(slot.getDate());
+                int month = parsedDate == null ? 1 : parsedDate.getMonthValue();
+                int dayOfMonth = parsedDate == null ? 1 : parsedDate.getDayOfMonth();
+                LocalDate date = safeDate(zonedNow.getYear(), month, dayOfMonth);
+                ZonedDateTime occurrence = ZonedDateTime.of(date, time, zoneId);
+                if (occurrence.isAfter(zonedNow)) {
+                    occurrence = ZonedDateTime.of(safeDate(zonedNow.getYear() - 1, month, dayOfMonth), time, zoneId);
+                }
+                return occurrence.toInstant();
+            }
+            ZonedDateTime occurrence = ZonedDateTime.of(zonedNow.toLocalDate(), time, zoneId);
+            if (occurrence.isAfter(zonedNow)) {
+                occurrence = occurrence.minusDays(1);
+            }
+            return occurrence.toInstant();
         } catch (Exception exception) {
             return null;
         }
@@ -527,6 +566,100 @@ public class NotificationRuleRegistryService {
         } catch (Exception exception) {
             return null;
         }
+    }
+
+    private void appendRunHistory(
+            NotificationRuleConfig rule,
+            String startedAtIso,
+            String finishedAtIso,
+            long durationMillis,
+            int processedCount,
+            String status,
+            String detail,
+            String actorUserId) {
+        List<NotificationRuleConfig.RunHistoryEntry> history = new ArrayList<>();
+        NotificationRuleConfig.RunHistoryEntry entry = new NotificationRuleConfig.RunHistoryEntry();
+        entry.setId(UUID.randomUUID().toString());
+        entry.setTrigger("scheduler".equals(safeText(actorUserId)) ? "scheduled" : "manual");
+        entry.setRunnerUser(firstNonBlank(actorUserId, SYSTEM_USER));
+        entry.setStartedAtIso(startedAtIso);
+        entry.setFinishedAtIso(finishedAtIso);
+        entry.setDurationMillis(durationMillis);
+        entry.setProcessedCount(Math.max(0, processedCount));
+        entry.setStatus(firstNonBlank(status, "completed"));
+        entry.setDetail(safeText(detail));
+        history.add(entry);
+        if (rule.getRunHistory() != null) {
+            history.addAll(rule.getRunHistory().stream()
+                    .filter(existing -> existing != null && StringUtils.hasText(safeText(existing.getId())))
+                    .limit(RUN_HISTORY_LIMIT - 1L)
+                    .toList());
+        }
+        rule.setRunHistory(history);
+    }
+
+    private int intervalMinutes(NotificationRuleConfig.Timing timing) {
+        String cron = safeText(timing == null ? null : timing.getCronExpression());
+        if (cron.matches("^0\\s+0/\\d+\\s+\\*\\s+\\*\\s+\\*\\s+\\?$")) {
+            String value = cron.split("\\s+")[1].substring(2);
+            try {
+                return Math.max(1, Integer.parseInt(value));
+            } catch (NumberFormatException exception) {
+                return Math.max(1, valueOrDefault(timing == null ? null : timing.getIntervalMinutes(), 60));
+            }
+        }
+        return Math.max(1, valueOrDefault(timing == null ? null : timing.getIntervalMinutes(), 60));
+    }
+
+    private String toIntervalCron(Integer intervalMinutes) {
+        return "0 0/" + Math.max(1, valueOrDefault(intervalMinutes, 60)) + " * * * ?";
+    }
+
+    private String toSlotCron(NotificationRuleConfig.ScheduleSlot slot) {
+        String[] timeParts = normalizeTime(slot == null ? null : slot.getTime()).split(":");
+        int hour = Integer.parseInt(timeParts[0]);
+        int minute = Integer.parseInt(timeParts[1]);
+        String frequency = normalizeFrequency(slot == null ? null : slot.getFrequency());
+        if ("one-time".equals(frequency)) {
+            LocalDate date = parseLocalDate(slot == null ? null : slot.getDate());
+            if (date == null) {
+                return "0 " + minute + " " + hour + " * * ?";
+            }
+            return "0 " + minute + " " + hour + " " + date.getDayOfMonth() + " " + date.getMonthValue() + " ?";
+        }
+        if ("weekly".equals(frequency)) {
+            int quartzDay = (clamp(valueOrDefault(slot == null ? null : slot.getDayOfWeek(), 1), 1, 7) % 7) + 1;
+            return "0 " + minute + " " + hour + " ? * " + quartzDay;
+        }
+        if ("bi-weekly".equals(frequency)) {
+            int quartzDay = (clamp(valueOrDefault(slot == null ? null : slot.getDayOfWeek(), 1), 1, 7) % 7) + 1;
+            return "0 " + minute + " " + hour + " ? * " + quartzDay;
+        }
+        if ("monthly".equals(frequency)) {
+            LocalDate date = parseLocalDate(slot == null ? null : slot.getDate());
+            int dayOfMonth = date == null ? 1 : date.getDayOfMonth();
+            return "0 " + minute + " " + hour + " " + dayOfMonth + " * ?";
+        }
+        if ("yearly".equals(frequency)) {
+            LocalDate date = parseLocalDate(slot == null ? null : slot.getDate());
+            int month = date == null ? 1 : date.getMonthValue();
+            int dayOfMonth = date == null ? 1 : date.getDayOfMonth();
+            return "0 " + minute + " " + hour + " " + dayOfMonth + " " + month + " ?";
+        }
+        return "0 " + minute + " " + hour + " * * ?";
+    }
+
+    private LocalDate parseLocalDate(String value) {
+        try {
+            return StringUtils.hasText(safeText(value)) ? LocalDate.parse(safeText(value)) : null;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private String normalizeFrequency(String value) {
+        String normalized = safeText(value).toLowerCase();
+        return Set.of("one-time", "daily", "weekly", "bi-weekly", "monthly", "yearly").contains(normalized) ? normalized : "daily";
     }
 
     private String normalizeTime(String value) {

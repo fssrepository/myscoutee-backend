@@ -68,6 +68,7 @@ public class ActivitiesEventsService {
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
+    private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
@@ -77,6 +78,7 @@ public class ActivitiesEventsService {
             ActivitiesMembersService activitiesMembersService,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
+            ScheduledMessageTaskService scheduledMessageTaskService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
@@ -84,6 +86,7 @@ public class ActivitiesEventsService {
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
+        this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -163,7 +166,8 @@ public class ActivitiesEventsService {
                         || StringUtils.hasText(request.view())
                         || request.friendsOnly() != null
                         || request.openSpotsOnly() != null
-                        || StringUtils.hasText(request.topic()));
+                        || StringUtils.hasText(request.topic())
+                        || (request.excludedSourceIds() != null && !request.excludedSourceIds().isEmpty()));
     }
 
     public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
@@ -289,6 +293,7 @@ public class ActivitiesEventsService {
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
+                    .filter(projection -> matchesActivitiesCalendarRange(projection, request, view))
                     .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                     .toList();
 
@@ -351,10 +356,12 @@ public class ActivitiesEventsService {
             boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
             int limit = normalizeLimit(requestedLimit, 10);
             String cursor = request == null ? null : request.cursor();
+            Set<String> excludedSourceIds = new LinkedHashSet<>(normalizeIds(request == null ? null : request.excludedSourceIds()));
 
             List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
 
             List<EventProjection> sorted = exploreRecords.stream()
+                    .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .map(record -> toProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
@@ -380,21 +387,24 @@ public class ActivitiesEventsService {
 
     public void trash(EventActionRequestDto request) {
         maybeApplyLeaveCancellationRefund(request);
-        updateItemState(request, current -> {
+        List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setIsTrashed(true);
             current.setTrashedAtIso(Instant.now().toString());
         });
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public void publish(EventActionRequestDto request) {
-        updateItemState(request, current -> current.setPublished(true));
+        List<ActivityEvent> updated = updateItemState(request, current -> current.setPublished(true));
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public void restore(EventActionRequestDto request) {
-        updateItemState(request, current -> {
+        List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setIsTrashed(false);
             current.setTrashedAtIso(null);
         });
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
@@ -414,7 +424,8 @@ public class ActivitiesEventsService {
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
         }
-        boolean accepted = isConfirmedBooking(request, preferred);
+        boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
+        boolean accepted = !waitingList && isConfirmedBooking(request, preferred);
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
@@ -423,8 +434,10 @@ public class ActivitiesEventsService {
                     .findFirst()
                     .orElse(null);
             if (slotRecord != null) {
-                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
-                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted);
+                waitingList = waitingList || isRecordFull(slotRecord);
+                accepted = !waitingList && isConfirmedBooking(request, preferred);
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
+                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList);
                 if (accepted) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                 }
@@ -436,7 +449,7 @@ public class ActivitiesEventsService {
             }
         }
 
-        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted);
+        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
         if (accepted) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
         }
@@ -445,6 +458,9 @@ public class ActivitiesEventsService {
     }
 
     private boolean isConfirmedBooking(EventActionRequestDto request, ActivityEvent preferred) {
+        if (isWaitlistRequested(request)) {
+            return false;
+        }
         String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId)) {
             // A checkout session means the booking flow started, but we keep the
@@ -455,6 +471,21 @@ public class ActivitiesEventsService {
             return false;
         }
         return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed());
+    }
+
+    private boolean isWaitlistRequested(EventActionRequestDto request) {
+        return "waitlist".equals(safeText(request == null ? null : request.pendingReason()));
+    }
+
+    private boolean isRecordFull(ActivityEvent record) {
+        if (record == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(record.getCapacityTotal());
+        if (capacityTotal <= 0) {
+            return false;
+        }
+        return resolveAcceptedMemberUserIds(record).size() >= capacityTotal;
     }
 
     private void recordJoinPayment(
@@ -555,6 +586,7 @@ public class ActivitiesEventsService {
             documentsToSave.add(eventsOverlay);
         }
         activityEventsRepository.saveAll(documentsToSave);
+        syncStageReminderTasksForSavedEvents(documentsToSave, actorUserId);
         materializeSlotOccurrences();
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
@@ -667,6 +699,7 @@ public class ActivitiesEventsService {
                 .map(record -> toProjection(record, viewer))
                 .filter(Objects::nonNull)
                 .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
+                .filter(projection -> matchesActivitiesCalendarRange(projection, request, view))
                 .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
                 .toList();
 
@@ -943,6 +976,29 @@ public class ActivitiesEventsService {
         };
     }
 
+    private boolean matchesActivitiesCalendarRange(
+            EventProjection projection,
+            EventsFilterRequestDto request,
+            String view) {
+        if (projection == null || (!"week".equals(view) && !"month".equals(view))) {
+            return true;
+        }
+        long rangeStartMs = toCalendarRangeBoundary(request == null ? null : request.rangeStart(), false);
+        long rangeEndMs = toCalendarRangeBoundary(request == null ? null : request.rangeEnd(), true);
+        if (rangeStartMs <= 0L || rangeEndMs <= 0L || rangeStartMs > rangeEndMs) {
+            return true;
+        }
+        return projection.startAtMs() <= rangeEndMs && projection.endAtMs() >= rangeStartMs;
+    }
+
+    private long toCalendarRangeBoundary(String value, boolean endOfDay) {
+        long parsed = toSortableDate(value);
+        if (parsed <= 0L || !StringUtils.hasText(value) || !value.trim().matches("\\d{4}-\\d{2}-\\d{2}")) {
+            return parsed;
+        }
+        return endOfDay ? parsed + ChronoUnit.DAYS.getDuration().toMillis() - 1L : parsed;
+    }
+
     private long resolveProjectionEndAtMs(EventRecordDto item, long fallbackStartAtMs) {
         if (item == null) {
             return fallbackStartAtMs;
@@ -1139,11 +1195,11 @@ public class ActivitiesEventsService {
         };
     }
 
-    private void updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater) {
+    private List<ActivityEvent> updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
-            return;
+            return List.of();
         }
 
         String requestType = request == null ? null : request.type();
@@ -1151,7 +1207,7 @@ public class ActivitiesEventsService {
         if (documents.isEmpty()) {
             ActivityEvent overlay = buildUserStateOverlayRecord(viewer.userId(), requestType, sourceId);
             if (overlay == null) {
-                return;
+                return List.of();
             }
             documents = List.of(overlay);
         }
@@ -1166,7 +1222,38 @@ public class ActivitiesEventsService {
             next.normalizeLifecycleState();
             updated.add(next);
         }
-        activityEventsRepository.saveAll(updated);
+        return activityEventsRepository.saveAll(updated);
+    }
+
+    private void syncStageReminderTasksForSavedEvents(List<ActivityEvent> documents, String actorUserId) {
+        if (documents == null || documents.isEmpty()) {
+            return;
+        }
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent document : documents) {
+            if (document == null) {
+                continue;
+            }
+            String sourceId = normalizeId(document.getSourceId());
+            if (!StringUtils.hasText(sourceId) || Boolean.TRUE.equals(document.getGenerated())) {
+                continue;
+            }
+            ActivityEvent current = preferredBySourceId.get(sourceId);
+            if (current == null || TYPE_HOSTING.equals(document.getType())) {
+                preferredBySourceId.put(sourceId, document);
+            }
+        }
+        for (ActivityEvent event : preferredBySourceId.values()) {
+            String sourceId = normalizeId(event.getSourceId());
+            if (!StringUtils.hasText(sourceId)) {
+                continue;
+            }
+            if (Boolean.FALSE.equals(event.getPublished()) || Boolean.TRUE.equals(event.getIsTrashed())) {
+                scheduledMessageTaskService.suspendEventStageReminders(sourceId, actorUserId);
+            } else {
+                scheduledMessageTaskService.scheduleEventStageReminders(event, actorUserId);
+            }
+        }
     }
 
     private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String type, String sourceId) {
@@ -2417,7 +2504,11 @@ public class ActivitiesEventsService {
             try {
                 return LocalDateTime.parse(value.trim()).toInstant(ZoneOffset.UTC).toEpochMilli();
             } catch (DateTimeParseException secondIgnored) {
-                return 0L;
+                try {
+                    return LocalDate.parse(value.trim()).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+                } catch (DateTimeParseException thirdIgnored) {
+                    return 0L;
+                }
             }
         }
     }

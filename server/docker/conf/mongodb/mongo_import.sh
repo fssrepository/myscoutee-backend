@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-guest}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-guest}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -107,6 +107,21 @@ ensure_collection_indexes() {
   local collection_name="$2"
 
   case "${collection_name}" in
+    chats)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('chats').createIndex({ ownerUserId: 1, id: 1 }, { name: 'chat_owner_public_id', unique: true });
+db.getCollection('chats').createIndex({ id: 1 }, { name: 'chat_public_id_lookup' });
+db.getCollection('chats').createIndex({ ownerUserId: 1, dateIso: -1 }, { name: 'chat_owner_date' });
+" >/dev/null
+      ;;
     events)
       mongosh \
         --host "${mongo_host}" \
@@ -127,6 +142,45 @@ db.getCollection('events').createIndex({ status: 1, creatorUserId: 1, visibility
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 }, { name: 'event_explore_candidates_status' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_explore_feed_status' });
 db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });
+" >/dev/null
+      ;;
+    userExperienceProfiles)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('userExperienceProfiles').createIndex({ userId: 1 }, { name: 'user_experience_profiles_user_id', unique: true });
+" >/dev/null
+      ;;
+    i18n_bundles)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('i18n_bundles').createIndex({ lang: 1 }, { name: 'i18n_bundles_lang', unique: true });
+" >/dev/null
+      ;;
+    i18n_messages)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('i18n_messages').createIndex({ key: 1, lang: 1 }, { name: 'i18n_messages_key_lang', unique: true });
 " >/dev/null
       ;;
   esac

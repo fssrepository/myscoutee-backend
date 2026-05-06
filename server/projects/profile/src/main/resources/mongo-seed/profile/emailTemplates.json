@@ -49,5 +49,22 @@
     "createdUser": "email-seed",
     "updatedDate": "2026-04-27T00:00:00Z",
     "updatedUser": "email-seed"
+  },
+  {
+    "_id": "email-template-event-stage-reminder-v1",
+    "syncKey": "email-template-event-stage-reminder-v1",
+    "templateKey": "event-stage-reminder-v1",
+    "name": "Event Stage Reminder",
+    "description": "Email fallback sent before an accepted member's event stage starts.",
+    "category": "event",
+    "locale": "en",
+    "enabled": true,
+    "subjectTemplate": "@stage_name starts soon",
+    "htmlTemplate": "<html>\n  <body style=\"margin:0;padding:0;background:#f4f7fb;font-family:Arial,sans-serif;color:#16304f;\">\n    <table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"background:#f4f7fb;padding:24px 0;\">\n      <tr>\n        <td align=\"center\">\n          <table role=\"presentation\" width=\"640\" cellspacing=\"0\" cellpadding=\"0\" style=\"max-width:640px;background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid #d9e5f4;\">\n            <tr>\n              <td style=\"background:#2f6fd6;padding:28px 32px;color:#ffffff;\">\n                <div style=\"font-size:14px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.88;\">MyScoutee Event</div>\n                <h1 style=\"margin:12px 0 0;font-size:30px;line-height:1.2;\">@stage_name starts soon</h1>\n              </td>\n            </tr>\n            <tr>\n              <td style=\"padding:32px;\">\n                <p style=\"margin:0 0 16px;font-size:16px;line-height:1.6;\">Hi @user_first_name,</p>\n                <p style=\"margin:0 0 16px;font-size:16px;line-height:1.6;\">@event_title has an upcoming stage. Open the event before the stage starts so you have the latest details.</p>\n                <p style=\"margin:0 0 22px;color:#5f7694;font-size:14px;line-height:1.6;\">Stage start: @stage_start_at</p>\n                <div style=\"margin:24px 0 28px;\">\n                  <a href=\"@cta_url\" style=\"display:inline-block;background:#2f6fd6;color:#ffffff;text-decoration:none;padding:14px 22px;border-radius:999px;font-weight:700;\">@cta_label</a>\n                </div>\n              </td>\n            </tr>\n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n",
+    "textTemplate": "@stage_name starts soon\n\nHi @user_first_name,\n\n@event_title has an upcoming stage. Open the event before the stage starts so you have the latest details.\n\nStage start: @stage_start_at\n\n@cta_label: @cta_url\n",
+    "createdDate": "2026-05-05T00:00:00Z",
+    "createdUser": "email-seed",
+    "updatedDate": "2026-05-05T00:00:00Z",
+    "updatedUser": "email-seed"
   }
 ]

@@ -9,7 +9,8 @@ public final class ActivityChatsDtos {
     public record ChatReadAvatarDto(
             String id,
             String initials,
-            String gender) {
+            String gender,
+            String imageUrl) {
     }
 
     public record ChatSummaryDto(
@@ -42,6 +43,7 @@ public final class ActivityChatsDtos {
             String senderName,
             String senderInitials,
             String senderGender,
+            String senderImageUrl,
             String text,
             String sentAtIso,
             Boolean mine,
@@ -108,7 +110,10 @@ public final class ActivityChatsDtos {
             String chatId,
             ChatMessageDto message,
             ChatTypingDto typing,
-            ChatReadReceiptDto read) {
+            ChatReadReceiptDto read,
+            String messageId,
+            String clientId,
+            String error) {
     }
 
     public record ChatPostMessageRequestDto(
@@ -126,10 +131,13 @@ public final class ActivityChatsDtos {
 
     public record ChatSocketRequestDto(
             String type,
+            String messageId,
             String clientId,
             String text,
             ChatMessageReplyDto replyTo,
             List<ChatMessageAttachmentDto> attachments,
+            Boolean pinned,
+            String emoji,
             Boolean typing,
             List<String> messageIds) {
     }

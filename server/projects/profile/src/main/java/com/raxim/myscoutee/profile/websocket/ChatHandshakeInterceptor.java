@@ -11,10 +11,13 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
+
 @Component
 public class ChatHandshakeInterceptor implements HandshakeInterceptor {
     public static final String CHAT_ID_ATTRIBUTE = "chatId";
     public static final String USER_ID_ATTRIBUTE = "userId";
+    public static final String SESSION_KIND_ATTRIBUTE = "sessionKind";
 
     @Override
     public boolean beforeHandshake(
@@ -24,6 +27,14 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
             Map<String, Object> attributes) {
         var queryParams = UriComponentsBuilder.fromUri(request.getURI()).build().getQueryParams();
         String chatId = queryParams.getFirst("chatId");
+        String path = request.getURI() == null ? "" : request.getURI().getPath();
+        if (path != null && path.endsWith("/admin/notifications/ws")) {
+            String userId = queryParams.getFirst("userId");
+            if (StringUtils.hasText(userId)) {
+                attributes.put(USER_ID_ATTRIBUTE, userId.trim());
+            }
+            return true;
+        }
         if (!StringUtils.hasText(chatId)) {
             response.setStatusCode(HttpStatus.BAD_REQUEST);
             return false;
@@ -32,6 +43,13 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
         String userId = queryParams.getFirst("userId");
         if (StringUtils.hasText(userId)) {
             attributes.put(USER_ID_ATTRIBUTE, userId.trim());
+        }
+        String sessionKind = queryParams.getFirst("sessionKind");
+        if (!StringUtils.hasText(sessionKind)) {
+            sessionKind = request.getHeaders().getFirst(SessionMongoRoutingFilter.SESSION_KIND_HEADER);
+        }
+        if (StringUtils.hasText(sessionKind)) {
+            attributes.put(SESSION_KIND_ATTRIBUTE, sessionKind.trim());
         }
         return true;
     }

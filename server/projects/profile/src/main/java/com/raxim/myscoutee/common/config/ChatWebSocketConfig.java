@@ -7,23 +7,36 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import com.raxim.myscoutee.profile.websocket.ChatHandshakeInterceptor;
 import com.raxim.myscoutee.profile.websocket.ChatWebSocketHandler;
+import com.raxim.myscoutee.profile.websocket.AdminNotificationWebSocketHandler;
 
 @Configuration
 @EnableWebSocket
 public class ChatWebSocketConfig implements WebSocketConfigurer {
     private final ChatWebSocketHandler chatWebSocketHandler;
+    private final AdminNotificationWebSocketHandler adminNotificationWebSocketHandler;
     private final ChatHandshakeInterceptor chatHandshakeInterceptor;
 
     public ChatWebSocketConfig(
             ChatWebSocketHandler chatWebSocketHandler,
+            AdminNotificationWebSocketHandler adminNotificationWebSocketHandler,
             ChatHandshakeInterceptor chatHandshakeInterceptor) {
         this.chatWebSocketHandler = chatWebSocketHandler;
+        this.adminNotificationWebSocketHandler = adminNotificationWebSocketHandler;
         this.chatHandshakeInterceptor = chatHandshakeInterceptor;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(chatWebSocketHandler, "/activities/chats/ws")
+                .addInterceptors(chatHandshakeInterceptor)
+                .setAllowedOriginPatterns("*");
+        registry.addHandler(chatWebSocketHandler, "/api/activities/chats/ws")
+                .addInterceptors(chatHandshakeInterceptor)
+                .setAllowedOriginPatterns("*");
+        registry.addHandler(adminNotificationWebSocketHandler, "/admin/notifications/ws")
+                .addInterceptors(chatHandshakeInterceptor)
+                .setAllowedOriginPatterns("*");
+        registry.addHandler(adminNotificationWebSocketHandler, "/api/admin/notifications/ws")
                 .addInterceptors(chatHandshakeInterceptor)
                 .setAllowedOriginPatterns("*");
     }

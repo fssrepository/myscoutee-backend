@@ -24,9 +24,9 @@ public class I18nMessageRestController {
     @GetMapping("/bundle")
     public ResponseEntity<I18nBundleResponseDto> getBundle(
             @RequestHeader(name = "accept-language", defaultValue = "en") String lang,
+            @RequestParam(name = "lang", required = false) String requestedLang,
             @RequestParam(name = "version", required = false) String version) {
-        String cleanLang = lang.split(",")[0].split("-")[0].trim().toLowerCase();
-        I18nBundleResponseDto bundle = i18nService.getBundle(cleanLang, version);
+        I18nBundleResponseDto bundle = i18nService.getBundle(requestedLang, lang, version);
         return ResponseEntity.ok(bundle);
     }
 }

@@ -3,12 +3,13 @@ package com.raxim.myscoutee.profile.data.document;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Document(collection = "chats")
 @CompoundIndexes({
@@ -17,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
         @CompoundIndex(name = "chat_owner_date", def = "{'ownerUserId': 1, 'dateIso': -1}")
 })
 public class ActivityChat {
-    @Id
+    @MongoId(FieldType.STRING)
     private String mongoId;
 
     @Field("id")
@@ -178,6 +179,7 @@ public class ActivityChat {
     }
 
     public static class ChatMessageRecord {
+        @Field("id")
         private String id;
         private String clientId;
         private String sender;
@@ -296,6 +298,7 @@ public class ActivityChat {
     }
 
     public static class ChatMessageReplyRecord {
+        @Field("id")
         private String id;
         private String sender;
         private String text;
@@ -331,6 +334,7 @@ public class ActivityChat {
     }
 
     public static class ChatMessageAttachmentRecord {
+        @Field("id")
         private String id;
         private String type;
         private String title;
@@ -371,6 +375,7 @@ public class ActivityChat {
     }
 
     public static class ChatAvatarRecord {
+        @Field("id")
         private String id;
         private String initials;
         private String gender;
@@ -401,6 +406,7 @@ public class ActivityChat {
     }
 
     public static class ChatReadAvatarRecord {
+        @Field("id")
         private String id;
         private String initials;
         private String gender;

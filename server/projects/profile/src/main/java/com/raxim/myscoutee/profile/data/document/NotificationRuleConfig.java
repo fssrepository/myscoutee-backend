@@ -1,5 +1,8 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,11 +25,14 @@ public class NotificationRuleConfig {
     private String triggerKind;
     private Boolean enabled;
     private Boolean manualRunEnabled;
+    private Boolean adminManageable;
     private Integer priority;
     private DeliveryChannels channels = new DeliveryChannels();
     private Timing timing = new Timing();
+    private List<ScheduleSlot> scheduleSlots = new ArrayList<>();
     private MessageTemplate message = new MessageTemplate();
     private RunState runState = new RunState();
+    private List<RunHistoryEntry> runHistory = new ArrayList<>();
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -112,6 +118,14 @@ public class NotificationRuleConfig {
         this.manualRunEnabled = manualRunEnabled;
     }
 
+    public Boolean getAdminManageable() {
+        return adminManageable;
+    }
+
+    public void setAdminManageable(Boolean adminManageable) {
+        this.adminManageable = adminManageable;
+    }
+
     public Integer getPriority() {
         return priority;
     }
@@ -136,6 +150,14 @@ public class NotificationRuleConfig {
         this.timing = timing == null ? new Timing() : timing;
     }
 
+    public List<ScheduleSlot> getScheduleSlots() {
+        return scheduleSlots;
+    }
+
+    public void setScheduleSlots(List<ScheduleSlot> scheduleSlots) {
+        this.scheduleSlots = scheduleSlots == null ? new ArrayList<>() : scheduleSlots;
+    }
+
     public MessageTemplate getMessage() {
         return message;
     }
@@ -150,6 +172,14 @@ public class NotificationRuleConfig {
 
     public void setRunState(RunState runState) {
         this.runState = runState == null ? new RunState() : runState;
+    }
+
+    public List<RunHistoryEntry> getRunHistory() {
+        return runHistory;
+    }
+
+    public void setRunHistory(List<RunHistoryEntry> runHistory) {
+        this.runHistory = runHistory == null ? new ArrayList<>() : runHistory;
     }
 
     public String getCreatedDate() {
@@ -231,6 +261,7 @@ public class NotificationRuleConfig {
         private Integer dayOfMonth;
         private String time;
         private String timezone;
+        private String cronExpression;
 
         public String getMode() {
             return mode;
@@ -286,6 +317,98 @@ public class NotificationRuleConfig {
 
         public void setTimezone(String timezone) {
             this.timezone = timezone;
+        }
+
+        public String getCronExpression() {
+            return cronExpression;
+        }
+
+        public void setCronExpression(String cronExpression) {
+            this.cronExpression = cronExpression;
+        }
+    }
+
+    public static class ScheduleSlot {
+        private String id;
+        private String frequency;
+        private String date;
+        private Integer dayOfWeek;
+        private String time;
+        private String timezone;
+        private String cronExpression;
+        private String actionKey;
+        private Boolean enabled;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getFrequency() {
+            return frequency;
+        }
+
+        public void setFrequency(String frequency) {
+            this.frequency = frequency;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public Integer getDayOfWeek() {
+            return dayOfWeek;
+        }
+
+        public void setDayOfWeek(Integer dayOfWeek) {
+            this.dayOfWeek = dayOfWeek;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getTimezone() {
+            return timezone;
+        }
+
+        public void setTimezone(String timezone) {
+            this.timezone = timezone;
+        }
+
+        public String getCronExpression() {
+            return cronExpression;
+        }
+
+        public void setCronExpression(String cronExpression) {
+            this.cronExpression = cronExpression;
+        }
+
+        public String getActionKey() {
+            return actionKey;
+        }
+
+        public void setActionKey(String actionKey) {
+            this.actionKey = actionKey;
+        }
+
+        public Boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(Boolean enabled) {
+            this.enabled = enabled;
         }
     }
 
@@ -347,11 +470,65 @@ public class NotificationRuleConfig {
     }
 
     public static class RunState {
+        private String currentStatus;
+        private Integer progressPercent;
+        private String progressDetail;
+        private String startedAtIso;
+        private String finishedAtIso;
+        private Long durationMillis;
         private String lastRunAtIso;
         private String lastRunStatus;
         private String lastRunDetail;
         private Integer lastRunCount;
         private String lastRunUser;
+
+        public String getCurrentStatus() {
+            return currentStatus;
+        }
+
+        public void setCurrentStatus(String currentStatus) {
+            this.currentStatus = currentStatus;
+        }
+
+        public Integer getProgressPercent() {
+            return progressPercent;
+        }
+
+        public void setProgressPercent(Integer progressPercent) {
+            this.progressPercent = progressPercent;
+        }
+
+        public String getProgressDetail() {
+            return progressDetail;
+        }
+
+        public void setProgressDetail(String progressDetail) {
+            this.progressDetail = progressDetail;
+        }
+
+        public String getStartedAtIso() {
+            return startedAtIso;
+        }
+
+        public void setStartedAtIso(String startedAtIso) {
+            this.startedAtIso = startedAtIso;
+        }
+
+        public String getFinishedAtIso() {
+            return finishedAtIso;
+        }
+
+        public void setFinishedAtIso(String finishedAtIso) {
+            this.finishedAtIso = finishedAtIso;
+        }
+
+        public Long getDurationMillis() {
+            return durationMillis;
+        }
+
+        public void setDurationMillis(Long durationMillis) {
+            this.durationMillis = durationMillis;
+        }
 
         public String getLastRunAtIso() {
             return lastRunAtIso;
@@ -391,6 +568,90 @@ public class NotificationRuleConfig {
 
         public void setLastRunUser(String lastRunUser) {
             this.lastRunUser = lastRunUser;
+        }
+    }
+
+    public static class RunHistoryEntry {
+        private String id;
+        private String trigger;
+        private String runnerUser;
+        private String startedAtIso;
+        private String finishedAtIso;
+        private Long durationMillis;
+        private Integer processedCount;
+        private String status;
+        private String detail;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTrigger() {
+            return trigger;
+        }
+
+        public void setTrigger(String trigger) {
+            this.trigger = trigger;
+        }
+
+        public String getRunnerUser() {
+            return runnerUser;
+        }
+
+        public void setRunnerUser(String runnerUser) {
+            this.runnerUser = runnerUser;
+        }
+
+        public String getStartedAtIso() {
+            return startedAtIso;
+        }
+
+        public void setStartedAtIso(String startedAtIso) {
+            this.startedAtIso = startedAtIso;
+        }
+
+        public String getFinishedAtIso() {
+            return finishedAtIso;
+        }
+
+        public void setFinishedAtIso(String finishedAtIso) {
+            this.finishedAtIso = finishedAtIso;
+        }
+
+        public Long getDurationMillis() {
+            return durationMillis;
+        }
+
+        public void setDurationMillis(Long durationMillis) {
+            this.durationMillis = durationMillis;
+        }
+
+        public Integer getProcessedCount() {
+            return processedCount;
+        }
+
+        public void setProcessedCount(Integer processedCount) {
+            this.processedCount = processedCount;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getDetail() {
+            return detail;
+        }
+
+        public void setDetail(String detail) {
+            this.detail = detail;
         }
     }
 }

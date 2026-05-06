@@ -29,6 +29,7 @@ import com.raxim.myscoutee.profile.repository.IdeaPostsRepository;
 
 @Service
 public class IdeaPostsService {
+    private static final String DEFAULT_LANG = "en";
     private static final int EXCERPT_MAX_LENGTH = 180;
     private static final int MAX_IMAGE_URLS = 24;
     private static final Safelist IDEA_HTML_SAFELIST = Safelist.relaxed()
@@ -54,17 +55,34 @@ public class IdeaPostsService {
     }
 
     public List<IdeaPostDto> publicPosts() {
+        return publicPosts(DEFAULT_LANG);
+    }
+
+    public List<IdeaPostDto> publicPosts(String lang) {
+        return publicPosts(lang, DEFAULT_LANG);
+    }
+
+    public List<IdeaPostDto> publicPosts(String lang, String acceptLanguage) {
         ensureSeeded();
-        return ideaPostsRepository.findByPublishedTrueOrderBySubmittedAtIsoDesc().stream()
+        String language = requestContentLang(lang, acceptLanguage);
+        List<IdeaPost> posts = ideaPostsRepository.findByPublishedTrueAndLangOrderBySubmittedAtIsoDesc(language);
+        if (posts.isEmpty() && !DEFAULT_LANG.equals(language)) {
+            posts = ideaPostsRepository.findByPublishedTrueAndLangOrderBySubmittedAtIsoDesc(DEFAULT_LANG);
+        }
+        return posts.stream()
                 .filter(post -> !Boolean.TRUE.equals(post.getTrashed()))
                 .map(this::toDto)
                 .toList();
     }
 
     public List<IdeaPostDto> adminPosts(String adminUserId) {
+        return adminPosts(adminUserId, DEFAULT_LANG);
+    }
+
+    public List<IdeaPostDto> adminPosts(String adminUserId, String lang) {
         ensureAdmin(adminUserId);
         ensureSeeded();
-        return ideaPostsRepository.findAllByOrderBySubmittedAtIsoDesc().stream()
+        return ideaPostsRepository.findAllByLangOrderBySubmittedAtIsoDesc(contentLang(lang)).stream()
                 .map(this::toDto)
                 .toList();
     }
@@ -73,12 +91,20 @@ public class IdeaPostsService {
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
         ensureSeeded();
         String normalizedId = normalize(request == null ? null : request.id());
+        String language = contentLang(request == null ? null : request.lang());
+        String requestedContentKey = normalize(request == null ? null : request.contentKey());
         IdeaPost post = StringUtils.hasText(normalizedId)
                 ? ideaPostsRepository.findById(normalizedId).orElseGet(IdeaPost::new)
-                : new IdeaPost();
+                : StringUtils.hasText(requestedContentKey)
+                        ? ideaPostsRepository.findByContentKeyAndLang(requestedContentKey, language).orElseGet(IdeaPost::new)
+                        : new IdeaPost();
         String nowIso = Instant.now().toString();
         if (!StringUtils.hasText(post.getId()) && StringUtils.hasText(normalizedId)) {
             post.setId(normalizedId);
+        }
+        String contentKey = text(requestedContentKey, contentKeyFromId(StringUtils.hasText(normalizedId) ? normalizedId : post.getId()));
+        if (!StringUtils.hasText(contentKey)) {
+            contentKey = "idea-" + Instant.now().toEpochMilli();
         }
         if (!StringUtils.hasText(post.getCreatedDate())) {
             post.setCreatedDate(nowIso);
@@ -87,6 +113,9 @@ public class IdeaPostsService {
 
         String html = sanitizeHtml(request == null ? null : request.contentHtml());
         String title = text(request == null ? null : request.title(), "Untitled idea");
+        post.setContentKey(contentKey);
+        post.setLang(language);
+        post.setLanguageLabel(languageLabel(language));
         post.setTitle(title);
         post.setContentHtml(html);
         post.setExcerpt(excerpt(request == null ? null : request.excerpt(), html));
@@ -146,16 +175,43 @@ public class IdeaPostsService {
     }
 
     private void ensureSeeded() {
-        if (!ideaPostsRepository.findAll().isEmpty()) {
-            return;
+        List<IdeaPost> current = ideaPostsRepository.findAll();
+        boolean changed = false;
+        for (IdeaPost post : current) {
+            String language = contentLang(post.getLang());
+            String contentKey = contentKeyFromId(post.getId());
+            if (!StringUtils.hasText(post.getLang())) {
+                post.setLang(language);
+                changed = true;
+            }
+            if (!languageLabel(language).equals(post.getLanguageLabel())) {
+                post.setLanguageLabel(languageLabel(language));
+                changed = true;
+            }
+            if (!StringUtils.hasText(post.getContentKey()) && StringUtils.hasText(contentKey)) {
+                post.setContentKey(contentKey);
+                changed = true;
+            }
         }
-        ideaPostsRepository.saveAll(defaultPosts());
+        if (changed) {
+            ideaPostsRepository.saveAll(current);
+        }
+        Set<String> currentIds = current.stream()
+                .map(IdeaPost::getId)
+                .collect(java.util.stream.Collectors.toSet());
+        List<IdeaPost> missing = defaultPosts().stream()
+                .filter(post -> !currentIds.contains(post.getId()))
+                .toList();
+        if (!missing.isEmpty()) {
+            ideaPostsRepository.saveAll(missing);
+        }
     }
 
     private List<IdeaPost> defaultPosts() {
         return List.of(
                 defaultPost(
                         "idea-why-priority-matching",
+                        "en",
                         "Why priority matching feels calmer than swiping",
                         "MyScoutee starts with intent, context, and real plans instead of an endless yes/no loop.",
                         """
@@ -172,6 +228,7 @@ public class IdeaPostsService {
                         "2026-04-29T10:00:00.000Z"),
                 defaultPost(
                         "idea-social-first-dating",
+                        "en",
                         "From lonely browsing to social-first meeting",
                         "Groups, hosts, and event context make introductions feel more natural and lower-pressure.",
                         """
@@ -186,6 +243,7 @@ public class IdeaPostsService {
                         "2026-04-24T12:30:00.000Z"),
                 defaultPost(
                         "idea-host-use-case",
+                        "en",
                         "Use case: host a small event and let the right people join",
                         "Hosts can describe the plan, capacity, resources, and tone before inviting or approving members.",
                         """
@@ -201,6 +259,7 @@ public class IdeaPostsService {
                         "2026-04-20T09:15:00.000Z"),
                 defaultPost(
                         "idea-trust-context",
+                        "en",
                         "Trust grows faster when context stays attached",
                         "Profiles, event history, feedback, and scoped chats help people understand who they are meeting.",
                         """
@@ -211,6 +270,7 @@ public class IdeaPostsService {
                         "2026-04-16T16:45:00.000Z"),
                 defaultPost(
                         "idea-register-value",
+                        "en",
                         "What viewers unlock when they register",
                         "Registration turns a static landing page into matching, event discovery, hosting, chat, and feedback.",
                         """
@@ -223,11 +283,52 @@ public class IdeaPostsService {
                         </ul>
                         """,
                         false,
+                        "2026-04-11T13:20:00.000Z"),
+                defaultPost(
+                        "idea-why-priority-matching-hu",
+                        "hu",
+                        "Miért nyugodtabb a preferenciaalapú párosítás, mint a swipe-olás",
+                        "A MyScoutee szándékkal, kontextussal és valódi tervekkel indul a végtelen igen/nem kör helyett.",
+                        "<p><strong>A legtöbb társkereső gyors reakciókra optimalizál. A MyScoutee olyan döntésekre épül, amelyekből valódi tervek lehetnek.</strong></p><p>A tagok nem csak igent vagy nemet jeleznek, hanem prioritást is, így az érdeklődés árnyaltabb és a következő lépés tisztább.</p><ul><li>A prioritási pontszám erősebb szándékot mutat.</li><li>A kontextus segít megérteni, miért van értelme egy találatnak.</li><li>Az események természetes következő lépést adnak.</li></ul>",
+                        true,
+                        "2026-04-29T10:00:00.000Z"),
+                defaultPost(
+                        "idea-social-first-dating-hu",
+                        "hu",
+                        "Magányos böngészésből közösségi találkozás",
+                        "A csoportok, szervezők és eseménykontextus természetesebbé és kevésbé nyomasztóvá teszik a bemutatkozást.",
+                        "<p>A MyScoutee akkor hasznos, amikor valaki úgy szeretne emberekkel találkozni, hogy ne minden beszélgetés interjúnak érződjön.</p><p>Egy szervezett program már az első üzenet előtt közös kontextust ad.</p>",
+                        true,
+                        "2026-04-24T12:30:00.000Z"),
+                defaultPost(
+                        "idea-host-use-case-hu",
+                        "hu",
+                        "Példa: szervezz kis eseményt, és engedd csatlakozni a megfelelő embereket",
+                        "A szervezők még meghívás vagy jóváhagyás előtt leírhatják a tervet, létszámot, erőforrásokat és hangulatot.",
+                        "<p>A szervező létrehozhat egy kisebb tervet, opcionális részekre bonthatja, és a logisztikát már az elejétől láthatóvá teheti.</p><p>Szétszórt üzenetek helyett az esemény hordozza az időpontot, a létszámot, az erőforrásokat, a tagokat és a csevegési kontextust.</p>",
+                        true,
+                        "2026-04-20T09:15:00.000Z"),
+                defaultPost(
+                        "idea-trust-context-hu",
+                        "hu",
+                        "A bizalom gyorsabban nő, ha a kontextus megmarad",
+                        "A profilok, eseményelőzmények, visszajelzések és célzott csevegések segítenek megérteni, kivel találkozol.",
+                        "<p>A bizalom könnyebb, ha a termék láthatóan tartja a kontextust. Egy ember nem csak egy fotó: az is számít, hogyan csatlakozik, szervez, kommunikál és viszi végig a terveket.</p><p>A MyScoutee összekötheti a profiljelzéseket, az eseményrészvételt, a visszajelzést és a célzott csevegéseket.</p>",
+                        true,
+                        "2026-04-16T16:45:00.000Z"),
+                defaultPost(
+                        "idea-register-value-hu",
+                        "hu",
+                        "Mit nyit meg a regisztráció",
+                        "A regisztráció a statikus nyitólapból párosítást, eseményfelfedezést, szervezést, csevegést és visszajelzést csinál.",
+                        "<p>A látogatók a nyitólapon megérthetik az ötletet, de az érték akkor indul, amikor regisztrálnak és felépítik a profiljukat.</p><p>Innentől a MyScoutee releváns embereket mutathat, eseménymeghívásokat támogathat, csevegésekben koordinálhat, és tanulhat a valódi közösségi aktivitás utáni visszajelzésekből.</p>",
+                        false,
                         "2026-04-11T13:20:00.000Z"));
     }
 
     private IdeaPost defaultPost(
             String id,
+            String lang,
             String title,
             String excerpt,
             String contentHtml,
@@ -237,6 +338,9 @@ public class IdeaPostsService {
         String nowIso = Instant.now().toString();
         String imageUrl = seedImageUrl(id);
         post.setId(id);
+        post.setContentKey(contentKeyFromId(id));
+        post.setLang(contentLang(lang));
+        post.setLanguageLabel(languageLabel(lang));
         post.setTitle(title);
         post.setExcerpt(excerpt);
         post.setContentHtml(sanitizeHtml(contentHtml.replace("@image_url", imageUrl)));
@@ -329,6 +433,9 @@ public class IdeaPostsService {
     private IdeaPostDto toDto(IdeaPost post) {
         return new IdeaPostDto(
                 normalize(post.getId()),
+                text(post.getContentKey(), contentKeyFromId(post.getId())),
+                contentLang(post.getLang()),
+                languageLabel(post.getLang()),
                 text(post.getTitle(), "Untitled idea"),
                 normalize(post.getExcerpt()),
                 normalize(post.getContentHtml()),
@@ -444,6 +551,50 @@ public class IdeaPostsService {
     private String text(String value, String fallback) {
         String normalized = normalize(value);
         return StringUtils.hasText(normalized) ? normalized : fallback;
+    }
+
+    private String contentLang(String value) {
+        return text(supportedContentLang(value), DEFAULT_LANG);
+    }
+
+    private String supportedContentLang(String value) {
+        String normalized = normalize(value).toLowerCase();
+        int semicolonIndex = normalized.indexOf(';');
+        if (semicolonIndex > 0) {
+            normalized = normalized.substring(0, semicolonIndex);
+        }
+        int dashIndex = normalized.indexOf('-');
+        if (dashIndex > 0) {
+            normalized = normalized.substring(0, dashIndex);
+        }
+        return "hu".equals(normalized) || DEFAULT_LANG.equals(normalized) ? normalized : "";
+    }
+
+    private String requestContentLang(String explicitLang, String acceptLanguage) {
+        if (StringUtils.hasText(normalize(explicitLang))) {
+            return contentLang(explicitLang);
+        }
+        for (String candidate : normalize(acceptLanguage).split(",")) {
+            String supportedLang = supportedContentLang(candidate);
+            if (StringUtils.hasText(supportedLang)) {
+                return supportedLang;
+            }
+        }
+        return DEFAULT_LANG;
+    }
+
+    private String languageLabel(String lang) {
+        return "hu".equals(contentLang(lang)) ? "Magyar" : "English";
+    }
+
+    private String contentKeyFromId(String id) {
+        String normalized = normalize(id);
+        if (!StringUtils.hasText(normalized)) {
+            return "";
+        }
+        return normalized.endsWith("-hu")
+                ? normalized.substring(0, normalized.length() - 3)
+                : normalized;
     }
 
     private String normalize(String value) {

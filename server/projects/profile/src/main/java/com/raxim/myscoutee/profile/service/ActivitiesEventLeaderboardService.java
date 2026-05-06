@@ -159,6 +159,24 @@ public class ActivitiesEventLeaderboardService {
         List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedEventId).stream()
                 .filter(Objects::nonNull)
                 .toList();
+        return materializeGeneratedGroups(normalizedEventId, normalizedSubEventId, documents);
+    }
+
+    public List<SubEventGroupItemDto> materializeGeneratedGroups(
+            String eventId,
+            String subEventId,
+            List<ActivityEvent> sourceDocuments) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return List.of();
+        }
+        List<ActivityEvent> documents = sourceDocuments == null
+                ? List.of()
+                : sourceDocuments.stream()
+                        .filter(Objects::nonNull)
+                        .filter(document -> normalizedEventId.equals(normalizeId(document.getSourceId())))
+                        .toList();
         if (documents.isEmpty()) {
             return List.of();
         }

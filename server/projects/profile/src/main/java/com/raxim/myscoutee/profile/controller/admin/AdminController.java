@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
@@ -84,14 +85,25 @@ public class AdminController {
         return adminNotificationService.run(ruleKey, request);
     }
 
+    @GetMapping("/notifications/{ruleKey}/runtime")
+    public AdminNotificationRuleDto notificationRuleRuntime(
+            @PathVariable String ruleKey,
+            @RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminNotificationService.ruleState(ruleKey, adminUserId);
+    }
+
     @GetMapping("/help")
-    public HelpCenterStateDto helpState(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return helpCenterService.adminState(adminUserId);
+    public HelpCenterStateDto helpState(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.adminState(adminUserId, "help", lang);
     }
 
     @GetMapping("/privacy")
-    public HelpCenterStateDto privacyState(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return helpCenterService.adminState(adminUserId, "privacy");
+    public HelpCenterStateDto privacyState(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.adminState(adminUserId, "privacy", lang);
     }
 
     @PostMapping("/help/revisions")
@@ -133,8 +145,10 @@ public class AdminController {
     }
 
     @GetMapping("/ideas")
-    public List<IdeaPostDto> ideas(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return ideaPostsService.adminPosts(adminUserId);
+    public List<IdeaPostDto> ideas(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return ideaPostsService.adminPosts(adminUserId, lang);
     }
 
     @PostMapping("/ideas")

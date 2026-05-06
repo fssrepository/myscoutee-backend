@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -97,8 +99,8 @@ public class UserRatesService {
         String sort = normalizeQuerySort(sortValue);
         String innerOrder = resolveActivityInnerOrder(sort, sortDirectionValue, secondaryFilterValue);
         String groupDirection = resolveActivityGroupDirection(sort, sortDirectionValue, innerOrder);
-        long rangeStartMs = parseIsoMillis(rangeStartIso, 0L);
-        long rangeEndMs = parseIsoMillis(rangeEndIso, Long.MAX_VALUE);
+        long rangeStartMs = parseRangeBoundaryMillis(rangeStartIso, 0L, false);
+        long rangeEndMs = parseRangeBoundaryMillis(rangeEndIso, Long.MAX_VALUE, true);
         if (rangeStartMs > rangeEndMs) {
             return new ActivityRatePageResponseDto(List.of(), 0, null, List.of());
         }
@@ -1122,8 +1124,20 @@ public class UserRatesService {
         try {
             return Instant.parse(safeText(value)).toEpochMilli();
         } catch (Exception exception) {
-            return fallback;
+            try {
+                return LocalDate.parse(safeText(value)).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+            } catch (DateTimeParseException secondException) {
+                return fallback;
+            }
         }
+    }
+
+    private static long parseRangeBoundaryMillis(String value, long fallback, boolean endOfDay) {
+        long parsed = parseIsoMillis(value, fallback);
+        if (parsed == fallback || !StringUtils.hasText(value) || !safeText(value).trim().matches("\\d{4}-\\d{2}-\\d{2}")) {
+            return parsed;
+        }
+        return endOfDay ? parsed + 86_399_999L : parsed;
     }
 
     private static long toDayStartMs(long value) {

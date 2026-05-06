@@ -42,6 +42,8 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequ
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserImpressionsDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserImpressionsSectionDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileDetailGroupDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileDetailRowDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
@@ -72,7 +74,6 @@ public class HomeUserProfileService {
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
     private static final String STATUS_ACCEPTED = "accepted";
@@ -160,6 +161,7 @@ public class HomeUserProfileService {
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
     private final UserReportSubmissionsRepository userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
+    private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurityProperties regionSecurityProperties;
 
@@ -176,6 +178,7 @@ public class HomeUserProfileService {
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
             UserReportSubmissionsRepository userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
+            ScheduledMessageTaskService scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
             RegionSecurityProperties regionSecurityProperties) {
         this.usersRepository = usersRepository;
@@ -190,6 +193,7 @@ public class HomeUserProfileService {
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
         this.userSessionActionsRepository = userSessionActionsRepository;
+        this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.countryPartitionService = countryPartitionService;
         this.regionSecurityProperties = regionSecurityProperties;
     }
@@ -203,6 +207,9 @@ public class HomeUserProfileService {
         Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
         if (user == null) {
             return null;
+        }
+        if (!StringUtils.hasText(requestedUserId)) {
+            scheduledMessageTaskService.touchUserActivity(resolvedUserId);
         }
 
         UserDto userDto = toUserDto(user);
@@ -226,12 +233,14 @@ public class HomeUserProfileService {
                 userDto.hostTier(),
                 userDto.traitLabel(),
                 userDto.completion(),
+                userDto.profileFormVersion(),
                 userDto.headline(),
                 userDto.about(),
                 userDto.affinity(),
                 userDto.locationCoordinates(),
                 userDto.partitionKey(),
                 userDto.images(),
+                userDto.profileDetails(),
                 userDto.impressions(),
                 userDto.profileStatus(),
                 userDto.previousProfileStatus(),
@@ -696,12 +705,14 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getHostTier()),
                 nullToEmpty(user.getTraitLabel()),
                 normalizeCount(user.getCompletion()),
+                normalizeCount(user.getProfileFormVersion()),
                 nullToEmpty(user.getHeadline()),
                 nullToEmpty(user.getAbout()),
                 user.getAffinity(),
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
                 nullToEmpty(user.getPartitionKey()),
                 normalizeStrings(user.getImages()),
+                toProfileDetailsDto(user.getProfileDetails()),
                 includeImpressions ? resolveMergedUserImpressions(user) : null,
                 resolveProfileStatus(user),
                 nullToEmpty(user.getPreviousProfileStatus()),
@@ -718,7 +729,12 @@ public class HomeUserProfileService {
                 nullToEmpty(user.getName()),
                 nullToEmpty(user.getCity()),
                 nullToEmpty(user.getInitials()),
-                normalizeUserListGender(user.getGender()));
+                normalizeUserListGender(user.getGender()),
+                nullToEmpty(user.getStatusText()),
+                normalizeCount(user.getCompletion()),
+                normalizeCount(user.getProfileFormVersion()),
+                resolveProfileStatus(user),
+                nullToEmpty(user.getDeletedAtIso()));
     }
 
     public Users resolveCurrentUser(String requestedUserId) {
@@ -1046,6 +1062,7 @@ public class HomeUserProfileService {
         document.setHostTier(nullToEmpty(user.hostTier()));
         document.setTraitLabel(nullToEmpty(user.traitLabel()));
         document.setCompletion(normalizeCount(user.completion()));
+        document.setProfileFormVersion(normalizeCount(user.profileFormVersion()));
         document.setHeadline(nullToEmpty(user.headline()));
         document.setAbout(nullToEmpty(user.about()));
         document.setAffinity(user.affinity());
@@ -1059,6 +1076,7 @@ public class HomeUserProfileService {
                 current == null ? null : current.getPartitionKey(),
                 current));
         document.setImages(normalizeStrings(user.images()));
+        document.setProfileDetails(toProfileDetailRecords(user.profileDetails()));
         document.setImpressions(toUserImpressionsRecord(user.impressions()));
         boolean reactivatingDeletedUser = current != null
                 && "D".equalsIgnoreCase(safeText(current.getStatus()))
@@ -1685,6 +1703,70 @@ public class HomeUserProfileService {
         return new Users.LocationCoordinatesRecord(dto.latitude(), dto.longitude());
     }
 
+    private List<ProfileDetailGroupDto> toProfileDetailsDto(List<Users.ProfileDetailGroupRecord> records) {
+        if (records == null || records.isEmpty()) {
+            return List.of();
+        }
+        return records.stream()
+                .filter(Objects::nonNull)
+                .map(group -> {
+                    String title = safeText(group.title());
+                    if (!StringUtils.hasText(title)) {
+                        return null;
+                    }
+                    List<ProfileDetailRowDto> rows = (group.rows() == null ? List.<Users.ProfileDetailRowRecord>of() : group.rows()).stream()
+                            .filter(Objects::nonNull)
+                            .map(row -> {
+                                String label = safeText(row.label());
+                                if (!StringUtils.hasText(label)) {
+                                    return null;
+                                }
+                                return new ProfileDetailRowDto(
+                                        label,
+                                        safeText(row.value()),
+                                        safeText(row.privacy()),
+                                        normalizeStrings(row.options()));
+                            })
+                            .filter(Objects::nonNull)
+                            .toList();
+                    return new ProfileDetailGroupDto(title, rows);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private List<Users.ProfileDetailGroupRecord> toProfileDetailRecords(List<ProfileDetailGroupDto> groups) {
+        if (groups == null || groups.isEmpty()) {
+            return List.of();
+        }
+        return groups.stream()
+                .filter(Objects::nonNull)
+                .map(group -> {
+                    String title = safeText(group.title());
+                    if (!StringUtils.hasText(title)) {
+                        return null;
+                    }
+                    List<Users.ProfileDetailRowRecord> rows = (group.rows() == null ? List.<ProfileDetailRowDto>of() : group.rows()).stream()
+                            .filter(Objects::nonNull)
+                            .map(row -> {
+                                String label = safeText(row.label());
+                                if (!StringUtils.hasText(label)) {
+                                    return null;
+                                }
+                                return new Users.ProfileDetailRowRecord(
+                                        label,
+                                        safeText(row.value()),
+                                        safeText(row.privacy()),
+                                        normalizeStrings(row.options()));
+                            })
+                            .filter(Objects::nonNull)
+                            .toList();
+                    return new Users.ProfileDetailGroupRecord(title, rows);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
     private Users.UserImpressionsRecord toUserImpressionsRecord(UserImpressionsDto dto) {
         if (dto == null) {
             return null;
@@ -1730,8 +1812,14 @@ public class HomeUserProfileService {
             Users.UserImpressionsSectionRecord record,
             String feedbackKind,
             List<EventFeedbackAnswer> feedbackAnswers) {
+        boolean hasStoredData = hasImpressionsSectionRecordData(record);
+        if (!hasStoredData
+                && !hasImpressionActivity(user, feedbackKind)
+                && !hasFeedbackAnswerSignals(feedbackKind, feedbackAnswers)) {
+            return null;
+        }
         List<UserPersonalityTraitDto> personalityTraits = resolvePersonalityTraits(user, record, feedbackKind, feedbackAnswers);
-        if (record == null && personalityTraits.isEmpty()) {
+        if (!hasStoredData && personalityTraits.isEmpty()) {
             return null;
         }
         return new UserImpressionsSectionDto(
@@ -1747,6 +1835,56 @@ public class HomeUserProfileService {
                         : toPersonalityBadges(personalityTraits),
                 personalityTraits,
                 normalizeStrings(record == null ? null : record.categoryBadges()));
+    }
+
+    private boolean hasImpressionActivity(Users user, String feedbackKind) {
+        if (user == null || user.getActivities() == null) {
+            return false;
+        }
+        Users.UserActivitiesRecord activities = user.getActivities();
+        String normalizedKind = normalizeToken(feedbackKind);
+        if ("event".equals(normalizedKind)) {
+            return normalizeCount(activities.events()) > 0
+                    || normalizeCount(activities.hosting()) > 0;
+        }
+        if ("attendee".equals(normalizedKind)) {
+            return normalizeCount(activities.chat()) > 0
+                    || normalizeCount(activities.invitations()) > 0
+                    || normalizeCount(activities.tickets()) > 0
+                    || normalizeCount(activities.feedback()) > 0;
+        }
+        return false;
+    }
+
+    private boolean hasImpressionsSectionRecordData(Users.UserImpressionsSectionRecord record) {
+        if (record == null) {
+            return false;
+        }
+        return (record.averageRating() != null && record.averageRating() > 0d)
+                || normalizeCount(record.peopleMet()) > 0
+                || normalizeCount(record.totalEvents()) > 0
+                || normalizeCount(record.repeatCount()) > 0
+                || normalizeCount(record.noShowCount()) > 0
+                || !normalizeStrings(record.vibeBadges()).isEmpty()
+                || !normalizeStrings(record.personalityBadges()).isEmpty()
+                || !normalizeStrings(record.categoryBadges()).isEmpty()
+                || safeList(record.personalityTraits()).stream()
+                        .filter(Objects::nonNull)
+                        .anyMatch(trait -> StringUtils.hasText(resolvePersonalityTraitId(trait.id(), trait.label()))
+                                && (normalizeCount(trait.percent()) > 0 || normalizeCount(trait.evidenceCount()) > 0));
+    }
+
+    private boolean hasFeedbackAnswerSignals(String feedbackKind, List<EventFeedbackAnswer> feedbackAnswers) {
+        String expectedKind = normalizeToken(feedbackKind);
+        return safeList(feedbackAnswers).stream()
+                .filter(Objects::nonNull)
+                .anyMatch(answer -> Objects.equals(expectedKind, normalizeToken(answer.getKind()))
+                        && (
+                            !normalizeStrings(answer.getPersonalityTraitIds()).isEmpty()
+                            || !normalizeStrings(answer.getTags()).isEmpty()
+                            || StringUtils.hasText(normalizeOptionalText(answer.getPrimaryValue()))
+                            || StringUtils.hasText(normalizeOptionalText(answer.getSecondaryValue()))
+                        ));
     }
 
     private List<UserPersonalityTraitDto> resolvePersonalityTraits(

@@ -64,11 +64,9 @@ public class MediaStorageService {
         }
         String normalizedScope = normalizeScope(scope);
         String normalizedOwnerId = sanitizeSegment(ownerId);
-        String normalizedEntityId = sanitizeSegment(entityId);
         if (!StringUtils.hasText(normalizedScope) || !StringUtils.hasText(normalizedOwnerId)) {
             return null;
         }
-        String contentType = normalizeContentType(contentTypeValue);
         return storeMediaBytes(scope, ownerId, entityId, originalFilename, contentTypeValue, bytes, "image/");
     }
 

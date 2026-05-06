@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,6 +41,10 @@ public class ActivitiesMembersService {
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
+    private static final String REQUEST_KIND_JOIN = "join";
+    private static final String REQUEST_KIND_INVITE = "invite";
+    private static final String REQUEST_KIND_WAITLIST = "waitlist";
+    private static final String REQUEST_KIND_WAITLIST_INVITE = "waitlist-invite";
     private static final Set<String> OWNER_TYPES = Set.of("event", "subEvent", "group", "asset");
     private static final Set<String> ACCEPTED_STATUSES = Set.of(STATUS_ACCEPTED);
     private static final Set<String> ADMIN_ROLES = Set.of("Admin");
@@ -52,6 +57,7 @@ public class ActivitiesMembersService {
     private final AssetsService assetsService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
+    private final EventInviteNotificationService eventInviteNotificationService;
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
@@ -61,7 +67,8 @@ public class ActivitiesMembersService {
             HomeUserProfileService homeUserProfileService,
             AssetsService assetsService,
             ActivitiesResourcesService activitiesResourcesService,
-            EventParticipationTicketService eventParticipationTicketService) {
+            EventParticipationTicketService eventParticipationTicketService,
+            EventInviteNotificationService eventInviteNotificationService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -70,6 +77,7 @@ public class ActivitiesMembersService {
         this.assetsService = assetsService;
         this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
+        this.eventInviteNotificationService = eventInviteNotificationService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -207,6 +215,41 @@ public class ActivitiesMembersService {
             List<ActivitySubEventResource> resources = resourcesByOwnerId.getOrDefault(sourceId, List.of());
             List<ActivityMember> merged = mergeDerivedEventMembersBatch(sourceId, rawMembers, eventRecord, resources);
             result.put(sourceId, toOwnerSnapshotBatch(OWNER_TYPE_EVENT, sourceId, merged, eventRecord, resources));
+        }
+        return result;
+    }
+
+    public Map<String, OwnerMembersSnapshot> buildBatchOwnerSnapshots(String ownerType, Collection<String> ownerIds) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        if (!StringUtils.hasText(normalizedOwnerType) || ownerIds == null || ownerIds.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> normalizedOwnerIds = ownerIds.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (normalizedOwnerIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, List<ActivityMember>> membersByOwnerId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(normalizedOwnerType, normalizedOwnerIds)) {
+            if (member == null) {
+                continue;
+            }
+            String ownerId = normalizeId(member.getOwnerId());
+            if (StringUtils.hasText(ownerId)) {
+                membersByOwnerId.computeIfAbsent(ownerId, key -> new ArrayList<>()).add(member);
+            }
+        }
+
+        Map<String, OwnerMembersSnapshot> result = new LinkedHashMap<>();
+        for (String ownerId : normalizedOwnerIds) {
+            List<ActivityMember> members = membersByOwnerId.getOrDefault(ownerId, List.of())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .toList();
+            result.put(ownerId, toOwnerSnapshot(normalizedOwnerType, ownerId, members));
         }
         return result;
     }
@@ -416,11 +459,12 @@ public class ActivitiesMembersService {
             activityMembersRepository.saveAll(membersToSave);
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
-            clearHandledInvitationRecords(ownerId, nextDocuments);
+            clearHandledInvitationRecords(ownerId, membersToSave);
             cascadeRemovedEventMembersFromAssignedAssets(ownerId, removedVisibleMembers, actorUserId, nowIso);
             Set<String> removedManagedAssetIds = activitiesResourcesService
                     .removeManagedResourcesForRemovedEventMembers(ownerId, removedVisibleMembers, actorUserId, nowIso);
             clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
+            processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
         }
@@ -525,7 +569,8 @@ public class ActivitiesMembersService {
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
         }
-        clearHandledInvitationRecords(ownerId, nextDocuments);
+        clearHandledInvitationRecords(ownerId, membersToSave);
+        processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
         eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
         refreshEmbeddedEventMembers(ownerId);
     }
@@ -535,6 +580,10 @@ public class ActivitiesMembersService {
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted) {
+        return requestJoin(eventId, viewer, eventRecord, accepted, false);
+    }
+
+    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted, boolean waitingList) {
         String normalizedEventId = normalizeId(eventId);
         String viewerUserId = viewer == null ? null : normalizeId(viewer.getId());
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(viewerUserId)) {
@@ -574,7 +623,7 @@ public class ActivitiesMembersService {
             current.setRole(normalizeRole(current.getRole(), viewerUserId, OWNER_TYPE_EVENT, normalizedEventId));
             current.setStatus(accepted ? STATUS_ACCEPTED : "pending");
             current.setPendingSource(accepted ? null : "member");
-            current.setRequestKind(accepted ? null : "join");
+            current.setRequestKind(accepted ? null : (waitingList ? REQUEST_KIND_WAITLIST : REQUEST_KIND_JOIN));
             current.setInvitedByUserId(null);
             current.setActionAtIso(nowIso);
             current.setMetAtIso(normalizeDateTime(current.getMetAtIso(), nowIso));
@@ -583,6 +632,9 @@ public class ActivitiesMembersService {
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
             clearHandledInvitationRecords(normalizedEventId, List.of(current));
+            if (accepted) {
+                processEventWaitlist(normalizedEventId, eventRecord, true);
+            }
             refreshEmbeddedEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
@@ -647,6 +699,28 @@ public class ActivitiesMembersService {
             refreshEmbeddedEventMembers(normalizedEventId);
         }
         return newlyInvitedUserIds;
+    }
+
+    public int sweepEventWaitlists() {
+        LinkedHashSet<String> eventIds = new LinkedHashSet<>();
+        activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(OWNER_TYPE_EVENT, STATUS_PENDING, REQUEST_KIND_WAITLIST).stream()
+                .filter(Objects::nonNull)
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(eventIds::add);
+        activityMembersRepository.findByOwnerTypeAndStatusAndRequestKind(OWNER_TYPE_EVENT, STATUS_PENDING, REQUEST_KIND_WAITLIST_INVITE).stream()
+                .filter(Objects::nonNull)
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(eventIds::add);
+
+        int invitedCount = 0;
+        for (String eventId : eventIds) {
+            invitedCount += processEventWaitlist(eventId, findPreferredEventRecord(eventId), false);
+        }
+        return invitedCount;
     }
 
     public List<String> syncGroupMembers(String groupId, String actorUserId, List<String> memberUserIds) {
@@ -1400,6 +1474,175 @@ public class ActivitiesMembersService {
         return assignedAssetIds;
     }
 
+    private int processEventWaitlist(String eventId, ActivityEvent eventRecord, boolean promoteSingle) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return 0;
+        }
+
+        ActivityEvent preferredEventRecord = eventRecord == null ? findPreferredEventRecord(normalizedEventId) : eventRecord;
+        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        int capacityTotal = snapshot == null || snapshot.capacityTotal() == null
+                ? Math.max(0, preferredEventRecord == null || preferredEventRecord.getCapacityTotal() == null ? 0 : preferredEventRecord.getCapacityTotal())
+                : Math.max(0, snapshot.capacityTotal());
+        if (capacityTotal <= 0) {
+            return 0;
+        }
+
+        List<ActivityMember> storedMembers = loadStoredOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
+        if (storedMembers.isEmpty()) {
+            storedMembers = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId, preferredEventRecord);
+        }
+        int acceptedMembers = snapshot == null ? 0 : Math.max(0, snapshot.acceptedMembers());
+        if (acceptedMembers >= capacityTotal) {
+            demoteWaitlistInvitations(normalizedEventId, storedMembers);
+            return 0;
+        }
+
+        List<ActivityMember> waitingMembers = storedMembers.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> STATUS_PENDING.equals(normalizeStatus(member.getStatus())))
+                .filter(member -> REQUEST_KIND_WAITLIST.equals(resolveRequestKind(member.getRequestKind(), STATUS_PENDING, resolvePendingSource(member.getPendingSource(), STATUS_PENDING))))
+                .sorted(Comparator
+                        .comparing((ActivityMember member) -> toSortableDate(member.getActionAtIso()))
+                        .thenComparing(member -> toSortableDate(member.getCreatedDate()))
+                        .thenComparing(member -> safeText(member.getSyncKey())))
+                .toList();
+        if (waitingMembers.isEmpty()) {
+            return 0;
+        }
+
+        int promotionLimit = promoteSingle ? 1 : waitingMembers.size();
+        String nowIso = Instant.now().toString();
+        String inviterUserId = resolveWaitlistInviterUserId(preferredEventRecord);
+        List<ActivityMember> membersToSave = new ArrayList<>();
+        List<String> promotedUserIds = new ArrayList<>();
+        for (ActivityMember waitingMember : waitingMembers) {
+            if (promotedUserIds.size() >= promotionLimit) {
+                break;
+            }
+            String userId = normalizeId(waitingMember.getUserId());
+            if (!StringUtils.hasText(userId)) {
+                continue;
+            }
+            ActivityMember invitedMember = cloneMember(waitingMember);
+            invitedMember.setPendingSource("admin");
+            invitedMember.setRequestKind(REQUEST_KIND_WAITLIST_INVITE);
+            invitedMember.setInvitedByUserId(StringUtils.hasText(inviterUserId) ? inviterUserId : null);
+            invitedMember.setUpdatedDate(nowIso);
+            invitedMember.setUpdatedUser(StringUtils.hasText(inviterUserId) ? inviterUserId : userId);
+            membersToSave.add(invitedMember);
+            promotedUserIds.add(userId);
+        }
+
+        if (membersToSave.isEmpty()) {
+            return 0;
+        }
+
+        activityMembersRepository.saveAll(membersToSave);
+        createWaitlistInvitationRecords(normalizedEventId, preferredEventRecord, promotedUserIds, nowIso);
+        eventInviteNotificationService.notifyInvitees(preferredEventRecord, promotedUserIds);
+        refreshEmbeddedEventMembers(normalizedEventId);
+        return promotedUserIds.size();
+    }
+
+    private void demoteWaitlistInvitations(String eventId, List<ActivityMember> members) {
+        List<ActivityMember> membersToSave = new ArrayList<>();
+        String nowIso = Instant.now().toString();
+        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
+            if (member == null || !STATUS_PENDING.equals(normalizeStatus(member.getStatus()))) {
+                continue;
+            }
+            String pendingSource = resolvePendingSource(member.getPendingSource(), STATUS_PENDING);
+            String requestKind = resolveRequestKind(member.getRequestKind(), STATUS_PENDING, pendingSource);
+            if (!REQUEST_KIND_WAITLIST_INVITE.equals(requestKind)) {
+                continue;
+            }
+            ActivityMember next = cloneMember(member);
+            next.setPendingSource("member");
+            next.setRequestKind(REQUEST_KIND_WAITLIST);
+            next.setInvitedByUserId(null);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(resolveWaitlistInviterUserId(findPreferredEventRecord(eventId)));
+            membersToSave.add(next);
+            deleteWaitlistInvitationRecord(eventId, normalizeId(next.getUserId()));
+        }
+        if (!membersToSave.isEmpty()) {
+            activityMembersRepository.saveAll(membersToSave);
+            refreshEmbeddedEventMembers(eventId);
+        }
+    }
+
+    private void createWaitlistInvitationRecords(String eventId, ActivityEvent eventRecord, List<String> userIds, String nowIso) {
+        ActivityEvent preferredEventRecord = eventRecord == null ? findPreferredEventRecord(eventId) : eventRecord;
+        if (preferredEventRecord == null || userIds == null || userIds.isEmpty()) {
+            return;
+        }
+
+        List<ActivityEvent> invitationRecords = new ArrayList<>();
+        for (String rawUserId : userIds) {
+            String userId = normalizeId(rawUserId);
+            if (!StringUtils.hasText(userId)) {
+                continue;
+            }
+            ActivityEvent existing = activityEventsRepository
+                    .findByOwnerUserIdAndTypeAndSourceId(userId, "invitations", eventId)
+                    .orElse(null);
+            ActivityEvent invitationRecord = existing == null ? new ActivityEvent() : existing;
+            String documentId = existing != null && StringUtils.hasText(existing.getId())
+                    ? existing.getId()
+                    : new ObjectId().toHexString();
+            String syncKey = existing != null && StringUtils.hasText(existing.getSyncKey())
+                    ? existing.getSyncKey().trim()
+                    : UUID.randomUUID().toString();
+            BeanUtils.copyProperties(preferredEventRecord, invitationRecord);
+            invitationRecord.setId(documentId);
+            invitationRecord.setSyncKey(syncKey);
+            invitationRecord.setSourceId(eventId);
+            invitationRecord.setOwnerUserId(userId);
+            invitationRecord.setType("invitations");
+            invitationRecord.setStatus("invitation");
+            invitationRecord.setInviter(safeText(preferredEventRecord.getCreatorName()));
+            invitationRecord.setUnread(Math.max(1, invitationRecord.getUnread()));
+            invitationRecord.setIsAdmin(false);
+            invitationRecord.setIsHosting(false);
+            invitationRecord.setIsInvitation(true);
+            invitationRecord.setPublished(true);
+            invitationRecord.setCreatedDate(existing == null ? nowIso : normalizeDateTime(existing.getCreatedDate(), nowIso));
+            invitationRecord.setCreatedUser(existing == null ? resolveWaitlistInviterUserId(preferredEventRecord) : safeText(existing.getCreatedUser()));
+            invitationRecord.setUpdatedDate(nowIso);
+            invitationRecord.setUpdatedUser(resolveWaitlistInviterUserId(preferredEventRecord));
+            invitationRecord.normalizeLifecycleState();
+            invitationRecords.add(invitationRecord);
+        }
+        if (!invitationRecords.isEmpty()) {
+            activityEventsRepository.saveAll(invitationRecords);
+        }
+    }
+
+    private void deleteWaitlistInvitationRecord(String eventId, String userId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        List<ActivityEvent> recordsToDelete = activityEventsRepository.findByOwnerUserIdAndSourceId(normalizedUserId, normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> Boolean.TRUE.equals(record.getIsInvitation()) || "invitations".equals(safeText(record.getType())))
+                .toList();
+        if (!recordsToDelete.isEmpty()) {
+            activityEventsRepository.deleteAll(recordsToDelete);
+        }
+    }
+
+    private String resolveWaitlistInviterUserId(ActivityEvent eventRecord) {
+        String creatorUserId = normalizeId(eventRecord == null ? null : eventRecord.getCreatorUserId());
+        if (StringUtils.hasText(creatorUserId)) {
+            return creatorUserId;
+        }
+        return "system";
+    }
+
     private ActivityEvent findPreferredEventRecord(String sourceId) {
         List<ActivityEvent> documents = activityEventsRepository.findBySourceId(sourceId);
         ActivityEvent preferred = null;
@@ -1465,7 +1708,8 @@ public class ActivitiesMembersService {
                 actionAtIso,
                 safeText(member.getMetWhere()),
                 user == null ? 0d : safeDouble(user.getAffinity()),
-                resolveAvatarUrl(user));
+                resolveAvatarUrl(user),
+                user == null ? null : homeUserProfileService.toGameCardUserDto(user));
     }
 
     private String resolveStoredRole(ActivityMember member, String ownerType, String ownerId) {
@@ -1633,13 +1877,19 @@ public class ActivitiesMembersService {
             return null;
         }
         String normalizedRequestKind = safeText(requestKind);
-        if ("join".equals(normalizedRequestKind)) {
-            return "join";
+        if (REQUEST_KIND_JOIN.equals(normalizedRequestKind)) {
+            return REQUEST_KIND_JOIN;
         }
-        if ("invite".equals(normalizedRequestKind)) {
-            return "invite";
+        if (REQUEST_KIND_INVITE.equals(normalizedRequestKind)) {
+            return REQUEST_KIND_INVITE;
         }
-        return "member".equals(pendingSource) ? "join" : "invite";
+        if (REQUEST_KIND_WAITLIST.equals(normalizedRequestKind)) {
+            return REQUEST_KIND_WAITLIST;
+        }
+        if (REQUEST_KIND_WAITLIST_INVITE.equals(normalizedRequestKind)) {
+            return REQUEST_KIND_WAITLIST_INVITE;
+        }
+        return "member".equals(pendingSource) ? REQUEST_KIND_JOIN : REQUEST_KIND_INVITE;
     }
 
     private String resolveInvitedByUserId(ActivityMemberEntryDto entry, ActivityMember current, String actorUserId) {
@@ -1651,7 +1901,8 @@ public class ActivitiesMembersService {
         String status = normalizeStatus(entry.status());
         String pendingSource = resolvePendingSource(entry.pendingSource(), status);
         String requestKind = resolveRequestKind(entry.requestKind(), status, pendingSource);
-        if (!STATUS_PENDING.equals(status) || !"invite".equals(requestKind)) {
+        if (!STATUS_PENDING.equals(status)
+                || !(REQUEST_KIND_INVITE.equals(requestKind) || REQUEST_KIND_WAITLIST_INVITE.equals(requestKind))) {
             return null;
         }
         String explicitInvitedByUserId = normalizeId(entry.invitedByUserId());
@@ -1703,12 +1954,15 @@ public class ActivitiesMembersService {
         if (STATUS_ACCEPTED.equals(status)) {
             return true;
         }
+        if (STATUS_DELETED.equals(status)) {
+            return true;
+        }
         if (!STATUS_PENDING.equals(status)) {
             return false;
         }
         String pendingSource = resolvePendingSource(member.getPendingSource(), status);
         String requestKind = resolveRequestKind(member.getRequestKind(), status, pendingSource);
-        return "join".equals(requestKind);
+        return REQUEST_KIND_JOIN.equals(requestKind);
     }
 
     private String resolveCreatedUser(ActivityMember member, String actorUserId) {
@@ -1803,7 +2057,13 @@ public class ActivitiesMembersService {
         if (STATUS_DELETED.equals(status)) {
             return "No longer active in this event.";
         }
-        if ("join".equals(requestKind) || "member".equals(pendingSource)) {
+        if (REQUEST_KIND_WAITLIST.equals(requestKind)) {
+            return "Waiting for a spot.";
+        }
+        if (REQUEST_KIND_WAITLIST_INVITE.equals(requestKind)) {
+            return "Invitation pending.";
+        }
+        if (REQUEST_KIND_JOIN.equals(requestKind) || "member".equals(pendingSource)) {
             return "Waiting for admin approval.";
         }
         return "Invitation pending.";

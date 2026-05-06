@@ -1,5 +1,7 @@
 {
   "documentType": "privacy",
+  "lang": "en",
+  "languageLabel": "English",
   "version": 1,
   "title": "Data privacy",
   "summary": "Privacy first",
@@ -11,15 +13,15 @@
       "id": "privacy",
       "icon": "policy",
       "title": "Privacy",
-      "blurb": "How myscoutee handles personal data for profile, events, and social activity (including GDPR rights).",
-      "contentHtml": "<p>How myscoutee handles personal data for profile, events, and social activity (including GDPR rights).</p><p><strong>Last updated:</strong> February 1, 2026</p>"
+      "blurb": "How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).",
+      "contentHtml": "<p>How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).</p><p><strong>Last updated:</strong> February 1, 2026</p>"
     },
     {
       "id": "contact-details",
       "icon": "contact_mail",
       "title": "Contact details",
       "blurb": "Who to contact about privacy and data protection.",
-      "contentHtml": "<ul><li><strong>Data Controller:</strong> myscoutee demo platform</li><li><strong>Support Email:</strong> privacy@myscoutee.app</li><li><strong>DPO Contact:</strong> dpo@myscoutee.app</li></ul>"
+      "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee demo platform</li><li><strong>Support Email:</strong> privacy@myscoutee.app</li><li><strong>DPO Contact:</strong> dpo@myscoutee.app</li></ul>"
     },
     {
       "id": "legal-basis",

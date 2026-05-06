@@ -21,6 +21,7 @@ public class ChatWebSocketSessionRegistry {
 
     private final ObjectMapper objectMapper;
     private final Map<String, Map<String, SessionRef>> sessionsByChatId = new ConcurrentHashMap<>();
+    private final Map<String, String> lastPayloadBySessionId = new ConcurrentHashMap<>();
 
     public ChatWebSocketSessionRegistry(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -44,6 +45,7 @@ public class ChatWebSocketSessionRegistry {
                 sessionsByChatId.remove(entry.getKey());
             }
         }
+        lastPayloadBySessionId.remove(session.getId());
     }
 
     public boolean isUserConnected(String chatId, String userId) {
@@ -79,7 +81,12 @@ public class ChatWebSocketSessionRegistry {
             }
             ChatSocketEventDto socketEvent = event.toSocketEvent(sessionRef.userId());
             try {
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(socketEvent)));
+                String payload = objectMapper.writeValueAsString(socketEvent);
+                String previousPayload = lastPayloadBySessionId.put(session.getId(), payload);
+                if (payload.equals(previousPayload)) {
+                    continue;
+                }
+                session.sendMessage(new TextMessage(payload));
             } catch (IOException exception) {
                 unregister(session);
             } catch (Exception exception) {

@@ -21,6 +21,7 @@ public record ChatStreamEvent(
         String senderName,
         String senderInitials,
         String senderGender,
+        String senderImageUrl,
         String text,
         String sentAtIso,
         List<ChatReadAvatarDto> readBy,
@@ -45,6 +46,7 @@ public record ChatStreamEvent(
             String senderName,
             String senderInitials,
             String senderGender,
+            String senderImageUrl,
             String text,
             String sentAtIso,
             List<ChatReadAvatarDto> readBy,
@@ -66,6 +68,7 @@ public record ChatStreamEvent(
                 senderName,
                 senderInitials,
                 senderGender,
+                senderImageUrl,
                 text,
                 sentAtIso,
                 readBy,
@@ -99,6 +102,7 @@ public record ChatStreamEvent(
                 senderName,
                 senderInitials,
                 senderGender,
+                null,
                 null,
                 null,
                 null,
@@ -145,6 +149,7 @@ public record ChatStreamEvent(
                 null,
                 null,
                 null,
+                null,
                 messageIds,
                 readAtIso);
     }
@@ -161,6 +166,9 @@ public record ChatStreamEvent(
                             senderInitials,
                             senderGender,
                             Boolean.TRUE.equals(typing)),
+                    null,
+                    null,
+                    null,
                     null);
         }
         if ("read".equalsIgnoreCase(type)) {
@@ -174,7 +182,10 @@ public record ChatStreamEvent(
                             senderInitials,
                             senderGender,
                             messageIds == null ? List.of() : List.copyOf(messageIds),
-                            readAtIso));
+                            readAtIso),
+                    null,
+                    null,
+                    null);
         }
         return new ChatSocketEventDto(
                 "message",
@@ -186,6 +197,7 @@ public record ChatStreamEvent(
                         senderName,
                         senderInitials,
                         senderGender,
+                        senderImageUrl,
                         text,
                         sentAtIso,
                         Objects.equals(senderId, viewerUserId),
@@ -199,6 +211,9 @@ public record ChatStreamEvent(
                         replyTo,
                         reactions == null ? List.of() : List.copyOf(reactions),
                         attachments == null ? List.of() : List.copyOf(attachments)),
+                null,
+                null,
+                null,
                 null,
                 null);
     }
