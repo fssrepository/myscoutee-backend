@@ -9,6 +9,11 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
+about page - landing size (before the login)
+the gdpr privacy shouldn't open if it's not needed (so not open and immediately close)
+
+report user menu is bleeding out of the screen on mobile
+
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)
