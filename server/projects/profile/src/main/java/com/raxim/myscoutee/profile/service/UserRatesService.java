@@ -19,9 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,7 +37,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserRatesService {
-    private static final RateDistance ZERO_DISTANCE = new RateDistance(0d, 0);
+    private static final RateDistance ZERO_DISTANCE = new RateDistance(0);
 
     private final UserRatesRepository userRatesRepository;
     private final UsersRepository usersRepository;
@@ -59,8 +56,7 @@ public class UserRatesService {
     }
 
     @PostConstruct
-    void normalizePersistedUserRates() {
-        removeDeprecatedStorageFields();
+    void ensureUserRateIndexes() {
         ensureCanonicalUserRateIndexes();
     }
 
@@ -156,21 +152,6 @@ public class UserRatesService {
             userRatesRepository.saveAll(normalizedRates);
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
-    }
-
-    private void removeDeprecatedStorageFields() {
-        mongoTemplate.updateMulti(
-                Query.query(new Criteria().orOperator(
-                        Criteria.where("source").exists(true),
-                        Criteria.where("fromUserId").exists(true),
-                        Criteria.where("toUserId").exists(true),
-                        Criteria.where("rate").exists(true))),
-                new Update()
-                        .unset("source")
-                        .unset("fromUserId")
-                        .unset("toUserId")
-                        .unset("rate"),
-                UserRate.class);
     }
 
     private void ensureCanonicalUserRateIndexes() {
@@ -421,11 +402,11 @@ public class UserRatesService {
                 }
                 return new RateMenuItemDto(displayId, participantOtherUserId, resolvedCurrentUserId, "pair", direction,
                         socialContext, bridgeUserId, bridgeCount,
-                        scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
+                        scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
                     socialContext, bridgeUserId, bridgeCount,
-                    scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
+                    scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
         }
 
         String relatedUserId = isOwnerView
@@ -436,20 +417,20 @@ public class UserRatesService {
         }
         return new RateMenuItemDto(displayId, relatedUserId, null, "individual", direction,
                 null, null, null,
-                scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
+                scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
     }
 
     private RatePageProjection toRatePageProjection(RateMenuItemDto item) {
         if (item == null) {
             return null;
         }
-        int distanceMeters = exactDistanceMeters(item.distanceMetersExact(), item.distanceKm());
+        int distanceMeters = exactDistanceMeters(item.distanceMetersExact());
         return new RatePageProjection(
                 item,
                 resolveRateRelevanceScore(item),
                 dayStartMillis(item.happenedAt()),
                 rateDateMillis(item.happenedAt()),
-                distanceBucketMeters(item.distanceMetersExact(), item.distanceKm()),
+                distanceBucketMeters(item.distanceMetersExact()),
                 distanceMeters);
     }
 
@@ -975,21 +956,18 @@ public class UserRatesService {
                 * Math.sin(deltaLng / 2d) * Math.sin(deltaLng / 2d);
         double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
         int meters = Math.max(0, (int) Math.round(earthRadiusMeters * c));
-        return new RateDistance(meters / 1000d, meters);
+        return new RateDistance(meters);
     }
 
-    private static int exactDistanceMeters(Integer distanceMetersExact, Double distanceKm) {
+    private static int exactDistanceMeters(Integer distanceMetersExact) {
         if (distanceMetersExact != null) {
             return Math.max(0, distanceMetersExact);
         }
-        if (distanceKm == null || !Double.isFinite(distanceKm)) {
-            return 0;
-        }
-        return Math.max(0, (int) Math.round(distanceKm * 1000d));
+        return 0;
     }
 
-    private static int distanceBucketMeters(Integer distanceMetersExact, Double distanceKm) {
-        int meters = exactDistanceMeters(distanceMetersExact, distanceKm);
+    private static int distanceBucketMeters(Integer distanceMetersExact) {
+        int meters = exactDistanceMeters(distanceMetersExact);
         return Math.max(5000, (int) Math.ceil(meters / 5000d) * 5000);
     }
 
@@ -1042,6 +1020,6 @@ public class UserRatesService {
             int distanceMetersExact) {
     }
 
-    private record RateDistance(double kilometers, int metersExact) {
+    private record RateDistance(int metersExact) {
     }
 }
