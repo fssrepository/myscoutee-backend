@@ -837,7 +837,7 @@ public class HomeUserProfileService {
             return ratedUserIds;
         }
 
-        for (UserRate record : userRatesRepository.findByOwnerUserIdAndSource(raterUserId, "activity-rate")) {
+        for (UserRate record : userRatesRepository.findByOwnerUserId(raterUserId)) {
             if (!hasOwnRecordedActivityRate(record, raterUserId)) {
                 continue;
             }
@@ -852,7 +852,7 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(raterUserId)) {
             return ratedPairKeys;
         }
-        for (UserRate record : userRatesRepository.findByOwnerUserIdAndSourceAndMode(raterUserId, "activity-rate", "pair")) {
+        for (UserRate record : userRatesRepository.findByOwnerUserIdAndMode(raterUserId, "pair")) {
             if (!hasOwnRecordedActivityRate(record, raterUserId)) {
                 continue;
             }
@@ -892,9 +892,6 @@ public class HomeUserProfileService {
         Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
 
         for (UserRate record : userRatesRepository.findAll()) {
-            if (!"activity-rate".equals(normalizeId(record.getSource()).toLowerCase())) {
-                continue;
-            }
             if (!Boolean.TRUE.equals(record.getMet())
                     && !StringUtils.hasText(normalizeOptionalText(record.getEventName()))) {
                 continue;
@@ -907,15 +904,6 @@ public class HomeUserProfileService {
             }
             if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(secondaryRelatedUserId) && !ownerUserId.equals(secondaryRelatedUserId)) {
                 registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, ownerUserId, secondaryRelatedUserId, record);
-            }
-
-            String firstUserId = normalizeId(record.getFromUserId());
-            String secondUserId = normalizeId(record.getToUserId());
-            if ("single".equals(normalizeId(record.getMode()).toLowerCase())
-                    && StringUtils.hasText(firstUserId)
-                    && StringUtils.hasText(secondUserId)
-                    && !firstUserId.equals(secondUserId)) {
-                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, firstUserId, secondUserId, record);
             }
         }
 

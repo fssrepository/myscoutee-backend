@@ -147,22 +147,6 @@ public class ActivitiesInviteCandidatesService {
 
         addCounterpart(counterpartIds, rate.getRelatedUserId(), activeUserId);
         addCounterpart(counterpartIds, rate.getSecondaryRelatedUserId(), activeUserId);
-        if (!counterpartIds.isEmpty()) {
-            return new ArrayList<>(counterpartIds);
-        }
-
-        String fromUserId = normalizeId(rate.getFromUserId());
-        String toUserId = normalizeId(rate.getToUserId());
-        if (activeUserId.equals(fromUserId)) {
-            addCounterpart(counterpartIds, toUserId, activeUserId);
-        }
-        if (activeUserId.equals(toUserId)) {
-            addCounterpart(counterpartIds, fromUserId, activeUserId);
-        }
-        if ("pair".equals(safeText(rate.getMode())) && activeUserId.equals(normalizeId(rate.getOwnerUserId()))) {
-            addCounterpart(counterpartIds, fromUserId, activeUserId);
-            addCounterpart(counterpartIds, toUserId, activeUserId);
-        }
         return new ArrayList<>(counterpartIds);
     }
 

@@ -54,7 +54,6 @@ public class EventScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventScheduler.class);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_GROUP = "group";
-    private static final String RATE_SOURCE_ACTIVITY = "activity-rate";
     private static final String MARKER_ACTION_GROUP_MEMBERS = "group-members";
     private static final String MARKER_ACTION_INVITE_BATCH = "invite-batch";
     private static final String MARKER_UPDATED_BY = "scheduler";
@@ -531,9 +530,9 @@ public List<InviteBatchPlan> generatePriorityPlans() {
                         .distinct()
                         .toList();
         if (normalizedUserIds.isEmpty()) {
-            return userRatesRepository.findBySource(RATE_SOURCE_ACTIVITY);
+            return userRatesRepository.findAll();
         }
-        return userRatesRepository.findRelevantBySourceAndUserIds(RATE_SOURCE_ACTIVITY, normalizedUserIds);
+        return userRatesRepository.findRelevantByUserIds(normalizedUserIds);
     }
 
     private void collectRateUserIds(Set<String> userIds, UserRate rate) {

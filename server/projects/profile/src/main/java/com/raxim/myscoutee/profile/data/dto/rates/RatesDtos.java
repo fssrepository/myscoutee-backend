@@ -38,7 +38,6 @@ public final class RatesDtos {
             String toUserId,
             Integer rate,
             String mode,
-            String source,
             String createdAtIso,
             String updatedAtIso,
             String ownerUserId,

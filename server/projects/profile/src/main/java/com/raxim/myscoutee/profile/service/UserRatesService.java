@@ -19,6 +19,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,8 +40,6 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserRatesService {
-    private static final String SOURCE_ACTIVITY_RATE = "activity-rate";
-    private static final String SOURCE_GAME_CARD = "game-card";
     private static final RateDistance ZERO_DISTANCE = new RateDistance(0d, 0);
 
     private final UserRatesRepository userRatesRepository;
@@ -59,7 +60,7 @@ public class UserRatesService {
 
     @PostConstruct
     void normalizePersistedUserRates() {
-        migrateLegacyGameCardRates();
+        removeDeprecatedStorageFields();
         ensureCanonicalUserRateIndexes();
     }
 
@@ -157,66 +158,19 @@ public class UserRatesService {
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
     }
 
-    private void migrateLegacyGameCardRates() {
-        List<UserRate> legacyRecords = userRatesRepository.findBySource(SOURCE_GAME_CARD);
-        if (legacyRecords.isEmpty()) {
-            return;
-        }
-        List<UserRate> changedRecords = legacyRecords.stream()
-                .filter(this::applyCanonicalGameCardShape)
-                .toList();
-        if (!changedRecords.isEmpty()) {
-            userRatesRepository.saveAll(changedRecords);
-        }
-    }
-
-    private boolean applyCanonicalGameCardShape(UserRate record) {
-        if (record == null || !SOURCE_GAME_CARD.equals(normalizeSource(record.getSource()))) {
-            return false;
-        }
-        String mode = normalizeMode(record.getMode());
-        if (!StringUtils.hasText(mode)) {
-            return false;
-        }
-        String canonicalOwnerUserId = "pair".equals(mode)
-                ? normalizeOptionalId(record.getOwnerUserId())
-                : normalizeOptionalId(record.getFromUserId());
-        String relatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(record.getFromUserId())
-                : normalizeOptionalId(record.getToUserId());
-        String secondaryRelatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(record.getToUserId())
-                : null;
-        Integer normalizedRate = normalizeRate(record.getRate(), false);
-        if (!StringUtils.hasText(canonicalOwnerUserId)
-                || !StringUtils.hasText(relatedUserId)
-                || canonicalOwnerUserId.equals(relatedUserId)
-                || normalizedRate == null) {
-            return false;
-        }
-        if ("pair".equals(mode) && (!StringUtils.hasText(secondaryRelatedUserId) || relatedUserId.equals(secondaryRelatedUserId))) {
-            return false;
-        }
-        record.setSource(SOURCE_ACTIVITY_RATE);
-        record.setOwnerUserId(canonicalOwnerUserId);
-        record.setOwnerLocation(resolveLocationSnapshot(canonicalOwnerUserId));
-        record.setRelatedUserId(relatedUserId);
-        record.setSecondaryRelatedUserId(secondaryRelatedUserId);
-        record.setScoreGiven(normalizedRate);
-        record.setScoreReceived(0);
-        record.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
-        record.setMet(false);
-        record.setEventName(normalizeOptionalText(record.getEventName()));
-        record.setFromUserId(null);
-        record.setToUserId(null);
-        record.setRate(null);
-        if (!StringUtils.hasText(normalizeOptionalId(record.getCreatedUser()))) {
-            record.setCreatedUser(canonicalOwnerUserId);
-        }
-        if (!StringUtils.hasText(normalizeOptionalId(record.getUpdatedUser()))) {
-            record.setUpdatedUser(canonicalOwnerUserId);
-        }
-        return true;
+    private void removeDeprecatedStorageFields() {
+        mongoTemplate.updateMulti(
+                Query.query(new Criteria().orOperator(
+                        Criteria.where("source").exists(true),
+                        Criteria.where("fromUserId").exists(true),
+                        Criteria.where("toUserId").exists(true),
+                        Criteria.where("rate").exists(true))),
+                new Update()
+                        .unset("source")
+                        .unset("fromUserId")
+                        .unset("toUserId")
+                        .unset("rate"),
+                UserRate.class);
     }
 
     private void ensureCanonicalUserRateIndexes() {
@@ -230,27 +184,27 @@ public class UserRatesService {
         dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_to");
         dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_pair_owner");
         dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_lane_owner");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_owner_mode_updated");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_primary_lookup");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_secondary_lookup");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_owner_primary_mode");
 
         indexOps.createIndex(new Index()
-                .named("user_rate_owner_mode_updated")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_owner_mode_updated_v2")
                 .on("ownerUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC)
                 .on("updatedDate", Sort.Direction.DESC));
         indexOps.createIndex(new Index()
-                .named("user_rate_primary_lookup")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_primary_lookup_v2")
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("updatedDate", Sort.Direction.DESC));
         indexOps.createIndex(new Index()
-                .named("user_rate_secondary_lookup")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_secondary_lookup_v2")
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
                 .on("updatedDate", Sort.Direction.DESC)
                 .sparse());
         indexOps.createIndex(new Index()
-                .named("user_rate_owner_primary_mode")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_owner_primary_mode_v2")
                 .on("ownerUserId", Sort.Direction.ASC)
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
@@ -269,7 +223,7 @@ public class UserRatesService {
 
     private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId) {
         Map<String, UserRate> recordsById = new LinkedHashMap<>();
-        addRecords(recordsById, userRatesRepository.findRelevantBySourceAndUserIds(SOURCE_ACTIVITY_RATE, List.of(ownerUserId)));
+        addRecords(recordsById, userRatesRepository.findRelevantByUserIds(List.of(ownerUserId)));
 
         return dedupeRateItems(recordsById.values().stream()
                 .map(record -> toRateMenuItem(record, currentUser))
@@ -340,17 +294,15 @@ public class UserRatesService {
         }
         String syncKey = resolveSyncKey(rate);
         String mode = normalizeMode(rate.mode());
-        String source = normalizeSource(rate.source());
         if (!StringUtils.hasText(syncKey)
-                || !StringUtils.hasText(mode)
-                || !StringUtils.hasText(source)) {
+                || !StringUtils.hasText(mode)) {
             return null;
         }
 
         UserRate existing = userRatesRepository.findBySyncKey(syncKey).orElse(null);
-        String ownerUserId = normalizeOptionalId(rate.ownerUserId());
         String fromUserId = normalizeOptionalId(rate.fromUserId());
         String toUserId = normalizeOptionalId(rate.toUserId());
+        String ownerUserId = resolveOwnerUserId(mode, rate.ownerUserId(), fromUserId);
         String updatedUserId = resolveUpdatedUser(rate, ownerUserId, fromUserId, toUserId);
         String createdUserId = existing != null
                 ? normalizeOptionalText(existing.getCreatedUser())
@@ -361,7 +313,6 @@ public class UserRatesService {
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
         document.setSyncKey(syncKey);
         document.setMode(mode);
-        document.setSource(source);
         document.setCreatedDate(existing != null
                 ? normalizeDate(existing.getCreatedDate(), nowIso)
                 : normalizeDate(rate.createdAtIso(), normalizeDate(rate.happenedAtIso(), normalizeDate(rate.updatedAtIso(), nowIso))));
@@ -371,13 +322,10 @@ public class UserRatesService {
         document.setOwnerUserId(ownerUserId);
         document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
 
-        if (SOURCE_ACTIVITY_RATE.equals(source)) {
-            return normalizeActivityRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
-        }
-        return normalizeGameCardRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+        return normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
     }
 
-    private UserRate normalizeActivityRateRecord(
+    private UserRate normalizeRateRecord(
             UserRate document,
             UserRateRecordDto rate,
             String mode,
@@ -404,12 +352,9 @@ public class UserRatesService {
         String preservedEventName = normalizeOptionalText(document.getEventName());
         String requestedEventName = normalizeOptionalText(rate.eventName());
 
-        document.setFromUserId(null);
-        document.setToUserId(null);
-        document.setRate(null);
         document.setRelatedUserId(relatedUserId);
         document.setSecondaryRelatedUserId(secondaryRelatedUserId);
-        document.setScoreGiven(normalizeScore(rate.scoreGiven()));
+        document.setScoreGiven(resolveScoreGiven(rate));
         document.setScoreReceived(normalizeScore(rate.scoreReceived()));
         document.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
         document.setMet(met);
@@ -419,56 +364,8 @@ public class UserRatesService {
         return document;
     }
 
-    private UserRate normalizeGameCardRecord(
-            UserRate document,
-            UserRateRecordDto rate,
-            String mode,
-            String ownerUserId,
-            String fromUserId,
-            String toUserId) {
-        String canonicalOwnerUserId = "pair".equals(mode)
-                ? normalizeOptionalId(ownerUserId)
-                : normalizeOptionalId(fromUserId);
-        String relatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(fromUserId)
-                : normalizeOptionalId(toUserId);
-        String secondaryRelatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(toUserId)
-                : null;
-        if (!StringUtils.hasText(canonicalOwnerUserId)
-                || !StringUtils.hasText(relatedUserId)
-                || canonicalOwnerUserId.equals(relatedUserId)) {
-            return null;
-        }
-        if ("pair".equals(mode) && (!StringUtils.hasText(secondaryRelatedUserId) || relatedUserId.equals(secondaryRelatedUserId))) {
-            return null;
-        }
-        Integer normalizedRate = normalizeRate(rate.rate(), false);
-        if (normalizedRate == null) {
-            return null;
-        }
-        document.setSource(SOURCE_ACTIVITY_RATE);
-        document.setOwnerUserId(canonicalOwnerUserId);
-        document.setOwnerLocation(resolveLocationSnapshot(canonicalOwnerUserId));
-        document.setFromUserId(null);
-        document.setToUserId(null);
-        document.setRate(null);
-        document.setRelatedUserId(relatedUserId);
-        document.setSecondaryRelatedUserId(secondaryRelatedUserId);
-        document.setScoreGiven(normalizedRate);
-        document.setScoreReceived(0);
-        document.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
-        document.setMet(false);
-        document.setEventName(normalizeOptionalText(rate.eventName()));
-        return document;
-    }
-
     private RateMenuItemDto toRateMenuItem(UserRate record, Users currentUser) {
         if (record == null || currentUser == null) {
-            return null;
-        }
-        String source = normalizeSource(record.getSource());
-        if (!SOURCE_ACTIVITY_RATE.equals(source)) {
             return null;
         }
         return toActivityRateMenuItem(record, currentUser);
@@ -735,6 +632,17 @@ public class UserRatesService {
         return normalized.isEmpty() ? null : normalized;
     }
 
+    private String resolveOwnerUserId(String mode, String requestedOwnerUserId, String fromUserId) {
+        String ownerUserId = normalizeOptionalId(requestedOwnerUserId);
+        if (StringUtils.hasText(ownerUserId)) {
+            return ownerUserId;
+        }
+        if ("single".equals(mode)) {
+            return normalizeOptionalId(fromUserId);
+        }
+        return null;
+    }
+
     private String resolveSyncKey(UserRateRecordDto rate) {
         String id = normalizeOptionalText(rate.id());
         if (StringUtils.hasText(id)) {
@@ -751,22 +659,14 @@ public class UserRatesService {
             String toUserId,
             String updatedUserId) {
         String direction = normalizeDisplayDirection(rate.displayDirection());
-        if (SOURCE_ACTIVITY_RATE.equals(normalizeSource(rate.source()))) {
-            if ("received".equals(direction) || "mutual".equals(direction)) {
-                return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, updatedUserId);
-            }
-            if (StringUtils.hasText(ownerUserId)) {
-                return ownerUserId;
-            }
-        }
-        if (SOURCE_GAME_CARD.equals(normalizeSource(rate.source())) && "single".equals(normalizeMode(rate.mode()))) {
-            return fromUserId;
-        }
-        if (StringUtils.hasText(updatedUserId)) {
-            return updatedUserId;
+        if ("received".equals(direction) || "mutual".equals(direction)) {
+            return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, updatedUserId);
         }
         if (StringUtils.hasText(ownerUserId)) {
             return ownerUserId;
+        }
+        if (StringUtils.hasText(updatedUserId)) {
+            return updatedUserId;
         }
         return fromUserId;
     }
@@ -777,16 +677,8 @@ public class UserRatesService {
             return normalizeId(currentUser.getId());
         }
         String persistedDirection = normalizeDisplayDirection(rate.displayDirection());
-        if (SOURCE_ACTIVITY_RATE.equals(normalizeSource(rate.source()))) {
-            if ("received".equals(persistedDirection)) {
-                return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, fromUserId);
-            }
-            if (StringUtils.hasText(ownerUserId)) {
-                return ownerUserId;
-            }
-        }
-        if (SOURCE_GAME_CARD.equals(normalizeSource(rate.source())) && "single".equals(normalizeMode(rate.mode()))) {
-            return fromUserId;
+        if ("received".equals(persistedDirection)) {
+            return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, fromUserId);
         }
         if (StringUtils.hasText(ownerUserId)) {
             return ownerUserId;
@@ -938,14 +830,6 @@ public class UserRatesService {
         return null;
     }
 
-    private String normalizeSource(String value) {
-        String normalized = normalizeId(value).toLowerCase();
-        if (SOURCE_GAME_CARD.equals(normalized) || SOURCE_ACTIVITY_RATE.equals(normalized)) {
-            return normalized;
-        }
-        return null;
-    }
-
     private String normalizeDisplayDirection(String value) {
         String normalized = normalizeId(value).toLowerCase();
         if ("given".equals(normalized) || "received".equals(normalized)
@@ -960,22 +844,19 @@ public class UserRatesService {
         return StringUtils.hasText(normalized) ? normalized : fallback;
     }
 
-    private Integer normalizeRate(Integer value, boolean allowZero) {
-        if (value == null) {
-            return allowZero ? 0 : null;
-        }
-        int normalized = Math.max(allowZero ? 0 : 1, Math.min(10, value));
-        if (!allowZero && normalized <= 0) {
-            return null;
-        }
-        return normalized;
-    }
-
     private int normalizeScore(Integer value) {
         if (value == null) {
             return 0;
         }
         return Math.max(0, Math.min(10, value));
+    }
+
+    private int resolveScoreGiven(UserRateRecordDto rate) {
+        int scoreGiven = normalizeScore(rate == null ? null : rate.scoreGiven());
+        if (scoreGiven > 0) {
+            return scoreGiven;
+        }
+        return normalizeScore(rate == null ? null : rate.rate());
     }
 
     private boolean isMetRequest(UserRateRecordDto rate) {

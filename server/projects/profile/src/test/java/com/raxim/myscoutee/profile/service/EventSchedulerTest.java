@@ -75,7 +75,7 @@ class EventSchedulerTest {
                 user("u1"),
                 user("u2"),
                 user("u3")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("locked-1", "u1", 1.0d),
                 rate("locked-1", "u2", 0.8d),
                 rate("u1", "u3", 0.95d),
@@ -119,7 +119,7 @@ class EventSchedulerTest {
                 user("u2"),
                 user("u3"),
                 user("u4")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u3", "u4", 0.95d)));
         ActivitiesMembersService.OwnerMembersSnapshot eventSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -213,7 +213,7 @@ class EventSchedulerTest {
                 user("u2"),
                 user("u3"),
                 user("u4")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u3", "u4", 0.95d)));
         ActivitiesMembersService.OwnerMembersSnapshot eventSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -314,7 +314,7 @@ class EventSchedulerTest {
                 user("u1"),
                 user("u2"),
                 user("u3")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u2", "u3", 0.2d)));
         when(activitiesEventLeaderboardService.queryState("event-3", "sub-1")).thenReturn(currentState);
@@ -342,7 +342,7 @@ class EventSchedulerTest {
         when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d)));
         ActivitiesMembersService.OwnerMembersSnapshot eventSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
                 "event",
@@ -398,7 +398,6 @@ class EventSchedulerTest {
 
     private UserRate rate(String ownerUserId, String relatedUserId, double affinityScore) {
         UserRate rate = new UserRate();
-        rate.setSource("activity-rate");
         rate.setMode("single");
         rate.setOwnerUserId(ownerUserId);
         rate.setRelatedUserId(relatedUserId);
