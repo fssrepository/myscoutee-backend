@@ -71,7 +71,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class HomeUserProfileService {
-    private static final List<String> PUBLIC_GAME_PROFILE_STATUSES = List.of("public");
+    private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
     private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted");
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
@@ -512,12 +512,19 @@ public class HomeUserProfileService {
         }
 
         Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
+        List<Users> visibleGameUsers = usersRepository.findByProfileStatusIn(HOME_GAME_PROFILE_STATUSES);
+        Set<String> friendsInCommonCandidateIds = queryFriendsInCommonCandidateIds(
+                normalizedUserId,
+                visibleGameUsers,
+                buildActivitySocialGraph(),
+                ratedUserIds);
         Map<String, Double> edgeWeightsByPairKey = queryAffinityEdgeWeights(List.of(normalizedUserId));
-        return usersRepository.findByProfileStatusIn(PUBLIC_GAME_PROFILE_STATUSES).stream()
+        return visibleGameUsers.stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
+                .filter(user -> !friendsInCommonCandidateIds.contains(normalizeId(user.getId())))
                 .sorted(homeUserComparator(normalizedUserId, edgeWeightsByPairKey))
                 .toList();
     }
@@ -689,6 +696,48 @@ public class HomeUserProfileService {
                         .comparingDouble(GameSocialCardCandidate::score).reversed()
                         .thenComparing(GameSocialCardCandidate::id))
                 .toList();
+    }
+
+    private Set<String> queryFriendsInCommonCandidateIds(
+            String activeUserId,
+            List<Users> users,
+            ActivitySocialGraph graph,
+            Set<String> ratedUserIds) {
+        String normalizedUserId = normalizeId(activeUserId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+
+        Map<String, Users> usersById = indexUsersById(users);
+        if (!isPublicGameUser(usersById.get(normalizedUserId))) {
+            return Set.of();
+        }
+
+        Set<String> activeNeighbors = graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
+        if (activeNeighbors.isEmpty()) {
+            return Set.of();
+        }
+
+        Set<String> excludedRatedUserIds = ratedUserIds == null ? Set.of() : ratedUserIds;
+        Set<String> candidateIds = new LinkedHashSet<>();
+        for (Users user : users) {
+            String candidateUserId = normalizeId(user == null ? null : user.getId());
+            if (!StringUtils.hasText(candidateUserId)
+                    || normalizedUserId.equals(candidateUserId)
+                    || activeNeighbors.contains(candidateUserId)
+                    || excludedRatedUserIds.contains(candidateUserId)
+                    || !isPublicGameUser(user)) {
+                continue;
+            }
+
+            Set<String> candidateNeighbors = graph.neighborsByUserId().getOrDefault(candidateUserId, Set.of());
+            if (activeNeighbors.stream()
+                    .filter(candidateNeighbors::contains)
+                    .anyMatch(bridgeId -> isInsideNetworkGameUser(usersById.get(bridgeId)))) {
+                candidateIds.add(candidateUserId);
+            }
+        }
+        return candidateIds;
     }
 
     public List<UserDto> queryDemoUsers() {

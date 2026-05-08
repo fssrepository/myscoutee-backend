@@ -2564,6 +2564,139 @@
   },
   {
     "_id": {
+      "$oid": "650000000000000000000061"
+    },
+    "about": "I am the seeded bridge profile for Friends in Common demo discovery.",
+    "activities": {
+      "chat": 2,
+      "events": 4,
+      "game": 1,
+      "hosting": 0,
+      "invitations": 1
+    },
+    "affinity": 612400,
+    "age": 32,
+    "birthday": "1993-04-14",
+    "city": "Austin",
+    "completion": 70,
+    "gender": "man",
+    "headline": "Quiet connector in small groups.",
+    "height": "181 cm",
+    "horoscope": "Aries",
+    "hostTier": "Member",
+    "images": [
+      "https://randomuser.me/api/portraits/men/52.jpg"
+    ],
+    "initials": "CB",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2712,
+      "longitude": -97.7412
+    },
+    "name": "Casey Bridge",
+    "physique": "Lean",
+    "profileDetails": [],
+    "profileFormVersion": 2,
+    "profileStatus": "friends only",
+    "statusText": "Recently Active",
+    "traitLabel": "Reliable One",
+    "syncKey": "11111111-2222-5333-8444-000000000061",
+    "partitionKey": "country:hu",
+    "userId": "650000000000000000000061"
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000062"
+    },
+    "about": "A fresh public profile connected only through a seeded friend bridge.",
+    "activities": {
+      "chat": 1,
+      "events": 3,
+      "game": 0,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 684300,
+    "age": 27,
+    "birthday": "1998-08-09",
+    "city": "Austin",
+    "completion": 74,
+    "gender": "woman",
+    "headline": "New face through a trusted friend.",
+    "height": "169 cm",
+    "horoscope": "Leo",
+    "hostTier": "Member",
+    "images": [
+      "https://randomuser.me/api/portraits/women/52.jpg"
+    ],
+    "initials": "NS",
+    "languages": [
+      "English",
+      "Spanish"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2791,
+      "longitude": -97.7461
+    },
+    "name": "Nova Social",
+    "physique": "Athletic",
+    "profileDetails": [],
+    "profileFormVersion": 2,
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Social Charmer",
+    "syncKey": "11111111-2222-5333-8444-000000000062",
+    "partitionKey": "country:hu",
+    "userId": "650000000000000000000062"
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000063"
+    },
+    "about": "A fresh public outside-network profile for Preferences discovery.",
+    "activities": {
+      "chat": 1,
+      "events": 2,
+      "game": 0,
+      "hosting": 0,
+      "invitations": 0
+    },
+    "affinity": 571200,
+    "age": 29,
+    "birthday": "1996-10-03",
+    "city": "Austin",
+    "completion": 68,
+    "gender": "man",
+    "headline": "Outside-network card for fresh discovery.",
+    "height": "183 cm",
+    "horoscope": "Libra",
+    "hostTier": "Member",
+    "images": [
+      "https://randomuser.me/api/portraits/men/53.jpg"
+    ],
+    "initials": "RO",
+    "languages": [
+      "English"
+    ],
+    "locationCoordinates": {
+      "latitude": 30.2656,
+      "longitude": -97.7523
+    },
+    "name": "Riley Outside",
+    "physique": "Fit",
+    "profileDetails": [],
+    "profileFormVersion": 2,
+    "profileStatus": "public",
+    "statusText": "Recently Active",
+    "traitLabel": "Adventurer",
+    "syncKey": "11111111-2222-5333-8444-000000000063",
+    "partitionKey": "country:hu",
+    "userId": "650000000000000000000063"
+  },
+  {
+    "_id": {
       "$oid": "650000000000000000000051"
     },
     "about": "",

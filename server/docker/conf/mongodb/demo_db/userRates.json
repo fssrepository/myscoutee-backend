@@ -80394,5 +80394,53 @@
     "socialContext": "friends-in-common",
     "bridgeUserId": "1b1c70be2349b3359a8f6f94",
     "bridgeCount": 3
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000071"
+    },
+    "syncKey": "22222222-3333-5444-8555-000000000071",
+    "mode": "single",
+    "ownerUserId": "bf057de7c586eede7e84bdc7",
+    "relatedUserId": "650000000000000000000061",
+    "scoreGiven": 0,
+    "scoreReceived": 0,
+    "met": true,
+    "affinityScore": 0.61,
+    "evidenceConfidence": 0.82,
+    "ownerLocation": {
+      "latitude": 30.2768,
+      "longitude": -97.7479
+    },
+    "createdDate": "2026-03-22T18:00:00Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-03-22T18:00:00Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7",
+    "mutuallyRated": false,
+    "eventName": "Seeded Coffee Bridge"
+  },
+  {
+    "_id": {
+      "$oid": "650000000000000000000072"
+    },
+    "syncKey": "22222222-3333-5444-8555-000000000072",
+    "mode": "single",
+    "ownerUserId": "650000000000000000000061",
+    "relatedUserId": "650000000000000000000062",
+    "scoreGiven": 0,
+    "scoreReceived": 0,
+    "met": true,
+    "affinityScore": 0.68,
+    "evidenceConfidence": 0.82,
+    "ownerLocation": {
+      "latitude": 30.2712,
+      "longitude": -97.7412
+    },
+    "createdDate": "2026-03-22T18:30:00Z",
+    "createdUser": "650000000000000000000061",
+    "updatedDate": "2026-03-22T18:30:00Z",
+    "updatedUser": "650000000000000000000061",
+    "mutuallyRated": false,
+    "eventName": "Seeded Coffee Bridge"
   }
 ]

@@ -2,11 +2,13 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,7 @@ import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.document.UserRate;
 
 @ExtendWith(MockitoExtension.class)
 class HomeUserProfileServiceTest {
@@ -142,6 +145,28 @@ class HomeUserProfileServiceTest {
         assertThat(cards.get(0).secondaryUserId()).isEqualTo("b");
     }
 
+    @Test
+    void preferencesExcludeFriendsInCommonCandidates() {
+        Users active = user("active", 0d);
+        Users bridge = user("bridge", 0d);
+        bridge.setProfileStatus("friends only");
+        Users socialCandidate = user("social-candidate", 900_000d);
+        Users outsideCandidate = user("outside-candidate", 1d);
+
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(List.of(active, bridge, socialCandidate, outsideCandidate));
+        when(userRatesRepository.findAll()).thenReturn(List.of(
+                metRate("active", "bridge"),
+                metRate("bridge", "social-candidate")));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
+
+        List<Users> cards = service.queryGameStackUserRecords("active");
+
+        assertThat(cards).extracting(Users::getId)
+                .containsExactly("outside-candidate");
+    }
+
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {
         Map<String, Set<String>> normalizedNeighbors = new LinkedHashMap<>();
         neighborsByUserId.forEach((userId, neighbors) ->
@@ -155,5 +180,14 @@ class HomeUserProfileServiceTest {
         user.setName(userId);
         user.setAffinity(affinity);
         return user;
+    }
+
+    private UserRate metRate(String ownerUserId, String relatedUserId) {
+        UserRate record = new UserRate();
+        record.setOwnerUserId(ownerUserId);
+        record.setRelatedUserId(relatedUserId);
+        record.setMet(true);
+        record.setEventName("Coffee Social");
+        return record;
     }
 }
