@@ -87,6 +87,12 @@ public class HomeUserProfileService {
     private static final double HOME_KNOWN_EDGE_SCORE = 1_000_000d;
     private static final double HOME_BRIDGE_COUNT_SCORE = 1_000_000d;
     private static final double HOME_BRIDGE_EDGE_SCORE = 250_000d;
+    private static final double HOME_DISTANCE_SCORE = 120_000d;
+    private static final double HOME_FRESHNESS_SCORE = 120_000d;
+    private static final double HOME_DISTANCE_BUCKET_KM = 5d;
+    private static final double HOME_DISTANCE_MAX_BUCKETS = 12d;
+    private static final double HOME_FRESHNESS_HALF_LIFE_DAYS = 14d;
+    private static final long MILLIS_PER_DAY = 24L * 60L * 60L * 1000L;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -519,13 +525,14 @@ public class HomeUserProfileService {
                 buildActivitySocialGraph(),
                 ratedUserIds);
         Map<String, Double> edgeWeightsByPairKey = queryAffinityEdgeWeights(List.of(normalizedUserId));
+        HomeRankingContext rankingContext = buildHomeRankingContext(normalizedUserId, visibleGameUsers);
         return visibleGameUsers.stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !friendsInCommonCandidateIds.contains(normalizeId(user.getId())))
-                .sorted(homeUserComparator(normalizedUserId, edgeWeightsByPairKey))
+                .sorted(homeUserComparator(normalizedUserId, edgeWeightsByPairKey, rankingContext))
                 .toList();
     }
 
@@ -912,17 +919,26 @@ public class HomeUserProfileService {
                 .thenComparing(user -> normalizeId(user.getId()));
     }
 
-    private Comparator<Users> homeUserComparator(String activeUserId, Map<String, Double> edgeWeightsByPairKey) {
+    private Comparator<Users> homeUserComparator(
+            String activeUserId,
+            Map<String, Double> edgeWeightsByPairKey,
+            HomeRankingContext rankingContext) {
         return Comparator
-                .comparingDouble((Users user) -> homeUserScore(activeUserId, user, edgeWeightsByPairKey))
+                .comparingDouble((Users user) -> homeUserScore(activeUserId, user, edgeWeightsByPairKey, rankingContext))
                 .reversed()
                 .thenComparing(user -> normalizeId(user == null ? null : user.getId()));
     }
 
-    private double homeUserScore(String activeUserId, Users user, Map<String, Double> edgeWeightsByPairKey) {
+    private double homeUserScore(
+            String activeUserId,
+            Users user,
+            Map<String, Double> edgeWeightsByPairKey,
+            HomeRankingContext rankingContext) {
         String candidateUserId = normalizeId(user == null ? null : user.getId());
         return edgeWeight(activeUserId, candidateUserId, edgeWeightsByPairKey) * HOME_KNOWN_EDGE_SCORE
-                + resolveUserAffinity(user);
+                + resolveUserAffinity(user)
+                + homeDistanceScore(rankingContext == null ? null : rankingContext.activeUser(), user)
+                + homeFreshnessScore(candidateUserId, rankingContext);
     }
 
     private Map<String, Users> indexUsersById(List<Users> users) {
@@ -969,6 +985,124 @@ public class HomeUserProfileService {
             }
         }
         return weightsByPairKey;
+    }
+
+    private HomeRankingContext buildHomeRankingContext(String activeUserId, List<Users> visibleGameUsers) {
+        String normalizedUserId = normalizeId(activeUserId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new HomeRankingContext(null, Map.of(), Instant.now().toEpochMilli());
+        }
+
+        Map<String, Users> usersById = indexUsersById(visibleGameUsers);
+        Users activeUser = usersById.get(normalizedUserId);
+        long nowMs = Instant.now().toEpochMilli();
+        Map<String, Long> latestActivityMsByUserId = queryLatestHomeActivityMsByUserId();
+        return new HomeRankingContext(activeUser, latestActivityMsByUserId, nowMs);
+    }
+
+    private Map<String, Long> queryLatestHomeActivityMsByUserId() {
+        Map<String, Long> latestByUserId = new LinkedHashMap<>();
+        for (UserRate record : userRatesRepository.findAll()) {
+            if (record == null) {
+                continue;
+            }
+            long timestampMs = parseIsoMillis(firstNonBlank(
+                    record.getUpdatedDate(),
+                    record.getCreatedDate()));
+            if (timestampMs <= 0L) {
+                continue;
+            }
+            rememberLatestActivityMs(latestByUserId, record.getOwnerUserId(), timestampMs);
+            rememberLatestActivityMs(latestByUserId, record.getRelatedUserId(), timestampMs);
+            rememberLatestActivityMs(latestByUserId, record.getSecondaryRelatedUserId(), timestampMs);
+        }
+        for (ActivityMember member : activityMembersRepository.findAll()) {
+            if (member == null) {
+                continue;
+            }
+            long timestampMs = parseIsoMillis(firstNonBlank(
+                    member.getActionAtIso(),
+                    member.getUpdatedDate(),
+                    member.getCreatedDate()));
+            if (timestampMs <= 0L) {
+                continue;
+            }
+            rememberLatestActivityMs(latestByUserId, member.getUserId(), timestampMs);
+        }
+        return latestByUserId;
+    }
+
+    private void rememberLatestActivityMs(Map<String, Long> latestByUserId, String userId, long timestampMs) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || timestampMs <= 0L) {
+            return;
+        }
+        Long currentMs = latestByUserId.get(normalizedUserId);
+        if (currentMs == null || timestampMs > currentMs.longValue()) {
+            latestByUserId.put(normalizedUserId, timestampMs);
+        }
+    }
+
+    private double homeDistanceScore(Users activeUser, Users candidateUser) {
+        return homeDistanceBucketScore(activeUser, candidateUser, HOME_DISTANCE_SCORE);
+    }
+
+    private double homeDistanceBucketScore(Users left, Users right, double scoreMultiplier) {
+        Double distanceMeters = distanceMeters(left, right);
+        if (distanceMeters == null) {
+            return 0d;
+        }
+        double distanceKm = Math.max(0d, distanceMeters.doubleValue() / 1000d);
+        double bucketIndex = Math.floor(distanceKm / HOME_DISTANCE_BUCKET_KM);
+        double signal = Math.max(0d, 1d - (Math.min(bucketIndex, HOME_DISTANCE_MAX_BUCKETS) / HOME_DISTANCE_MAX_BUCKETS));
+        return signal * scoreMultiplier;
+    }
+
+    private Double distanceMeters(Users left, Users right) {
+        if (left == null || right == null || left.getLocationCoordinates() == null || right.getLocationCoordinates() == null) {
+            return null;
+        }
+        Double leftLat = left.getLocationCoordinates().latitude();
+        Double leftLon = left.getLocationCoordinates().longitude();
+        Double rightLat = right.getLocationCoordinates().latitude();
+        Double rightLon = right.getLocationCoordinates().longitude();
+        if (leftLat == null || leftLon == null || rightLat == null || rightLon == null
+                || !Double.isFinite(leftLat) || !Double.isFinite(leftLon)
+                || !Double.isFinite(rightLat) || !Double.isFinite(rightLon)) {
+            return null;
+        }
+        double earthRadiusMeters = 6371000d;
+        double latitudeDelta = Math.toRadians(rightLat - leftLat);
+        double longitudeDelta = Math.toRadians(rightLon - leftLon);
+        double leftLatitude = Math.toRadians(leftLat);
+        double rightLatitude = Math.toRadians(rightLat);
+        double haversine = Math.sin(latitudeDelta / 2d) * Math.sin(latitudeDelta / 2d)
+                + Math.cos(leftLatitude) * Math.cos(rightLatitude)
+                * Math.sin(longitudeDelta / 2d) * Math.sin(longitudeDelta / 2d);
+        return earthRadiusMeters * 2d * Math.atan2(Math.sqrt(haversine), Math.sqrt(1d - haversine));
+    }
+
+    private double homeFreshnessScore(String candidateUserId, HomeRankingContext rankingContext) {
+        if (rankingContext == null || rankingContext.latestActivityMsByUserId().isEmpty()) {
+            return 0d;
+        }
+        Long latestActivityMs = rankingContext.latestActivityMsByUserId().get(normalizeId(candidateUserId));
+        if (latestActivityMs == null || latestActivityMs.longValue() <= 0L) {
+            return 0d;
+        }
+        long ageMs = Math.max(0L, rankingContext.nowMs() - latestActivityMs.longValue());
+        double ageDays = ageMs / (double) MILLIS_PER_DAY;
+        double signal = 1d / (1d + (ageDays / HOME_FRESHNESS_HALF_LIFE_DAYS));
+        return signal * HOME_FRESHNESS_SCORE;
+    }
+
+    private long parseIsoMillis(String value) {
+        try {
+            String normalized = normalizeOptionalText(value);
+            return StringUtils.hasText(normalized) ? Instant.parse(normalized).toEpochMilli() : 0L;
+        } catch (Exception exception) {
+            return 0L;
+        }
     }
 
     private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
@@ -1158,8 +1292,25 @@ public class HomeUserProfileService {
         return edgeWeight(leftUserId, rightUserId, edgeWeightsByPairKey) * HOME_KNOWN_EDGE_SCORE
                 + edgeWeight(activeUserId, leftUserId, edgeWeightsByPairKey) * HOME_BRIDGE_EDGE_SCORE
                 + edgeWeight(activeUserId, rightUserId, edgeWeightsByPairKey) * HOME_BRIDGE_EDGE_SCORE
+                + homePairDistanceScore(activeUserId, leftUserId, rightUserId, usersById)
                 + resolveUserAffinity(usersById.get(leftUserId))
                 + resolveUserAffinity(usersById.get(rightUserId));
+    }
+
+    private double homePairDistanceScore(
+            String activeUserId,
+            String leftUserId,
+            String rightUserId,
+            Map<String, Users> usersById) {
+        Users activeUser = usersById.get(normalizeId(activeUserId));
+        Users leftUser = usersById.get(normalizeId(leftUserId));
+        Users rightUser = usersById.get(normalizeId(rightUserId));
+        double pairDistanceScore = homeDistanceBucketScore(leftUser, rightUser, HOME_DISTANCE_SCORE);
+        double triangleDistanceScore = (
+                homeDistanceBucketScore(activeUser, leftUser, HOME_DISTANCE_SCORE)
+                        + homeDistanceBucketScore(activeUser, rightUser, HOME_DISTANCE_SCORE))
+                / 2d;
+        return pairDistanceScore + (triangleDistanceScore * 0.35d);
     }
 
     private double friendsInCommonScore(
@@ -1178,6 +1329,7 @@ public class HomeUserProfileService {
         return bridgeCount * HOME_BRIDGE_COUNT_SCORE
                 + edgeWeight(activeUserId, candidateUserId, edgeWeightsByPairKey) * HOME_KNOWN_EDGE_SCORE
                 + bestBridgeSupport
+                + homeDistanceScore(usersById.get(normalizeId(activeUserId)), usersById.get(candidateUserId))
                 + resolveUserAffinity(usersById.get(candidateUserId));
     }
 
@@ -2627,6 +2779,12 @@ public class HomeUserProfileService {
         private boolean hasDirectEdge(String leftUserId, String rightUserId) {
             return neighborsByUserId.getOrDefault(leftUserId, Set.of()).contains(rightUserId);
         }
+    }
+
+    private record HomeRankingContext(
+            Users activeUser,
+            Map<String, Long> latestActivityMsByUserId,
+            long nowMs) {
     }
 
     private record PersonalityTraitDefinition(

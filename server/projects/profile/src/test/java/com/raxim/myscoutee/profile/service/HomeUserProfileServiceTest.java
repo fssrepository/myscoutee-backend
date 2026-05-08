@@ -75,6 +75,7 @@ class HomeUserProfileServiceTest {
     void setUp() {
         lenient().when(userRatesRepository.findByOwnerUserId("active")).thenReturn(List.of());
         lenient().when(userRatesRepository.findByOwnerUserIdAndMode("active", "pair")).thenReturn(List.of());
+        lenient().when(activityMembersRepository.findAll()).thenReturn(List.of());
         service = new HomeUserProfileService(
                 usersRepository,
                 userFilterPreferencesRepository,
@@ -167,6 +168,28 @@ class HomeUserProfileServiceTest {
                 .containsExactly("outside-candidate");
     }
 
+    @Test
+    void preferencesUseDistanceAndFreshnessAsSoftLiveRankingModifiers() {
+        Users active = user("active", 0d);
+        active.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
+        Users nearFresh = user("near-fresh", 10d);
+        nearFresh.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979, 19.0402));
+        Users farStale = user("far-stale", 20d);
+        farStale.setLocationCoordinates(new Users.LocationCoordinatesRecord(48.8566, 2.3522));
+
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(List.of(active, nearFresh, farStale));
+        when(userRatesRepository.findAll()).thenReturn(List.of(
+                activityRate("near-fresh", "active", java.time.Instant.now().toString())));
+        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
+
+        List<Users> cards = service.queryGameStackUserRecords("active");
+
+        assertThat(cards).extracting(Users::getId)
+                .containsExactly("near-fresh", "far-stale");
+    }
+
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {
         Map<String, Set<String>> normalizedNeighbors = new LinkedHashMap<>();
         neighborsByUserId.forEach((userId, neighbors) ->
@@ -188,6 +211,14 @@ class HomeUserProfileServiceTest {
         record.setRelatedUserId(relatedUserId);
         record.setMet(true);
         record.setEventName("Coffee Social");
+        return record;
+    }
+
+    private UserRate activityRate(String ownerUserId, String relatedUserId, String updatedDate) {
+        UserRate record = new UserRate();
+        record.setOwnerUserId(ownerUserId);
+        record.setRelatedUserId(relatedUserId);
+        record.setUpdatedDate(updatedDate);
         return record;
     }
 }
