@@ -14,6 +14,7 @@ the gdpr privacy shouldn't open if it's not needed (so not open and immediately 
 
 report user menu is bleeding out of the screen on mobile
 configureable matrix, to fine tune the algorithm - specify weights of profile data - normalize
+friends in common is a single rate not a pair - does not make any sense - ui needs to be modified accordingly
 
 Commands
 --------
