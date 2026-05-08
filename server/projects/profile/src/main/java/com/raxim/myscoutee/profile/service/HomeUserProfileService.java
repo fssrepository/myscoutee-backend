@@ -30,6 +30,7 @@ import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserFilterPreferences;
+import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
@@ -62,6 +63,7 @@ import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserFilterPreferencesRepository;
+import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
@@ -82,6 +84,9 @@ public class HomeUserProfileService {
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
+    private static final double HOME_KNOWN_EDGE_SCORE = 1_000_000d;
+    private static final double HOME_BRIDGE_COUNT_SCORE = 1_000_000d;
+    private static final double HOME_BRIDGE_EDGE_SCORE = 250_000d;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -154,6 +159,7 @@ public class HomeUserProfileService {
 
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
+    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -167,10 +173,12 @@ public class HomeUserProfileService {
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurityProperties regionSecurityProperties;
+    private final AbsoluteAffinityService absoluteAffinityService;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
+            UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
             ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
@@ -183,9 +191,11 @@ public class HomeUserProfileService {
             UserSessionActionsRepository userSessionActionsRepository,
             ScheduledMessageTaskService scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
-            RegionSecurityProperties regionSecurityProperties) {
+            RegionSecurityProperties regionSecurityProperties,
+            AbsoluteAffinityService absoluteAffinityService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
+        this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -199,6 +209,7 @@ public class HomeUserProfileService {
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.countryPartitionService = countryPartitionService;
         this.regionSecurityProperties = regionSecurityProperties;
+        this.absoluteAffinityService = absoluteAffinityService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -330,7 +341,9 @@ public class HomeUserProfileService {
 
         Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
-        return toUserDto(syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved))));
+        Users resolved = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved)));
+        refreshEventAffinitiesForUser(resolved);
+        return toUserDto(resolved);
     }
 
     public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
@@ -499,23 +512,33 @@ public class HomeUserProfileService {
         }
 
         Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
+        Map<String, Double> edgeWeightsByPairKey = queryAffinityEdgeWeights(List.of(normalizedUserId));
         return usersRepository.findByProfileStatusIn(PUBLIC_GAME_PROFILE_STATUSES).stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
-                .sorted(userComparator())
+                .sorted(homeUserComparator(normalizedUserId, edgeWeightsByPairKey))
                 .toList();
     }
 
     public List<GameSocialCardCandidate> querySeparatedFriendCards(String activeUserId) {
-        return querySeparatedFriendCards(activeUserId, orderedUsers(), buildActivitySocialGraph());
+        List<Users> users = orderedUsers();
+        return querySeparatedFriendCards(activeUserId, users, buildActivitySocialGraph(), queryAffinityEdgeWeights(userIds(users)));
     }
 
     List<GameSocialCardCandidate> querySeparatedFriendCards(
             String activeUserId,
             List<Users> users,
             ActivitySocialGraph graph) {
+        return querySeparatedFriendCards(activeUserId, users, graph, Map.of());
+    }
+
+    List<GameSocialCardCandidate> querySeparatedFriendCards(
+            String activeUserId,
+            List<Users> users,
+            ActivitySocialGraph graph,
+            Map<String, Double> edgeWeightsByPairKey) {
         String normalizedUserId = normalizeId(activeUserId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
@@ -544,7 +567,12 @@ public class HomeUserProfileService {
                         || ratedPairKeys.contains(pairKey(leftUserId, rightUserId))) {
                     continue;
                 }
-                double score = resolveUserAffinity(usersById.get(leftUserId)) + resolveUserAffinity(usersById.get(rightUserId));
+                double score = separatedFriendsScore(
+                        normalizedUserId,
+                        leftUserId,
+                        rightUserId,
+                        usersById,
+                        edgeWeightsByPairKey);
                 String eventName = firstNonBlank(
                         graph.latestEventNameByEdgeKey().get(pairKey(normalizedUserId, leftUserId)),
                         graph.latestEventNameByEdgeKey().get(pairKey(normalizedUserId, rightUserId)),
@@ -569,13 +597,22 @@ public class HomeUserProfileService {
     }
 
     public List<GameSocialCardCandidate> queryFriendsInCommonCards(String activeUserId) {
-        return queryFriendsInCommonCards(activeUserId, orderedUsers(), buildActivitySocialGraph());
+        List<Users> users = orderedUsers();
+        return queryFriendsInCommonCards(activeUserId, users, buildActivitySocialGraph(), queryAffinityEdgeWeights(userIds(users)));
     }
 
     List<GameSocialCardCandidate> queryFriendsInCommonCards(
             String activeUserId,
             List<Users> users,
             ActivitySocialGraph graph) {
+        return queryFriendsInCommonCards(activeUserId, users, graph, Map.of());
+    }
+
+    List<GameSocialCardCandidate> queryFriendsInCommonCards(
+            String activeUserId,
+            List<Users> users,
+            ActivitySocialGraph graph,
+            Map<String, Double> edgeWeightsByPairKey) {
         String normalizedUserId = normalizeId(activeUserId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
@@ -618,14 +655,24 @@ public class HomeUserProfileService {
 
             String bridgeUserId = bridges.stream()
                     .max(Comparator
-                            .comparingDouble((String bridgeId) -> resolveUserAffinity(usersById.get(bridgeId)))
+                            .comparingDouble((String bridgeId) -> bridgeSupportScore(
+                                    normalizedUserId,
+                                    candidateUserId,
+                                    bridgeId,
+                                    usersById,
+                                    edgeWeightsByPairKey))
                             .thenComparing(bridgeId -> bridgeId))
                     .orElse(bridges.get(0));
             String eventName = firstNonBlank(
                     graph.latestEventNameByEdgeKey().get(pairKey(normalizedUserId, bridgeUserId)),
                     graph.latestEventNameByEdgeKey().get(pairKey(candidateUserId, bridgeUserId)),
                     "Friends in common");
-            double score = (bridges.size() * 100d) + resolveUserAffinity(user);
+            double score = friendsInCommonScore(
+                    normalizedUserId,
+                    candidateUserId,
+                    bridges,
+                    usersById,
+                    edgeWeightsByPairKey);
             candidates.add(new GameSocialCardCandidate(
                     "friends-in-common:" + normalizedUserId + ":" + candidateUserId,
                     candidateUserId,
@@ -816,10 +863,77 @@ public class HomeUserProfileService {
                 .thenComparing(user -> normalizeId(user.getId()));
     }
 
+    private Comparator<Users> homeUserComparator(String activeUserId, Map<String, Double> edgeWeightsByPairKey) {
+        return Comparator
+                .comparingDouble((Users user) -> homeUserScore(activeUserId, user, edgeWeightsByPairKey))
+                .reversed()
+                .thenComparing(user -> normalizeId(user == null ? null : user.getId()));
+    }
+
+    private double homeUserScore(String activeUserId, Users user, Map<String, Double> edgeWeightsByPairKey) {
+        String candidateUserId = normalizeId(user == null ? null : user.getId());
+        return edgeWeight(activeUserId, candidateUserId, edgeWeightsByPairKey) * HOME_KNOWN_EDGE_SCORE
+                + resolveUserAffinity(user);
+    }
+
     private Map<String, Users> indexUsersById(List<Users> users) {
         return (users == null ? List.<Users>of() : users).stream()
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+    }
+
+    private List<String> userIds(List<Users> users) {
+        return (users == null ? List.<Users>of() : users).stream()
+                .map(user -> normalizeId(user == null ? null : user.getId()))
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    private Map<String, Double> queryAffinityEdgeWeights(Collection<String> userIds) {
+        List<String> normalizedUserIds = userIds == null
+                ? List.of()
+                : userIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList();
+        if (normalizedUserIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
+        for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
+            String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
+            String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
+            if (!StringUtils.hasText(leftUserId) || !StringUtils.hasText(rightUserId) || leftUserId.equals(rightUserId)) {
+                continue;
+            }
+            double edgeWeight = resolveAffinityEdgeWeight(edge);
+            if (edgeWeight <= 0d) {
+                continue;
+            }
+            String key = pairKey(leftUserId, rightUserId);
+            Double existingWeight = weightsByPairKey.get(key);
+            if (existingWeight == null || edgeWeight > existingWeight.doubleValue()) {
+                weightsByPairKey.put(key, edgeWeight);
+            }
+        }
+        return weightsByPairKey;
+    }
+
+    private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
+        if (edge == null) {
+            return 0d;
+        }
+        Double edgeWeight = edge.getEdgeWeight();
+        if (edgeWeight == null || !Double.isFinite(edgeWeight) || edgeWeight <= 0d) {
+            edgeWeight = edge.getAffinityScore();
+        }
+        if (edgeWeight == null || !Double.isFinite(edgeWeight)) {
+            return 0d;
+        }
+        return Math.max(0d, Math.min(1d, edgeWeight));
     }
 
     private boolean isUsableUserDocument(Users user) {
@@ -986,6 +1100,62 @@ public class HomeUserProfileService {
         return normalizeId(left == null ? null : left.getId()).compareTo(normalizeId(right == null ? null : right.getId()));
     }
 
+    private double separatedFriendsScore(
+            String activeUserId,
+            String leftUserId,
+            String rightUserId,
+            Map<String, Users> usersById,
+            Map<String, Double> edgeWeightsByPairKey) {
+        return edgeWeight(leftUserId, rightUserId, edgeWeightsByPairKey) * HOME_KNOWN_EDGE_SCORE
+                + edgeWeight(activeUserId, leftUserId, edgeWeightsByPairKey) * HOME_BRIDGE_EDGE_SCORE
+                + edgeWeight(activeUserId, rightUserId, edgeWeightsByPairKey) * HOME_BRIDGE_EDGE_SCORE
+                + resolveUserAffinity(usersById.get(leftUserId))
+                + resolveUserAffinity(usersById.get(rightUserId));
+    }
+
+    private double friendsInCommonScore(
+            String activeUserId,
+            String candidateUserId,
+            List<String> bridgeUserIds,
+            Map<String, Users> usersById,
+            Map<String, Double> edgeWeightsByPairKey) {
+        double bestBridgeSupport = bridgeUserIds == null
+                ? 0d
+                : bridgeUserIds.stream()
+                        .mapToDouble(bridgeId -> bridgeSupportScore(activeUserId, candidateUserId, bridgeId, usersById, edgeWeightsByPairKey))
+                        .max()
+                        .orElse(0d);
+        int bridgeCount = bridgeUserIds == null ? 0 : bridgeUserIds.size();
+        return bridgeCount * HOME_BRIDGE_COUNT_SCORE
+                + edgeWeight(activeUserId, candidateUserId, edgeWeightsByPairKey) * HOME_KNOWN_EDGE_SCORE
+                + bestBridgeSupport
+                + resolveUserAffinity(usersById.get(candidateUserId));
+    }
+
+    private double bridgeSupportScore(
+            String activeUserId,
+            String candidateUserId,
+            String bridgeUserId,
+            Map<String, Users> usersById,
+            Map<String, Double> edgeWeightsByPairKey) {
+        return edgeWeight(activeUserId, bridgeUserId, edgeWeightsByPairKey) * HOME_BRIDGE_EDGE_SCORE
+                + edgeWeight(candidateUserId, bridgeUserId, edgeWeightsByPairKey) * HOME_BRIDGE_EDGE_SCORE
+                + resolveUserAffinity(usersById.get(bridgeUserId));
+    }
+
+    private double edgeWeight(String leftUserId, String rightUserId, Map<String, Double> edgeWeightsByPairKey) {
+        String normalizedLeft = normalizeId(leftUserId);
+        String normalizedRight = normalizeId(rightUserId);
+        if (!StringUtils.hasText(normalizedLeft)
+                || !StringUtils.hasText(normalizedRight)
+                || normalizedLeft.equals(normalizedRight)
+                || edgeWeightsByPairKey == null
+                || edgeWeightsByPairKey.isEmpty()) {
+            return 0d;
+        }
+        return Math.max(0d, Math.min(1d, edgeWeightsByPairKey.getOrDefault(pairKey(normalizedLeft, normalizedRight), 0d)));
+    }
+
     private double resolveUserAffinity(Users user) {
         if (user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())) {
             return 0d;
@@ -1087,7 +1257,7 @@ public class HomeUserProfileService {
         document.setProfileFormVersion(normalizeCount(user.profileFormVersion()));
         document.setHeadline(nullToEmpty(user.headline()));
         document.setAbout(nullToEmpty(user.about()));
-        document.setAffinity(user.affinity());
+        document.setAffinity(absoluteAffinityService.resolveUserAffinity(user));
         document.setLocationCoordinates(toLocationCoordinatesRecord(user.locationCoordinates()));
         String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(user.locationCoordinates());
         if (regionSecurityProperties.isEnabled() && user.locationCoordinates() != null && !StringUtils.hasText(resolvedPartitionKey)) {
@@ -1169,6 +1339,79 @@ public class HomeUserProfileService {
 
         user.setPartitionKey(resolvedPartitionKey);
         return usersRepository.save(user);
+    }
+
+    private void refreshEventAffinitiesForUser(Users changedUser) {
+        String changedUserId = normalizeId(changedUser == null ? null : changedUser.getId());
+        if (!StringUtils.hasText(changedUserId)) {
+            return;
+        }
+
+        LinkedHashMap<String, ActivityEvent> affectedEventsByDocumentId = new LinkedHashMap<>();
+        addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByCreatorUserId(changedUserId));
+        addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByAcceptedMemberUserIdsContaining(changedUserId));
+        if (affectedEventsByDocumentId.isEmpty()) {
+            return;
+        }
+
+        LinkedHashSet<String> participantUserIds = new LinkedHashSet<>();
+        participantUserIds.add(changedUserId);
+        for (ActivityEvent event : affectedEventsByDocumentId.values()) {
+            String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
+            if (StringUtils.hasText(creatorUserId)) {
+                participantUserIds.add(creatorUserId);
+            }
+            participantUserIds.addAll(normalizeIds(event == null ? null : event.getAcceptedMemberUserIds()));
+        }
+
+        Map<String, Users> usersById = new LinkedHashMap<>();
+        usersById.put(changedUserId, changedUser);
+        for (Users user : usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds))) {
+            String userId = normalizeId(user == null ? null : user.getId());
+            if (StringUtils.hasText(userId)) {
+                usersById.put(userId, user);
+            }
+        }
+
+        List<ActivityEvent> changedEvents = new ArrayList<>();
+        for (ActivityEvent event : affectedEventsByDocumentId.values()) {
+            List<Users> participants = eventAffinityParticipants(event, usersById);
+            double nextAffinity = absoluteAffinityService.resolveEventAffinity(event, participants);
+            if (Math.abs(safeDouble(event.getAffinity()) - nextAffinity) > 0.000001d) {
+                event.setAffinity(nextAffinity);
+                changedEvents.add(event);
+            }
+        }
+        if (!changedEvents.isEmpty()) {
+            activityEventsRepository.saveAll(changedEvents);
+        }
+    }
+
+    private void addAffectedEvents(Map<String, ActivityEvent> target, List<ActivityEvent> events) {
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            if (event == null) {
+                continue;
+            }
+            String documentId = normalizeId(event.getId());
+            if (StringUtils.hasText(documentId)) {
+                target.put(documentId, event);
+            }
+        }
+    }
+
+    private List<Users> eventAffinityParticipants(ActivityEvent event, Map<String, Users> usersById) {
+        LinkedHashMap<String, Users> participantsById = new LinkedHashMap<>();
+        String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
+        if (StringUtils.hasText(creatorUserId) && usersById.containsKey(creatorUserId)) {
+            participantsById.put(creatorUserId, usersById.get(creatorUserId));
+        }
+        for (String userId : normalizeIds(event == null ? null : event.getAcceptedMemberUserIds())) {
+            Users user = usersById.get(userId);
+            if (user != null) {
+                participantsById.put(userId, user);
+            }
+        }
+        return new ArrayList<>(participantsById.values());
     }
 
     private String resolveStoredPartitionKey(
@@ -1739,12 +1982,12 @@ public class HomeUserProfileService {
                     List<ProfileDetailRowDto> rows = (group.rows() == null ? List.<Users.ProfileDetailRowRecord>of() : group.rows()).stream()
                             .filter(Objects::nonNull)
                             .map(row -> {
-                                String label = safeText(row.label());
-                                if (!StringUtils.hasText(label)) {
+                                String labelKey = safeText(row.labelKey());
+                                if (!StringUtils.hasText(labelKey)) {
                                     return null;
                                 }
                                 return new ProfileDetailRowDto(
-                                        label,
+                                        labelKey,
                                         safeText(row.value()),
                                         safeText(row.privacy()),
                                         normalizeStrings(row.options()));
@@ -1771,12 +2014,12 @@ public class HomeUserProfileService {
                     List<Users.ProfileDetailRowRecord> rows = (group.rows() == null ? List.<ProfileDetailRowDto>of() : group.rows()).stream()
                             .filter(Objects::nonNull)
                             .map(row -> {
-                                String label = safeText(row.label());
-                                if (!StringUtils.hasText(label)) {
+                                String labelKey = safeText(row.labelKey());
+                                if (!StringUtils.hasText(labelKey)) {
                                     return null;
                                 }
                                 return new Users.ProfileDetailRowRecord(
-                                        label,
+                                        labelKey,
                                         safeText(row.value()),
                                         safeText(row.privacy()),
                                         normalizeStrings(row.options()));
@@ -2270,8 +2513,23 @@ public class HomeUserProfileService {
                 .toList();
     }
 
+    private List<String> normalizeIds(Collection<String> values) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        return values.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
     private int normalizeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
+    }
+
+    private double safeDouble(Number value) {
+        return value == null || !Double.isFinite(value.doubleValue()) ? 0d : value.doubleValue();
     }
 
     private String normalizeId(String value) {

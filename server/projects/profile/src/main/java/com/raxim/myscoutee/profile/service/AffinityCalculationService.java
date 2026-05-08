@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -16,8 +15,10 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
 import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.AffinityConfigsRepository;
+import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -31,14 +32,17 @@ public class AffinityCalculationService {
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final UsersRepository usersRepository;
     private final UserRatesRepository userRatesRepository;
+    private final UserExperienceProfilesRepository userExperienceProfilesRepository;
 
     public AffinityCalculationService(
             AffinityConfigsRepository affinityConfigsRepository,
             UsersRepository usersRepository,
-            UserRatesRepository userRatesRepository) {
+            UserRatesRepository userRatesRepository,
+            UserExperienceProfilesRepository userExperienceProfilesRepository) {
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
+        this.userExperienceProfilesRepository = userExperienceProfilesRepository;
     }
 
     public void applyAffinity(List<UserRate> rates) {
@@ -49,16 +53,18 @@ public class AffinityCalculationService {
         AffinityConfig config = activeConfig();
         Set<String> userIds = collectUserIds(rates);
         Map<String, Users> usersById = loadUsers(userIds);
+        Map<String, UserExperienceProfile> experiencesByUserId = loadExperienceProfiles(userIds);
         List<UserRate> contextRates = loadContextRates(userIds, rates);
 
         for (UserRate rate : rates) {
-            applyAffinity(rate, usersById, contextRates, config);
+            applyAffinity(rate, usersById, experiencesByUserId, contextRates, config);
         }
     }
 
     private void applyAffinity(
             UserRate rate,
             Map<String, Users> usersById,
+            Map<String, UserExperienceProfile> experiencesByUserId,
             List<UserRate> contextRates,
             AffinityConfig config) {
         if (rate == null) {
@@ -89,10 +95,10 @@ public class AffinityCalculationService {
         List<Signal> signals = new ArrayList<>();
         addRatingSignal(signals, rate, mode, scoreGiven, scoreReceived, mutuallyRated, config);
         if (MODE_PAIR.equals(mode)) {
-            addCompatibilitySignals(signals, related, secondary, config);
-            addOwnerContextSignal(signals, owner, related, secondary, rate, contextRates, config);
+            addCompatibilitySignals(signals, related, secondary, experiencesByUserId, config);
+            addOwnerContextSignal(signals, owner, related, secondary, rate, experiencesByUserId, contextRates, config);
         } else {
-            addCompatibilitySignals(signals, owner, related, config);
+            addCompatibilitySignals(signals, owner, related, experiencesByUserId, config);
         }
 
         rate.setAffinityScore(weightedAverage(signals));
@@ -128,15 +134,24 @@ public class AffinityCalculationService {
         addSignal(signals, ratingSignal, multiplier);
     }
 
-    private void addCompatibilitySignals(List<Signal> signals, Users left, Users right, AffinityConfig config) {
-        addProfileSignals(signals, left, right, config);
+    private void addCompatibilitySignals(
+            List<Signal> signals,
+            Users left,
+            Users right,
+            Map<String, UserExperienceProfile> experiencesByUserId,
+            AffinityConfig config) {
+        addProfileSignals(signals, left, right, experiencesByUserId, config);
         addDistanceSignal(signals, left, right, config);
         addImpressionSignals(signals, left, right, config);
     }
 
-    private Double compatibilityScore(Users left, Users right, AffinityConfig config) {
+    private Double compatibilityScore(
+            Users left,
+            Users right,
+            Map<String, UserExperienceProfile> experiencesByUserId,
+            AffinityConfig config) {
         List<Signal> signals = new ArrayList<>();
-        addCompatibilitySignals(signals, left, right, config);
+        addCompatibilitySignals(signals, left, right, experiencesByUserId, config);
         return signals.isEmpty() ? null : weightedAverage(signals);
     }
 
@@ -146,14 +161,15 @@ public class AffinityCalculationService {
             Users related,
             Users secondary,
             UserRate rate,
+            Map<String, UserExperienceProfile> experiencesByUserId,
             List<UserRate> contextRates,
             AffinityConfig config) {
         if (!isInsideNetwork(rate)) {
             return;
         }
 
-        Double ownerRelated = ownerParticipantContext(owner, related, rate, contextRates, config);
-        Double ownerSecondary = ownerParticipantContext(owner, secondary, rate, contextRates, config);
+        Double ownerRelated = ownerParticipantContext(owner, related, rate, experiencesByUserId, contextRates, config);
+        Double ownerSecondary = ownerParticipantContext(owner, secondary, rate, experiencesByUserId, contextRates, config);
         Double context = harmonic(nonNullValues(ownerRelated, ownerSecondary));
         addSignal(signals, context, multiplier(config.getOwnerContext(), 3d));
     }
@@ -162,11 +178,12 @@ public class AffinityCalculationService {
             Users owner,
             Users participant,
             UserRate currentRate,
+            Map<String, UserExperienceProfile> experiencesByUserId,
             List<UserRate> contextRates,
             AffinityConfig config) {
         String ownerUserId = normalize(owner == null ? null : owner.getId());
         String participantUserId = normalize(participant == null ? null : participant.getId());
-        Double compatibility = compatibilityScore(owner, participant, config);
+        Double compatibility = compatibilityScore(owner, participant, experiencesByUserId, config);
         Double relationship = relationshipScore(ownerUserId, participantUserId, currentRate, contextRates);
         return average(nonNullValues(compatibility, relationship));
     }
@@ -225,7 +242,12 @@ public class AffinityCalculationService {
         return oneSidedScore > 0 ? normalizeScoreSignal(oneSidedScore) * 0.5d : null;
     }
 
-    private void addProfileSignals(List<Signal> signals, Users left, Users right, AffinityConfig config) {
+    private void addProfileSignals(
+            List<Signal> signals,
+            Users left,
+            Users right,
+            Map<String, UserExperienceProfile> experiencesByUserId,
+            AffinityConfig config) {
         if (left == null || right == null) {
             return;
         }
@@ -233,14 +255,18 @@ public class AffinityCalculationService {
             if (rule == null || !StringUtils.hasText(rule.getField())) {
                 continue;
             }
-            Double score = profileSignal(left, right, rule);
+            Double score = profileSignal(left, right, experiencesByUserId, rule);
             addSignal(signals, score, multiplier(rule, 1d));
         }
     }
 
-    private Double profileSignal(Users left, Users right, AffinityConfig.FieldRule rule) {
-        List<String> leftValues = profileValues(left, rule.getField());
-        List<String> rightValues = profileValues(right, rule.getField());
+    private Double profileSignal(
+            Users left,
+            Users right,
+            Map<String, UserExperienceProfile> experiencesByUserId,
+            AffinityConfig.FieldRule rule) {
+        List<String> leftValues = profileValues(left, experiencesByUserId, rule);
+        List<String> rightValues = profileValues(right, experiencesByUserId, rule);
         String strategy = normalize(rule.getStrategy());
         if ("exact".equals(strategy)) {
             return exactScore(leftValues, rightValues);
@@ -251,11 +277,22 @@ public class AffinityCalculationService {
         return null;
     }
 
-    private List<String> profileValues(Users user, String field) {
-        if (user == null || !StringUtils.hasText(field)) {
+    private List<String> profileValues(
+            Users user,
+            Map<String, UserExperienceProfile> experiencesByUserId,
+            AffinityConfig.FieldRule rule) {
+        if (user == null || rule == null) {
             return List.of();
         }
-        return switch (field) {
+        String field = rule.getField();
+        if (!StringUtils.hasText(field)) {
+            return List.of();
+        }
+        String normalizedField = field.trim();
+        String labelKey = rule.getLabelKey();
+        Map<String, UserExperienceProfile> safeExperiencesByUserId =
+                experiencesByUserId == null ? Map.of() : experiencesByUserId;
+        return switch (normalizedField) {
             case "languages" -> normalizeValues(user.getLanguages());
             case "physique" -> singleValue(user.getPhysique());
             case "gender" -> singleValue(user.getGender());
@@ -263,7 +300,8 @@ public class AffinityCalculationService {
             case "city" -> singleValue(user.getCity());
             case "hostTier" -> singleValue(user.getHostTier());
             case "traitLabel" -> singleValue(user.getTraitLabel());
-            case "profileDetails.values" -> profileDetailValues(user);
+            case "profileDetails" -> profileDetailValues(user, labelKey);
+            case "experience" -> experienceValues(safeExperiencesByUserId.get(normalize(user.getId())), labelKey);
             default -> List.of();
         };
     }
@@ -273,8 +311,9 @@ public class AffinityCalculationService {
         return StringUtils.hasText(normalized) ? List.of(normalized) : List.of();
     }
 
-    private List<String> profileDetailValues(Users user) {
-        if (user == null || user.getProfileDetails() == null) {
+    private List<String> profileDetailValues(Users user, String labelKey) {
+        String normalizedLabelKey = normalize(labelKey);
+        if (user == null || user.getProfileDetails() == null || !StringUtils.hasText(normalizedLabelKey)) {
             return List.of();
         }
         Set<String> values = new LinkedHashSet<>();
@@ -283,7 +322,7 @@ public class AffinityCalculationService {
                 continue;
             }
             for (Users.ProfileDetailRowRecord row : group.rows()) {
-                if (row == null) {
+                if (row == null || !normalizedLabelKey.equals(normalize(row.labelKey()))) {
                     continue;
                 }
                 addNormalizedValue(values, row.value());
@@ -295,6 +334,38 @@ public class AffinityCalculationService {
             }
         }
         return new ArrayList<>(values);
+    }
+
+    private List<String> experienceValues(UserExperienceProfile profile, String labelKey) {
+        String normalizedLabelKey = normalize(labelKey);
+        if (profile == null || profile.getEntries() == null || !StringUtils.hasText(normalizedLabelKey)) {
+            return List.of();
+        }
+
+        Set<String> values = new LinkedHashSet<>();
+        for (UserExperienceProfile.ExperienceItemRecord entry : profile.getEntries()) {
+            if (entry == null) {
+                continue;
+            }
+            if ("profile.experience.workplace".equals(normalizedLabelKey) && isWorkspace(entry)) {
+                addNormalizedValue(values, entry.getOrg());
+            } else if ("profile.experience.profession".equals(normalizedLabelKey) && isWorkspace(entry)) {
+                addNormalizedValue(values, entry.getTitle());
+            } else if ("profile.experience.school".equals(normalizedLabelKey) && isSchool(entry)) {
+                addNormalizedValue(values, entry.getOrg());
+            } else if ("profile.experience.education".equals(normalizedLabelKey) && isSchool(entry)) {
+                addNormalizedValue(values, entry.getTitle());
+            }
+        }
+        return new ArrayList<>(values);
+    }
+
+    private boolean isWorkspace(UserExperienceProfile.ExperienceItemRecord entry) {
+        return "workspace".equals(normalize(entry == null ? null : entry.getType()));
+    }
+
+    private boolean isSchool(UserExperienceProfile.ExperienceItemRecord entry) {
+        return "school".equals(normalize(entry == null ? null : entry.getType()));
     }
 
     private void addDistanceSignal(List<Signal> signals, Users left, Users right, AffinityConfig config) {
@@ -565,6 +636,20 @@ public class AffinityCalculationService {
         return usersById;
     }
 
+    private Map<String, UserExperienceProfile> loadExperienceProfiles(Set<String> userIds) {
+        if (userExperienceProfilesRepository == null || userIds == null || userIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, UserExperienceProfile> profilesByUserId = new HashMap<>();
+        for (UserExperienceProfile profile : userExperienceProfilesRepository.findByUserIdIn(userIds)) {
+            String userId = normalize(profile == null ? null : profile.getUserId());
+            if (StringUtils.hasText(userId)) {
+                profilesByUserId.put(userId, profile);
+            }
+        }
+        return profilesByUserId;
+    }
+
     private Set<String> collectUserIds(List<UserRate> rates) {
         Set<String> userIds = new LinkedHashSet<>();
         if (rates == null) {
@@ -612,7 +697,10 @@ public class AffinityCalculationService {
 
     private double multiplier(AffinityConfig.MultiplierRule rule, double fallback) {
         Double multiplier = rule == null ? null : rule.getMultiplier();
-        return isFinite(multiplier) ? Math.max(0d, multiplier) : fallback;
+        if (multiplier == null || !Double.isFinite(multiplier.doubleValue())) {
+            return fallback;
+        }
+        return Math.max(0d, multiplier.doubleValue());
     }
 
     private Double exactScore(Collection<String> leftValues, Collection<String> rightValues) {

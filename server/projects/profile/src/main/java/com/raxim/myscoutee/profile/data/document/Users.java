@@ -345,7 +345,7 @@ public class Users {
     }
 
     public record ProfileDetailRowRecord(
-            String label,
+            String labelKey,
             String value,
             String privacy,
             List<String> options) {

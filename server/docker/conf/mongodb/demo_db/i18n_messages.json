@@ -8926,5 +8926,293 @@
     "key": "missing",
     "lang": "hu",
     "value": "Hiányzik"
+  },
+  {
+    "_id": "i18n-message-en-profile-name",
+    "key": "profile.name",
+    "lang": "en",
+    "value": "Name"
+  },
+  {
+    "_id": "i18n-message-en-profile-city",
+    "key": "profile.city",
+    "lang": "en",
+    "value": "City"
+  },
+  {
+    "_id": "i18n-message-en-profile-birthday",
+    "key": "profile.birthday",
+    "lang": "en",
+    "value": "Birthday"
+  },
+  {
+    "_id": "i18n-message-en-profile-height",
+    "key": "profile.height",
+    "lang": "en",
+    "value": "Height"
+  },
+  {
+    "_id": "i18n-message-en-profile-physique",
+    "key": "profile.physique",
+    "lang": "en",
+    "value": "Physique"
+  },
+  {
+    "_id": "i18n-message-en-profile-languages",
+    "key": "profile.languages",
+    "lang": "en",
+    "value": "Languages"
+  },
+  {
+    "_id": "i18n-message-en-profile-horoscope",
+    "key": "profile.horoscope",
+    "lang": "en",
+    "value": "Horoscope"
+  },
+  {
+    "_id": "i18n-message-en-profile-gender",
+    "key": "profile.gender",
+    "lang": "en",
+    "value": "Gender"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-interest",
+    "key": "profile.details.interest",
+    "lang": "en",
+    "value": "Interest"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-drinking",
+    "key": "profile.details.drinking",
+    "lang": "en",
+    "value": "Drinking"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-smoking",
+    "key": "profile.details.smoking",
+    "lang": "en",
+    "value": "Smoking"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-workout",
+    "key": "profile.details.workout",
+    "lang": "en",
+    "value": "Workout"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-pets",
+    "key": "profile.details.pets",
+    "lang": "en",
+    "value": "Pets"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-family-plans",
+    "key": "profile.details.familyPlans",
+    "lang": "en",
+    "value": "Family plans"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-children",
+    "key": "profile.details.children",
+    "lang": "en",
+    "value": "Children"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-love-style",
+    "key": "profile.details.loveStyle",
+    "lang": "en",
+    "value": "Love style"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-communication-style",
+    "key": "profile.details.communicationStyle",
+    "lang": "en",
+    "value": "Communication style"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-sexual-orientation",
+    "key": "profile.details.sexualOrientation",
+    "lang": "en",
+    "value": "Sexual orientation"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-religion",
+    "key": "profile.details.religion",
+    "lang": "en",
+    "value": "Religion"
+  },
+  {
+    "_id": "i18n-message-en-profile-details-values",
+    "key": "profile.details.values",
+    "lang": "en",
+    "value": "Values"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-workplace",
+    "key": "profile.experience.workplace",
+    "lang": "en",
+    "value": "Workplace"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-profession",
+    "key": "profile.experience.profession",
+    "lang": "en",
+    "value": "Profession"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-school",
+    "key": "profile.experience.school",
+    "lang": "en",
+    "value": "School"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-education",
+    "key": "profile.experience.education",
+    "lang": "en",
+    "value": "Education"
+  },
+  {
+    "_id": "i18n-message-hu-profile-name",
+    "key": "profile.name",
+    "lang": "hu",
+    "value": "Név"
+  },
+  {
+    "_id": "i18n-message-hu-profile-city",
+    "key": "profile.city",
+    "lang": "hu",
+    "value": "Város"
+  },
+  {
+    "_id": "i18n-message-hu-profile-birthday",
+    "key": "profile.birthday",
+    "lang": "hu",
+    "value": "Születésnap"
+  },
+  {
+    "_id": "i18n-message-hu-profile-height",
+    "key": "profile.height",
+    "lang": "hu",
+    "value": "Magasság"
+  },
+  {
+    "_id": "i18n-message-hu-profile-physique",
+    "key": "profile.physique",
+    "lang": "hu",
+    "value": "Testalkat"
+  },
+  {
+    "_id": "i18n-message-hu-profile-languages",
+    "key": "profile.languages",
+    "lang": "hu",
+    "value": "Nyelvek"
+  },
+  {
+    "_id": "i18n-message-hu-profile-horoscope",
+    "key": "profile.horoscope",
+    "lang": "hu",
+    "value": "Horoszkóp"
+  },
+  {
+    "_id": "i18n-message-hu-profile-gender",
+    "key": "profile.gender",
+    "lang": "hu",
+    "value": "Nem"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-interest",
+    "key": "profile.details.interest",
+    "lang": "hu",
+    "value": "Érdeklődés"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-drinking",
+    "key": "profile.details.drinking",
+    "lang": "hu",
+    "value": "Alkohol"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-smoking",
+    "key": "profile.details.smoking",
+    "lang": "hu",
+    "value": "Dohányzás"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-workout",
+    "key": "profile.details.workout",
+    "lang": "hu",
+    "value": "Edzés"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-pets",
+    "key": "profile.details.pets",
+    "lang": "hu",
+    "value": "Háziállatok"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-family-plans",
+    "key": "profile.details.familyPlans",
+    "lang": "hu",
+    "value": "Családtervek"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-children",
+    "key": "profile.details.children",
+    "lang": "hu",
+    "value": "Gyerekek"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-love-style",
+    "key": "profile.details.loveStyle",
+    "lang": "hu",
+    "value": "Kapcsolati stílus"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-communication-style",
+    "key": "profile.details.communicationStyle",
+    "lang": "hu",
+    "value": "Kommunikációs stílus"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-sexual-orientation",
+    "key": "profile.details.sexualOrientation",
+    "lang": "hu",
+    "value": "Szexuális orientáció"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-religion",
+    "key": "profile.details.religion",
+    "lang": "hu",
+    "value": "Vallás"
+  },
+  {
+    "_id": "i18n-message-hu-profile-details-values",
+    "key": "profile.details.values",
+    "lang": "hu",
+    "value": "Értékek"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-workplace",
+    "key": "profile.experience.workplace",
+    "lang": "hu",
+    "value": "Munkahely"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-profession",
+    "key": "profile.experience.profession",
+    "lang": "hu",
+    "value": "Szakma"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-school",
+    "key": "profile.experience.school",
+    "lang": "hu",
+    "value": "Iskola"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-education",
+    "key": "profile.experience.education",
+    "lang": "hu",
+    "value": "Tanulmány"
   }
 ]

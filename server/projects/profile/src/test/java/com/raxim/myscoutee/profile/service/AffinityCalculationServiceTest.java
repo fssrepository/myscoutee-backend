@@ -16,9 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
+import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.AffinityConfigsRepository;
+import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -30,6 +32,8 @@ class AffinityCalculationServiceTest {
     private UsersRepository usersRepository;
     @Mock
     private UserRatesRepository userRatesRepository;
+    @Mock
+    private UserExperienceProfilesRepository userExperienceProfilesRepository;
 
     @Test
     void mutualRatingUsesHarmonicAverageSoImbalancedScoresAreLower() {
@@ -194,12 +198,61 @@ class AffinityCalculationServiceTest {
         assertThat(rate.getEvidenceConfidence()).isEqualTo(1d);
     }
 
+    @Test
+    void profileDetailRulesUseStableLabelKeys() {
+        AffinityConfig config = profileConfig(List.of(
+                new AffinityConfig.FieldRule("profile", "profileDetails", "profile.details.workout", 4d, "exact")));
+        UserRate rate = singleRate("rate", "u1", "u2", 0);
+        Users left = user("u1", List.of(), null);
+        left.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Lifestyle", List.of(
+                new Users.ProfileDetailRowRecord("profile.details.workout", "Daily", "Public", List.of("Daily"))))));
+        Users right = user("u2", List.of(), null);
+        right.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Lifestyle", List.of(
+                new Users.ProfileDetailRowRecord("profile.details.workout", "Daily", "Public", List.of("Daily"))))));
+
+        AffinityCalculationService service = service(config, List.of(), Map.of(
+                "u1", left,
+                "u2", right));
+
+        service.applyAffinity(List.of(rate));
+
+        assertThat(rate.getAffinityScore()).isGreaterThan(0d);
+    }
+
+    @Test
+    void experienceRulesUseStableLabelKeys() {
+        AffinityConfig config = profileConfig(List.of(
+                new AffinityConfig.FieldRule("profile", "experience", "profile.experience.workplace", 5d, "exact")));
+        UserRate rate = singleRate("rate", "u1", "u2", 0);
+        when(userExperienceProfilesRepository.findByUserIdIn(anyCollection()))
+                .thenReturn(List.of(experienceProfile("u1", "Workspace", "Acme"), experienceProfile("u2", "Workspace", "Acme")));
+
+        AffinityCalculationService service = service(config, List.of(), Map.of(
+                "u1", user("u1", List.of(), null),
+                "u2", user("u2", List.of(), null)), false);
+
+        service.applyAffinity(List.of(rate));
+
+        assertThat(rate.getAffinityScore()).isGreaterThan(0d);
+    }
+
     private AffinityCalculationService service(
             AffinityConfig config,
             List<UserRate> existingRates,
             Map<String, Users> usersById) {
+        return service(config, existingRates, usersById, true);
+    }
+
+    private AffinityCalculationService service(
+            AffinityConfig config,
+            List<UserRate> existingRates,
+            Map<String, Users> usersById,
+            boolean stubEmptyExperiences) {
         when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(config));
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(existingRates);
+        if (stubEmptyExperiences) {
+            when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
+        }
         when(usersRepository.findByUserIdIn(anyCollection())).thenAnswer(invocation -> {
             Collection<String> requestedIds = invocation.getArgument(0);
             return requestedIds.stream()
@@ -207,7 +260,23 @@ class AffinityCalculationServiceTest {
                     .filter(java.util.Objects::nonNull)
                     .toList();
         });
-        return new AffinityCalculationService(affinityConfigsRepository, usersRepository, userRatesRepository);
+        return new AffinityCalculationService(
+                affinityConfigsRepository,
+                usersRepository,
+                userRatesRepository,
+                userExperienceProfilesRepository);
+    }
+
+    private UserExperienceProfile experienceProfile(String userId, String type, String org) {
+        UserExperienceProfile profile = new UserExperienceProfile();
+        profile.setUserId(userId);
+        UserExperienceProfile.ExperienceItemRecord entry = new UserExperienceProfile.ExperienceItemRecord();
+        entry.setId(userId + "-experience");
+        entry.setType(type);
+        entry.setTitle("Engineer");
+        entry.setOrg(org);
+        profile.setEntries(List.of(entry));
+        return profile;
     }
 
     private AffinityConfig ratingOnlyConfig() {

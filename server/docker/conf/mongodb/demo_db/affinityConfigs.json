@@ -47,37 +47,152 @@
     },
     "profileRules": [
       {
+        "group": "profile",
         "field": "languages",
         "multiplier": 2,
         "strategy": "intersection"
       },
       {
+        "group": "profile",
         "field": "physique",
         "multiplier": 3,
         "strategy": "exact"
       },
       {
-        "field": "profileDetails.values",
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.interest",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.values",
         "multiplier": 3,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.workout",
+        "multiplier": 2,
+        "strategy": "exact"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.workplace",
+        "multiplier": 4,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.profession",
+        "multiplier": 3,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.school",
+        "multiplier": 4,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.education",
+        "multiplier": 2,
         "strategy": "intersection"
       }
     ],
     "impressionRules": [
       {
+        "group": "traits",
         "field": "member.personalityTraits",
         "multiplier": 4,
         "strategy": "trait-vector"
       },
       {
+        "group": "traits",
         "field": "member.vibeBadges",
         "multiplier": 2,
         "strategy": "intersection"
       },
       {
+        "group": "traits",
         "field": "member.categoryBadges",
         "multiplier": 2,
         "strategy": "intersection"
       }
-    ]
+    ],
+    "absolute": {
+      "user": {
+        "profileTokens": {
+          "multiplier": 97
+        },
+        "profileDetailTokens": {
+          "multiplier": 97
+        },
+        "experienceTokens": {
+          "multiplier": 97
+        },
+        "impressionTokens": {
+          "multiplier": 97
+        },
+        "age": {
+          "multiplier": 17
+        },
+        "height": {
+          "multiplier": 11
+        },
+        "completion": {
+          "multiplier": 13
+        },
+        "impressionAverageRating": {
+          "multiplier": 29
+        },
+        "impressionPeopleMet": {
+          "multiplier": 43
+        },
+        "impressionTotalEvents": {
+          "multiplier": 37
+        },
+        "impressionRepeatCount": {
+          "multiplier": 53
+        },
+        "impressionNoShowPenalty": {
+          "multiplier": 71
+        },
+        "impressionTraitPercent": {
+          "multiplier": 7
+        },
+        "impressionTraitEvidenceCount": {
+          "multiplier": 23
+        }
+      },
+      "event": {
+        "contentTokens": {
+          "multiplier": 89
+        },
+        "participantAffinity": {
+          "multiplier": 1
+        },
+        "rating": {
+          "multiplier": 29
+        },
+        "acceptedMembers": {
+          "multiplier": 19
+        },
+        "pendingMembers": {
+          "multiplier": 11
+        },
+        "capacityTotal": {
+          "multiplier": 7
+        }
+      }
+    }
   }
 ]

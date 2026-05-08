@@ -30,6 +30,7 @@ import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRateRecordDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncResponseDto;
 import com.raxim.myscoutee.profile.repository.AffinityConfigsRepository;
+import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -43,6 +44,8 @@ class UserRatesServiceTest {
     private HomeUserProfileService homeUserProfileService;
     @Mock
     private AffinityConfigsRepository affinityConfigsRepository;
+    @Mock
+    private UserExperienceProfilesRepository userExperienceProfilesRepository;
     @Mock
     private UserAffinityEdgeService userAffinityEdgeService;
     @Mock
@@ -255,12 +258,14 @@ class UserRatesServiceTest {
         config.setImpressionRules(List.of());
         when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(config));
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(contextRates);
+        when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
         when(userRatesRepository.saveAll(anyList())).thenAnswer(invocation -> List.copyOf(invocation.getArgument(0)));
         stubUsers(usersById);
         AffinityCalculationService affinityCalculationService = new AffinityCalculationService(
                 affinityConfigsRepository,
                 usersRepository,
-                userRatesRepository);
+                userRatesRepository,
+                userExperienceProfilesRepository);
         return new UserRatesService(
                 userRatesRepository,
                 usersRepository,
@@ -282,7 +287,11 @@ class UserRatesServiceTest {
                 userRatesRepository,
                 usersRepository,
                 homeUserProfileService,
-                new AffinityCalculationService(affinityConfigsRepository, usersRepository, userRatesRepository),
+                new AffinityCalculationService(
+                        affinityConfigsRepository,
+                        usersRepository,
+                        userRatesRepository,
+                        userExperienceProfilesRepository),
                 userAffinityEdgeService,
                 mongoTemplate);
     }
@@ -305,7 +314,7 @@ class UserRatesServiceTest {
         return savedRates().get(0);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     private List<UserRate> savedRates() {
         ArgumentCaptor<List<UserRate>> ratesCaptor = ArgumentCaptor.forClass(List.class);
         verify(userRatesRepository).saveAll(ratesCaptor.capture());

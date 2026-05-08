@@ -568,12 +568,10 @@ public class ActivitiesChatService {
         for (ActivityChat existing : snapshot.chatDocuments()) {
             ActivityChat next = copyChat(existing);
             List<ChatMessageRecord> nextMessages = new ArrayList<>();
-            boolean found = false;
             for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
                 ChatMessageRecord nextMessage = copyMessageRecord(existingMessage);
                 if (isSameStoredChatMessage(nextMessage, targetMessage, normalizedMessageId)) {
                     mutator.apply(nextMessage, userId, user);
-                    found = true;
                     if (userId.equals(normalizeId(existing.getOwnerUserId()))) {
                         updatedViewerMessage = copyMessageRecord(nextMessage);
                     }

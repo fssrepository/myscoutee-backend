@@ -25,6 +25,7 @@ public class AffinityConfig {
     private MultiplierRule ownerContext = new MultiplierRule();
     private List<FieldRule> profileRules = new ArrayList<>();
     private List<FieldRule> impressionRules = new ArrayList<>();
+    private AbsoluteAffinityMultipliers absolute = new AbsoluteAffinityMultipliers();
 
     public static AffinityConfig defaults() {
         AffinityConfig config = new AffinityConfig();
@@ -55,13 +56,47 @@ public class AffinityConfig {
 
         config.setOwnerContext(new MultiplierRule(3d));
         config.setProfileRules(List.of(
-                new FieldRule("languages", 2d, "intersection"),
-                new FieldRule("physique", 3d, "exact"),
-                new FieldRule("profileDetails.values", 3d, "intersection")));
+                new FieldRule("profile", "languages", null, 2d, "intersection"),
+                new FieldRule("profile", "physique", null, 3d, "exact"),
+                new FieldRule("profile", "profileDetails", "profile.details.interest", 2d, "intersection"),
+                new FieldRule("profile", "profileDetails", "profile.details.values", 3d, "intersection"),
+                new FieldRule("profile", "profileDetails", "profile.details.workout", 2d, "exact"),
+                new FieldRule("experience", "experience", "profile.experience.workplace", 4d, "intersection"),
+                new FieldRule("experience", "experience", "profile.experience.profession", 3d, "intersection"),
+                new FieldRule("experience", "experience", "profile.experience.school", 4d, "intersection"),
+                new FieldRule("experience", "experience", "profile.experience.education", 2d, "intersection")));
         config.setImpressionRules(List.of(
-                new FieldRule("member.personalityTraits", 4d, "trait-vector"),
-                new FieldRule("member.vibeBadges", 2d, "intersection"),
-                new FieldRule("member.categoryBadges", 2d, "intersection")));
+                new FieldRule("traits", "member.personalityTraits", null, 4d, "trait-vector"),
+                new FieldRule("traits", "member.vibeBadges", null, 2d, "intersection"),
+                new FieldRule("traits", "member.categoryBadges", null, 2d, "intersection")));
+
+        AbsoluteAffinityMultipliers absolute = new AbsoluteAffinityMultipliers();
+        AbsoluteUserAffinityMultipliers user = new AbsoluteUserAffinityMultipliers();
+        user.setProfileTokens(new MultiplierRule(97d));
+        user.setProfileDetailTokens(new MultiplierRule(97d));
+        user.setExperienceTokens(new MultiplierRule(97d));
+        user.setImpressionTokens(new MultiplierRule(97d));
+        user.setAge(new MultiplierRule(17d));
+        user.setHeight(new MultiplierRule(11d));
+        user.setCompletion(new MultiplierRule(13d));
+        user.setImpressionAverageRating(new MultiplierRule(29d));
+        user.setImpressionPeopleMet(new MultiplierRule(43d));
+        user.setImpressionTotalEvents(new MultiplierRule(37d));
+        user.setImpressionRepeatCount(new MultiplierRule(53d));
+        user.setImpressionNoShowPenalty(new MultiplierRule(71d));
+        user.setImpressionTraitPercent(new MultiplierRule(7d));
+        user.setImpressionTraitEvidenceCount(new MultiplierRule(23d));
+        absolute.setUser(user);
+
+        AbsoluteEventAffinityMultipliers event = new AbsoluteEventAffinityMultipliers();
+        event.setContentTokens(new MultiplierRule(89d));
+        event.setParticipantAffinity(new MultiplierRule(1d));
+        event.setRating(new MultiplierRule(29d));
+        event.setAcceptedMembers(new MultiplierRule(19d));
+        event.setPendingMembers(new MultiplierRule(11d));
+        event.setCapacityTotal(new MultiplierRule(7d));
+        absolute.setEvent(event);
+        config.setAbsolute(absolute);
         return config;
     }
 
@@ -143,6 +178,14 @@ public class AffinityConfig {
 
     public void setImpressionRules(List<FieldRule> impressionRules) {
         this.impressionRules = impressionRules == null ? new ArrayList<>() : new ArrayList<>(impressionRules);
+    }
+
+    public AbsoluteAffinityMultipliers getAbsolute() {
+        return absolute == null ? new AbsoluteAffinityMultipliers() : absolute;
+    }
+
+    public void setAbsolute(AbsoluteAffinityMultipliers absolute) {
+        this.absolute = absolute;
     }
 
     public static class RatingMultipliers {
@@ -251,6 +294,213 @@ public class AffinityConfig {
         }
     }
 
+    public static class AbsoluteAffinityMultipliers {
+        private AbsoluteUserAffinityMultipliers user = new AbsoluteUserAffinityMultipliers();
+        private AbsoluteEventAffinityMultipliers event = new AbsoluteEventAffinityMultipliers();
+
+        public AbsoluteUserAffinityMultipliers getUser() {
+            return user == null ? new AbsoluteUserAffinityMultipliers() : user;
+        }
+
+        public void setUser(AbsoluteUserAffinityMultipliers user) {
+            this.user = user;
+        }
+
+        public AbsoluteEventAffinityMultipliers getEvent() {
+            return event == null ? new AbsoluteEventAffinityMultipliers() : event;
+        }
+
+        public void setEvent(AbsoluteEventAffinityMultipliers event) {
+            this.event = event;
+        }
+    }
+
+    public static class AbsoluteUserAffinityMultipliers {
+        private MultiplierRule profileTokens = new MultiplierRule();
+        private MultiplierRule profileDetailTokens = new MultiplierRule();
+        private MultiplierRule experienceTokens = new MultiplierRule();
+        private MultiplierRule impressionTokens = new MultiplierRule();
+        private MultiplierRule age = new MultiplierRule();
+        private MultiplierRule height = new MultiplierRule();
+        private MultiplierRule completion = new MultiplierRule();
+        private MultiplierRule impressionAverageRating = new MultiplierRule();
+        private MultiplierRule impressionPeopleMet = new MultiplierRule();
+        private MultiplierRule impressionTotalEvents = new MultiplierRule();
+        private MultiplierRule impressionRepeatCount = new MultiplierRule();
+        private MultiplierRule impressionNoShowPenalty = new MultiplierRule();
+        private MultiplierRule impressionTraitPercent = new MultiplierRule();
+        private MultiplierRule impressionTraitEvidenceCount = new MultiplierRule();
+
+        public MultiplierRule getProfileTokens() {
+            return profileTokens == null ? new MultiplierRule() : profileTokens;
+        }
+
+        public void setProfileTokens(MultiplierRule profileTokens) {
+            this.profileTokens = profileTokens;
+        }
+
+        public MultiplierRule getProfileDetailTokens() {
+            return profileDetailTokens == null ? new MultiplierRule() : profileDetailTokens;
+        }
+
+        public void setProfileDetailTokens(MultiplierRule profileDetailTokens) {
+            this.profileDetailTokens = profileDetailTokens;
+        }
+
+        public MultiplierRule getExperienceTokens() {
+            return experienceTokens == null ? new MultiplierRule() : experienceTokens;
+        }
+
+        public void setExperienceTokens(MultiplierRule experienceTokens) {
+            this.experienceTokens = experienceTokens;
+        }
+
+        public MultiplierRule getImpressionTokens() {
+            return impressionTokens == null ? new MultiplierRule() : impressionTokens;
+        }
+
+        public void setImpressionTokens(MultiplierRule impressionTokens) {
+            this.impressionTokens = impressionTokens;
+        }
+
+        public MultiplierRule getAge() {
+            return age == null ? new MultiplierRule() : age;
+        }
+
+        public void setAge(MultiplierRule age) {
+            this.age = age;
+        }
+
+        public MultiplierRule getHeight() {
+            return height == null ? new MultiplierRule() : height;
+        }
+
+        public void setHeight(MultiplierRule height) {
+            this.height = height;
+        }
+
+        public MultiplierRule getCompletion() {
+            return completion == null ? new MultiplierRule() : completion;
+        }
+
+        public void setCompletion(MultiplierRule completion) {
+            this.completion = completion;
+        }
+
+        public MultiplierRule getImpressionAverageRating() {
+            return impressionAverageRating == null ? new MultiplierRule() : impressionAverageRating;
+        }
+
+        public void setImpressionAverageRating(MultiplierRule impressionAverageRating) {
+            this.impressionAverageRating = impressionAverageRating;
+        }
+
+        public MultiplierRule getImpressionPeopleMet() {
+            return impressionPeopleMet == null ? new MultiplierRule() : impressionPeopleMet;
+        }
+
+        public void setImpressionPeopleMet(MultiplierRule impressionPeopleMet) {
+            this.impressionPeopleMet = impressionPeopleMet;
+        }
+
+        public MultiplierRule getImpressionTotalEvents() {
+            return impressionTotalEvents == null ? new MultiplierRule() : impressionTotalEvents;
+        }
+
+        public void setImpressionTotalEvents(MultiplierRule impressionTotalEvents) {
+            this.impressionTotalEvents = impressionTotalEvents;
+        }
+
+        public MultiplierRule getImpressionRepeatCount() {
+            return impressionRepeatCount == null ? new MultiplierRule() : impressionRepeatCount;
+        }
+
+        public void setImpressionRepeatCount(MultiplierRule impressionRepeatCount) {
+            this.impressionRepeatCount = impressionRepeatCount;
+        }
+
+        public MultiplierRule getImpressionNoShowPenalty() {
+            return impressionNoShowPenalty == null ? new MultiplierRule() : impressionNoShowPenalty;
+        }
+
+        public void setImpressionNoShowPenalty(MultiplierRule impressionNoShowPenalty) {
+            this.impressionNoShowPenalty = impressionNoShowPenalty;
+        }
+
+        public MultiplierRule getImpressionTraitPercent() {
+            return impressionTraitPercent == null ? new MultiplierRule() : impressionTraitPercent;
+        }
+
+        public void setImpressionTraitPercent(MultiplierRule impressionTraitPercent) {
+            this.impressionTraitPercent = impressionTraitPercent;
+        }
+
+        public MultiplierRule getImpressionTraitEvidenceCount() {
+            return impressionTraitEvidenceCount == null ? new MultiplierRule() : impressionTraitEvidenceCount;
+        }
+
+        public void setImpressionTraitEvidenceCount(MultiplierRule impressionTraitEvidenceCount) {
+            this.impressionTraitEvidenceCount = impressionTraitEvidenceCount;
+        }
+    }
+
+    public static class AbsoluteEventAffinityMultipliers {
+        private MultiplierRule contentTokens = new MultiplierRule();
+        private MultiplierRule participantAffinity = new MultiplierRule();
+        private MultiplierRule rating = new MultiplierRule();
+        private MultiplierRule acceptedMembers = new MultiplierRule();
+        private MultiplierRule pendingMembers = new MultiplierRule();
+        private MultiplierRule capacityTotal = new MultiplierRule();
+
+        public MultiplierRule getContentTokens() {
+            return contentTokens == null ? new MultiplierRule() : contentTokens;
+        }
+
+        public void setContentTokens(MultiplierRule contentTokens) {
+            this.contentTokens = contentTokens;
+        }
+
+        public MultiplierRule getParticipantAffinity() {
+            return participantAffinity == null ? new MultiplierRule() : participantAffinity;
+        }
+
+        public void setParticipantAffinity(MultiplierRule participantAffinity) {
+            this.participantAffinity = participantAffinity;
+        }
+
+        public MultiplierRule getRating() {
+            return rating == null ? new MultiplierRule() : rating;
+        }
+
+        public void setRating(MultiplierRule rating) {
+            this.rating = rating;
+        }
+
+        public MultiplierRule getAcceptedMembers() {
+            return acceptedMembers == null ? new MultiplierRule() : acceptedMembers;
+        }
+
+        public void setAcceptedMembers(MultiplierRule acceptedMembers) {
+            this.acceptedMembers = acceptedMembers;
+        }
+
+        public MultiplierRule getPendingMembers() {
+            return pendingMembers == null ? new MultiplierRule() : pendingMembers;
+        }
+
+        public void setPendingMembers(MultiplierRule pendingMembers) {
+            this.pendingMembers = pendingMembers;
+        }
+
+        public MultiplierRule getCapacityTotal() {
+            return capacityTotal == null ? new MultiplierRule() : capacityTotal;
+        }
+
+        public void setCapacityTotal(MultiplierRule capacityTotal) {
+            this.capacityTotal = capacityTotal;
+        }
+    }
+
     public static class DistanceRule extends MultiplierRule {
         private Integer maxMeters;
         private String strategy;
@@ -273,7 +523,9 @@ public class AffinityConfig {
     }
 
     public static class FieldRule extends MultiplierRule {
+        private String group;
         private String field;
+        private String labelKey;
         private String strategy;
 
         public FieldRule() {
@@ -285,12 +537,43 @@ public class AffinityConfig {
             this.strategy = strategy;
         }
 
+        public FieldRule(String field, String labelKey, Double multiplier, String strategy) {
+            super(multiplier);
+            this.field = field;
+            this.labelKey = labelKey;
+            this.strategy = strategy;
+        }
+
+        public FieldRule(String group, String field, String labelKey, Double multiplier, String strategy) {
+            super(multiplier);
+            this.group = group;
+            this.field = field;
+            this.labelKey = labelKey;
+            this.strategy = strategy;
+        }
+
+        public String getGroup() {
+            return group;
+        }
+
+        public void setGroup(String group) {
+            this.group = group;
+        }
+
         public String getField() {
             return field;
         }
 
         public void setField(String field) {
             this.field = field;
+        }
+
+        public String getLabelKey() {
+            return labelKey;
+        }
+
+        public void setLabelKey(String labelKey) {
+            this.labelKey = labelKey;
         }
 
         public String getStrategy() {

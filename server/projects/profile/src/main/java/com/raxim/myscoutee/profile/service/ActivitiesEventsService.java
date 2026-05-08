@@ -35,6 +35,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
@@ -48,6 +49,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinate
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
@@ -64,35 +66,41 @@ public class ActivitiesEventsService {
 
     private final ActivityEventsRepository activityEventsRepository;
     private final UsersRepository usersRepository;
+    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
+    private final AbsoluteAffinityService absoluteAffinityService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
             UsersRepository usersRepository,
+            UserAffinityEdgesRepository userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             ScheduledMessageTaskService scheduledMessageTaskService,
+            AbsoluteAffinityService absoluteAffinityService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
+        this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
+        this.absoluteAffinityService = absoluteAffinityService;
         this.mongoTemplate = mongoTemplate;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
-            return new EventQueryContext(List.of(), List.of(), new LinkedHashMap<>(), Set.of());
+            return new EventQueryContext(List.of(), List.of(), new LinkedHashMap<>(), Set.of(), Map.of());
         }
 
         List<ActivityEvent> directOwnerRecords = queryDirectOwnerRecords(viewer.userId());
@@ -114,7 +122,8 @@ public class ActivitiesEventsService {
                 scopedEvents,
                 scopedEvents,
                 buildMemberSnapshotMap(scopedEvents),
-                activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()));
+                activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()),
+                queryEventOwnerEdgeWeights(viewer, scopedEvents));
     }
 
     private EventQueryContext buildExploreQueryContext(ViewerContext viewer) {
@@ -132,7 +141,71 @@ public class ActivitiesEventsService {
                 allEvents,
                 allEvents,
                 new LinkedHashMap<>(),
-                trackedSourceIds);
+                trackedSourceIds,
+                queryEventOwnerEdgeWeights(viewer, allEvents));
+    }
+
+    private Map<String, Double> queryEventOwnerEdgeWeights(ViewerContext viewer, Collection<ActivityEvent> records) {
+        if (viewer == null || !StringUtils.hasText(viewer.userId())) {
+            return Map.of();
+        }
+        LinkedHashSet<String> userIds = new LinkedHashSet<>();
+        userIds.add(viewer.userId());
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            String ownerUserId = resolveEventOwnerUserId(record);
+            if (StringUtils.hasText(ownerUserId)) {
+                userIds.add(ownerUserId);
+            }
+        }
+        return queryAffinityEdgeWeights(userIds);
+    }
+
+    private Map<String, Double> queryAffinityEdgeWeights(Collection<String> userIds) {
+        List<String> normalizedUserIds = userIds == null
+                ? List.of()
+                : userIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList();
+        if (normalizedUserIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
+        for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
+            String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
+            String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
+            if (!StringUtils.hasText(leftUserId)
+                    || !StringUtils.hasText(rightUserId)
+                    || leftUserId.equals(rightUserId)) {
+                continue;
+            }
+            double edgeWeight = resolveAffinityEdgeWeight(edge);
+            if (edgeWeight <= 0d) {
+                continue;
+            }
+            String key = pairKey(leftUserId, rightUserId);
+            Double existingWeight = weightsByPairKey.get(key);
+            if (existingWeight == null || edgeWeight > existingWeight.doubleValue()) {
+                weightsByPairKey.put(key, edgeWeight);
+            }
+        }
+        return weightsByPairKey;
+    }
+
+    private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
+        if (edge == null) {
+            return 0d;
+        }
+        Double edgeWeight = edge.getEdgeWeight();
+        if (edgeWeight == null || !Double.isFinite(edgeWeight) || edgeWeight <= 0d) {
+            edgeWeight = edge.getAffinityScore();
+        }
+        if (edgeWeight == null || !Double.isFinite(edgeWeight)) {
+            return 0d;
+        }
+        return Math.max(0d, Math.min(1d, edgeWeight));
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> buildMemberSnapshotMap(List<ActivityEvent> records) {
@@ -952,6 +1025,7 @@ public class ActivitiesEventsService {
         long startAtMs = toSortableDate(item.startAtIso());
         long endAtMs = resolveProjectionEndAtMs(item, startAtMs);
         Integer distanceMetersExact = resolveDistanceMetersExact(viewer.locationCoordinates(), record);
+        int affinityGap = Math.abs(Math.max(0, normalizeCount(record.getAffinity())) - viewer.affinity());
         return new EventProjection(
                 record,
                 item,
@@ -960,9 +1034,39 @@ public class ActivitiesEventsService {
                 startAtMs,
                 endAtMs,
                 dateOnly(startAtMs),
-                Math.abs(Math.max(0, normalizeCount(record.getAffinity())) - viewer.affinity()),
+                ownerRelevanceRank(record, viewer, affinityGap),
+                affinityGap,
                 -Math.max(0, (int) Math.round(safeDouble(item.rating()) * 100d)),
                 endAtMs < System.currentTimeMillis());
+    }
+
+    private long ownerRelevanceRank(ActivityEvent record, ViewerContext viewer, int affinityGap) {
+        double score = ownerRelevanceScore(record, viewer, affinityGap);
+        return -Math.round(score * 1_000_000d);
+    }
+
+    private double ownerRelevanceScore(ActivityEvent record, ViewerContext viewer, int affinityGap) {
+        String viewerUserId = normalizeId(viewer == null ? null : viewer.userId());
+        String ownerUserId = resolveEventOwnerUserId(record);
+        if (!StringUtils.hasText(viewerUserId) || !StringUtils.hasText(ownerUserId)) {
+            return affinitySimilarityScore(affinityGap);
+        }
+        if (viewerUserId.equals(ownerUserId)) {
+            return 2d;
+        }
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        double knownEdgeWeight = edgeWeight(
+                viewerUserId,
+                ownerUserId,
+                ctx == null ? Map.of() : ctx.edgeWeightsByPairKey());
+        if (knownEdgeWeight > 0d) {
+            return 1d + knownEdgeWeight;
+        }
+        return affinitySimilarityScore(affinityGap);
+    }
+
+    private double affinitySimilarityScore(int affinityGap) {
+        return 1d / (1d + Math.max(0, affinityGap));
     }
 
     private boolean matchesActivitiesSecondaryFilter(EventProjection projection, String secondaryFilter) {
@@ -1173,6 +1277,7 @@ public class ActivitiesEventsService {
         long distanceMeters = projection.distanceMeters();
         long ratingValue = projection.ratingValue();
         long affinityGap = projection.affinityGap();
+        long ownerRelevanceRank = projection.ownerRelevanceRank();
         long isPast = projection.past() ? 1L : 0L;
         long pastPriority = projection.past() ? 0L : 1L;
 
@@ -1181,7 +1286,7 @@ public class ActivitiesEventsService {
                 case "past-events" -> List.of(distanceMeters, pastPriority, -startAtMs, affinityGap);
                 case "nearby" -> List.of(distanceMeters, isPast, startAtMs, affinityGap);
                 case "top-rated" -> List.of(distanceMeters, isPast, ratingValue, startAtMs);
-                case "most-relevant" -> List.of(distanceMeters, isPast, affinityGap, startAtMs);
+                case "most-relevant" -> List.of(distanceMeters, isPast, ownerRelevanceRank, affinityGap, startAtMs);
                 default -> List.of(distanceMeters, isPast, startAtMs, affinityGap);
             };
         }
@@ -1190,7 +1295,7 @@ public class ActivitiesEventsService {
             case "past-events" -> List.of(pastPriority, -dayMs, -startAtMs, distanceMeters);
             case "nearby" -> List.of(isPast, dayMs, distanceMeters, startAtMs);
             case "top-rated" -> List.of(isPast, dayMs, ratingValue, startAtMs);
-            case "most-relevant" -> List.of(isPast, dayMs, affinityGap, startAtMs);
+            case "most-relevant" -> List.of(isPast, dayMs, ownerRelevanceRank, affinityGap, startAtMs);
             default -> List.of(isPast, dayMs, startAtMs, distanceMeters);
         };
     }
@@ -1392,7 +1497,7 @@ public class ActivitiesEventsService {
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setRelevance(existing == null ? 0d : safeDouble(existing.getRelevance()));
-        document.setAffinity(resolveAffinity(existing, creator, acceptedMemberUserIds));
+        document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
@@ -1404,18 +1509,28 @@ public class ActivitiesEventsService {
         return document;
     }
 
-    private double resolveAffinity(ActivityEvent existing, Users creator, List<String> acceptedMemberUserIds) {
-        if (existing != null && existing.getAffinity() != null) {
-            return existing.getAffinity();
+    private double resolveAffinity(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
+        return absoluteAffinityService.resolveEventAffinity(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
+    }
+
+    private List<Users> resolveAffinityParticipants(Users creator, List<String> acceptedMemberUserIds) {
+        LinkedHashMap<String, Users> participantsByUserId = new LinkedHashMap<>();
+        String creatorUserId = normalizeId(creator == null ? null : creator.getId());
+        if (StringUtils.hasText(creatorUserId)) {
+            participantsByUserId.put(creatorUserId, creator);
         }
-        List<Double> values = new ArrayList<>();
-        if (creator != null && creator.getAffinity() != null) {
-            values.add(creator.getAffinity());
+        List<String> missingUserIds = normalizeIds(acceptedMemberUserIds).stream()
+                .filter(userId -> !participantsByUserId.containsKey(userId))
+                .toList();
+        if (!missingUserIds.isEmpty()) {
+            for (Users user : usersRepository.findByUserIdIn(missingUserIds)) {
+                String userId = normalizeId(user == null ? null : user.getId());
+                if (StringUtils.hasText(userId)) {
+                    participantsByUserId.put(userId, user);
+                }
+            }
         }
-        for (String userId : normalizeIds(acceptedMemberUserIds)) {
-            usersRepository.findByUserId(userId).map(Users::getAffinity).filter(Objects::nonNull).ifPresent(values::add);
-        }
-        return values.stream().mapToDouble(Double::doubleValue).average().orElse(0d);
+        return new ArrayList<>(participantsByUserId.values());
     }
 
     private List<String> resolveSyncedAcceptedMemberUserIds(
@@ -1972,6 +2087,39 @@ public class ActivitiesEventsService {
             }
         }
         return new ArrayList<>(normalized);
+    }
+
+    private String resolveEventOwnerUserId(ActivityEvent record) {
+        if (record == null) {
+            return null;
+        }
+        String creatorUserId = normalizeId(record.getCreatorUserId());
+        if (StringUtils.hasText(creatorUserId)) {
+            return creatorUserId;
+        }
+        return normalizeId(record.getOwnerUserId());
+    }
+
+    private double edgeWeight(String leftUserId, String rightUserId, Map<String, Double> edgeWeightsByPairKey) {
+        String normalizedLeft = normalizeId(leftUserId);
+        String normalizedRight = normalizeId(rightUserId);
+        if (!StringUtils.hasText(normalizedLeft)
+                || !StringUtils.hasText(normalizedRight)
+                || normalizedLeft.equals(normalizedRight)
+                || edgeWeightsByPairKey == null
+                || edgeWeightsByPairKey.isEmpty()) {
+            return 0d;
+        }
+        return Math.max(0d, Math.min(1d, edgeWeightsByPairKey.getOrDefault(pairKey(normalizedLeft, normalizedRight), 0d)));
+    }
+
+    private String pairKey(String leftUserId, String rightUserId) {
+        String normalizedLeft = normalizeId(leftUserId);
+        String normalizedRight = normalizeId(rightUserId);
+        if (normalizedLeft.compareTo(normalizedRight) <= 0) {
+            return normalizedLeft + ":" + normalizedRight;
+        }
+        return normalizedRight + ":" + normalizedLeft;
     }
 
     private List<String> normalizeStrings(Collection<String> values) {
@@ -2626,6 +2774,7 @@ public class ActivitiesEventsService {
             long startAtMs,
             long endAtMs,
             long dayMs,
+            long ownerRelevanceRank,
             int affinityGap,
             int ratingValue,
             boolean past) {
@@ -2635,6 +2784,7 @@ public class ActivitiesEventsService {
             List<ActivityEvent> allEvents,
             List<ActivityEvent> mergedEvents,
             Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
-            Set<String> trackedEventSourceIds) {
+            Set<String> trackedEventSourceIds,
+            Map<String, Double> edgeWeightsByPairKey) {
     }
 }

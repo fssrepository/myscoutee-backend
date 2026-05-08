@@ -91,7 +91,7 @@ public final class AuthDtos {
     }
 
     public record ProfileDetailRowDto(
-            String label,
+            String labelKey,
             String value,
             String privacy,
             List<String> options) {
