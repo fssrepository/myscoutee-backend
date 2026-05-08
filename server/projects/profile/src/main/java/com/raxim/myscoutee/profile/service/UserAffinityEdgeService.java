@@ -179,22 +179,23 @@ public class UserAffinityEdgeService {
             if (affinity <= 0d) {
                 return;
             }
+            double confidence = evidenceConfidence(rate);
             String mode = normalize(rate.getMode()).toLowerCase();
             if (MODE_PAIR.equals(mode)) {
                 boolean insideNetwork = SOCIAL_SEPARATED_FRIENDS.equals(normalize(rate.getSocialContext()));
-                addEvidence(insideNetwork ? EvidenceType.PAIR_INSIDE_NETWORK : EvidenceType.PAIR_OUTSIDE_NETWORK, affinity);
+                addEvidence(insideNetwork ? EvidenceType.PAIR_INSIDE_NETWORK : EvidenceType.PAIR_OUTSIDE_NETWORK, affinity, confidence);
             } else if (MODE_SINGLE.equals(mode)) {
                 addEvidence(Boolean.TRUE.equals(rate.getMutuallyRated())
                         ? EvidenceType.MUTUAL_SINGLE
-                        : EvidenceType.SINGLE_ONE_SIDED, affinity);
+                        : EvidenceType.SINGLE_ONE_SIDED, affinity, confidence);
             }
             if (Boolean.TRUE.equals(rate.getMet())) {
-                addEvidence(EvidenceType.MET, affinity);
+                addEvidence(EvidenceType.MET, affinity, confidence);
             }
         }
 
-        private void addEvidence(EvidenceType type, double affinity) {
-            double multiplier = evidenceMultiplier(type);
+        private void addEvidence(EvidenceType type, double affinity, double confidence) {
+            double multiplier = evidenceMultiplier(type) * confidence;
             if (multiplier <= 0d) {
                 return;
             }
@@ -266,6 +267,13 @@ public class UserAffinityEdgeService {
                 case PAIR_INSIDE_NETWORK -> multiplier(multipliers.getPairInsideNetwork(), 0.7d);
                 case MET -> multiplier(multipliers.getMet(), 0.5d);
             };
+        }
+
+        private double evidenceConfidence(UserRate rate) {
+            Double confidence = rate == null ? null : rate.getEvidenceConfidence();
+            return confidence == null || !Double.isFinite(confidence)
+                    ? 1d
+                    : Math.max(0d, Math.min(1d, confidence));
         }
     }
 

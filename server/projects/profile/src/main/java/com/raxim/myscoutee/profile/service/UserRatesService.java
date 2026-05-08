@@ -563,9 +563,16 @@ public class UserRatesService {
         int scoreGiven = normalizeScore(item.scoreGiven());
         int scoreReceived = normalizeScore(item.scoreReceived());
         if ("mutual".equals(normalizeDisplayDirection(item.direction()))) {
-            return scoreGiven + scoreReceived;
+            return harmonicScore(scoreGiven, scoreReceived);
         }
         return scoreGiven > 0 ? scoreGiven : 5d;
+    }
+
+    private double harmonicScore(int scoreGiven, int scoreReceived) {
+        if (scoreGiven <= 0 || scoreReceived <= 0) {
+            return 0d;
+        }
+        return 2d * scoreGiven * scoreReceived / (scoreGiven + scoreReceived);
     }
 
     private int resolveCursorStartIndex(List<RateMenuItemDto> items, String cursor) {

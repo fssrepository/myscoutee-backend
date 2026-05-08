@@ -29,6 +29,7 @@ public class UserRate {
     private Integer scoreGiven;
     private Integer scoreReceived;
     private Double affinityScore;
+    private Double evidenceConfidence;
     private Boolean mutuallyRated;
     private String socialContext;
     private String bridgeUserId;
@@ -63,6 +64,8 @@ public class UserRate {
     public void setScoreReceived(Integer scoreReceived) { this.scoreReceived = scoreReceived; }
     public Double getAffinityScore() { return affinityScore; }
     public void setAffinityScore(Double affinityScore) { this.affinityScore = affinityScore; }
+    public Double getEvidenceConfidence() { return evidenceConfidence; }
+    public void setEvidenceConfidence(Double evidenceConfidence) { this.evidenceConfidence = evidenceConfidence; }
     public Boolean getMutuallyRated() { return mutuallyRated; }
     public void setMutuallyRated(Boolean mutuallyRated) { this.mutuallyRated = mutuallyRated; }
     public String getSocialContext() { return socialContext; }

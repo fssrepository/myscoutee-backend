@@ -65,6 +65,30 @@ class UserAffinityEdgeServiceTest {
     }
 
     @Test
+    void evidenceConfidenceScalesEdgeWeightButNotRawAffinity() {
+        UserRate outsidePair = pairRate("outside", "owner", "u1", "u2", 0.8d, null);
+        outsidePair.setEvidenceConfidence(0.25d);
+        UserAffinityEdgeService service = service(List.of(outsidePair));
+
+        service.recomputeForRates(List.of(outsidePair));
+
+        UserAffinityEdge edge = capturedEdge();
+        assertThat(edge.getAffinityScore()).isCloseTo(0.8d, offset());
+        assertThat(edge.getEdgeWeight()).isCloseTo(0.06d, offset());
+        assertThat(edge.getEvidence().getTotalMultiplier()).isCloseTo(0.075d, offset());
+    }
+
+    @Test
+    void missingEvidenceConfidenceRemainsNeutralForLegacyRates() {
+        UserRate outsidePair = pairRate("outside", "owner", "u1", "u2", 0.8d, null);
+        UserAffinityEdgeService service = service(List.of(outsidePair));
+
+        service.recomputeForRates(List.of(outsidePair));
+
+        assertThat(capturedEdge().getEdgeWeight()).isCloseTo(0.24d, offset());
+    }
+
+    @Test
     void unsupportedOneSidedEvidenceDeletesExistingSummaryEdge() {
         UserRate oneSided = singleRate("single", "u1", "u2", 0.8d, false);
         UserAffinityEdgeService service = service(List.of(oneSided));

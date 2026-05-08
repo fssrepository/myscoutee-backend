@@ -135,6 +135,65 @@ class AffinityCalculationServiceTest {
         assertThat(weakOwnerPair.getAffinityScore()).isLessThan(strongOwnerPair.getAffinityScore());
     }
 
+    @Test
+    void insideNetworkOwnerContextUsesExistingOwnerRelationshipEvidence() {
+        AffinityConfig config = profileConfig(List.of(
+                new AffinityConfig.FieldRule("languages", 8d, "intersection")));
+        config.getRating().setPairInsideNetwork(new AffinityConfig.MultiplierRule(5d));
+        config.setOwnerContext(new AffinityConfig.MultiplierRule(3d));
+
+        Users first = user("u1", List.of("music"), null);
+        Users second = user("u2", List.of("music"), null);
+        UserRate connectedOwnerFirst = mutualSingleRate("connected-owner-u1", "connected-owner", "u1", 9, 9, 0.9d);
+        UserRate connectedOwnerSecond = mutualSingleRate("connected-owner-u2", "connected-owner", "u2", 9, 9, 0.9d);
+        UserRate connectedOwnerPair = pairRate("connected-owner-pair", "connected-owner", "u1", "u2", 8, "separated-friends");
+        UserRate weakOwnerPair = pairRate("weak-owner-pair", "weak-owner", "u1", "u2", 8, "separated-friends");
+
+        AffinityCalculationService service = service(config, List.of(connectedOwnerFirst, connectedOwnerSecond), Map.of(
+                "connected-owner", user("connected-owner", List.of("chess"), null),
+                "weak-owner", user("weak-owner", List.of("chess"), null),
+                "u1", first,
+                "u2", second));
+
+        service.applyAffinity(List.of(connectedOwnerPair, weakOwnerPair));
+
+        assertThat(connectedOwnerPair.getAffinityScore()).isGreaterThan(weakOwnerPair.getAffinityScore());
+    }
+
+    @Test
+    void evidenceConfidenceUsesImpressionEvidenceAndNoShowPenaltyWithoutChangingAffinity() {
+        AffinityConfig config = ratingOnlyConfig();
+        UserRate strongEvidence = singleRate("strong-evidence", "strong-owner", "u1", 8);
+        UserRate weakEvidence = singleRate("weak-evidence", "weak-owner", "u1", 8);
+        Users strongOwner = userWithImpressionConfidence("strong-owner", 4.8d, 20, 20, 10, 0, 20);
+        Users weakOwner = userWithImpressionConfidence("weak-owner", 4.8d, 20, 20, 10, 4, 20);
+        Users related = userWithImpressionConfidence("u1", 4.8d, 20, 20, 10, 0, 20);
+
+        AffinityCalculationService service = service(config, List.of(), Map.of(
+                "strong-owner", strongOwner,
+                "weak-owner", weakOwner,
+                "u1", related));
+
+        service.applyAffinity(List.of(strongEvidence, weakEvidence));
+
+        assertThat(strongEvidence.getAffinityScore()).isEqualTo(weakEvidence.getAffinityScore());
+        assertThat(strongEvidence.getEvidenceConfidence()).isGreaterThan(weakEvidence.getEvidenceConfidence());
+        assertThat(weakEvidence.getEvidenceConfidence()).isLessThan(0.7d);
+    }
+
+    @Test
+    void missingImpressionConfidenceIsNeutralForExistingRateBehavior() {
+        AffinityConfig config = ratingOnlyConfig();
+        UserRate rate = singleRate("rate", "u1", "u2", 8);
+        AffinityCalculationService service = service(config, List.of(), Map.of(
+                "u1", user("u1", List.of("music"), null),
+                "u2", user("u2", List.of("music"), null)));
+
+        service.applyAffinity(List.of(rate));
+
+        assertThat(rate.getEvidenceConfidence()).isEqualTo(1d);
+    }
+
     private AffinityCalculationService service(
             AffinityConfig config,
             List<UserRate> existingRates,
@@ -176,6 +235,20 @@ class AffinityCalculationServiceTest {
         return rate;
     }
 
+    private UserRate mutualSingleRate(
+            String id,
+            String ownerUserId,
+            String relatedUserId,
+            int scoreGiven,
+            int scoreReceived,
+            double affinityScore) {
+        UserRate rate = singleRate(id, ownerUserId, relatedUserId, scoreGiven);
+        rate.setScoreReceived(scoreReceived);
+        rate.setAffinityScore(affinityScore);
+        rate.setMutuallyRated(true);
+        return rate;
+    }
+
     private UserRate pairRate(
             String id,
             String ownerUserId,
@@ -201,6 +274,36 @@ class AffinityCalculationServiceTest {
         user.setId(userId);
         user.setLanguages(languages);
         user.setPhysique(physique);
+        return user;
+    }
+
+    private Users userWithImpressionConfidence(
+            String userId,
+            double averageRating,
+            int peopleMet,
+            int totalEvents,
+            int repeatCount,
+            int noShowCount,
+            int traitEvidenceCount) {
+        Users user = user(userId, List.of("music"), null);
+        Users.UserPersonalityTraitRecord trait = new Users.UserPersonalityTraitRecord(
+                "warm",
+                "Warm",
+                80,
+                traitEvidenceCount,
+                "2026-05-08T00:00:00Z");
+        Users.UserImpressionsSectionRecord section = new Users.UserImpressionsSectionRecord(
+                0,
+                averageRating,
+                peopleMet,
+                totalEvents,
+                repeatCount,
+                noShowCount,
+                List.of("friendly"),
+                List.of("warm"),
+                List.of(trait),
+                List.of("music"));
+        user.setImpressions(new Users.UserImpressionsRecord(section, section));
         return user;
     }
 

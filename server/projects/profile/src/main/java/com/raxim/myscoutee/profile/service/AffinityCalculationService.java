@@ -90,12 +90,13 @@ public class AffinityCalculationService {
         addRatingSignal(signals, rate, mode, scoreGiven, scoreReceived, mutuallyRated, config);
         if (MODE_PAIR.equals(mode)) {
             addCompatibilitySignals(signals, related, secondary, config);
-            addOwnerContextSignal(signals, owner, related, secondary, rate, config);
+            addOwnerContextSignal(signals, owner, related, secondary, rate, contextRates, config);
         } else {
             addCompatibilitySignals(signals, owner, related, config);
         }
 
         rate.setAffinityScore(weightedAverage(signals));
+        rate.setEvidenceConfidence(evidenceConfidence(rate, owner, related, secondary));
     }
 
     private void addRatingSignal(
@@ -145,15 +146,83 @@ public class AffinityCalculationService {
             Users related,
             Users secondary,
             UserRate rate,
+            List<UserRate> contextRates,
             AffinityConfig config) {
         if (!isInsideNetwork(rate)) {
             return;
         }
 
-        Double ownerRelated = compatibilityScore(owner, related, config);
-        Double ownerSecondary = compatibilityScore(owner, secondary, config);
+        Double ownerRelated = ownerParticipantContext(owner, related, rate, contextRates, config);
+        Double ownerSecondary = ownerParticipantContext(owner, secondary, rate, contextRates, config);
         Double context = harmonic(nonNullValues(ownerRelated, ownerSecondary));
         addSignal(signals, context, multiplier(config.getOwnerContext(), 3d));
+    }
+
+    private Double ownerParticipantContext(
+            Users owner,
+            Users participant,
+            UserRate currentRate,
+            List<UserRate> contextRates,
+            AffinityConfig config) {
+        String ownerUserId = normalize(owner == null ? null : owner.getId());
+        String participantUserId = normalize(participant == null ? null : participant.getId());
+        Double compatibility = compatibilityScore(owner, participant, config);
+        Double relationship = relationshipScore(ownerUserId, participantUserId, currentRate, contextRates);
+        return average(nonNullValues(compatibility, relationship));
+    }
+
+    private Double relationshipScore(
+            String firstUserId,
+            String secondUserId,
+            UserRate currentRate,
+            List<UserRate> contextRates) {
+        if (!StringUtils.hasText(firstUserId)
+                || !StringUtils.hasText(secondUserId)
+                || firstUserId.equals(secondUserId)
+                || contextRates == null) {
+            return null;
+        }
+
+        Double best = null;
+        for (UserRate candidate : contextRates) {
+            if (candidate == null || sameRecord(currentRate, candidate)) {
+                continue;
+            }
+            if (!MODE_SINGLE.equals(normalize(candidate.getMode()))) {
+                continue;
+            }
+            String ownerUserId = normalize(candidate.getOwnerUserId());
+            String relatedUserId = normalize(candidate.getRelatedUserId());
+            boolean samePair = (firstUserId.equals(ownerUserId) && secondUserId.equals(relatedUserId))
+                    || (firstUserId.equals(relatedUserId) && secondUserId.equals(ownerUserId));
+            if (!samePair) {
+                continue;
+            }
+
+            Double candidateScore = relationshipEvidenceScore(candidate);
+            if (candidateScore == null) {
+                continue;
+            }
+            best = best == null ? candidateScore : Math.max(best, candidateScore);
+        }
+        return best;
+    }
+
+    private Double relationshipEvidenceScore(UserRate rate) {
+        if (rate == null) {
+            return null;
+        }
+        if (isFinite(rate.getAffinityScore()) && rate.getAffinityScore() > 0d) {
+            return clamp01(rate.getAffinityScore());
+        }
+
+        int scoreGiven = normalizeScore(rate.getScoreGiven());
+        int scoreReceived = normalizeScore(rate.getScoreReceived());
+        if (scoreGiven > 0 && scoreReceived > 0) {
+            return harmonic(List.of(normalizeScoreSignal(scoreGiven), normalizeScoreSignal(scoreReceived)));
+        }
+        int oneSidedScore = Math.max(scoreGiven, scoreReceived);
+        return oneSidedScore > 0 ? normalizeScoreSignal(oneSidedScore) * 0.5d : null;
     }
 
     private void addProfileSignals(List<Signal> signals, Users left, Users right, AffinityConfig config) {
@@ -273,6 +342,88 @@ public class AffinityCalculationService {
             return intersectionScore(impressionValues(left, rule.getField()), impressionValues(right, rule.getField()));
         }
         return null;
+    }
+
+    private Double evidenceConfidence(UserRate rate, Users owner, Users related, Users secondary) {
+        List<Double> confidences = new ArrayList<>();
+        String mode = normalize(rate == null ? null : rate.getMode());
+        if (MODE_PAIR.equals(mode)) {
+            addConfidence(confidences, userConfidence(related));
+            addConfidence(confidences, userConfidence(secondary));
+            if (isInsideNetwork(rate)) {
+                addConfidence(confidences, userConfidence(owner));
+            }
+        } else {
+            addConfidence(confidences, userConfidence(owner));
+            addConfidence(confidences, userConfidence(related));
+        }
+        Double confidence = average(confidences);
+        return confidence == null ? 1d : confidence;
+    }
+
+    private void addConfidence(List<Double> confidences, Double confidence) {
+        if (isFinite(confidence)) {
+            confidences.add(clamp01(confidence));
+        }
+    }
+
+    private Double userConfidence(Users user) {
+        if (user == null || user.getImpressions() == null) {
+            return null;
+        }
+        return average(nonNullValues(
+                sectionConfidence(user.getImpressions().member()),
+                sectionConfidence(user.getImpressions().host())));
+    }
+
+    private Double sectionConfidence(Users.UserImpressionsSectionRecord section) {
+        if (section == null) {
+            return null;
+        }
+
+        List<Double> signals = new ArrayList<>();
+        addConfidence(signals, ratingConfidence(section.averageRating()));
+        addConfidence(signals, countConfidence(section.peopleMet(), 20));
+        addConfidence(signals, countConfidence(section.totalEvents(), 20));
+        addConfidence(signals, countConfidence(section.repeatCount(), 10));
+        addConfidence(signals, traitEvidenceConfidence(section.personalityTraits()));
+        Double base = average(signals);
+        if (base == null) {
+            return null;
+        }
+
+        int noShowCount = section.noShowCount() == null ? 0 : Math.max(0, section.noShowCount());
+        double noShowPenalty = 1d - Math.min(0.8d, noShowCount * 0.2d);
+        return clamp01(base * noShowPenalty);
+    }
+
+    private Double ratingConfidence(Double averageRating) {
+        if (!isFinite(averageRating) || averageRating <= 0d) {
+            return null;
+        }
+        double denominator = averageRating <= 5d ? 5d : 10d;
+        return clamp01(averageRating / denominator);
+    }
+
+    private Double countConfidence(Integer count, int saturationCount) {
+        if (count == null || count < 0 || saturationCount <= 0) {
+            return null;
+        }
+        return clamp01(count / (double) saturationCount);
+    }
+
+    private Double traitEvidenceConfidence(List<Users.UserPersonalityTraitRecord> traits) {
+        if (traits == null || traits.isEmpty()) {
+            return null;
+        }
+        List<Double> signals = new ArrayList<>();
+        for (Users.UserPersonalityTraitRecord trait : traits) {
+            if (trait == null || trait.evidenceCount() == null) {
+                continue;
+            }
+            addConfidence(signals, countConfidence(trait.evidenceCount(), 20));
+        }
+        return average(signals);
     }
 
     private Double traitVectorScore(Users left, Users right, String field) {
@@ -547,6 +698,22 @@ public class AffinityCalculationService {
             count += 1;
         }
         return count == 0 || reciprocalTotal <= 0d ? null : count / reciprocalTotal;
+    }
+
+    private Double average(List<Double> values) {
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+        double total = 0d;
+        int count = 0;
+        for (Double value : values) {
+            if (!isFinite(value)) {
+                continue;
+            }
+            total += clamp01(value);
+            count += 1;
+        }
+        return count == 0 ? null : total / count;
     }
 
     private double normalizeScoreSignal(int score) {
