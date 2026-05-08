@@ -29,6 +29,10 @@ public class UserRate {
     private Integer scoreGiven;
     private Integer scoreReceived;
     private Double affinityScore;
+    private Boolean mutuallyRated;
+    private String socialContext;
+    private String bridgeUserId;
+    private Integer bridgeCount;
     private Boolean met;
     private String eventName;
     private LocationSnapshot ownerLocation;
@@ -59,6 +63,14 @@ public class UserRate {
     public void setScoreReceived(Integer scoreReceived) { this.scoreReceived = scoreReceived; }
     public Double getAffinityScore() { return affinityScore; }
     public void setAffinityScore(Double affinityScore) { this.affinityScore = affinityScore; }
+    public Boolean getMutuallyRated() { return mutuallyRated; }
+    public void setMutuallyRated(Boolean mutuallyRated) { this.mutuallyRated = mutuallyRated; }
+    public String getSocialContext() { return socialContext; }
+    public void setSocialContext(String socialContext) { this.socialContext = socialContext; }
+    public String getBridgeUserId() { return bridgeUserId; }
+    public void setBridgeUserId(String bridgeUserId) { this.bridgeUserId = bridgeUserId; }
+    public Integer getBridgeCount() { return bridgeCount; }
+    public void setBridgeCount(Integer bridgeCount) { this.bridgeCount = bridgeCount; }
     public Boolean getMet() { return met; }
     public void setMet(Boolean met) { this.met = met; }
     public String getEventName() { return eventName; }

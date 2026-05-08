@@ -13,8 +13,8 @@ about page - landing size (before the login)
 the gdpr privacy shouldn't open if it's not needed (so not open and immediately close)
 
 report user menu is bleeding out of the screen on mobile
-configureable matrix, to fine tune the algorithm - specify weights of profile data - normalize
-friends in common is a single rate not a pair - does not make any sense - ui needs to be modified accordingly
+configureable matrix, to fine tune the algorithm - specify multipliers of profile data - normalize
+friends in common is a single rate, not a pair; home/activity UI must rate one person, hide the two-person search inputs there, and keep demo/mongo seeds aligned
 
 Commands
 --------

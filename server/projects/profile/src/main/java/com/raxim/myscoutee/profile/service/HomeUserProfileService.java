@@ -69,6 +69,9 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class HomeUserProfileService {
+    private static final List<String> PUBLIC_GAME_PROFILE_STATUSES = List.of("public");
+    private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
+    private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted");
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
     private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
@@ -491,12 +494,17 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
+        if (!isPublicGameUser(usersRepository.findByUserId(normalizedUserId).orElse(null))) {
+            return List.of();
+        }
 
         Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
-        return orderedUsers().stream()
+        return usersRepository.findByProfileStatusIn(PUBLIC_GAME_PROFILE_STATUSES).stream()
                 .filter(Objects::nonNull)
+                .filter(this::isPublicGameUser)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
+                .sorted(userComparator())
                 .toList();
     }
 
@@ -514,8 +522,14 @@ public class HomeUserProfileService {
         }
 
         Map<String, Users> usersById = indexUsersById(users);
+        if (!isPublicGameUser(usersById.get(normalizedUserId))) {
+            return List.of();
+        }
         List<String> neighbors = new ArrayList<>(graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of()));
-        neighbors.sort((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)));
+        neighbors = neighbors.stream()
+                .filter(userId -> isInsideNetworkGameUser(usersById.get(userId)))
+                .sorted((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)))
+                .toList();
 
         Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId);
         List<GameSocialCardCandidate> candidates = new ArrayList<>();
@@ -568,6 +582,9 @@ public class HomeUserProfileService {
         }
 
         Map<String, Users> usersById = indexUsersById(users);
+        if (!isPublicGameUser(usersById.get(normalizedUserId))) {
+            return List.of();
+        }
         Set<String> activeNeighbors = graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
         if (activeNeighbors.isEmpty()) {
             return List.of();
@@ -580,7 +597,8 @@ public class HomeUserProfileService {
             if (!StringUtils.hasText(candidateUserId)
                     || normalizedUserId.equals(candidateUserId)
                     || activeNeighbors.contains(candidateUserId)
-                    || ratedUserIds.contains(candidateUserId)) {
+                    || ratedUserIds.contains(candidateUserId)
+                    || !isPublicGameUser(user)) {
                 continue;
             }
 
@@ -591,6 +609,7 @@ public class HomeUserProfileService {
 
             List<String> bridges = activeNeighbors.stream()
                     .filter(candidateNeighbors::contains)
+                    .filter(bridgeId -> isInsideNetworkGameUser(usersById.get(bridgeId)))
                     .sorted((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)))
                     .toList();
             if (bridges.isEmpty()) {
@@ -816,6 +835,21 @@ public class HomeUserProfileService {
     private boolean isSelectableDemoUserDocument(Users user) {
         return isUsableUserDocument(user)
                 && !"deleted".equals(resolveProfileStatus(user));
+    }
+
+    boolean isPublicGameUser(Users user) {
+        return isUsableUserDocument(user)
+                && "public".equals(resolveProfileStatus(user));
+    }
+
+    boolean isInsideNetworkGameUser(Users user) {
+        return isUsableUserDocument(user)
+                && INSIDE_NETWORK_GAME_PROFILE_STATUSES.contains(resolveProfileStatus(user));
+    }
+
+    boolean isActivityRateVisibleUser(Users user) {
+        return isUsableUserDocument(user)
+                && !HARD_HIDDEN_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
     private String normalizeUserListGender(String gender) {

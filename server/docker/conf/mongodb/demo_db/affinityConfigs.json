@@ -1,0 +1,83 @@
+[
+  {
+    "_id": {
+      "$oid": "11111111111111111111a001"
+    },
+    "key": "default",
+    "active": true,
+    "version": 1,
+    "rating": {
+      "singleMutual": {
+        "multiplier": 10
+      },
+      "singleOneSided": {
+        "multiplier": 2
+      },
+      "pairOutsideNetwork": {
+        "multiplier": 2
+      },
+      "pairInsideNetwork": {
+        "multiplier": 5
+      }
+    },
+    "evidence": {
+      "mutualSingle": {
+        "multiplier": 1
+      },
+      "singleOneSided": {
+        "multiplier": 0
+      },
+      "pairOutsideNetwork": {
+        "multiplier": 0.3
+      },
+      "pairInsideNetwork": {
+        "multiplier": 0.7
+      },
+      "met": {
+        "multiplier": 0.5
+      }
+    },
+    "distance": {
+      "multiplier": 5,
+      "maxMeters": 50000,
+      "strategy": "linear"
+    },
+    "ownerContext": {
+      "multiplier": 3
+    },
+    "profileRules": [
+      {
+        "field": "languages",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "field": "physique",
+        "multiplier": 3,
+        "strategy": "exact"
+      },
+      {
+        "field": "profileDetails.values",
+        "multiplier": 3,
+        "strategy": "intersection"
+      }
+    ],
+    "impressionRules": [
+      {
+        "field": "member.personalityTraits",
+        "multiplier": 4,
+        "strategy": "trait-vector"
+      },
+      {
+        "field": "member.vibeBadges",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "field": "member.categoryBadges",
+        "multiplier": 2,
+        "strategy": "intersection"
+      }
+    ]
+  }
+]

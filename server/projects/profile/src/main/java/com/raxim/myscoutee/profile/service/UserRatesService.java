@@ -42,16 +42,22 @@ public class UserRatesService {
     private final UserRatesRepository userRatesRepository;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final AffinityCalculationService affinityCalculationService;
+    private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
 
     public UserRatesService(
             UserRatesRepository userRatesRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
+            AffinityCalculationService affinityCalculationService,
+            UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.affinityCalculationService = affinityCalculationService;
+        this.userAffinityEdgeService = userAffinityEdgeService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -81,6 +87,7 @@ public class UserRatesService {
             String sortValue,
             String sortDirectionValue,
             String secondaryFilterValue,
+            boolean socialBadgeEnabled,
             String cursor,
             Integer limitValue,
             String rangeStartIso,
@@ -105,6 +112,7 @@ public class UserRatesService {
         List<RatePageProjection> projections = queryNormalizedRateItems(currentUser, ownerUserId).stream()
                 .filter(item -> matchesRequestedMode(item, mode))
                 .filter(item -> direction.equals(item.direction()))
+                .filter(item -> matchesSocialBadgeFilter(item, mode, socialBadgeEnabled))
                 .filter(item -> isWithinRange(item, rangeStartMs, rangeEndMs))
                 .map(this::toRatePageProjection)
                 .filter(Objects::nonNull)
@@ -149,7 +157,10 @@ public class UserRatesService {
         }
 
         if (!normalizedRates.isEmpty()) {
-            userRatesRepository.saveAll(normalizedRates);
+            affinityCalculationService.applyAffinity(normalizedRates);
+            List<UserRate> savedRates = new ArrayList<>();
+            userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
+            userAffinityEdgeService.recomputeForRates(savedRates.isEmpty() ? normalizedRates : savedRates);
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
     }
@@ -190,6 +201,11 @@ public class UserRatesService {
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC));
+        indexOps.createIndex(new Index()
+                .named("user_rate_pair_lookup_v2")
+                .on("relatedUserId", Sort.Direction.ASC)
+                .on("secondaryRelatedUserId", Sort.Direction.ASC)
+                .on("mode", Sort.Direction.ASC));
     }
 
     private void dropIndexIfPresent(
@@ -206,10 +222,11 @@ public class UserRatesService {
         Map<String, UserRate> recordsById = new LinkedHashMap<>();
         addRecords(recordsById, userRatesRepository.findRelevantByUserIds(List.of(ownerUserId)));
 
-        return dedupeRateItems(recordsById.values().stream()
+        List<RateMenuItemDto> items = dedupeRateItems(recordsById.values().stream()
                 .map(record -> toRateMenuItem(record, currentUser))
                 .filter(Objects::nonNull)
                 .toList());
+        return filterActivityRateVisibleItems(items, ownerUserId);
     }
 
     private void addRecords(Map<String, UserRate> target, List<UserRate> records) {
@@ -232,6 +249,47 @@ public class UserRatesService {
             addUserId(userIds, item.bridgeUserId());
         }
         return userIds;
+    }
+
+    private List<RateMenuItemDto> filterActivityRateVisibleItems(List<RateMenuItemDto> items, String ownerUserId) {
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
+        Set<String> checkedUserIds = resolveDisplayUserIds(items).stream()
+                .filter(userId -> !normalizeId(userId).equals(normalizeId(ownerUserId)))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (checkedUserIds.isEmpty()) {
+            return items;
+        }
+
+        Map<String, Users> usersById = usersRepository.findByUserIdIn(checkedUserIds).stream()
+                .filter(Objects::nonNull)
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+        return items.stream()
+                .filter(item -> activityRateItemUsersAreVisible(item, ownerUserId, usersById))
+                .toList();
+    }
+
+    private boolean activityRateItemUsersAreVisible(
+            RateMenuItemDto item,
+            String ownerUserId,
+            Map<String, Users> usersById) {
+        if (item == null) {
+            return false;
+        }
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        Set<String> displayedUserIds = new LinkedHashSet<>();
+        addUserId(displayedUserIds, item.userId());
+        addUserId(displayedUserIds, item.secondaryUserId());
+        addUserId(displayedUserIds, item.bridgeUserId());
+        displayedUserIds.remove(normalizedOwnerUserId);
+        for (String userId : displayedUserIds) {
+            Users user = usersById.get(normalizeId(userId));
+            if (!homeUserProfileService.isActivityRateVisibleUser(user)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void addUserId(Set<String> target, String userId) {
@@ -335,9 +393,18 @@ public class UserRatesService {
 
         document.setRelatedUserId(relatedUserId);
         document.setSecondaryRelatedUserId(secondaryRelatedUserId);
+        String storedSocialContext = resolveStoredSocialContext(mode, rate.socialContext());
         document.setScoreGiven(resolveScoreGiven(rate));
         document.setScoreReceived(normalizeScore(rate.scoreReceived()));
-        document.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
+        document.setSocialContext(storedSocialContext);
+        document.setBridgeUserId(resolveStoredBridgeUserId(
+                mode,
+                storedSocialContext,
+                rate.bridgeUserId(),
+                ownerUserId,
+                relatedUserId,
+                secondaryRelatedUserId));
+        document.setBridgeCount(resolveStoredBridgeCount(storedSocialContext, rate.bridgeCount()));
         document.setMet(met);
         document.setEventName(met
                 ? (StringUtils.hasText(requestedEventName) ? requestedEventName : preservedEventName)
@@ -383,7 +450,7 @@ public class UserRatesService {
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
         RateDistance distance = resolveActivityDistance(currentUser, record.getOwnerLocation());
-        String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), direction);
+        String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), record.getSocialContext());
         String bridgeUserId = resolvePairBridgeUserId(record, resolvedCurrentUserId, socialContext);
         Integer bridgeCount = resolvePairBridgeCount(socialContext);
 
@@ -415,8 +482,11 @@ public class UserRatesService {
         if (!StringUtils.hasText(relatedUserId) || currentUserId.equals(relatedUserId)) {
             return null;
         }
+        String individualSocialContext = resolveIndividualSocialContext(record);
         return new RateMenuItemDto(displayId, relatedUserId, null, "individual", direction,
-                null, null, null,
+                individualSocialContext,
+                resolveIndividualBridgeUserId(record, resolvedCurrentUserId, relatedUserId, individualSocialContext),
+                resolveIndividualBridgeCount(record, individualSocialContext),
                 scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
     }
 
@@ -687,20 +757,23 @@ public class UserRatesService {
         if (Boolean.TRUE.equals(record.getMet())) {
             return "met";
         }
-        String createdUser = normalizeOptionalId(record.getCreatedUser());
+        String mode = normalizeMode(record.getMode());
         int scoreGiven = normalizeScore(record.getScoreGiven());
         int scoreReceived = normalizeScore(record.getScoreReceived());
-        if (ownerUserId.equals(createdUser)) {
-            return "given";
+        if ("pair".equals(mode)) {
+            if (matchesActivityParticipant(record, ownerUserId) && scoreGiven <= 0 && scoreReceived > 0) {
+                return "received";
+            }
+            return scoreGiven > 0 || scoreReceived > 0 ? "given" : null;
         }
         if (scoreGiven > 0 && scoreReceived > 0) {
             return "mutual";
         }
-        if (scoreReceived > 0) {
-            return "received";
-        }
         if (scoreGiven > 0) {
             return "given";
+        }
+        if (scoreReceived > 0) {
+            return "received";
         }
         return null;
     }
@@ -749,17 +822,97 @@ public class UserRatesService {
         return null;
     }
 
-    private String resolvePairSocialContext(String mode, String direction) {
+    private String resolvePairSocialContext(String mode, String storedSocialContext) {
         if (!"pair".equals(mode)) {
             return null;
         }
-        if ("given".equals(direction)) {
+        if ("separated-friends".equals(normalizeOptionalText(storedSocialContext))) {
             return "separated-friends";
         }
-        if ("received".equals(direction)) {
-            return "friends-in-common";
+        return null;
+    }
+
+    private String resolveIndividualSocialContext(UserRate record) {
+        String socialContext = normalizeOptionalText(record == null ? null : record.getSocialContext());
+        return "friends-in-common".equals(socialContext) ? "friends-in-common" : null;
+    }
+
+    private String resolveStoredSocialContext(String mode, String socialContext) {
+        String normalized = normalizeOptionalText(socialContext);
+        if ("single".equals(mode) && "friends-in-common".equals(normalized)) {
+            return normalized;
+        }
+        if ("pair".equals(mode) && "separated-friends".equals(normalized)) {
+            return normalized;
         }
         return null;
+    }
+
+    private String resolveStoredBridgeUserId(
+            String mode,
+            String socialContext,
+            String bridgeUserId,
+            String ownerUserId,
+            String relatedUserId,
+            String secondaryRelatedUserId) {
+        if (!"single".equals(mode) || !"friends-in-common".equals(socialContext)) {
+            return null;
+        }
+        String normalizedBridgeUserId = normalizeOptionalId(bridgeUserId);
+        if (!StringUtils.hasText(normalizedBridgeUserId)
+                || normalizedBridgeUserId.equals(ownerUserId)
+                || normalizedBridgeUserId.equals(relatedUserId)
+                || normalizedBridgeUserId.equals(secondaryRelatedUserId)) {
+            return null;
+        }
+        return normalizedBridgeUserId;
+    }
+
+    private Integer resolveStoredBridgeCount(String socialContext, Integer bridgeCount) {
+        if (!"friends-in-common".equals(socialContext)) {
+            return null;
+        }
+        if (bridgeCount == null) {
+            return null;
+        }
+        return Math.max(1, bridgeCount);
+    }
+
+    private String resolveIndividualBridgeUserId(
+            UserRate record,
+            String currentUserId,
+            String relatedUserId,
+            String socialContext) {
+        if (!"friends-in-common".equals(socialContext) || record == null) {
+            return null;
+        }
+        String bridgeUserId = normalizeOptionalId(record.getBridgeUserId());
+        if (!StringUtils.hasText(bridgeUserId)
+                || bridgeUserId.equals(currentUserId)
+                || bridgeUserId.equals(relatedUserId)) {
+            return null;
+        }
+        return bridgeUserId;
+    }
+
+    private Integer resolveIndividualBridgeCount(UserRate record, String socialContext) {
+        if (!"friends-in-common".equals(socialContext) || record == null || record.getBridgeCount() == null) {
+            return null;
+        }
+        return Math.max(1, record.getBridgeCount());
+    }
+
+    private boolean matchesSocialBadgeFilter(RateMenuItemDto item, String mode, boolean socialBadgeEnabled) {
+        String socialContext = normalizeOptionalText(item == null ? null : item.socialContext());
+        if ("single".equals(mode)) {
+            boolean friendsInCommon = "friends-in-common".equals(socialContext);
+            return socialBadgeEnabled ? friendsInCommon : !friendsInCommon;
+        }
+        if ("pair".equals(mode)) {
+            boolean insideNetwork = "separated-friends".equals(socialContext);
+            return socialBadgeEnabled ? insideNetwork : !insideNetwork;
+        }
+        return true;
     }
 
     private String resolvePairBridgeUserId(UserRate record, String ownerUserId, String socialContext) {
@@ -863,38 +1016,6 @@ public class UserRatesService {
             return null;
         }
         return normalizeOptionalId(toUserId);
-    }
-
-    private Double resolveAffinityScore(String mode, String relatedUserId, String secondaryRelatedUserId) {
-        double total = 0d;
-        int count = 0;
-
-        Double relatedAffinity = resolveUserAffinityScore(relatedUserId);
-        if (relatedAffinity != null) {
-            total += relatedAffinity;
-            count += 1;
-        }
-
-        if ("pair".equals(mode)) {
-            Double secondaryAffinity = resolveUserAffinityScore(secondaryRelatedUserId);
-            if (secondaryAffinity != null) {
-                total += secondaryAffinity;
-                count += 1;
-            }
-        }
-
-        return count == 0 ? 0d : total / count;
-    }
-
-    private Double resolveUserAffinityScore(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return null;
-        }
-        Users user = usersRepository.findByUserId(userId).orElse(null);
-        if (user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())) {
-            return null;
-        }
-        return Math.max(0d, user.getAffinity());
     }
 
     private UserRate.LocationSnapshot resolveLocationSnapshot(String userId) {
