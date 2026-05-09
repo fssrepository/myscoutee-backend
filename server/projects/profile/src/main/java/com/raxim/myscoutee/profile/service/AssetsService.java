@@ -61,6 +61,7 @@ public class AssetsService {
     private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
     private final AssetSourceRefreshProperties assetSourceRefreshProperties;
+    private final AbsoluteAffinityService absoluteAffinityService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -68,13 +69,15 @@ public class AssetsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             MongoTemplate mongoTemplate,
-            AssetSourceRefreshProperties assetSourceRefreshProperties) {
+            AssetSourceRefreshProperties assetSourceRefreshProperties,
+            AbsoluteAffinityService absoluteAffinityService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.mongoTemplate = mongoTemplate;
         this.assetSourceRefreshProperties = assetSourceRefreshProperties;
+        this.absoluteAffinityService = absoluteAffinityService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -100,13 +103,14 @@ public class AssetsService {
         }
 
         ensureExploreAssetsBootstrapped();
+        double viewerAffinity = resolveStoredUserAffinity(normalizedUserId);
         return assetsRepository.findAll().stream()
                 .filter(Objects::nonNull)
                 .filter(asset -> normalizedType.equals(normalizeAssetType(asset.getType())))
                 .filter(asset -> !normalizedUserId.equals(normalizeId(asset.getOwnerUserId())))
                 .filter(asset -> !StringUtils.hasText(normalizedCategory) || normalizedCategory.equals(safeText(asset.getCategory())))
                 .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
-                .sorted(Comparator.comparing(asset -> safeText(asset.getTitle())))
+                .sorted(visibleAssetComparator(viewerAffinity))
                 .map(this::toDto)
                 .filter(Objects::nonNull)
                 .toList();
@@ -299,6 +303,7 @@ public class AssetsService {
         next.setRequests(nextRequests);
         next.setUpdatedDate(Instant.now().toString());
         next.setUpdatedUser(ownerUserId);
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         assetsRepository.save(next);
     }
 
@@ -480,6 +485,7 @@ public class AssetsService {
         asset.setPricing(null);
         asset.setRequests(readLegacyRequests(legacy.get("requests")));
         asset.setVisibility(safeText(legacy.getString("visibility")));
+        asset.setAffinity(resolveAssetAffinity(asset, ownerUserId));
         String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
         String updatedDate = normalizeDateTime(legacy.getString("updatedAtIso"), createdDate);
         asset.setCreatedDate(createdDate);
@@ -548,6 +554,7 @@ public class AssetsService {
             nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
         }
         next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -576,6 +583,7 @@ public class AssetsService {
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
+        clone.setAffinity(source.getAffinity());
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
@@ -721,6 +729,47 @@ public class AssetsService {
             ownerNamesByUserId.put(ownerUserId, owner == null ? null : safeText(owner.getName()));
         }
         return ownerNamesByUserId;
+    }
+
+    private Comparator<Asset> visibleAssetComparator(double viewerAffinity) {
+        return Comparator
+                .comparingDouble((Asset asset) -> assetAffinitySortValue(asset, viewerAffinity))
+                .thenComparing(asset -> safeText(asset.getTitle()))
+                .thenComparing(asset -> normalizeId(asset.getAssetId()));
+    }
+
+    private double assetAffinitySortValue(Asset asset, double viewerAffinity) {
+        double assetAffinity = safeDouble(asset == null ? null : asset.getAffinity());
+        if (viewerAffinity > 0d && assetAffinity > 0d) {
+            return Math.abs(viewerAffinity - assetAffinity);
+        }
+        return 1_000_000_000d - assetAffinity;
+    }
+
+    private double resolveAssetAffinity(Asset asset, String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        if (!StringUtils.hasText(normalizedOwnerUserId)) {
+            return 0d;
+        }
+        return usersRepository.findByUserId(normalizedOwnerUserId)
+                .map(owner -> absoluteAffinityService.resolveAssetAffinity(asset, owner))
+                .orElse(0d);
+    }
+
+    private double resolveStoredUserAffinity(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return 0d;
+        }
+        return usersRepository.findByUserId(normalizedUserId)
+                .map(this::resolveStoredUserAffinity)
+                .orElse(0d);
+    }
+
+    private double resolveStoredUserAffinity(Users user) {
+        return user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())
+                ? 0d
+                : Math.max(0d, user.getAffinity());
     }
 
     private AssetCardDto toDto(Asset asset) {

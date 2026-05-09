@@ -180,6 +180,7 @@ public class HomeUserProfileService {
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurityProperties regionSecurityProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
+    private final AffinityMaintenanceService affinityMaintenanceService;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -198,7 +199,8 @@ public class HomeUserProfileService {
             ScheduledMessageTaskService scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
             RegionSecurityProperties regionSecurityProperties,
-            AbsoluteAffinityService absoluteAffinityService) {
+            AbsoluteAffinityService absoluteAffinityService,
+            AffinityMaintenanceService affinityMaintenanceService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -216,6 +218,7 @@ public class HomeUserProfileService {
         this.countryPartitionService = countryPartitionService;
         this.regionSecurityProperties = regionSecurityProperties;
         this.absoluteAffinityService = absoluteAffinityService;
+        this.affinityMaintenanceService = affinityMaintenanceService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -348,7 +351,7 @@ public class HomeUserProfileService {
         Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved)));
-        refreshEventAffinitiesForUser(resolved);
+        affinityMaintenanceService.refreshUserAffinityAndDependents(resolved);
         return toUserDto(resolved);
     }
 
@@ -504,6 +507,7 @@ public class HomeUserProfileService {
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
+        affinityMaintenanceService.refreshForUser(user);
         recordSessionAction(resolvedUserId, "delete", "status:D");
         return new UserSubmitActionResponseDto(true, null);
     }
@@ -1540,79 +1544,6 @@ public class HomeUserProfileService {
 
         user.setPartitionKey(resolvedPartitionKey);
         return usersRepository.save(user);
-    }
-
-    private void refreshEventAffinitiesForUser(Users changedUser) {
-        String changedUserId = normalizeId(changedUser == null ? null : changedUser.getId());
-        if (!StringUtils.hasText(changedUserId)) {
-            return;
-        }
-
-        LinkedHashMap<String, ActivityEvent> affectedEventsByDocumentId = new LinkedHashMap<>();
-        addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByCreatorUserId(changedUserId));
-        addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByAcceptedMemberUserIdsContaining(changedUserId));
-        if (affectedEventsByDocumentId.isEmpty()) {
-            return;
-        }
-
-        LinkedHashSet<String> participantUserIds = new LinkedHashSet<>();
-        participantUserIds.add(changedUserId);
-        for (ActivityEvent event : affectedEventsByDocumentId.values()) {
-            String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
-            if (StringUtils.hasText(creatorUserId)) {
-                participantUserIds.add(creatorUserId);
-            }
-            participantUserIds.addAll(normalizeIds(event == null ? null : event.getAcceptedMemberUserIds()));
-        }
-
-        Map<String, Users> usersById = new LinkedHashMap<>();
-        usersById.put(changedUserId, changedUser);
-        for (Users user : usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds))) {
-            String userId = normalizeId(user == null ? null : user.getId());
-            if (StringUtils.hasText(userId)) {
-                usersById.put(userId, user);
-            }
-        }
-
-        List<ActivityEvent> changedEvents = new ArrayList<>();
-        for (ActivityEvent event : affectedEventsByDocumentId.values()) {
-            List<Users> participants = eventAffinityParticipants(event, usersById);
-            double nextAffinity = absoluteAffinityService.resolveEventAffinity(event, participants);
-            if (Math.abs(safeDouble(event.getAffinity()) - nextAffinity) > 0.000001d) {
-                event.setAffinity(nextAffinity);
-                changedEvents.add(event);
-            }
-        }
-        if (!changedEvents.isEmpty()) {
-            activityEventsRepository.saveAll(changedEvents);
-        }
-    }
-
-    private void addAffectedEvents(Map<String, ActivityEvent> target, List<ActivityEvent> events) {
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
-            if (event == null) {
-                continue;
-            }
-            String documentId = normalizeId(event.getId());
-            if (StringUtils.hasText(documentId)) {
-                target.put(documentId, event);
-            }
-        }
-    }
-
-    private List<Users> eventAffinityParticipants(ActivityEvent event, Map<String, Users> usersById) {
-        LinkedHashMap<String, Users> participantsById = new LinkedHashMap<>();
-        String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
-        if (StringUtils.hasText(creatorUserId) && usersById.containsKey(creatorUserId)) {
-            participantsById.put(creatorUserId, usersById.get(creatorUserId));
-        }
-        for (String userId : normalizeIds(event == null ? null : event.getAcceptedMemberUserIds())) {
-            Users user = usersById.get(userId);
-            if (user != null) {
-                participantsById.put(userId, user);
-            }
-        }
-        return new ArrayList<>(participantsById.values());
     }
 
     private String resolveStoredPartitionKey(

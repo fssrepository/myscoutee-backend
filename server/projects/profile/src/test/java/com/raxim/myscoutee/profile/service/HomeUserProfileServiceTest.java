@@ -67,6 +67,8 @@ class HomeUserProfileServiceTest {
     private CountryPartitionService countryPartitionService;
     @Mock
     private RegionSecurityProperties regionSecurityProperties;
+    @Mock
+    private AffinityMaintenanceService affinityMaintenanceService;
 
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -93,7 +95,8 @@ class HomeUserProfileServiceTest {
                 scheduledMessageTaskService,
                 countryPartitionService,
                 regionSecurityProperties,
-                absoluteAffinityService);
+                absoluteAffinityService,
+                affinityMaintenanceService);
     }
 
     @Test

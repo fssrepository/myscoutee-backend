@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
+import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileDetailGroupDto;
@@ -174,6 +175,39 @@ public class AbsoluteAffinityService {
                 + Math.max(0, normalizeCount(event.getAcceptedMembers(), 0)) * multiplier(multipliers.getAcceptedMembers(), 19d)
                 + Math.max(0, normalizeCount(event.getPendingMembers(), 0)) * multiplier(multipliers.getPendingMembers(), 11d)
                 + Math.max(0, normalizeCount(event.getCapacityTotal(), 0)) * multiplier(multipliers.getCapacityTotal(), 7d);
+        return Math.max(0d, score);
+    }
+
+    public double resolveAssetAffinity(Asset asset, Users owner) {
+        if (asset == null) {
+            return 0d;
+        }
+        AffinityConfig config = activeConfig();
+        AffinityConfig.AbsoluteAssetAffinityMultipliers multipliers = config.getAbsolute().getAsset();
+        LinkedHashSet<String> tokens = new LinkedHashSet<>();
+        addToken(tokens, "asset:type", asset.getType());
+        addToken(tokens, "asset:title", asset.getTitle());
+        addToken(tokens, "asset:subtitle", asset.getSubtitle());
+        addToken(tokens, "asset:category", asset.getCategory());
+        addToken(tokens, "asset:city", asset.getCity());
+        addToken(tokens, "asset:visibility", asset.getVisibility());
+        addTextTokens(tokens, "asset:details", asset.getDetails());
+        addTokens(tokens, "asset:route", asset.getRoutes());
+        for (Asset.AssetPolicyRecord policy : asset.getPolicies() == null ? List.<Asset.AssetPolicyRecord>of() : asset.getPolicies()) {
+            if (policy == null) {
+                continue;
+            }
+            addToken(tokens, "asset:policy:title", policy.title());
+            addToken(tokens, "asset:policy:description", policy.description());
+            addToken(tokens, "asset:policy:required", Boolean.TRUE.equals(policy.required()) ? "required" : "optional");
+        }
+
+        double ownerAffinity = safeDouble(owner == null ? null : owner.getAffinity());
+        double score = tokenScore(tokens) * multiplier(multipliers.getContentTokens(), 83d)
+                + ownerAffinity * multiplier(multipliers.getOwnerAffinity(), 1d)
+                + Math.max(0, normalizeCount(asset.getCapacityTotal(), 0)) * multiplier(multipliers.getCapacityTotal(), 7d)
+                + Math.max(0, normalizeCount(asset.getQuantity(), 0)) * multiplier(multipliers.getQuantity(), 11d)
+                + Math.max(0, asset.getRequests() == null ? 0 : asset.getRequests().size()) * multiplier(multipliers.getRequestCount(), 13d);
         return Math.max(0d, score);
     }
 

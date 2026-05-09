@@ -42,6 +42,7 @@ public class Asset {
     private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
+    private Double affinity;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -197,6 +198,14 @@ public class Asset {
 
     public void setVisibility(String visibility) {
         this.visibility = visibility;
+    }
+
+    public Double getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(Double affinity) {
+        this.affinity = affinity;
     }
 
     public String getCreatedDate() {

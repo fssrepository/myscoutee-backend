@@ -192,6 +192,23 @@
         "capacityTotal": {
           "multiplier": 7
         }
+      },
+      "asset": {
+        "contentTokens": {
+          "multiplier": 83
+        },
+        "ownerAffinity": {
+          "multiplier": 1
+        },
+        "capacityTotal": {
+          "multiplier": 7
+        },
+        "quantity": {
+          "multiplier": 11
+        },
+        "requestCount": {
+          "multiplier": 13
+        }
       }
     }
   }

@@ -73,6 +73,7 @@ public class ActivitiesEventsService {
     private final PaymentService paymentService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
+    private final AffinityMaintenanceService affinityMaintenanceService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
@@ -85,6 +86,7 @@ public class ActivitiesEventsService {
             PaymentService paymentService,
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
+            AffinityMaintenanceService affinityMaintenanceService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
@@ -95,6 +97,7 @@ public class ActivitiesEventsService {
         this.paymentService = paymentService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
+        this.affinityMaintenanceService = affinityMaintenanceService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -511,6 +514,8 @@ public class ActivitiesEventsService {
                 accepted = !waitingList && isConfirmedBooking(request, preferred);
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
                 activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList);
+                affinityMaintenanceService.refreshEventAffinitiesForSourceId(sourceId);
+                affinityMaintenanceService.refreshEventAffinitiesForSourceId(slotSourceId);
                 if (accepted) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                 }
@@ -523,6 +528,7 @@ public class ActivitiesEventsService {
         }
 
         activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
+        affinityMaintenanceService.refreshEventAffinitiesForSourceId(sourceId);
         if (accepted) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
         }

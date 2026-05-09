@@ -96,6 +96,14 @@ public class AffinityConfig {
         event.setPendingMembers(new MultiplierRule(11d));
         event.setCapacityTotal(new MultiplierRule(7d));
         absolute.setEvent(event);
+
+        AbsoluteAssetAffinityMultipliers asset = new AbsoluteAssetAffinityMultipliers();
+        asset.setContentTokens(new MultiplierRule(83d));
+        asset.setOwnerAffinity(new MultiplierRule(1d));
+        asset.setCapacityTotal(new MultiplierRule(7d));
+        asset.setQuantity(new MultiplierRule(11d));
+        asset.setRequestCount(new MultiplierRule(13d));
+        absolute.setAsset(asset);
         config.setAbsolute(absolute);
         return config;
     }
@@ -297,6 +305,7 @@ public class AffinityConfig {
     public static class AbsoluteAffinityMultipliers {
         private AbsoluteUserAffinityMultipliers user = new AbsoluteUserAffinityMultipliers();
         private AbsoluteEventAffinityMultipliers event = new AbsoluteEventAffinityMultipliers();
+        private AbsoluteAssetAffinityMultipliers asset = new AbsoluteAssetAffinityMultipliers();
 
         public AbsoluteUserAffinityMultipliers getUser() {
             return user == null ? new AbsoluteUserAffinityMultipliers() : user;
@@ -312,6 +321,14 @@ public class AffinityConfig {
 
         public void setEvent(AbsoluteEventAffinityMultipliers event) {
             this.event = event;
+        }
+
+        public AbsoluteAssetAffinityMultipliers getAsset() {
+            return asset == null ? new AbsoluteAssetAffinityMultipliers() : asset;
+        }
+
+        public void setAsset(AbsoluteAssetAffinityMultipliers asset) {
+            this.asset = asset;
         }
     }
 
@@ -498,6 +515,54 @@ public class AffinityConfig {
 
         public void setCapacityTotal(MultiplierRule capacityTotal) {
             this.capacityTotal = capacityTotal;
+        }
+    }
+
+    public static class AbsoluteAssetAffinityMultipliers {
+        private MultiplierRule contentTokens = new MultiplierRule();
+        private MultiplierRule ownerAffinity = new MultiplierRule();
+        private MultiplierRule capacityTotal = new MultiplierRule();
+        private MultiplierRule quantity = new MultiplierRule();
+        private MultiplierRule requestCount = new MultiplierRule();
+
+        public MultiplierRule getContentTokens() {
+            return contentTokens == null ? new MultiplierRule() : contentTokens;
+        }
+
+        public void setContentTokens(MultiplierRule contentTokens) {
+            this.contentTokens = contentTokens;
+        }
+
+        public MultiplierRule getOwnerAffinity() {
+            return ownerAffinity == null ? new MultiplierRule() : ownerAffinity;
+        }
+
+        public void setOwnerAffinity(MultiplierRule ownerAffinity) {
+            this.ownerAffinity = ownerAffinity;
+        }
+
+        public MultiplierRule getCapacityTotal() {
+            return capacityTotal == null ? new MultiplierRule() : capacityTotal;
+        }
+
+        public void setCapacityTotal(MultiplierRule capacityTotal) {
+            this.capacityTotal = capacityTotal;
+        }
+
+        public MultiplierRule getQuantity() {
+            return quantity == null ? new MultiplierRule() : quantity;
+        }
+
+        public void setQuantity(MultiplierRule quantity) {
+            this.quantity = quantity;
+        }
+
+        public MultiplierRule getRequestCount() {
+            return requestCount == null ? new MultiplierRule() : requestCount;
+        }
+
+        public void setRequestCount(MultiplierRule requestCount) {
+            this.requestCount = requestCount;
         }
     }
 
