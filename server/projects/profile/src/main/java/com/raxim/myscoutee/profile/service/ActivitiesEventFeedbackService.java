@@ -38,7 +38,7 @@ public class ActivitiesEventFeedbackService {
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
-    private final AffinityMaintenanceService affinityMaintenanceService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -46,13 +46,13 @@ public class ActivitiesEventFeedbackService {
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UsersRepository usersRepository,
-            AffinityMaintenanceService affinityMaintenanceService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.usersRepository = usersRepository;
-        this.affinityMaintenanceService = affinityMaintenanceService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -191,7 +191,7 @@ public class ActivitiesEventFeedbackService {
             }
         }
         for (String targetUserId : changedTargetUserIds) {
-            affinityMaintenanceService.refreshUserAffinityAndDependents(targetUserId);
+            affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
     }
 

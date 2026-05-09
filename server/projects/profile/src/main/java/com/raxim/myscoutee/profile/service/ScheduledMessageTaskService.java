@@ -89,6 +89,7 @@ public class ScheduledMessageTaskService {
     private final ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider;
     private final ObjectProvider<EmailProperties> emailPropertiesProvider;
     private final ObjectProvider<ConfigProperties> configPropertiesProvider;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final ScheduledExecutorService taskExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable, "scheduled-message-task-controller");
         thread.setDaemon(true);
@@ -115,7 +116,8 @@ public class ScheduledMessageTaskService {
             ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider,
             ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider,
             ObjectProvider<EmailProperties> emailPropertiesProvider,
-            ObjectProvider<ConfigProperties> configPropertiesProvider) {
+            ObjectProvider<ConfigProperties> configPropertiesProvider,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.mongoTemplate = mongoTemplate;
         this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
         this.usersRepository = usersRepository;
@@ -130,6 +132,7 @@ public class ScheduledMessageTaskService {
         this.emailProviderGatewayProvider = emailProviderGatewayProvider;
         this.emailPropertiesProvider = emailPropertiesProvider;
         this.configPropertiesProvider = configPropertiesProvider;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     @PreDestroy
@@ -434,6 +437,7 @@ public class ScheduledMessageTaskService {
         user.setStatus("I");
         user.setProfileStatus("inactive");
         usersRepository.save(user);
+        affinityRecomputeTaskService.enqueueAdminStatusChanged(userId);
         scheduledMessageAuditService.recordDelivery(runId, task, user, "action", STATUS_COMPLETED, "Profile set to inactive.");
         return new TaskResult(STATUS_COMPLETED, 1, "Profile set to inactive.");
     }

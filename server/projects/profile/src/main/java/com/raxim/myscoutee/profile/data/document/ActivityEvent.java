@@ -37,6 +37,10 @@ public class ActivityEvent {
     private static final String STATUS_INVITATION = "invitation";
     private static final String STATUS_DRAFT = "draft";
     private static final String STATUS_TRASHED = "trashed";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
 
     @Id
     private String id;
@@ -46,6 +50,7 @@ public class ActivityEvent {
     private String ownerUserId;
     private String type;
     private String status;
+    private String statusBeforeSuppression;
     private List<String> admins = new ArrayList<>();
     private String avatar;
     private String title;
@@ -124,6 +129,10 @@ public class ActivityEvent {
         return deriveStatusFromLegacy();
     }
     public void setStatus(String status) { this.status = normalizeStatusValue(status); }
+    public String getStatusBeforeSuppression() { return statusBeforeSuppression; }
+    public void setStatusBeforeSuppression(String statusBeforeSuppression) {
+        this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatusValue(statusBeforeSuppression) : null;
+    }
     public List<String> getAdmins() { return admins; }
     public void setAdmins(List<String> admins) { this.admins = admins == null ? new ArrayList<>() : new ArrayList<>(admins); }
     public String getAvatar() { return avatar; }
@@ -304,7 +313,8 @@ public class ActivityEvent {
     private static String normalizeStatusValue(String value) {
         String normalized = value == null ? "" : value.trim();
         return switch (normalized) {
-            case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED -> normalized;
+            case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED, STATUS_UNDER_REVIEW,
+                    STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE -> normalized;
             default -> STATUS_ACTIVE;
         };
     }

@@ -42,6 +42,8 @@ public class Asset {
     private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
+    private String status;
+    private String statusBeforeSuppression;
     private Double affinity;
     private Double boost;
     private String createdDate;
@@ -201,6 +203,22 @@ public class Asset {
         this.visibility = visibility;
     }
 
+    public String getStatus() {
+        return hasText(status) ? status.trim() : "active";
+    }
+
+    public void setStatus(String status) {
+        this.status = hasText(status) ? status.trim() : "active";
+    }
+
+    public String getStatusBeforeSuppression() {
+        return statusBeforeSuppression;
+    }
+
+    public void setStatusBeforeSuppression(String statusBeforeSuppression) {
+        this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? statusBeforeSuppression.trim() : null;
+    }
+
     public Double getAffinity() {
         return affinity;
     }
@@ -285,5 +303,9 @@ public class Asset {
             String title,
             String description,
             Boolean required) {
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 }

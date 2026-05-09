@@ -180,7 +180,7 @@ public class HomeUserProfileService {
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurityProperties regionSecurityProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityMaintenanceService affinityMaintenanceService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -200,7 +200,7 @@ public class HomeUserProfileService {
             CountryPartitionService countryPartitionService,
             RegionSecurityProperties regionSecurityProperties,
             AbsoluteAffinityService absoluteAffinityService,
-            AffinityMaintenanceService affinityMaintenanceService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -218,7 +218,7 @@ public class HomeUserProfileService {
         this.countryPartitionService = countryPartitionService;
         this.regionSecurityProperties = regionSecurityProperties;
         this.absoluteAffinityService = absoluteAffinityService;
-        this.affinityMaintenanceService = affinityMaintenanceService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -351,7 +351,7 @@ public class HomeUserProfileService {
         Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved)));
-        affinityMaintenanceService.refreshUserAffinityAndDependents(resolved);
+        affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
         return toUserDto(resolved);
     }
 
@@ -507,7 +507,7 @@ public class HomeUserProfileService {
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
-        affinityMaintenanceService.refreshForUser(user);
+        affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", "status:D");
         return new UserSubmitActionResponseDto(true, null);
     }

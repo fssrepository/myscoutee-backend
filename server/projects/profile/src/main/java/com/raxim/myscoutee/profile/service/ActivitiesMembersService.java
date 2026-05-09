@@ -57,7 +57,7 @@ public class ActivitiesMembersService {
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventInviteNotificationService eventInviteNotificationService;
-    private final AffinityMaintenanceService affinityMaintenanceService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
@@ -69,7 +69,7 @@ public class ActivitiesMembersService {
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
             EventInviteNotificationService eventInviteNotificationService,
-            AffinityMaintenanceService affinityMaintenanceService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -79,7 +79,7 @@ public class ActivitiesMembersService {
         this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventInviteNotificationService = eventInviteNotificationService;
-        this.affinityMaintenanceService = affinityMaintenanceService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -1743,7 +1743,7 @@ public class ActivitiesMembersService {
         }
         if (!documentsToSave.isEmpty()) {
             activityEventsRepository.saveAll(documentsToSave);
-            affinityMaintenanceService.refreshEventAffinitiesForSourceId(normalizedEventId);
+            affinityRecomputeTaskService.enqueueEventMembersChanged(normalizedEventId, "system");
         }
     }
 

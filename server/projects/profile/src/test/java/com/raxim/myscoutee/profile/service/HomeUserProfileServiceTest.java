@@ -68,7 +68,7 @@ class HomeUserProfileServiceTest {
     @Mock
     private RegionSecurityProperties regionSecurityProperties;
     @Mock
-    private AffinityMaintenanceService affinityMaintenanceService;
+    private AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -96,7 +96,7 @@ class HomeUserProfileServiceTest {
                 countryPartitionService,
                 regionSecurityProperties,
                 absoluteAffinityService,
-                affinityMaintenanceService);
+                affinityRecomputeTaskService);
     }
 
     @Test

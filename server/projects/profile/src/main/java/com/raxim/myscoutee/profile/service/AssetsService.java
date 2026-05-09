@@ -62,6 +62,7 @@ public class AssetsService {
     private final MongoTemplate mongoTemplate;
     private final AssetSourceRefreshProperties assetSourceRefreshProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -70,7 +71,8 @@ public class AssetsService {
             PaymentService paymentService,
             MongoTemplate mongoTemplate,
             AssetSourceRefreshProperties assetSourceRefreshProperties,
-            AbsoluteAffinityService absoluteAffinityService) {
+            AbsoluteAffinityService absoluteAffinityService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
@@ -78,6 +80,7 @@ public class AssetsService {
         this.mongoTemplate = mongoTemplate;
         this.assetSourceRefreshProperties = assetSourceRefreshProperties;
         this.absoluteAffinityService = absoluteAffinityService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -306,6 +309,7 @@ public class AssetsService {
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
+        affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizeId(next.getAssetId()), ownerUserId);
     }
 
     private AssetCardDto saveOwnedAsset(String ownerUserId, AssetCardDto assetDto) {
@@ -320,6 +324,7 @@ public class AssetsService {
             return null;
         }
         assetsRepository.save(saved);
+        affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         return toDto(saved);
     }
@@ -486,6 +491,7 @@ public class AssetsService {
         asset.setPricing(null);
         asset.setRequests(readLegacyRequests(legacy.get("requests")));
         asset.setVisibility(safeText(legacy.getString("visibility")));
+        asset.setStatus("active");
         asset.setAffinity(resolveAssetAffinity(asset, ownerUserId));
         asset.setBoost(resolveAssetBoost(asset, ownerUserId));
         String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
@@ -556,6 +562,10 @@ public class AssetsService {
             nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
         }
         next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
+        if (current == null) {
+            next.setStatus("active");
+            next.setStatusBeforeSuppression(null);
+        }
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
@@ -586,6 +596,8 @@ public class AssetsService {
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
+        clone.setStatus(source.getStatus());
+        clone.setStatusBeforeSuppression(source.getStatusBeforeSuppression());
         clone.setAffinity(source.getAffinity());
         clone.setBoost(source.getBoost());
         clone.setCreatedDate(source.getCreatedDate());
@@ -883,6 +895,9 @@ public class AssetsService {
 
     private boolean shouldIncludeExploreAsset(Asset asset, String activeUserId) {
         if (asset == null) {
+            return false;
+        }
+        if (!"active".equals(safeText(asset.getStatus()))) {
             return false;
         }
         String visibility = normalizeVisibility(asset.getVisibility());

@@ -74,7 +74,7 @@ public class ActivitiesEventsService {
     private final PaymentService paymentService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityMaintenanceService affinityMaintenanceService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
@@ -87,7 +87,7 @@ public class ActivitiesEventsService {
             PaymentService paymentService,
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
-            AffinityMaintenanceService affinityMaintenanceService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
@@ -98,7 +98,7 @@ public class ActivitiesEventsService {
         this.paymentService = paymentService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
-        this.affinityMaintenanceService = affinityMaintenanceService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -515,8 +515,8 @@ public class ActivitiesEventsService {
                 accepted = !waitingList && isConfirmedBooking(request, preferred);
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
                 activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList);
-                affinityMaintenanceService.refreshEventAffinitiesForSourceId(sourceId);
-                affinityMaintenanceService.refreshEventAffinitiesForSourceId(slotSourceId);
+                affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
+                affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
                 if (accepted) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                 }
@@ -529,7 +529,7 @@ public class ActivitiesEventsService {
         }
 
         activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
-        affinityMaintenanceService.refreshEventAffinitiesForSourceId(sourceId);
+        affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
         if (accepted) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
         }
@@ -665,6 +665,7 @@ public class ActivitiesEventsService {
             documentsToSave.add(eventsOverlay);
         }
         activityEventsRepository.saveAll(documentsToSave);
+        affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
         syncStageReminderTasksForSavedEvents(documentsToSave, actorUserId);
         materializeSlotOccurrences();
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);

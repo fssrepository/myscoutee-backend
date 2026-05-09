@@ -9,8 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 
+import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -34,6 +39,7 @@ public class AffinityMaintenanceService {
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityCalculationService affinityCalculationService;
     private final UserAffinityEdgeService userAffinityEdgeService;
+    private final MongoTemplate mongoTemplate;
 
     public AffinityMaintenanceService(
             UsersRepository usersRepository,
@@ -43,7 +49,8 @@ public class AffinityMaintenanceService {
             UserRatesRepository userRatesRepository,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityCalculationService affinityCalculationService,
-            UserAffinityEdgeService userAffinityEdgeService) {
+            UserAffinityEdgeService userAffinityEdgeService,
+            MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -52,6 +59,7 @@ public class AffinityMaintenanceService {
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityCalculationService = affinityCalculationService;
         this.userAffinityEdgeService = userAffinityEdgeService;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public void refreshForUser(String userId) {
@@ -87,11 +95,110 @@ public class AffinityMaintenanceService {
         double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
         Users refreshed = user;
         if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
-            user.setAffinity(nextAffinity);
-            refreshed = usersRepository.save(user);
+            if (updateUserAffinityOnly(user, nextAffinity)) {
+                refreshed = user;
+            }
         }
         refreshRateAffinitiesForUser(refreshed);
         refreshForUser(refreshed);
+    }
+
+    public void refreshUserAffinityAndRates(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        usersRepository.findByUserId(normalizedUserId).ifPresent(this::refreshUserAffinityAndRates);
+    }
+
+    public void refreshUserAffinityAndRates(Users user) {
+        String userId = normalizeId(user == null ? null : user.getId());
+        if (!StringUtils.hasText(userId)) {
+            return;
+        }
+        double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
+        Users refreshed = user;
+        if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
+            if (updateUserAffinityOnly(user, nextAffinity)) {
+                refreshed = user;
+            }
+        }
+        refreshRateAffinitiesForUser(refreshed);
+    }
+
+    public UserAffinityDependents resolveUserAffinityDependents(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new UserAffinityDependents(List.of(), List.of());
+        }
+
+        LinkedHashSet<String> eventSourceIds = new LinkedHashSet<>();
+        for (ActivityEvent event : activityEventsRepository.findByCreatorUserId(normalizedUserId)) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                eventSourceIds.add(sourceId);
+            }
+        }
+        eventSourceIds.addAll(acceptedEventSourceIdsForUser(normalizedUserId));
+
+        LinkedHashSet<String> assetIds = new LinkedHashSet<>();
+        for (Asset asset : assetsRepository.findByOwnerUserId(normalizedUserId)) {
+            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            if (StringUtils.hasText(assetId)) {
+                assetIds.add(assetId);
+            }
+        }
+        return new UserAffinityDependents(new ArrayList<>(eventSourceIds), new ArrayList<>(assetIds));
+    }
+
+    public RecomputeOutcome refreshAssetAffinityForAssetId(String assetId) {
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedAssetId)) {
+            return RecomputeOutcome.empty();
+        }
+        return refreshAssetAffinitiesForAssetIds(List.of(normalizedAssetId));
+    }
+
+    public RecomputeOutcome refreshAssetAffinitiesForAssetIds(Collection<String> assetIds) {
+        List<String> normalizedAssetIds = normalizeIds(assetIds);
+        if (normalizedAssetIds.isEmpty()) {
+            return RecomputeOutcome.empty();
+        }
+        List<Asset> assets = normalizedAssetIds.size() == 1
+                ? assetsRepository.findByAssetId(normalizedAssetIds.get(0)).map(List::of).orElseGet(List::of)
+                : assetsRepository.findByAssetIdIn(normalizedAssetIds);
+        if (assets == null || assets.isEmpty()) {
+            return RecomputeOutcome.empty();
+        }
+
+        LinkedHashSet<String> ownerUserIds = new LinkedHashSet<>();
+        for (Asset asset : assets) {
+            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                ownerUserIds.add(ownerUserId);
+            }
+        }
+
+        Map<String, Users> ownersById = indexUsers(usersRepository.findByUserIdIn(new ArrayList<>(ownerUserIds)));
+        List<String> updatedAssetIds = new ArrayList<>();
+        List<String> conflictedAssetIds = new ArrayList<>();
+        for (Asset asset : assets) {
+            if (asset == null) {
+                continue;
+            }
+            Users owner = ownersById.get(normalizeId(asset.getOwnerUserId()));
+            double nextAffinity = absoluteAffinityService.resolveAssetAffinity(asset, owner);
+            double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
+            if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
+                    || Math.abs(safeDouble(asset.getBoost()) - nextBoost) > 0.000001d) {
+                if (updateAssetDerivedFieldsIfSnapshotCurrent(asset, nextAffinity, nextBoost)) {
+                    updatedAssetIds.add(normalizeId(asset.getAssetId()));
+                } else {
+                    conflictedAssetIds.add(normalizeId(asset.getAssetId()));
+                }
+            }
+        }
+        return new RecomputeOutcome(updatedAssetIds, conflictedAssetIds);
     }
 
     public void refreshForUsers(Collection<String> userIds) {
@@ -105,36 +212,42 @@ public class AffinityMaintenanceService {
         }
     }
 
-    public void refreshAllStoredAffinities() {
+    public StoredAffinityRecomputeOutcome refreshAllStoredAffinities() {
         List<Users> users = usersRepository.findAll().stream()
                 .filter(user -> StringUtils.hasText(normalizeId(user == null ? null : user.getId())))
                 .toList();
-        List<Users> changedUsers = new ArrayList<>();
         for (Users user : users) {
             double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
             if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
-                user.setAffinity(nextAffinity);
-                changedUsers.add(user);
+                updateUserAffinityOnly(user, nextAffinity);
             }
-        }
-        if (!changedUsers.isEmpty()) {
-            usersRepository.saveAll(changedUsers);
         }
 
         Map<String, Users> usersById = indexUsers(users);
         refreshAllRateAffinities();
-        refreshAllEventAffinities(usersById);
-        refreshAllAssetAffinities(usersById);
+        RecomputeOutcome eventOutcome = refreshAllEventAffinities(usersById);
+        RecomputeOutcome assetOutcome = refreshAllAssetAffinities(usersById);
+        return new StoredAffinityRecomputeOutcome(eventOutcome, assetOutcome);
     }
 
-    public void refreshEventAffinitiesForSourceId(String sourceId) {
+    public RecomputeOutcome refreshEventAffinitiesForSourceId(String sourceId) {
         String normalizedSourceId = normalizeId(sourceId);
         if (!StringUtils.hasText(normalizedSourceId)) {
-            return;
+            return RecomputeOutcome.empty();
         }
-        List<ActivityEvent> events = activityEventsRepository.findBySourceId(normalizedSourceId);
+        return refreshEventAffinitiesForSourceIds(List.of(normalizedSourceId));
+    }
+
+    public RecomputeOutcome refreshEventAffinitiesForSourceIds(Collection<String> sourceIds) {
+        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        if (normalizedSourceIds.isEmpty()) {
+            return RecomputeOutcome.empty();
+        }
+        List<ActivityEvent> events = normalizedSourceIds.size() == 1
+                ? activityEventsRepository.findBySourceId(normalizedSourceIds.get(0))
+                : activityEventsRepository.findBySourceIdIn(normalizedSourceIds);
         if (events == null || events.isEmpty()) {
-            return;
+            return RecomputeOutcome.empty();
         }
         LinkedHashSet<String> participantUserIds = new LinkedHashSet<>();
         for (ActivityEvent event : events) {
@@ -143,7 +256,9 @@ public class AffinityMaintenanceService {
                 participantUserIds.add(creatorUserId);
             }
         }
-        participantUserIds.addAll(acceptedEventMemberUserIds(normalizedSourceId));
+        participantUserIds.addAll(eventAcceptedMemberUserIdsBySourceId(events).values().stream()
+                .flatMap(Collection::stream)
+                .toList());
         Map<String, Users> usersById = new LinkedHashMap<>();
         List<Users> participants = usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds));
         for (Users user : participants == null ? List.<Users>of() : participants) {
@@ -152,7 +267,7 @@ public class AffinityMaintenanceService {
                 usersById.put(userId, user);
             }
         }
-        saveChangedEvents(events, usersById);
+        return saveChangedEvents(events, usersById);
     }
 
     private void refreshEventAffinitiesForUser(Users changedUser) {
@@ -195,16 +310,17 @@ public class AffinityMaintenanceService {
         saveChangedEvents(affectedEventsByDocumentId.values(), usersById);
     }
 
-    private void refreshAllEventAffinities(Map<String, Users> usersById) {
-        saveChangedEvents(activityEventsRepository.findAll(), usersById);
+    private RecomputeOutcome refreshAllEventAffinities(Map<String, Users> usersById) {
+        return saveChangedEvents(activityEventsRepository.findAll(), usersById);
     }
 
-    private void saveChangedEvents(Collection<ActivityEvent> events, Map<String, Users> usersById) {
+    private RecomputeOutcome saveChangedEvents(Collection<ActivityEvent> events, Map<String, Users> usersById) {
         List<ActivityEvent> eventList = events == null
                 ? List.of()
                 : events.stream().filter(event -> event != null).toList();
         Map<String, List<String>> acceptedMembersBySourceId = eventAcceptedMemberUserIdsBySourceId(eventList);
-        List<ActivityEvent> changedEvents = new ArrayList<>();
+        List<String> updatedSourceIds = new ArrayList<>();
+        List<String> conflictedSourceIds = new ArrayList<>();
         for (ActivityEvent event : eventList) {
             List<Users> participants = eventAffinityParticipants(event, usersById, acceptedMembersBySourceId.get(normalizeId(event.getSourceId())));
             double nextAffinity = absoluteAffinityService.resolveEventAffinity(
@@ -213,22 +329,23 @@ public class AffinityMaintenanceService {
             double nextBoost = absoluteAffinityService.resolveEventBoost(event, participants);
             if (Math.abs(safeDouble(event.getAffinity()) - nextAffinity) > 0.000001d
                     || Math.abs(safeDouble(event.getBoost()) - nextBoost) > 0.000001d) {
-                event.setAffinity(nextAffinity);
-                event.setBoost(nextBoost);
-                changedEvents.add(event);
+                if (updateEventDerivedFieldsIfSnapshotCurrent(event, nextAffinity, nextBoost)) {
+                    updatedSourceIds.add(normalizeId(event.getSourceId()));
+                } else {
+                    conflictedSourceIds.add(normalizeId(event.getSourceId()));
+                }
             }
         }
-        if (!changedEvents.isEmpty()) {
-            activityEventsRepository.saveAll(changedEvents);
-        }
+        return new RecomputeOutcome(updatedSourceIds, conflictedSourceIds);
     }
 
-    private void refreshAssetAffinitiesForOwner(Users owner) {
+    private RecomputeOutcome refreshAssetAffinitiesForOwner(Users owner) {
         String ownerUserId = normalizeId(owner == null ? null : owner.getId());
         if (!StringUtils.hasText(ownerUserId)) {
-            return;
+            return RecomputeOutcome.empty();
         }
-        List<Asset> changedAssets = new ArrayList<>();
+        List<String> updatedAssetIds = new ArrayList<>();
+        List<String> conflictedAssetIds = new ArrayList<>();
         for (Asset asset : assetsRepository.findByOwnerUserId(ownerUserId)) {
             if (asset == null) {
                 continue;
@@ -237,18 +354,19 @@ public class AffinityMaintenanceService {
             double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
             if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
                     || Math.abs(safeDouble(asset.getBoost()) - nextBoost) > 0.000001d) {
-                asset.setAffinity(nextAffinity);
-                asset.setBoost(nextBoost);
-                changedAssets.add(asset);
+                if (updateAssetDerivedFieldsIfSnapshotCurrent(asset, nextAffinity, nextBoost)) {
+                    updatedAssetIds.add(normalizeId(asset.getAssetId()));
+                } else {
+                    conflictedAssetIds.add(normalizeId(asset.getAssetId()));
+                }
             }
         }
-        if (!changedAssets.isEmpty()) {
-            assetsRepository.saveAll(changedAssets);
-        }
+        return new RecomputeOutcome(updatedAssetIds, conflictedAssetIds);
     }
 
-    private void refreshAllAssetAffinities(Map<String, Users> usersById) {
-        List<Asset> changedAssets = new ArrayList<>();
+    private RecomputeOutcome refreshAllAssetAffinities(Map<String, Users> usersById) {
+        List<String> updatedAssetIds = new ArrayList<>();
+        List<String> conflictedAssetIds = new ArrayList<>();
         for (Asset asset : assetsRepository.findAll()) {
             if (asset == null) {
                 continue;
@@ -258,14 +376,14 @@ public class AffinityMaintenanceService {
             double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
             if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
                     || Math.abs(safeDouble(asset.getBoost()) - nextBoost) > 0.000001d) {
-                asset.setAffinity(nextAffinity);
-                asset.setBoost(nextBoost);
-                changedAssets.add(asset);
+                if (updateAssetDerivedFieldsIfSnapshotCurrent(asset, nextAffinity, nextBoost)) {
+                    updatedAssetIds.add(normalizeId(asset.getAssetId()));
+                } else {
+                    conflictedAssetIds.add(normalizeId(asset.getAssetId()));
+                }
             }
         }
-        if (!changedAssets.isEmpty()) {
-            assetsRepository.saveAll(changedAssets);
-        }
+        return new RecomputeOutcome(updatedAssetIds, conflictedAssetIds);
     }
 
     private void addAffectedEvents(Map<String, ActivityEvent> target, List<ActivityEvent> events) {
@@ -303,20 +421,6 @@ public class AffinityMaintenanceService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-    }
-
-    private List<String> acceptedEventMemberUserIds(String sourceId) {
-        String normalizedSourceId = normalizeId(sourceId);
-        if (!StringUtils.hasText(normalizedSourceId)) {
-            return List.of();
-        }
-        return activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, normalizedSourceId).stream()
-                .filter(member -> STATUS_ACCEPTED.equals(normalizeMemberStatus(member == null ? null : member.getStatus())))
-                .map(ActivityMember::getUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
     }
 
     private Map<String, List<String>> eventAcceptedMemberUserIdsBySourceId(Collection<ActivityEvent> events) {
@@ -381,10 +485,95 @@ public class AffinityMaintenanceService {
                 changedRates.add(rate);
             }
         }
-        if (!changedRates.isEmpty()) {
-            userRatesRepository.saveAll(changedRates);
+        for (UserRate rate : changedRates) {
+            updateRateDerivedFieldsIfSnapshotCurrent(rate);
         }
         userAffinityEdgeService.recomputeForRates(rates);
+    }
+
+    private boolean updateUserAffinityOnly(Users user, double nextAffinity) {
+        String userId = normalizeId(user == null ? null : user.getId());
+        if (!StringUtils.hasText(userId)) {
+            return false;
+        }
+        UpdateResult result = mongoTemplate.updateFirst(
+                new Query(Criteria.where("userId").is(userId)),
+                new Update().set("affinity", nextAffinity),
+                Users.class);
+        if (result.getMatchedCount() <= 0) {
+            return false;
+        }
+        user.setAffinity(nextAffinity);
+        return true;
+    }
+
+    private boolean updateEventDerivedFieldsIfSnapshotCurrent(ActivityEvent event, double nextAffinity, double nextBoost) {
+        String id = normalizeId(event == null ? null : event.getId());
+        if (!StringUtils.hasText(id)) {
+            return false;
+        }
+        Criteria criteria = Criteria.where("_id").is(id);
+        String updatedDate = normalizeId(event.getUpdatedDate());
+        if (StringUtils.hasText(updatedDate)) {
+            criteria = criteria.and("updatedDate").is(updatedDate);
+        }
+        UpdateResult result = mongoTemplate.updateFirst(
+                new Query(criteria),
+                new Update()
+                        .set("affinity", nextAffinity)
+                        .set("boost", nextBoost),
+                ActivityEvent.class);
+        if (result.getMatchedCount() <= 0) {
+            return false;
+        }
+        event.setAffinity(nextAffinity);
+        event.setBoost(nextBoost);
+        return true;
+    }
+
+    private boolean updateAssetDerivedFieldsIfSnapshotCurrent(Asset asset, double nextAffinity, double nextBoost) {
+        String id = normalizeId(asset == null ? null : asset.getId());
+        if (!StringUtils.hasText(id)) {
+            return false;
+        }
+        Criteria criteria = Criteria.where("_id").is(id);
+        String updatedDate = normalizeId(asset.getUpdatedDate());
+        if (StringUtils.hasText(updatedDate)) {
+            criteria = criteria.and("updatedDate").is(updatedDate);
+        }
+        UpdateResult result = mongoTemplate.updateFirst(
+                new Query(criteria),
+                new Update()
+                        .set("affinity", nextAffinity)
+                        .set("boost", nextBoost),
+                Asset.class);
+        if (result.getMatchedCount() <= 0) {
+            return false;
+        }
+        asset.setAffinity(nextAffinity);
+        asset.setBoost(nextBoost);
+        return true;
+    }
+
+    private boolean updateRateDerivedFieldsIfSnapshotCurrent(UserRate rate) {
+        String id = normalizeId(rate == null ? null : rate.getId());
+        if (!StringUtils.hasText(id)) {
+            return false;
+        }
+        Criteria criteria = Criteria.where("_id").is(id);
+        String updatedDate = normalizeId(rate.getUpdatedDate());
+        if (StringUtils.hasText(updatedDate)) {
+            criteria = criteria.and("updatedDate").is(updatedDate);
+        }
+        UpdateResult result = mongoTemplate.updateFirst(
+                new Query(criteria),
+                new Update()
+                        .set("affinityScore", rate.getAffinityScore())
+                        .set("evidenceConfidence", rate.getEvidenceConfidence())
+                        .set("scoreReceived", rate.getScoreReceived())
+                        .set("mutuallyRated", rate.getMutuallyRated()),
+                UserRate.class);
+        return result.getMatchedCount() > 0;
     }
 
     private Map<String, Users> indexUsers(List<Users> users) {
@@ -456,5 +645,41 @@ public class AffinityMaintenanceService {
         private static boolean sameBoolean(Boolean left, Boolean right) {
             return left == null ? right == null : left.equals(right);
         }
+    }
+
+    public record RecomputeOutcome(List<String> updatedTargetIds, List<String> conflictedTargetIds) {
+        public RecomputeOutcome {
+            updatedTargetIds = compact(updatedTargetIds);
+            conflictedTargetIds = compact(conflictedTargetIds);
+        }
+
+        public static RecomputeOutcome empty() {
+            return new RecomputeOutcome(List.of(), List.of());
+        }
+
+        public boolean hasConflicts() {
+            return !conflictedTargetIds.isEmpty();
+        }
+
+        private static List<String> compact(Collection<String> values) {
+            if (values == null || values.isEmpty()) {
+                return List.of();
+            }
+            return values.stream()
+                    .map(value -> value == null ? "" : value.trim())
+                    .filter(StringUtils::hasText)
+                    .distinct()
+                    .toList();
+        }
+    }
+
+    public record StoredAffinityRecomputeOutcome(RecomputeOutcome events, RecomputeOutcome assets) {
+        public StoredAffinityRecomputeOutcome {
+            events = events == null ? RecomputeOutcome.empty() : events;
+            assets = assets == null ? RecomputeOutcome.empty() : assets;
+        }
+    }
+
+    public record UserAffinityDependents(List<String> eventSourceIds, List<String> assetIds) {
     }
 }

@@ -43,7 +43,7 @@ class ActivitiesEventsServiceTest {
     @Mock
     private ScheduledMessageTaskService scheduledMessageTaskService;
     @Mock
-    private AffinityMaintenanceService affinityMaintenanceService;
+    private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock
     private MongoTemplate mongoTemplate;
 
@@ -62,7 +62,7 @@ class ActivitiesEventsServiceTest {
                 paymentService,
                 scheduledMessageTaskService,
                 absoluteAffinityService,
-                affinityMaintenanceService,
+                affinityRecomputeTaskService,
                 mongoTemplate);
     }
 
