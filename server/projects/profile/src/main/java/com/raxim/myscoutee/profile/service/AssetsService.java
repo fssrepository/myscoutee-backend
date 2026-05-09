@@ -52,6 +52,13 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AssetsService {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_TRASHED = "T";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
+
     private static final String LEGACY_ASSETS_WRAPPER_ID = "assets";
     private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
 
@@ -209,6 +216,35 @@ public class AssetsService {
         ensureOwnerAssetsBootstrapped(normalizedUserId);
         assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
                 .ifPresent(assetsRepository::delete);
+    }
+
+    public void takeOver(AssetDeleteRequestDto request) {
+        if (request == null) {
+            return;
+        }
+        String normalizedUserId = normalizeId(request.userId());
+        String normalizedAssetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return;
+        }
+        ensureOwnerAssetsBootstrapped(normalizedUserId);
+        Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
+        if (current == null || !STATUS_UNDER_REVIEW.equals(safeText(current.getStatus()))) {
+            return;
+        }
+        Asset next = cloneAsset(current);
+        String restoredStatus = safeText(next.getStatusBeforeSuppression());
+        if (!StringUtils.hasText(restoredStatus) || isSuppressedLifecycleStatus(restoredStatus)) {
+            restoredStatus = STATUS_ACTIVE;
+        }
+        next.setStatus(restoredStatus);
+        next.setStatusBeforeSuppression(null);
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(normalizedUserId);
+        next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
+        next.setBoost(resolveAssetBoost(next, normalizedUserId));
+        assetsRepository.save(next);
+        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
     }
 
     public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
@@ -563,7 +599,7 @@ public class AssetsService {
         }
         next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
         if (current == null) {
-            next.setStatus("active");
+            next.setStatus(STATUS_ACTIVE);
             next.setStatusBeforeSuppression(null);
         }
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
@@ -827,6 +863,7 @@ public class AssetsService {
                         .toList(),
                 clonePricing(asset.getPricing()),
                 normalizeVisibility(asset.getVisibility()),
+                safeText(asset.getStatus()),
                 normalizeId(asset.getOwnerUserId()),
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset));
@@ -897,7 +934,8 @@ public class AssetsService {
         if (asset == null) {
             return false;
         }
-        if (!"active".equals(safeText(asset.getStatus()))) {
+        String status = safeText(asset.getStatus());
+        if (!STATUS_ACTIVE.equals(status) && !"active".equals(status)) {
             return false;
         }
         String visibility = normalizeVisibility(asset.getVisibility());
@@ -905,6 +943,15 @@ public class AssetsService {
             return false;
         }
         return !"Friends only".equals(visibility) || isFriendOfActiveUser(normalizeId(asset.getOwnerUserId()), activeUserId);
+    }
+
+    private boolean isSuppressedLifecycleStatus(String status) {
+        String normalized = safeText(status);
+        return STATUS_UNDER_REVIEW.equals(normalized)
+                || STATUS_BLOCKED.equals(normalized)
+                || STATUS_DELETED.equals(normalized)
+                || STATUS_INACTIVE.equals(normalized)
+                || STATUS_TRASHED.equals(normalized);
     }
 
     private String normalizeVisibility(String visibility) {

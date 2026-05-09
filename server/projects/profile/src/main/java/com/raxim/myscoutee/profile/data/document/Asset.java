@@ -17,6 +17,13 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
 public class Asset {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
+    private static final String STATUS_TRASHED = "T";
+
     @Id
     private String id;
 
@@ -204,11 +211,11 @@ public class Asset {
     }
 
     public String getStatus() {
-        return hasText(status) ? status.trim() : "active";
+        return normalizeStatus(status);
     }
 
     public void setStatus(String status) {
-        this.status = hasText(status) ? status.trim() : "active";
+        this.status = normalizeStatus(status);
     }
 
     public String getStatusBeforeSuppression() {
@@ -216,7 +223,7 @@ public class Asset {
     }
 
     public void setStatusBeforeSuppression(String statusBeforeSuppression) {
-        this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? statusBeforeSuppression.trim() : null;
+        this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatus(statusBeforeSuppression) : null;
     }
 
     public Double getAffinity() {
@@ -307,5 +314,19 @@ public class Asset {
 
     private static boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private static String normalizeStatus(String value) {
+        String normalized = value == null ? "" : value.trim();
+        return switch (normalized) {
+            case STATUS_ACTIVE, STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE, STATUS_TRASHED -> normalized;
+            case "active" -> STATUS_ACTIVE;
+            case "under-review", "under review" -> STATUS_UNDER_REVIEW;
+            case "blocked" -> STATUS_BLOCKED;
+            case "inactive" -> STATUS_INACTIVE;
+            case "deleted" -> STATUS_DELETED;
+            case "trashed", "trash" -> STATUS_TRASHED;
+            default -> STATUS_ACTIVE;
+        };
     }
 }

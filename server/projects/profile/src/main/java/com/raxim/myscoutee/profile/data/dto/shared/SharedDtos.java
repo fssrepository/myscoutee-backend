@@ -274,6 +274,7 @@ public final class SharedDtos {
             List<PolicyItemDto> policies,
             PricingConfigDto pricing,
             String visibility,
+            String status,
             String ownerUserId,
             String ownerName,
             List<AssetMemberRequestDto> requests) {

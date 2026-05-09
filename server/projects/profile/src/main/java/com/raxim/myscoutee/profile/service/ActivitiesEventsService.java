@@ -60,6 +60,14 @@ public class ActivitiesEventsService {
     private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_HOSTING = "H";
+    private static final String STATUS_DRAFT = "DR";
+    private static final String STATUS_TRASHED = "T";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
     private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
     private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
@@ -465,6 +473,7 @@ public class ActivitiesEventsService {
     public void trash(EventActionRequestDto request) {
         maybeApplyLeaveCancellationRefund(request);
         List<ActivityEvent> updated = updateItemState(request, current -> {
+            current.setStatus(STATUS_TRASHED);
             current.setIsTrashed(true);
             current.setTrashedAtIso(Instant.now().toString());
         });
@@ -472,15 +481,66 @@ public class ActivitiesEventsService {
     }
 
     public void publish(EventActionRequestDto request) {
-        List<ActivityEvent> updated = updateItemState(request, current -> current.setPublished(true));
+        List<ActivityEvent> updated = updateItemState(request, current -> {
+            current.setStatus(TYPE_HOSTING.equals(normalizeType(current.getType())) ? STATUS_HOSTING : STATUS_ACTIVE);
+            current.setPublished(true);
+        });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
     public void restore(EventActionRequestDto request) {
         List<ActivityEvent> updated = updateItemState(request, current -> {
+            current.setStatus(TYPE_HOSTING.equals(normalizeType(current.getType())) ? STATUS_HOSTING : STATUS_ACTIVE);
+            current.setStatusBeforeSuppression(null);
             current.setIsTrashed(false);
             current.setTrashedAtIso(null);
         });
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+    }
+
+    public void takeOver(EventActionRequestDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return;
+        }
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(sourceId).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .toList();
+        ActivityEvent preferred = computePreferredEventRecords(documents).stream().findFirst().orElse(null);
+        if (!isViewerAdmin(preferred, viewer.userId())) {
+            return;
+        }
+        String nowIso = Instant.now().toString();
+        List<ActivityEvent> updated = new ArrayList<>();
+        for (ActivityEvent document : documents) {
+            if (!STATUS_UNDER_REVIEW.equals(safeText(document.getStatus()))) {
+                continue;
+            }
+            ActivityEvent next = cloneDocument(document);
+            String restoredStatus = safeText(next.getStatusBeforeSuppression());
+            if (!StringUtils.hasText(restoredStatus) || isSuppressedLifecycleStatus(restoredStatus)) {
+                restoredStatus = TYPE_HOSTING.equals(normalizeType(next.getType())) ? STATUS_HOSTING : STATUS_ACTIVE;
+            }
+            next.setStatus(restoredStatus);
+            next.setStatusBeforeSuppression(null);
+            next.setIsTrashed(false);
+            next.setTrashedAtIso(null);
+            next.setPublished(!STATUS_DRAFT.equals(restoredStatus));
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(viewer.userId());
+            next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
+            next.normalizeLifecycleState();
+            updated.add(next);
+        }
+        if (updated.isEmpty()) {
+            return;
+        }
+        updated = activityEventsRepository.saveAll(updated);
+        affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
     }
 
@@ -656,6 +716,7 @@ public class ActivitiesEventsService {
         if (TYPE_HOSTING.equals(targetType)) {
             ActivityEvent eventsOverlay = cloneDocument(baseRecord);
             eventsOverlay.setType(TYPE_EVENTS);
+            eventsOverlay.setStatus(STATUS_ACTIVE);
             eventsOverlay.setIsHosting(false);
             eventsOverlay.setIsInvitation(false);
             eventsOverlay.setId(resolveExistingId(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
@@ -702,35 +763,38 @@ public class ActivitiesEventsService {
         List<ActivityEvent> memberEventItems = userItems.stream()
                 .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> !isViewerAdmin(record, viewer.userId()))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> !isTrashScopeStatus(record))
                 .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
                 .toList();
         List<ActivityEvent> pendingEventItems = memberEventItems.stream()
-                .filter(record -> isPendingParticipation(record, viewer.userId()))
+                .filter(record -> isPendingParticipation(record, viewer.userId()) || isPendingReviewStatus(record))
                 .toList();
         List<ActivityEvent> activeEventItems = memberEventItems.stream()
-                .filter(record -> hasAcceptedParticipation(record, viewer.userId()))
+                .filter(record -> hasAcceptedParticipation(record, viewer.userId()) && !isPendingReviewStatus(record))
                 .toList();
         List<ActivityEvent> invitationItems = userItems.stream()
                 .filter(record -> TYPE_INVITATIONS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> !isTrashScopeStatus(record))
                 .toList();
         List<ActivityEvent> myEventItems = userItems.stream()
                 .filter(record -> TYPE_HOSTING.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> isViewerAdmin(record, viewer.userId()))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
+                .filter(record -> !isTrashScopeStatus(record))
                 .toList();
         List<ActivityEvent> draftItems = myEventItems.stream()
                 .filter(record -> Boolean.FALSE.equals(record.getPublished()))
                 .toList();
+        List<ActivityEvent> reviewItems = myEventItems.stream()
+                .filter(this::isPendingReviewStatus)
+                .toList();
 
         return switch (filter) {
             case "all" -> concat(concat(activeEventItems, pendingEventItems), concat(invitationItems, myEventItems));
-            case "pending" -> pendingEventItems;
+            case "pending" -> concat(pendingEventItems, reviewItems);
             case "invitations" -> invitationItems;
             case "my-events" -> "drafts".equals(hostingPublicationFilter) ? draftItems : myEventItems;
             case "drafts" -> draftItems;
-            case "trash" -> userItems.stream().filter(record -> Boolean.TRUE.equals(record.getIsTrashed())).toList();
+            case "trash" -> userItems.stream().filter(this::isTrashScopeStatus).toList();
             default -> activeEventItems;
         };
     }
@@ -820,13 +884,17 @@ public class ActivitiesEventsService {
         List<ActivityEvent> drafts = myEvents.stream()
                 .filter(record -> Boolean.FALSE.equals(record.getPublished()))
                 .toList();
+        List<ActivityEvent> reviewItems = myEvents.stream()
+                .filter(this::isPendingReviewStatus)
+                .toList();
 
         return switch (filter) {
             case "invitations" -> invitations;
             case "my-events" -> "drafts".equals(hostingPublicationFilter) ? drafts : myEvents;
             case "drafts" -> drafts;
+            case "pending" -> reviewItems;
             case "trash" -> directOwnerRecords.stream()
-                    .filter(record -> Boolean.TRUE.equals(record.getIsTrashed()))
+                    .filter(this::isTrashScopeStatus)
                     .sorted(directRecordComparator())
                     .toList();
             default -> List.of();
@@ -869,7 +937,7 @@ public class ActivitiesEventsService {
     private List<ActivityEvent> queryMyEventScopeRecords(ViewerContext viewer, List<ActivityEvent> directOwnerRecords) {
         LinkedHashMap<String, ActivityEvent> myEventRecordsBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : directOwnerRecords) {
-            if (Boolean.TRUE.equals(record.getIsTrashed())) {
+            if (isTrashScopeStatus(record)) {
                 continue;
             }
             if (TYPE_HOSTING.equals(normalizeType(record.getType()))) {
@@ -889,6 +957,7 @@ public class ActivitiesEventsService {
         ActivityEvent projection = cloneDocument(source);
         projection.setOwnerUserId(viewerUserId);
         projection.setType(TYPE_HOSTING);
+        projection.setStatus(STATUS_HOSTING);
         projection.setIsHosting(true);
         projection.setIsInvitation(false);
         projection.setIsAdmin(true);
@@ -944,6 +1013,21 @@ public class ActivitiesEventsService {
             return true;
         }
         return hasTrackedUserParticipation(preferredRecord == null ? record : preferredRecord, userId);
+    }
+
+    private boolean isPendingReviewStatus(ActivityEvent record) {
+        String status = safeText(record == null ? null : record.getStatus());
+        return STATUS_UNDER_REVIEW.equals(status) || STATUS_BLOCKED.equals(status);
+    }
+
+    private boolean isTrashScopeStatus(ActivityEvent record) {
+        if (Boolean.TRUE.equals(record == null ? null : record.getIsTrashed())) {
+            return true;
+        }
+        String status = safeText(record == null ? null : record.getStatus());
+        return STATUS_TRASHED.equals(status)
+                || STATUS_DELETED.equals(status)
+                || STATUS_INACTIVE.equals(status);
     }
 
     private ActivityEvent buildMembershipProjection(String ownerUserId, ActivityEvent record) {
@@ -1006,6 +1090,9 @@ public class ActivitiesEventsService {
             return false;
         }
         if (Boolean.TRUE.equals(record.getIsTrashed()) || Boolean.TRUE.equals(record.getIsInvitation())) {
+            return false;
+        }
+        if (!STATUS_ACTIVE.equals(safeText(record.getStatus()))) {
             return false;
         }
         return StringUtils.hasText(normalizeId(record.getSourceId()));
@@ -1658,7 +1745,7 @@ public class ActivitiesEventsService {
                 .append("spherical", true)
                 .append("key", "locationGeo")
                 .append("query", new Document("type", TYPE_EVENTS)
-                        .append("status", "active")
+                        .append("status", new Document("$in", List.of(STATUS_ACTIVE, "active")))
                         .append("generated", new Document("$ne", true))));
 
         List<Document> rawDocuments;
@@ -1948,6 +2035,14 @@ public class ActivitiesEventsService {
     private String normalizeTargetType(String value) {
         String normalized = safeText(value);
         return TYPE_EVENTS.equals(normalized) || TYPE_HOSTING.equals(normalized) ? normalized : null;
+    }
+
+    private boolean isSuppressedLifecycleStatus(String status) {
+        String normalized = safeText(status);
+        return STATUS_UNDER_REVIEW.equals(normalized)
+                || STATUS_BLOCKED.equals(normalized)
+                || STATUS_DELETED.equals(normalized)
+                || STATUS_INACTIVE.equals(normalized);
     }
 
     private String normalizeEventScopeFilter(String value) {

@@ -32,11 +32,11 @@ public class ActivityEvent {
     private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
-    private static final String STATUS_ACTIVE = "active";
-    private static final String STATUS_HOSTING = "hosting";
-    private static final String STATUS_INVITATION = "invitation";
-    private static final String STATUS_DRAFT = "draft";
-    private static final String STATUS_TRASHED = "trashed";
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_HOSTING = "H";
+    private static final String STATUS_INVITATION = "INV";
+    private static final String STATUS_DRAFT = "DR";
+    private static final String STATUS_TRASHED = "T";
     private static final String STATUS_UNDER_REVIEW = "UR";
     private static final String STATUS_BLOCKED = "B";
     private static final String STATUS_DELETED = "D";
@@ -315,6 +315,12 @@ public class ActivityEvent {
         return switch (normalized) {
             case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED, STATUS_UNDER_REVIEW,
                     STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE -> normalized;
+            case "active" -> STATUS_ACTIVE;
+            case "hosting" -> STATUS_HOSTING;
+            case "invitation" -> STATUS_INVITATION;
+            case "draft" -> STATUS_DRAFT;
+            case "trashed", "trash" -> STATUS_TRASHED;
+            case "deleted" -> STATUS_DELETED;
             default -> STATUS_ACTIVE;
         };
     }

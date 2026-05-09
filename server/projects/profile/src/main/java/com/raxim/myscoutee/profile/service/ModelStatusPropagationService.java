@@ -32,7 +32,7 @@ public class ModelStatusPropagationService {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String ROLE_ADMIN = "Admin";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
-    private static final String STATUS_ACTIVE = "active";
+    private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
     private static final String STATUS_BLOCKED = "B";
     private static final String STATUS_DELETED = "D";
@@ -105,6 +105,11 @@ public class ModelStatusPropagationService {
         }
 
         Map<String, Set<String>> adminIdsBySourceId = resolveAdminIdsBySourceId(eventList);
+        LinkedHashSet<String> sourceIds = eventList.stream()
+                .map(event -> normalizeId(event.getSourceId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, Integer> acceptedMemberCountsBySourceId = acceptedMemberCountsBySourceId(sourceIds);
         Set<String> allAdminIds = adminIdsBySourceId.values().stream()
                 .flatMap(Collection::stream)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
@@ -125,7 +130,7 @@ public class ModelStatusPropagationService {
             if (StringUtils.hasText(nextStatus)) {
                 conflict = !suppressEvent(event, nextStatus) || conflict;
             } else {
-                conflict = !restoreEventIfSuppressed(event) || conflict;
+                conflict = !restoreEventIfSuppressed(event, acceptedMemberCountsBySourceId) || conflict;
             }
         }
         return new RecomputeTargets(new ArrayList<>(targetSourceIds), conflict);
@@ -170,9 +175,12 @@ public class ModelStatusPropagationService {
         return updateEventStatusIfSnapshotCurrent(event, suppressionStatus, previousStatus);
     }
 
-    private boolean restoreEventIfSuppressed(ActivityEvent event) {
+    private boolean restoreEventIfSuppressed(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
         String currentStatus = safeText(event == null ? null : event.getStatus());
         if (!SUPPRESSED_STATUSES.contains(currentStatus)) {
+            return true;
+        }
+        if (!canRestoreEvent(event, acceptedMemberCountsBySourceId)) {
             return true;
         }
         String previousStatus = safeText(event.getStatusBeforeSuppression());
@@ -247,6 +255,38 @@ public class ModelStatusPropagationService {
         }
         UpdateResult result = mongoTemplate.updateFirst(new Query(criteria), update, Asset.class);
         return result.getMatchedCount() > 0;
+    }
+
+    private boolean canRestoreEvent(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
+        if (!isOperationalEvent(event)) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(event == null ? null : event.getCapacityTotal());
+        if (capacityTotal <= 0) {
+            return true;
+        }
+        String sourceId = normalizeId(event.getSourceId());
+        int acceptedMembers = Math.max(
+                normalizeCount(event.getAcceptedMembers()),
+                acceptedMemberCountsBySourceId == null ? 0 : acceptedMemberCountsBySourceId.getOrDefault(sourceId, 0));
+        return acceptedMembers < capacityTotal;
+    }
+
+    private Map<String, Integer> acceptedMemberCountsBySourceId(Collection<String> sourceIds) {
+        if (sourceIds == null || sourceIds.isEmpty()) {
+            return Map.of();
+        }
+        LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+            if (!MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus()))) {
+                continue;
+            }
+            String sourceId = normalizeId(member.getOwnerId());
+            if (StringUtils.hasText(sourceId)) {
+                result.merge(sourceId, 1, Integer::sum);
+            }
+        }
+        return result;
     }
 
     private Map<String, Set<String>> resolveAdminIdsBySourceId(Collection<ActivityEvent> events) {
@@ -394,6 +434,10 @@ public class ModelStatusPropagationService {
 
     private String normalizeStatus(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private int normalizeCount(Integer value) {
+        return value == null ? 0 : Math.max(0, value);
     }
 
     private String safeText(String value) {

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,12 +68,49 @@ class ModelStatusPropagationServiceTest {
         ArgumentCaptor<Update> eventUpdate = ArgumentCaptor.forClass(Update.class);
         verify(mongoTemplate).updateFirst(any(), eventUpdate.capture(), eq(ActivityEvent.class));
         assertThat(eventUpdate.getValue().getUpdateObject().toJson()).contains("\"status\": \"UR\"");
-        assertThat(eventUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"active\"");
+        assertThat(eventUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"A\"");
 
         ArgumentCaptor<Update> assetUpdate = ArgumentCaptor.forClass(Update.class);
         verify(mongoTemplate).updateFirst(any(), assetUpdate.capture(), eq(Asset.class));
         assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"status\": \"B\"");
-        assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"active\"");
+        assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"A\"");
+    }
+
+    @Test
+    void activeUserDoesNotRestoreSuppressedFullEvent() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityEventsRepository eventsRepository = mock(ActivityEventsRepository.class);
+        ActivityMembersRepository membersRepository = mock(ActivityMembersRepository.class);
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        Users activeUser = user("u1", "public", "A");
+        ActivityEvent event = event("event-doc-1", "event-1", "u1", "UR", "2026-05-09T10:00:00Z");
+        event.setStatusBeforeSuppression("H");
+        event.setAdmins(List.of("u1"));
+        event.setCapacityTotal(2);
+        event.setAcceptedMembers(2);
+
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(activeUser));
+        when(eventsRepository.findByCreatorUserId("u1")).thenReturn(List.of(event));
+        when(eventsRepository.findByAdminsContaining("u1")).thenReturn(List.of());
+        when(membersRepository.findByOwnerTypeAndUserId("event", "u1")).thenReturn(List.of());
+        when(membersRepository.findByOwnerTypeAndOwnerIdIn(eq("event"), any())).thenReturn(List.of());
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(activeUser));
+        when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of());
+
+        ModelStatusPropagationService service = new ModelStatusPropagationService(
+                usersRepository,
+                eventsRepository,
+                membersRepository,
+                assetsRepository,
+                mongoTemplate);
+
+        ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
+
+        assertThat(outcome.eventSourceIds()).containsExactly("event-1");
+        assertThat(outcome.hasConflicts()).isFalse();
+        verify(mongoTemplate, never()).updateFirst(any(), any(), eq(ActivityEvent.class));
     }
 
     private Users user(String userId, String profileStatus, String status) {
