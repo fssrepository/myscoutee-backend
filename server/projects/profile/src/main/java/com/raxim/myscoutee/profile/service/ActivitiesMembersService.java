@@ -57,6 +57,7 @@ public class ActivitiesMembersService {
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventInviteNotificationService eventInviteNotificationService;
+    private final AffinityMaintenanceService affinityMaintenanceService;
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
@@ -67,7 +68,8 @@ public class ActivitiesMembersService {
             AssetsService assetsService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
-            EventInviteNotificationService eventInviteNotificationService) {
+            EventInviteNotificationService eventInviteNotificationService,
+            AffinityMaintenanceService affinityMaintenanceService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -77,6 +79,7 @@ public class ActivitiesMembersService {
         this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventInviteNotificationService = eventInviteNotificationService;
+        this.affinityMaintenanceService = affinityMaintenanceService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -1602,7 +1605,6 @@ public class ActivitiesMembersService {
                 normalizeDateTime(member.getMetAtIso(), actionAtIso),
                 actionAtIso,
                 safeText(member.getMetWhere()),
-                user == null ? 0d : safeDouble(user.getAffinity()),
                 resolveAvatarUrl(user),
                 user == null ? null : homeUserProfileService.toGameCardUserDto(user));
     }
@@ -1741,6 +1743,7 @@ public class ActivitiesMembersService {
         }
         if (!documentsToSave.isEmpty()) {
             activityEventsRepository.saveAll(documentsToSave);
+            affinityMaintenanceService.refreshEventAffinitiesForSourceId(normalizedEventId);
         }
     }
 

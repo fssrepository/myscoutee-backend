@@ -442,6 +442,9 @@ public class UserRatesService {
 
         String displayId = resolveResponseId(record);
         String happenedAt = normalizeDate(record.getCreatedDate(), normalizeDate(record.getUpdatedDate(), Instant.now().toString()));
+        if ("met".equals(direction) && isFutureActivityDate(happenedAt)) {
+            return null;
+        }
         int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven()) : 0;
         int scoreReceived = isOwnerView
                 ? normalizeScore(record.getScoreReceived())
@@ -1101,6 +1104,11 @@ public class UserRatesService {
 
     private static long rateDateMillis(String value) {
         return parseIsoMillis(value, 0L);
+    }
+
+    private static boolean isFutureActivityDate(String value) {
+        long parsed = parseIsoMillis(value, 0L);
+        return parsed > 0L && parsed > Instant.now().toEpochMilli();
     }
 
     private static long dayStartMillis(String value) {

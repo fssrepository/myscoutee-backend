@@ -43,6 +43,7 @@ public class Asset {
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
     private Double affinity;
+    private Double boost;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -206,6 +207,14 @@ public class Asset {
 
     public void setAffinity(Double affinity) {
         this.affinity = affinity;
+    }
+
+    public Double getBoost() {
+        return boost;
+    }
+
+    public void setBoost(Double boost) {
+        this.boost = boost;
     }
 
     public String getCreatedDate() {

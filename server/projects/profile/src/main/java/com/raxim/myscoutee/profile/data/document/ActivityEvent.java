@@ -95,7 +95,7 @@ public class ActivityEvent {
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String subEventsDisplayMode;
     private Double rating;
-    private Double relevance;
+    private Double boost;
     private Double affinity;
     private String createdDate;
     private String createdUser;
@@ -255,8 +255,8 @@ public class ActivityEvent {
     public void setSubEventsDisplayMode(String subEventsDisplayMode) { this.subEventsDisplayMode = subEventsDisplayMode; }
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
-    public Double getRelevance() { return relevance; }
-    public void setRelevance(Double relevance) { this.relevance = relevance; }
+    public Double getBoost() { return boost; }
+    public void setBoost(Double boost) { this.boost = boost; }
     public Double getAffinity() { return affinity; }
     public void setAffinity(Double affinity) { this.affinity = affinity; }
     public String getCreatedDate() { return createdDate; }

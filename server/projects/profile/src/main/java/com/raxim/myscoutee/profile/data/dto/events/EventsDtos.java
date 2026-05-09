@@ -174,7 +174,7 @@ public final class EventsDtos {
             List<SubEventFormItemDto> subEvents,
             String subEventsDisplayMode,
             Double rating,
-            Double relevance,
+            Double boost,
             Double affinity) {
     }
 

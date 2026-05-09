@@ -61,6 +61,7 @@ public class ActivitiesEventsService {
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
     private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
+    private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
     private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
     private static final ThreadLocal<EventQueryContext> ACTIVE_CONTEXT = new ThreadLocal<>();
 
@@ -1035,29 +1036,34 @@ public class ActivitiesEventsService {
                 record,
                 item,
                 distanceMetersExact == null ? Integer.MAX_VALUE : distanceMetersExact,
-                Math.max(0d, safeDouble(item.relevance())),
+                Math.max(0d, safeDouble(item.boost())),
                 startAtMs,
                 endAtMs,
                 dateOnly(startAtMs),
-                ownerRelevanceRank(record, viewer, affinityGap),
+                boostAffinityRank(record, viewer, affinityGap),
                 affinityGap,
                 -Math.max(0, (int) Math.round(safeDouble(item.rating()) * 100d)),
                 endAtMs < System.currentTimeMillis());
     }
 
-    private long ownerRelevanceRank(ActivityEvent record, ViewerContext viewer, int affinityGap) {
-        double score = ownerRelevanceScore(record, viewer, affinityGap);
+    private long boostAffinityRank(ActivityEvent record, ViewerContext viewer, int affinityGap) {
+        double score = boostAffinityScore(record, viewer, affinityGap);
         return -Math.round(score * 1_000_000d);
     }
 
-    private double ownerRelevanceScore(ActivityEvent record, ViewerContext viewer, int affinityGap) {
+    private double boostAffinityScore(ActivityEvent record, ViewerContext viewer, int affinityGap) {
+        double boost = safeDouble(record == null ? null : record.getBoost());
+        return boost + ownerConnectionBoost(record, viewer) - (Math.max(0, affinityGap) / AFFINITY_DISTANCE_BOOST_SCALE);
+    }
+
+    private double ownerConnectionBoost(ActivityEvent record, ViewerContext viewer) {
         String viewerUserId = normalizeId(viewer == null ? null : viewer.userId());
         String ownerUserId = resolveEventOwnerUserId(record);
         if (!StringUtils.hasText(viewerUserId) || !StringUtils.hasText(ownerUserId)) {
-            return affinitySimilarityScore(affinityGap);
+            return 0d;
         }
         if (viewerUserId.equals(ownerUserId)) {
-            return 2d;
+            return 100d;
         }
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         double knownEdgeWeight = edgeWeight(
@@ -1065,13 +1071,9 @@ public class ActivitiesEventsService {
                 ownerUserId,
                 ctx == null ? Map.of() : ctx.edgeWeightsByPairKey());
         if (knownEdgeWeight > 0d) {
-            return 1d + knownEdgeWeight;
+            return knownEdgeWeight * 100d;
         }
-        return affinitySimilarityScore(affinityGap);
-    }
-
-    private double affinitySimilarityScore(int affinityGap) {
-        return 1d / (1d + Math.max(0, affinityGap));
+        return 0d;
     }
 
     private boolean matchesActivitiesSecondaryFilter(EventProjection projection, String secondaryFilter) {
@@ -1190,7 +1192,7 @@ public class ActivitiesEventsService {
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getSubEventsDisplayMode()),
                 safeDouble(record.getRating()),
-                safeDouble(record.getRelevance()),
+                safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()));
     }
 
@@ -1206,7 +1208,7 @@ public class ActivitiesEventsService {
                 if (delta != 0) {
                     return delta;
                 }
-                delta = Double.compare(left.relevanceValue(), right.relevanceValue());
+                delta = Double.compare(right.boostValue(), left.boostValue());
                 if (delta != 0) {
                     return delta;
                 }
@@ -1232,7 +1234,7 @@ public class ActivitiesEventsService {
             if (delta != 0) {
                 return delta;
             }
-            delta = Double.compare(left.relevanceValue(), right.relevanceValue());
+            delta = Double.compare(right.boostValue(), left.boostValue());
             if (delta != 0) {
                 return delta;
             }
@@ -1284,7 +1286,7 @@ public class ActivitiesEventsService {
         long distanceMeters = projection.distanceMeters();
         long ratingValue = projection.ratingValue();
         long affinityGap = projection.affinityGap();
-        long ownerRelevanceRank = projection.ownerRelevanceRank();
+        long boostAffinityRank = projection.boostAffinityRank();
         long isPast = projection.past() ? 1L : 0L;
         long pastPriority = projection.past() ? 0L : 1L;
 
@@ -1293,7 +1295,7 @@ public class ActivitiesEventsService {
                 case "past-events" -> List.of(distanceMeters, pastPriority, -startAtMs, affinityGap);
                 case "nearby" -> List.of(distanceMeters, isPast, startAtMs, affinityGap);
                 case "top-rated" -> List.of(distanceMeters, isPast, ratingValue, startAtMs);
-                case "most-relevant" -> List.of(distanceMeters, isPast, ownerRelevanceRank, affinityGap, startAtMs);
+                case "most-relevant" -> List.of(distanceMeters, isPast, boostAffinityRank, startAtMs);
                 default -> List.of(distanceMeters, isPast, startAtMs, affinityGap);
             };
         }
@@ -1302,7 +1304,7 @@ public class ActivitiesEventsService {
             case "past-events" -> List.of(pastPriority, -dayMs, -startAtMs, distanceMeters);
             case "nearby" -> List.of(isPast, dayMs, distanceMeters, startAtMs);
             case "top-rated" -> List.of(isPast, dayMs, ratingValue, startAtMs);
-            case "most-relevant" -> List.of(isPast, dayMs, ownerRelevanceRank, affinityGap, startAtMs);
+            case "most-relevant" -> List.of(isPast, dayMs, boostAffinityRank, startAtMs);
             default -> List.of(isPast, dayMs, startAtMs, distanceMeters);
         };
     }
@@ -1508,8 +1510,8 @@ public class ActivitiesEventsService {
         document.setSubEvents(cloneSubEvents(request.subEvents()));
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
-        document.setRelevance(existing == null ? 0d : safeDouble(existing.getRelevance()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
+        document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
         document.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
@@ -1523,6 +1525,10 @@ public class ActivitiesEventsService {
 
     private double resolveAffinity(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
         return absoluteAffinityService.resolveEventAffinity(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
+    }
+
+    private double resolveBoost(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
+        return absoluteAffinityService.resolveEventBoost(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
     }
 
     private List<Users> resolveAffinityParticipants(Users creator, List<String> acceptedMemberUserIds) {
@@ -2388,8 +2394,8 @@ public class ActivitiesEventsService {
         next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
-        next.setRelevance(existing == null ? safeDouble(parent.getRelevance()) : safeDouble(existing.getRelevance()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
+        next.setBoost(existing == null ? safeDouble(parent.getBoost()) : safeDouble(existing.getBoost()));
         next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
         next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -2728,11 +2734,11 @@ public class ActivitiesEventsService {
             ActivityEvent record,
             EventRecordDto item,
             int distanceMeters,
-            double relevanceValue,
+            double boostValue,
             long startAtMs,
             long endAtMs,
             long dayMs,
-            long ownerRelevanceRank,
+            long boostAffinityRank,
             int affinityGap,
             int ratingValue,
             boolean past) {

@@ -1,6 +1,9 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.text.Normalizer;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -170,11 +173,28 @@ public class AbsoluteAffinityService {
                 : participantAffinities.stream().mapToDouble(Double::doubleValue).average().orElse(0d);
 
         double score = tokenScore(tokens) * multiplier(multipliers.getContentTokens(), 89d)
-                + averageParticipantAffinity * multiplier(multipliers.getParticipantAffinity(), 1d)
-                + Math.round(clamp(safeDouble(event.getRating()), 0d, 10d) * 100d) * multiplier(multipliers.getRating(), 29d)
-                + Math.max(0, normalizeCount(event.getAcceptedMembers(), 0)) * multiplier(multipliers.getAcceptedMembers(), 19d)
-                + Math.max(0, normalizeCount(event.getPendingMembers(), 0)) * multiplier(multipliers.getPendingMembers(), 11d)
-                + Math.max(0, normalizeCount(event.getCapacityTotal(), 0)) * multiplier(multipliers.getCapacityTotal(), 7d);
+                + averageParticipantAffinity * multiplier(multipliers.getParticipantAffinity(), 1d);
+        return Math.max(0d, score);
+    }
+
+    public double resolveEventBoost(ActivityEvent event, Collection<Users> participants) {
+        if (event == null) {
+            return 0d;
+        }
+        AffinityConfig config = activeConfig();
+        AffinityConfig.EventBoostMultipliers multipliers = config.getBoost().getEvent();
+        int acceptedMembers = Math.max(0, normalizeCount(event.getAcceptedMembers(), 0));
+        int capacityAvailable = Math.max(0, normalizeCount(event.getCapacityTotal(), 0) - acceptedMembers);
+        double hostConfidence = averageHostConfidence(participants);
+        double score = Math.round(clamp(safeDouble(event.getRating()), 0d, 10d) * 100d)
+                * multiplier(multipliers.getRating(), 29d)
+                + acceptedMembers * multiplier(multipliers.getAcceptedMembers(), 19d)
+                + Math.max(0, normalizeCount(event.getPendingMembers(), 0))
+                * multiplier(multipliers.getPendingMembers(), 11d)
+                + capacityAvailable * multiplier(multipliers.getCapacityAvailable(), 7d)
+                + freshnessScore(event.getStartAtIso(), event.getUpdatedDate(), event.getCreatedDate())
+                * multiplier(multipliers.getFreshness(), 5d)
+                + hostConfidence * multiplier(multipliers.getHostConfidence(), 0.25d);
         return Math.max(0d, score);
     }
 
@@ -204,10 +224,30 @@ public class AbsoluteAffinityService {
 
         double ownerAffinity = safeDouble(owner == null ? null : owner.getAffinity());
         double score = tokenScore(tokens) * multiplier(multipliers.getContentTokens(), 83d)
-                + ownerAffinity * multiplier(multipliers.getOwnerAffinity(), 1d)
-                + Math.max(0, normalizeCount(asset.getCapacityTotal(), 0)) * multiplier(multipliers.getCapacityTotal(), 7d)
+                + ownerAffinity * multiplier(multipliers.getOwnerAffinity(), 1d);
+        return Math.max(0d, score);
+    }
+
+    public double resolveAssetBoost(Asset asset, Users owner) {
+        if (asset == null) {
+            return 0d;
+        }
+        AffinityConfig config = activeConfig();
+        AffinityConfig.AssetBoostMultipliers multipliers = config.getBoost().getAsset();
+        int acceptedRequests = 0;
+        for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
+            if (request != null && "accepted".equals(normalizeKey(request.status()))) {
+                acceptedRequests += 1;
+            }
+        }
+        int capacityAvailable = Math.max(0, normalizeCount(asset.getCapacityTotal(), 0) - acceptedRequests);
+        double score = capacityAvailable * multiplier(multipliers.getCapacityAvailable(), 7d)
                 + Math.max(0, normalizeCount(asset.getQuantity(), 0)) * multiplier(multipliers.getQuantity(), 11d)
-                + Math.max(0, asset.getRequests() == null ? 0 : asset.getRequests().size()) * multiplier(multipliers.getRequestCount(), 13d);
+                + Math.max(0, asset.getRequests() == null ? 0 : asset.getRequests().size())
+                * multiplier(multipliers.getRequestCount(), 13d)
+                + freshnessScore(asset.getUpdatedDate(), asset.getCreatedDate(), null)
+                * multiplier(multipliers.getFreshness(), 3d)
+                + hostConfidence(owner) * multiplier(multipliers.getOwnerConfidence(), 0.25d);
         return Math.max(0d, score);
     }
 
@@ -380,9 +420,7 @@ public class AbsoluteAffinityService {
                 + Math.max(0, normalizeCount(section.totalEvents(), 0))
                 * multiplier(multipliers.getImpressionTotalEvents(), 37d)
                 + Math.max(0, normalizeCount(section.repeatCount(), 0))
-                * multiplier(multipliers.getImpressionRepeatCount(), 53d)
-                - Math.max(0, normalizeCount(section.noShowCount(), 0))
-                * multiplier(multipliers.getImpressionNoShowPenalty(), 71d);
+                * multiplier(multipliers.getImpressionRepeatCount(), 53d);
         for (UserPersonalityTraitDto trait : section.personalityTraits() == null ? List.<UserPersonalityTraitDto>of() : section.personalityTraits()) {
             if (trait != null) {
                 score += Math.max(0, normalizeCount(trait.percent(), 0))
@@ -407,9 +445,7 @@ public class AbsoluteAffinityService {
                 + Math.max(0, normalizeCount(section.totalEvents(), 0))
                 * multiplier(multipliers.getImpressionTotalEvents(), 37d)
                 + Math.max(0, normalizeCount(section.repeatCount(), 0))
-                * multiplier(multipliers.getImpressionRepeatCount(), 53d)
-                - Math.max(0, normalizeCount(section.noShowCount(), 0))
-                * multiplier(multipliers.getImpressionNoShowPenalty(), 71d);
+                * multiplier(multipliers.getImpressionRepeatCount(), 53d);
         for (Users.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<Users.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
             if (trait != null) {
                 score += Math.max(0, normalizeCount(trait.percent(), 0))
@@ -419,6 +455,64 @@ public class AbsoluteAffinityService {
             }
         }
         return score;
+    }
+
+    private double averageHostConfidence(Collection<Users> participants) {
+        if (participants == null || participants.isEmpty()) {
+            return 0d;
+        }
+        return participants.stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(this::hostConfidence)
+                .filter(value -> Double.isFinite(value) && value > 0d)
+                .average()
+                .orElse(0d);
+    }
+
+    private double hostConfidence(Users user) {
+        Users.UserImpressionsSectionRecord host = user == null || user.getImpressions() == null
+                ? null
+                : user.getImpressions().host();
+        if (host == null) {
+            return 0d;
+        }
+        double score = Math.round(clamp(safeDouble(host.averageRating()), 0d, 10d) * 100d)
+                + Math.max(0, normalizeCount(host.peopleMet(), 0)) * 10d
+                + Math.max(0, normalizeCount(host.totalEvents(), 0)) * 15d
+                + Math.max(0, normalizeCount(host.repeatCount(), 0)) * 20d;
+        for (Users.UserPersonalityTraitRecord trait : host.personalityTraits() == null ? List.<Users.UserPersonalityTraitRecord>of() : host.personalityTraits()) {
+            if (trait != null) {
+                score += Math.max(0, normalizeCount(trait.evidenceCount(), 0)) * 5d;
+            }
+        }
+        return Math.max(0d, score);
+    }
+
+    private double freshnessScore(String primaryIso, String fallbackIso, String finalFallbackIso) {
+        Instant timestamp = parseInstant(primaryIso);
+        if (timestamp == null) {
+            timestamp = parseInstant(fallbackIso);
+        }
+        if (timestamp == null) {
+            timestamp = parseInstant(finalFallbackIso);
+        }
+        if (timestamp == null) {
+            return 0d;
+        }
+        long ageDays = Math.abs(Duration.between(Instant.now(), timestamp).toDays());
+        return Math.max(0d, 100d - Math.min(100d, ageDays));
+    }
+
+    private Instant parseInstant(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return null;
+        }
+        try {
+            return Instant.parse(text);
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
     }
 
     private long tokenScore(Collection<String> tokens) {

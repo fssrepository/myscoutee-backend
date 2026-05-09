@@ -206,11 +206,15 @@ public class AffinityMaintenanceService {
         Map<String, List<String>> acceptedMembersBySourceId = eventAcceptedMemberUserIdsBySourceId(eventList);
         List<ActivityEvent> changedEvents = new ArrayList<>();
         for (ActivityEvent event : eventList) {
+            List<Users> participants = eventAffinityParticipants(event, usersById, acceptedMembersBySourceId.get(normalizeId(event.getSourceId())));
             double nextAffinity = absoluteAffinityService.resolveEventAffinity(
                     event,
-                    eventAffinityParticipants(event, usersById, acceptedMembersBySourceId.get(normalizeId(event.getSourceId()))));
-            if (Math.abs(safeDouble(event.getAffinity()) - nextAffinity) > 0.000001d) {
+                    participants);
+            double nextBoost = absoluteAffinityService.resolveEventBoost(event, participants);
+            if (Math.abs(safeDouble(event.getAffinity()) - nextAffinity) > 0.000001d
+                    || Math.abs(safeDouble(event.getBoost()) - nextBoost) > 0.000001d) {
                 event.setAffinity(nextAffinity);
+                event.setBoost(nextBoost);
                 changedEvents.add(event);
             }
         }
@@ -230,8 +234,11 @@ public class AffinityMaintenanceService {
                 continue;
             }
             double nextAffinity = absoluteAffinityService.resolveAssetAffinity(asset, owner);
-            if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d) {
+            double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
+            if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
+                    || Math.abs(safeDouble(asset.getBoost()) - nextBoost) > 0.000001d) {
                 asset.setAffinity(nextAffinity);
+                asset.setBoost(nextBoost);
                 changedAssets.add(asset);
             }
         }
@@ -248,8 +255,11 @@ public class AffinityMaintenanceService {
             }
             Users owner = usersById.get(normalizeId(asset.getOwnerUserId()));
             double nextAffinity = absoluteAffinityService.resolveAssetAffinity(asset, owner);
-            if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d) {
+            double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
+            if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
+                    || Math.abs(safeDouble(asset.getBoost()) - nextBoost) > 0.000001d) {
                 asset.setAffinity(nextAffinity);
+                asset.setBoost(nextBoost);
                 changedAssets.add(asset);
             }
         }

@@ -26,6 +26,7 @@ public class AffinityConfig {
     private List<FieldRule> profileRules = new ArrayList<>();
     private List<FieldRule> impressionRules = new ArrayList<>();
     private AbsoluteAffinityMultipliers absolute = new AbsoluteAffinityMultipliers();
+    private BoostMultipliers boost = new BoostMultipliers();
 
     public static AffinityConfig defaults() {
         AffinityConfig config = new AffinityConfig();
@@ -91,20 +92,31 @@ public class AffinityConfig {
         AbsoluteEventAffinityMultipliers event = new AbsoluteEventAffinityMultipliers();
         event.setContentTokens(new MultiplierRule(89d));
         event.setParticipantAffinity(new MultiplierRule(1d));
-        event.setRating(new MultiplierRule(29d));
-        event.setAcceptedMembers(new MultiplierRule(19d));
-        event.setPendingMembers(new MultiplierRule(11d));
-        event.setCapacityTotal(new MultiplierRule(7d));
         absolute.setEvent(event);
 
         AbsoluteAssetAffinityMultipliers asset = new AbsoluteAssetAffinityMultipliers();
         asset.setContentTokens(new MultiplierRule(83d));
         asset.setOwnerAffinity(new MultiplierRule(1d));
-        asset.setCapacityTotal(new MultiplierRule(7d));
-        asset.setQuantity(new MultiplierRule(11d));
-        asset.setRequestCount(new MultiplierRule(13d));
         absolute.setAsset(asset);
         config.setAbsolute(absolute);
+
+        BoostMultipliers boost = new BoostMultipliers();
+        EventBoostMultipliers eventBoost = new EventBoostMultipliers();
+        eventBoost.setRating(new MultiplierRule(29d));
+        eventBoost.setAcceptedMembers(new MultiplierRule(19d));
+        eventBoost.setPendingMembers(new MultiplierRule(11d));
+        eventBoost.setCapacityAvailable(new MultiplierRule(7d));
+        eventBoost.setFreshness(new MultiplierRule(5d));
+        eventBoost.setHostConfidence(new MultiplierRule(0.25d));
+        boost.setEvent(eventBoost);
+        AssetBoostMultipliers assetBoost = new AssetBoostMultipliers();
+        assetBoost.setCapacityAvailable(new MultiplierRule(7d));
+        assetBoost.setQuantity(new MultiplierRule(11d));
+        assetBoost.setRequestCount(new MultiplierRule(13d));
+        assetBoost.setFreshness(new MultiplierRule(3d));
+        assetBoost.setOwnerConfidence(new MultiplierRule(0.25d));
+        boost.setAsset(assetBoost);
+        config.setBoost(boost);
         return config;
     }
 
@@ -194,6 +206,14 @@ public class AffinityConfig {
 
     public void setAbsolute(AbsoluteAffinityMultipliers absolute) {
         this.absolute = absolute;
+    }
+
+    public BoostMultipliers getBoost() {
+        return boost == null ? new BoostMultipliers() : boost;
+    }
+
+    public void setBoost(BoostMultipliers boost) {
+        this.boost = boost;
     }
 
     public static class RatingMultipliers {
@@ -464,10 +484,6 @@ public class AffinityConfig {
     public static class AbsoluteEventAffinityMultipliers {
         private MultiplierRule contentTokens = new MultiplierRule();
         private MultiplierRule participantAffinity = new MultiplierRule();
-        private MultiplierRule rating = new MultiplierRule();
-        private MultiplierRule acceptedMembers = new MultiplierRule();
-        private MultiplierRule pendingMembers = new MultiplierRule();
-        private MultiplierRule capacityTotal = new MultiplierRule();
 
         public MultiplierRule getContentTokens() {
             return contentTokens == null ? new MultiplierRule() : contentTokens;
@@ -484,6 +500,59 @@ public class AffinityConfig {
         public void setParticipantAffinity(MultiplierRule participantAffinity) {
             this.participantAffinity = participantAffinity;
         }
+
+    }
+
+    public static class AbsoluteAssetAffinityMultipliers {
+        private MultiplierRule contentTokens = new MultiplierRule();
+        private MultiplierRule ownerAffinity = new MultiplierRule();
+
+        public MultiplierRule getContentTokens() {
+            return contentTokens == null ? new MultiplierRule() : contentTokens;
+        }
+
+        public void setContentTokens(MultiplierRule contentTokens) {
+            this.contentTokens = contentTokens;
+        }
+
+        public MultiplierRule getOwnerAffinity() {
+            return ownerAffinity == null ? new MultiplierRule() : ownerAffinity;
+        }
+
+        public void setOwnerAffinity(MultiplierRule ownerAffinity) {
+            this.ownerAffinity = ownerAffinity;
+        }
+
+    }
+
+    public static class BoostMultipliers {
+        private EventBoostMultipliers event = new EventBoostMultipliers();
+        private AssetBoostMultipliers asset = new AssetBoostMultipliers();
+
+        public EventBoostMultipliers getEvent() {
+            return event == null ? new EventBoostMultipliers() : event;
+        }
+
+        public void setEvent(EventBoostMultipliers event) {
+            this.event = event;
+        }
+
+        public AssetBoostMultipliers getAsset() {
+            return asset == null ? new AssetBoostMultipliers() : asset;
+        }
+
+        public void setAsset(AssetBoostMultipliers asset) {
+            this.asset = asset;
+        }
+    }
+
+    public static class EventBoostMultipliers {
+        private MultiplierRule rating = new MultiplierRule();
+        private MultiplierRule acceptedMembers = new MultiplierRule();
+        private MultiplierRule pendingMembers = new MultiplierRule();
+        private MultiplierRule capacityAvailable = new MultiplierRule();
+        private MultiplierRule freshness = new MultiplierRule();
+        private MultiplierRule hostConfidence = new MultiplierRule();
 
         public MultiplierRule getRating() {
             return rating == null ? new MultiplierRule() : rating;
@@ -509,44 +578,44 @@ public class AffinityConfig {
             this.pendingMembers = pendingMembers;
         }
 
-        public MultiplierRule getCapacityTotal() {
-            return capacityTotal == null ? new MultiplierRule() : capacityTotal;
+        public MultiplierRule getCapacityAvailable() {
+            return capacityAvailable == null ? new MultiplierRule() : capacityAvailable;
         }
 
-        public void setCapacityTotal(MultiplierRule capacityTotal) {
-            this.capacityTotal = capacityTotal;
+        public void setCapacityAvailable(MultiplierRule capacityAvailable) {
+            this.capacityAvailable = capacityAvailable;
+        }
+
+        public MultiplierRule getFreshness() {
+            return freshness == null ? new MultiplierRule() : freshness;
+        }
+
+        public void setFreshness(MultiplierRule freshness) {
+            this.freshness = freshness;
+        }
+
+        public MultiplierRule getHostConfidence() {
+            return hostConfidence == null ? new MultiplierRule() : hostConfidence;
+        }
+
+        public void setHostConfidence(MultiplierRule hostConfidence) {
+            this.hostConfidence = hostConfidence;
         }
     }
 
-    public static class AbsoluteAssetAffinityMultipliers {
-        private MultiplierRule contentTokens = new MultiplierRule();
-        private MultiplierRule ownerAffinity = new MultiplierRule();
-        private MultiplierRule capacityTotal = new MultiplierRule();
+    public static class AssetBoostMultipliers {
+        private MultiplierRule capacityAvailable = new MultiplierRule();
         private MultiplierRule quantity = new MultiplierRule();
         private MultiplierRule requestCount = new MultiplierRule();
+        private MultiplierRule freshness = new MultiplierRule();
+        private MultiplierRule ownerConfidence = new MultiplierRule();
 
-        public MultiplierRule getContentTokens() {
-            return contentTokens == null ? new MultiplierRule() : contentTokens;
+        public MultiplierRule getCapacityAvailable() {
+            return capacityAvailable == null ? new MultiplierRule() : capacityAvailable;
         }
 
-        public void setContentTokens(MultiplierRule contentTokens) {
-            this.contentTokens = contentTokens;
-        }
-
-        public MultiplierRule getOwnerAffinity() {
-            return ownerAffinity == null ? new MultiplierRule() : ownerAffinity;
-        }
-
-        public void setOwnerAffinity(MultiplierRule ownerAffinity) {
-            this.ownerAffinity = ownerAffinity;
-        }
-
-        public MultiplierRule getCapacityTotal() {
-            return capacityTotal == null ? new MultiplierRule() : capacityTotal;
-        }
-
-        public void setCapacityTotal(MultiplierRule capacityTotal) {
-            this.capacityTotal = capacityTotal;
+        public void setCapacityAvailable(MultiplierRule capacityAvailable) {
+            this.capacityAvailable = capacityAvailable;
         }
 
         public MultiplierRule getQuantity() {
@@ -563,6 +632,22 @@ public class AffinityConfig {
 
         public void setRequestCount(MultiplierRule requestCount) {
             this.requestCount = requestCount;
+        }
+
+        public MultiplierRule getFreshness() {
+            return freshness == null ? new MultiplierRule() : freshness;
+        }
+
+        public void setFreshness(MultiplierRule freshness) {
+            this.freshness = freshness;
+        }
+
+        public MultiplierRule getOwnerConfidence() {
+            return ownerConfidence == null ? new MultiplierRule() : ownerConfidence;
+        }
+
+        public void setOwnerConfidence(MultiplierRule ownerConfidence) {
+            this.ownerConfidence = ownerConfidence;
         }
     }
 

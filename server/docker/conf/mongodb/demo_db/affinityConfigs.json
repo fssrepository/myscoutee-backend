@@ -179,7 +179,19 @@
         },
         "participantAffinity": {
           "multiplier": 1
+        }
+      },
+      "asset": {
+        "contentTokens": {
+          "multiplier": 83
         },
+        "ownerAffinity": {
+          "multiplier": 1
+        }
+      }
+    },
+    "boost": {
+      "event": {
         "rating": {
           "multiplier": 29
         },
@@ -189,18 +201,18 @@
         "pendingMembers": {
           "multiplier": 11
         },
-        "capacityTotal": {
+        "capacityAvailable": {
           "multiplier": 7
+        },
+        "freshness": {
+          "multiplier": 5
+        },
+        "hostConfidence": {
+          "multiplier": 0.25
         }
       },
       "asset": {
-        "contentTokens": {
-          "multiplier": 83
-        },
-        "ownerAffinity": {
-          "multiplier": 1
-        },
-        "capacityTotal": {
+        "capacityAvailable": {
           "multiplier": 7
         },
         "quantity": {
@@ -208,6 +220,12 @@
         },
         "requestCount": {
           "multiplier": 13
+        },
+        "freshness": {
+          "multiplier": 3
+        },
+        "ownerConfidence": {
+          "multiplier": 0.25
         }
       }
     }

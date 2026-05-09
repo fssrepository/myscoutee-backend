@@ -304,6 +304,7 @@ public class AssetsService {
         next.setUpdatedDate(Instant.now().toString());
         next.setUpdatedUser(ownerUserId);
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
     }
 
@@ -486,6 +487,7 @@ public class AssetsService {
         asset.setRequests(readLegacyRequests(legacy.get("requests")));
         asset.setVisibility(safeText(legacy.getString("visibility")));
         asset.setAffinity(resolveAssetAffinity(asset, ownerUserId));
+        asset.setBoost(resolveAssetBoost(asset, ownerUserId));
         String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
         String updatedDate = normalizeDateTime(legacy.getString("updatedAtIso"), createdDate);
         asset.setCreatedDate(createdDate);
@@ -555,6 +557,7 @@ public class AssetsService {
         }
         next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -584,6 +587,7 @@ public class AssetsService {
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
         clone.setAffinity(source.getAffinity());
+        clone.setBoost(source.getBoost());
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
@@ -650,7 +654,7 @@ public class AssetsService {
                 event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
                 safeText(event.getSubEventsDisplayMode()),
                 safeDouble(event.getRating()),
-                safeDouble(event.getRelevance()),
+                safeDouble(event.getBoost()),
                 safeDouble(event.getAffinity()));
     }
 
@@ -731,17 +735,18 @@ public class AssetsService {
 
     private Comparator<Asset> visibleAssetComparator(double viewerAffinity) {
         return Comparator
-                .comparingDouble((Asset asset) -> assetAffinitySortValue(asset, viewerAffinity))
+                .comparingDouble((Asset asset) -> -assetExploreScore(asset, viewerAffinity))
                 .thenComparing(asset -> safeText(asset.getTitle()))
                 .thenComparing(asset -> normalizeId(asset.getAssetId()));
     }
 
-    private double assetAffinitySortValue(Asset asset, double viewerAffinity) {
+    private double assetExploreScore(Asset asset, double viewerAffinity) {
         double assetAffinity = safeDouble(asset == null ? null : asset.getAffinity());
+        double boost = safeDouble(asset == null ? null : asset.getBoost());
         if (viewerAffinity > 0d && assetAffinity > 0d) {
-            return Math.abs(viewerAffinity - assetAffinity);
+            return boost - (Math.abs(viewerAffinity - assetAffinity) / 10_000d);
         }
-        return 1_000_000_000d - assetAffinity;
+        return boost + (assetAffinity / 10_000d);
     }
 
     private double resolveAssetAffinity(Asset asset, String ownerUserId) {
@@ -751,6 +756,16 @@ public class AssetsService {
         }
         return usersRepository.findByUserId(normalizedOwnerUserId)
                 .map(owner -> absoluteAffinityService.resolveAssetAffinity(asset, owner))
+                .orElse(0d);
+    }
+
+    private double resolveAssetBoost(Asset asset, String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        if (!StringUtils.hasText(normalizedOwnerUserId)) {
+            return 0d;
+        }
+        return usersRepository.findByUserId(normalizedOwnerUserId)
+                .map(owner -> absoluteAffinityService.resolveAssetBoost(asset, owner))
                 .orElse(0d);
     }
 

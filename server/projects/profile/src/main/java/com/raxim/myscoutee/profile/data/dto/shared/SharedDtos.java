@@ -183,7 +183,6 @@ public final class SharedDtos {
             String metAtIso,
             String actionAtIso,
             String metWhere,
-            Double relevance,
             String avatarUrl,
             UserDto profile) {
     }

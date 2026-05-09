@@ -119,7 +119,7 @@ class ActivitiesEventsServiceTest {
         event.setVisibility("Public");
         event.setCapacityTotal(10);
         event.setRating(0d);
-        event.setRelevance(0d);
+        event.setBoost(0d);
         event.setAffinity(affinity);
         return event;
     }
