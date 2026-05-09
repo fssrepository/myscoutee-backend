@@ -91,8 +91,6 @@ public class ActivityEvent {
     private String eventType;
     private Integer acceptedMembers;
     private Integer pendingMembers;
-    private List<String> acceptedMemberUserIds;
-    private List<String> pendingMemberUserIds;
     private List<String> topics = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String subEventsDisplayMode;
@@ -249,21 +247,6 @@ public class ActivityEvent {
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }
     public void setPendingMembers(Integer pendingMembers) { this.pendingMembers = pendingMembers; }
-    public List<String> getAcceptedMemberUserIds() {
-        return acceptedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(acceptedMemberUserIds);
-    }
-    public void setAcceptedMemberUserIds(List<String> acceptedMemberUserIds) {
-        this.acceptedMemberUserIds = acceptedMemberUserIds == null ? null : new ArrayList<>(acceptedMemberUserIds);
-    }
-    public List<String> getPendingMemberUserIds() {
-        return pendingMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingMemberUserIds);
-    }
-    public void setPendingMemberUserIds(List<String> pendingMemberUserIds) {
-        this.pendingMemberUserIds = pendingMemberUserIds == null ? null : new ArrayList<>(pendingMemberUserIds);
-    }
-    public boolean hasEmbeddedMemberUserIds() {
-        return acceptedMemberUserIds != null || pendingMemberUserIds != null;
-    }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }

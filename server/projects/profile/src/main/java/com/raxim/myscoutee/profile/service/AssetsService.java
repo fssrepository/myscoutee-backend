@@ -646,8 +646,6 @@ public class AssetsService {
                 List.of(),
                 memberSnapshot.acceptedUserIds().size(),
                 memberSnapshot.pendingUserIds().size(),
-                memberSnapshot.acceptedUserIds(),
-                memberSnapshot.pendingUserIds(),
                 normalizeStrings(event.getTopics()),
                 event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
                 safeText(event.getSubEventsDisplayMode()),

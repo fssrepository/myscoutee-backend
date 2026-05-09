@@ -25,7 +25,6 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMembersSummaryDto;
@@ -471,108 +470,6 @@ public class ActivitiesMembersService {
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
         }
-    }
-
-    public void sync(ActivitiesEventSyncPayloadDto request) {
-        if (request == null) {
-            return;
-        }
-        String ownerId = normalizeId(request.id());
-        if (!StringUtils.hasText(ownerId)) {
-            return;
-        }
-
-        String ownerType = OWNER_TYPE_EVENT;
-        String creatorUserId = resolveActorUserId(request.creatorUserId());
-        String nowIso = Instant.now().toString();
-        List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
-        Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
-        for (ActivityMember member : existing) {
-            if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
-                existingByUserId.put(normalizeId(member.getUserId()), member);
-            }
-        }
-
-        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>(normalizeUserIds(request.acceptedMemberUserIds()));
-        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>(normalizeUserIds(request.pendingMemberUserIds()));
-        if (StringUtils.hasText(creatorUserId)) {
-            acceptedUserIds.add(creatorUserId);
-            pendingUserIds.remove(creatorUserId);
-        }
-
-        List<ActivityMember> nextDocuments = new ArrayList<>();
-        for (String userId : acceptedUserIds) {
-            ActivityMember current = existingByUserId.get(userId);
-            ActivityMember next = current == null ? new ActivityMember() : cloneMember(current);
-            next.setId(current == null ? new ObjectId().toHexString() : current.getId());
-            next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
-            next.setOwnerType(ownerType);
-            next.setOwnerId(ownerId);
-            next.setUserId(userId);
-            next.setRole(userId.equals(creatorUserId) ? "Admin" : normalizeRole(current == null ? null : current.getRole(), userId, ownerType, ownerId));
-            next.setStatus("accepted");
-            next.setPendingSource(null);
-            next.setRequestKind(null);
-            next.setInvitedByUserId(current == null ? null : current.getInvitedByUserId());
-            String actionAtIso = current != null ? normalizeDateTime(current.getActionAtIso(), nowIso) : normalizeDateTime(request.startAt(), nowIso);
-            next.setActionAtIso(actionAtIso);
-            next.setMetAtIso(current != null ? normalizeDateTime(current.getMetAtIso(), actionAtIso) : actionAtIso);
-            next.setMetWhere(current == null ? safeText(request.location()) : safeText(current.getMetWhere()));
-            next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
-            next.setCreatedUser(current == null ? resolveCreatedUser(next, creatorUserId) : safeText(current.getCreatedUser()));
-            next.setUpdatedDate(nowIso);
-            next.setUpdatedUser(resolveUpdatedUser(creatorUserId, next, current));
-            nextDocuments.add(next);
-        }
-
-        for (String userId : pendingUserIds) {
-            ActivityMember current = existingByUserId.get(userId);
-            ActivityMember next = current == null ? new ActivityMember() : cloneMember(current);
-            next.setId(current == null ? new ObjectId().toHexString() : current.getId());
-            next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
-            next.setOwnerType(ownerType);
-            next.setOwnerId(ownerId);
-            next.setUserId(userId);
-            next.setRole(normalizeRole(current == null ? null : current.getRole(), userId, ownerType, ownerId));
-            next.setStatus("pending");
-            next.setPendingSource(resolvePendingSource(current == null ? null : current.getPendingSource(), "pending"));
-            next.setRequestKind(resolveRequestKind(current == null ? null : current.getRequestKind(), "pending", next.getPendingSource()));
-            String invitedByUserId = current != null && StringUtils.hasText(current.getInvitedByUserId())
-                    ? current.getInvitedByUserId().trim()
-                    : safeText(creatorUserId);
-            next.setInvitedByUserId(invitedByUserId);
-            String requestedStartAt = request == null ? null : request.startAt();
-            String requestedLocation = request == null ? null : request.location();
-            String actionAtIso = current != null ? normalizeDateTime(current.getActionAtIso(), nowIso) : normalizeDateTime(requestedStartAt, nowIso);
-            next.setActionAtIso(actionAtIso);
-            next.setMetAtIso(current != null ? normalizeDateTime(current.getMetAtIso(), actionAtIso) : actionAtIso);
-            next.setMetWhere(current == null ? safeText(requestedLocation) : safeText(current.getMetWhere()));
-            next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
-            next.setCreatedUser(current == null ? resolveCreatedUser(next, creatorUserId) : safeText(current.getCreatedUser()));
-            next.setUpdatedDate(nowIso);
-            next.setUpdatedUser(resolveUpdatedUser(creatorUserId, next, current));
-            nextDocuments.add(next);
-        }
-
-        Set<String> retainedUserIds = nextDocuments.stream()
-                .map(ActivityMember::getUserId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        List<ActivityMember> removedMembers = existing.stream()
-                .filter(Objects::nonNull)
-                .filter(member -> !retainedUserIds.contains(normalizeId(member.getUserId())))
-                .map(member -> toDeletedMember(member, creatorUserId, nowIso))
-                .toList();
-        List<ActivityMember> membersToSave = new ArrayList<>(nextDocuments);
-        membersToSave.addAll(removedMembers);
-        if (!membersToSave.isEmpty()) {
-            activityMembersRepository.saveAll(membersToSave);
-        }
-        clearHandledInvitationRecords(ownerId, membersToSave);
-        processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
-        eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
-        refreshEmbeddedEventMembers(ownerId);
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
@@ -1246,8 +1143,6 @@ public class ActivitiesMembersService {
         String updatedDate = normalizeDateTime(record.getUpdatedDate(), createdDate);
         LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
         LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
-        acceptedUserIds.addAll(normalizeUserIds(record.getAcceptedMemberUserIds()));
-        pendingUserIds.addAll(normalizeUserIds(record.getPendingMemberUserIds()));
         if (StringUtils.hasText(creatorUserId)) {
             acceptedUserIds.add(creatorUserId);
             pendingUserIds.remove(creatorUserId);
@@ -1827,8 +1722,6 @@ public class ActivitiesMembersService {
         }
 
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
-        List<String> acceptedMemberUserIds = snapshot == null ? List.of() : snapshot.acceptedMemberUserIds();
-        List<String> pendingMemberUserIds = snapshot == null ? List.of() : snapshot.pendingMemberUserIds();
         int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
         int pendingMembers = snapshot == null ? 0 : snapshot.pendingMembers();
 
@@ -1837,8 +1730,6 @@ public class ActivitiesMembersService {
             if (document == null) {
                 continue;
             }
-            document.setAcceptedMemberUserIds(acceptedMemberUserIds);
-            document.setPendingMemberUserIds(pendingMemberUserIds);
             document.setAcceptedMembers(acceptedMembers);
             document.setPendingMembers(pendingMembers);
             document.setCapacityTotal(Math.max(

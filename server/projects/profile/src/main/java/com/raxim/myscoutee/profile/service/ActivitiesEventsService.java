@@ -640,7 +640,6 @@ public class ActivitiesEventsService {
             return;
         }
 
-        activitiesMembersService.sync(request);
         ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
 
@@ -1126,11 +1125,15 @@ public class ActivitiesEventsService {
         }
         Integer distanceMetersExact = resolveDistanceMetersExact(viewer == null ? null : viewer.locationCoordinates(), record);
         ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot = resolveMembersSnapshot(record);
-        List<String> acceptedMemberUserIds = resolveAcceptedMemberUserIds(record);
-        List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record);
         int capacityTotal = membersSnapshot == null || membersSnapshot.capacityTotal() == null
                 ? normalizeCount(record.getCapacityTotal())
                 : Math.max(0, membersSnapshot.capacityTotal());
+        int acceptedMembers = membersSnapshot == null
+                ? Math.max(normalizeCount(record.getAcceptedMembers()), fallbackAcceptedMemberUserIds(record).size())
+                : membersSnapshot.acceptedMembers();
+        int pendingMembers = membersSnapshot == null
+                ? normalizeCount(record.getPendingMembers())
+                : membersSnapshot.pendingMembers();
         List<EventSlotOccurrenceDto> upcomingSlots = resolveUpcomingSlotOccurrences(record);
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
@@ -1168,7 +1171,7 @@ public class ActivitiesEventsService {
                 cloneLocation(record.getLocationCoordinates()),
                 nullableCount(record.getCapacityMin()),
                 nullableCount(record.getCapacityMax()),
-                Math.max(acceptedMemberUserIds.size(), capacityTotal),
+                Math.max(acceptedMembers, capacityTotal),
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
@@ -1181,10 +1184,8 @@ public class ActivitiesEventsService {
                 isGeneratedSlotRecord(record) ? "slot" : "main",
                 upcomingSlots.isEmpty() ? null : upcomingSlots.get(0),
                 upcomingSlots,
-                acceptedMemberUserIds.size(),
-                pendingMemberUserIds.size(),
-                acceptedMemberUserIds,
-                pendingMemberUserIds,
+                acceptedMembers,
+                pendingMembers,
                 normalizeStrings(record.getTopics()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getSubEventsDisplayMode()),
@@ -1439,8 +1440,15 @@ public class ActivitiesEventsService {
         boolean slotEvent = generated
                 || "slot".equalsIgnoreCase(requestedEventType)
                 || StringUtils.hasText(parentEventId);
-        List<String> acceptedMemberUserIds = resolveSyncedAcceptedMemberUserIds(request, existing, ownerUserId, syncedMembersSnapshot);
-        List<String> pendingMemberUserIds = resolveSyncedPendingMemberUserIds(request, existing, acceptedMemberUserIds, syncedMembersSnapshot);
+        List<String> acceptedMemberUserIds = syncedMembersSnapshot == null
+                ? fallbackAcceptedMemberUserIds(request, existing, ownerUserId)
+                : new ArrayList<>(syncedMembersSnapshot.acceptedMemberUserIds());
+        int acceptedMembers = syncedMembersSnapshot == null
+                ? Math.max(normalizeCount(request.acceptedMembers()), acceptedMemberUserIds.size())
+                : syncedMembersSnapshot.acceptedMembers();
+        int pendingMembers = syncedMembersSnapshot == null
+                ? normalizeCount(request.pendingMembers())
+                : syncedMembersSnapshot.pendingMembers();
 
         document.setId(resolveExistingId(ownerUserId, targetType, sourceId, existing));
         document.setSyncKey(resolveExistingSyncKey(ownerUserId, targetType, sourceId, existing == null ? request.syncKey() : existing.getSyncKey()));
@@ -1483,7 +1491,7 @@ public class ActivitiesEventsService {
         document.setLocationGeo(toGeoPoint(document.getLocationCoordinates()));
         document.setCapacityMin(nullableCount(request.capacityMin()));
         document.setCapacityMax(nullableCount(request.capacityMax()));
-        document.setCapacityTotal(resolveCapacityTotal(request, existing, acceptedMemberUserIds, syncedMembersSnapshot));
+        document.setCapacityTotal(resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
         document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
@@ -1494,10 +1502,8 @@ public class ActivitiesEventsService {
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
         document.setEventType(slotEvent ? "slot" : "main");
-        document.setAcceptedMemberUserIds(acceptedMemberUserIds);
-        document.setPendingMemberUserIds(pendingMemberUserIds);
-        document.setAcceptedMembers(resolveAcceptedMembers(request, acceptedMemberUserIds, syncedMembersSnapshot));
-        document.setPendingMembers(resolvePendingMembers(request, pendingMemberUserIds, syncedMembersSnapshot));
+        document.setAcceptedMembers(acceptedMembers);
+        document.setPendingMembers(pendingMembers);
         document.setTopics(normalizeStrings(request.topics()));
         document.setSubEvents(cloneSubEvents(request.subEvents()));
         document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
@@ -1539,18 +1545,11 @@ public class ActivitiesEventsService {
         return new ArrayList<>(participantsByUserId.values());
     }
 
-    private List<String> resolveSyncedAcceptedMemberUserIds(
+    private List<String> fallbackAcceptedMemberUserIds(
             ActivitiesEventSyncPayloadDto request,
             ActivityEvent existing,
-            String ownerUserId,
-            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        if (syncedMembersSnapshot != null) {
-            return new ArrayList<>(syncedMembersSnapshot.acceptedMemberUserIds());
-        }
-        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>(normalizeIds(request.acceptedMemberUserIds()));
-        if (acceptedMemberUserIds.isEmpty() && existing != null && existing.hasEmbeddedMemberUserIds()) {
-            acceptedMemberUserIds.addAll(normalizeIds(existing.getAcceptedMemberUserIds()));
-        }
+            String ownerUserId) {
+        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>();
         String creatorUserId = normalizeId(request.creatorUserId());
         if (!StringUtils.hasText(creatorUserId) && existing != null) {
             creatorUserId = normalizeId(existing.getCreatorUserId());
@@ -1564,48 +1563,11 @@ public class ActivitiesEventsService {
         return new ArrayList<>(acceptedMemberUserIds);
     }
 
-    private List<String> resolveSyncedPendingMemberUserIds(
-            ActivitiesEventSyncPayloadDto request,
-            ActivityEvent existing,
-            List<String> acceptedMemberUserIds,
-            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        if (syncedMembersSnapshot != null) {
-            return new ArrayList<>(syncedMembersSnapshot.pendingMemberUserIds());
-        }
-        LinkedHashSet<String> pendingMemberUserIds = new LinkedHashSet<>(normalizeIds(request.pendingMemberUserIds()));
-        if (pendingMemberUserIds.isEmpty() && existing != null && existing.hasEmbeddedMemberUserIds()) {
-            pendingMemberUserIds.addAll(normalizeIds(existing.getPendingMemberUserIds()));
-        }
-        pendingMemberUserIds.removeAll(new LinkedHashSet<>(acceptedMemberUserIds));
-        return new ArrayList<>(pendingMemberUserIds);
-    }
-
-    private int resolveAcceptedMembers(
-            ActivitiesEventSyncPayloadDto request,
-            List<String> acceptedMemberUserIds,
-            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        if (syncedMembersSnapshot != null) {
-            return syncedMembersSnapshot.acceptedMembers();
-        }
-        return Math.max(normalizeCount(request.acceptedMembers()), acceptedMemberUserIds.size());
-    }
-
-    private int resolvePendingMembers(
-            ActivitiesEventSyncPayloadDto request,
-            List<String> pendingMemberUserIds,
-            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        if (syncedMembersSnapshot != null) {
-            return syncedMembersSnapshot.pendingMembers();
-        }
-        return Math.max(normalizeCount(request.pendingMembers()), pendingMemberUserIds.size());
-    }
-
     private int resolveCapacityTotal(
             ActivitiesEventSyncPayloadDto request,
             ActivityEvent existing,
-            List<String> acceptedMemberUserIds,
+            int acceptedMembers,
             ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
-        int acceptedMembers = resolveAcceptedMembers(request, acceptedMemberUserIds, syncedMembersSnapshot);
         int requestedCapacity = Math.max(normalizeCount(request.capacityTotal()), Math.max(nullableCount(request.capacityMax()) == null ? 0 : nullableCount(request.capacityMax()), acceptedMembers));
         if (requestedCapacity > 0) {
             return requestedCapacity;
@@ -1880,9 +1842,6 @@ public class ActivitiesEventsService {
         if (snapshot != null) {
             return new ArrayList<>(snapshot.acceptedMemberUserIds());
         }
-        if (record != null && record.hasEmbeddedMemberUserIds()) {
-            return new ArrayList<>(normalizeIds(record.getAcceptedMemberUserIds()));
-        }
         return fallbackAcceptedMemberUserIds(record);
     }
 
@@ -1890,9 +1849,6 @@ public class ActivitiesEventsService {
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = resolveMembersSnapshot(record);
         if (snapshot != null) {
             return new ArrayList<>(snapshot.pendingMemberUserIds());
-        }
-        if (record != null && record.hasEmbeddedMemberUserIds()) {
-            return new ArrayList<>(normalizeIds(record.getPendingMemberUserIds()));
         }
         return List.of();
     }
@@ -1965,8 +1921,6 @@ public class ActivitiesEventsService {
         ActivityEvent clone = new ActivityEvent();
         BeanUtils.copyProperties(source, clone);
         clone.setAdmins(new ArrayList<>(normalizeIds(source.getAdmins())));
-        clone.setAcceptedMemberUserIds(source.hasEmbeddedMemberUserIds() ? source.getAcceptedMemberUserIds() : null);
-        clone.setPendingMemberUserIds(source.hasEmbeddedMemberUserIds() ? source.getPendingMemberUserIds() : null);
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
@@ -2430,8 +2384,6 @@ public class ActivitiesEventsService {
         next.setEventType("slot");
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
-        next.setAcceptedMemberUserIds(existing == null ? List.of() : existing.getAcceptedMemberUserIds());
-        next.setPendingMemberUserIds(existing == null ? List.of() : existing.getPendingMemberUserIds());
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());

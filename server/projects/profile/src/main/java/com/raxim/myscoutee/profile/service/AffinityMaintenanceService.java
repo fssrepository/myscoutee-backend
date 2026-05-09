@@ -6,23 +6,29 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AffinityMaintenanceService {
+    private static final String OWNER_TYPE_EVENT = "event";
+    private static final String STATUS_ACCEPTED = "accepted";
     private final UsersRepository usersRepository;
     private final ActivityEventsRepository activityEventsRepository;
+    private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
     private final UserRatesRepository userRatesRepository;
     private final AbsoluteAffinityService absoluteAffinityService;
@@ -32,6 +38,7 @@ public class AffinityMaintenanceService {
     public AffinityMaintenanceService(
             UsersRepository usersRepository,
             ActivityEventsRepository activityEventsRepository,
+            ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
             UserRatesRepository userRatesRepository,
             AbsoluteAffinityService absoluteAffinityService,
@@ -39,6 +46,7 @@ public class AffinityMaintenanceService {
             UserAffinityEdgeService userAffinityEdgeService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
         this.userRatesRepository = userRatesRepository;
         this.absoluteAffinityService = absoluteAffinityService;
@@ -134,8 +142,8 @@ public class AffinityMaintenanceService {
             if (StringUtils.hasText(creatorUserId)) {
                 participantUserIds.add(creatorUserId);
             }
-            participantUserIds.addAll(normalizeIds(event == null ? null : event.getAcceptedMemberUserIds()));
         }
+        participantUserIds.addAll(acceptedEventMemberUserIds(normalizedSourceId));
         Map<String, Users> usersById = new LinkedHashMap<>();
         List<Users> participants = usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds));
         for (Users user : participants == null ? List.<Users>of() : participants) {
@@ -155,7 +163,10 @@ public class AffinityMaintenanceService {
 
         LinkedHashMap<String, ActivityEvent> affectedEventsByDocumentId = new LinkedHashMap<>();
         addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByCreatorUserId(changedUserId));
-        addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByAcceptedMemberUserIdsContaining(changedUserId));
+        Set<String> memberEventSourceIds = acceptedEventSourceIdsForUser(changedUserId);
+        if (!memberEventSourceIds.isEmpty()) {
+            addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findBySourceIdIn(memberEventSourceIds));
+        }
         if (affectedEventsByDocumentId.isEmpty()) {
             return;
         }
@@ -167,8 +178,10 @@ public class AffinityMaintenanceService {
             if (StringUtils.hasText(creatorUserId)) {
                 participantUserIds.add(creatorUserId);
             }
-            participantUserIds.addAll(normalizeIds(event == null ? null : event.getAcceptedMemberUserIds()));
         }
+        participantUserIds.addAll(eventAcceptedMemberUserIdsBySourceId(affectedEventsByDocumentId.values()).values().stream()
+                .flatMap(Collection::stream)
+                .toList());
 
         Map<String, Users> usersById = new LinkedHashMap<>();
         usersById.put(changedUserId, changedUser);
@@ -187,12 +200,15 @@ public class AffinityMaintenanceService {
     }
 
     private void saveChangedEvents(Collection<ActivityEvent> events, Map<String, Users> usersById) {
+        List<ActivityEvent> eventList = events == null
+                ? List.of()
+                : events.stream().filter(event -> event != null).toList();
+        Map<String, List<String>> acceptedMembersBySourceId = eventAcceptedMemberUserIdsBySourceId(eventList);
         List<ActivityEvent> changedEvents = new ArrayList<>();
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
-            if (event == null) {
-                continue;
-            }
-            double nextAffinity = absoluteAffinityService.resolveEventAffinity(event, eventAffinityParticipants(event, usersById));
+        for (ActivityEvent event : eventList) {
+            double nextAffinity = absoluteAffinityService.resolveEventAffinity(
+                    event,
+                    eventAffinityParticipants(event, usersById, acceptedMembersBySourceId.get(normalizeId(event.getSourceId()))));
             if (Math.abs(safeDouble(event.getAffinity()) - nextAffinity) > 0.000001d) {
                 event.setAffinity(nextAffinity);
                 changedEvents.add(event);
@@ -251,19 +267,75 @@ public class AffinityMaintenanceService {
         }
     }
 
-    private List<Users> eventAffinityParticipants(ActivityEvent event, Map<String, Users> usersById) {
+    private List<Users> eventAffinityParticipants(ActivityEvent event, Map<String, Users> usersById, List<String> acceptedMemberUserIds) {
         LinkedHashMap<String, Users> participantsById = new LinkedHashMap<>();
         String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
         if (StringUtils.hasText(creatorUserId) && usersById.containsKey(creatorUserId)) {
             participantsById.put(creatorUserId, usersById.get(creatorUserId));
         }
-        for (String userId : normalizeIds(event == null ? null : event.getAcceptedMemberUserIds())) {
+        for (String userId : normalizeIds(acceptedMemberUserIds)) {
             Users user = usersById.get(userId);
             if (user != null) {
                 participantsById.put(userId, user);
             }
         }
         return new ArrayList<>(participantsById.values());
+    }
+
+    private Set<String> acceptedEventSourceIdsForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeMemberStatus(member == null ? null : member.getStatus())))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
+    private List<String> acceptedEventMemberUserIds(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return List.of();
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, normalizedSourceId).stream()
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeMemberStatus(member == null ? null : member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    private Map<String, List<String>> eventAcceptedMemberUserIdsBySourceId(Collection<ActivityEvent> events) {
+        LinkedHashSet<String> sourceIds = new LinkedHashSet<>();
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                sourceIds.add(sourceId);
+            }
+        }
+        if (sourceIds.isEmpty()) {
+            return Map.of();
+        }
+        LinkedHashMap<String, LinkedHashSet<String>> membersBySourceId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+            if (!STATUS_ACCEPTED.equals(normalizeMemberStatus(member == null ? null : member.getStatus()))) {
+                continue;
+            }
+            String sourceId = normalizeId(member.getOwnerId());
+            String userId = normalizeId(member.getUserId());
+            if (StringUtils.hasText(sourceId) && StringUtils.hasText(userId)) {
+                membersBySourceId.computeIfAbsent(sourceId, ignored -> new LinkedHashSet<>()).add(userId);
+            }
+        }
+        LinkedHashMap<String, List<String>> result = new LinkedHashMap<>();
+        for (Map.Entry<String, LinkedHashSet<String>> entry : membersBySourceId.entrySet()) {
+            result.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
+        return result;
     }
 
     private void refreshRateAffinitiesForUser(Users changedUser) {
@@ -328,6 +400,10 @@ public class AffinityMaintenanceService {
     }
 
     private String normalizeId(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String normalizeMemberStatus(String value) {
         return value == null ? "" : value.trim();
     }
 

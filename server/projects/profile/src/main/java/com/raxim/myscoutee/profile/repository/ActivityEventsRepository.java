@@ -24,8 +24,6 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
 
     List<ActivityEvent> findByCreatorUserId(String creatorUserId);
 
-    List<ActivityEvent> findByAcceptedMemberUserIdsContaining(String userId);
-
     @Query("{ 'type': ?0, 'status': 'active', 'generated': { $ne: true }, 'published': { $ne: false }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findCanonicalExploreCandidates(String type);
 
