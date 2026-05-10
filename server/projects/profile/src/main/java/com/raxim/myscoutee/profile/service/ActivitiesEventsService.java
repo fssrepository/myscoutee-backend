@@ -686,19 +686,19 @@ public class ActivitiesEventsService {
         return preferred == null ? null : preferred.getStartAtIso();
     }
 
-    public void sync(ActivitiesEventSyncPayloadDto request) {
+    public EventRecordDto sync(ActivitiesEventSyncPayloadDto request) {
         if (request == null) {
-            return;
+            return null;
         }
         String sourceId = normalizeId(request.id());
         if (!StringUtils.hasText(sourceId)) {
-            return;
+            return null;
         }
 
         ViewerContext actor = resolveViewer(request.creatorUserId());
         String actorUserId = actor == null ? normalizeId(request.creatorUserId()) : actor.userId();
         if (!StringUtils.hasText(actorUserId)) {
-            return;
+            return null;
         }
 
         ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot =
@@ -706,7 +706,7 @@ public class ActivitiesEventsService {
 
         String targetType = normalizeTargetType(request.target());
         if (!StringUtils.hasText(targetType)) {
-            return;
+            return null;
         }
 
         Users creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
@@ -743,6 +743,7 @@ public class ActivitiesEventsService {
                     bookingStartAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
+        return toEventRecordDto(baseRecord, actor);
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {

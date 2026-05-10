@@ -19,6 +19,11 @@ status-code migration note: use compact persisted/network status codes where pos
 
 fuggoben levo esemenynel a chat le van tiltva???
 reload page - activity menubar stucks
+affinity config (multiplier)+ telemetry menu
+asset take over - multi manager case also
+
+firebase worker with time window not to call the notification several times
+and when anything changes admin or members are needed to be notified
 
 Commands
 --------

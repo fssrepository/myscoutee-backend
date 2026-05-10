@@ -132,7 +132,7 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/sync")
-    public void sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
-        activitiesEventsService.sync(request);
+    public EventRecordDto sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
+        return activitiesEventsService.sync(request);
     }
 }
