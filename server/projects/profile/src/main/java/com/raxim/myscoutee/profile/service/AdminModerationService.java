@@ -54,18 +54,21 @@ public class AdminModerationService {
     private final UserFeedbackSubmissionsRepository feedbackRepository;
     private final UsersRepository usersRepository;
     private final ActivityChatsRepository chatsRepository;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public AdminModerationService(
             ConfigProperties configProperties,
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
             UsersRepository usersRepository,
-            ActivityChatsRepository chatsRepository) {
+            ActivityChatsRepository chatsRepository,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
         this.usersRepository = usersRepository;
         this.chatsRepository = chatsRepository;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
@@ -121,6 +124,7 @@ public class AdminModerationService {
             user.setPreviousProfileStatus(StringUtils.hasText(user.getProfileStatus()) ? user.getProfileStatus() : "public");
             user.setProfileStatus("blocked");
             usersRepository.save(user);
+            affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
         }
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
@@ -137,6 +141,7 @@ public class AdminModerationService {
         user.setProfileStatus(StringUtils.hasText(previous) && !"blocked".equals(previous) ? previous : "public");
         user.setPreviousProfileStatus(null);
         usersRepository.save(user);
+        affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
         return dashboard(admin.id());
     }
 

@@ -64,6 +64,11 @@ public class AssetsController {
         assetsService.delete(request);
     }
 
+    @PostMapping("/take-over")
+    public void takeOver(@RequestBody AssetDeleteRequestDto request) {
+        assetsService.takeOver(request);
+    }
+
     @PostMapping("/refresh-from-source")
     public AssetSourceRefreshResponseDto refreshFromSource(@RequestBody AssetSourceRefreshRequestDto request) {
         return assetsService.refreshFromSource(request);

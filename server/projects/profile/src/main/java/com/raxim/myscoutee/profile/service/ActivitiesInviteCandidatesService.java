@@ -7,7 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -59,39 +58,43 @@ public class ActivitiesInviteCandidatesService {
             blockedUserIds.addAll(snapshot.pendingMemberUserIds());
         }
 
-        Map<String, Users> usersById = usersRepository.findAll().stream()
-                .filter(Objects::nonNull)
-                .filter(user -> StringUtils.hasText(normalizeId(user.getId())))
-                .collect(LinkedHashMap::new, (map, user) -> map.put(normalizeId(user.getId()), user), Map::putAll);
-
         Map<String, CandidateSignal> signalsByUserId = new LinkedHashMap<>();
-        for (UserRate rate : userRatesRepository.findByOwnerUserId(activeUserId)) {
-            for (String candidateUserId : counterpartUserIds(rate, activeUserId)) {
+        for (UserRate rate : userRatesRepository.findRelevantByUserIds(List.of(activeUserId))) {
+            if (!isEligibleSingleMetRate(rate, activeUserId)) {
+                continue;
+            }
+            CandidateSignal signal = toSignal(rate);
+            if (signal == null) {
+                continue;
+            }
+            for (String candidateUserId : singleMetCounterpartUserIds(rate, activeUserId)) {
                 if (blockedUserIds.contains(candidateUserId)) {
                     continue;
                 }
-                Users candidate = usersById.get(candidateUserId);
-                if (candidate == null) {
-                    continue;
-                }
-                CandidateSignal signal = toSignal(rate, candidate);
                 CandidateSignal current = signalsByUserId.get(candidateUserId);
                 if (current == null || shouldReplace(current, signal)) {
                     signalsByUserId.put(candidateUserId, signal);
                 }
             }
         }
+        if (signalsByUserId.isEmpty()) {
+            return List.of();
+        }
 
-        Comparator<ActivityMemberEntryDto> comparator = "relevant".equals(safeText(request.sort()))
-                ? Comparator.comparing(ActivityMemberEntryDto::relevance, Comparator.nullsLast(Comparator.reverseOrder()))
-                        .thenComparing(entry -> toSortableDate(entry.metAtIso()), Comparator.reverseOrder())
-                : Comparator.comparing((ActivityMemberEntryDto entry) -> toSortableDate(entry.metAtIso()), Comparator.reverseOrder())
-                        .thenComparing(entry -> entry.relevance() == null ? 0d : entry.relevance(), Comparator.reverseOrder());
+        Map<String, Users> usersById = usersRepository.findByUserIdIn(signalsByUserId.keySet()).stream()
+                .filter(user -> user != null && StringUtils.hasText(normalizeId(user.getId())))
+                .filter(homeUserProfileService::isActivityRateVisibleUser)
+                .collect(LinkedHashMap::new, (map, user) -> map.put(normalizeId(user.getId()), user), Map::putAll);
 
+        Comparator<Map.Entry<String, CandidateSignal>> comparator = "relevant".equals(safeText(request.sort()))
+                ? Comparator.<Map.Entry<String, CandidateSignal>>comparingDouble(entry -> safeDouble(entry.getValue().userRateAffinity())).reversed()
+                        .thenComparing(entry -> toSortableDate(entry.getValue().metAtIso()), Comparator.reverseOrder())
+                : Comparator.<Map.Entry<String, CandidateSignal>>comparingLong(entry -> toSortableDate(entry.getValue().metAtIso())).reversed()
+                        .thenComparing(entry -> safeDouble(entry.getValue().userRateAffinity()), Comparator.reverseOrder());
         return signalsByUserId.entrySet().stream()
-                .map(entry -> toEntry(entry.getKey(), usersById.get(entry.getKey()), entry.getValue()))
-                .filter(Objects::nonNull)
                 .sorted(comparator)
+                .map(entry -> toEntry(entry.getKey(), usersById.get(entry.getKey()), entry.getValue()))
+                .filter(entry -> entry != null)
                 .toList();
     }
 
@@ -116,18 +119,20 @@ public class ActivitiesInviteCandidatesService {
                 signal.metAtIso(),
                 signal.metAtIso(),
                 signal.metWhere(),
-                signal.relevance(),
                 resolveAvatarUrl(user),
                 homeUserProfileService.toGameCardUserDto(user));
     }
 
-    private CandidateSignal toSignal(UserRate rate, Users candidate) {
-        String metAtIso = firstNonBlank(rate == null ? null : rate.getUpdatedDate(), rate == null ? null : rate.getCreatedDate(), Instant.now().toString());
+    private CandidateSignal toSignal(UserRate rate) {
+        String metAtIso = firstNonBlank(rate == null ? null : rate.getCreatedDate(), rate == null ? null : rate.getUpdatedDate(), Instant.now().toString());
+        if (isFutureIso(metAtIso)) {
+            return null;
+        }
         String metWhere = firstNonBlank(rate == null ? null : rate.getEventName(), "Met on MyScoutee");
-        double relevance = rate != null && rate.getAffinityScore() != null
+        double userRateAffinity = rate != null && rate.getAffinityScore() != null
                 ? Math.max(0d, rate.getAffinityScore())
-                : Math.max(0d, candidate.getAffinity() == null ? 0d : candidate.getAffinity());
-        return new CandidateSignal(metAtIso, metWhere, relevance);
+                : 0d;
+        return new CandidateSignal(metAtIso, metWhere, userRateAffinity);
     }
 
     private boolean shouldReplace(CandidateSignal current, CandidateSignal next) {
@@ -136,32 +141,28 @@ public class ActivitiesInviteCandidatesService {
         if (nextMetAt != currentMetAt) {
             return nextMetAt > currentMetAt;
         }
-        return next.relevance() > current.relevance();
+        return next.userRateAffinity() > current.userRateAffinity();
     }
 
-    private List<String> counterpartUserIds(UserRate rate, String activeUserId) {
+    private boolean isEligibleSingleMetRate(UserRate rate, String activeUserId) {
+        return rate != null
+                && "single".equals(safeText(rate.getMode()))
+                && Boolean.TRUE.equals(rate.getMet())
+                && !singleMetCounterpartUserIds(rate, activeUserId).isEmpty();
+    }
+
+    private List<String> singleMetCounterpartUserIds(UserRate rate, String activeUserId) {
         LinkedHashSet<String> counterpartIds = new LinkedHashSet<>();
         if (rate == null || !StringUtils.hasText(activeUserId)) {
             return List.of();
         }
 
-        addCounterpart(counterpartIds, rate.getRelatedUserId(), activeUserId);
-        addCounterpart(counterpartIds, rate.getSecondaryRelatedUserId(), activeUserId);
-        if (!counterpartIds.isEmpty()) {
-            return new ArrayList<>(counterpartIds);
-        }
-
-        String fromUserId = normalizeId(rate.getFromUserId());
-        String toUserId = normalizeId(rate.getToUserId());
-        if (activeUserId.equals(fromUserId)) {
-            addCounterpart(counterpartIds, toUserId, activeUserId);
-        }
-        if (activeUserId.equals(toUserId)) {
-            addCounterpart(counterpartIds, fromUserId, activeUserId);
-        }
-        if ("pair".equals(safeText(rate.getMode())) && activeUserId.equals(normalizeId(rate.getOwnerUserId()))) {
-            addCounterpart(counterpartIds, fromUserId, activeUserId);
-            addCounterpart(counterpartIds, toUserId, activeUserId);
+        String ownerUserId = normalizeId(rate.getOwnerUserId());
+        String relatedUserId = normalizeId(rate.getRelatedUserId());
+        if (activeUserId.equals(ownerUserId)) {
+            addCounterpart(counterpartIds, relatedUserId, activeUserId);
+        } else if (activeUserId.equals(relatedUserId)) {
+            addCounterpart(counterpartIds, ownerUserId, activeUserId);
         }
         return new ArrayList<>(counterpartIds);
     }
@@ -205,6 +206,14 @@ public class ActivitiesInviteCandidatesService {
         }
     }
 
+    private boolean isFutureIso(String value) {
+        try {
+            return Instant.parse(firstNonBlank(value, Instant.EPOCH.toString())).isAfter(Instant.now());
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
     private String firstNonBlank(String first, String second) {
         return firstNonBlank(first, second, "");
     }
@@ -225,9 +234,13 @@ public class ActivitiesInviteCandidatesService {
         return value == null ? "" : value.trim();
     }
 
+    private double safeDouble(Double value) {
+        return value == null || !Double.isFinite(value) ? 0d : value;
+    }
+
     private record CandidateSignal(
             String metAtIso,
             String metWhere,
-            Double relevance) {
+            Double userRateAffinity) {
     }
 }

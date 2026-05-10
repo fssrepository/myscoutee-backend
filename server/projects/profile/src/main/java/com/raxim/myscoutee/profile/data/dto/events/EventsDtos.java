@@ -170,13 +170,11 @@ public final class EventsDtos {
             List<EventSlotOccurrenceDto> upcomingSlots,
             Integer acceptedMembers,
             Integer pendingMembers,
-            List<String> acceptedMemberUserIds,
-            List<String> pendingMemberUserIds,
             List<String> topics,
             List<SubEventFormItemDto> subEvents,
             String subEventsDisplayMode,
             Double rating,
-            Double relevance,
+            Double boost,
             Double affinity) {
     }
 
@@ -227,8 +225,6 @@ public final class EventsDtos {
             String location,
             LocationCoordinatesDto locationCoordinates,
             String sourceLink,
-            List<String> acceptedMemberUserIds,
-            List<String> pendingMemberUserIds,
             List<String> topics,
             List<SubEventFormItemDto> subEvents,
             String subEventsDisplayMode,

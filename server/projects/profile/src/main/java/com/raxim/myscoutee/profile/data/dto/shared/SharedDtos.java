@@ -183,7 +183,6 @@ public final class SharedDtos {
             String metAtIso,
             String actionAtIso,
             String metWhere,
-            Double relevance,
             String avatarUrl,
             UserDto profile) {
     }
@@ -275,6 +274,7 @@ public final class SharedDtos {
             List<PolicyItemDto> policies,
             PricingConfigDto pricing,
             String visibility,
+            String status,
             String ownerUserId,
             String ownerName,
             List<AssetMemberRequestDto> requests) {

@@ -17,6 +17,13 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
 public class Asset {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
+    private static final String STATUS_TRASHED = "T";
+
     @Id
     private String id;
 
@@ -42,6 +49,10 @@ public class Asset {
     private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
     private String visibility;
+    private String status;
+    private String statusBeforeSuppression;
+    private Double affinity;
+    private Double boost;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -199,6 +210,38 @@ public class Asset {
         this.visibility = visibility;
     }
 
+    public String getStatus() {
+        return normalizeStatus(status);
+    }
+
+    public void setStatus(String status) {
+        this.status = normalizeStatus(status);
+    }
+
+    public String getStatusBeforeSuppression() {
+        return statusBeforeSuppression;
+    }
+
+    public void setStatusBeforeSuppression(String statusBeforeSuppression) {
+        this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatus(statusBeforeSuppression) : null;
+    }
+
+    public Double getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(Double affinity) {
+        this.affinity = affinity;
+    }
+
+    public Double getBoost() {
+        return boost;
+    }
+
+    public void setBoost(Double boost) {
+        this.boost = boost;
+    }
+
     public String getCreatedDate() {
         return createdDate;
     }
@@ -267,5 +310,23 @@ public class Asset {
             String title,
             String description,
             Boolean required) {
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
+
+    private static String normalizeStatus(String value) {
+        String normalized = value == null ? "" : value.trim();
+        return switch (normalized) {
+            case STATUS_ACTIVE, STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE, STATUS_TRASHED -> normalized;
+            case "active" -> STATUS_ACTIVE;
+            case "under-review", "under review" -> STATUS_UNDER_REVIEW;
+            case "blocked" -> STATUS_BLOCKED;
+            case "inactive" -> STATUS_INACTIVE;
+            case "deleted" -> STATUS_DELETED;
+            case "trashed", "trash" -> STATUS_TRASHED;
+            default -> STATUS_ACTIVE;
+        };
     }
 }

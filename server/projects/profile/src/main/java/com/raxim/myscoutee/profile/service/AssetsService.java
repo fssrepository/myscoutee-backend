@@ -52,6 +52,13 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AssetsService {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_TRASHED = "T";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
+
     private static final String LEGACY_ASSETS_WRAPPER_ID = "assets";
     private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
 
@@ -61,6 +68,8 @@ public class AssetsService {
     private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
     private final AssetSourceRefreshProperties assetSourceRefreshProperties;
+    private final AbsoluteAffinityService absoluteAffinityService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -68,13 +77,17 @@ public class AssetsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             MongoTemplate mongoTemplate,
-            AssetSourceRefreshProperties assetSourceRefreshProperties) {
+            AssetSourceRefreshProperties assetSourceRefreshProperties,
+            AbsoluteAffinityService absoluteAffinityService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.mongoTemplate = mongoTemplate;
         this.assetSourceRefreshProperties = assetSourceRefreshProperties;
+        this.absoluteAffinityService = absoluteAffinityService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -100,13 +113,14 @@ public class AssetsService {
         }
 
         ensureExploreAssetsBootstrapped();
+        double viewerAffinity = resolveStoredUserAffinity(normalizedUserId);
         return assetsRepository.findAll().stream()
                 .filter(Objects::nonNull)
                 .filter(asset -> normalizedType.equals(normalizeAssetType(asset.getType())))
                 .filter(asset -> !normalizedUserId.equals(normalizeId(asset.getOwnerUserId())))
                 .filter(asset -> !StringUtils.hasText(normalizedCategory) || normalizedCategory.equals(safeText(asset.getCategory())))
                 .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
-                .sorted(Comparator.comparing(asset -> safeText(asset.getTitle())))
+                .sorted(visibleAssetComparator(viewerAffinity))
                 .map(this::toDto)
                 .filter(Objects::nonNull)
                 .toList();
@@ -204,6 +218,35 @@ public class AssetsService {
                 .ifPresent(assetsRepository::delete);
     }
 
+    public void takeOver(AssetDeleteRequestDto request) {
+        if (request == null) {
+            return;
+        }
+        String normalizedUserId = normalizeId(request.userId());
+        String normalizedAssetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return;
+        }
+        ensureOwnerAssetsBootstrapped(normalizedUserId);
+        Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
+        if (current == null || !STATUS_UNDER_REVIEW.equals(safeText(current.getStatus()))) {
+            return;
+        }
+        Asset next = cloneAsset(current);
+        String restoredStatus = safeText(next.getStatusBeforeSuppression());
+        if (!StringUtils.hasText(restoredStatus) || isSuppressedLifecycleStatus(restoredStatus)) {
+            restoredStatus = STATUS_ACTIVE;
+        }
+        next.setStatus(restoredStatus);
+        next.setStatusBeforeSuppression(null);
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(normalizedUserId);
+        next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
+        next.setBoost(resolveAssetBoost(next, normalizedUserId));
+        assetsRepository.save(next);
+        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
+    }
+
     public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
         String normalizedUrl = normalizeExternalUrl(request == null ? null : request.sourceLink());
         boolean enabled = assetSourceRefreshProperties.isEnabled();
@@ -299,7 +342,10 @@ public class AssetsService {
         next.setRequests(nextRequests);
         next.setUpdatedDate(Instant.now().toString());
         next.setUpdatedUser(ownerUserId);
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
+        affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizeId(next.getAssetId()), ownerUserId);
     }
 
     private AssetCardDto saveOwnedAsset(String ownerUserId, AssetCardDto assetDto) {
@@ -314,6 +360,7 @@ public class AssetsService {
             return null;
         }
         assetsRepository.save(saved);
+        affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         return toDto(saved);
     }
@@ -480,6 +527,9 @@ public class AssetsService {
         asset.setPricing(null);
         asset.setRequests(readLegacyRequests(legacy.get("requests")));
         asset.setVisibility(safeText(legacy.getString("visibility")));
+        asset.setStatus("active");
+        asset.setAffinity(resolveAssetAffinity(asset, ownerUserId));
+        asset.setBoost(resolveAssetBoost(asset, ownerUserId));
         String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
         String updatedDate = normalizeDateTime(legacy.getString("updatedAtIso"), createdDate);
         asset.setCreatedDate(createdDate);
@@ -548,6 +598,12 @@ public class AssetsService {
             nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
         }
         next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
+        if (current == null) {
+            next.setStatus(STATUS_ACTIVE);
+            next.setStatusBeforeSuppression(null);
+        }
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -576,6 +632,10 @@ public class AssetsService {
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
+        clone.setStatus(source.getStatus());
+        clone.setStatusBeforeSuppression(source.getStatusBeforeSuppression());
+        clone.setAffinity(source.getAffinity());
+        clone.setBoost(source.getBoost());
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
@@ -638,13 +698,11 @@ public class AssetsService {
                 List.of(),
                 memberSnapshot.acceptedUserIds().size(),
                 memberSnapshot.pendingUserIds().size(),
-                memberSnapshot.acceptedUserIds(),
-                memberSnapshot.pendingUserIds(),
                 normalizeStrings(event.getTopics()),
                 event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
                 safeText(event.getSubEventsDisplayMode()),
                 safeDouble(event.getRating()),
-                safeDouble(event.getRelevance()),
+                safeDouble(event.getBoost()),
                 safeDouble(event.getAffinity()));
     }
 
@@ -723,6 +781,58 @@ public class AssetsService {
         return ownerNamesByUserId;
     }
 
+    private Comparator<Asset> visibleAssetComparator(double viewerAffinity) {
+        return Comparator
+                .comparingDouble((Asset asset) -> -assetExploreScore(asset, viewerAffinity))
+                .thenComparing(asset -> safeText(asset.getTitle()))
+                .thenComparing(asset -> normalizeId(asset.getAssetId()));
+    }
+
+    private double assetExploreScore(Asset asset, double viewerAffinity) {
+        double assetAffinity = safeDouble(asset == null ? null : asset.getAffinity());
+        double boost = safeDouble(asset == null ? null : asset.getBoost());
+        if (viewerAffinity > 0d && assetAffinity > 0d) {
+            return boost - (Math.abs(viewerAffinity - assetAffinity) / 10_000d);
+        }
+        return boost + (assetAffinity / 10_000d);
+    }
+
+    private double resolveAssetAffinity(Asset asset, String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        if (!StringUtils.hasText(normalizedOwnerUserId)) {
+            return 0d;
+        }
+        return usersRepository.findByUserId(normalizedOwnerUserId)
+                .map(owner -> absoluteAffinityService.resolveAssetAffinity(asset, owner))
+                .orElse(0d);
+    }
+
+    private double resolveAssetBoost(Asset asset, String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        if (!StringUtils.hasText(normalizedOwnerUserId)) {
+            return 0d;
+        }
+        return usersRepository.findByUserId(normalizedOwnerUserId)
+                .map(owner -> absoluteAffinityService.resolveAssetBoost(asset, owner))
+                .orElse(0d);
+    }
+
+    private double resolveStoredUserAffinity(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return 0d;
+        }
+        return usersRepository.findByUserId(normalizedUserId)
+                .map(this::resolveStoredUserAffinity)
+                .orElse(0d);
+    }
+
+    private double resolveStoredUserAffinity(Users user) {
+        return user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())
+                ? 0d
+                : Math.max(0d, user.getAffinity());
+    }
+
     private AssetCardDto toDto(Asset asset) {
         return toDto(asset, Map.of());
     }
@@ -753,6 +863,7 @@ public class AssetsService {
                         .toList(),
                 clonePricing(asset.getPricing()),
                 normalizeVisibility(asset.getVisibility()),
+                safeText(asset.getStatus()),
                 normalizeId(asset.getOwnerUserId()),
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset));
@@ -823,11 +934,24 @@ public class AssetsService {
         if (asset == null) {
             return false;
         }
+        String status = safeText(asset.getStatus());
+        if (!STATUS_ACTIVE.equals(status) && !"active".equals(status)) {
+            return false;
+        }
         String visibility = normalizeVisibility(asset.getVisibility());
         if ("Invitation only".equals(visibility)) {
             return false;
         }
         return !"Friends only".equals(visibility) || isFriendOfActiveUser(normalizeId(asset.getOwnerUserId()), activeUserId);
+    }
+
+    private boolean isSuppressedLifecycleStatus(String status) {
+        String normalized = safeText(status);
+        return STATUS_UNDER_REVIEW.equals(normalized)
+                || STATUS_BLOCKED.equals(normalized)
+                || STATUS_DELETED.equals(normalized)
+                || STATUS_INACTIVE.equals(normalized)
+                || STATUS_TRASHED.equals(normalized);
     }
 
     private String normalizeVisibility(String visibility) {

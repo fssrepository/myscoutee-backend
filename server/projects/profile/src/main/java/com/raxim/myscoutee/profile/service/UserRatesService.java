@@ -37,29 +37,32 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class UserRatesService {
-    private static final String SOURCE_ACTIVITY_RATE = "activity-rate";
-    private static final String SOURCE_GAME_CARD = "game-card";
-    private static final RateDistance ZERO_DISTANCE = new RateDistance(0d, 0);
+    private static final RateDistance ZERO_DISTANCE = new RateDistance(0);
 
     private final UserRatesRepository userRatesRepository;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final AffinityCalculationService affinityCalculationService;
+    private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
 
     public UserRatesService(
             UserRatesRepository userRatesRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
+            AffinityCalculationService affinityCalculationService,
+            UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.affinityCalculationService = affinityCalculationService;
+        this.userAffinityEdgeService = userAffinityEdgeService;
         this.mongoTemplate = mongoTemplate;
     }
 
     @PostConstruct
-    void normalizePersistedUserRates() {
-        migrateLegacyGameCardRates();
+    void ensureUserRateIndexes() {
         ensureCanonicalUserRateIndexes();
     }
 
@@ -84,6 +87,7 @@ public class UserRatesService {
             String sortValue,
             String sortDirectionValue,
             String secondaryFilterValue,
+            boolean socialBadgeEnabled,
             String cursor,
             Integer limitValue,
             String rangeStartIso,
@@ -108,6 +112,7 @@ public class UserRatesService {
         List<RatePageProjection> projections = queryNormalizedRateItems(currentUser, ownerUserId).stream()
                 .filter(item -> matchesRequestedMode(item, mode))
                 .filter(item -> direction.equals(item.direction()))
+                .filter(item -> matchesSocialBadgeFilter(item, mode, socialBadgeEnabled))
                 .filter(item -> isWithinRange(item, rangeStartMs, rangeEndMs))
                 .map(this::toRatePageProjection)
                 .filter(Objects::nonNull)
@@ -152,71 +157,12 @@ public class UserRatesService {
         }
 
         if (!normalizedRates.isEmpty()) {
-            userRatesRepository.saveAll(normalizedRates);
+            affinityCalculationService.applyAffinity(normalizedRates);
+            List<UserRate> savedRates = new ArrayList<>();
+            userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
+            userAffinityEdgeService.recomputeForRates(savedRates.isEmpty() ? normalizedRates : savedRates);
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
-    }
-
-    private void migrateLegacyGameCardRates() {
-        List<UserRate> legacyRecords = userRatesRepository.findBySource(SOURCE_GAME_CARD);
-        if (legacyRecords.isEmpty()) {
-            return;
-        }
-        List<UserRate> changedRecords = legacyRecords.stream()
-                .filter(this::applyCanonicalGameCardShape)
-                .toList();
-        if (!changedRecords.isEmpty()) {
-            userRatesRepository.saveAll(changedRecords);
-        }
-    }
-
-    private boolean applyCanonicalGameCardShape(UserRate record) {
-        if (record == null || !SOURCE_GAME_CARD.equals(normalizeSource(record.getSource()))) {
-            return false;
-        }
-        String mode = normalizeMode(record.getMode());
-        if (!StringUtils.hasText(mode)) {
-            return false;
-        }
-        String canonicalOwnerUserId = "pair".equals(mode)
-                ? normalizeOptionalId(record.getOwnerUserId())
-                : normalizeOptionalId(record.getFromUserId());
-        String relatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(record.getFromUserId())
-                : normalizeOptionalId(record.getToUserId());
-        String secondaryRelatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(record.getToUserId())
-                : null;
-        Integer normalizedRate = normalizeRate(record.getRate(), false);
-        if (!StringUtils.hasText(canonicalOwnerUserId)
-                || !StringUtils.hasText(relatedUserId)
-                || canonicalOwnerUserId.equals(relatedUserId)
-                || normalizedRate == null) {
-            return false;
-        }
-        if ("pair".equals(mode) && (!StringUtils.hasText(secondaryRelatedUserId) || relatedUserId.equals(secondaryRelatedUserId))) {
-            return false;
-        }
-        record.setSource(SOURCE_ACTIVITY_RATE);
-        record.setOwnerUserId(canonicalOwnerUserId);
-        record.setOwnerLocation(resolveLocationSnapshot(canonicalOwnerUserId));
-        record.setRelatedUserId(relatedUserId);
-        record.setSecondaryRelatedUserId(secondaryRelatedUserId);
-        record.setScoreGiven(normalizedRate);
-        record.setScoreReceived(0);
-        record.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
-        record.setMet(false);
-        record.setEventName(normalizeOptionalText(record.getEventName()));
-        record.setFromUserId(null);
-        record.setToUserId(null);
-        record.setRate(null);
-        if (!StringUtils.hasText(normalizeOptionalId(record.getCreatedUser()))) {
-            record.setCreatedUser(canonicalOwnerUserId);
-        }
-        if (!StringUtils.hasText(normalizeOptionalId(record.getUpdatedUser()))) {
-            record.setUpdatedUser(canonicalOwnerUserId);
-        }
-        return true;
     }
 
     private void ensureCanonicalUserRateIndexes() {
@@ -230,28 +176,33 @@ public class UserRatesService {
         dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_to");
         dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_game_card_pair_owner");
         dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_lane_owner");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_owner_mode_updated");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_primary_lookup");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_secondary_lookup");
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_owner_primary_mode");
 
         indexOps.createIndex(new Index()
-                .named("user_rate_owner_mode_updated")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_owner_mode_updated_v2")
                 .on("ownerUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC)
                 .on("updatedDate", Sort.Direction.DESC));
         indexOps.createIndex(new Index()
-                .named("user_rate_primary_lookup")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_primary_lookup_v2")
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("updatedDate", Sort.Direction.DESC));
         indexOps.createIndex(new Index()
-                .named("user_rate_secondary_lookup")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_secondary_lookup_v2")
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
                 .on("updatedDate", Sort.Direction.DESC)
                 .sparse());
         indexOps.createIndex(new Index()
-                .named("user_rate_owner_primary_mode")
-                .on("source", Sort.Direction.ASC)
+                .named("user_rate_owner_primary_mode_v2")
                 .on("ownerUserId", Sort.Direction.ASC)
+                .on("relatedUserId", Sort.Direction.ASC)
+                .on("secondaryRelatedUserId", Sort.Direction.ASC)
+                .on("mode", Sort.Direction.ASC));
+        indexOps.createIndex(new Index()
+                .named("user_rate_pair_lookup_v2")
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC));
@@ -269,12 +220,13 @@ public class UserRatesService {
 
     private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId) {
         Map<String, UserRate> recordsById = new LinkedHashMap<>();
-        addRecords(recordsById, userRatesRepository.findRelevantBySourceAndUserIds(SOURCE_ACTIVITY_RATE, List.of(ownerUserId)));
+        addRecords(recordsById, userRatesRepository.findRelevantByUserIds(List.of(ownerUserId)));
 
-        return dedupeRateItems(recordsById.values().stream()
+        List<RateMenuItemDto> items = dedupeRateItems(recordsById.values().stream()
                 .map(record -> toRateMenuItem(record, currentUser))
                 .filter(Objects::nonNull)
                 .toList());
+        return filterActivityRateVisibleItems(items, ownerUserId);
     }
 
     private void addRecords(Map<String, UserRate> target, List<UserRate> records) {
@@ -297,6 +249,47 @@ public class UserRatesService {
             addUserId(userIds, item.bridgeUserId());
         }
         return userIds;
+    }
+
+    private List<RateMenuItemDto> filterActivityRateVisibleItems(List<RateMenuItemDto> items, String ownerUserId) {
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
+        Set<String> checkedUserIds = resolveDisplayUserIds(items).stream()
+                .filter(userId -> !normalizeId(userId).equals(normalizeId(ownerUserId)))
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (checkedUserIds.isEmpty()) {
+            return items;
+        }
+
+        Map<String, Users> usersById = usersRepository.findByUserIdIn(checkedUserIds).stream()
+                .filter(Objects::nonNull)
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+        return items.stream()
+                .filter(item -> activityRateItemUsersAreVisible(item, ownerUserId, usersById))
+                .toList();
+    }
+
+    private boolean activityRateItemUsersAreVisible(
+            RateMenuItemDto item,
+            String ownerUserId,
+            Map<String, Users> usersById) {
+        if (item == null) {
+            return false;
+        }
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        Set<String> displayedUserIds = new LinkedHashSet<>();
+        addUserId(displayedUserIds, item.userId());
+        addUserId(displayedUserIds, item.secondaryUserId());
+        addUserId(displayedUserIds, item.bridgeUserId());
+        displayedUserIds.remove(normalizedOwnerUserId);
+        for (String userId : displayedUserIds) {
+            Users user = usersById.get(normalizeId(userId));
+            if (!homeUserProfileService.isActivityRateVisibleUser(user)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void addUserId(Set<String> target, String userId) {
@@ -340,17 +333,15 @@ public class UserRatesService {
         }
         String syncKey = resolveSyncKey(rate);
         String mode = normalizeMode(rate.mode());
-        String source = normalizeSource(rate.source());
         if (!StringUtils.hasText(syncKey)
-                || !StringUtils.hasText(mode)
-                || !StringUtils.hasText(source)) {
+                || !StringUtils.hasText(mode)) {
             return null;
         }
 
         UserRate existing = userRatesRepository.findBySyncKey(syncKey).orElse(null);
-        String ownerUserId = normalizeOptionalId(rate.ownerUserId());
         String fromUserId = normalizeOptionalId(rate.fromUserId());
         String toUserId = normalizeOptionalId(rate.toUserId());
+        String ownerUserId = resolveOwnerUserId(mode, rate.ownerUserId(), fromUserId);
         String updatedUserId = resolveUpdatedUser(rate, ownerUserId, fromUserId, toUserId);
         String createdUserId = existing != null
                 ? normalizeOptionalText(existing.getCreatedUser())
@@ -361,7 +352,6 @@ public class UserRatesService {
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
         document.setSyncKey(syncKey);
         document.setMode(mode);
-        document.setSource(source);
         document.setCreatedDate(existing != null
                 ? normalizeDate(existing.getCreatedDate(), nowIso)
                 : normalizeDate(rate.createdAtIso(), normalizeDate(rate.happenedAtIso(), normalizeDate(rate.updatedAtIso(), nowIso))));
@@ -371,13 +361,10 @@ public class UserRatesService {
         document.setOwnerUserId(ownerUserId);
         document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
 
-        if (SOURCE_ACTIVITY_RATE.equals(source)) {
-            return normalizeActivityRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
-        }
-        return normalizeGameCardRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+        return normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
     }
 
-    private UserRate normalizeActivityRateRecord(
+    private UserRate normalizeRateRecord(
             UserRate document,
             UserRateRecordDto rate,
             String mode,
@@ -404,14 +391,20 @@ public class UserRatesService {
         String preservedEventName = normalizeOptionalText(document.getEventName());
         String requestedEventName = normalizeOptionalText(rate.eventName());
 
-        document.setFromUserId(null);
-        document.setToUserId(null);
-        document.setRate(null);
         document.setRelatedUserId(relatedUserId);
         document.setSecondaryRelatedUserId(secondaryRelatedUserId);
-        document.setScoreGiven(normalizeScore(rate.scoreGiven()));
+        String storedSocialContext = resolveStoredSocialContext(mode, rate.socialContext());
+        document.setScoreGiven(resolveScoreGiven(rate));
         document.setScoreReceived(normalizeScore(rate.scoreReceived()));
-        document.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
+        document.setSocialContext(storedSocialContext);
+        document.setBridgeUserId(resolveStoredBridgeUserId(
+                mode,
+                storedSocialContext,
+                rate.bridgeUserId(),
+                ownerUserId,
+                relatedUserId,
+                secondaryRelatedUserId));
+        document.setBridgeCount(resolveStoredBridgeCount(storedSocialContext, rate.bridgeCount()));
         document.setMet(met);
         document.setEventName(met
                 ? (StringUtils.hasText(requestedEventName) ? requestedEventName : preservedEventName)
@@ -419,56 +412,8 @@ public class UserRatesService {
         return document;
     }
 
-    private UserRate normalizeGameCardRecord(
-            UserRate document,
-            UserRateRecordDto rate,
-            String mode,
-            String ownerUserId,
-            String fromUserId,
-            String toUserId) {
-        String canonicalOwnerUserId = "pair".equals(mode)
-                ? normalizeOptionalId(ownerUserId)
-                : normalizeOptionalId(fromUserId);
-        String relatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(fromUserId)
-                : normalizeOptionalId(toUserId);
-        String secondaryRelatedUserId = "pair".equals(mode)
-                ? normalizeOptionalId(toUserId)
-                : null;
-        if (!StringUtils.hasText(canonicalOwnerUserId)
-                || !StringUtils.hasText(relatedUserId)
-                || canonicalOwnerUserId.equals(relatedUserId)) {
-            return null;
-        }
-        if ("pair".equals(mode) && (!StringUtils.hasText(secondaryRelatedUserId) || relatedUserId.equals(secondaryRelatedUserId))) {
-            return null;
-        }
-        Integer normalizedRate = normalizeRate(rate.rate(), false);
-        if (normalizedRate == null) {
-            return null;
-        }
-        document.setSource(SOURCE_ACTIVITY_RATE);
-        document.setOwnerUserId(canonicalOwnerUserId);
-        document.setOwnerLocation(resolveLocationSnapshot(canonicalOwnerUserId));
-        document.setFromUserId(null);
-        document.setToUserId(null);
-        document.setRate(null);
-        document.setRelatedUserId(relatedUserId);
-        document.setSecondaryRelatedUserId(secondaryRelatedUserId);
-        document.setScoreGiven(normalizedRate);
-        document.setScoreReceived(0);
-        document.setAffinityScore(resolveAffinityScore(mode, relatedUserId, secondaryRelatedUserId));
-        document.setMet(false);
-        document.setEventName(normalizeOptionalText(rate.eventName()));
-        return document;
-    }
-
     private RateMenuItemDto toRateMenuItem(UserRate record, Users currentUser) {
         if (record == null || currentUser == null) {
-            return null;
-        }
-        String source = normalizeSource(record.getSource());
-        if (!SOURCE_ACTIVITY_RATE.equals(source)) {
             return null;
         }
         return toActivityRateMenuItem(record, currentUser);
@@ -497,6 +442,9 @@ public class UserRatesService {
 
         String displayId = resolveResponseId(record);
         String happenedAt = normalizeDate(record.getCreatedDate(), normalizeDate(record.getUpdatedDate(), Instant.now().toString()));
+        if ("met".equals(direction) && isFutureActivityDate(happenedAt)) {
+            return null;
+        }
         int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven()) : 0;
         int scoreReceived = isOwnerView
                 ? normalizeScore(record.getScoreReceived())
@@ -505,7 +453,7 @@ public class UserRatesService {
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
         RateDistance distance = resolveActivityDistance(currentUser, record.getOwnerLocation());
-        String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), direction);
+        String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), record.getSocialContext());
         String bridgeUserId = resolvePairBridgeUserId(record, resolvedCurrentUserId, socialContext);
         Integer bridgeCount = resolvePairBridgeCount(socialContext);
 
@@ -524,11 +472,11 @@ public class UserRatesService {
                 }
                 return new RateMenuItemDto(displayId, participantOtherUserId, resolvedCurrentUserId, "pair", direction,
                         socialContext, bridgeUserId, bridgeCount,
-                        scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
+                        scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
                     socialContext, bridgeUserId, bridgeCount,
-                    scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
+                    scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
         }
 
         String relatedUserId = isOwnerView
@@ -537,22 +485,25 @@ public class UserRatesService {
         if (!StringUtils.hasText(relatedUserId) || currentUserId.equals(relatedUserId)) {
             return null;
         }
+        String individualSocialContext = resolveIndividualSocialContext(record);
         return new RateMenuItemDto(displayId, relatedUserId, null, "individual", direction,
-                null, null, null,
-                scoreGiven, scoreReceived, eventName, happenedAt, distance.kilometers(), distance.metersExact());
+                individualSocialContext,
+                resolveIndividualBridgeUserId(record, resolvedCurrentUserId, relatedUserId, individualSocialContext),
+                resolveIndividualBridgeCount(record, individualSocialContext),
+                scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact());
     }
 
     private RatePageProjection toRatePageProjection(RateMenuItemDto item) {
         if (item == null) {
             return null;
         }
-        int distanceMeters = exactDistanceMeters(item.distanceMetersExact(), item.distanceKm());
+        int distanceMeters = exactDistanceMeters(item.distanceMetersExact());
         return new RatePageProjection(
                 item,
                 resolveRateRelevanceScore(item),
                 dayStartMillis(item.happenedAt()),
                 rateDateMillis(item.happenedAt()),
-                distanceBucketMeters(item.distanceMetersExact(), item.distanceKm()),
+                distanceBucketMeters(item.distanceMetersExact()),
                 distanceMeters);
     }
 
@@ -615,9 +566,16 @@ public class UserRatesService {
         int scoreGiven = normalizeScore(item.scoreGiven());
         int scoreReceived = normalizeScore(item.scoreReceived());
         if ("mutual".equals(normalizeDisplayDirection(item.direction()))) {
-            return scoreGiven + scoreReceived;
+            return harmonicScore(scoreGiven, scoreReceived);
         }
         return scoreGiven > 0 ? scoreGiven : 5d;
+    }
+
+    private double harmonicScore(int scoreGiven, int scoreReceived) {
+        if (scoreGiven <= 0 || scoreReceived <= 0) {
+            return 0d;
+        }
+        return 2d * scoreGiven * scoreReceived / (scoreGiven + scoreReceived);
     }
 
     private int resolveCursorStartIndex(List<RateMenuItemDto> items, String cursor) {
@@ -735,6 +693,17 @@ public class UserRatesService {
         return normalized.isEmpty() ? null : normalized;
     }
 
+    private String resolveOwnerUserId(String mode, String requestedOwnerUserId, String fromUserId) {
+        String ownerUserId = normalizeOptionalId(requestedOwnerUserId);
+        if (StringUtils.hasText(ownerUserId)) {
+            return ownerUserId;
+        }
+        if ("single".equals(mode)) {
+            return normalizeOptionalId(fromUserId);
+        }
+        return null;
+    }
+
     private String resolveSyncKey(UserRateRecordDto rate) {
         String id = normalizeOptionalText(rate.id());
         if (StringUtils.hasText(id)) {
@@ -751,22 +720,14 @@ public class UserRatesService {
             String toUserId,
             String updatedUserId) {
         String direction = normalizeDisplayDirection(rate.displayDirection());
-        if (SOURCE_ACTIVITY_RATE.equals(normalizeSource(rate.source()))) {
-            if ("received".equals(direction) || "mutual".equals(direction)) {
-                return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, updatedUserId);
-            }
-            if (StringUtils.hasText(ownerUserId)) {
-                return ownerUserId;
-            }
-        }
-        if (SOURCE_GAME_CARD.equals(normalizeSource(rate.source())) && "single".equals(normalizeMode(rate.mode()))) {
-            return fromUserId;
-        }
-        if (StringUtils.hasText(updatedUserId)) {
-            return updatedUserId;
+        if ("received".equals(direction) || "mutual".equals(direction)) {
+            return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, updatedUserId);
         }
         if (StringUtils.hasText(ownerUserId)) {
             return ownerUserId;
+        }
+        if (StringUtils.hasText(updatedUserId)) {
+            return updatedUserId;
         }
         return fromUserId;
     }
@@ -777,16 +738,8 @@ public class UserRatesService {
             return normalizeId(currentUser.getId());
         }
         String persistedDirection = normalizeDisplayDirection(rate.displayDirection());
-        if (SOURCE_ACTIVITY_RATE.equals(normalizeSource(rate.source()))) {
-            if ("received".equals(persistedDirection)) {
-                return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, fromUserId);
-            }
-            if (StringUtils.hasText(ownerUserId)) {
-                return ownerUserId;
-            }
-        }
-        if (SOURCE_GAME_CARD.equals(normalizeSource(rate.source())) && "single".equals(normalizeMode(rate.mode()))) {
-            return fromUserId;
+        if ("received".equals(persistedDirection)) {
+            return resolveActivityCounterpartyActor(ownerUserId, fromUserId, toUserId, fromUserId);
         }
         if (StringUtils.hasText(ownerUserId)) {
             return ownerUserId;
@@ -814,20 +767,23 @@ public class UserRatesService {
         if (Boolean.TRUE.equals(record.getMet())) {
             return "met";
         }
-        String createdUser = normalizeOptionalId(record.getCreatedUser());
+        String mode = normalizeMode(record.getMode());
         int scoreGiven = normalizeScore(record.getScoreGiven());
         int scoreReceived = normalizeScore(record.getScoreReceived());
-        if (ownerUserId.equals(createdUser)) {
-            return "given";
+        if ("pair".equals(mode)) {
+            if (matchesActivityParticipant(record, ownerUserId) && scoreGiven <= 0 && scoreReceived > 0) {
+                return "received";
+            }
+            return scoreGiven > 0 || scoreReceived > 0 ? "given" : null;
         }
         if (scoreGiven > 0 && scoreReceived > 0) {
             return "mutual";
         }
-        if (scoreReceived > 0) {
-            return "received";
-        }
         if (scoreGiven > 0) {
             return "given";
+        }
+        if (scoreReceived > 0) {
+            return "received";
         }
         return null;
     }
@@ -876,17 +832,97 @@ public class UserRatesService {
         return null;
     }
 
-    private String resolvePairSocialContext(String mode, String direction) {
+    private String resolvePairSocialContext(String mode, String storedSocialContext) {
         if (!"pair".equals(mode)) {
             return null;
         }
-        if ("given".equals(direction)) {
+        if ("separated-friends".equals(normalizeOptionalText(storedSocialContext))) {
             return "separated-friends";
         }
-        if ("received".equals(direction)) {
-            return "friends-in-common";
+        return null;
+    }
+
+    private String resolveIndividualSocialContext(UserRate record) {
+        String socialContext = normalizeOptionalText(record == null ? null : record.getSocialContext());
+        return "friends-in-common".equals(socialContext) ? "friends-in-common" : null;
+    }
+
+    private String resolveStoredSocialContext(String mode, String socialContext) {
+        String normalized = normalizeOptionalText(socialContext);
+        if ("single".equals(mode) && "friends-in-common".equals(normalized)) {
+            return normalized;
+        }
+        if ("pair".equals(mode) && "separated-friends".equals(normalized)) {
+            return normalized;
         }
         return null;
+    }
+
+    private String resolveStoredBridgeUserId(
+            String mode,
+            String socialContext,
+            String bridgeUserId,
+            String ownerUserId,
+            String relatedUserId,
+            String secondaryRelatedUserId) {
+        if (!"single".equals(mode) || !"friends-in-common".equals(socialContext)) {
+            return null;
+        }
+        String normalizedBridgeUserId = normalizeOptionalId(bridgeUserId);
+        if (!StringUtils.hasText(normalizedBridgeUserId)
+                || normalizedBridgeUserId.equals(ownerUserId)
+                || normalizedBridgeUserId.equals(relatedUserId)
+                || normalizedBridgeUserId.equals(secondaryRelatedUserId)) {
+            return null;
+        }
+        return normalizedBridgeUserId;
+    }
+
+    private Integer resolveStoredBridgeCount(String socialContext, Integer bridgeCount) {
+        if (!"friends-in-common".equals(socialContext)) {
+            return null;
+        }
+        if (bridgeCount == null) {
+            return null;
+        }
+        return Math.max(1, bridgeCount);
+    }
+
+    private String resolveIndividualBridgeUserId(
+            UserRate record,
+            String currentUserId,
+            String relatedUserId,
+            String socialContext) {
+        if (!"friends-in-common".equals(socialContext) || record == null) {
+            return null;
+        }
+        String bridgeUserId = normalizeOptionalId(record.getBridgeUserId());
+        if (!StringUtils.hasText(bridgeUserId)
+                || bridgeUserId.equals(currentUserId)
+                || bridgeUserId.equals(relatedUserId)) {
+            return null;
+        }
+        return bridgeUserId;
+    }
+
+    private Integer resolveIndividualBridgeCount(UserRate record, String socialContext) {
+        if (!"friends-in-common".equals(socialContext) || record == null || record.getBridgeCount() == null) {
+            return null;
+        }
+        return Math.max(1, record.getBridgeCount());
+    }
+
+    private boolean matchesSocialBadgeFilter(RateMenuItemDto item, String mode, boolean socialBadgeEnabled) {
+        String socialContext = normalizeOptionalText(item == null ? null : item.socialContext());
+        if ("single".equals(mode)) {
+            boolean friendsInCommon = "friends-in-common".equals(socialContext);
+            return socialBadgeEnabled ? friendsInCommon : !friendsInCommon;
+        }
+        if ("pair".equals(mode)) {
+            boolean insideNetwork = "separated-friends".equals(socialContext);
+            return socialBadgeEnabled ? insideNetwork : !insideNetwork;
+        }
+        return true;
     }
 
     private String resolvePairBridgeUserId(UserRate record, String ownerUserId, String socialContext) {
@@ -938,14 +974,6 @@ public class UserRatesService {
         return null;
     }
 
-    private String normalizeSource(String value) {
-        String normalized = normalizeId(value).toLowerCase();
-        if (SOURCE_GAME_CARD.equals(normalized) || SOURCE_ACTIVITY_RATE.equals(normalized)) {
-            return normalized;
-        }
-        return null;
-    }
-
     private String normalizeDisplayDirection(String value) {
         String normalized = normalizeId(value).toLowerCase();
         if ("given".equals(normalized) || "received".equals(normalized)
@@ -960,22 +988,19 @@ public class UserRatesService {
         return StringUtils.hasText(normalized) ? normalized : fallback;
     }
 
-    private Integer normalizeRate(Integer value, boolean allowZero) {
-        if (value == null) {
-            return allowZero ? 0 : null;
-        }
-        int normalized = Math.max(allowZero ? 0 : 1, Math.min(10, value));
-        if (!allowZero && normalized <= 0) {
-            return null;
-        }
-        return normalized;
-    }
-
     private int normalizeScore(Integer value) {
         if (value == null) {
             return 0;
         }
         return Math.max(0, Math.min(10, value));
+    }
+
+    private int resolveScoreGiven(UserRateRecordDto rate) {
+        int scoreGiven = normalizeScore(rate == null ? null : rate.scoreGiven());
+        if (scoreGiven > 0) {
+            return scoreGiven;
+        }
+        return normalizeScore(rate == null ? null : rate.rate());
     }
 
     private boolean isMetRequest(UserRateRecordDto rate) {
@@ -1001,38 +1026,6 @@ public class UserRatesService {
             return null;
         }
         return normalizeOptionalId(toUserId);
-    }
-
-    private Double resolveAffinityScore(String mode, String relatedUserId, String secondaryRelatedUserId) {
-        double total = 0d;
-        int count = 0;
-
-        Double relatedAffinity = resolveUserAffinityScore(relatedUserId);
-        if (relatedAffinity != null) {
-            total += relatedAffinity;
-            count += 1;
-        }
-
-        if ("pair".equals(mode)) {
-            Double secondaryAffinity = resolveUserAffinityScore(secondaryRelatedUserId);
-            if (secondaryAffinity != null) {
-                total += secondaryAffinity;
-                count += 1;
-            }
-        }
-
-        return count == 0 ? 0d : total / count;
-    }
-
-    private Double resolveUserAffinityScore(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return null;
-        }
-        Users user = usersRepository.findByUserId(userId).orElse(null);
-        if (user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())) {
-            return null;
-        }
-        return Math.max(0d, user.getAffinity());
     }
 
     private UserRate.LocationSnapshot resolveLocationSnapshot(String userId) {
@@ -1094,26 +1087,28 @@ public class UserRatesService {
                 * Math.sin(deltaLng / 2d) * Math.sin(deltaLng / 2d);
         double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1d - a));
         int meters = Math.max(0, (int) Math.round(earthRadiusMeters * c));
-        return new RateDistance(meters / 1000d, meters);
+        return new RateDistance(meters);
     }
 
-    private static int exactDistanceMeters(Integer distanceMetersExact, Double distanceKm) {
+    private static int exactDistanceMeters(Integer distanceMetersExact) {
         if (distanceMetersExact != null) {
             return Math.max(0, distanceMetersExact);
         }
-        if (distanceKm == null || !Double.isFinite(distanceKm)) {
-            return 0;
-        }
-        return Math.max(0, (int) Math.round(distanceKm * 1000d));
+        return 0;
     }
 
-    private static int distanceBucketMeters(Integer distanceMetersExact, Double distanceKm) {
-        int meters = exactDistanceMeters(distanceMetersExact, distanceKm);
+    private static int distanceBucketMeters(Integer distanceMetersExact) {
+        int meters = exactDistanceMeters(distanceMetersExact);
         return Math.max(5000, (int) Math.ceil(meters / 5000d) * 5000);
     }
 
     private static long rateDateMillis(String value) {
         return parseIsoMillis(value, 0L);
+    }
+
+    private static boolean isFutureActivityDate(String value) {
+        long parsed = parseIsoMillis(value, 0L);
+        return parsed > 0L && parsed > Instant.now().toEpochMilli();
     }
 
     private static long dayStartMillis(String value) {
@@ -1161,6 +1156,6 @@ public class UserRatesService {
             int distanceMetersExact) {
     }
 
-    private record RateDistance(double kilometers, int metersExact) {
+    private record RateDistance(int metersExact) {
     }
 }

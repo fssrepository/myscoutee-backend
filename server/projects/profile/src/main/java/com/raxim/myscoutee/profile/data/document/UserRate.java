@@ -8,21 +8,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "userRates")
 @CompoundIndexes({
-        @CompoundIndex(name = "user_rate_owner_mode_updated", def = "{'source': 1, 'ownerUserId': 1, 'mode': 1, 'updatedDate': -1}"),
-        @CompoundIndex(name = "user_rate_primary_lookup", def = "{'source': 1, 'relatedUserId': 1, 'updatedDate': -1}"),
-        @CompoundIndex(name = "user_rate_secondary_lookup", def = "{'source': 1, 'secondaryRelatedUserId': 1, 'updatedDate': -1}", sparse = true),
-        @CompoundIndex(name = "user_rate_owner_primary_mode", def = "{'source': 1, 'ownerUserId': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1, 'mode': 1}")
+        @CompoundIndex(name = "user_rate_owner_mode_updated_v2", def = "{'ownerUserId': 1, 'mode': 1, 'updatedDate': -1}"),
+        @CompoundIndex(name = "user_rate_primary_lookup_v2", def = "{'relatedUserId': 1, 'updatedDate': -1}"),
+        @CompoundIndex(name = "user_rate_secondary_lookup_v2", def = "{'secondaryRelatedUserId': 1, 'updatedDate': -1}", sparse = true),
+        @CompoundIndex(name = "user_rate_owner_primary_mode_v2", def = "{'ownerUserId': 1, 'relatedUserId': 1, 'secondaryRelatedUserId': 1, 'mode': 1}")
 })
 public class UserRate {
     @Id
     private String id;
     @Indexed(name = "user_rate_sync_key", unique = true, sparse = true)
     private String syncKey;
-    private String fromUserId;
-    private String toUserId;
-    private Integer rate;
     private String mode;
-    private String source;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -33,6 +29,11 @@ public class UserRate {
     private Integer scoreGiven;
     private Integer scoreReceived;
     private Double affinityScore;
+    private Double evidenceConfidence;
+    private Boolean mutuallyRated;
+    private String socialContext;
+    private String bridgeUserId;
+    private Integer bridgeCount;
     private Boolean met;
     private String eventName;
     private LocationSnapshot ownerLocation;
@@ -41,16 +42,8 @@ public class UserRate {
     public void setId(String id) { this.id = id; }
     public String getSyncKey() { return syncKey; }
     public void setSyncKey(String syncKey) { this.syncKey = syncKey; }
-    public String getFromUserId() { return fromUserId; }
-    public void setFromUserId(String fromUserId) { this.fromUserId = fromUserId; }
-    public String getToUserId() { return toUserId; }
-    public void setToUserId(String toUserId) { this.toUserId = toUserId; }
-    public Integer getRate() { return rate; }
-    public void setRate(Integer rate) { this.rate = rate; }
     public String getMode() { return mode; }
     public void setMode(String mode) { this.mode = mode; }
-    public String getSource() { return source; }
-    public void setSource(String source) { this.source = source; }
     public String getCreatedDate() { return createdDate; }
     public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }
     public String getCreatedUser() { return createdUser; }
@@ -71,6 +64,16 @@ public class UserRate {
     public void setScoreReceived(Integer scoreReceived) { this.scoreReceived = scoreReceived; }
     public Double getAffinityScore() { return affinityScore; }
     public void setAffinityScore(Double affinityScore) { this.affinityScore = affinityScore; }
+    public Double getEvidenceConfidence() { return evidenceConfidence; }
+    public void setEvidenceConfidence(Double evidenceConfidence) { this.evidenceConfidence = evidenceConfidence; }
+    public Boolean getMutuallyRated() { return mutuallyRated; }
+    public void setMutuallyRated(Boolean mutuallyRated) { this.mutuallyRated = mutuallyRated; }
+    public String getSocialContext() { return socialContext; }
+    public void setSocialContext(String socialContext) { this.socialContext = socialContext; }
+    public String getBridgeUserId() { return bridgeUserId; }
+    public void setBridgeUserId(String bridgeUserId) { this.bridgeUserId = bridgeUserId; }
+    public Integer getBridgeCount() { return bridgeCount; }
+    public void setBridgeCount(Integer bridgeCount) { this.bridgeCount = bridgeCount; }
     public Boolean getMet() { return met; }
     public void setMet(Boolean met) { this.met = met; }
     public String getEventName() { return eventName; }

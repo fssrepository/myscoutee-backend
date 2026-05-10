@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMembersSummaryDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
@@ -40,10 +39,5 @@ public class ActivitiesMembersController {
     @PostMapping("/replace")
     public void replace(@RequestBody ActivityMembersReplaceRequestDto request) {
         activitiesMembersService.replace(request);
-    }
-
-    @PostMapping("/sync")
-    public void sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
-        activitiesMembersService.sync(request);
     }
 }

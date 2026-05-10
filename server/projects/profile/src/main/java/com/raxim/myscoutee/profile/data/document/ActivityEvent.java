@@ -32,11 +32,15 @@ public class ActivityEvent {
     private static final String TYPE_EVENTS = "events";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
-    private static final String STATUS_ACTIVE = "active";
-    private static final String STATUS_HOSTING = "hosting";
-    private static final String STATUS_INVITATION = "invitation";
-    private static final String STATUS_DRAFT = "draft";
-    private static final String STATUS_TRASHED = "trashed";
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_HOSTING = "H";
+    private static final String STATUS_INVITATION = "INV";
+    private static final String STATUS_DRAFT = "DR";
+    private static final String STATUS_TRASHED = "T";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
 
     @Id
     private String id;
@@ -46,6 +50,7 @@ public class ActivityEvent {
     private String ownerUserId;
     private String type;
     private String status;
+    private String statusBeforeSuppression;
     private List<String> admins = new ArrayList<>();
     private String avatar;
     private String title;
@@ -91,13 +96,11 @@ public class ActivityEvent {
     private String eventType;
     private Integer acceptedMembers;
     private Integer pendingMembers;
-    private List<String> acceptedMemberUserIds;
-    private List<String> pendingMemberUserIds;
     private List<String> topics = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String subEventsDisplayMode;
     private Double rating;
-    private Double relevance;
+    private Double boost;
     private Double affinity;
     private String createdDate;
     private String createdUser;
@@ -126,6 +129,10 @@ public class ActivityEvent {
         return deriveStatusFromLegacy();
     }
     public void setStatus(String status) { this.status = normalizeStatusValue(status); }
+    public String getStatusBeforeSuppression() { return statusBeforeSuppression; }
+    public void setStatusBeforeSuppression(String statusBeforeSuppression) {
+        this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatusValue(statusBeforeSuppression) : null;
+    }
     public List<String> getAdmins() { return admins; }
     public void setAdmins(List<String> admins) { this.admins = admins == null ? new ArrayList<>() : new ArrayList<>(admins); }
     public String getAvatar() { return avatar; }
@@ -249,21 +256,6 @@ public class ActivityEvent {
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }
     public void setPendingMembers(Integer pendingMembers) { this.pendingMembers = pendingMembers; }
-    public List<String> getAcceptedMemberUserIds() {
-        return acceptedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(acceptedMemberUserIds);
-    }
-    public void setAcceptedMemberUserIds(List<String> acceptedMemberUserIds) {
-        this.acceptedMemberUserIds = acceptedMemberUserIds == null ? null : new ArrayList<>(acceptedMemberUserIds);
-    }
-    public List<String> getPendingMemberUserIds() {
-        return pendingMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingMemberUserIds);
-    }
-    public void setPendingMemberUserIds(List<String> pendingMemberUserIds) {
-        this.pendingMemberUserIds = pendingMemberUserIds == null ? null : new ArrayList<>(pendingMemberUserIds);
-    }
-    public boolean hasEmbeddedMemberUserIds() {
-        return acceptedMemberUserIds != null || pendingMemberUserIds != null;
-    }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }
@@ -272,8 +264,8 @@ public class ActivityEvent {
     public void setSubEventsDisplayMode(String subEventsDisplayMode) { this.subEventsDisplayMode = subEventsDisplayMode; }
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
-    public Double getRelevance() { return relevance; }
-    public void setRelevance(Double relevance) { this.relevance = relevance; }
+    public Double getBoost() { return boost; }
+    public void setBoost(Double boost) { this.boost = boost; }
     public Double getAffinity() { return affinity; }
     public void setAffinity(Double affinity) { this.affinity = affinity; }
     public String getCreatedDate() { return createdDate; }
@@ -321,7 +313,14 @@ public class ActivityEvent {
     private static String normalizeStatusValue(String value) {
         String normalized = value == null ? "" : value.trim();
         return switch (normalized) {
-            case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED -> normalized;
+            case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED, STATUS_UNDER_REVIEW,
+                    STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE -> normalized;
+            case "active" -> STATUS_ACTIVE;
+            case "hosting" -> STATUS_HOSTING;
+            case "invitation" -> STATUS_INVITATION;
+            case "draft" -> STATUS_DRAFT;
+            case "trashed", "trash" -> STATUS_TRASHED;
+            case "deleted" -> STATUS_DELETED;
             default -> STATUS_ACTIVE;
         };
     }

@@ -91,6 +91,11 @@ public class ActivitiesEventsController {
         activitiesEventsService.restore(request);
     }
 
+    @PostMapping("/take-over")
+    public void takeOver(@RequestBody EventActionRequestDto request) {
+        activitiesEventsService.takeOver(request);
+    }
+
     @PostMapping("/join")
     public EventRecordDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
@@ -127,7 +132,7 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/sync")
-    public void sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
-        activitiesEventsService.sync(request);
+    public EventRecordDto sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
+        return activitiesEventsService.sync(request);
     }
 }

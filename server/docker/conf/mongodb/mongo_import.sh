@@ -183,6 +183,22 @@ db.getCollection('i18n_bundles').createIndex({ lang: 1 }, { name: 'i18n_bundles_
 db.getCollection('i18n_messages').createIndex({ key: 1, lang: 1 }, { name: 'i18n_messages_key_lang', unique: true });
 " >/dev/null
       ;;
+    userAffinityEdges)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('userAffinityEdges').createIndex({ pairKey: 1 }, { name: 'user_affinity_edge_pair_key', unique: true });
+db.getCollection('userAffinityEdges').createIndex({ leftUserId: 1, rightUserId: 1 }, { name: 'user_affinity_edge_left_right', unique: true });
+db.getCollection('userAffinityEdges').createIndex({ leftUserId: 1, edgeWeight: -1 }, { name: 'user_affinity_edge_left_weight' });
+db.getCollection('userAffinityEdges').createIndex({ rightUserId: 1, edgeWeight: -1 }, { name: 'user_affinity_edge_right_weight' });
+" >/dev/null
+      ;;
   esac
 }
 

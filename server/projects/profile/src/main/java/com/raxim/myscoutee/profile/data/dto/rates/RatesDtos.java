@@ -21,7 +21,6 @@ public final class RatesDtos {
             Integer scoreReceived,
             String eventName,
             String happenedAt,
-            Double distanceKm,
             Integer distanceMetersExact) {
     }
 
@@ -38,7 +37,6 @@ public final class RatesDtos {
             String toUserId,
             Integer rate,
             String mode,
-            String source,
             String createdAtIso,
             String updatedAtIso,
             String ownerUserId,
@@ -51,7 +49,6 @@ public final class RatesDtos {
             Integer scoreReceived,
             String eventName,
             String happenedAtIso,
-            Double distanceKm,
             Integer distanceMetersExact) {
     }
 

@@ -24,7 +24,7 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
-import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardGroupDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
@@ -32,7 +32,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
-import com.raxim.myscoutee.profile.repository.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
@@ -41,7 +41,7 @@ class EventSchedulerTest {
     @Mock
     private UsersRepository usersRepository;
     @Mock
-    private UserRatesRepository userRatesRepository;
+    private UserAffinityEdgesRepository userAffinityEdgesRepository;
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
@@ -75,7 +75,7 @@ class EventSchedulerTest {
                 user("u1"),
                 user("u2"),
                 user("u3")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("locked-1", "u1", 1.0d),
                 rate("locked-1", "u2", 0.8d),
                 rate("u1", "u3", 0.95d),
@@ -119,7 +119,7 @@ class EventSchedulerTest {
                 user("u2"),
                 user("u3"),
                 user("u4")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u3", "u4", 0.95d)));
         ActivitiesMembersService.OwnerMembersSnapshot eventSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -213,7 +213,7 @@ class EventSchedulerTest {
                 user("u2"),
                 user("u3"),
                 user("u4")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u3", "u4", 0.95d)));
         ActivitiesMembersService.OwnerMembersSnapshot eventSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -314,7 +314,7 @@ class EventSchedulerTest {
                 user("u1"),
                 user("u2"),
                 user("u3")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u2", "u3", 0.2d)));
         when(activitiesEventLeaderboardService.queryState("event-3", "sub-1")).thenReturn(currentState);
@@ -342,7 +342,7 @@ class EventSchedulerTest {
         when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
-        when(userRatesRepository.findRelevantBySourceAndUserIds(org.mockito.ArgumentMatchers.eq("activity-rate"), anyList())).thenReturn(List.of(
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d)));
         ActivitiesMembersService.OwnerMembersSnapshot eventSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
                 "event",
@@ -380,7 +380,7 @@ class EventSchedulerTest {
         lenient().when(schedulerPlanMarkersRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
         return new EventScheduler(
                 usersRepository,
-                userRatesRepository,
+                userAffinityEdgesRepository,
                 activityEventsRepository,
                 schedulerPlanMarkersRepository,
                 activitiesMembersService,
@@ -396,14 +396,14 @@ class EventSchedulerTest {
         return user;
     }
 
-    private UserRate rate(String ownerUserId, String relatedUserId, double affinityScore) {
-        UserRate rate = new UserRate();
-        rate.setSource("activity-rate");
-        rate.setMode("single");
-        rate.setOwnerUserId(ownerUserId);
-        rate.setRelatedUserId(relatedUserId);
-        rate.setAffinityScore(affinityScore);
-        return rate;
+    private UserAffinityEdge rate(String leftUserId, String rightUserId, double edgeWeight) {
+        UserAffinityEdge edge = new UserAffinityEdge();
+        edge.setLeftUserId(leftUserId);
+        edge.setRightUserId(rightUserId);
+        edge.setPairKey(leftUserId + ":" + rightUserId);
+        edge.setAffinityScore(edgeWeight);
+        edge.setEdgeWeight(edgeWeight);
+        return edge;
     }
 
     private SubEventFormItemDto subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {

@@ -15,6 +15,8 @@ public interface UsersRepository extends MongoRepository<Users, String> {
 
     List<Users> findByProfileStatus(String profileStatus);
 
+    List<Users> findByProfileStatusIn(Collection<String> profileStatuses);
+
     List<Users> findByPartitionKey(String partitionKey);
 
     List<Users> findByProfileStatusAndDeletedAtIsoLessThanEqual(String profileStatus, String deletedAtIso);

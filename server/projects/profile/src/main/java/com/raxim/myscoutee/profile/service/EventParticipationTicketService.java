@@ -283,7 +283,7 @@ public class EventParticipationTicketService {
         next.setSubEvents(cloneSubEvents(preferred.getSubEvents()));
         next.setSubEventsDisplayMode(safeText(preferred.getSubEventsDisplayMode()));
         next.setRating(preferred.getRating());
-        next.setRelevance(preferred.getRelevance());
+        next.setBoost(preferred.getBoost());
         next.setAffinity(preferred.getAffinity());
         next.setCreatedDate(existing != null ? normalizeDateTime(existing.getCreatedDate(), nowIso) : nowIso);
         next.setCreatedUser(existing != null ? safeText(existing.getCreatedUser()) : ownerUserId);
@@ -408,7 +408,7 @@ public class EventParticipationTicketService {
                 && Objects.equals(safeSubEvents(left.getSubEvents()), safeSubEvents(right.getSubEvents()))
                 && Objects.equals(left.getSubEventsDisplayMode(), right.getSubEventsDisplayMode())
                 && Objects.equals(left.getRating(), right.getRating())
-                && Objects.equals(left.getRelevance(), right.getRelevance())
+                && Objects.equals(left.getBoost(), right.getBoost())
                 && Objects.equals(left.getAffinity(), right.getAffinity())
                 && Objects.equals(left.getCreatedDate(), right.getCreatedDate())
                 && Objects.equals(left.getCreatedUser(), right.getCreatedUser());

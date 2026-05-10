@@ -38,14 +38,14 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorRequest;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
-import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
-import com.raxim.myscoutee.profile.repository.UserRatesRepository;
+import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
@@ -54,13 +54,12 @@ public class EventScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventScheduler.class);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_GROUP = "group";
-    private static final String RATE_SOURCE_ACTIVITY = "activity-rate";
     private static final String MARKER_ACTION_GROUP_MEMBERS = "group-members";
     private static final String MARKER_ACTION_INVITE_BATCH = "invite-batch";
     private static final String MARKER_UPDATED_BY = "scheduler";
 
     private final UsersRepository usersRepository;
-    private final UserRatesRepository userRatesRepository;
+    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final SchedulerPlanMarkersRepository schedulerPlanMarkersRepository;
     private final ActivitiesMembersService activitiesMembersService;
@@ -76,7 +75,7 @@ public class EventScheduler {
 
     public EventScheduler(
             UsersRepository usersRepository,
-            UserRatesRepository userRatesRepository,
+            UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
             SchedulerPlanMarkersRepository schedulerPlanMarkersRepository,
             ActivitiesMembersService activitiesMembersService,
@@ -84,7 +83,7 @@ public class EventScheduler {
             EventInviteNotificationService eventInviteNotificationService,
             NotificationRuleRegistryService notificationRuleRegistryService) {
         this.usersRepository = usersRepository;
-        this.userRatesRepository = userRatesRepository;
+        this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.schedulerPlanMarkersRepository = schedulerPlanMarkersRepository;
         this.activitiesMembersService = activitiesMembersService;
@@ -492,13 +491,13 @@ public List<InviteBatchPlan> generatePriorityPlans() {
                     .forEach(discoveredUserIds::add);
         }
 
-        List<UserRate> rates = resolveRelevantRates(discoveredUserIds);
+        List<UserAffinityEdge> affinityEdges = resolveRelevantEdges(discoveredUserIds);
         incrementObservedQueries(observedQueries);
-        for (UserRate rate : rates) {
-            if (rate == null) {
+        for (UserAffinityEdge edge : affinityEdges) {
+            if (edge == null) {
                 continue;
             }
-            collectRateUserIds(discoveredUserIds, rate);
+            collectAffinityEdgeUserIds(discoveredUserIds, edge);
         }
 
         Map<String, Node> nodesByUserId = new LinkedHashMap<>();
@@ -513,16 +512,16 @@ public List<InviteBatchPlan> generatePriorityPlans() {
             nodesByUserId.putIfAbsent(userId, new Node(userId));
         }
 
-        for (UserRate rate : rates) {
-            if (rate == null) {
+        for (UserAffinityEdge edge : affinityEdges) {
+            if (edge == null) {
                 continue;
             }
-            addActivityRateEdges(edges, nodesByUserId, rate);
+            addUserAffinityEdge(edges, nodesByUserId, edge);
         }
         return new FGraph(nodesByUserId, edges);
     }
 
-    private List<UserRate> resolveRelevantRates(Set<String> requiredUserIds) {
+    private List<UserAffinityEdge> resolveRelevantEdges(Set<String> requiredUserIds) {
         List<String> normalizedUserIds = requiredUserIds == null
                 ? List.of()
                 : requiredUserIds.stream()
@@ -531,42 +530,30 @@ public List<InviteBatchPlan> generatePriorityPlans() {
                         .distinct()
                         .toList();
         if (normalizedUserIds.isEmpty()) {
-            return userRatesRepository.findBySource(RATE_SOURCE_ACTIVITY);
+            return userAffinityEdgesRepository.findAll();
         }
-        return userRatesRepository.findRelevantBySourceAndUserIds(RATE_SOURCE_ACTIVITY, normalizedUserIds);
+        return userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds);
     }
 
-    private void collectRateUserIds(Set<String> userIds, UserRate rate) {
-        String ownerUserId = normalizeId(rate == null ? null : rate.getOwnerUserId());
-        String relatedUserId = normalizeId(rate == null ? null : rate.getRelatedUserId());
-        String secondaryRelatedUserId = normalizeId(rate == null ? null : rate.getSecondaryRelatedUserId());
-        if (StringUtils.hasText(ownerUserId)) {
-            userIds.add(ownerUserId);
+    private void collectAffinityEdgeUserIds(Set<String> userIds, UserAffinityEdge edge) {
+        String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
+        String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
+        if (StringUtils.hasText(leftUserId)) {
+            userIds.add(leftUserId);
         }
-        if (StringUtils.hasText(relatedUserId)) {
-            userIds.add(relatedUserId);
-        }
-        if (StringUtils.hasText(secondaryRelatedUserId)) {
-            userIds.add(secondaryRelatedUserId);
+        if (StringUtils.hasText(rightUserId)) {
+            userIds.add(rightUserId);
         }
     }
 
-    private void addActivityRateEdges(List<Edge> edges, Map<String, Node> nodesByUserId, UserRate rate) {
-        String ownerUserId = normalizeId(rate.getOwnerUserId());
-        String relatedUserId = normalizeId(rate.getRelatedUserId());
-        String secondaryRelatedUserId = normalizeId(rate.getSecondaryRelatedUserId());
-        String mode = normalizeId(rate.getMode()).toLowerCase();
-        double weight = rate.getAffinityScore() == null ? 0d : Math.max(0d, rate.getAffinityScore());
-
-        if ("pair".equals(mode) && StringUtils.hasText(relatedUserId) && StringUtils.hasText(secondaryRelatedUserId)) {
-            addEdge(edges, nodesByUserId, relatedUserId, secondaryRelatedUserId, weight);
+    private void addUserAffinityEdge(List<Edge> edges, Map<String, Node> nodesByUserId, UserAffinityEdge affinityEdge) {
+        String leftUserId = normalizeId(affinityEdge.getLeftUserId());
+        String rightUserId = normalizeId(affinityEdge.getRightUserId());
+        double weight = affinityEdge.getEdgeWeight() == null ? 0d : Math.max(0d, affinityEdge.getEdgeWeight());
+        if (weight <= 0d) {
+            return;
         }
-        if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(relatedUserId)) {
-            addEdge(edges, nodesByUserId, ownerUserId, relatedUserId, weight);
-        }
-        if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(secondaryRelatedUserId)) {
-            addEdge(edges, nodesByUserId, ownerUserId, secondaryRelatedUserId, weight);
-        }
+        addEdge(edges, nodesByUserId, leftUserId, rightUserId, weight);
     }
 
     private void addEdge(List<Edge> edges, Map<String, Node> nodesByUserId, String leftUserId, String rightUserId, double weight) {

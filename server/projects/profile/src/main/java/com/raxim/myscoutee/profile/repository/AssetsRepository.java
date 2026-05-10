@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,8 @@ public interface AssetsRepository extends MongoRepository<Asset, String> {
     Optional<Asset> findBySyncKey(String syncKey);
 
     Optional<Asset> findByAssetId(String assetId);
+
+    List<Asset> findByAssetIdIn(Collection<String> assetIds);
 
     Optional<Asset> findByOwnerUserIdAndAssetId(String ownerUserId, String assetId);
 

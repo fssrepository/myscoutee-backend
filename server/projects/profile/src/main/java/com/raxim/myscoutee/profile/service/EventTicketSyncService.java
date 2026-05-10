@@ -286,7 +286,7 @@ public class EventTicketSyncService {
             next.setSubEvents(canonical.getSubEvents() == null ? List.of() : new ArrayList<>(canonical.getSubEvents()));
             next.setSubEventsDisplayMode(safeText(canonical.getSubEventsDisplayMode()));
             next.setRating(safeDouble(canonical.getRating()));
-            next.setRelevance(safeDouble(canonical.getRelevance()));
+            next.setBoost(safeDouble(canonical.getBoost()));
             next.setAffinity(safeDouble(canonical.getAffinity()));
             next.setTicketing(ticketingEnabled);
             boolean existingTrashed = existing != null && Boolean.TRUE.equals(existing.getIsTrashed());
@@ -365,7 +365,7 @@ public class EventTicketSyncService {
         clone.setSubEvents(source.getSubEvents() == null ? List.of() : new ArrayList<>(source.getSubEvents()));
         clone.setSubEventsDisplayMode(source.getSubEventsDisplayMode());
         clone.setRating(source.getRating());
-        clone.setRelevance(source.getRelevance());
+        clone.setBoost(source.getBoost());
         clone.setAffinity(source.getAffinity());
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
@@ -424,7 +424,7 @@ public class EventTicketSyncService {
                 && Objects.equals(left.getSubEvents() == null ? List.of() : left.getSubEvents(), right.getSubEvents() == null ? List.of() : right.getSubEvents())
                 && Objects.equals(safeText(left.getSubEventsDisplayMode()), safeText(right.getSubEventsDisplayMode()))
                 && Double.compare(safeDouble(left.getRating()), safeDouble(right.getRating())) == 0
-                && Double.compare(safeDouble(left.getRelevance()), safeDouble(right.getRelevance())) == 0
+                && Double.compare(safeDouble(left.getBoost()), safeDouble(right.getBoost())) == 0
                 && Double.compare(safeDouble(left.getAffinity()), safeDouble(right.getAffinity())) == 0;
     }
 

@@ -20,12 +20,15 @@ import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 public class UserExperienceProfilesService {
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public UserExperienceProfilesService(
             UserExperienceProfilesRepository userExperienceProfilesRepository,
-            HomeUserProfileService homeUserProfileService) {
+            HomeUserProfileService homeUserProfileService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public UserExperiencesResponseDto queryUserExperiences(String requestedUserId) {
@@ -53,6 +56,7 @@ public class UserExperienceProfilesService {
         profile.setUpdatedAtIso(OffsetDateTime.now(ZoneOffset.UTC).toString());
         profile.setEntries(normalizeEntries(request == null ? null : request.entries()));
         UserExperienceProfile saved = userExperienceProfilesRepository.save(profile);
+        affinityRecomputeTaskService.enqueueUserChanged(resolvedUserId);
         return new UserExperiencesResponseDto(resolvedUserId, toDtos(saved.getEntries()));
     }
 

@@ -13,6 +13,17 @@ about page - landing size (before the login)
 the gdpr privacy shouldn't open if it's not needed (so not open and immediately close)
 
 report user menu is bleeding out of the screen on mobile
+configureable matrix, to fine tune the algorithm - specify multipliers of profile data - normalize
+friends in common is a single rate, not a pair; home/activity UI must rate one person, hide the two-person search inputs there, and keep demo/mongo seeds aligned
+status-code migration note: use compact persisted/network status codes where possible to reduce payload size. Current suppression codes are B=blocked, D=deleted, I=inactive, UR=under review. Before converting existing long event statuses such as active/draft/trashed/hosting/invitation, add an explicit compatibility map so old UI/DTO logic does not break.
+
+fuggoben levo esemenynel a chat le van tiltva???
+reload page - activity menubar stucks
+affinity config (multiplier)+ telemetry menu
+asset take over - multi manager case also
+
+firebase worker with time window not to call the notification several times
+and when anything changes admin or members are needed to be notified
 
 Commands
 --------

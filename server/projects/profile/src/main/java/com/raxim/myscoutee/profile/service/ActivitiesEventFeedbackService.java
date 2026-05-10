@@ -38,18 +38,21 @@ public class ActivitiesEventFeedbackService {
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
             ActivityEventsRepository activityEventsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
-            UsersRepository usersRepository) {
+            UsersRepository usersRepository,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.usersRepository = usersRepository;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -160,6 +163,7 @@ public class ActivitiesEventFeedbackService {
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
 
+        LinkedHashSet<String> changedTargetUserIds = new LinkedHashSet<>();
         for (EventFeedbackAnswerSubmitDto answer : safeAnswers(request == null ? null : request.answers())) {
             String cardId = normalizeId(answer.cardId());
             if (!StringUtils.hasText(cardId)) {
@@ -181,6 +185,13 @@ public class ActivitiesEventFeedbackService {
             document.setUpdatedDate(nowIso);
             document.setUpdatedUser(userId);
             eventFeedbackAnswersRepository.save(document);
+            String targetUserId = normalizeId(document.getTargetUserId());
+            if (StringUtils.hasText(targetUserId)) {
+                changedTargetUserIds.add(targetUserId);
+            }
+        }
+        for (String targetUserId : changedTargetUserIds) {
+            affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
     }
 
