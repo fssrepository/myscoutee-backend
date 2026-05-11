@@ -70,10 +70,11 @@ public class AdminParamsService {
                         changedDate(config),
                         firstNonBlank(config.getChangedUser(), "system"),
                         summaryFor(config, section.key()),
+                        summaryKeyFor(summaryFor(config, section.key()), section.key()),
                         Boolean.TRUE.equals(config.getActive()),
                         fieldsFor(section.key(), config)))
                 .toList();
-        return new AdminParamsHistoryDto(section.key(), section.label(), versions);
+        return new AdminParamsHistoryDto(section.key(), section.label(), section.labelKey(), versions);
     }
 
     public AdminParamsStateDto save(AdminParamsSaveRequestDto request) {
@@ -123,10 +124,12 @@ public class AdminParamsService {
         return new AdminParamsSectionDto(
                 section.key(),
                 section.label(),
+                section.labelKey(),
                 safeVersion(metadata),
                 changedDate(metadata),
                 firstNonBlank(metadata.getChangedUser(), "system"),
                 summaryFor(metadata, section.key()),
+                summaryKeyFor(summaryFor(metadata, section.key()), section.key()),
                 fieldsFor(section.key(), active));
     }
 
@@ -502,11 +505,33 @@ public class AdminParamsService {
     }
 
     private AdminParamFieldDto field(String key, String label, String group, Double value, String unit, String strategy) {
-        return new AdminParamFieldDto(key, label, group, "number", value, null, unit, strategy);
+        return new AdminParamFieldDto(
+                key,
+                label,
+                fieldLabelKey(key),
+                group,
+                groupLabelKey(group),
+                "number",
+                value,
+                null,
+                unit,
+                strategy,
+                strategyLabelKey(strategy));
     }
 
     private AdminParamFieldDto textField(String key, String label, String group, String value, String strategy) {
-        return new AdminParamFieldDto(key, label, group, "text", null, value, null, strategy);
+        return new AdminParamFieldDto(
+                key,
+                label,
+                fieldLabelKey(key),
+                group,
+                groupLabelKey(group),
+                "text",
+                null,
+                value,
+                null,
+                strategy,
+                strategyLabelKey(strategy));
     }
 
     private Map<String, AdminParamFieldDto> indexFields(Collection<AdminParamFieldDto> fields) {
@@ -566,6 +591,18 @@ public class AdminParamsService {
         return "Config version " + safeVersion(config) + ".";
     }
 
+    private String summaryKeyFor(String summary, String sectionKey) {
+        String normalizedSummary = safeText(summary);
+        String normalizedSection = safeText(sectionKey);
+        if (!StringUtils.hasText(normalizedSummary) || !StringUtils.hasText(normalizedSection)) {
+            return "";
+        }
+        if (normalizedSummary.matches("(?i)^Updated\\s+.+?\\s+parameters\\.$")) {
+            return "admin.params.summary.updated." + normalizedSection;
+        }
+        return "";
+    }
+
     private SectionDefinition section(String value) {
         String normalized = safeText(value).toLowerCase();
         return SECTIONS.stream()
@@ -576,6 +613,30 @@ public class AdminParamsService {
 
     private String labelFor(String sectionKey) {
         return section(sectionKey).label();
+    }
+
+    private String fieldLabelKey(String key) {
+        String normalized = safeText(key);
+        return StringUtils.hasText(normalized) ? "admin.params.field." + normalized : "";
+    }
+
+    private String groupLabelKey(String group) {
+        String normalized = i18nSegment(group);
+        return StringUtils.hasText(normalized) ? "admin.params.group." + normalized : "admin.params.group.general";
+    }
+
+    private String strategyLabelKey(String strategy) {
+        String normalized = safeText(strategy);
+        return StringUtils.hasText(normalized) ? "admin.params.strategy." + normalized : "";
+    }
+
+    private String i18nSegment(String value) {
+        String normalized = safeText(value)
+                .replaceAll("([a-z0-9])([A-Z])", "$1.$2")
+                .replaceAll("[^a-zA-Z0-9]+", ".")
+                .replaceAll("^\\.+|\\.+$", "")
+                .toLowerCase();
+        return normalized;
     }
 
     private AffinityConfig cloneConfig(AffinityConfig config) {
@@ -615,5 +676,8 @@ public class AdminParamsService {
     }
 
     private record SectionDefinition(String key, String label) {
+        private String labelKey() {
+            return "admin.params.section." + key;
+        }
     }
 }

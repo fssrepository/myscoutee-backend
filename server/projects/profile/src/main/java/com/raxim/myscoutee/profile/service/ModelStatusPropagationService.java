@@ -211,7 +211,11 @@ public class ModelStatusPropagationService {
         if (!StringUtils.hasText(previousStatus)) {
             previousStatus = STATUS_ACTIVE;
         }
-        return updateEventStatusIfSnapshotCurrent(event, suppressionStatus, previousStatus);
+        boolean updated = updateEventStatusIfSnapshotCurrent(event, suppressionStatus, previousStatus);
+        if (updated) {
+            enqueueEventStatusNotification(event, suppressionStatus, previousStatus);
+        }
+        return updated;
     }
 
     private boolean restoreEventIfSuppressed(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
@@ -226,10 +230,15 @@ public class ModelStatusPropagationService {
             return true;
         }
         String previousStatus = safeText(event.getStatusBeforeSuppression());
-        return updateEventStatusIfSnapshotCurrent(
+        String restoredStatus = StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE;
+        boolean updated = updateEventStatusIfSnapshotCurrent(
                 event,
-                StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE,
+                restoredStatus,
                 null);
+        if (updated) {
+            enqueueEventStatusNotification(event, restoredStatus, currentStatus);
+        }
+        return updated;
     }
 
     private boolean suppressAsset(Asset asset, String suppressionStatus) {
@@ -335,6 +344,66 @@ public class ModelStatusPropagationService {
                         "assetStatus", normalizedNextStatus,
                         "previousStatus", safeText(previousStatus)),
                 safeText(asset.getUpdatedUser())));
+    }
+
+    private void enqueueEventStatusNotification(ActivityEvent event, String nextStatus, String previousStatus) {
+        if (event == null || notificationOutboxService == null) {
+            return;
+        }
+        String sourceId = normalizeId(event.getSourceId());
+        if (!StringUtils.hasText(sourceId)) {
+            return;
+        }
+        String normalizedNextStatus = safeText(nextStatus);
+        String title;
+        String body;
+        String type;
+        String scope;
+        List<String> recipients;
+        if (STATUS_UNDER_REVIEW.equals(normalizedNextStatus)) {
+            recipients = activeEventAdminUserIds(event);
+            title = "Event needs review";
+            body = eventTitle(event) + " needs review. An active admin can take over or cancel it.";
+            type = "event-review";
+            scope = "event-active-admins";
+        } else if (STATUS_BLOCKED.equals(normalizedNextStatus)
+                || STATUS_DELETED.equals(normalizedNextStatus)
+                || STATUS_INACTIVE.equals(normalizedNextStatus)) {
+            recipients = eventMemberUserIds(event);
+            title = "Event unavailable";
+            body = eventTitle(event) + " is no longer available.";
+            type = "event-unavailable";
+            scope = "event-members";
+        } else if (STATUS_ACTIVE.equals(normalizedNextStatus) || "H".equals(normalizedNextStatus)) {
+            recipients = activeEventAdminUserIds(event);
+            title = "Event restored";
+            body = eventTitle(event) + " is available again.";
+            type = "event-restored";
+            scope = "event-active-admins";
+        } else {
+            return;
+        }
+        if (recipients.isEmpty()) {
+            return;
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                type,
+                "event",
+                sourceId,
+                scope,
+                recipients,
+                title,
+                body,
+                "/game",
+                firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                type + "-" + sourceId,
+                Map.of(
+                        "eventId", sourceId,
+                        "eventTitle", eventTitle(event),
+                        "eventStatus", normalizedNextStatus,
+                        "previousStatus", safeText(previousStatus)),
+                safeText(event.getUpdatedUser())));
     }
 
     private boolean updateEventStatusIfSnapshotCurrent(ActivityEvent event, String nextStatus, String previousStatus) {
@@ -520,6 +589,59 @@ public class ModelStatusPropagationService {
                 .toList();
     }
 
+    private List<String> activeEventAdminUserIds(ActivityEvent event) {
+        String sourceId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(sourceId)) {
+            return List.of();
+        }
+        LinkedHashSet<String> candidateIds = new LinkedHashSet<>();
+        candidateIds.addAll(normalizeIds(event.getAdmins()));
+        String creatorUserId = normalizeId(event.getCreatorUserId());
+        if (StringUtils.hasText(creatorUserId)) {
+            candidateIds.add(creatorUserId);
+        }
+        List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
+        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
+            if (member == null
+                    || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
+                    || !ROLE_ADMIN.equals(safeText(member.getRole()))) {
+                continue;
+            }
+            String userId = normalizeId(member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                candidateIds.add(userId);
+            }
+        }
+        if (candidateIds.isEmpty()) {
+            return List.of();
+        }
+        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
+        return candidateIds.stream()
+                .filter(userId -> isActiveUser(usersById.get(userId)))
+                .toList();
+    }
+
+    private List<String> eventMemberUserIds(ActivityEvent event) {
+        String sourceId = normalizeId(event == null ? null : event.getSourceId());
+        if (!StringUtils.hasText(sourceId)) {
+            return List.of();
+        }
+        LinkedHashSet<String> adminUserIds = new LinkedHashSet<>(normalizeIds(event.getAdmins()));
+        String creatorUserId = normalizeId(event.getCreatorUserId());
+        if (StringUtils.hasText(creatorUserId)) {
+            adminUserIds.add(creatorUserId);
+        }
+        List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
+        return (members == null ? List.<ActivityMember>of() : members).stream()
+                .filter(member -> member != null && MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !adminUserIds.contains(userId))
+                .distinct()
+                .toList();
+    }
+
     private List<String> assetRequesterUserIds(Asset asset) {
         if (asset == null || asset.getRequests() == null || asset.getRequests().isEmpty()) {
             return List.of();
@@ -587,6 +709,11 @@ public class ModelStatusPropagationService {
     private String assetTitle(Asset asset) {
         String title = safeText(asset == null ? null : asset.getTitle());
         return StringUtils.hasText(title) ? title : "This asset";
+    }
+
+    private String eventTitle(ActivityEvent event) {
+        String title = safeText(event == null ? null : event.getTitle());
+        return StringUtils.hasText(title) ? title : "This event";
     }
 
     private String firstNonBlank(String first, String second) {

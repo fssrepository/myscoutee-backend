@@ -20,20 +20,25 @@ public final class AdminDtos {
     public record AdminParamsSectionDto(
             String key,
             String label,
+            String labelKey,
             Integer version,
             String changedDate,
             String changedBy,
             String summary,
+            String summaryKey,
             List<AdminParamFieldDto> fields) {}
     public record AdminParamFieldDto(
             String key,
             String label,
+            String labelKey,
             String group,
+            String groupKey,
             String valueType,
             Double numberValue,
             String textValue,
             String unit,
-            String strategy) {}
+            String strategy,
+            String strategyKey) {}
     public record AdminParamsSaveRequestDto(
             String adminUserId,
             String sectionKey,
@@ -42,6 +47,7 @@ public final class AdminDtos {
     public record AdminParamsHistoryDto(
             String sectionKey,
             String label,
+            String labelKey,
             List<AdminParamsHistoryItemDto> versions) {}
     public record AdminParamsHistoryItemDto(
             String configId,
@@ -49,6 +55,7 @@ public final class AdminDtos {
             String changedDate,
             String changedBy,
             String summary,
+            String summaryKey,
             Boolean active,
             List<AdminParamFieldDto> fields) {}
     public record AdminParamsRevertRequestDto(

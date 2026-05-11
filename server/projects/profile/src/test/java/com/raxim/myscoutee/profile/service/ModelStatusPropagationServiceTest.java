@@ -35,6 +35,7 @@ class ModelStatusPropagationServiceTest {
         ActivityMembersRepository membersRepository = mock(ActivityMembersRepository.class);
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
 
         Users blockedUser = user("u1", "blocked", "B");
         Users activeAdmin = user("u2", "public", "A");
@@ -60,7 +61,7 @@ class ModelStatusPropagationServiceTest {
                 membersRepository,
                 assetsRepository,
                 mongoTemplate,
-                mock(NotificationOutboxService.class));
+                notificationOutboxService);
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 
@@ -77,6 +78,12 @@ class ModelStatusPropagationServiceTest {
         verify(mongoTemplate).updateFirst(any(), assetUpdate.capture(), eq(Asset.class));
         assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"status\": \"B\"");
         assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"A\"");
+
+        ArgumentCaptor<NotificationOutboxService.NotificationIntent> notification =
+                ArgumentCaptor.forClass(NotificationOutboxService.NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("event-review");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
     }
 
     @Test

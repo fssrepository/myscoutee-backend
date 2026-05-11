@@ -14,6 +14,8 @@ about page - landing size (before the login)
 report user menu is bleeding out of the screen on mobile
 reload page - activity menubar stucks
 
+chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a save button at top, and probably remove backward/forward arrow as stepper)
+
 tournament / auto inviter time window (2h earlier to run background process)
 
 Commands

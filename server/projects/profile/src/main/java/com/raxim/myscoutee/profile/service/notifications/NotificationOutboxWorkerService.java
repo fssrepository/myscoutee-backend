@@ -11,6 +11,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +49,7 @@ import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.PlatformParametersService;
 
 @Service
 public class NotificationOutboxWorkerService {
@@ -56,6 +60,7 @@ public class NotificationOutboxWorkerService {
     private final UsersRepository usersRepository;
     private final MongoTemplate mongoTemplate;
     private final StringRedisTemplate stringRedisTemplate;
+    private final PlatformParametersService platformParametersService;
     private final int batchSize;
     private final int firebaseChunkSize;
     private final int maxRetries;
@@ -71,6 +76,7 @@ public class NotificationOutboxWorkerService {
             UsersRepository usersRepository,
             MongoTemplate mongoTemplate,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
+            PlatformParametersService platformParametersService,
             @Value("${notifications.outbox.batch-size:50}") int batchSize,
             @Value("${notifications.outbox.firebase-chunk-size:500}") int firebaseChunkSize,
             @Value("${notifications.outbox.max-retries:5}") int maxRetries,
@@ -83,6 +89,7 @@ public class NotificationOutboxWorkerService {
         this.usersRepository = usersRepository;
         this.mongoTemplate = mongoTemplate;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
+        this.platformParametersService = platformParametersService;
         this.batchSize = Math.max(1, Math.min(500, batchSize));
         this.firebaseChunkSize = Math.max(1, Math.min(500, firebaseChunkSize));
         this.maxRetries = Math.max(1, maxRetries);
@@ -98,17 +105,57 @@ public class NotificationOutboxWorkerService {
             return;
         }
         String nowIso = Instant.now().toString();
-        for (NotificationOutboxItem item : dueItems(nowIso)) {
+        List<NotificationOutboxItem> leasedItems = new ArrayList<>();
+        for (NotificationOutboxItem item : dueItems(nowIso, effectiveBatchSize())) {
             NotificationOutboxItem leased = lease(item, nowIso).orElse(null);
             if (leased == null) {
                 continue;
             }
-            try {
-                DeliveryResult result = deliver(leased);
-                markSent(leased, result, Instant.now().toString());
-            } catch (Exception exception) {
-                markFailed(leased, exception, Instant.now());
+            leasedItems.add(leased);
+        }
+        processLeasedItems(leasedItems);
+    }
+
+    private void processLeasedItems(List<NotificationOutboxItem> leasedItems) {
+        if (leasedItems == null || leasedItems.isEmpty()) {
+            return;
+        }
+        int workerCount = Math.min(effectiveMaxWorkers(), leasedItems.size());
+        if (workerCount <= 1) {
+            leasedItems.forEach(this::processLeasedItem);
+            return;
+        }
+
+        ExecutorService executorService = Executors.newFixedThreadPool(workerCount);
+        try {
+            List<Future<?>> futures = new ArrayList<>();
+            for (NotificationOutboxItem leased : leasedItems) {
+                futures.add(executorService.submit(() -> processLeasedItem(leased)));
             }
+            for (Future<?> future : futures) {
+                try {
+                    future.get();
+                } catch (InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    return;
+                } catch (Exception exception) {
+                    LOGGER.warn("Notification outbox worker task failed.", exception);
+                }
+            }
+        } finally {
+            executorService.shutdown();
+        }
+    }
+
+    private void processLeasedItem(NotificationOutboxItem leased) {
+        if (leased == null) {
+            return;
+        }
+        try {
+            DeliveryResult result = deliver(leased);
+            markSent(leased, result, Instant.now().toString());
+        } catch (Exception exception) {
+            markFailed(leased, exception, Instant.now());
         }
     }
 
@@ -119,7 +166,7 @@ public class NotificationOutboxWorkerService {
         }
         try {
             List<MapRecord<String, Object, Object>> records = stringRedisTemplate.opsForStream().read(
-                    StreamReadOptions.empty().count(batchSize),
+                    StreamReadOptions.empty().count(effectiveBatchSize()),
                     StreamOffset.create(NotificationOutboxService.WAKEUP_STREAM_KEY, ReadOffset.from(lastWakeupStreamId)));
             if (records == null || records.isEmpty()) {
                 return;
@@ -131,7 +178,7 @@ public class NotificationOutboxWorkerService {
         }
     }
 
-    private List<NotificationOutboxItem> dueItems(String nowIso) {
+    private List<NotificationOutboxItem> dueItems(String nowIso, int limit) {
         Criteria statusCriteria = Criteria.where("status").is(NotificationOutboxItem.STATUS_PENDING);
         Criteria retryCriteria = new Criteria().orOperator(
                 Criteria.where("nextRetryAt").exists(false),
@@ -139,7 +186,7 @@ public class NotificationOutboxWorkerService {
                 Criteria.where("nextRetryAt").lte(nowIso));
         Query query = Query.query(new Criteria().andOperator(statusCriteria, retryCriteria))
                 .with(Sort.by(Sort.Direction.ASC, "createdDate"))
-                .limit(batchSize);
+                .limit(Math.max(1, limit));
         return mongoTemplate.find(query, NotificationOutboxItem.class);
     }
 
@@ -312,7 +359,7 @@ public class NotificationOutboxWorkerService {
 
     private void markFailed(NotificationOutboxItem item, Exception exception, Instant now) {
         int retryCount = Math.max(0, item == null || item.getRetryCount() == null ? 0 : item.getRetryCount()) + 1;
-        boolean exhausted = retryCount >= maxRetries;
+        boolean exhausted = retryCount >= effectiveMaxRetries();
         String nowIso = now.toString();
         String nextRetryAt = now.plus(retryDelay(retryCount)).toString();
         Update update = new Update()
@@ -328,18 +375,54 @@ public class NotificationOutboxWorkerService {
 
     private Duration retryDelay(int retryCount) {
         long multiplier = 1L << Math.min(8, Math.max(0, retryCount - 1));
-        return retryBaseDelay.multipliedBy(multiplier);
+        return effectiveRetryBaseDelay().multipliedBy(multiplier);
     }
 
     private boolean isInsideDeliveryWindow() {
-        if (deliveryWindowStartHour == deliveryWindowEndHour) {
+        int startHour = effectiveDeliveryWindowStartHour();
+        int endHour = effectiveDeliveryWindowEndHour();
+        if (startHour == endHour) {
             return true;
         }
         int currentHour = LocalTime.now(ZoneId.systemDefault()).getHour();
-        if (deliveryWindowStartHour < deliveryWindowEndHour) {
-            return currentHour >= deliveryWindowStartHour && currentHour < deliveryWindowEndHour;
+        if (startHour < endHour) {
+            return currentHour >= startHour && currentHour < endHour;
         }
-        return currentHour >= deliveryWindowStartHour || currentHour < deliveryWindowEndHour;
+        return currentHour >= startHour || currentHour < endHour;
+    }
+
+    private int effectiveBatchSize() {
+        return batchSize;
+    }
+
+    private int effectiveMaxWorkers() {
+        return platformParametersService == null
+                ? 1
+                : platformParametersService.notificationMaxWorkers(1);
+    }
+
+    private int effectiveMaxRetries() {
+        return platformParametersService == null
+                ? maxRetries
+                : platformParametersService.notificationMaxRetries(maxRetries);
+    }
+
+    private Duration effectiveRetryBaseDelay() {
+        return platformParametersService == null
+                ? retryBaseDelay
+                : platformParametersService.notificationInitialBackoff(retryBaseDelay);
+    }
+
+    private int effectiveDeliveryWindowStartHour() {
+        return platformParametersService == null
+                ? deliveryWindowStartHour
+                : platformParametersService.notificationWindowStartHour(deliveryWindowStartHour);
+    }
+
+    private int effectiveDeliveryWindowEndHour() {
+        return platformParametersService == null
+                ? deliveryWindowEndHour
+                : platformParametersService.notificationWindowEndHour(deliveryWindowEndHour);
     }
 
     private int clampHour(int value, int fallback) {

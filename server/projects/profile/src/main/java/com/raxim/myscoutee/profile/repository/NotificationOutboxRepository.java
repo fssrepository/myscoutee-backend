@@ -8,7 +8,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 
 public interface NotificationOutboxRepository extends MongoRepository<NotificationOutboxItem, String> {
-    Optional<NotificationOutboxItem> findFirstByCollapseKeyAndStatusInOrderByCreatedDateAsc(
+    Optional<NotificationOutboxItem> findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
             String collapseKey,
-            Collection<String> statuses);
+            Collection<String> statuses,
+            String createdDate);
 }

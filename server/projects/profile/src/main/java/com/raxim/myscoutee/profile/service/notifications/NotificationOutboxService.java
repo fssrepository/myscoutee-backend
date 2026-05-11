@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
+import com.raxim.myscoutee.profile.service.PlatformParametersService;
 
 @Service
 public class NotificationOutboxService {
@@ -34,19 +35,23 @@ public class NotificationOutboxService {
     private static final String DELIVERY_STRATEGY_MULTICAST = "multicast";
     private static final String DELIVERY_STRATEGY_TOPIC = "topic";
     private static final int DEFAULT_TOPIC_THRESHOLD = 1000;
+    private static final int DEFAULT_COLLAPSE_WINDOW_SECONDS = 300;
 
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final StringRedisTemplate stringRedisTemplate;
+    private final PlatformParametersService platformParametersService;
 
     public NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
-            ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider) {
+            ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
+            PlatformParametersService platformParametersService) {
         this.notificationOutboxRepository = notificationOutboxRepository;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
+        this.platformParametersService = platformParametersService;
     }
 
     NotificationOutboxService(NotificationOutboxRepository notificationOutboxRepository) {
-        this(notificationOutboxRepository, null);
+        this(notificationOutboxRepository, null, null);
     }
 
     public Optional<NotificationOutboxItem> enqueue(NotificationIntent intent) {
@@ -74,9 +79,10 @@ public class NotificationOutboxService {
                 payloadHash);
 
         NotificationOutboxItem item = notificationOutboxRepository
-                .findFirstByCollapseKeyAndStatusInOrderByCreatedDateAsc(
+                .findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
                         collapseKey,
-                        List.of(NotificationOutboxItem.STATUS_PENDING))
+                        List.of(NotificationOutboxItem.STATUS_PENDING),
+                        collapseWindowStartIso(nowIso))
                 .map(existing -> mergeRecipients(existing, recipientUserIds, nowIso, intent.createdUser()))
                 .orElseGet(() -> newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, topicName, nowIso));
         NotificationOutboxItem saved = notificationOutboxRepository.save(item);
@@ -154,8 +160,28 @@ public class NotificationOutboxService {
         if (!stableTopic) {
             return null;
         }
-        int threshold = readInt(payload.get("topicThreshold"), DEFAULT_TOPIC_THRESHOLD);
+        int threshold = readInt(payload.get("topicThreshold"), topicThreshold());
         return recipientCount == 0 || recipientCount >= Math.max(1, threshold) ? topicName : null;
+    }
+
+    private String collapseWindowStartIso(String nowIso) {
+        int windowSeconds = platformParametersService == null
+                ? DEFAULT_COLLAPSE_WINDOW_SECONDS
+                : platformParametersService.notificationCollapseWindowSeconds(DEFAULT_COLLAPSE_WINDOW_SECONDS);
+        if (windowSeconds <= 0) {
+            return nowIso;
+        }
+        try {
+            return Instant.parse(nowIso).minusSeconds(windowSeconds).toString();
+        } catch (Exception ignored) {
+            return Instant.now().minusSeconds(windowSeconds).toString();
+        }
+    }
+
+    private int topicThreshold() {
+        return platformParametersService == null
+                ? DEFAULT_TOPIC_THRESHOLD
+                : platformParametersService.notificationTopicThreshold(DEFAULT_TOPIC_THRESHOLD);
     }
 
     private void publishWakeup(NotificationOutboxItem item) {
