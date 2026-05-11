@@ -987,7 +987,7 @@ public class ActivitiesMembersService {
                 .toList();
         Set<String> adminUserIds = ordered.stream()
                 .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
-                .filter(member -> ADMIN_ROLES.contains(resolveStoredRole(member, ownerType, ownerId)))
+                .filter(member -> isAdminRoleForOwner(ownerType, resolveStoredRole(member, ownerType, ownerId)))
                 .map(ActivityMember::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -1621,6 +1621,13 @@ public class ActivitiesMembersService {
             return normalizedRole;
         }
         return normalizeRole(normalizedRole, normalizeId(member == null ? null : member.getUserId()), ownerType, ownerId);
+    }
+
+    private boolean isAdminRoleForOwner(String ownerType, String role) {
+        if (OWNER_TYPE_ASSET.equals(ownerType)) {
+            return "Manager".equals(role) || ADMIN_ROLES.contains(role);
+        }
+        return ADMIN_ROLES.contains(role);
     }
 
     private List<ActivityMemberEntryDto> safeMembers(List<ActivityMemberEntryDto> members) {

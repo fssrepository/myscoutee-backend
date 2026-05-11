@@ -26,17 +26,22 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @Service
 public class ModelStatusPropagationService {
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final String OWNER_TYPE_ASSET = "asset";
     private static final String ROLE_ADMIN = "Admin";
+    private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
     private static final String STATUS_BLOCKED = "B";
     private static final String STATUS_DELETED = "D";
     private static final String STATUS_INACTIVE = "I";
+    private static final String STATUS_TRASHED = "T";
     private static final Set<String> SUPPRESSED_STATUSES = Set.of(STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE);
 
     private final UsersRepository usersRepository;
@@ -44,18 +49,21 @@ public class ModelStatusPropagationService {
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
     private final MongoTemplate mongoTemplate;
+    private final NotificationOutboxService notificationOutboxService;
 
     public ModelStatusPropagationService(
             UsersRepository usersRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            NotificationOutboxService notificationOutboxService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
         this.mongoTemplate = mongoTemplate;
+        this.notificationOutboxService = notificationOutboxService;
     }
 
     public ModelStatusPropagationOutcome applyForUser(String userId) {
@@ -70,7 +78,7 @@ public class ModelStatusPropagationService {
 
         LinkedHashMap<String, ActivityEvent> affectedEventsById = affectedAdminEventsByDocumentId(normalizedUserId);
         RecomputeTargets eventTargets = applyEventStatuses(affectedEventsById.values());
-        RecomputeTargets assetTargets = applyAssetStatuses(normalizedUserId, suppressionStatusForUser(user));
+        RecomputeTargets assetTargets = applyAssetStatuses(normalizedUserId);
         return new ModelStatusPropagationOutcome(
                 eventTargets.targetIds(),
                 assetTargets.targetIds(),
@@ -136,28 +144,56 @@ public class ModelStatusPropagationService {
         return new RecomputeTargets(new ArrayList<>(targetSourceIds), conflict);
     }
 
-    private RecomputeTargets applyAssetStatuses(String ownerUserId, String suppressionStatus) {
-        List<Asset> assets = assetsRepository.findByOwnerUserId(ownerUserId).stream()
-                .filter(asset -> asset != null)
-                .toList();
+    private RecomputeTargets applyAssetStatuses(String userId) {
+        List<Asset> assets = new ArrayList<>(affectedResponsibleAssetsByDocumentId(userId).values());
         if (assets.isEmpty()) {
             return RecomputeTargets.empty();
         }
 
+        Map<String, Set<String>> responsibleUserIdsByAssetId = resolveResponsibleUserIdsByAssetId(assets);
+        Set<String> allResponsibleUserIds = responsibleUserIdsByAssetId.values().stream()
+                .flatMap(Collection::stream)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(allResponsibleUserIds));
+
         LinkedHashSet<String> targetAssetIds = new LinkedHashSet<>();
         boolean conflict = false;
         for (Asset asset : assets) {
+            if (!isOperationalAsset(asset)) {
+                continue;
+            }
             String assetId = normalizeId(asset.getAssetId());
             if (StringUtils.hasText(assetId)) {
                 targetAssetIds.add(assetId);
             }
-            if (StringUtils.hasText(suppressionStatus)) {
-                conflict = !suppressAsset(asset, suppressionStatus) || conflict;
+            AdminStatusSnapshot responsibleStatus = adminStatusSnapshot(responsibleUserIdsByAssetId.get(assetId), usersById);
+            String nextStatus = eventSuppressionStatus(responsibleStatus);
+            if (StringUtils.hasText(nextStatus)) {
+                conflict = !suppressAsset(asset, nextStatus) || conflict;
             } else {
-                conflict = !restoreAssetIfSuppressed(asset) || conflict;
+                conflict = !restoreAssetIfSuppressed(asset, responsibleStatus) || conflict;
             }
         }
         return new RecomputeTargets(new ArrayList<>(targetAssetIds), conflict);
+    }
+
+    private LinkedHashMap<String, Asset> affectedResponsibleAssetsByDocumentId(String userId) {
+        LinkedHashMap<String, Asset> assetsById = new LinkedHashMap<>();
+        addAssets(assetsById, assetsRepository.findByOwnerUserId(userId));
+
+        List<ActivityMember> managerMemberships = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId);
+        List<String> managedAssetIds = (managerMemberships == null ? List.<ActivityMember>of() : managerMemberships).stream()
+                .filter(member -> MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus())))
+                .filter(member -> isManagerRole(member == null ? null : member.getRole()))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (!managedAssetIds.isEmpty()) {
+            addAssets(assetsById, assetsRepository.findByAssetIdIn(managedAssetIds));
+        }
+        return assetsById;
     }
 
     private boolean suppressEvent(ActivityEvent event, String suppressionStatus) {
@@ -211,10 +247,14 @@ public class ModelStatusPropagationService {
         if (!StringUtils.hasText(previousStatus)) {
             previousStatus = STATUS_ACTIVE;
         }
-        return updateAssetStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
+        boolean updated = updateAssetStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
+        if (updated) {
+            enqueueAssetStatusNotification(asset, suppressionStatus, previousStatus);
+        }
+        return updated;
     }
 
-    private boolean restoreAssetIfSuppressed(Asset asset) {
+    private boolean restoreAssetIfSuppressed(Asset asset, AdminStatusSnapshot responsibleStatus) {
         if (asset == null) {
             return true;
         }
@@ -222,11 +262,79 @@ public class ModelStatusPropagationService {
         if (!SUPPRESSED_STATUSES.contains(currentStatus)) {
             return true;
         }
+        if (responsibleStatus == null || !responsibleStatus.hasActiveAdmin() || !isOperationalAsset(asset)) {
+            return true;
+        }
         String previousStatus = safeText(asset.getStatusBeforeSuppression());
-        return updateAssetStatusIfSnapshotCurrent(
+        String restoredStatus = StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE;
+        boolean updated = updateAssetStatusIfSnapshotCurrent(
                 asset,
-                StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE,
+                restoredStatus,
                 null);
+        if (updated) {
+            enqueueAssetStatusNotification(asset, restoredStatus, currentStatus);
+        }
+        return updated;
+    }
+
+    private void enqueueAssetStatusNotification(Asset asset, String nextStatus, String previousStatus) {
+        if (asset == null || notificationOutboxService == null) {
+            return;
+        }
+        String assetId = normalizeId(asset.getAssetId());
+        if (!StringUtils.hasText(assetId)) {
+            return;
+        }
+        String normalizedNextStatus = safeText(nextStatus);
+        String title;
+        String body;
+        String type;
+        String scope;
+        List<String> recipients;
+        if (STATUS_UNDER_REVIEW.equals(normalizedNextStatus)) {
+            recipients = activeResponsibleAssetUserIds(asset);
+            title = "Asset needs review";
+            body = assetTitle(asset) + " needs review. You can take over or make it unavailable.";
+            type = "asset-review";
+            scope = "asset-active-managers";
+        } else if (STATUS_BLOCKED.equals(normalizedNextStatus)
+                || STATUS_DELETED.equals(normalizedNextStatus)
+                || STATUS_INACTIVE.equals(normalizedNextStatus)) {
+            recipients = assetRequesterUserIds(asset);
+            title = "Asset unavailable";
+            body = assetTitle(asset) + " is no longer available.";
+            type = "asset-unavailable";
+            scope = "asset-requesters";
+        } else if (STATUS_ACTIVE.equals(normalizedNextStatus)) {
+            recipients = activeResponsibleAssetUserIds(asset);
+            title = "Asset restored";
+            body = assetTitle(asset) + " is available again.";
+            type = "asset-restored";
+            scope = "asset-active-managers";
+        } else {
+            return;
+        }
+        if (recipients.isEmpty()) {
+            return;
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                type,
+                "asset",
+                assetId,
+                scope,
+                recipients,
+                title,
+                body,
+                "/game",
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                type + "-" + assetId,
+                Map.of(
+                        "assetId", assetId,
+                        "assetTitle", assetTitle(asset),
+                        "assetStatus", normalizedNextStatus,
+                        "previousStatus", safeText(previousStatus)),
+                safeText(asset.getUpdatedUser())));
     }
 
     private boolean updateEventStatusIfSnapshotCurrent(ActivityEvent event, String nextStatus, String previousStatus) {
@@ -344,6 +452,88 @@ public class ModelStatusPropagationService {
         return result;
     }
 
+    private Map<String, Set<String>> resolveResponsibleUserIdsByAssetId(Collection<Asset> assets) {
+        LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
+        LinkedHashSet<String> assetIds = new LinkedHashSet<>();
+        for (Asset asset : assets == null ? List.<Asset>of() : assets) {
+            if (asset == null) {
+                continue;
+            }
+            String assetId = normalizeId(asset.getAssetId());
+            if (!StringUtils.hasText(assetId)) {
+                continue;
+            }
+            assetIds.add(assetId);
+            Set<String> userIds = result.computeIfAbsent(assetId, ignored -> new LinkedHashSet<>());
+            String ownerUserId = normalizeId(asset.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                userIds.add(ownerUserId);
+            }
+        }
+
+        if (!assetIds.isEmpty()) {
+            List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
+            for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
+                if (member == null
+                        || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
+                        || !isManagerRole(member.getRole())) {
+                    continue;
+                }
+                String assetId = normalizeId(member.getOwnerId());
+                String userId = normalizeId(member.getUserId());
+                if (StringUtils.hasText(assetId) && StringUtils.hasText(userId)) {
+                    result.computeIfAbsent(assetId, ignored -> new LinkedHashSet<>()).add(userId);
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<String> activeResponsibleAssetUserIds(Asset asset) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (!StringUtils.hasText(assetId)) {
+            return List.of();
+        }
+        LinkedHashSet<String> candidateIds = new LinkedHashSet<>();
+        String ownerUserId = normalizeId(asset.getOwnerUserId());
+        if (StringUtils.hasText(ownerUserId)) {
+            candidateIds.add(ownerUserId);
+        }
+        List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
+        for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
+            if (member == null
+                    || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
+                    || !isManagerRole(member.getRole())) {
+                continue;
+            }
+            String userId = normalizeId(member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                candidateIds.add(userId);
+            }
+        }
+        if (candidateIds.isEmpty()) {
+            return List.of();
+        }
+        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
+        return candidateIds.stream()
+                .filter(userId -> isActiveUser(usersById.get(userId)))
+                .toList();
+    }
+
+    private List<String> assetRequesterUserIds(Asset asset) {
+        if (asset == null || asset.getRequests() == null || asset.getRequests().isEmpty()) {
+            return List.of();
+        }
+        String ownerUserId = normalizeId(asset.getOwnerUserId());
+        return asset.getRequests().stream()
+                .map(Asset.AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(ownerUserId))
+                .distinct()
+                .toList();
+    }
+
     private AdminStatusSnapshot adminStatusSnapshot(Collection<String> userIds, Map<String, Users> usersById) {
         String strongest = "";
         boolean hasSuppressedAdmin = false;
@@ -390,6 +580,20 @@ public class ModelStatusPropagationService {
         return "";
     }
 
+    private boolean isActiveUser(Users user) {
+        return !StringUtils.hasText(suppressionStatusForUser(user));
+    }
+
+    private String assetTitle(Asset asset) {
+        String title = safeText(asset == null ? null : asset.getTitle());
+        return StringUtils.hasText(title) ? title : "This asset";
+    }
+
+    private String firstNonBlank(String first, String second) {
+        String normalizedFirst = safeText(first);
+        return StringUtils.hasText(normalizedFirst) ? normalizedFirst : safeText(second);
+    }
+
     private boolean isOperationalEvent(ActivityEvent event) {
         if (event == null) {
             return false;
@@ -401,6 +605,10 @@ public class ModelStatusPropagationService {
         }
         Instant startAt = parseInstant(event.getStartAtIso());
         return startAt == null || !startAt.isBefore(now);
+    }
+
+    private boolean isOperationalAsset(Asset asset) {
+        return asset != null && !STATUS_TRASHED.equals(safeText(asset.getStatus()));
     }
 
     private Instant parseInstant(String value) {
@@ -420,6 +628,15 @@ public class ModelStatusPropagationService {
             String documentId = normalizeId(event == null ? null : event.getId());
             if (StringUtils.hasText(documentId)) {
                 target.put(documentId, event);
+            }
+        }
+    }
+
+    private void addAssets(Map<String, Asset> target, List<Asset> assets) {
+        for (Asset asset : assets == null ? List.<Asset>of() : assets) {
+            String documentId = normalizeId(asset == null ? null : asset.getId());
+            if (StringUtils.hasText(documentId)) {
+                target.put(documentId, asset);
             }
         }
     }
@@ -444,6 +661,11 @@ public class ModelStatusPropagationService {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
+    }
+
+    private boolean isManagerRole(String role) {
+        String normalizedRole = safeText(role);
+        return ROLE_MANAGER.equals(normalizedRole) || ROLE_ADMIN.equals(normalizedRole);
     }
 
     private String normalizeId(String value) {

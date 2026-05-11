@@ -16,6 +16,10 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRul
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsHistoryDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsRevertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsSaveRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
@@ -24,6 +28,7 @@ import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActio
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
+import com.raxim.myscoutee.profile.service.AdminParamsService;
 import com.raxim.myscoutee.profile.service.AdminStatsService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 import com.raxim.myscoutee.profile.service.IdeaPostsService;
@@ -39,18 +44,21 @@ public class AdminController {
     private final IdeaPostsService ideaPostsService;
     private final AdminNotificationService adminNotificationService;
     private final AdminStatsService adminStatsService;
+    private final AdminParamsService adminParamsService;
 
     public AdminController(
             AdminModerationService adminModerationService,
             HelpCenterService helpCenterService,
             IdeaPostsService ideaPostsService,
             AdminNotificationService adminNotificationService,
-            AdminStatsService adminStatsService) {
+            AdminStatsService adminStatsService,
+            AdminParamsService adminParamsService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
         this.adminNotificationService = adminNotificationService;
         this.adminStatsService = adminStatsService;
+        this.adminParamsService = adminParamsService;
     }
 
     @GetMapping("/dashboard")
@@ -61,6 +69,28 @@ public class AdminController {
     @GetMapping("/stats")
     public AdminStatsDashboardDto stats(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
         return adminStatsService.dashboard(adminUserId);
+    }
+
+    @GetMapping("/params")
+    public AdminParamsStateDto params(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminParamsService.state(adminUserId);
+    }
+
+    @PostMapping("/params")
+    public AdminParamsStateDto saveParams(@RequestBody(required = false) AdminParamsSaveRequestDto request) {
+        return adminParamsService.save(request);
+    }
+
+    @GetMapping("/params/{sectionKey}/history")
+    public AdminParamsHistoryDto paramsHistory(@PathVariable String sectionKey) {
+        return adminParamsService.history(sectionKey);
+    }
+
+    @PostMapping("/params/{sectionKey}/revert")
+    public AdminParamsStateDto revertParams(
+            @PathVariable String sectionKey,
+            @RequestBody(required = false) AdminParamsRevertRequestDto request) {
+        return adminParamsService.revert(sectionKey, request);
     }
 
     @PostMapping("/users/{userId}/warn")

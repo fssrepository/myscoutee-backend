@@ -27,12 +27,20 @@ public class AffinityConfig {
     private List<FieldRule> impressionRules = new ArrayList<>();
     private AbsoluteAffinityMultipliers absolute = new AbsoluteAffinityMultipliers();
     private BoostMultipliers boost = new BoostMultipliers();
+    private NotificationParameters notifications = new NotificationParameters();
+    private JobParameters jobs = new JobParameters();
+    private String changedDate;
+    private String changedUser;
+    private String changedSection;
+    private String changeSummary;
 
     public static AffinityConfig defaults() {
         AffinityConfig config = new AffinityConfig();
         config.setKey("default");
         config.setActive(true);
         config.setVersion(1);
+        config.setChangedSection("seed");
+        config.setChangeSummary("Initial platform parameter defaults.");
 
         RatingMultipliers rating = new RatingMultipliers();
         rating.setSingleMutual(new MultiplierRule(10d));
@@ -214,6 +222,54 @@ public class AffinityConfig {
 
     public void setBoost(BoostMultipliers boost) {
         this.boost = boost;
+    }
+
+    public NotificationParameters getNotifications() {
+        return notifications == null ? new NotificationParameters() : notifications;
+    }
+
+    public void setNotifications(NotificationParameters notifications) {
+        this.notifications = notifications;
+    }
+
+    public JobParameters getJobs() {
+        return jobs == null ? new JobParameters() : jobs;
+    }
+
+    public void setJobs(JobParameters jobs) {
+        this.jobs = jobs;
+    }
+
+    public String getChangedDate() {
+        return changedDate;
+    }
+
+    public void setChangedDate(String changedDate) {
+        this.changedDate = changedDate;
+    }
+
+    public String getChangedUser() {
+        return changedUser;
+    }
+
+    public void setChangedUser(String changedUser) {
+        this.changedUser = changedUser;
+    }
+
+    public String getChangedSection() {
+        return changedSection;
+    }
+
+    public void setChangedSection(String changedSection) {
+        this.changedSection = changedSection;
+    }
+
+    public String getChangeSummary() {
+        return changeSummary;
+    }
+
+    public void setChangeSummary(String changeSummary) {
+        this.changeSummary = changeSummary;
     }
 
     public static class RatingMultipliers {
@@ -648,6 +704,165 @@ public class AffinityConfig {
 
         public void setOwnerConfidence(MultiplierRule ownerConfidence) {
             this.ownerConfidence = ownerConfidence;
+        }
+    }
+
+    public static class NotificationParameters {
+        private Integer firebaseWindowStartHour = 8;
+        private Integer firebaseWindowEndHour = 22;
+        private Integer maxWorkers = 4;
+        private Integer maxRetries = 5;
+        private Integer initialBackoffSeconds = 30;
+        private Integer collapseWindowSeconds = 300;
+        private Integer multicastThreshold = 3;
+        private Integer topicThreshold = 250;
+
+        public Integer getFirebaseWindowStartHour() {
+            return firebaseWindowStartHour;
+        }
+
+        public void setFirebaseWindowStartHour(Integer firebaseWindowStartHour) {
+            this.firebaseWindowStartHour = firebaseWindowStartHour;
+        }
+
+        public Integer getFirebaseWindowEndHour() {
+            return firebaseWindowEndHour;
+        }
+
+        public void setFirebaseWindowEndHour(Integer firebaseWindowEndHour) {
+            this.firebaseWindowEndHour = firebaseWindowEndHour;
+        }
+
+        public Integer getMaxWorkers() {
+            return maxWorkers;
+        }
+
+        public void setMaxWorkers(Integer maxWorkers) {
+            this.maxWorkers = maxWorkers;
+        }
+
+        public Integer getMaxRetries() {
+            return maxRetries;
+        }
+
+        public void setMaxRetries(Integer maxRetries) {
+            this.maxRetries = maxRetries;
+        }
+
+        public Integer getInitialBackoffSeconds() {
+            return initialBackoffSeconds;
+        }
+
+        public void setInitialBackoffSeconds(Integer initialBackoffSeconds) {
+            this.initialBackoffSeconds = initialBackoffSeconds;
+        }
+
+        public Integer getCollapseWindowSeconds() {
+            return collapseWindowSeconds;
+        }
+
+        public void setCollapseWindowSeconds(Integer collapseWindowSeconds) {
+            this.collapseWindowSeconds = collapseWindowSeconds;
+        }
+
+        public Integer getMulticastThreshold() {
+            return multicastThreshold;
+        }
+
+        public void setMulticastThreshold(Integer multicastThreshold) {
+            this.multicastThreshold = multicastThreshold;
+        }
+
+        public Integer getTopicThreshold() {
+            return topicThreshold;
+        }
+
+        public void setTopicThreshold(Integer topicThreshold) {
+            this.topicThreshold = topicThreshold;
+        }
+    }
+
+    public static class JobParameters {
+        private Integer userChangedDebounceSeconds = 300;
+        private Integer eventChangedDebounceSeconds = 180;
+        private Integer eventMembersChangedDebounceSeconds = 300;
+        private Integer assetChangedDebounceSeconds = 180;
+        private Integer assetRequestsChangedDebounceSeconds = 180;
+        private Integer configChangedDebounceSeconds = 900;
+        private Integer workerPollDelayMs = 60000;
+        private Integer batchSize = 50;
+        private Integer leaseDurationSeconds = 600;
+
+        public Integer getUserChangedDebounceSeconds() {
+            return userChangedDebounceSeconds;
+        }
+
+        public void setUserChangedDebounceSeconds(Integer userChangedDebounceSeconds) {
+            this.userChangedDebounceSeconds = userChangedDebounceSeconds;
+        }
+
+        public Integer getEventChangedDebounceSeconds() {
+            return eventChangedDebounceSeconds;
+        }
+
+        public void setEventChangedDebounceSeconds(Integer eventChangedDebounceSeconds) {
+            this.eventChangedDebounceSeconds = eventChangedDebounceSeconds;
+        }
+
+        public Integer getEventMembersChangedDebounceSeconds() {
+            return eventMembersChangedDebounceSeconds;
+        }
+
+        public void setEventMembersChangedDebounceSeconds(Integer eventMembersChangedDebounceSeconds) {
+            this.eventMembersChangedDebounceSeconds = eventMembersChangedDebounceSeconds;
+        }
+
+        public Integer getAssetChangedDebounceSeconds() {
+            return assetChangedDebounceSeconds;
+        }
+
+        public void setAssetChangedDebounceSeconds(Integer assetChangedDebounceSeconds) {
+            this.assetChangedDebounceSeconds = assetChangedDebounceSeconds;
+        }
+
+        public Integer getAssetRequestsChangedDebounceSeconds() {
+            return assetRequestsChangedDebounceSeconds;
+        }
+
+        public void setAssetRequestsChangedDebounceSeconds(Integer assetRequestsChangedDebounceSeconds) {
+            this.assetRequestsChangedDebounceSeconds = assetRequestsChangedDebounceSeconds;
+        }
+
+        public Integer getConfigChangedDebounceSeconds() {
+            return configChangedDebounceSeconds;
+        }
+
+        public void setConfigChangedDebounceSeconds(Integer configChangedDebounceSeconds) {
+            this.configChangedDebounceSeconds = configChangedDebounceSeconds;
+        }
+
+        public Integer getWorkerPollDelayMs() {
+            return workerPollDelayMs;
+        }
+
+        public void setWorkerPollDelayMs(Integer workerPollDelayMs) {
+            this.workerPollDelayMs = workerPollDelayMs;
+        }
+
+        public Integer getBatchSize() {
+            return batchSize;
+        }
+
+        public void setBatchSize(Integer batchSize) {
+            this.batchSize = batchSize;
+        }
+
+        public Integer getLeaseDurationSeconds() {
+            return leaseDurationSeconds;
+        }
+
+        public void setLeaseDurationSeconds(Integer leaseDurationSeconds) {
+            this.leaseDurationSeconds = leaseDurationSeconds;
         }
     }
 

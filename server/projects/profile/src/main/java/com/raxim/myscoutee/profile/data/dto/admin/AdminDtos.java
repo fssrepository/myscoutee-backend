@@ -14,6 +14,46 @@ public final class AdminDtos {
             String about,
             List<String> images) {}
     public record AdminActionRequestDto(String adminUserId, String message) {}
+    public record AdminParamsStateDto(
+            List<AdminParamsSectionDto> sections,
+            String updatedDate) {}
+    public record AdminParamsSectionDto(
+            String key,
+            String label,
+            Integer version,
+            String changedDate,
+            String changedBy,
+            String summary,
+            List<AdminParamFieldDto> fields) {}
+    public record AdminParamFieldDto(
+            String key,
+            String label,
+            String group,
+            String valueType,
+            Double numberValue,
+            String textValue,
+            String unit,
+            String strategy) {}
+    public record AdminParamsSaveRequestDto(
+            String adminUserId,
+            String sectionKey,
+            List<AdminParamFieldDto> fields,
+            String summary) {}
+    public record AdminParamsHistoryDto(
+            String sectionKey,
+            String label,
+            List<AdminParamsHistoryItemDto> versions) {}
+    public record AdminParamsHistoryItemDto(
+            String configId,
+            Integer version,
+            String changedDate,
+            String changedBy,
+            String summary,
+            Boolean active,
+            List<AdminParamFieldDto> fields) {}
+    public record AdminParamsRevertRequestDto(
+            String adminUserId,
+            Integer version) {}
     public record AdminNotificationCenterStateDto(
             List<AdminNotificationRuleDto> rules,
             List<AdminNotificationTemplateOptionDto> emailTemplates,

@@ -1,50 +1,42 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.WebpushConfig;
-import com.google.firebase.messaging.WebpushFcmOptions;
-import com.google.firebase.messaging.WebpushNotification;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 @Service
 public class ChatPushNotificationService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatPushNotificationService.class);
     private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
-    private final ConfigProperties configProperties;
     private final UsersRepository usersRepository;
     private final ChatWebSocketSessionRegistry sessionRegistry;
+    private final NotificationOutboxService notificationOutboxService;
 
     public ChatPushNotificationService(
-            ConfigProperties configProperties,
             UsersRepository usersRepository,
-            ChatWebSocketSessionRegistry sessionRegistry) {
-        this.configProperties = configProperties;
+            ChatWebSocketSessionRegistry sessionRegistry,
+            NotificationOutboxService notificationOutboxService) {
         this.usersRepository = usersRepository;
         this.sessionRegistry = sessionRegistry;
+        this.notificationOutboxService = notificationOutboxService;
     }
 
     public void notifyRecipients(List<ActivityChat> chatDocuments, ChatStreamEvent event) {
         if (event == null || chatDocuments == null || chatDocuments.isEmpty()) {
-            return;
-        }
-        if (!configProperties.isFirebaseEnabled()) {
             return;
         }
 
@@ -55,69 +47,37 @@ public class ChatPushNotificationService {
         String clickUrl = buildClickUrl(event);
         String notificationTag = buildNotificationTag(event);
         long timestampMillis = resolveTimestampMillis(event.sentAtIso());
-
-        for (String userId : resolveRecipientUserIds(chatDocuments, event.senderId())) {
-            if (!StringUtils.hasText(userId) || sessionRegistry.isUserConnected(event.chatId(), userId)) {
-                continue;
-            }
-            Users user = usersRepository.findByUserId(userId).orElse(null);
-            if (user == null) {
-                continue;
-            }
-            if (user.getDevices() != null && !user.getDevices().isEmpty()) {
-                for (String firebaseToken : resolveFirebaseTokens(user)) {
-                    try {
-                        Message.Builder messageBuilder = Message.builder()
-                                .setToken(firebaseToken)
-                                .putData("type", "chat-message")
-                                .putData("chatId", safeText(event.chatId()))
-                                .putData("messageId", safeText(event.id()))
-                                .putData("senderId", safeText(event.senderId()))
-                                .putData("senderName", safeText(event.senderName()))
-                                .putData("chatTitle", chatTitle)
-                                .putData("title", chatTitle)
-                                .putData("body", body)
-                                .putData("text", safeText(event.text()))
-                                .putData("icon", senderAvatarUrl)
-                                .putData("badge", APP_BADGE_URL)
-                                .putData("url", clickUrl)
-                                .putData("tag", notificationTag);
-                        WebpushNotification.Builder notificationBuilder = WebpushNotification.builder()
-                                .setTitle(chatTitle)
-                                .setBody(body)
-                                .setIcon(senderAvatarUrl)
-                                .setBadge(APP_BADGE_URL)
-                                .setTag(notificationTag)
-                                .setRenotify(true)
-                                .setRequireInteraction(false);
-                        if (timestampMillis > 0) {
-                            notificationBuilder.setTimestampMillis(timestampMillis);
-                        }
-                        messageBuilder.setWebpushConfig(WebpushConfig.builder()
-                                .putHeader("Urgency", "high")
-                                .putData("type", "chat-message")
-                                .putData("chatId", safeText(event.chatId()))
-                                .putData("messageId", safeText(event.id()))
-                                .putData("senderId", safeText(event.senderId()))
-                                .putData("senderName", safeText(event.senderName()))
-                                .putData("chatTitle", chatTitle)
-                                .putData("title", chatTitle)
-                                .putData("body", body)
-                                .putData("text", safeText(event.text()))
-                                .putData("icon", senderAvatarUrl)
-                                .putData("badge", APP_BADGE_URL)
-                                .putData("url", clickUrl)
-                                .putData("tag", notificationTag)
-                                .setFcmOptions(WebpushFcmOptions.withLink(clickUrl))
-                                .setNotification(notificationBuilder.build())
-                                .build());
-                        FirebaseMessaging.getInstance().sendAsync(messageBuilder.build());
-                    } catch (Exception exception) {
-                        LOGGER.warn("Unable to send Firebase chat notification to user {}.", userId, exception);
-                    }
-                }
-            }
+        List<String> recipients = resolveRecipientUserIds(chatDocuments, event.senderId()).stream()
+                .filter(userId -> !sessionRegistry.isUserConnected(event.chatId(), userId))
+                .toList();
+        if (recipients.isEmpty()) {
+            return;
         }
+
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("chatId", safeText(event.chatId()));
+        payload.put("messageId", safeText(event.id()));
+        payload.put("senderId", safeText(event.senderId()));
+        payload.put("senderName", safeText(event.senderName()));
+        payload.put("chatTitle", chatTitle);
+        payload.put("text", safeText(event.text()));
+        if (timestampMillis > 0L) {
+            payload.put("timestampMillis", Long.toString(timestampMillis));
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "chat-message",
+                "chat",
+                safeText(event.chatId()),
+                "chat-members",
+                recipients,
+                chatTitle,
+                body,
+                clickUrl,
+                senderAvatarUrl,
+                APP_BADGE_URL,
+                notificationTag,
+                payload,
+                safeText(event.senderId())));
     }
 
     private Set<String> resolveRecipientUserIds(List<ActivityChat> chatDocuments, String senderUserId) {
@@ -140,20 +100,6 @@ public class ChatPushNotificationService {
             }
         }
         return recipients;
-    }
-
-    private Set<String> resolveFirebaseTokens(Users user) {
-        Set<String> tokens = new LinkedHashSet<>();
-        for (Users.UserDeviceRecord device : user.getDevices()) {
-            if (device == null || !Boolean.TRUE.equals(device.getNotificationsEnabled())) {
-                continue;
-            }
-            String token = safeText(device.getFirebaseToken());
-            if (StringUtils.hasText(token)) {
-                tokens.add(token);
-            }
-        }
-        return tokens;
     }
 
     private String resolveChatTitle(ActivityChat referenceChat, ChatStreamEvent event) {

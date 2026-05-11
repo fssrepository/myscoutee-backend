@@ -18,12 +18,14 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 
 class ModelStatusPropagationServiceTest {
     @Test
@@ -57,7 +59,8 @@ class ModelStatusPropagationServiceTest {
                 eventsRepository,
                 membersRepository,
                 assetsRepository,
-                mongoTemplate);
+                mongoTemplate,
+                mock(NotificationOutboxService.class));
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 
@@ -104,13 +107,99 @@ class ModelStatusPropagationServiceTest {
                 eventsRepository,
                 membersRepository,
                 assetsRepository,
-                mongoTemplate);
+                mongoTemplate,
+                mock(NotificationOutboxService.class));
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 
         assertThat(outcome.eventSourceIds()).containsExactly("event-1");
         assertThat(outcome.hasConflicts()).isFalse();
         verify(mongoTemplate, never()).updateFirst(any(), any(), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void blockedOwnerMovesAssetUnderReviewWhenActiveManagerExists() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityEventsRepository eventsRepository = mock(ActivityEventsRepository.class);
+        ActivityMembersRepository membersRepository = mock(ActivityMembersRepository.class);
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        Users blockedOwner = user("u1", "blocked", "B");
+        Users activeManager = user("u2", "public", "A");
+        Asset asset = asset("asset-doc-1", "asset-1", "u1", "active", "2026-05-09T10:00:00Z");
+        ActivityMember manager = member("asset", "asset-1", "u2", "Manager", "accepted");
+
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(blockedOwner));
+        when(eventsRepository.findByCreatorUserId("u1")).thenReturn(List.of());
+        when(eventsRepository.findByAdminsContaining("u1")).thenReturn(List.of());
+        when(membersRepository.findByOwnerTypeAndUserId("event", "u1")).thenReturn(List.of());
+        when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of(asset));
+        when(membersRepository.findByOwnerTypeAndUserId("asset", "u1")).thenReturn(List.of());
+        when(membersRepository.findByOwnerTypeAndOwnerIdIn(eq("asset"), any())).thenReturn(List.of(manager));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(blockedOwner, activeManager));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1, 1L, null));
+
+        ModelStatusPropagationService service = new ModelStatusPropagationService(
+                usersRepository,
+                eventsRepository,
+                membersRepository,
+                assetsRepository,
+                mongoTemplate,
+                mock(NotificationOutboxService.class));
+
+        ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
+
+        assertThat(outcome.assetIds()).containsExactly("asset-1");
+
+        ArgumentCaptor<Update> assetUpdate = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(any(), assetUpdate.capture(), eq(Asset.class));
+        assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"status\": \"UR\"");
+        assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"A\"");
+    }
+
+    @Test
+    void blockedManagerMovesManagedAssetUnderReview() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityEventsRepository eventsRepository = mock(ActivityEventsRepository.class);
+        ActivityMembersRepository membersRepository = mock(ActivityMembersRepository.class);
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        Users blockedManager = user("u1", "blocked", "B");
+        Users activeOwner = user("u2", "public", "A");
+        Asset asset = asset("asset-doc-1", "asset-1", "u2", "active", "2026-05-09T10:00:00Z");
+        ActivityMember manager = member("asset", "asset-1", "u1", "Manager", "accepted");
+
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(blockedManager));
+        when(eventsRepository.findByCreatorUserId("u1")).thenReturn(List.of());
+        when(eventsRepository.findByAdminsContaining("u1")).thenReturn(List.of());
+        when(membersRepository.findByOwnerTypeAndUserId("event", "u1")).thenReturn(List.of());
+        when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of());
+        when(membersRepository.findByOwnerTypeAndUserId("asset", "u1")).thenReturn(List.of(manager));
+        when(assetsRepository.findByAssetIdIn(List.of("asset-1"))).thenReturn(List.of(asset));
+        when(membersRepository.findByOwnerTypeAndOwnerIdIn(eq("asset"), any())).thenReturn(List.of(manager));
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(blockedManager, activeOwner));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1, 1L, null));
+
+        ModelStatusPropagationService service = new ModelStatusPropagationService(
+                usersRepository,
+                eventsRepository,
+                membersRepository,
+                assetsRepository,
+                mongoTemplate,
+                mock(NotificationOutboxService.class));
+
+        ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
+
+        assertThat(outcome.assetIds()).containsExactly("asset-1");
+
+        ArgumentCaptor<Update> assetUpdate = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(any(), assetUpdate.capture(), eq(Asset.class));
+        assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"status\": \"UR\"");
+        assertThat(assetUpdate.getValue().getUpdateObject().toJson()).contains("\"statusBeforeSuppression\": \"A\"");
     }
 
     private Users user(String userId, String profileStatus, String status) {
@@ -127,7 +216,7 @@ class ModelStatusPropagationServiceTest {
         event.setSourceId(sourceId);
         event.setCreatorUserId(creatorUserId);
         event.setStatus(status);
-        event.setStartAtIso("2026-05-10T10:00:00Z");
+        event.setStartAtIso("2026-06-10T10:00:00Z");
         event.setUpdatedDate(updatedDate);
         return event;
     }
@@ -140,5 +229,15 @@ class ModelStatusPropagationServiceTest {
         asset.setStatus(status);
         asset.setUpdatedDate(updatedDate);
         return asset;
+    }
+
+    private ActivityMember member(String ownerType, String ownerId, String userId, String role, String status) {
+        ActivityMember member = new ActivityMember();
+        member.setOwnerType(ownerType);
+        member.setOwnerId(ownerId);
+        member.setUserId(userId);
+        member.setRole(role);
+        member.setStatus(status);
+        return member;
     }
 }

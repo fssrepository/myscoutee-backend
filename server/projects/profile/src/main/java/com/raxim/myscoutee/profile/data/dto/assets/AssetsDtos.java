@@ -24,6 +24,12 @@ public final class AssetsDtos {
             String assetId) {
     }
 
+    public record AssetMakeManagerRequestDto(
+            String userId,
+            String assetId,
+            String targetUserId) {
+    }
+
     public record AssetSourceRefreshRequestDto(
             String userId,
             String type,

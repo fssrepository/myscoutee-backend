@@ -255,7 +255,8 @@ public final class SharedDtos {
             String note,
             String requestKind,
             String requestedAtIso,
-            AssetRequestBookingDto booking) {
+            AssetRequestBookingDto booking,
+            List<String> menuActions) {
     }
 
     public record AssetCardDto(
@@ -277,6 +278,7 @@ public final class SharedDtos {
             String status,
             String ownerUserId,
             String ownerName,
-            List<AssetMemberRequestDto> requests) {
+            List<AssetMemberRequestDto> requests,
+            List<String> menuActions) {
     }
 }
