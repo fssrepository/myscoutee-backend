@@ -219,6 +219,102 @@
       "as10": "2026-05-07T09:05:00.000Z",
       "as11": "2026-05-06T09:00:00.000Z",
       "as12": "2026-05-06T09:05:00.000Z"
+    },
+    "revenueMetrics": {
+      "payable-events": 12,
+      "event-unit-cents": 202500,
+      "projected-event-cents": 202500,
+      "avg-event-ticket-cents": 1688,
+      "payable-assets": 16,
+      "asset-unit-cents": 213000,
+      "projected-asset-cents": 213000,
+      "avg-asset-price-cents": 13313,
+      "actual-payments": 22,
+      "paying-users": 22,
+      "actual-payment-cents": 52200,
+      "avg-payment-cents": 2373
+    },
+    "revenueAssetCategories": {
+      "Accommodation": 84000,
+      "Car": 77000,
+      "Supplies": 52000
+    },
+    "dailyRevenueActivity": {
+      "2026-04-28": { "payableEvents": 1, "payableAssets": 1, "projectedEventCents": 18000, "projectedAssetCents": 12000, "actualPaymentCents": 0, "payingUsers": 0 },
+      "2026-04-29": { "payableEvents": 1, "payableAssets": 2, "projectedEventCents": 12500, "projectedAssetCents": 22000, "actualPaymentCents": 4200, "payingUsers": 2 },
+      "2026-04-30": { "payableEvents": 0, "payableAssets": 1, "projectedEventCents": 0, "projectedAssetCents": 9500, "actualPaymentCents": 3800, "payingUsers": 1 },
+      "2026-05-01": { "payableEvents": 2, "payableAssets": 1, "projectedEventCents": 26000, "projectedAssetCents": 18000, "actualPaymentCents": 6200, "payingUsers": 3 },
+      "2026-05-02": { "payableEvents": 1, "payableAssets": 2, "projectedEventCents": 14500, "projectedAssetCents": 24000, "actualPaymentCents": 5300, "payingUsers": 2 },
+      "2026-05-03": { "payableEvents": 0, "payableAssets": 1, "projectedEventCents": 0, "projectedAssetCents": 8500, "actualPaymentCents": 0, "payingUsers": 0 },
+      "2026-05-04": { "payableEvents": 2, "payableAssets": 1, "projectedEventCents": 31000, "projectedAssetCents": 13000, "actualPaymentCents": 7800, "payingUsers": 4 },
+      "2026-05-05": { "payableEvents": 1, "payableAssets": 1, "projectedEventCents": 16500, "projectedAssetCents": 16000, "actualPaymentCents": 2900, "payingUsers": 1 },
+      "2026-05-06": { "payableEvents": 0, "payableAssets": 2, "projectedEventCents": 0, "projectedAssetCents": 28000, "actualPaymentCents": 6100, "payingUsers": 3 },
+      "2026-05-07": { "payableEvents": 2, "payableAssets": 1, "projectedEventCents": 27500, "projectedAssetCents": 14000, "actualPaymentCents": 4500, "payingUsers": 2 },
+      "2026-05-08": { "payableEvents": 1, "payableAssets": 0, "projectedEventCents": 15500, "projectedAssetCents": 0, "actualPaymentCents": 0, "payingUsers": 0 },
+      "2026-05-09": { "payableEvents": 1, "payableAssets": 2, "projectedEventCents": 21000, "projectedAssetCents": 34000, "actualPaymentCents": 8200, "payingUsers": 3 },
+      "2026-05-10": { "payableEvents": 0, "payableAssets": 1, "projectedEventCents": 0, "projectedAssetCents": 15000, "actualPaymentCents": 3200, "payingUsers": 1 },
+      "2026-05-11": { "payableEvents": 0, "payableAssets": 0, "projectedEventCents": 0, "projectedAssetCents": 0, "actualPaymentCents": 0, "payingUsers": 0 }
+    },
+    "graphHealthScore": 78,
+    "graphHealthLabelKey": "stats.graph.health.watch",
+    "graphInsightKey": "stats.graph.insight.healthy",
+    "graphMetrics": {
+      "users": 42,
+      "edges": 116,
+      "communities": 6,
+      "bridge-users": 8,
+      "avg-degree-tenths": 55,
+      "reachability-2-hop": 68,
+      "clustering": 42,
+      "weak-tie-ratio": 34,
+      "recurring-edge-ratio": 31,
+      "network-quality": 64,
+      "cluster-quality": 79,
+      "female-to-male-avg-tenths": 73,
+      "male-to-female-avg-tenths": 69,
+      "female-to-female-avg-tenths": 76,
+      "male-to-male-avg-tenths": 66
+    },
+    "graphBridgeUsers": {
+      "Lina Stone": 96,
+      "Luca Hale": 84,
+      "Ava Baker": 71,
+      "Mason Grant": 62,
+      "Noah Lane": 48
+    },
+    "graphCommunities": {
+      "Austin event circle": 14,
+      "Seattle creators": 9,
+      "Denver assets": 7,
+      "Miami mixed": 5,
+      "Phoenix discovery": 4,
+      "Boston board games": 3
+    },
+    "graphSignals": {
+      "reachability-2-hop": 68,
+      "weak-tie-ratio": 34,
+      "clustering": 42,
+      "recurring-edge-ratio": 31,
+      "bridge-coverage": 19,
+      "largest-community": 33,
+      "network-quality": 64,
+      "cluster-quality": 79
+    },
+    "dailyGraphActivity": {
+      "2026-04-28": { "activeEdges": 56, "newEdges": 8, "recurringEdges": 5, "weakTies": 19, "bridgeUsers": 5, "communities": 7, "networkQuality": 51, "clusterQuality": 69 },
+      "2026-04-29": { "activeEdges": 62, "newEdges": 7, "recurringEdges": 8, "weakTies": 21, "bridgeUsers": 5, "communities": 7, "networkQuality": 53, "clusterQuality": 70 },
+      "2026-04-30": { "activeEdges": 68, "newEdges": 9, "recurringEdges": 7, "weakTies": 23, "bridgeUsers": 6, "communities": 7, "networkQuality": 55, "clusterQuality": 71 },
+      "2026-05-01": { "activeEdges": 74, "newEdges": 10, "recurringEdges": 9, "weakTies": 25, "bridgeUsers": 6, "communities": 7, "networkQuality": 57, "clusterQuality": 72 },
+      "2026-05-02": { "activeEdges": 80, "newEdges": 11, "recurringEdges": 11, "weakTies": 28, "bridgeUsers": 7, "communities": 7, "networkQuality": 58, "clusterQuality": 73 },
+      "2026-05-03": { "activeEdges": 83, "newEdges": 6, "recurringEdges": 10, "weakTies": 29, "bridgeUsers": 7, "communities": 7, "networkQuality": 59, "clusterQuality": 74 },
+      "2026-05-04": { "activeEdges": 88, "newEdges": 12, "recurringEdges": 13, "weakTies": 31, "bridgeUsers": 7, "communities": 6, "networkQuality": 60, "clusterQuality": 75 },
+      "2026-05-05": { "activeEdges": 94, "newEdges": 14, "recurringEdges": 12, "weakTies": 32, "bridgeUsers": 8, "communities": 6, "networkQuality": 61, "clusterQuality": 76 },
+      "2026-05-06": { "activeEdges": 97, "newEdges": 7, "recurringEdges": 14, "weakTies": 32, "bridgeUsers": 8, "communities": 6, "networkQuality": 62, "clusterQuality": 76 },
+      "2026-05-07": { "activeEdges": 103, "newEdges": 13, "recurringEdges": 16, "weakTies": 35, "bridgeUsers": 8, "communities": 6, "networkQuality": 63, "clusterQuality": 77 },
+      "2026-05-08": { "activeEdges": 108, "newEdges": 8, "recurringEdges": 15, "weakTies": 36, "bridgeUsers": 8, "communities": 6, "networkQuality": 63, "clusterQuality": 78 },
+      "2026-05-09": { "activeEdges": 113, "newEdges": 12, "recurringEdges": 18, "weakTies": 38, "bridgeUsers": 8, "communities": 6, "networkQuality": 64, "clusterQuality": 78 },
+      "2026-05-10": { "activeEdges": 116, "newEdges": 9, "recurringEdges": 17, "weakTies": 39, "bridgeUsers": 8, "communities": 6, "networkQuality": 64, "clusterQuality": 79 },
+      "2026-05-11": { "activeEdges": 116, "newEdges": 5, "recurringEdges": 14, "weakTies": 40, "bridgeUsers": 8, "communities": 6, "networkQuality": 64, "clusterQuality": 79 }
     }
   }
 ]

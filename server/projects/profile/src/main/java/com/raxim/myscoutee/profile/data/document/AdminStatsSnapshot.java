@@ -36,6 +36,17 @@ public class AdminStatsSnapshot {
     private Map<String, String> activeEvents = new LinkedHashMap<>();
     private Map<String, String> knownAssets = new LinkedHashMap<>();
     private Map<String, String> activeAssets = new LinkedHashMap<>();
+    private Integer graphHealthScore;
+    private String graphHealthLabelKey;
+    private String graphInsightKey;
+    private Map<String, Long> graphMetrics = new LinkedHashMap<>();
+    private Map<String, Long> graphBridgeUsers = new LinkedHashMap<>();
+    private Map<String, Long> graphCommunities = new LinkedHashMap<>();
+    private Map<String, Long> graphSignals = new LinkedHashMap<>();
+    private Map<String, Map<String, Long>> dailyGraphActivity = new LinkedHashMap<>();
+    private Map<String, Long> revenueMetrics = new LinkedHashMap<>();
+    private Map<String, Long> revenueAssetCategories = new LinkedHashMap<>();
+    private Map<String, Map<String, Long>> dailyRevenueActivity = new LinkedHashMap<>();
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -95,4 +106,38 @@ public class AdminStatsSnapshot {
     public void setKnownAssets(Map<String, String> knownAssets) { this.knownAssets = knownAssets == null ? new LinkedHashMap<>() : new LinkedHashMap<>(knownAssets); }
     public Map<String, String> getActiveAssets() { return activeAssets; }
     public void setActiveAssets(Map<String, String> activeAssets) { this.activeAssets = activeAssets == null ? new LinkedHashMap<>() : new LinkedHashMap<>(activeAssets); }
+    public Integer getGraphHealthScore() { return graphHealthScore; }
+    public void setGraphHealthScore(Integer graphHealthScore) { this.graphHealthScore = graphHealthScore; }
+    public String getGraphHealthLabelKey() { return graphHealthLabelKey; }
+    public void setGraphHealthLabelKey(String graphHealthLabelKey) { this.graphHealthLabelKey = graphHealthLabelKey; }
+    public String getGraphInsightKey() { return graphInsightKey; }
+    public void setGraphInsightKey(String graphInsightKey) { this.graphInsightKey = graphInsightKey; }
+    public Map<String, Long> getGraphMetrics() { return graphMetrics; }
+    public void setGraphMetrics(Map<String, Long> graphMetrics) { this.graphMetrics = graphMetrics == null ? new LinkedHashMap<>() : new LinkedHashMap<>(graphMetrics); }
+    public Map<String, Long> getGraphBridgeUsers() { return graphBridgeUsers; }
+    public void setGraphBridgeUsers(Map<String, Long> graphBridgeUsers) { this.graphBridgeUsers = graphBridgeUsers == null ? new LinkedHashMap<>() : new LinkedHashMap<>(graphBridgeUsers); }
+    public Map<String, Long> getGraphCommunities() { return graphCommunities; }
+    public void setGraphCommunities(Map<String, Long> graphCommunities) { this.graphCommunities = graphCommunities == null ? new LinkedHashMap<>() : new LinkedHashMap<>(graphCommunities); }
+    public Map<String, Long> getGraphSignals() { return graphSignals; }
+    public void setGraphSignals(Map<String, Long> graphSignals) { this.graphSignals = graphSignals == null ? new LinkedHashMap<>() : new LinkedHashMap<>(graphSignals); }
+    public Map<String, Map<String, Long>> getDailyGraphActivity() { return dailyGraphActivity; }
+    public void setDailyGraphActivity(Map<String, Map<String, Long>> dailyGraphActivity) {
+        this.dailyGraphActivity = new LinkedHashMap<>();
+        if (dailyGraphActivity == null) {
+            return;
+        }
+        dailyGraphActivity.forEach((key, value) -> this.dailyGraphActivity.put(key, value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value)));
+    }
+    public Map<String, Long> getRevenueMetrics() { return revenueMetrics; }
+    public void setRevenueMetrics(Map<String, Long> revenueMetrics) { this.revenueMetrics = revenueMetrics == null ? new LinkedHashMap<>() : new LinkedHashMap<>(revenueMetrics); }
+    public Map<String, Long> getRevenueAssetCategories() { return revenueAssetCategories; }
+    public void setRevenueAssetCategories(Map<String, Long> revenueAssetCategories) { this.revenueAssetCategories = revenueAssetCategories == null ? new LinkedHashMap<>() : new LinkedHashMap<>(revenueAssetCategories); }
+    public Map<String, Map<String, Long>> getDailyRevenueActivity() { return dailyRevenueActivity; }
+    public void setDailyRevenueActivity(Map<String, Map<String, Long>> dailyRevenueActivity) {
+        this.dailyRevenueActivity = new LinkedHashMap<>();
+        if (dailyRevenueActivity == null) {
+            return;
+        }
+        dailyRevenueActivity.forEach((key, value) -> this.dailyRevenueActivity.put(key, value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value)));
+    }
 }

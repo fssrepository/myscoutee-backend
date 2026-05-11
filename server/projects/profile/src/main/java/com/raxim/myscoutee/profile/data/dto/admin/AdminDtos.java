@@ -120,7 +120,42 @@ public final class AdminDtos {
             List<AdminStatsBreakdownItemDto> topTopics,
             List<AdminStatsTimelinePointDto> timeline,
             List<AdminStatsBreakdownItemDto> eventTypes,
-            List<AdminStatsBreakdownItemDto> activityMix) {}
+            List<AdminStatsBreakdownItemDto> activityMix,
+            AdminStatsGraphDto graph,
+            AdminStatsRevenueDto revenue) {}
+    public record AdminStatsGraphDto(
+            Integer healthScore,
+            String healthLabelKey,
+            String insightKey,
+            List<AdminStatsMetricDto> metrics,
+            List<AdminStatsBreakdownItemDto> bridgeUsers,
+            List<AdminStatsBreakdownItemDto> communities,
+            List<AdminStatsBreakdownItemDto> signals,
+            List<AdminStatsGraphTimelinePointDto> timeline) {}
+    public record AdminStatsGraphTimelinePointDto(
+            String dateKey,
+            String label,
+            Long activeEdges,
+            Long newEdges,
+            Long recurringEdges,
+            Long weakTies,
+            Long bridgeUsers,
+            Long communities,
+            Long networkQuality,
+            Long clusterQuality) {}
+    public record AdminStatsRevenueDto(
+            List<AdminStatsMetricDto> metrics,
+            List<AdminStatsBreakdownItemDto> assetCategories,
+            List<AdminStatsRevenueTimelinePointDto> timeline) {}
+    public record AdminStatsRevenueTimelinePointDto(
+            String dateKey,
+            String label,
+            Long payableEvents,
+            Long payableAssets,
+            Long projectedEventCents,
+            Long projectedAssetCents,
+            Long actualPaymentCents,
+            Long payingUsers) {}
     public record AdminStatsMetricDto(
             String key,
             String labelKey,

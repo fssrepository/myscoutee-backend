@@ -56,6 +56,7 @@ public class AdminStatsTelemetryWorkerService {
                 streamUnavailableLogged = false;
             }
             if (records == null || records.isEmpty()) {
+                adminStatsService.refreshGraphScienceSnapshot();
                 return;
             }
 

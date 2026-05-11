@@ -19,7 +19,11 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.AdminStatsSnapshot;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsBreakdownItemDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsGraphDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsGraphTimelinePointDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsMetricDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsRevenueDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsRevenueTimelinePointDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsSegmentDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsTimelinePointDto;
 import com.raxim.myscoutee.profile.repository.AdminStatsRepository;
@@ -32,12 +36,18 @@ public class AdminStatsService {
 
     private final AdminStatsRepository adminStatsRepository;
     private final AdminModerationService adminModerationService;
+    private final AdminGraphScienceService adminGraphScienceService;
+    private final AdminRevenueStatsService adminRevenueStatsService;
 
     public AdminStatsService(
             AdminStatsRepository adminStatsRepository,
-            AdminModerationService adminModerationService) {
+            AdminModerationService adminModerationService,
+            AdminGraphScienceService adminGraphScienceService,
+            AdminRevenueStatsService adminRevenueStatsService) {
         this.adminStatsRepository = adminStatsRepository;
         this.adminModerationService = adminModerationService;
+        this.adminGraphScienceService = adminGraphScienceService;
+        this.adminRevenueStatsService = adminRevenueStatsService;
     }
 
     public AdminStatsDashboardDto dashboard(String adminUserId) {
@@ -140,6 +150,16 @@ public class AdminStatsService {
         if (StringUtils.hasText(safeText(lastStreamId))) {
             snapshot.setLastTelemetryStreamId(safeText(lastStreamId));
         }
+        adminGraphScienceService.refresh(snapshot);
+        adminRevenueStatsService.refresh(snapshot);
+        adminStatsRepository.save(snapshot);
+    }
+
+    public void refreshGraphScienceSnapshot() {
+        AdminStatsSnapshot snapshot = resolveSnapshot();
+        adminGraphScienceService.refresh(snapshot);
+        adminRevenueStatsService.refresh(snapshot);
+        snapshot.setGeneratedAtIso(Instant.now().toString());
         adminStatsRepository.save(snapshot);
     }
 
@@ -241,7 +261,177 @@ public class AdminStatsService {
                 topItems(snapshot.getTopTopics(), "", "local_offer", "purple", 6),
                 timelineItems(dailyActivity, dailyActiveUsers),
                 topItems(snapshot.getEventTypes(), "", "category", "green", 6),
-                activityMixItems(segments));
+                activityMixItems(segments),
+                graphDto(snapshot),
+                revenueDto(snapshot));
+    }
+
+    private AdminStatsRevenueDto revenueDto(AdminStatsSnapshot snapshot) {
+        Map<String, Long> metrics = safeMap(snapshot.getRevenueMetrics());
+        long payableEvents = metrics.getOrDefault("payable-events", 0L);
+        long projectedEventCents = metrics.getOrDefault("projected-event-cents", 0L);
+        long avgEventTicketCents = metrics.getOrDefault("avg-event-ticket-cents", 0L);
+        long payableAssets = metrics.getOrDefault("payable-assets", 0L);
+        long projectedAssetCents = metrics.getOrDefault("projected-asset-cents", 0L);
+        long avgAssetPriceCents = metrics.getOrDefault("avg-asset-price-cents", 0L);
+        long actualPaymentCents = metrics.getOrDefault("actual-payment-cents", 0L);
+        long payingUsers = metrics.getOrDefault("paying-users", 0L);
+        long avgPaymentCents = metrics.getOrDefault("avg-payment-cents", 0L);
+        long projectedTotalCents = Math.max(1L, projectedEventCents + projectedAssetCents);
+        List<AdminStatsMetricDto> revenueMetrics = List.of(
+                graphMetric("payable-events", "stats.revenue.metric.payable.events", payableEvents, formatCount(payableEvents), "confirmation_number", "green", pct(payableEvents, 40)),
+                graphMetric("projected-event-revenue", "stats.revenue.metric.projected.events", projectedEventCents, moneyLabel(projectedEventCents), "event_available", "green", pct(projectedEventCents, projectedTotalCents)),
+                graphMetric("avg-event-ticket", "stats.revenue.metric.avg.event.ticket", avgEventTicketCents, moneyLabel(avgEventTicketCents), "sell", "gold", pct(avgEventTicketCents, 10000)),
+                graphMetric("payable-assets", "stats.revenue.metric.payable.assets", payableAssets, formatCount(payableAssets), "inventory_2", "purple", pct(payableAssets, 40)),
+                graphMetric("projected-asset-revenue", "stats.revenue.metric.projected.assets", projectedAssetCents, moneyLabel(projectedAssetCents), "category", "blue", pct(projectedAssetCents, projectedTotalCents)),
+                graphMetric("avg-asset-price", "stats.revenue.metric.avg.asset.price", avgAssetPriceCents, moneyLabel(avgAssetPriceCents), "payments", "slate", pct(avgAssetPriceCents, 10000)),
+                graphMetric("actual-paid", "stats.revenue.metric.actual.paid", actualPaymentCents, moneyLabel(actualPaymentCents), "paid", actualPaymentCents > 0 ? "blue" : "slate", pct(actualPaymentCents, projectedTotalCents)),
+                graphMetric("paying-users", "stats.revenue.metric.paying.users", payingUsers, formatCount(payingUsers), "group", "red", pct(payingUsers, Math.max(1L, metrics.getOrDefault("actual-payments", 0L)))),
+                graphMetric("avg-payment", "stats.revenue.metric.avg.payment", avgPaymentCents, moneyLabel(avgPaymentCents), "receipt_long", "purple", pct(avgPaymentCents, 10000))
+        );
+        return new AdminStatsRevenueDto(
+                revenueMetrics,
+                revenueAssetCategoryItems(snapshot.getRevenueAssetCategories()),
+                revenueTimelineItems(snapshot.getDailyRevenueActivity()));
+    }
+
+    private List<AdminStatsBreakdownItemDto> revenueAssetCategoryItems(Map<String, Long> values) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        long total = values.values().stream().mapToLong(Long::longValue).sum();
+        return values.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()).thenComparing(Map.Entry::getKey))
+                .limit(6)
+                .map(entry -> {
+                    String normalized = normalizeKey(entry.getKey());
+                    String labelKey = switch (normalized) {
+                        case "accommodation" -> "accommodation";
+                        case "car" -> "car";
+                        case "supplies" -> "supplies";
+                        default -> "";
+                    };
+                    String icon = switch (normalized) {
+                        case "accommodation" -> "hotel";
+                        case "car" -> "directions_car";
+                        default -> "category";
+                    };
+                    String tone = switch (normalized) {
+                        case "accommodation" -> "gold";
+                        case "car" -> "blue";
+                        case "supplies" -> "green";
+                        default -> "slate";
+                    };
+                    return new AdminStatsBreakdownItemDto(
+                            normalized,
+                            labelKey,
+                            StringUtils.hasText(labelKey) ? null : entry.getKey(),
+                            entry.getValue(),
+                            Math.max(1L, total),
+                            icon,
+                            tone);
+                })
+                .toList();
+    }
+
+    private AdminStatsGraphDto graphDto(AdminStatsSnapshot snapshot) {
+        Map<String, Long> graphMetrics = safeMap(snapshot.getGraphMetrics());
+        Map<String, Long> graphSignals = safeMap(snapshot.getGraphSignals());
+        long graphHealth = Math.max(0L, Math.min(100L, snapshot.getGraphHealthScore() == null ? 0L : snapshot.getGraphHealthScore().longValue()));
+        long users = graphMetrics.getOrDefault("users", 0L);
+        long edges = graphMetrics.getOrDefault("edges", 0L);
+        long avgDegreeTenths = graphMetrics.getOrDefault("avg-degree-tenths", 0L);
+        long communities = graphMetrics.getOrDefault("communities", 0L);
+        long bridgeUsers = graphMetrics.getOrDefault("bridge-users", 0L);
+        long networkQuality = graphMetrics.getOrDefault("network-quality", 0L);
+        long clusterQuality = graphMetrics.getOrDefault("cluster-quality", 0L);
+        long femaleToMaleAvgTenths = graphMetrics.getOrDefault("female-to-male-avg-tenths", 0L);
+        long maleToFemaleAvgTenths = graphMetrics.getOrDefault("male-to-female-avg-tenths", 0L);
+        List<AdminStatsMetricDto> metrics = List.of(
+                graphMetric("graph-health", "stats.graph.metric.health", graphHealth, Long.toString(graphHealth), "monitoring", "green", graphHealth),
+                graphMetric("graph-users", "stats.graph.metric.users", users, formatCount(users), "person", "blue", pct(users, Math.max(1L, users))),
+                graphMetric("graph-edges", "stats.graph.metric.edges", edges, formatCount(edges), "share", "purple", pct(edges, Math.max(1L, users * 3L))),
+                graphMetric("graph-avg-degree", "stats.graph.metric.avg.degree", avgDegreeTenths, String.format(Locale.US, "%.1f", avgDegreeTenths / 10d), "hub", "gold", pct(avgDegreeTenths, 50)),
+                graphMetric("graph-communities", "stats.graph.metric.communities", communities, formatCount(communities), "bubble_chart", "green", pct(communities, Math.max(1L, users / 4L))),
+                graphMetric("graph-bridges", "stats.graph.metric.bridges", bridgeUsers, formatCount(bridgeUsers), "conversion_path", "red", pct(bridgeUsers, Math.max(1L, users / 8L))),
+                graphMetric("graph-network-quality", "stats.graph.metric.network.quality", networkQuality, networkQuality + "%", "ssid_chart", "blue", networkQuality),
+                graphMetric("graph-cluster-quality", "stats.graph.metric.cluster.quality", clusterQuality, clusterQuality + "%", "bubble_chart", "green", clusterQuality),
+                graphMetric("gender-female-to-male", "stats.graph.metric.gender.female.to.male", femaleToMaleAvgTenths, formatTenths(femaleToMaleAvgTenths), "female", "purple", pct(femaleToMaleAvgTenths, 100)),
+                graphMetric("gender-male-to-female", "stats.graph.metric.gender.male.to.female", maleToFemaleAvgTenths, formatTenths(maleToFemaleAvgTenths), "male", "gold", pct(maleToFemaleAvgTenths, 100))
+        );
+        return new AdminStatsGraphDto(
+                (int) graphHealth,
+                firstNonBlank(snapshot.getGraphHealthLabelKey(), "stats.graph.health.cold"),
+                firstNonBlank(snapshot.getGraphInsightKey(), "stats.graph.insight.cold"),
+                metrics,
+                topItems(snapshot.getGraphBridgeUsers(), "", "conversion_path", "red", 8),
+                topItems(snapshot.getGraphCommunities(), "", "bubble_chart", "green", 8),
+                graphSignals(graphSignals),
+                graphTimelineItems(snapshot.getDailyGraphActivity()));
+    }
+
+    private AdminStatsMetricDto graphMetric(String key, String labelKey, long value, String valueLabel, String icon, String tone, long percent) {
+        return new AdminStatsMetricDto(key, labelKey, value, valueLabel, null, null, icon, tone, (int) Math.max(0L, Math.min(100L, percent)));
+    }
+
+    private List<AdminStatsBreakdownItemDto> graphSignals(Map<String, Long> signals) {
+        if (signals == null || signals.isEmpty()) {
+            return List.of();
+        }
+        return List.of(
+                item("reachability-2-hop", "stats.graph.signal.reachability", signals.getOrDefault("reachability-2-hop", 0L), 100L, "travel_explore", "blue"),
+                item("weak-tie-ratio", "stats.graph.signal.weak.ties", signals.getOrDefault("weak-tie-ratio", 0L), 100L, "lan", "purple"),
+                item("clustering", "stats.graph.signal.clustering", signals.getOrDefault("clustering", 0L), 100L, "bubble_chart", "green"),
+                item("recurring-edge-ratio", "stats.graph.signal.recurring", signals.getOrDefault("recurring-edge-ratio", 0L), 100L, "repeat", "gold"),
+                item("bridge-coverage", "stats.graph.signal.bridge.coverage", signals.getOrDefault("bridge-coverage", 0L), 100L, "conversion_path", "red"),
+                item("largest-community", "stats.graph.signal.largest.community", signals.getOrDefault("largest-community", 0L), 100L, "groups", "slate"),
+                item("network-quality", "stats.graph.signal.network.quality", signals.getOrDefault("network-quality", 0L), 100L, "ssid_chart", "blue"),
+                item("cluster-quality", "stats.graph.signal.cluster.quality", signals.getOrDefault("cluster-quality", 0L), 100L, "bubble_chart", "green")
+        );
+    }
+
+    private List<AdminStatsGraphTimelinePointDto> graphTimelineItems(Map<String, Map<String, Long>> dailyGraphActivity) {
+        Map<String, Map<String, Long>> valuesByDay = copyNestedLongMap(dailyGraphActivity);
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        return java.util.stream.IntStream.rangeClosed(0, TIMELINE_DAYS - 1)
+                .mapToObj(index -> today.minusDays(TIMELINE_DAYS - 1L - index))
+                .map(day -> {
+                    String key = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+                    Map<String, Long> values = valuesByDay.getOrDefault(key, Map.of());
+                    return new AdminStatsGraphTimelinePointDto(
+                            key,
+                            day.format(DateTimeFormatter.ofPattern("MMM d", Locale.US)),
+                            values.getOrDefault("activeEdges", 0L),
+                            values.getOrDefault("newEdges", 0L),
+                            values.getOrDefault("recurringEdges", 0L),
+                            values.getOrDefault("weakTies", 0L),
+                            values.getOrDefault("bridgeUsers", 0L),
+                            values.getOrDefault("communities", 0L),
+                            values.getOrDefault("networkQuality", 0L),
+                            values.getOrDefault("clusterQuality", 0L));
+                })
+                .toList();
+    }
+
+    private List<AdminStatsRevenueTimelinePointDto> revenueTimelineItems(Map<String, Map<String, Long>> dailyRevenueActivity) {
+        Map<String, Map<String, Long>> valuesByDay = copyNestedLongMap(dailyRevenueActivity);
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        return java.util.stream.IntStream.rangeClosed(0, TIMELINE_DAYS - 1)
+                .mapToObj(index -> today.minusDays(TIMELINE_DAYS - 1L - index))
+                .map(day -> {
+                    String key = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+                    Map<String, Long> values = valuesByDay.getOrDefault(key, Map.of());
+                    return new AdminStatsRevenueTimelinePointDto(
+                            key,
+                            day.format(DateTimeFormatter.ofPattern("MMM d", Locale.US)),
+                            values.getOrDefault("payableEvents", 0L),
+                            values.getOrDefault("payableAssets", 0L),
+                            values.getOrDefault("projectedEventCents", 0L),
+                            values.getOrDefault("projectedAssetCents", 0L),
+                            values.getOrDefault("actualPaymentCents", 0L),
+                            values.getOrDefault("payingUsers", 0L));
+                })
+                .toList();
     }
 
     private void applyDailyActivity(Map<String, Long> day, String eventKey, String domain, long amount) {
@@ -482,6 +672,15 @@ public class AdminStatsService {
             return String.format(Locale.US, "%.1fk", value / 1_000d);
         }
         return Long.toString(value);
+    }
+
+    private String moneyLabel(long cents) {
+        long safeCents = Math.max(0L, cents);
+        return String.format(Locale.US, "$%,d.%02d", safeCents / 100L, safeCents % 100L);
+    }
+
+    private String formatTenths(long value) {
+        return value <= 0L ? "n/a" : String.format(Locale.US, "%.1f", value / 10d);
     }
 
     private Map<String, Long> safeMap(Map<String, Long> values) {
