@@ -28,6 +28,7 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class AdminParamsService {
     private static final String CONFIG_KEY = "default";
+    private static final List<String> DISTANCE_STRATEGIES = List.of("linear", "exponential", "bucketed");
     private static final List<SectionDefinition> SECTIONS = List.of(
             new SectionDefinition("matching", "Matching"),
             new SectionDefinition("profile", "Profile"),
@@ -316,10 +317,7 @@ public class AdminParamsService {
     private void applyDiscovery(AffinityConfig config, Map<String, AdminParamFieldDto> fields) {
         setMultiplier(config.getDistance(), fields.get("distance.multiplier"));
         readInteger(fields.get("distance.maxMeters"), 0, 1_000_000).ifPresent(config.getDistance()::setMaxMeters);
-        String strategy = safeText(fieldText(fields.get("distance.strategy")));
-        if (StringUtils.hasText(strategy)) {
-            config.getDistance().setStrategy(strategy);
-        }
+        config.getDistance().setStrategy(normalizeDistanceStrategy(fieldText(fields.get("distance.strategy"))));
     }
 
     private void applyNotifications(AffinityConfig config, Map<String, AdminParamFieldDto> fields) {
@@ -609,6 +607,11 @@ public class AdminParamsService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String normalizeDistanceStrategy(String value) {
+        String normalized = safeText(value).toLowerCase();
+        return DISTANCE_STRATEGIES.contains(normalized) ? normalized : "linear";
     }
 
     private record SectionDefinition(String key, String label) {

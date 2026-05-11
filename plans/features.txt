@@ -12,14 +12,7 @@ but if the smaller one has an override rule that should be applied
 about page - landing size (before the login)
 
 report user menu is bleeding out of the screen on mobile
-
-fuggoben levo esemenynel a chat le van tiltva???
 reload page - activity menubar stucks
-affinity config (multiplier)+ telemetry menu
-asset take over - multi manager case also
-
-firebase worker with time window not to call the notification several times
-and when anything changes admin or members are needed to be notified
 
 tournament / auto inviter time window (2h earlier to run background process)
 

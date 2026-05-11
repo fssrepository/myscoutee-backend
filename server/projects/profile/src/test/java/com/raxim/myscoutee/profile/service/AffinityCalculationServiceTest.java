@@ -236,6 +236,17 @@ class AffinityCalculationServiceTest {
         assertThat(rate.getAffinityScore()).isGreaterThan(0d);
     }
 
+    @Test
+    void distanceStrategyChangesDistanceSignalShape() {
+        double linear = distanceScore("linear");
+        double exponential = distanceScore("exponential");
+        double bucketed = distanceScore("bucketed");
+
+        assertThat(linear).isBetween(0.40d, 0.60d);
+        assertThat(exponential).isLessThan(linear);
+        assertThat(bucketed).isCloseTo(0.5d, org.assertj.core.data.Offset.offset(0.15d));
+    }
+
     private AffinityCalculationService service(
             AffinityConfig config,
             List<UserRate> existingRates,
@@ -292,6 +303,22 @@ class AffinityCalculationServiceTest {
         return config;
     }
 
+    private double distanceScore(String strategy) {
+        AffinityConfig config = ratingOnlyConfig();
+        config.getRating().setSingleOneSided(new AffinityConfig.MultiplierRule(0d));
+        config.getDistance().setMultiplier(1d);
+        config.getDistance().setMaxMeters(10_000);
+        config.getDistance().setStrategy(strategy);
+        UserRate rate = singleRate("distance-" + strategy, "u1", "u2", 0);
+        AffinityCalculationService service = service(config, List.of(), Map.of(
+                "u1", userAt("u1", 47.4979d, 19.0402d),
+                "u2", userAt("u2", 47.5428d, 19.0402d)));
+
+        service.applyAffinity(List.of(rate));
+
+        return rate.getAffinityScore();
+    }
+
     private UserRate singleRate(String id, String ownerUserId, String relatedUserId, int scoreGiven) {
         UserRate rate = new UserRate();
         rate.setId(id);
@@ -343,6 +370,12 @@ class AffinityCalculationServiceTest {
         user.setId(userId);
         user.setLanguages(languages);
         user.setPhysique(physique);
+        return user;
+    }
+
+    private Users userAt(String userId, double latitude, double longitude) {
+        Users user = user(userId, List.of(), null);
+        user.setLocationCoordinates(new Users.LocationCoordinatesRecord(latitude, longitude));
         return user;
     }
 
