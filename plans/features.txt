@@ -22,6 +22,7 @@ partition key - is it available in different country -- has it been implemented 
 chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
 
 metrics popup (visualize architecturally and statisticswise, how certain process is built up + logs)
+gdpr consent should be seeded and updated based on purge rules on production also
 
 Commands
 --------
