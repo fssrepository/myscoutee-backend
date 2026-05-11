@@ -30,7 +30,9 @@ public class AdminStatsSnapshot {
     private Map<String, Map<String, Long>> dailyActivity = new LinkedHashMap<>();
     private Map<String, Map<String, String>> dailyActiveUsers = new LinkedHashMap<>();
     private Map<String, String> activeUsers = new LinkedHashMap<>();
+    private Map<String, String> userFirstSeen = new LinkedHashMap<>();
     private Map<String, Long> userActivityCounts = new LinkedHashMap<>();
+    private Map<String, Long> departedUserDurationsDays = new LinkedHashMap<>();
     private Map<String, Long> profileFillRates = new LinkedHashMap<>();
     private Map<String, String> knownEvents = new LinkedHashMap<>();
     private Map<String, String> activeEvents = new LinkedHashMap<>();
@@ -94,8 +96,12 @@ public class AdminStatsSnapshot {
     }
     public Map<String, String> getActiveUsers() { return activeUsers; }
     public void setActiveUsers(Map<String, String> activeUsers) { this.activeUsers = activeUsers == null ? new LinkedHashMap<>() : new LinkedHashMap<>(activeUsers); }
+    public Map<String, String> getUserFirstSeen() { return userFirstSeen; }
+    public void setUserFirstSeen(Map<String, String> userFirstSeen) { this.userFirstSeen = userFirstSeen == null ? new LinkedHashMap<>() : new LinkedHashMap<>(userFirstSeen); }
     public Map<String, Long> getUserActivityCounts() { return userActivityCounts; }
     public void setUserActivityCounts(Map<String, Long> userActivityCounts) { this.userActivityCounts = userActivityCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(userActivityCounts); }
+    public Map<String, Long> getDepartedUserDurationsDays() { return departedUserDurationsDays; }
+    public void setDepartedUserDurationsDays(Map<String, Long> departedUserDurationsDays) { this.departedUserDurationsDays = departedUserDurationsDays == null ? new LinkedHashMap<>() : new LinkedHashMap<>(departedUserDurationsDays); }
     public Map<String, Long> getProfileFillRates() { return profileFillRates; }
     public void setProfileFillRates(Map<String, Long> profileFillRates) { this.profileFillRates = profileFillRates == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileFillRates); }
     public Map<String, String> getKnownEvents() { return knownEvents; }

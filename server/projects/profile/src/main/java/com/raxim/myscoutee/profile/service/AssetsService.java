@@ -81,6 +81,7 @@ public class AssetsService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final NotificationOutboxService notificationOutboxService;
+    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -93,7 +94,8 @@ public class AssetsService {
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -105,6 +107,7 @@ public class AssetsService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.notificationOutboxService = notificationOutboxService;
+        this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -209,12 +212,18 @@ public class AssetsService {
             retainedIds.add(next.getId());
         }
 
-        List<Asset> toDelete = existing.stream()
+        String nowIso = Instant.now().toString();
+        List<Asset> toTrash = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(asset -> !retainedIds.contains(asset.getId()))
+                .filter(asset -> !STATUS_TRASHED.equals(safeText(asset.getStatus())))
+                .map(asset -> toTrashedAsset(asset, normalizedUserId, nowIso))
                 .toList();
-        if (!toDelete.isEmpty()) {
-            assetsRepository.deleteAll(toDelete);
+        if (!toTrash.isEmpty()) {
+            assetsRepository.saveAll(toTrash);
+            for (Asset trashed : toTrash) {
+                handleAssetTrashed(trashed, normalizedUserId);
+            }
         }
         if (!nextDocuments.isEmpty()) {
             assetsRepository.saveAll(nextDocuments);
@@ -232,7 +241,42 @@ public class AssetsService {
         }
         ensureOwnerAssetsBootstrapped(normalizedUserId);
         assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
-                .ifPresent(assetsRepository::delete);
+                .filter(asset -> !STATUS_TRASHED.equals(safeText(asset.getStatus())))
+                .map(asset -> toTrashedAsset(asset, normalizedUserId, Instant.now().toString()))
+                .ifPresent(trashed -> {
+                    assetsRepository.save(trashed);
+                    handleAssetTrashed(trashed, normalizedUserId);
+                });
+    }
+
+    public AssetCardDto restore(AssetDeleteRequestDto request) {
+        if (request == null) {
+            return null;
+        }
+        String normalizedUserId = normalizeId(request.userId());
+        String normalizedAssetId = normalizeId(request.assetId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        ensureOwnerAssetsBootstrapped(normalizedUserId);
+        Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
+        if (current == null || !STATUS_TRASHED.equals(safeText(current.getStatus()))) {
+            return null;
+        }
+        Asset next = cloneAsset(current);
+        next.setStatus(STATUS_ACTIVE);
+        next.setStatusBeforeSuppression(null);
+        next.setTrashedAtIso(null);
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(normalizedUserId);
+        next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
+        next.setBoost(resolveAssetBoost(next, normalizedUserId));
+        assetsRepository.save(next);
+        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
+        adminTelemetryService.record("asset.restored", "assets", normalizedAssetId, normalizedUserId);
+        markAssetAttachmentAvailable(normalizedAssetId);
+        enqueueAssetRestoredNotification(next, normalizedUserId);
+        return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
     public AssetCardDto takeOver(AssetDeleteRequestDto request) {
@@ -265,6 +309,7 @@ public class AssetsService {
         next.setBoost(resolveAssetBoost(next, normalizedUserId));
         assetsRepository.save(next);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
+        markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);
         return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
@@ -685,6 +730,7 @@ public class AssetsService {
         if (current == null) {
             next.setStatus(STATUS_ACTIVE);
             next.setStatusBeforeSuppression(null);
+            next.setTrashedAtIso(null);
         }
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setBoost(resolveAssetBoost(next, ownerUserId));
@@ -718,6 +764,7 @@ public class AssetsService {
         clone.setVisibility(source.getVisibility());
         clone.setStatus(source.getStatus());
         clone.setStatusBeforeSuppression(source.getStatusBeforeSuppression());
+        clone.setTrashedAtIso(source.getTrashedAtIso());
         clone.setAffinity(source.getAffinity());
         clone.setBoost(source.getBoost());
         clone.setCreatedDate(source.getCreatedDate());
@@ -1107,11 +1154,14 @@ public class AssetsService {
         }
         boolean owner = normalizedViewerUserId.equals(normalizeId(asset.getOwnerUserId()));
         boolean manager = owner || hasAcceptedAssetManagerRole(asset, normalizedViewerUserId);
+        String status = safeText(asset.getStatus());
+        if (STATUS_TRASHED.equals(status)) {
+            return owner ? List.of("restore") : List.of();
+        }
         if (!manager) {
             return List.of("share");
         }
         LinkedHashSet<String> actions = new LinkedHashSet<>();
-        String status = safeText(asset.getStatus());
         if (STATUS_UNDER_REVIEW.equals(status) && isActiveUser(normalizedViewerUserId)) {
             actions.add("takeOver");
         }
@@ -1250,6 +1300,108 @@ public class AssetsService {
                 existing != null ? cloneRequestBooking(existing.booking()) : base.booking());
     }
 
+    private Asset toTrashedAsset(Asset current, String actorUserId, String nowIso) {
+        Asset next = cloneAsset(current);
+        next.setStatus(STATUS_TRASHED);
+        next.setStatusBeforeSuppression(null);
+        next.setTrashedAtIso(nowIso);
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(actorUserId);
+        return next;
+    }
+
+    private void handleAssetTrashed(Asset trashed, String actorUserId) {
+        String assetId = normalizeId(trashed == null ? null : trashed.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId)) {
+            return;
+        }
+        affinityRecomputeTaskService.enqueueAssetChanged(assetId, normalizedActorUserId);
+        adminTelemetryService.record("asset.trashed", "assets", assetId, normalizedActorUserId);
+        markAssetAttachmentUnavailable(assetId, "trashed");
+        enqueueAssetUnavailableNotification(trashed, normalizedActorUserId);
+    }
+
+    private void markAssetAttachmentUnavailable(String assetId, String reason) {
+        if (chatAttachmentLifecycleService != null) {
+            chatAttachmentLifecycleService.markAssetUnavailable(assetId, reason);
+        }
+    }
+
+    private void markAssetAttachmentAvailable(String assetId) {
+        if (chatAttachmentLifecycleService != null) {
+            chatAttachmentLifecycleService.markAssetAvailable(assetId);
+        }
+    }
+
+    private void enqueueAssetUnavailableNotification(Asset asset, String actorUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
+        recipients.addAll(activeResponsibleAssetUserIds(asset));
+        if (StringUtils.hasText(normalizedActorUserId)) {
+            recipients.remove(normalizedActorUserId);
+        }
+        if (recipients.isEmpty()) {
+            return;
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-unavailable",
+                "asset",
+                assetId,
+                "asset-affected-users",
+                new ArrayList<>(recipients),
+                "Asset unavailable",
+                assetTitle(asset) + " is no longer available.",
+                "/game",
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-unavailable-" + assetId,
+                Map.of(
+                        "assetId", assetId,
+                        "assetTitle", assetTitle(asset),
+                        "assetStatus", STATUS_TRASHED,
+                        "previousStatus", STATUS_ACTIVE),
+                normalizedActorUserId));
+    }
+
+    private void enqueueAssetRestoredNotification(Asset asset, String actorUserId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(assetId)) {
+            return;
+        }
+        LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
+        recipients.addAll(activeResponsibleAssetUserIds(asset));
+        if (StringUtils.hasText(normalizedActorUserId)) {
+            recipients.remove(normalizedActorUserId);
+        }
+        if (recipients.isEmpty()) {
+            return;
+        }
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "asset-restored",
+                "asset",
+                assetId,
+                "asset-affected-users",
+                new ArrayList<>(recipients),
+                "Asset restored",
+                assetTitle(asset) + " is available again.",
+                "/game",
+                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "asset-restored-" + assetId,
+                Map.of(
+                        "assetId", assetId,
+                        "assetTitle", assetTitle(asset),
+                        "assetStatus", STATUS_ACTIVE,
+                        "previousStatus", STATUS_TRASHED),
+                normalizedActorUserId));
+    }
+
     private void enqueueAssetTakeOverNotification(Asset previous, Asset next, String actorUserId) {
         String assetId = normalizeId(next == null ? null : next.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
@@ -1350,6 +1502,21 @@ public class AssetsService {
         }
         return userIds.stream()
                 .filter(this::isActiveUser)
+                .toList();
+    }
+
+    private List<String> assetRequesterUserIds(Asset asset) {
+        if (asset == null || asset.getRequests() == null || asset.getRequests().isEmpty()) {
+            return List.of();
+        }
+        String ownerUserId = normalizeId(asset.getOwnerUserId());
+        return asset.getRequests().stream()
+                .filter(Objects::nonNull)
+                .map(AssetRequestRecord::userId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(userId -> !userId.equals(ownerUserId))
+                .distinct()
                 .toList();
     }
 

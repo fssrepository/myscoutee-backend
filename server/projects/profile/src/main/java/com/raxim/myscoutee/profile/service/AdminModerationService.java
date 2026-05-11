@@ -172,8 +172,7 @@ public class AdminModerationService {
         String email = principal instanceof FirebasePrincipal firebasePrincipal
                 ? normalize(firebasePrincipal.getEmail())
                 : normalize(authentication == null ? null : authentication.getName());
-        String configured = normalize(configProperties.getAdminUser());
-        if (!StringUtils.hasText(email) || !StringUtils.hasText(configured) || !configured.equalsIgnoreCase(email)) {
+        if (!configProperties.isAdminUser(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
         }
         return withStoredAdminProfile(new AdminUserDto(

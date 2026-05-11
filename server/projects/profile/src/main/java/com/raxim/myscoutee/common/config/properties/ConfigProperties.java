@@ -1,6 +1,10 @@
 package com.raxim.myscoutee.common.config.properties;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
 
 @ConfigurationProperties("config")
 public class ConfigProperties {
@@ -16,6 +20,20 @@ public class ConfigProperties {
 
     public void setAdminUser(String adminUser) {
         this.adminUser = adminUser;
+    }
+
+    public List<String> getAdminUsers() {
+        return Arrays.stream((adminUser == null ? "" : adminUser).split("[,;]"))
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    public boolean isAdminUser(String value) {
+        String normalized = value == null ? "" : value.trim();
+        return StringUtils.hasText(normalized)
+                && getAdminUsers().stream().anyMatch(admin -> admin.equalsIgnoreCase(normalized));
     }
 
     public String getFirebaseServiceAccountPath() {

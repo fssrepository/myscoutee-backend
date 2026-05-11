@@ -42,14 +42,17 @@ public class AdminParamsService {
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final ObjectMapper objectMapper;
     private final NotificationOutboxService notificationOutboxService;
+    private final AdminAudienceService adminAudienceService;
 
     public AdminParamsService(
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            AdminAudienceService adminAudienceService) {
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.objectMapper = objectMapper;
         this.notificationOutboxService = notificationOutboxService;
+        this.adminAudienceService = adminAudienceService;
     }
 
     public AdminParamsStateDto state(String adminUserId) {
@@ -64,7 +67,10 @@ public class AdminParamsService {
     public AdminParamsHistoryDto history(String sectionKey) {
         SectionDefinition section = section(sectionKey);
         AffinityConfig active = activeConfig();
-        List<AdminParamsHistoryItemDto> versions = configHistory(active.getKey()).stream()
+        List<AffinityConfig> history = configHistory(active.getKey());
+        int activeSectionVersion = activeSectionVersion(section.key(), history, active);
+        List<AdminParamsHistoryItemDto> versions = history.stream()
+                .filter(config -> isSectionHistoryVersion(config, section.key(), activeSectionVersion))
                 .map(config -> new AdminParamsHistoryItemDto(
                         config.getId(),
                         safeVersion(config),
@@ -72,7 +78,7 @@ public class AdminParamsService {
                         firstNonBlank(config.getChangedUser(), "system"),
                         summaryFor(config, section.key()),
                         summaryKeyFor(summaryFor(config, section.key()), section.key()),
-                        Boolean.TRUE.equals(config.getActive()),
+                        safeVersion(config) == activeSectionVersion,
                         fieldsFor(section.key(), config)))
                 .toList();
         return new AdminParamsHistoryDto(section.key(), section.label(), section.labelKey(), versions);
@@ -118,10 +124,7 @@ public class AdminParamsService {
             SectionDefinition section,
             AffinityConfig active,
             List<AffinityConfig> versions) {
-        AffinityConfig metadata = versions.stream()
-                .filter(config -> section.key().equals(safeText(config.getChangedSection())))
-                .findFirst()
-                .orElse(active);
+        AffinityConfig metadata = sectionMetadata(section.key(), active, versions);
         return new AdminParamsSectionDto(
                 section.key(),
                 section.label(),
@@ -415,7 +418,10 @@ public class AdminParamsService {
 
     private void notifyAdminParameterChange(AffinityConfig config, String sectionKey, String actorUserId, String summary) {
         String normalizedActorUserId = safeText(actorUserId);
-        if (!StringUtils.hasText(normalizedActorUserId)) {
+        List<String> adminRecipientUserIds = adminAudienceService == null
+                ? (StringUtils.hasText(normalizedActorUserId) ? List.of(normalizedActorUserId) : List.of())
+                : adminAudienceService.adminNotificationRecipientUserIds(normalizedActorUserId);
+        if (adminRecipientUserIds.isEmpty()) {
             return;
         }
         String label = labelFor(sectionKey);
@@ -425,9 +431,9 @@ public class AdminParamsService {
                 "config",
                 firstNonBlank(config == null ? null : config.getKey(), CONFIG_KEY) + ":" + safeText(sectionKey),
                 "admins",
-                List.of(normalizedActorUserId),
+                adminRecipientUserIds,
                 "Platform parameters changed",
-                label + " parameters saved. Recompute tasks were queued.",
+                label + " parameters saved by " + firstNonBlank(normalizedActorUserId, "system") + ". Recompute tasks were queued.",
                 "/admin",
                 "/assets/logo/heart.webp",
                 "/assets/logo/heart.webp",
@@ -462,6 +468,39 @@ public class AdminParamsService {
             return List.of(activeConfig());
         }
         return versions.stream().map(this::cloneConfig).toList();
+    }
+
+    private AffinityConfig sectionMetadata(String sectionKey, AffinityConfig active, List<AffinityConfig> versions) {
+        return versions.stream()
+                .filter(config -> sectionKey.equals(safeText(config.getChangedSection())))
+                .findFirst()
+                .orElseGet(() -> versions.stream()
+                        .filter(this::isInitialHistoryVersion)
+                        .findFirst()
+                        .orElse(active));
+    }
+
+    private int activeSectionVersion(String sectionKey, List<AffinityConfig> versions, AffinityConfig active) {
+        return versions.stream()
+                .filter(config -> sectionKey.equals(safeText(config.getChangedSection())))
+                .findFirst()
+                .map(this::safeVersion)
+                .orElseGet(() -> versions.stream()
+                        .filter(this::isInitialHistoryVersion)
+                        .findFirst()
+                        .map(this::safeVersion)
+                        .orElseGet(() -> safeVersion(active)));
+    }
+
+    private boolean isSectionHistoryVersion(AffinityConfig config, String sectionKey, int activeSectionVersion) {
+        return safeVersion(config) == activeSectionVersion
+                || sectionKey.equals(safeText(config == null ? null : config.getChangedSection()))
+                || isInitialHistoryVersion(config);
+    }
+
+    private boolean isInitialHistoryVersion(AffinityConfig config) {
+        String changedSection = safeText(config == null ? null : config.getChangedSection());
+        return !StringUtils.hasText(changedSection) || "seed".equals(changedSection);
     }
 
     private int nextVersion(String key) {
@@ -619,6 +658,24 @@ public class AdminParamsService {
         }
         if (normalizedSummary.matches("(?i)^Updated\\s+.+?\\s+parameters\\.$")) {
             return "admin.params.summary.updated." + normalizedSection;
+        }
+        if ("Initial parameter seed.".equals(normalizedSummary)) {
+            return "admin.params.summary.initial.seed";
+        }
+        if ("Initial platform parameter defaults.".equals(normalizedSummary)) {
+            return "admin.params.summary.initial.defaults";
+        }
+        if ("Raised inside-network confidence after graph review.".equals(normalizedSummary)) {
+            return "admin.params.summary.matching.raised";
+        }
+        if ("Balanced profile, workplace, school, and trait inputs.".equals(normalizedSummary)) {
+            return "admin.params.summary.profile.balanced";
+        }
+        if ("Adjusted host confidence and open-capacity boost.".equals(normalizedSummary)) {
+            return "admin.params.summary.events.adjusted";
+        }
+        if ("Added owner confidence and request pressure to asset ranking.".equals(normalizedSummary)) {
+            return "admin.params.summary.assets.adjusted";
         }
         return "";
     }

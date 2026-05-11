@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Locale;
@@ -119,6 +120,17 @@ public class MediaStorageService {
         return new StoredMediaObject(storedObject.bytes(), storedObject.contentType());
     }
 
+    public void deletePublicObject(String mediaUrlOrKey) {
+        if (!isEnabled()) {
+            return;
+        }
+        String key = extractPublicObjectKey(mediaUrlOrKey);
+        if (!StringUtils.hasText(key)) {
+            return;
+        }
+        objectStoreClient.deleteObject(properties.getBucket(), key);
+    }
+
     public boolean isEnabled() {
         return properties.isEnabled()
                 && objectStoreClient != null
@@ -164,6 +176,30 @@ public class MediaStorageService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String extractPublicObjectKey(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return "";
+        }
+        if (!normalized.contains("/media/public")) {
+            return normalized.contains("/") ? "" : normalized;
+        }
+        int keyIndex = normalized.indexOf("key=");
+        if (keyIndex < 0) {
+            return "";
+        }
+        String encoded = normalized.substring(keyIndex + 4);
+        int separatorIndex = encoded.indexOf('&');
+        if (separatorIndex >= 0) {
+            encoded = encoded.substring(0, separatorIndex);
+        }
+        try {
+            return URLDecoder.decode(encoded, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException ex) {
+            return "";
+        }
     }
 
     public record StoredMediaObject(

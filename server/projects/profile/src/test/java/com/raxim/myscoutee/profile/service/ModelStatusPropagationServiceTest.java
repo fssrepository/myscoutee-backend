@@ -61,7 +61,8 @@ class ModelStatusPropagationServiceTest {
                 membersRepository,
                 assetsRepository,
                 mongoTemplate,
-                notificationOutboxService);
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class));
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 
@@ -115,7 +116,8 @@ class ModelStatusPropagationServiceTest {
                 membersRepository,
                 assetsRepository,
                 mongoTemplate,
-                mock(NotificationOutboxService.class));
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class));
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 
@@ -154,7 +156,8 @@ class ModelStatusPropagationServiceTest {
                 membersRepository,
                 assetsRepository,
                 mongoTemplate,
-                mock(NotificationOutboxService.class));
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class));
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 
@@ -197,7 +200,8 @@ class ModelStatusPropagationServiceTest {
                 membersRepository,
                 assetsRepository,
                 mongoTemplate,
-                mock(NotificationOutboxService.class));
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class));
 
         ModelStatusPropagationService.ModelStatusPropagationOutcome outcome = service.applyForUser("u1");
 

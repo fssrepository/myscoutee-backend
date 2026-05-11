@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.bson.Document;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
@@ -759,15 +760,19 @@ public class ActivitiesChatService {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
         Users sender = findUser(senderId);
+        boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
+        String senderName = deletedSender ? deletedUserName() : message == null ? "" : safeText(message.getSender());
+        String senderInitials = deletedSender ? deletedUserInitials() : senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials());
+        String senderGender = deletedSender ? "deleted" : senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender());
         boolean deleted = StringUtils.hasText(message == null ? "" : message.getDeletedAtIso());
         return new ChatMessageDto(
                 message == null ? "" : safeText(message.getId()),
                 message == null ? "" : safeText(message.getClientId()),
                 senderId,
-                message == null ? "" : safeText(message.getSender()),
-                senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials()),
-                senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
-                resolveUserImageUrl(sender),
+                senderName,
+                senderInitials,
+                senderGender,
+                "deleted".equals(senderGender) ? "" : resolveUserImageUrl(sender),
                 deleted ? "" : message == null ? "" : safeText(message.getText()),
                 message == null ? Instant.now().toString() : safeText(message.getSentAtIso()),
                 Objects.equals(senderId, normalizeId(viewerUserId)),
@@ -800,12 +805,15 @@ public class ActivitiesChatService {
     }
 
     private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record) {
+        String userId = record == null ? "" : safeText(record.getUserId());
+        Users user = findUser(userId);
+        boolean deletedUser = isDeletedOrPurgedUser(user, userId);
         return new ChatMessageReactionDto(
                 record == null ? "" : safeText(record.getEmoji()),
-                record == null ? "" : safeText(record.getUserId()),
-                record == null ? "" : safeText(record.getUserName()),
-                record == null ? "" : safeText(record.getUserInitials()),
-                record == null ? "man" : normalizeGender(record.getUserGender()),
+                userId,
+                deletedUser ? deletedUserName() : record == null ? "" : safeText(record.getUserName()),
+                deletedUser ? deletedUserInitials() : record == null ? "" : safeText(record.getUserInitials()),
+                deletedUser ? "deleted" : record == null ? "man" : normalizeGender(record.getUserGender()),
                 record == null ? "" : safeText(record.getReactedAtIso()));
     }
 
@@ -817,12 +825,72 @@ public class ActivitiesChatService {
                 record == null ? "" : safeText(record.getEntityId()),
                 record == null ? "" : safeText(record.getAssetType()),
                 record == null ? "" : safeText(record.getOwnerUserId()),
+                record == null ? "available" : normalizeAttachmentStatus(record.getStatus()),
+                record == null ? "" : safeText(record.getUnavailableReason()),
                 record == null ? "" : safeText(record.getSubtitle()),
-                record == null ? "" : safeText(record.getDescription()),
+                record == null ? "" : presentationAttachmentDescription(record),
                 record == null ? "" : safeText(record.getUrl()),
                 record == null ? "" : safeText(record.getPreviewUrl()),
                 record == null ? "" : safeText(record.getMimeType()),
                 record == null ? null : record.getSizeBytes());
+    }
+
+    private String presentationAttachmentDescription(ChatMessageAttachmentRecord record) {
+        if (record == null) {
+            return "";
+        }
+        String type = safeText(record.getType()).toLowerCase(Locale.US);
+        if (!"poll".equals(type)) {
+            return safeText(record.getDescription());
+        }
+        return maskDeletedPollVotes(record.getDescription());
+    }
+
+    private String maskDeletedPollVotes(String description) {
+        String normalizedDescription = safeText(description);
+        if (!StringUtils.hasText(normalizedDescription)) {
+            return "";
+        }
+        try {
+            Document root = Document.parse(normalizedDescription);
+            Object optionsValue = root.get("options");
+            if (!(optionsValue instanceof List<?> optionNodes)) {
+                return normalizedDescription;
+            }
+            boolean changed = false;
+            for (Object option : optionNodes) {
+                if (!(option instanceof Document optionDocument)) {
+                    continue;
+                }
+                Object votesValue = optionDocument.get("votes");
+                if (!(votesValue instanceof List<?> voteNodes)) {
+                    continue;
+                }
+                for (Object vote : voteNodes) {
+                    if (!(vote instanceof Document voteObject)) {
+                        continue;
+                    }
+                    String userId = safeText(Objects.toString(voteObject.get("userId"), ""));
+                    if (!StringUtils.hasText(userId) || !isDeletedOrPurgedUser(findUser(userId), userId)) {
+                        continue;
+                    }
+                    changed = putIfChanged(voteObject, "name", deletedUserName()) || changed;
+                    changed = putIfChanged(voteObject, "initials", deletedUserInitials()) || changed;
+                    changed = putIfChanged(voteObject, "gender", "deleted") || changed;
+                }
+            }
+            return changed ? root.toJson() : normalizedDescription;
+        } catch (Exception ignored) {
+            return normalizedDescription;
+        }
+    }
+
+    private boolean putIfChanged(Document node, String key, String value) {
+        if (Objects.equals(safeText(Objects.toString(node.get(key), "")), safeText(value))) {
+            return false;
+        }
+        node.put(key, safeText(value));
+        return true;
     }
 
     private String chatMessageSummary(ChatMessageRecord message) {
@@ -853,11 +921,14 @@ public class ActivitiesChatService {
 
     private ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record) {
         String userId = record == null ? "" : safeText(record.getId());
+        Users user = findUser(userId);
+        boolean deletedUser = isDeletedOrPurgedUser(user, userId);
+        String gender = deletedUser ? "deleted" : record == null ? "man" : normalizeGender(record.getGender());
         return new ChatReadAvatarDto(
                 userId,
-                record == null ? "" : safeText(record.getInitials()),
-                record == null ? "man" : normalizeGender(record.getGender()),
-                resolveUserImageUrl(findUser(userId)));
+                deletedUser ? deletedUserInitials() : record == null ? "" : safeText(record.getInitials()),
+                gender,
+                "deleted".equals(gender) ? "" : resolveUserImageUrl(user));
     }
 
     private ChatMessageRecord buildMessageRecord(
@@ -886,15 +957,19 @@ public class ActivitiesChatService {
 
     private ChatStreamEvent toStreamEvent(String chatId, ChatMessageRecord messageRecord) {
         ChatAvatarRecord senderAvatar = messageRecord.getSenderAvatar();
+        String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
+        Users sender = findUser(senderId);
+        boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
+        String senderGender = deletedSender ? "deleted" : senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender());
         return ChatStreamEvent.message(
                 chatId,
                 messageRecord.getId(),
                 safeText(messageRecord.getClientId()),
-                senderAvatar == null ? "" : safeText(senderAvatar.getId()),
-                safeText(messageRecord.getSender()),
-                senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
-                senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
-                resolveUserImageUrl(findUser(senderAvatar == null ? "" : safeText(senderAvatar.getId()))),
+                senderId,
+                deletedSender ? deletedUserName() : safeText(messageRecord.getSender()),
+                deletedSender ? deletedUserInitials() : senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
+                senderGender,
+                "deleted".equals(senderGender) ? "" : resolveUserImageUrl(sender),
                 safeText(messageRecord.getText()),
                 safeText(messageRecord.getSentAtIso()),
                 safeReadBy(messageRecord.getReadBy()).stream()
@@ -1103,6 +1178,8 @@ public class ActivitiesChatService {
             record.setEntityId(safeText(attachment.entityId()));
             record.setAssetType(safeText(attachment.assetType()));
             record.setOwnerUserId(safeText(attachment.ownerUserId()));
+            record.setStatus(normalizeAttachmentStatus(attachment.status()));
+            record.setUnavailableReason(safeText(attachment.unavailableReason()));
             record.setSubtitle(safeText(attachment.subtitle()));
             record.setDescription(safeText(attachment.description()));
             record.setUrl(url);
@@ -1124,6 +1201,8 @@ public class ActivitiesChatService {
             copy.setEntityId(attachment.getEntityId());
             copy.setAssetType(attachment.getAssetType());
             copy.setOwnerUserId(attachment.getOwnerUserId());
+            copy.setStatus(normalizeAttachmentStatus(attachment.getStatus()));
+            copy.setUnavailableReason(attachment.getUnavailableReason());
             copy.setSubtitle(attachment.getSubtitle());
             copy.setDescription(attachment.getDescription());
             copy.setUrl(attachment.getUrl());
@@ -1195,6 +1274,23 @@ public class ActivitiesChatService {
         return usersRepository.findByUserId(userId).orElse(null);
     }
 
+    private boolean isDeletedOrPurgedUser(Users user, String userId) {
+        if (!StringUtils.hasText(safeText(userId))) {
+            return false;
+        }
+        return user == null
+                || "D".equalsIgnoreCase(safeText(user.getStatus()))
+                || "deleted".equalsIgnoreCase(safeText(user.getProfileStatus()));
+    }
+
+    private String deletedUserName() {
+        return "Deleted user";
+    }
+
+    private String deletedUserInitials() {
+        return "DU";
+    }
+
     private String requireResolvedUserId(String requestedUserId) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
@@ -1262,10 +1358,17 @@ public class ActivitiesChatService {
 
     private String normalizeGender(String value) {
         String normalized = safeText(value).toLowerCase(Locale.US);
+        if ("deleted".equals(normalized)) {
+            return "deleted";
+        }
         if (normalized.startsWith("w") || normalized.startsWith("f")) {
             return "woman";
         }
         return "man";
+    }
+
+    private String normalizeAttachmentStatus(String value) {
+        return "unavailable".equals(safeText(value)) ? "unavailable" : "available";
     }
 
     private List<ChatMessageRecord> safeMessages(List<ChatMessageRecord> messages) {

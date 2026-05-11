@@ -16,7 +16,10 @@ reload page - activity menubar stucks
 
 chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a save button at top, and probably remove backward/forward arrow as stepper)
 
-tournament / auto inviter time window (2h earlier to run background process)
+tournament / auto inviter time window (2h earlier to run background process + should be configureable somehow on admin)
+partition key - is it available in different country -- has it been implemented feature?
+
+chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
 
 metrics popup (visualize architecturally and statisticswise, how certain process is built up + logs)
 

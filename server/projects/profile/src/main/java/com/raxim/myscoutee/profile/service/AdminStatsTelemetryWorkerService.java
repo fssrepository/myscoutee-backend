@@ -26,6 +26,7 @@ public class AdminStatsTelemetryWorkerService {
     private final ObjectMapper objectMapper;
     private final AdminStatsService adminStatsService;
     private final AdminStatsProperties properties;
+    private final RedisStreamRetentionService redisStreamRetentionService;
 
     private String lastSeenId = "";
     private boolean streamUnavailableLogged;
@@ -34,11 +35,13 @@ public class AdminStatsTelemetryWorkerService {
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
             AdminStatsService adminStatsService,
-            AdminStatsProperties properties) {
+            AdminStatsProperties properties,
+            RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.adminStatsService = adminStatsService;
         this.properties = properties;
+        this.redisStreamRetentionService = redisStreamRetentionService;
     }
 
     @Scheduled(fixedDelayString = "${admin.stats.telemetry-window-ms:60000}")
@@ -61,9 +64,11 @@ public class AdminStatsTelemetryWorkerService {
             }
 
             List<AdminTelemetryEvent> events = new ArrayList<>();
+            List<String> recordIds = new ArrayList<>();
             String latestId = offset;
             for (MapRecord<String, Object, Object> record : records) {
                 latestId = record.getId().getValue();
+                recordIds.add(record.getId().getValue());
                 Object payload = record.getValue().get("payload");
                 if (!(payload instanceof String jsonPayload) || jsonPayload.isBlank()) {
                     continue;
@@ -79,6 +84,7 @@ public class AdminStatsTelemetryWorkerService {
             }
             lastSeenId = latestId;
             adminStatsService.applyTelemetryEvents(events, latestId);
+            redisStreamRetentionService.deleteRecords(stringRedisTemplate, properties.getStreamKey(), recordIds);
         } catch (Exception exception) {
             if (!streamUnavailableLogged) {
                 LOGGER.warn("Admin stats telemetry worker paused because Redis is unavailable.", exception);

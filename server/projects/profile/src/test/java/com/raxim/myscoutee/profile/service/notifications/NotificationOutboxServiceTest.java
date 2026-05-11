@@ -17,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
+import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class NotificationOutboxServiceTest {
@@ -77,5 +78,97 @@ class NotificationOutboxServiceTest {
 
         assertThat(result).isEmpty();
         verify(repository, never()).save(any(NotificationOutboxItem.class));
+    }
+
+    @Test
+    void enqueueUsesDirectDeliveryBelowMulticastThreshold() {
+        NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(anyString(), anyCollection(), anyString()))
+                .thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
+        when(parameters.notificationMulticastThreshold(3)).thenReturn(3);
+        NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+
+        service.enqueue(intent(List.of("u1", "u2"), Map.of()));
+
+        ArgumentCaptor<NotificationOutboxItem> savedItem = ArgumentCaptor.forClass(NotificationOutboxItem.class);
+        verify(repository).save(savedItem.capture());
+        assertThat(savedItem.getValue().getDeliveryStrategy()).isEqualTo("direct");
+    }
+
+    @Test
+    void enqueueUsesMulticastDeliveryAtMulticastThreshold() {
+        NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(anyString(), anyCollection(), anyString()))
+                .thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
+        when(parameters.notificationMulticastThreshold(3)).thenReturn(3);
+        NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+
+        service.enqueue(intent(List.of("u1", "u2", "u3"), Map.of()));
+
+        ArgumentCaptor<NotificationOutboxItem> savedItem = ArgumentCaptor.forClass(NotificationOutboxItem.class);
+        verify(repository).save(savedItem.capture());
+        assertThat(savedItem.getValue().getDeliveryStrategy()).isEqualTo("multicast");
+    }
+
+    @Test
+    void enqueuePayloadMulticastThresholdOverridesConfig() {
+        NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(anyString(), anyCollection(), anyString()))
+                .thenReturn(Optional.empty());
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
+        when(parameters.notificationMulticastThreshold(3)).thenReturn(10);
+        NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+
+        service.enqueue(intent(List.of("u1", "u2"), Map.of("multicastThreshold", "2")));
+
+        ArgumentCaptor<NotificationOutboxItem> savedItem = ArgumentCaptor.forClass(NotificationOutboxItem.class);
+        verify(repository).save(savedItem.capture());
+        assertThat(savedItem.getValue().getDeliveryStrategy()).isEqualTo("multicast");
+    }
+
+    @Test
+    void enqueueUpgradesCollapsedDirectItemToMulticastAfterRecipientMerge() {
+        NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        NotificationOutboxItem existing = new NotificationOutboxItem();
+        existing.setId("n-1");
+        existing.setStatus(NotificationOutboxItem.STATUS_PENDING);
+        existing.setDeliveryStrategy("direct");
+        existing.setRecipientUserIds(List.of("u1", "u2"));
+        existing.setPayload(Map.of());
+        when(repository.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(anyString(), anyCollection(), anyString()))
+                .thenReturn(Optional.of(existing));
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
+        when(parameters.notificationMulticastThreshold(3)).thenReturn(3);
+        NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+
+        service.enqueue(intent(List.of("u3"), Map.of()));
+
+        ArgumentCaptor<NotificationOutboxItem> savedItem = ArgumentCaptor.forClass(NotificationOutboxItem.class);
+        verify(repository).save(savedItem.capture());
+        assertThat(savedItem.getValue().getRecipientUserIds()).containsExactly("u1", "u2", "u3");
+        assertThat(savedItem.getValue().getDeliveryStrategy()).isEqualTo("multicast");
+    }
+
+    private NotificationIntent intent(List<String> recipientUserIds, Map<String, String> payload) {
+        return new NotificationIntent(
+                "asset-review",
+                "asset",
+                "asset-1",
+                "asset-active-managers",
+                recipientUserIds,
+                "Asset needs review",
+                "Asset needs review.",
+                "/game",
+                "/asset.webp",
+                "/badge.webp",
+                "asset-review-asset-1",
+                payload,
+                "worker");
     }
 }

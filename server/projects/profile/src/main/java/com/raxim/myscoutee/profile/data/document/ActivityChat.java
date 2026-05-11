@@ -341,6 +341,8 @@ public class ActivityChat {
         private String entityId;
         private String assetType;
         private String ownerUserId;
+        private String status;
+        private String unavailableReason;
         private String subtitle;
         private String description;
         private String url;
@@ -360,6 +362,10 @@ public class ActivityChat {
         public void setAssetType(String assetType) { this.assetType = assetType; }
         public String getOwnerUserId() { return ownerUserId; }
         public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        public String getUnavailableReason() { return unavailableReason; }
+        public void setUnavailableReason(String unavailableReason) { this.unavailableReason = unavailableReason; }
         public String getSubtitle() { return subtitle; }
         public void setSubtitle(String subtitle) { this.subtitle = subtitle; }
         public String getDescription() { return description; }

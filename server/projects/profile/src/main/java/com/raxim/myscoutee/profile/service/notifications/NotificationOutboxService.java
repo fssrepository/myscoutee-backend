@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service.notifications;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,34 +25,48 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
+import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
 
 @Service
 public class NotificationOutboxService {
     public static final String WAKEUP_STREAM_KEY = "notification:outbox:wakeups";
+    private static final Duration WAKEUP_STREAM_RETENTION = Duration.ofDays(30);
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationOutboxService.class);
     private static final String DEFAULT_BADGE_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
+    private static final String DELIVERY_STRATEGY_DIRECT = "direct";
     private static final String DELIVERY_STRATEGY_MULTICAST = "multicast";
     private static final String DELIVERY_STRATEGY_TOPIC = "topic";
+    private static final int DEFAULT_MULTICAST_THRESHOLD = 3;
     private static final int DEFAULT_TOPIC_THRESHOLD = 1000;
     private static final int DEFAULT_COLLAPSE_WINDOW_SECONDS = 300;
 
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final PlatformParametersService platformParametersService;
+    private final RedisStreamRetentionService redisStreamRetentionService;
 
     public NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
-            PlatformParametersService platformParametersService) {
+            PlatformParametersService platformParametersService,
+            RedisStreamRetentionService redisStreamRetentionService) {
         this.notificationOutboxRepository = notificationOutboxRepository;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
         this.platformParametersService = platformParametersService;
+        this.redisStreamRetentionService = redisStreamRetentionService;
+    }
+
+    NotificationOutboxService(
+            NotificationOutboxRepository notificationOutboxRepository,
+            ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
+            PlatformParametersService platformParametersService) {
+        this(notificationOutboxRepository, stringRedisTemplateProvider, platformParametersService, null);
     }
 
     NotificationOutboxService(NotificationOutboxRepository notificationOutboxRepository) {
-        this(notificationOutboxRepository, null, null);
+        this(notificationOutboxRepository, null, null, null);
     }
 
     public Optional<NotificationOutboxItem> enqueue(NotificationIntent intent) {
@@ -62,6 +77,9 @@ public class NotificationOutboxService {
         Map<String, String> payload = normalizedPayload(intent);
         List<String> recipientUserIds = compactIds(intent.recipientUserIds());
         String topicName = resolveStableTopicName(intent, payload, recipientUserIds.size());
+        String deliveryStrategy = StringUtils.hasText(topicName)
+                ? DELIVERY_STRATEGY_TOPIC
+                : knownUserDeliveryStrategy(payload, recipientUserIds.size());
         if (!StringUtils.hasText(type) || (recipientUserIds.isEmpty() && !StringUtils.hasText(topicName))) {
             return Optional.empty();
         }
@@ -83,8 +101,8 @@ public class NotificationOutboxService {
                         collapseKey,
                         List.of(NotificationOutboxItem.STATUS_PENDING),
                         collapseWindowStartIso(nowIso))
-                .map(existing -> mergeRecipients(existing, recipientUserIds, nowIso, intent.createdUser()))
-                .orElseGet(() -> newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, topicName, nowIso));
+                .map(existing -> mergeRecipients(existing, recipientUserIds, payload, nowIso, intent.createdUser()))
+                .orElseGet(() -> newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso));
         NotificationOutboxItem saved = notificationOutboxRepository.save(item);
         publishWakeup(saved);
         return Optional.of(saved);
@@ -96,6 +114,7 @@ public class NotificationOutboxService {
             Map<String, String> payload,
             String payloadHash,
             String collapseKey,
+            String deliveryStrategy,
             String topicName,
             String nowIso) {
         NotificationOutboxItem item = new NotificationOutboxItem();
@@ -106,7 +125,7 @@ public class NotificationOutboxService {
         item.setEntityId(safeNullableText(intent.entityId()));
         item.setRecipientScope(firstNonBlank(intent.recipientScope(), "users"));
         item.setRecipientUserIds(recipientUserIds);
-        item.setDeliveryStrategy(StringUtils.hasText(topicName) ? DELIVERY_STRATEGY_TOPIC : DELIVERY_STRATEGY_MULTICAST);
+        item.setDeliveryStrategy(deliveryStrategy);
         item.setTopicName(safeNullableText(topicName));
         item.setTitle(firstNonBlank(intent.title(), payload.get("title")));
         item.setBody(firstNonBlank(intent.body(), payload.get("body")));
@@ -132,11 +151,15 @@ public class NotificationOutboxService {
     private NotificationOutboxItem mergeRecipients(
             NotificationOutboxItem item,
             List<String> recipientUserIds,
+            Map<String, String> payload,
             String nowIso,
             String actorUserId) {
         LinkedHashSet<String> merged = new LinkedHashSet<>(compactIds(item.getRecipientUserIds()));
         merged.addAll(recipientUserIds);
         item.setRecipientUserIds(List.copyOf(merged));
+        if (!DELIVERY_STRATEGY_TOPIC.equals(safeText(item.getDeliveryStrategy()))) {
+            item.setDeliveryStrategy(knownUserDeliveryStrategy(firstNonEmptyMap(item.getPayload(), payload), merged.size()));
+        }
         item.setNextRetryAt(firstNonBlank(item.getNextRetryAt(), nowIso));
         item.setUpdatedDate(nowIso);
         item.setUpdatedUser(safeNullableText(actorUserId));
@@ -164,6 +187,11 @@ public class NotificationOutboxService {
         return recipientCount == 0 || recipientCount >= Math.max(1, threshold) ? topicName : null;
     }
 
+    private String knownUserDeliveryStrategy(Map<String, String> payload, int recipientCount) {
+        int threshold = readInt(payload == null ? null : payload.get("multicastThreshold"), multicastThreshold());
+        return recipientCount >= Math.max(1, threshold) ? DELIVERY_STRATEGY_MULTICAST : DELIVERY_STRATEGY_DIRECT;
+    }
+
     private String collapseWindowStartIso(String nowIso) {
         int windowSeconds = platformParametersService == null
                 ? DEFAULT_COLLAPSE_WINDOW_SECONDS
@@ -184,6 +212,19 @@ public class NotificationOutboxService {
                 : platformParametersService.notificationTopicThreshold(DEFAULT_TOPIC_THRESHOLD);
     }
 
+    private int multicastThreshold() {
+        return platformParametersService == null
+                ? DEFAULT_MULTICAST_THRESHOLD
+                : platformParametersService.notificationMulticastThreshold(DEFAULT_MULTICAST_THRESHOLD);
+    }
+
+    private Map<String, String> firstNonEmptyMap(Map<String, String> first, Map<String, String> second) {
+        if (first != null && !first.isEmpty()) {
+            return first;
+        }
+        return second == null ? Map.of() : second;
+    }
+
     private void publishWakeup(NotificationOutboxItem item) {
         if (stringRedisTemplate == null || item == null || !StringUtils.hasText(safeText(item.getId()))) {
             return;
@@ -194,6 +235,9 @@ public class NotificationOutboxService {
                     "collapseKey", safeText(item.getCollapseKey()),
                     "type", safeText(item.getNotificationType()),
                     "createdDate", firstNonBlank(item.getCreatedDate(), Instant.now().toString()))).withStreamKey(WAKEUP_STREAM_KEY));
+            if (redisStreamRetentionService != null) {
+                redisStreamRetentionService.trimByAge(stringRedisTemplate, WAKEUP_STREAM_KEY, WAKEUP_STREAM_RETENTION);
+            }
         } catch (RuntimeException exception) {
             LOGGER.debug("Notification outbox Redis wakeup publish failed; scheduled polling remains active.", exception);
         }

@@ -50,6 +50,7 @@ public class ModelStatusPropagationService {
     private final AssetsRepository assetsRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationOutboxService notificationOutboxService;
+    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
 
     public ModelStatusPropagationService(
             UsersRepository usersRepository,
@@ -57,13 +58,15 @@ public class ModelStatusPropagationService {
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
             MongoTemplate mongoTemplate,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService,
+            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationOutboxService = notificationOutboxService;
+        this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
     }
 
     public ModelStatusPropagationOutcome applyForUser(String userId) {
@@ -214,6 +217,7 @@ public class ModelStatusPropagationService {
         boolean updated = updateEventStatusIfSnapshotCurrent(event, suppressionStatus, previousStatus);
         if (updated) {
             enqueueEventStatusNotification(event, suppressionStatus, previousStatus);
+            markEventAttachmentUnavailable(event, suppressionStatus);
         }
         return updated;
     }
@@ -237,6 +241,7 @@ public class ModelStatusPropagationService {
                 null);
         if (updated) {
             enqueueEventStatusNotification(event, restoredStatus, currentStatus);
+            markEventAttachmentAvailable(event);
         }
         return updated;
     }
@@ -259,6 +264,7 @@ public class ModelStatusPropagationService {
         boolean updated = updateAssetStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
         if (updated) {
             enqueueAssetStatusNotification(asset, suppressionStatus, previousStatus);
+            markAssetAttachmentUnavailable(asset, suppressionStatus);
         }
         return updated;
     }
@@ -282,8 +288,37 @@ public class ModelStatusPropagationService {
                 null);
         if (updated) {
             enqueueAssetStatusNotification(asset, restoredStatus, currentStatus);
+            markAssetAttachmentAvailable(asset);
         }
         return updated;
+    }
+
+    private void markEventAttachmentUnavailable(ActivityEvent event, String reason) {
+        String sourceId = normalizeId(event == null ? null : event.getSourceId());
+        if (chatAttachmentLifecycleService != null && StringUtils.hasText(sourceId)) {
+            chatAttachmentLifecycleService.markEventUnavailable(sourceId, reason);
+        }
+    }
+
+    private void markEventAttachmentAvailable(ActivityEvent event) {
+        String sourceId = normalizeId(event == null ? null : event.getSourceId());
+        if (chatAttachmentLifecycleService != null && StringUtils.hasText(sourceId)) {
+            chatAttachmentLifecycleService.markEventAvailable(sourceId);
+        }
+    }
+
+    private void markAssetAttachmentUnavailable(Asset asset, String reason) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (chatAttachmentLifecycleService != null && StringUtils.hasText(assetId)) {
+            chatAttachmentLifecycleService.markAssetUnavailable(assetId, reason);
+        }
+    }
+
+    private void markAssetAttachmentAvailable(Asset asset) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (chatAttachmentLifecycleService != null && StringUtils.hasText(assetId)) {
+            chatAttachmentLifecycleService.markAssetAvailable(assetId);
+        }
     }
 
     private void enqueueAssetStatusNotification(Asset asset, String nextStatus, String previousStatus) {

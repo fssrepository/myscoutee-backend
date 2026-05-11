@@ -50,10 +50,13 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
+import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
 
 @Service
 public class NotificationOutboxWorkerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationOutboxWorkerService.class);
+    private static final String DELIVERY_STRATEGY_DIRECT = "direct";
+    private static final String DELIVERY_STRATEGY_TOPIC = "topic";
 
     private final ConfigProperties configProperties;
     private final NotificationOutboxRepository notificationOutboxRepository;
@@ -61,6 +64,7 @@ public class NotificationOutboxWorkerService {
     private final MongoTemplate mongoTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final PlatformParametersService platformParametersService;
+    private final RedisStreamRetentionService redisStreamRetentionService;
     private final int batchSize;
     private final int firebaseChunkSize;
     private final int maxRetries;
@@ -83,13 +87,15 @@ public class NotificationOutboxWorkerService {
             @Value("${notifications.outbox.lease-ms:300000}") long leaseMs,
             @Value("${notifications.outbox.retry-base-ms:60000}") long retryBaseMs,
             @Value("${notifications.outbox.delivery-window-start-hour:0}") int deliveryWindowStartHour,
-            @Value("${notifications.outbox.delivery-window-end-hour:24}") int deliveryWindowEndHour) {
+            @Value("${notifications.outbox.delivery-window-end-hour:24}") int deliveryWindowEndHour,
+            RedisStreamRetentionService redisStreamRetentionService) {
         this.configProperties = configProperties;
         this.notificationOutboxRepository = notificationOutboxRepository;
         this.usersRepository = usersRepository;
         this.mongoTemplate = mongoTemplate;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
         this.platformParametersService = platformParametersService;
+        this.redisStreamRetentionService = redisStreamRetentionService;
         this.batchSize = Math.max(1, Math.min(500, batchSize));
         this.firebaseChunkSize = Math.max(1, Math.min(500, firebaseChunkSize));
         this.maxRetries = Math.max(1, maxRetries);
@@ -171,8 +177,13 @@ public class NotificationOutboxWorkerService {
             if (records == null || records.isEmpty()) {
                 return;
             }
+            List<String> recordIds = records.stream()
+                    .map(record -> record.getId().getValue())
+                    .filter(StringUtils::hasText)
+                    .toList();
             lastWakeupStreamId = records.get(records.size() - 1).getId().getValue();
             processDueNotifications();
+            redisStreamRetentionService.deleteRecords(stringRedisTemplate, NotificationOutboxService.WAKEUP_STREAM_KEY, recordIds);
         } catch (RuntimeException exception) {
             LOGGER.debug("Notification outbox Redis wakeup read failed; scheduled polling remains active.", exception);
         }
@@ -216,7 +227,7 @@ public class NotificationOutboxWorkerService {
     }
 
     private DeliveryResult deliver(NotificationOutboxItem item) throws FirebaseMessagingException {
-        if ("topic".equals(safeText(item.getDeliveryStrategy())) && StringUtils.hasText(safeText(item.getTopicName()))) {
+        if (DELIVERY_STRATEGY_TOPIC.equals(safeText(item.getDeliveryStrategy())) && StringUtils.hasText(safeText(item.getTopicName()))) {
             FirebaseMessaging.getInstance().send(buildTopicMessage(item, safeText(item.getTopicName())));
             return new DeliveryResult(1, 0, Set.of());
         }
@@ -225,7 +236,33 @@ public class NotificationOutboxWorkerService {
         if (registrations.isEmpty()) {
             return new DeliveryResult(0, 0, Set.of());
         }
+        DeliveryResult result = DELIVERY_STRATEGY_DIRECT.equals(safeText(item.getDeliveryStrategy()))
+                ? deliverDirect(item, registrations)
+                : deliverMulticast(item, registrations);
+        removeInvalidTokens(users, result.invalidTokens());
+        return result;
+    }
 
+    private DeliveryResult deliverDirect(NotificationOutboxItem item, List<TokenRegistration> registrations)
+            throws FirebaseMessagingException {
+        int success = 0;
+        int failure = 0;
+        LinkedHashSet<String> invalidTokens = new LinkedHashSet<>();
+        for (int index = 0; index < registrations.size(); index += firebaseChunkSize) {
+            List<TokenRegistration> chunk = registrations.subList(index, Math.min(index + firebaseChunkSize, registrations.size()));
+            List<Message> messages = chunk.stream()
+                    .map(registration -> buildTokenMessage(item, registration.token()))
+                    .toList();
+            BatchResponse response = FirebaseMessaging.getInstance().sendAll(messages);
+            success += response.getSuccessCount();
+            failure += response.getFailureCount();
+            collectInvalidTokens(chunk, response, invalidTokens);
+        }
+        return new DeliveryResult(success, failure, invalidTokens);
+    }
+
+    private DeliveryResult deliverMulticast(NotificationOutboxItem item, List<TokenRegistration> registrations)
+            throws FirebaseMessagingException {
         int success = 0;
         int failure = 0;
         LinkedHashSet<String> invalidTokens = new LinkedHashSet<>();
@@ -235,22 +272,37 @@ public class NotificationOutboxWorkerService {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(buildMessage(item, tokens));
             success += response.getSuccessCount();
             failure += response.getFailureCount();
-            List<SendResponse> responses = response.getResponses();
-            for (int responseIndex = 0; responseIndex < responses.size() && responseIndex < chunk.size(); responseIndex += 1) {
-                SendResponse sendResponse = responses.get(responseIndex);
-                if (sendResponse != null && !sendResponse.isSuccessful() && isInvalidToken(sendResponse.getException())) {
-                    invalidTokens.add(chunk.get(responseIndex).token());
-                }
+            collectInvalidTokens(chunk, response, invalidTokens);
+        }
+        return new DeliveryResult(success, failure, invalidTokens);
+    }
+
+    private void collectInvalidTokens(
+            List<TokenRegistration> chunk,
+            BatchResponse response,
+            LinkedHashSet<String> invalidTokens) {
+        List<SendResponse> responses = response == null ? List.of() : response.getResponses();
+        for (int responseIndex = 0; responseIndex < responses.size() && responseIndex < chunk.size(); responseIndex += 1) {
+            SendResponse sendResponse = responses.get(responseIndex);
+            if (sendResponse != null && !sendResponse.isSuccessful() && isInvalidToken(sendResponse.getException())) {
+                invalidTokens.add(chunk.get(responseIndex).token());
             }
         }
-        removeInvalidTokens(users, invalidTokens);
-        return new DeliveryResult(success, failure, invalidTokens);
     }
 
     private MulticastMessage buildMessage(NotificationOutboxItem item, List<String> tokens) {
         Map<String, String> payload = payloadFor(item);
         return MulticastMessage.builder()
                 .addAllTokens(tokens)
+                .putAllData(payload)
+                .setWebpushConfig(webpushConfig(item, payload))
+                .build();
+    }
+
+    private Message buildTokenMessage(NotificationOutboxItem item, String token) {
+        Map<String, String> payload = payloadFor(item);
+        return Message.builder()
+                .setToken(token)
                 .putAllData(payload)
                 .setWebpushConfig(webpushConfig(item, payload))
                 .build();

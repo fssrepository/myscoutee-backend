@@ -81,6 +81,8 @@ public final class ActivityChatsDtos {
             String entityId,
             String assetType,
             String ownerUserId,
+            String status,
+            String unavailableReason,
             String subtitle,
             String description,
             String url,

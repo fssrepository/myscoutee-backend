@@ -65,6 +65,11 @@ public class AssetsController {
         assetsService.delete(request);
     }
 
+    @PostMapping("/restore")
+    public AssetCardDto restore(@RequestBody AssetDeleteRequestDto request) {
+        return assetsService.restore(request);
+    }
+
     @PostMapping("/take-over")
     public AssetCardDto takeOver(@RequestBody AssetDeleteRequestDto request) {
         return assetsService.takeOver(request);

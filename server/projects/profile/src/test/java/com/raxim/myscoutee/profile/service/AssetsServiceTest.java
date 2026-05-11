@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,12 +20,14 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
     @Test
@@ -65,7 +68,8 @@ class AssetsServiceTest {
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
-                notificationOutboxService);
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -82,6 +86,104 @@ class AssetsServiceTest {
 
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getAffinity()).isEqualTo(42d);
+        assertThat(savedAsset.getValue().getBoost()).isEqualTo(7d);
+        verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+    }
+
+    @Test
+    void deleteMarksAssetTrashedInsteadOfPhysicallyDeleting() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+
+        Asset asset = asset();
+        when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of(asset));
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class));
+
+        service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
+
+        verify(assetsRepository, never()).delete(any(Asset.class));
+        verify(assetsRepository, never()).deleteAll(org.mockito.ArgumentMatchers.<Iterable<Asset>>any());
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getStatus()).isEqualTo("T");
+        assertThat(savedAsset.getValue().getStatusBeforeSuppression()).isNull();
+        assertThat(savedAsset.getValue().getTrashedAtIso()).isNotBlank();
+        assertThat(savedAsset.getValue().getUpdatedUser()).isEqualTo("u1");
+
+        verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+        ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
+        verify(notificationOutboxService).enqueue(notification.capture());
+        assertThat(notification.getValue().type()).isEqualTo("asset-unavailable");
+        assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
+    }
+
+    @Test
+    void restoreClearsAssetTrashStatus() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+
+        Asset asset = asset();
+        asset.setStatus("T");
+        asset.setTrashedAtIso("2026-05-01T10:00:00Z");
+        Users owner = user("u1", "Owner One", "OO");
+
+        when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of(asset));
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
+        when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
+        when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class));
+
+        AssetCardDto card = service.restore(new AssetDeleteRequestDto("u1", "asset-1"));
+
+        assertThat(card).isNotNull();
+        assertThat(card.status()).isEqualTo("A");
+        assertThat(card.menuActions()).contains("delete");
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getStatus()).isEqualTo("A");
+        assertThat(savedAsset.getValue().getTrashedAtIso()).isNull();
         assertThat(savedAsset.getValue().getAffinity()).isEqualTo(42d);
         assertThat(savedAsset.getValue().getBoost()).isEqualTo(7d);
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");

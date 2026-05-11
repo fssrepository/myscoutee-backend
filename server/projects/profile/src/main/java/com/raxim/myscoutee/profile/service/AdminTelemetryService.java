@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,14 +23,17 @@ public class AdminTelemetryService {
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final AdminStatsProperties properties;
+    private final RedisStreamRetentionService redisStreamRetentionService;
 
     public AdminTelemetryService(
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
-            AdminStatsProperties properties) {
+            AdminStatsProperties properties,
+            RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.properties = properties;
+        this.redisStreamRetentionService = redisStreamRetentionService;
     }
 
     public void record(String eventKey, String domain, String entityId, String actorUserId) {
@@ -66,6 +70,10 @@ public class AdminTelemetryService {
             stringRedisTemplate.opsForStream().add(
                     StreamRecords.mapBacked(Map.of("payload", objectMapper.writeValueAsString(event)))
                             .withStreamKey(properties.getStreamKey()));
+            redisStreamRetentionService.trimByAge(
+                    stringRedisTemplate,
+                    properties.getStreamKey(),
+                    Duration.ofDays(properties.getStreamRetentionDays()));
         } catch (Exception exception) {
             LOGGER.warn("Unable to enqueue admin telemetry event {}.", normalizedEventKey, exception);
         }

@@ -85,6 +85,7 @@ public class ActivitiesEventsService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final MongoTemplate mongoTemplate;
+    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -98,7 +99,8 @@ public class ActivitiesEventsService {
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -111,6 +113,7 @@ public class ActivitiesEventsService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.mongoTemplate = mongoTemplate;
+        this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -481,6 +484,7 @@ public class ActivitiesEventsService {
             current.setTrashedAtIso(Instant.now().toString());
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        markEventAttachmentsUnavailable(updated, "trashed");
     }
 
     public void publish(EventActionRequestDto request) {
@@ -489,6 +493,7 @@ public class ActivitiesEventsService {
             current.setPublished(true);
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        markEventAttachmentsAvailable(updated);
     }
 
     public void restore(EventActionRequestDto request) {
@@ -545,6 +550,7 @@ public class ActivitiesEventsService {
         updated = activityEventsRepository.saveAll(updated);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        markEventAttachmentsAvailable(updated);
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
@@ -1477,6 +1483,30 @@ public class ActivitiesEventsService {
                 scheduledMessageTaskService.scheduleEventStageReminders(event, actorUserId);
             }
         }
+    }
+
+    private void markEventAttachmentsUnavailable(List<ActivityEvent> documents, String reason) {
+        if (chatAttachmentLifecycleService == null || documents == null || documents.isEmpty()) {
+            return;
+        }
+        documents.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .forEach(sourceId -> chatAttachmentLifecycleService.markEventUnavailable(sourceId, reason));
+    }
+
+    private void markEventAttachmentsAvailable(List<ActivityEvent> documents) {
+        if (chatAttachmentLifecycleService == null || documents == null || documents.isEmpty()) {
+            return;
+        }
+        documents.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .forEach(chatAttachmentLifecycleService::markEventAvailable);
     }
 
     private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String type, String sourceId) {

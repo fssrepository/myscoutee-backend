@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,7 +77,9 @@ public class AdminStatsService {
         Map<String, Map<String, Long>> dailyActivity = copyNestedLongMap(snapshot.getDailyActivity());
         Map<String, Map<String, String>> dailyActiveUsers = copyNestedStringMap(snapshot.getDailyActiveUsers());
         Map<String, String> activeUsers = new LinkedHashMap<>(safeStringMap(snapshot.getActiveUsers()));
+        Map<String, String> userFirstSeen = new LinkedHashMap<>(safeStringMap(snapshot.getUserFirstSeen()));
         Map<String, Long> userActivityCounts = new LinkedHashMap<>(safeMap(snapshot.getUserActivityCounts()));
+        Map<String, Long> departedUserDurationsDays = new LinkedHashMap<>(safeMap(snapshot.getDepartedUserDurationsDays()));
         Map<String, Long> profileFillRates = new LinkedHashMap<>(safeMap(snapshot.getProfileFillRates()));
         Map<String, String> knownEvents = new LinkedHashMap<>(safeStringMap(snapshot.getKnownEvents()));
         Map<String, String> activeEvents = new LinkedHashMap<>(safeStringMap(snapshot.getActiveEvents()));
@@ -96,11 +100,26 @@ public class AdminStatsService {
             Map<String, Long> day = dailyActivity.computeIfAbsent(dayKey, ignored -> new LinkedHashMap<>());
             increment(counters, eventKey, amount);
             if (StringUtils.hasText(actorUserId)) {
+                userFirstSeen.putIfAbsent(actorUserId, occurredAtIso);
                 activeUsers.put(actorUserId, occurredAtIso);
                 increment(userActivityCounts, actorUserId, amount);
                 dailyActiveUsers
                         .computeIfAbsent(dayKey, ignored -> new LinkedHashMap<>())
                         .put(actorUserId, occurredAtIso);
+            }
+            if ("profile.registered".equals(eventKey)) {
+                String registeredUserId = firstNonBlank(entityId, actorUserId);
+                if (StringUtils.hasText(registeredUserId)) {
+                    userFirstSeen.putIfAbsent(registeredUserId, occurredAtIso);
+                }
+            }
+            if ("profile.deleted".equals(eventKey)) {
+                String departedUserId = firstNonBlank(entityId, actorUserId);
+                if (StringUtils.hasText(departedUserId)) {
+                    String firstSeenAt = firstNonBlank(firstNonBlank(userFirstSeen.get(departedUserId), activeUsers.get(departedUserId)), occurredAtIso);
+                    departedUserDurationsDays.put(departedUserId, daysBetween(firstSeenAt, occurredAtIso));
+                    activeUsers.remove(departedUserId);
+                }
             }
             Long profileFillPercent = tagLong(event.tags(), "profileFillPercent");
             if ("profiles".equals(domain) && StringUtils.hasText(entityId) && profileFillPercent != null) {
@@ -136,7 +155,9 @@ public class AdminStatsService {
         snapshot.setDailyActivity(dailyActivity);
         snapshot.setDailyActiveUsers(dailyActiveUsers);
         snapshot.setActiveUsers(activeUsers);
+        snapshot.setUserFirstSeen(userFirstSeen);
         snapshot.setUserActivityCounts(userActivityCounts);
+        snapshot.setDepartedUserDurationsDays(departedUserDurationsDays);
         snapshot.setProfileFillRates(profileFillRates);
         snapshot.setKnownEvents(knownEvents);
         snapshot.setActiveEvents(activeEvents);
@@ -185,6 +206,7 @@ public class AdminStatsService {
         Map<String, Map<String, String>> dailyActiveUsers = copyNestedStringMap(snapshot.getDailyActiveUsers());
         Map<String, String> activeUsers = safeStringMap(snapshot.getActiveUsers());
         Map<String, Long> userActivityCounts = safeMap(snapshot.getUserActivityCounts());
+        Map<String, Long> departedUserDurationsDays = safeMap(snapshot.getDepartedUserDurationsDays());
         Map<String, Long> profileFillRates = safeMap(snapshot.getProfileFillRates());
         Map<String, String> knownEvents = safeStringMap(snapshot.getKnownEvents());
         Map<String, String> activeEvents = safeStringMap(snapshot.getActiveEvents());
@@ -197,6 +219,12 @@ public class AdminStatsService {
                 .filter(value -> value != null && value.longValue() > 1L)
                 .count();
         long newRegistrations = counters.getOrDefault("profile.registered", 0L);
+        long departedUsers = Math.max(departedUserDurationsDays.size(), counters.getOrDefault("profile.deleted", 0L));
+        long medianDaysBeforeDelete = median(departedUserDurationsDays.values().stream()
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .boxed()
+                .toList());
         long averageProfileFill = average(profileFillRates);
         long activeEventCount = activeEvents.size();
         long eventCount = Math.max(activeEventCount, knownEvents.size());
@@ -211,6 +239,7 @@ public class AdminStatsService {
         List<AdminStatsMetricDto> kpis = List.of(
                 metric("active-users", "stats.kpi.active.users", activeUsers7d, "person", "blue", pct(activeUsers7d, Math.max(1L, triedUsers))),
                 metric("returning-users", "stats.kpi.returning.users", returningUsers, "repeat", "purple", pct(returningUsers, Math.max(1L, triedUsers))),
+                metric("departed-users", "stats.kpi.departed.users", departedUsers, "person_remove", "slate", pct(departedUsers, Math.max(1L, triedUsers + departedUsers))),
                 metric("active-events", "stats.kpi.active.events", activeEventCount, "event_available", "green", pct(activeEventCount, 40)),
                 metric("active-assets", "stats.kpi.active.assets", activeAssetCount, "inventory_2", "gold", pct(activeAssetCount, 40)),
                 metric("moderation-pressure", "stats.kpi.moderation.pressure", moderationOps, "shield", attention.isEmpty() ? "slate" : "red", pct(moderationOps, 80))
@@ -222,6 +251,8 @@ public class AdminStatsService {
                         item("active-users-7d", "stats.event.active.users.7d", activeUsers7d, triedUsers, "person", "blue"),
                         item("active-users-30d", "stats.event.active.users.30d", activeUsers30d, triedUsers, "calendar_month", "green"),
                         item("returning-users", "stats.event.returning.users", returningUsers, triedUsers, "repeat", "purple"),
+                        item("profile.deleted", "stats.event.profile.deleted", departedUsers, Math.max(1L, triedUsers + departedUsers), "person_remove", "slate"),
+                        item("deleted-median-days", "stats.event.deleted.median.days", medianDaysBeforeDelete, Math.max(1L, medianDaysBeforeDelete), "timer", "gold"),
                         item("profile-fill-average", "stats.event.profile.fill.average", averageProfileFill, 100L, "fact_check", "gold"),
                         item("tried-users", "stats.event.tried.users", triedUsers, triedUsers, "group", "slate")
                 )),
@@ -643,6 +674,33 @@ public class AdminStatsService {
                 .mapToLong(Long::longValue)
                 .average()
                 .orElse(0d));
+    }
+
+    private long median(List<Long> values) {
+        if (values == null || values.isEmpty()) {
+            return 0L;
+        }
+        List<Long> sorted = new ArrayList<>(values.stream()
+                .filter(Objects::nonNull)
+                .sorted()
+                .toList());
+        if (sorted.isEmpty()) {
+            return 0L;
+        }
+        int middle = sorted.size() / 2;
+        if (sorted.size() % 2 == 1) {
+            return sorted.get(middle);
+        }
+        return Math.round((sorted.get(middle - 1) + sorted.get(middle)) / 2d);
+    }
+
+    private long daysBetween(String startIso, String endIso) {
+        Instant start = parseInstant(startIso);
+        Instant end = parseInstant(endIso);
+        if (start == null || end == null || end.isBefore(start)) {
+            return 0L;
+        }
+        return Math.max(0L, ChronoUnit.DAYS.between(start, end));
     }
 
     private Long tagLong(Map<String, String> tags, String key) {

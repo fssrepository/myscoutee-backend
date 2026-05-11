@@ -48,6 +48,8 @@ class ActivitiesEventsServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private MongoTemplate mongoTemplate;
+    @Mock
+    private ChatAttachmentLifecycleService chatAttachmentLifecycleService;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -66,7 +68,8 @@ class ActivitiesEventsServiceTest {
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                mongoTemplate);
+                mongoTemplate,
+                chatAttachmentLifecycleService);
     }
 
     @Test

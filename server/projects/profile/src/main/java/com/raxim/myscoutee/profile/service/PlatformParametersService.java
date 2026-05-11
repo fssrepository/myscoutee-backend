@@ -59,6 +59,10 @@ public class PlatformParametersService {
         return clampInt(notifications().getTopicThreshold(), 1, 1_000_000, fallback);
     }
 
+    public int notificationMulticastThreshold(int fallback) {
+        return clampInt(notifications().getMulticastThreshold(), 1, 1000, fallback);
+    }
+
     public long jobWorkerPollDelayMs(long fallback) {
         Integer value = jobs().getWorkerPollDelayMs();
         if (value == null || value < 100 || value > 3_600_000) {

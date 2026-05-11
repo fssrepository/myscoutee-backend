@@ -7,6 +7,7 @@ public class AdminStatsProperties {
     private boolean enabled = true;
     private String streamKey = "admin:telemetry";
     private int maxBatchSize = 500;
+    private int streamRetentionDays = 30;
 
     public boolean isEnabled() {
         return enabled;
@@ -30,5 +31,13 @@ public class AdminStatsProperties {
 
     public void setMaxBatchSize(int maxBatchSize) {
         this.maxBatchSize = Math.max(1, maxBatchSize);
+    }
+
+    public int getStreamRetentionDays() {
+        return streamRetentionDays;
+    }
+
+    public void setStreamRetentionDays(int streamRetentionDays) {
+        this.streamRetentionDays = Math.max(1, streamRetentionDays);
     }
 }
