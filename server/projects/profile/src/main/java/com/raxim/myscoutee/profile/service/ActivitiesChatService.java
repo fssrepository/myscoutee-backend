@@ -53,6 +53,7 @@ public class ActivitiesChatService {
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
     private final ChatPushNotificationService chatPushNotificationService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public ActivitiesChatService(
             ActivityChatsRepository activityChatsRepository,
@@ -60,13 +61,15 @@ public class ActivitiesChatService {
             HomeUserProfileService homeUserProfileService,
             ChatStreamPublisher chatStreamPublisher,
             ChatWebSocketSessionRegistry chatWebSocketSessionRegistry,
-            ChatPushNotificationService chatPushNotificationService) {
+            ChatPushNotificationService chatPushNotificationService,
+            AdminTelemetryService adminTelemetryService) {
         this.activityChatsRepository = activityChatsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
         this.chatPushNotificationService = chatPushNotificationService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public List<ChatSummaryDto> queryChats(String requestedUserId) {
@@ -191,6 +194,7 @@ public class ActivitiesChatService {
         ChatStreamEvent streamEvent = toStreamEvent(snapshot.chatId(), messageRecord);
         publishChatEvent(streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record("chat.message.sent", "chats", snapshot.chatId(), userId);
         return toMessageDto(messageRecord, userId);
     }
 

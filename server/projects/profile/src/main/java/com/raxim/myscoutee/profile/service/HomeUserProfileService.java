@@ -181,6 +181,7 @@ public class HomeUserProfileService {
     private final RegionSecurityProperties regionSecurityProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -200,7 +201,8 @@ public class HomeUserProfileService {
             CountryPartitionService countryPartitionService,
             RegionSecurityProperties regionSecurityProperties,
             AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -219,6 +221,7 @@ public class HomeUserProfileService {
         this.regionSecurityProperties = regionSecurityProperties;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -352,6 +355,14 @@ public class HomeUserProfileService {
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved)));
         affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
+        String resolvedUserId = normalizeId(resolved == null ? null : resolved.getId());
+        adminTelemetryService.record(
+                existing == null ? "profile.registered" : "profile.fill.sampled",
+                "profiles",
+                resolvedUserId,
+                resolvedUserId,
+                1L,
+                profileTelemetryTags(resolved));
         return toUserDto(resolved);
     }
 
@@ -374,7 +385,14 @@ public class HomeUserProfileService {
         }
         slots.set(normalizedSlotIndex, normalizedImageUrl);
         user.setImages(normalizeStrings(slots));
-        usersRepository.save(user);
+        Users saved = usersRepository.save(user);
+        adminTelemetryService.record(
+                "profile.fill.sampled",
+                "profiles",
+                resolvedUserId,
+                resolvedUserId,
+                1L,
+                profileTelemetryTags(saved));
     }
 
     public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
@@ -397,6 +415,7 @@ public class HomeUserProfileService {
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(userId);
         userFeedbackSubmissionsRepository.save(document);
+        adminTelemetryService.record("feedback.submitted", "moderation", document.getId(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }
 
@@ -478,6 +497,7 @@ public class HomeUserProfileService {
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(userId);
         userReportSubmissionsRepository.save(document);
+        adminTelemetryService.record("report.submitted", "moderation", document.getId(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }
 
@@ -509,6 +529,7 @@ public class HomeUserProfileService {
         usersRepository.save(user);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", "status:D");
+        adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
         return new UserSubmitActionResponseDto(true, null);
     }
 
@@ -908,6 +929,46 @@ public class HomeUserProfileService {
                 .filter(Objects::nonNull)
                 .sorted(userComparator())
                 .toList();
+    }
+
+    private Map<String, String> profileTelemetryTags(Users user) {
+        Map<String, String> tags = new LinkedHashMap<>();
+        tags.put("profileFillPercent", Long.toString(profileFillPercent(user)));
+        return tags;
+    }
+
+    private long profileFillPercent(Users user) {
+        if (user == null) {
+            return 0L;
+        }
+        Integer completion = user.getCompletion();
+        if (completion != null && completion.intValue() >= 0) {
+            return Math.max(0L, Math.min(100L, completion.longValue()));
+        }
+
+        int total = 0;
+        int filled = 0;
+        total++;
+        filled += StringUtils.hasText(user.getName()) ? 1 : 0;
+        total++;
+        filled += user.getAge() != null || StringUtils.hasText(user.getBirthday()) ? 1 : 0;
+        total++;
+        filled += StringUtils.hasText(user.getGender()) ? 1 : 0;
+        total++;
+        filled += StringUtils.hasText(user.getCity()) ? 1 : 0;
+        total++;
+        filled += StringUtils.hasText(user.getHeadline()) ? 1 : 0;
+        total++;
+        filled += StringUtils.hasText(user.getAbout()) ? 1 : 0;
+        total++;
+        filled += user.getImages() != null && !user.getImages().isEmpty() ? 1 : 0;
+        total++;
+        filled += user.getProfileDetails() != null && !user.getProfileDetails().isEmpty() ? 1 : 0;
+        total++;
+        filled += user.getLanguages() != null && !user.getLanguages().isEmpty() ? 1 : 0;
+        total++;
+        filled += user.getLocationCoordinates() != null ? 1 : 0;
+        return Math.round((filled * 100d) / Math.max(1, total));
     }
 
     private UserGameFilterPreferencesDto resolveFilterPreferences(String resolvedUserId, Users user) {
@@ -2645,23 +2706,8 @@ public class HomeUserProfileService {
                 .toList();
     }
 
-    private List<String> normalizeIds(Collection<String> values) {
-        if (values == null || values.isEmpty()) {
-            return List.of();
-        }
-        return values.stream()
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
-    }
-
     private int normalizeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
-    }
-
-    private double safeDouble(Number value) {
-        return value == null || !Double.isFinite(value.doubleValue()) ? 0d : value.doubleValue();
     }
 
     private String normalizeId(String value) {

@@ -68,6 +68,7 @@ public class HelpCenterService {
     private final MongoTemplate mongoTemplate;
     private final ObjectMapper objectMapper;
     private final ResourceLoader resourceLoader;
+    private final AdminTelemetryService adminTelemetryService;
 
     public HelpCenterService(
             ConfigProperties configProperties,
@@ -76,7 +77,8 @@ public class HelpCenterService {
             PrivacyConsentsRepository privacyConsentsRepository,
             MongoTemplate mongoTemplate,
             ObjectMapper objectMapper,
-            ResourceLoader resourceLoader) {
+            ResourceLoader resourceLoader,
+            AdminTelemetryService adminTelemetryService) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
@@ -84,6 +86,7 @@ public class HelpCenterService {
         this.mongoTemplate = mongoTemplate;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public HelpCenterStateDto activeState() {
@@ -165,6 +168,7 @@ public class HelpCenterService {
         audit("create", actorUserId, saved, StringUtils.hasText(baseRevisionId)
                 ? "Created v" + saved.getVersion() + " from " + baseRevisionId + "."
                 : "Created v" + saved.getVersion() + ".");
+        adminTelemetryService.record("content.revision.saved", "content", saved.getId(), actorUserId);
         return fullState(kind, language);
     }
 
@@ -195,6 +199,7 @@ public class HelpCenterService {
         }
         revisionsRepository.saveAll(revisions);
         audit("activate", actorUserId, target, "Activated v" + target.getVersion() + ".");
+        adminTelemetryService.record("content.revision.activated", "content", target.getId(), actorUserId);
         return fullState(kind, language);
     }
 
@@ -215,6 +220,7 @@ public class HelpCenterService {
         boolean wasActive = Boolean.TRUE.equals(target.getActive());
         revisionsRepository.delete(target);
         audit("delete", actorUserId, target, "Deleted v" + target.getVersion() + ".");
+        adminTelemetryService.record("content.revision.deleted", "content", target.getId(), actorUserId);
         if (wasActive) {
             revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language).stream().findFirst().ifPresent(next -> {
                 next.setActive(true);

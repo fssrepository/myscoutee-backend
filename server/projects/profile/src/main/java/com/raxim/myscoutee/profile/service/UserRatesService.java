@@ -45,6 +45,7 @@ public class UserRatesService {
     private final AffinityCalculationService affinityCalculationService;
     private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
+    private final AdminTelemetryService adminTelemetryService;
 
     public UserRatesService(
             UserRatesRepository userRatesRepository,
@@ -52,13 +53,15 @@ public class UserRatesService {
             HomeUserProfileService homeUserProfileService,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            AdminTelemetryService adminTelemetryService) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.affinityCalculationService = affinityCalculationService;
         this.userAffinityEdgeService = userAffinityEdgeService;
         this.mongoTemplate = mongoTemplate;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     @PostConstruct
@@ -161,6 +164,7 @@ public class UserRatesService {
             List<UserRate> savedRates = new ArrayList<>();
             userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
             userAffinityEdgeService.recomputeForRates(savedRates.isEmpty() ? normalizedRates : savedRates);
+            adminTelemetryService.record("rates.synced", "matching", "", normalizedRates.get(0).getOwnerUserId(), normalizedRates.size());
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
     }

@@ -55,6 +55,7 @@ public class AdminModerationService {
     private final UsersRepository usersRepository;
     private final ActivityChatsRepository chatsRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public AdminModerationService(
             ConfigProperties configProperties,
@@ -62,13 +63,15 @@ public class AdminModerationService {
             UserFeedbackSubmissionsRepository feedbackRepository,
             UsersRepository usersRepository,
             ActivityChatsRepository chatsRepository,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
         this.usersRepository = usersRepository;
         this.chatsRepository = chatsRepository;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
@@ -111,6 +114,7 @@ public class AdminModerationService {
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
                 : "Please update the reported behavior before your account is blocked.");
+        adminTelemetryService.record("admin.user.warned", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
 
@@ -125,6 +129,7 @@ public class AdminModerationService {
             user.setProfileStatus("blocked");
             usersRepository.save(user);
             affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
+            adminTelemetryService.record("admin.user.blocked", "moderation", targetUserId, admin.id());
         }
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
@@ -142,6 +147,7 @@ public class AdminModerationService {
         user.setPreviousProfileStatus(null);
         usersRepository.save(user);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
+        adminTelemetryService.record("admin.user.unblocked", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
 

@@ -161,9 +161,12 @@ public class ModelStatusPropagationService {
     }
 
     private boolean suppressEvent(ActivityEvent event, String suppressionStatus) {
-        String currentStatus = safeText(event == null ? null : event.getStatus());
+        if (event == null) {
+            return false;
+        }
+        String currentStatus = safeText(event.getStatus());
         if (suppressionStatus.equals(currentStatus)
-                && StringUtils.hasText(safeText(event == null ? null : event.getStatusBeforeSuppression()))) {
+                && StringUtils.hasText(safeText(event.getStatusBeforeSuppression()))) {
             return true;
         }
         String previousStatus = SUPPRESSED_STATUSES.contains(currentStatus)
@@ -176,7 +179,10 @@ public class ModelStatusPropagationService {
     }
 
     private boolean restoreEventIfSuppressed(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
-        String currentStatus = safeText(event == null ? null : event.getStatus());
+        if (event == null) {
+            return true;
+        }
+        String currentStatus = safeText(event.getStatus());
         if (!SUPPRESSED_STATUSES.contains(currentStatus)) {
             return true;
         }
@@ -191,9 +197,12 @@ public class ModelStatusPropagationService {
     }
 
     private boolean suppressAsset(Asset asset, String suppressionStatus) {
-        String currentStatus = safeText(asset == null ? null : asset.getStatus());
+        if (asset == null) {
+            return false;
+        }
+        String currentStatus = safeText(asset.getStatus());
         if (suppressionStatus.equals(currentStatus)
-                && StringUtils.hasText(safeText(asset == null ? null : asset.getStatusBeforeSuppression()))) {
+                && StringUtils.hasText(safeText(asset.getStatusBeforeSuppression()))) {
             return true;
         }
         String previousStatus = SUPPRESSED_STATUSES.contains(currentStatus)
@@ -206,7 +215,10 @@ public class ModelStatusPropagationService {
     }
 
     private boolean restoreAssetIfSuppressed(Asset asset) {
-        String currentStatus = safeText(asset == null ? null : asset.getStatus());
+        if (asset == null) {
+            return true;
+        }
+        String currentStatus = safeText(asset.getStatus());
         if (!SUPPRESSED_STATUSES.contains(currentStatus)) {
             return true;
         }
@@ -218,7 +230,10 @@ public class ModelStatusPropagationService {
     }
 
     private boolean updateEventStatusIfSnapshotCurrent(ActivityEvent event, String nextStatus, String previousStatus) {
-        String id = normalizeId(event == null ? null : event.getId());
+        if (event == null) {
+            return false;
+        }
+        String id = normalizeId(event.getId());
         if (!StringUtils.hasText(id)) {
             return false;
         }
@@ -238,7 +253,10 @@ public class ModelStatusPropagationService {
     }
 
     private boolean updateAssetStatusIfSnapshotCurrent(Asset asset, String nextStatus, String previousStatus) {
-        String id = normalizeId(asset == null ? null : asset.getId());
+        if (asset == null) {
+            return false;
+        }
+        String id = normalizeId(asset.getId());
         if (!StringUtils.hasText(id)) {
             return false;
         }
@@ -261,7 +279,7 @@ public class ModelStatusPropagationService {
         if (!isOperationalEvent(event)) {
             return false;
         }
-        int capacityTotal = normalizeCount(event == null ? null : event.getCapacityTotal());
+        int capacityTotal = normalizeCount(event.getCapacityTotal());
         if (capacityTotal <= 0) {
             return true;
         }
@@ -278,12 +296,12 @@ public class ModelStatusPropagationService {
         }
         LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
         for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
-            if (!MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus()))) {
+            if (member == null || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))) {
                 continue;
             }
             String sourceId = normalizeId(member.getOwnerId());
             if (StringUtils.hasText(sourceId)) {
-                result.merge(sourceId, 1, Integer::sum);
+                result.put(sourceId, result.getOrDefault(sourceId, 0) + 1);
             }
         }
         return result;
@@ -293,7 +311,10 @@ public class ModelStatusPropagationService {
         LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
         LinkedHashSet<String> sourceIds = new LinkedHashSet<>();
         for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (event == null) {
+                continue;
+            }
+            String sourceId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
@@ -308,8 +329,9 @@ public class ModelStatusPropagationService {
 
         if (!sourceIds.isEmpty()) {
             for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
-                if (!MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus()))
-                        || !ROLE_ADMIN.equals(safeText(member == null ? null : member.getRole()))) {
+                if (member == null
+                        || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
+                        || !ROLE_ADMIN.equals(safeText(member.getRole()))) {
                     continue;
                 }
                 String sourceId = normalizeId(member.getOwnerId());
@@ -320,10 +342,6 @@ public class ModelStatusPropagationService {
             }
         }
         return result;
-    }
-
-    private String strongestSuppressionStatus(Collection<String> userIds, Map<String, Users> usersById) {
-        return adminStatusSnapshot(userIds, usersById).strongestSuppressionStatus();
     }
 
     private AdminStatusSnapshot adminStatusSnapshot(Collection<String> userIds, Map<String, Users> usersById) {

@@ -88,7 +88,10 @@ public class AffinityMaintenanceService {
     }
 
     public void refreshUserAffinityAndDependents(Users user) {
-        String userId = normalizeId(user == null ? null : user.getId());
+        if (user == null) {
+            return;
+        }
+        String userId = normalizeId(user.getId());
         if (!StringUtils.hasText(userId)) {
             return;
         }
@@ -112,7 +115,10 @@ public class AffinityMaintenanceService {
     }
 
     public void refreshUserAffinityAndRates(Users user) {
-        String userId = normalizeId(user == null ? null : user.getId());
+        if (user == null) {
+            return;
+        }
+        String userId = normalizeId(user.getId());
         if (!StringUtils.hasText(userId)) {
             return;
         }
@@ -436,7 +442,7 @@ public class AffinityMaintenanceService {
         }
         LinkedHashMap<String, LinkedHashSet<String>> membersBySourceId = new LinkedHashMap<>();
         for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
-            if (!STATUS_ACCEPTED.equals(normalizeMemberStatus(member == null ? null : member.getStatus()))) {
+            if (member == null || !STATUS_ACCEPTED.equals(normalizeMemberStatus(member.getStatus()))) {
                 continue;
             }
             String sourceId = normalizeId(member.getOwnerId());
@@ -470,7 +476,10 @@ public class AffinityMaintenanceService {
         }
         Map<String, RateAffinitySnapshot> previousById = new LinkedHashMap<>();
         for (UserRate rate : rates) {
-            String id = normalizeId(rate == null ? null : rate.getId());
+            if (rate == null) {
+                continue;
+            }
+            String id = normalizeId(rate.getId());
             if (StringUtils.hasText(id)) {
                 previousById.put(id, RateAffinitySnapshot.of(rate));
             }
@@ -479,7 +488,10 @@ public class AffinityMaintenanceService {
         affinityCalculationService.applyAffinity(rates);
         List<UserRate> changedRates = new ArrayList<>();
         for (UserRate rate : rates) {
-            String id = normalizeId(rate == null ? null : rate.getId());
+            if (rate == null) {
+                continue;
+            }
+            String id = normalizeId(rate.getId());
             RateAffinitySnapshot previous = previousById.get(id);
             if (previous == null || !previous.matches(rate)) {
                 changedRates.add(rate);
@@ -492,7 +504,10 @@ public class AffinityMaintenanceService {
     }
 
     private boolean updateUserAffinityOnly(Users user, double nextAffinity) {
-        String userId = normalizeId(user == null ? null : user.getId());
+        if (user == null) {
+            return false;
+        }
+        String userId = normalizeId(user.getId());
         if (!StringUtils.hasText(userId)) {
             return false;
         }
@@ -508,7 +523,10 @@ public class AffinityMaintenanceService {
     }
 
     private boolean updateEventDerivedFieldsIfSnapshotCurrent(ActivityEvent event, double nextAffinity, double nextBoost) {
-        String id = normalizeId(event == null ? null : event.getId());
+        if (event == null) {
+            return false;
+        }
+        String id = normalizeId(event.getId());
         if (!StringUtils.hasText(id)) {
             return false;
         }
@@ -532,7 +550,10 @@ public class AffinityMaintenanceService {
     }
 
     private boolean updateAssetDerivedFieldsIfSnapshotCurrent(Asset asset, double nextAffinity, double nextBoost) {
-        String id = normalizeId(asset == null ? null : asset.getId());
+        if (asset == null) {
+            return false;
+        }
+        String id = normalizeId(asset.getId());
         if (!StringUtils.hasText(id)) {
             return false;
         }
@@ -556,7 +577,10 @@ public class AffinityMaintenanceService {
     }
 
     private boolean updateRateDerivedFieldsIfSnapshotCurrent(UserRate rate) {
-        String id = normalizeId(rate == null ? null : rate.getId());
+        if (rate == null) {
+            return false;
+        }
+        String id = normalizeId(rate.getId());
         if (!StringUtils.hasText(id)) {
             return false;
         }

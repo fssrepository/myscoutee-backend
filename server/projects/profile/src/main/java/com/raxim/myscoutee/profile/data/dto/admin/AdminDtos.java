@@ -107,6 +107,57 @@ public final class AdminDtos {
             String name,
             String category,
             String description) {}
+    public record AdminStatsDashboardDto(
+            String generatedAtIso,
+            String source,
+            Integer healthScore,
+            String healthLabelKey,
+            String healthSummaryKey,
+            List<AdminStatsMetricDto> kpis,
+            List<AdminStatsSegmentDto> segments,
+            List<AdminStatsBreakdownItemDto> attention,
+            List<AdminStatsBreakdownItemDto> topCities,
+            List<AdminStatsBreakdownItemDto> topTopics,
+            List<AdminStatsTimelinePointDto> timeline,
+            List<AdminStatsBreakdownItemDto> eventTypes,
+            List<AdminStatsBreakdownItemDto> activityMix) {}
+    public record AdminStatsMetricDto(
+            String key,
+            String labelKey,
+            Long value,
+            String valueLabel,
+            String captionKey,
+            String caption,
+            String icon,
+            String tone,
+            Integer percent) {}
+    public record AdminStatsSegmentDto(
+            String key,
+            String labelKey,
+            String icon,
+            Long total,
+            Integer healthPercent,
+            String summaryKey,
+            String summary,
+            List<AdminStatsBreakdownItemDto> items) {}
+    public record AdminStatsBreakdownItemDto(
+            String key,
+            String labelKey,
+            String label,
+            Long value,
+            Long total,
+            String icon,
+            String tone) {}
+    public record AdminStatsTimelinePointDto(
+            String dateKey,
+            String label,
+            Long registrations,
+            Long activeUsers,
+            Long ratings,
+            Long events,
+            Long assets,
+            Long messages,
+            Long moderation) {}
     public record AdminChatMessageDto(
             String id,
             String sender,

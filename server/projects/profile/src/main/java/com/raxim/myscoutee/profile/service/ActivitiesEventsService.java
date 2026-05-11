@@ -83,6 +83,7 @@ public class ActivitiesEventsService {
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesEventsService(
@@ -96,6 +97,7 @@ public class ActivitiesEventsService {
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService,
             MongoTemplate mongoTemplate) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
@@ -107,6 +109,7 @@ public class ActivitiesEventsService {
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -727,6 +730,23 @@ public class ActivitiesEventsService {
         }
         activityEventsRepository.saveAll(documentsToSave);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
+        Map<String, String> telemetryTags = new LinkedHashMap<>();
+        String city = safeText(request.creatorCity());
+        if (!StringUtils.hasText(city)) {
+            city = safeText(request.location());
+        }
+        if (StringUtils.hasText(city)) {
+            telemetryTags.put("city", city);
+        }
+        if (request.topics() != null) {
+            request.topics().stream()
+                    .map(this::safeText)
+                    .filter(StringUtils::hasText)
+                    .findFirst()
+                    .ifPresent(topic -> telemetryTags.put("topic", topic));
+        }
+        telemetryTags.put("eventType", resolveTelemetryEventType(request));
+        adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
         syncStageReminderTasksForSavedEvents(documentsToSave, actorUserId);
         materializeSlotOccurrences();
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
@@ -2136,6 +2156,27 @@ public class ActivitiesEventsService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String resolveTelemetryEventType(ActivitiesEventSyncPayloadDto request) {
+        if (request == null) {
+            return "Organized";
+        }
+        String eventType = safeText(request.eventType());
+        String normalizedEventType = eventType.toLowerCase(Locale.ROOT);
+        if (Boolean.TRUE.equals(request.generated())) {
+            return "Random";
+        }
+        if (normalizedEventType.contains("tournament")) {
+            return "Tournament";
+        }
+        if (normalizedEventType.contains("recurring") || StringUtils.hasText(safeText(request.frequency()))) {
+            return "Recurring";
+        }
+        if (Boolean.TRUE.equals(request.slotsEnabled()) || request.slotTemplates() != null && !request.slotTemplates().isEmpty()) {
+            return "Multi-slot";
+        }
+        return StringUtils.hasText(eventType) ? eventType : "Organized";
     }
 
     private List<String> normalizeIds(Collection<String> values) {

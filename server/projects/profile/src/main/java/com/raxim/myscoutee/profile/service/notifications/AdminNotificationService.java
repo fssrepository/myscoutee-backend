@@ -33,6 +33,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTim
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
 
 @Service
@@ -45,6 +46,7 @@ public class AdminNotificationService {
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
+    private final AdminTelemetryService adminTelemetryService;
     private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
     private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
         Thread thread = new Thread(runnable, "admin-notification-runner");
@@ -61,11 +63,13 @@ public class AdminNotificationService {
             NotificationRuleRegistryService notificationRuleRegistryService,
             EmailTemplatesRepository emailTemplatesRepository,
             EventScheduler eventScheduler,
-            AdminModerationService adminModerationService) {
+            AdminModerationService adminModerationService,
+            AdminTelemetryService adminTelemetryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     @PreDestroy
@@ -90,7 +94,9 @@ public class AdminNotificationService {
         List<NotificationRuleConfig> documents = request == null || request.rules() == null
                 ? List.of()
                 : request.rules().stream().map(this::toDocument).toList();
-        return toState(notificationRuleRegistryService.saveRules(documents, admin.id()));
+        AdminNotificationCenterStateDto state = toState(notificationRuleRegistryService.saveRules(documents, admin.id()));
+        adminTelemetryService.record("jobs.config.saved", "jobs", "", admin.id(), documents.size());
+        return state;
     }
 
     public AdminNotificationRuleRunResultDto run(String ruleKey, AdminNotificationRuleRunRequestDto request) {
@@ -126,6 +132,7 @@ public class AdminNotificationService {
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     RandomRunProgress runProgress = progress;
                     runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress));
+                    adminTelemetryService.record("jobs.run.started", "jobs", normalizedRuleKey, admin.id());
                     String startedAtIso = startedAtIso(startedRule);
                     return new AdminNotificationRuleRunResultDto(
                             normalizedRuleKey,
@@ -203,6 +210,7 @@ public class AdminNotificationService {
                     detail,
                     adminUserId,
                     progress == null ? null : progress.startedAt());
+            adminTelemetryService.record("jobs.run.completed", "jobs", ruleKey, adminUserId, Math.max(1, affectedUsers));
         } catch (Exception exception) {
             notificationRuleRegistryService.recordRun(
                     ruleKey,
@@ -211,6 +219,7 @@ public class AdminNotificationService {
                     safeText(exception.getMessage()),
                     adminUserId,
                     progress == null ? null : progress.startedAt());
+            adminTelemetryService.record("jobs.run.failed", "jobs", ruleKey, adminUserId);
         } finally {
             if (progress != null) {
                 progress.close();

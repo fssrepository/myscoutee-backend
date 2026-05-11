@@ -39,6 +39,7 @@ public class ActivitiesEventFeedbackService {
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -46,13 +47,15 @@ public class ActivitiesEventFeedbackService {
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UsersRepository usersRepository,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.usersRepository = usersRepository;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -193,6 +196,7 @@ public class ActivitiesEventFeedbackService {
         for (String targetUserId : changedTargetUserIds) {
             affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
+        adminTelemetryService.record("event.feedback.submitted", "events", eventId, userId);
     }
 
     public void saveNote(EventFeedbackNoteRequestDto request) {

@@ -58,6 +58,7 @@ public class ActivitiesMembersService {
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
@@ -69,7 +70,8 @@ public class ActivitiesMembersService {
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
             EventInviteNotificationService eventInviteNotificationService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -80,6 +82,7 @@ public class ActivitiesMembersService {
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -459,6 +462,7 @@ public class ActivitiesMembersService {
         membersToSave.addAll(removedMembers);
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
+            adminTelemetryService.record("event.members.changed", ownerType, ownerId, actorUserId, membersToSave.size());
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             clearHandledInvitationRecords(ownerId, membersToSave);
@@ -531,6 +535,7 @@ public class ActivitiesMembersService {
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
+            adminTelemetryService.record("event.member.joined", "events", normalizedEventId, viewerUserId);
             clearHandledInvitationRecords(normalizedEventId, List.of(current));
             if (accepted) {
                 processEventWaitlist(normalizedEventId, eventRecord, true);
@@ -595,6 +600,7 @@ public class ActivitiesMembersService {
 
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
+            adminTelemetryService.record("event.member.invited", "events", normalizedEventId, actorUserId, membersToSave.size());
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
             refreshEmbeddedEventMembers(normalizedEventId);
         }
@@ -1913,10 +1919,6 @@ public class ActivitiesMembersService {
 
     private String normalizeGender(String value) {
         return "woman".equals(safeText(value)) ? "woman" : "man";
-    }
-
-    private double safeDouble(Double value) {
-        return value == null ? 0d : Math.max(0d, value);
     }
 
     private String resolveAvatarUrl(Users user) {

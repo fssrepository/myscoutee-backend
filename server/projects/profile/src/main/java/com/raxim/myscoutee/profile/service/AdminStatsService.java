@@ -1,0 +1,533 @@
+package com.raxim.myscoutee.profile.service;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.bson.types.ObjectId;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.raxim.myscoutee.profile.data.document.AdminStatsSnapshot;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsBreakdownItemDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsMetricDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsSegmentDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsTimelinePointDto;
+import com.raxim.myscoutee.profile.repository.AdminStatsRepository;
+
+@Service
+public class AdminStatsService {
+    private static final String GLOBAL_STATS_KEY = "global";
+    private static final int TIMELINE_DAYS = 14;
+    private static final int STORED_DAILY_DAYS = 45;
+
+    private final AdminStatsRepository adminStatsRepository;
+    private final AdminModerationService adminModerationService;
+
+    public AdminStatsService(
+            AdminStatsRepository adminStatsRepository,
+            AdminModerationService adminModerationService) {
+        this.adminStatsRepository = adminStatsRepository;
+        this.adminModerationService = adminModerationService;
+    }
+
+    public AdminStatsDashboardDto dashboard(String adminUserId) {
+        adminModerationService.resolveAdminActor(adminUserId);
+        return toDto(resolveSnapshot());
+    }
+
+    public Optional<String> lastTelemetryStreamId() {
+        return adminStatsRepository.findByStatsKey(GLOBAL_STATS_KEY)
+                .map(AdminStatsSnapshot::getLastTelemetryStreamId)
+                .map(this::safeText)
+                .filter(StringUtils::hasText);
+    }
+
+    public void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId) {
+        if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
+            return;
+        }
+        AdminStatsSnapshot snapshot = resolveSnapshot();
+        Map<String, Long> counters = new LinkedHashMap<>(safeMap(snapshot.getCounters()));
+        Map<String, Long> attention = new LinkedHashMap<>(safeMap(snapshot.getAttention()));
+        Map<String, Long> topCities = new LinkedHashMap<>(safeMap(snapshot.getTopCities()));
+        Map<String, Long> topTopics = new LinkedHashMap<>(safeMap(snapshot.getTopTopics()));
+        Map<String, Long> eventTypes = new LinkedHashMap<>(safeMap(snapshot.getEventTypes()));
+        Map<String, Map<String, Long>> dailyActivity = copyNestedLongMap(snapshot.getDailyActivity());
+        Map<String, Map<String, String>> dailyActiveUsers = copyNestedStringMap(snapshot.getDailyActiveUsers());
+        Map<String, String> activeUsers = new LinkedHashMap<>(safeStringMap(snapshot.getActiveUsers()));
+        Map<String, Long> userActivityCounts = new LinkedHashMap<>(safeMap(snapshot.getUserActivityCounts()));
+        Map<String, Long> profileFillRates = new LinkedHashMap<>(safeMap(snapshot.getProfileFillRates()));
+        Map<String, String> knownEvents = new LinkedHashMap<>(safeStringMap(snapshot.getKnownEvents()));
+        Map<String, String> activeEvents = new LinkedHashMap<>(safeStringMap(snapshot.getActiveEvents()));
+        Map<String, String> knownAssets = new LinkedHashMap<>(safeStringMap(snapshot.getKnownAssets()));
+        Map<String, String> activeAssets = new LinkedHashMap<>(safeStringMap(snapshot.getActiveAssets()));
+
+        for (AdminTelemetryEvent event : events == null ? List.<AdminTelemetryEvent>of() : events) {
+            if (event == null || !StringUtils.hasText(safeText(event.eventKey()))) {
+                continue;
+            }
+            long amount = Math.max(1L, event.amount() == null ? 1L : event.amount());
+            String eventKey = normalizeKey(event.eventKey());
+            String domain = normalizeKey(event.domain());
+            String actorUserId = safeText(event.actorUserId());
+            String entityId = safeText(event.entityId());
+            String occurredAtIso = firstNonBlank(event.occurredAtIso(), Instant.now().toString());
+            String dayKey = dayKey(occurredAtIso);
+            Map<String, Long> day = dailyActivity.computeIfAbsent(dayKey, ignored -> new LinkedHashMap<>());
+            increment(counters, eventKey, amount);
+            if (StringUtils.hasText(actorUserId)) {
+                activeUsers.put(actorUserId, occurredAtIso);
+                increment(userActivityCounts, actorUserId, amount);
+                dailyActiveUsers
+                        .computeIfAbsent(dayKey, ignored -> new LinkedHashMap<>())
+                        .put(actorUserId, occurredAtIso);
+            }
+            Long profileFillPercent = tagLong(event.tags(), "profileFillPercent");
+            if ("profiles".equals(domain) && StringUtils.hasText(entityId) && profileFillPercent != null) {
+                profileFillRates.put(entityId, Math.max(0L, Math.min(100L, profileFillPercent.longValue())));
+            }
+            applyEntityActivity(knownEvents, activeEvents, "events", domain, entityId, eventKey, occurredAtIso);
+            applyEntityActivity(knownAssets, activeAssets, "assets", domain, entityId, eventKey, occurredAtIso);
+            applyDailyActivity(day, eventKey, domain, amount);
+            if (isAttentionEvent(eventKey)) {
+                increment(attention, eventKey, amount);
+            }
+            String city = safeText(event.tags() == null ? null : event.tags().get("city"));
+            if (StringUtils.hasText(city)) {
+                increment(topCities, city, amount);
+            }
+            String topic = safeText(event.tags() == null ? null : event.tags().get("topic"));
+            if (StringUtils.hasText(topic)) {
+                increment(topTopics, topic, amount);
+            }
+            String eventType = safeText(event.tags() == null ? null : event.tags().get("eventType"));
+            if ("events".equals(domain) && StringUtils.hasText(eventType)) {
+                increment(eventTypes, eventType, amount);
+            }
+        }
+        trimDailyMaps(dailyActivity, dailyActiveUsers);
+
+        int healthScore = calculateHealthScore(counters, attention);
+        snapshot.setCounters(counters);
+        snapshot.setAttention(attention);
+        snapshot.setTopCities(topCities);
+        snapshot.setTopTopics(topTopics);
+        snapshot.setEventTypes(eventTypes);
+        snapshot.setDailyActivity(dailyActivity);
+        snapshot.setDailyActiveUsers(dailyActiveUsers);
+        snapshot.setActiveUsers(activeUsers);
+        snapshot.setUserActivityCounts(userActivityCounts);
+        snapshot.setProfileFillRates(profileFillRates);
+        snapshot.setKnownEvents(knownEvents);
+        snapshot.setActiveEvents(activeEvents);
+        snapshot.setKnownAssets(knownAssets);
+        snapshot.setActiveAssets(activeAssets);
+        snapshot.setHealthScore(healthScore);
+        snapshot.setHealthLabelKey(healthScore >= 80 ? "stats.health.good" : healthScore >= 60 ? "stats.health.watch" : "stats.health.risk");
+        snapshot.setHealthSummaryKey("stats.health.summary");
+        snapshot.setGeneratedAtIso(Instant.now().toString());
+        snapshot.setSource("http");
+        if (StringUtils.hasText(safeText(lastStreamId))) {
+            snapshot.setLastTelemetryStreamId(safeText(lastStreamId));
+        }
+        adminStatsRepository.save(snapshot);
+    }
+
+    private AdminStatsSnapshot resolveSnapshot() {
+        return adminStatsRepository.findByStatsKey(GLOBAL_STATS_KEY).orElseGet(() -> {
+            AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
+            snapshot.setId(new ObjectId().toHexString());
+            snapshot.setStatsKey(GLOBAL_STATS_KEY);
+            snapshot.setGeneratedAtIso(Instant.now().toString());
+            snapshot.setSource("http");
+            snapshot.setHealthScore(100);
+            snapshot.setHealthLabelKey("stats.health.good");
+            snapshot.setHealthSummaryKey("stats.health.summary");
+            snapshot.setLastTelemetryStreamId("0-0");
+            return adminStatsRepository.save(snapshot);
+        });
+    }
+
+    private AdminStatsDashboardDto toDto(AdminStatsSnapshot snapshot) {
+        Map<String, Long> counters = safeMap(snapshot.getCounters());
+        Map<String, Long> attention = safeMap(snapshot.getAttention());
+        Map<String, Map<String, Long>> dailyActivity = copyNestedLongMap(snapshot.getDailyActivity());
+        Map<String, Map<String, String>> dailyActiveUsers = copyNestedStringMap(snapshot.getDailyActiveUsers());
+        Map<String, String> activeUsers = safeStringMap(snapshot.getActiveUsers());
+        Map<String, Long> userActivityCounts = safeMap(snapshot.getUserActivityCounts());
+        Map<String, Long> profileFillRates = safeMap(snapshot.getProfileFillRates());
+        Map<String, String> knownEvents = safeStringMap(snapshot.getKnownEvents());
+        Map<String, String> activeEvents = safeStringMap(snapshot.getActiveEvents());
+        Map<String, String> knownAssets = safeStringMap(snapshot.getKnownAssets());
+        Map<String, String> activeAssets = safeStringMap(snapshot.getActiveAssets());
+        long triedUsers = activeUsers.size();
+        long activeUsers7d = countSeenSince(activeUsers, 7);
+        long activeUsers30d = countSeenSince(activeUsers, 30);
+        long returningUsers = userActivityCounts.values().stream()
+                .filter(value -> value != null && value.longValue() > 1L)
+                .count();
+        long newRegistrations = counters.getOrDefault("profile.registered", 0L);
+        long averageProfileFill = average(profileFillRates);
+        long activeEventCount = activeEvents.size();
+        long eventCount = Math.max(activeEventCount, knownEvents.size());
+        long activeAssetCount = activeAssets.size();
+        long assetCount = Math.max(activeAssetCount, knownAssets.size());
+        long matchingOps = sum(counters, "rates.synced");
+        long eventInteractions = sum(counters, "event.members.changed", "event.member.joined", "event.member.invited", "event.feedback.submitted");
+        long assetInteractions = sum(counters, "asset.requests.changed");
+        long communicationOps = sum(counters, "chat.message.sent", "admin.user.warned");
+        long moderationOps = sum(counters, "feedback.submitted", "report.submitted", "admin.user.blocked", "admin.user.unblocked");
+
+        List<AdminStatsMetricDto> kpis = List.of(
+                metric("active-users", "stats.kpi.active.users", activeUsers7d, "person", "blue", pct(activeUsers7d, Math.max(1L, triedUsers))),
+                metric("returning-users", "stats.kpi.returning.users", returningUsers, "repeat", "purple", pct(returningUsers, Math.max(1L, triedUsers))),
+                metric("active-events", "stats.kpi.active.events", activeEventCount, "event_available", "green", pct(activeEventCount, 40)),
+                metric("active-assets", "stats.kpi.active.assets", activeAssetCount, "inventory_2", "gold", pct(activeAssetCount, 40)),
+                metric("moderation-pressure", "stats.kpi.moderation.pressure", moderationOps, "shield", attention.isEmpty() ? "slate" : "red", pct(moderationOps, 80))
+        );
+
+        List<AdminStatsSegmentDto> segments = List.of(
+                segment("community", "stats.segment.community", "person", triedUsers, List.of(
+                        item("profile.registered", "stats.event.profile.registered", newRegistrations, Math.max(1L, triedUsers), "person_add", "green"),
+                        item("active-users-7d", "stats.event.active.users.7d", activeUsers7d, triedUsers, "person", "blue"),
+                        item("active-users-30d", "stats.event.active.users.30d", activeUsers30d, triedUsers, "calendar_month", "green"),
+                        item("returning-users", "stats.event.returning.users", returningUsers, triedUsers, "repeat", "purple"),
+                        item("profile-fill-average", "stats.event.profile.fill.average", averageProfileFill, 100L, "fact_check", "gold"),
+                        item("tried-users", "stats.event.tried.users", triedUsers, triedUsers, "group", "slate")
+                )),
+                segment("matching", "stats.segment.matching", "hub", matchingOps, List.of(
+                        item("rates.synced", "stats.event.rates.synced", counters.getOrDefault("rates.synced", 0L), matchingOps, "star", "gold")
+                )),
+                segment("activities", "stats.segment.activities", "event_available", eventCount + assetCount + eventInteractions + assetInteractions, List.of(
+                        item("active-events", "stats.event.active.events", activeEventCount, eventCount + assetCount + eventInteractions + assetInteractions, "event_available", "green"),
+                        item("all-events", "stats.event.all.events", eventCount, eventCount + assetCount + eventInteractions + assetInteractions, "event", "blue"),
+                        item("active-assets", "stats.event.active.assets", activeAssetCount, eventCount + assetCount + eventInteractions + assetInteractions, "inventory_2", "gold"),
+                        item("all-assets", "stats.event.all.assets", assetCount, eventCount + assetCount + eventInteractions + assetInteractions, "category", "purple"),
+                        item("event.members.changed", "stats.event.event.members.changed", counters.getOrDefault("event.members.changed", 0L), eventInteractions + assetInteractions, "groups", "green"),
+                        item("asset.requests.changed", "stats.event.asset.requests.changed", counters.getOrDefault("asset.requests.changed", 0L), eventInteractions + assetInteractions, "handshake", "gold")
+                )),
+                segment("communication", "stats.segment.communication", "chat", communicationOps, List.of(
+                        item("chat.message.sent", "stats.event.chat.message.sent", counters.getOrDefault("chat.message.sent", 0L), communicationOps, "forum", "blue"),
+                        item("admin.user.warned", "stats.event.admin.user.warned", counters.getOrDefault("admin.user.warned", 0L), communicationOps, "warning", "gold")
+                )),
+                segment("moderation", "stats.segment.moderation", "shield", moderationOps, List.of(
+                        item("report.submitted", "stats.event.report.submitted", counters.getOrDefault("report.submitted", 0L), moderationOps, "report", "red"),
+                        item("feedback.submitted", "stats.event.feedback.submitted", counters.getOrDefault("feedback.submitted", 0L), moderationOps, "feedback", "purple"),
+                        item("admin.user.blocked", "stats.event.admin.user.blocked", counters.getOrDefault("admin.user.blocked", 0L), moderationOps, "block", "red"),
+                        item("admin.user.unblocked", "stats.event.admin.user.unblocked", counters.getOrDefault("admin.user.unblocked", 0L), moderationOps, "lock_open", "green")
+                ))
+        );
+
+        return new AdminStatsDashboardDto(
+                firstNonBlank(snapshot.getGeneratedAtIso(), Instant.now().toString()),
+                firstNonBlank(snapshot.getSource(), "http"),
+                snapshot.getHealthScore() == null ? 100 : snapshot.getHealthScore(),
+                firstNonBlank(snapshot.getHealthLabelKey(), "stats.health.good"),
+                firstNonBlank(snapshot.getHealthSummaryKey(), "stats.health.summary"),
+                kpis,
+                segments,
+                List.of(),
+                topItems(snapshot.getTopCities(), "", "location_on", "blue", 6),
+                topItems(snapshot.getTopTopics(), "", "local_offer", "purple", 6),
+                timelineItems(dailyActivity, dailyActiveUsers),
+                topItems(snapshot.getEventTypes(), "", "category", "green", 6),
+                activityMixItems(segments));
+    }
+
+    private void applyDailyActivity(Map<String, Long> day, String eventKey, String domain, long amount) {
+        if ("profile.registered".equals(eventKey)) {
+            increment(day, "registrations", amount);
+        }
+        if ("rates.synced".equals(eventKey)) {
+            increment(day, "ratings", amount);
+        }
+        if ("events".equals(domain)) {
+            increment(day, "events", amount);
+        }
+        if ("assets".equals(domain)) {
+            increment(day, "assets", amount);
+        }
+        if ("chat.message.sent".equals(eventKey)) {
+            increment(day, "messages", amount);
+        }
+        if (isAttentionEvent(eventKey)) {
+            increment(day, "moderation", amount);
+        }
+    }
+
+    private void applyEntityActivity(
+            Map<String, String> knownEntities,
+            Map<String, String> activeEntities,
+            String expectedDomain,
+            String domain,
+            String entityId,
+            String eventKey,
+            String occurredAtIso) {
+        if (!expectedDomain.equals(domain) || !StringUtils.hasText(entityId)) {
+            return;
+        }
+        if (eventKey.contains("deleted") || eventKey.contains("blocked") || eventKey.contains("inactive")) {
+            activeEntities.remove(entityId);
+            return;
+        }
+        knownEntities.put(entityId, occurredAtIso);
+        activeEntities.put(entityId, occurredAtIso);
+    }
+
+    private List<AdminStatsTimelinePointDto> timelineItems(
+            Map<String, Map<String, Long>> dailyActivity,
+            Map<String, Map<String, String>> dailyActiveUsers) {
+        LocalDate today = LocalDate.now(ZoneOffset.UTC);
+        return java.util.stream.IntStream.rangeClosed(0, TIMELINE_DAYS - 1)
+                .mapToObj(index -> today.minusDays(TIMELINE_DAYS - 1L - index))
+                .map(day -> {
+                    String key = day.format(DateTimeFormatter.ISO_LOCAL_DATE);
+                    Map<String, Long> values = dailyActivity.getOrDefault(key, Map.of());
+                    long activeUserCount = dailyActiveUsers.getOrDefault(key, Map.of()).size();
+                    return new AdminStatsTimelinePointDto(
+                            key,
+                            day.format(DateTimeFormatter.ofPattern("MMM d", Locale.US)),
+                            values.getOrDefault("registrations", 0L),
+                            activeUserCount,
+                            values.getOrDefault("ratings", 0L),
+                            values.getOrDefault("events", 0L),
+                            values.getOrDefault("assets", 0L),
+                            values.getOrDefault("messages", 0L),
+                            values.getOrDefault("moderation", 0L));
+                })
+                .toList();
+    }
+
+    private AdminStatsMetricDto metric(String key, String labelKey, long value, String icon, String tone, int percent) {
+        return new AdminStatsMetricDto(key, labelKey, value, formatCount(value), null, null, icon, tone, percent);
+    }
+
+    private AdminStatsSegmentDto segment(String key, String labelKey, String icon, long total, List<AdminStatsBreakdownItemDto> items) {
+        return new AdminStatsSegmentDto(
+                key,
+                labelKey,
+                icon,
+                total,
+                pct(total, 120),
+                "stats.segment.summary",
+                null,
+                items);
+    }
+
+    private AdminStatsBreakdownItemDto item(String key, String labelKey, long value, long total, String icon, String tone) {
+        return new AdminStatsBreakdownItemDto(key, labelKey, null, value, Math.max(1L, total), icon, tone);
+    }
+
+    private List<AdminStatsBreakdownItemDto> topItems(Map<String, Long> values, String labelPrefix, String icon, String tone, int limit) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        long total = values.values().stream().mapToLong(Long::longValue).sum();
+        return values.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()).thenComparing(Map.Entry::getKey))
+                .limit(Math.max(1, limit))
+                .map(entry -> new AdminStatsBreakdownItemDto(
+                        normalizeKey(entry.getKey()),
+                        StringUtils.hasText(labelPrefix) ? labelPrefix + normalizeKey(entry.getKey()) : "",
+                        StringUtils.hasText(labelPrefix) ? null : entry.getKey(),
+                        entry.getValue(),
+                        Math.max(1L, total),
+                        icon,
+                        tone))
+                .toList();
+    }
+
+    private List<AdminStatsBreakdownItemDto> activityMixItems(List<AdminStatsSegmentDto> segments) {
+        if (segments == null || segments.isEmpty()) {
+            return List.of();
+        }
+        long total = segments.stream()
+                .map(AdminStatsSegmentDto::total)
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .sum();
+        return segments.stream()
+                .map(segment -> new AdminStatsBreakdownItemDto(
+                        normalizeKey(segment.key()),
+                        segment.labelKey(),
+                        null,
+                        Math.max(0L, segment.total() == null ? 0L : segment.total()),
+                        Math.max(1L, total),
+                        segment.icon(),
+                        toneForSegment(segment.key())))
+                .toList();
+    }
+
+    private String toneForSegment(String key) {
+        return switch (normalizeKey(key)) {
+            case "community" -> "blue";
+            case "matching" -> "purple";
+            case "activities" -> "green";
+            case "communication" -> "gold";
+            case "moderation" -> "red";
+            default -> "slate";
+        };
+    }
+
+    private long countSeenSince(Map<String, String> lastSeenById, int days) {
+        if (lastSeenById == null || lastSeenById.isEmpty()) {
+            return 0L;
+        }
+        Instant threshold = Instant.now().minusSeconds(Math.max(1, days) * 24L * 60L * 60L);
+        return lastSeenById.values().stream()
+                .map(this::parseInstant)
+                .filter(Objects::nonNull)
+                .filter(value -> !value.isBefore(threshold))
+                .count();
+    }
+
+    private void trimDailyMaps(
+            Map<String, Map<String, Long>> dailyActivity,
+            Map<String, Map<String, String>> dailyActiveUsers) {
+        LocalDate minDay = LocalDate.now(ZoneOffset.UTC).minusDays(STORED_DAILY_DAYS);
+        dailyActivity.keySet().removeIf(key -> isBeforeDay(key, minDay));
+        dailyActiveUsers.keySet().removeIf(key -> isBeforeDay(key, minDay));
+    }
+
+    private boolean isBeforeDay(String key, LocalDate minDay) {
+        try {
+            return LocalDate.parse(safeText(key), DateTimeFormatter.ISO_LOCAL_DATE).isBefore(minDay);
+        } catch (RuntimeException ignored) {
+            return false;
+        }
+    }
+
+    private String dayKey(String occurredAtIso) {
+        Instant instant = parseInstant(occurredAtIso);
+        return (instant == null ? Instant.now() : instant)
+                .atZone(ZoneOffset.UTC)
+                .toLocalDate()
+                .format(DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    private boolean isAttentionEvent(String eventKey) {
+        return eventKey.startsWith("admin.user.block")
+                || eventKey.startsWith("report.")
+                || eventKey.startsWith("feedback.")
+                || eventKey.endsWith(".failed");
+    }
+
+    private int calculateHealthScore(Map<String, Long> counters, Map<String, Long> attention) {
+        long positive = sum(counters, "profile.registered", "rates.synced", "event.synced", "event.members.changed", "asset.saved", "chat.message.sent");
+        long risk = attention.values().stream().mapToLong(Long::longValue).sum();
+        int score = 92 + (int) Math.min(8, positive / 25) - (int) Math.min(55, risk * 5);
+        return Math.max(35, Math.min(100, score));
+    }
+
+    private void increment(Map<String, Long> values, String key, long amount) {
+        if (!StringUtils.hasText(key)) {
+            return;
+        }
+        values.put(key, values.getOrDefault(key, 0L) + Math.max(1L, amount));
+    }
+
+    private long sum(Map<String, Long> values, String... keys) {
+        long total = 0L;
+        for (String key : keys) {
+            total += values.getOrDefault(key, 0L);
+        }
+        return total;
+    }
+
+    private long average(Map<String, Long> values) {
+        if (values == null || values.isEmpty()) {
+            return 0L;
+        }
+        return Math.round(values.values().stream()
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .average()
+                .orElse(0d));
+    }
+
+    private Long tagLong(Map<String, String> tags, String key) {
+        if (tags == null || !StringUtils.hasText(key)) {
+            return null;
+        }
+        String value = safeText(tags.get(key));
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private int pct(long value, long max) {
+        return (int) Math.max(0, Math.min(100, Math.round((double) value * 100d / Math.max(1L, max))));
+    }
+
+    private String formatCount(long value) {
+        if (value >= 1_000_000L) {
+            return String.format(Locale.US, "%.1fM", value / 1_000_000d);
+        }
+        if (value >= 1_000L) {
+            return String.format(Locale.US, "%.1fk", value / 1_000d);
+        }
+        return Long.toString(value);
+    }
+
+    private Map<String, Long> safeMap(Map<String, Long> values) {
+        return values == null ? Map.of() : values;
+    }
+
+    private Map<String, String> safeStringMap(Map<String, String> values) {
+        return values == null ? Map.of() : values;
+    }
+
+    private Map<String, Map<String, Long>> copyNestedLongMap(Map<String, Map<String, Long>> values) {
+        Map<String, Map<String, Long>> copy = new LinkedHashMap<>();
+        if (values == null) {
+            return copy;
+        }
+        values.forEach((key, value) -> copy.put(key, value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value)));
+        return copy;
+    }
+
+    private Map<String, Map<String, String>> copyNestedStringMap(Map<String, Map<String, String>> values) {
+        Map<String, Map<String, String>> copy = new LinkedHashMap<>();
+        if (values == null) {
+            return copy;
+        }
+        values.forEach((key, value) -> copy.put(key, value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value)));
+        return copy;
+    }
+
+    private String normalizeKey(String value) {
+        return safeText(value).toLowerCase(Locale.ROOT).replace(' ', '-').replace('_', '-');
+    }
+
+    private String firstNonBlank(String value, String fallback) {
+        String normalized = safeText(value);
+        return StringUtils.hasText(normalized) ? normalized : fallback;
+    }
+
+    private Instant parseInstant(String value) {
+        try {
+            return Instant.parse(safeText(value));
+        } catch (RuntimeException ignored) {
+            return null;
+        }
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+}

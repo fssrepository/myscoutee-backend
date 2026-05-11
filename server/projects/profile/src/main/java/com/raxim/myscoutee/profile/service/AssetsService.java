@@ -70,6 +70,7 @@ public class AssetsService {
     private final AssetSourceRefreshProperties assetSourceRefreshProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -79,7 +80,8 @@ public class AssetsService {
             MongoTemplate mongoTemplate,
             AssetSourceRefreshProperties assetSourceRefreshProperties,
             AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
@@ -88,6 +90,7 @@ public class AssetsService {
         this.assetSourceRefreshProperties = assetSourceRefreshProperties;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -346,6 +349,7 @@ public class AssetsService {
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizeId(next.getAssetId()), ownerUserId);
+        adminTelemetryService.record("asset.requests.changed", "assets", normalizeId(next.getAssetId()), ownerUserId);
     }
 
     private AssetCardDto saveOwnedAsset(String ownerUserId, AssetCardDto assetDto) {
@@ -361,6 +365,7 @@ public class AssetsService {
         }
         assetsRepository.save(saved);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
+        adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         return toDto(saved);
     }
