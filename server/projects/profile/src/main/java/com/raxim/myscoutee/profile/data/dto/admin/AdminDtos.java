@@ -37,8 +37,13 @@ public final class AdminDtos {
             Double numberValue,
             String textValue,
             String unit,
+            List<AdminParamOptionDto> options,
             String strategy,
             String strategyKey) {}
+    public record AdminParamOptionDto(
+            String value,
+            String label,
+            String labelKey) {}
     public record AdminParamsSaveRequestDto(
             String adminUserId,
             String sectionKey,

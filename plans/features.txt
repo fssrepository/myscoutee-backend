@@ -18,6 +18,8 @@ chatgpt chat - replace starbar to slider (i think it's better to make an arrow t
 
 tournament / auto inviter time window (2h earlier to run background process)
 
+metrics popup (visualize architecturally and statisticswise, how certain process is built up + logs)
+
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

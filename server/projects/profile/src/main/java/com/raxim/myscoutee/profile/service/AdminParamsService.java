@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsHistoryDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsHistoryItemDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsRevertRequestDto;
@@ -515,6 +516,7 @@ public class AdminParamsService {
                 value,
                 null,
                 unit,
+                List.of(),
                 strategy,
                 strategyLabelKey(strategy));
     }
@@ -530,8 +532,26 @@ public class AdminParamsService {
                 null,
                 value,
                 null,
+                optionsFor(key),
                 strategy,
                 strategyLabelKey(strategy));
+    }
+
+    private List<AdminParamOptionDto> optionsFor(String key) {
+        if ("distance.strategy".equals(safeText(key))) {
+            return DISTANCE_STRATEGIES.stream()
+                    .map(value -> new AdminParamOptionDto(value, optionLabel(value), strategyLabelKey(value)))
+                    .toList();
+        }
+        return List.of();
+    }
+
+    private String optionLabel(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return "";
+        }
+        return normalized.substring(0, 1).toUpperCase() + normalized.substring(1);
     }
 
     private Map<String, AdminParamFieldDto> indexFields(Collection<AdminParamFieldDto> fields) {
