@@ -75,7 +75,10 @@ public class AdminRevenueStatsService {
         long assetUnitCents = 0L;
         long projectedAssetCents = 0L;
         for (Asset asset : assetsRepository.findAll()) {
-            long unitCents = pricingUnitCents(asset == null ? null : asset.getPricing());
+            if (asset == null) {
+                continue;
+            }
+            long unitCents = pricingUnitCents(asset.getPricing());
             if (unitCents <= 0L) {
                 continue;
             }

@@ -276,10 +276,16 @@ public class AdminGraphScienceService {
             boolean changed = false;
             for (String node : nodes) {
                 Map<String, Double> labelScores = new LinkedHashMap<>();
-                graph.getOrDefault(node, Map.of()).forEach((neighbor, weight) ->
-                        labelScores.merge(labels.getOrDefault(neighbor, neighbor), Math.max(0.01d, weight), Double::sum));
+                graph.getOrDefault(node, Map.of()).forEach((neighbor, weight) -> {
+                    String label = labels.getOrDefault(neighbor, neighbor);
+                    double score = Math.max(0.01d, safeDouble(weight));
+                    labelScores.put(label, safeDouble(labelScores.get(label)) + score);
+                });
                 String selected = labelScores.entrySet().stream()
-                        .sorted(Map.Entry.<String, Double>comparingByValue(Comparator.reverseOrder()).thenComparing(Map.Entry::getKey))
+                        .sorted(Comparator
+                                .comparingDouble((Map.Entry<String, Double> entry) -> safeDouble(entry.getValue()))
+                                .reversed()
+                                .thenComparing(Map.Entry::getKey))
                         .map(Map.Entry::getKey)
                         .findFirst()
                         .orElse(labels.get(node));
