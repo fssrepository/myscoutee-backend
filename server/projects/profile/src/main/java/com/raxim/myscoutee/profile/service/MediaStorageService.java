@@ -121,6 +121,13 @@ public class MediaStorageService {
     }
 
     public void deletePublicObject(String mediaUrlOrKey) {
+        try {
+            deletePublicObjectOrThrow(mediaUrlOrKey);
+        } catch (RuntimeException ignored) {
+        }
+    }
+
+    public void deletePublicObjectOrThrow(String mediaUrlOrKey) {
         if (!isEnabled()) {
             return;
         }

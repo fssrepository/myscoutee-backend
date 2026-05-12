@@ -71,13 +71,10 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
         if (!isEnabled() || !StringUtils.hasText(safeText(bucket)) || !StringUtils.hasText(safeText(key))) {
             return;
         }
-        try {
-            s3Client.deleteObject(DeleteObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(key)
-                    .build());
-        } catch (S3Exception ignored) {
-        }
+        s3Client.deleteObject(DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build());
     }
 
     private S3Client createClient(MediaStorageProperties storageProperties) {

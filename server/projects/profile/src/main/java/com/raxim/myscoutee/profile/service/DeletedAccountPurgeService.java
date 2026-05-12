@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -16,10 +20,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import org.bson.Document;
+import com.raxim.myscoutee.profile.data.document.AccountPurgeJob;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
@@ -36,12 +42,16 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.AccountPurgeJobsRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class DeletedAccountPurgeService {
     private static final int DELETE_GRACE_DAYS = 30;
+    private static final Duration PURGE_JOB_LEASE = Duration.ofMinutes(30);
+    private static final Duration PURGE_RETRY_BASE = Duration.ofMinutes(15);
+    private static final Duration PURGE_RETRY_MAX = Duration.ofHours(24);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
 
@@ -50,6 +60,7 @@ public class DeletedAccountPurgeService {
     private final ActivityEventsRepository activityEventsRepository;
     private final AssetsRepository assetsRepository;
     private final ActivityMembersRepository activityMembersRepository;
+    private final AccountPurgeJobsRepository accountPurgeJobsRepository;
     private final MediaStorageService mediaStorageService;
     private final MongoTemplate mongoTemplate;
 
@@ -59,6 +70,7 @@ public class DeletedAccountPurgeService {
             ActivityEventsRepository activityEventsRepository,
             AssetsRepository assetsRepository,
             ActivityMembersRepository activityMembersRepository,
+            AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaStorageService mediaStorageService,
             MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
@@ -66,34 +78,218 @@ public class DeletedAccountPurgeService {
         this.activityEventsRepository = activityEventsRepository;
         this.assetsRepository = assetsRepository;
         this.activityMembersRepository = activityMembersRepository;
+        this.accountPurgeJobsRepository = accountPurgeJobsRepository;
         this.mediaStorageService = mediaStorageService;
         this.mongoTemplate = mongoTemplate;
     }
 
     @Scheduled(fixedDelayString = "${users.deleted-account-purge-delay-ms:3600000}")
     public void purgeExpiredDeletedAccounts() {
-        String purgeBeforeIso = Instant.now().minus(DELETE_GRACE_DAYS, ChronoUnit.DAYS).toString();
+        Instant now = Instant.now();
+        String purgeBeforeIso = now.minus(DELETE_GRACE_DAYS, ChronoUnit.DAYS).toString();
         List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual("deleted", purgeBeforeIso);
-        for (Users user : users) {
-            purgeUser(user);
+        for (Users user : users == null ? List.<Users>of() : users) {
+            purgeUser(user, null, now);
+        }
+        resumeDuePurgeJobs(now);
+    }
+
+    private void resumeDuePurgeJobs(Instant now) {
+        List<AccountPurgeJob> jobs = accountPurgeJobsRepository.findByStatusIn(List.of(
+                AccountPurgeJob.STATUS_PENDING,
+                AccountPurgeJob.STATUS_RUNNING,
+                AccountPurgeJob.STATUS_FAILED));
+        for (AccountPurgeJob job : jobs == null ? List.<AccountPurgeJob>of() : jobs) {
+            String userId = safeText(job == null ? null : job.getUserId());
+            if (!StringUtils.hasText(userId) || !shouldRunPurgeJob(job, now)) {
+                continue;
+            }
+            Users user = usersRepository.findById(userId).orElse(null);
+            if (user == null) {
+                completeJob(job, now);
+                continue;
+            }
+            purgeUser(user, job, now);
         }
     }
 
-    private void purgeUser(Users user) {
+    private void purgeUser(Users user, AccountPurgeJob existingJob, Instant now) {
         String userId = user == null ? "" : safeText(user.getId());
         if (!StringUtils.hasText(userId)) {
             return;
         }
-        purgeUserMedia(user);
-        List<String> ownedEventIds = purgeOwnedEvents(userId);
-        List<String> ownedAssetIds = purgeOwnedAssets(userId);
-        purgeActivityMemberships(userId);
-        purgeRemainingAssetRequests(userId);
-        purgeActivityResources(userId, ownedEventIds, ownedAssetIds);
-        purgeIdeaPosts(userId);
-        purgeUserChatActivity(userId);
-        purgeUserReferencedDocuments(userId);
-        usersRepository.delete(user);
+        AccountPurgeJob job = existingJob == null ? loadOrCreatePurgeJob(userId, now) : existingJob;
+        if (!shouldRunPurgeJob(job, now)) {
+            return;
+        }
+        try {
+            startJob(job, userId, now);
+
+            markStage(job, "profile-media");
+            purgeUserMedia(user);
+
+            markStage(job, "owned-events");
+            List<ActivityEvent> ownedEvents = findOwnedEventsForPurge(userId);
+            job.setOwnedEventIds(mergeIds(job.getOwnedEventIds(), sourceIds(ownedEvents)));
+            saveJob(job);
+            purgeOwnedEvents(ownedEvents, job.getOwnedEventIds());
+
+            markStage(job, "owned-assets");
+            List<Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
+            job.setOwnedAssetIds(mergeIds(job.getOwnedAssetIds(), assetIds(ownedAssets)));
+            saveJob(job);
+            purgeOwnedAssets(ownedAssets, job.getOwnedAssetIds());
+
+            markStage(job, "memberships");
+            purgeActivityMemberships(userId);
+            purgeManagedEventAdminReferences(userId);
+
+            markStage(job, "asset-requests");
+            purgeRemainingAssetRequests(userId);
+
+            markStage(job, "activity-resources");
+            purgeActivityResources(userId, job.getOwnedEventIds(), job.getOwnedAssetIds());
+
+            markStage(job, "idea-posts");
+            purgeIdeaPosts(userId);
+
+            markStage(job, "chat-activity");
+            purgeUserChatActivity(userId);
+
+            markStage(job, "referenced-documents");
+            purgeUserReferencedDocuments(userId);
+
+            markStage(job, "delete-user");
+            usersRepository.delete(user);
+
+            completeJob(job, Instant.now());
+        } catch (RuntimeException exception) {
+            failJob(job, exception, Instant.now());
+        }
+    }
+
+    private AccountPurgeJob loadOrCreatePurgeJob(String userId, Instant now) {
+        java.util.Optional<AccountPurgeJob> existing = accountPurgeJobsRepository.findByUserId(userId);
+        if (existing != null && existing.isPresent()) {
+            return existing.get();
+        }
+        AccountPurgeJob job = new AccountPurgeJob();
+        String nowIso = now.toString();
+        job.setUserId(userId);
+        job.setUserHash(hashUserId(userId));
+        job.setStatus(AccountPurgeJob.STATUS_PENDING);
+        job.setStage("queued");
+        job.setRetryCount(0);
+        job.setCreatedDate(nowIso);
+        job.setUpdatedDate(nowIso);
+        AccountPurgeJob saved = accountPurgeJobsRepository.save(job);
+        return saved == null ? job : saved;
+    }
+
+    private boolean shouldRunPurgeJob(AccountPurgeJob job, Instant now) {
+        if (job == null || AccountPurgeJob.STATUS_COMPLETED.equals(safeText(job.getStatus()))) {
+            return false;
+        }
+        if (AccountPurgeJob.STATUS_RUNNING.equals(safeText(job.getStatus())) && isFuture(job.getLockedUntilIso(), now)) {
+            return false;
+        }
+        return !AccountPurgeJob.STATUS_FAILED.equals(safeText(job.getStatus())) || !isFuture(job.getNextRetryAtIso(), now);
+    }
+
+    private void startJob(AccountPurgeJob job, String userId, Instant now) {
+        String nowIso = now.toString();
+        job.setUserId(userId);
+        job.setUserHash(hashUserId(userId));
+        job.setStatus(AccountPurgeJob.STATUS_RUNNING);
+        job.setStage("start");
+        job.setNextRetryAtIso(null);
+        job.setLockedUntilIso(now.plus(PURGE_JOB_LEASE).toString());
+        if (!StringUtils.hasText(safeText(job.getStartedAtIso()))) {
+            job.setStartedAtIso(nowIso);
+        }
+        job.setLastError(null);
+        job.setUpdatedDate(nowIso);
+        saveJob(job);
+    }
+
+    private void markStage(AccountPurgeJob job, String stage) {
+        Instant now = Instant.now();
+        job.setStatus(AccountPurgeJob.STATUS_RUNNING);
+        job.setStage(stage);
+        job.setLockedUntilIso(now.plus(PURGE_JOB_LEASE).toString());
+        job.setUpdatedDate(now.toString());
+        saveJob(job);
+    }
+
+    private void completeJob(AccountPurgeJob job, Instant now) {
+        job.setStatus(AccountPurgeJob.STATUS_COMPLETED);
+        job.setStage("completed");
+        job.setUserId(null);
+        job.setOwnedEventIds(List.of());
+        job.setOwnedAssetIds(List.of());
+        job.setNextRetryAtIso(null);
+        job.setLockedUntilIso(null);
+        job.setCompletedAtIso(now.toString());
+        job.setLastError(null);
+        job.setUpdatedDate(now.toString());
+        saveJob(job);
+    }
+
+    private void failJob(AccountPurgeJob job, RuntimeException exception, Instant now) {
+        int retryCount = Math.max(0, job.getRetryCount() == null ? 0 : job.getRetryCount().intValue()) + 1;
+        job.setStatus(AccountPurgeJob.STATUS_FAILED);
+        job.setRetryCount(retryCount);
+        job.setNextRetryAtIso(now.plus(retryDelay(retryCount)).toString());
+        job.setLockedUntilIso(null);
+        job.setLastError(truncateError(exception));
+        job.setUpdatedDate(now.toString());
+        saveJob(job);
+    }
+
+    private AccountPurgeJob saveJob(AccountPurgeJob job) {
+        AccountPurgeJob saved = accountPurgeJobsRepository.save(job);
+        return saved == null ? job : saved;
+    }
+
+    private Duration retryDelay(int retryCount) {
+        long seconds = PURGE_RETRY_BASE.toSeconds();
+        for (int index = 1; index < Math.min(retryCount, 8); index += 1) {
+            seconds = Math.min(PURGE_RETRY_MAX.toSeconds(), seconds * 2L);
+        }
+        return Duration.ofSeconds(Math.min(PURGE_RETRY_MAX.toSeconds(), seconds));
+    }
+
+    private boolean isFuture(String iso, Instant now) {
+        if (!StringUtils.hasText(safeText(iso))) {
+            return false;
+        }
+        try {
+            return Instant.parse(iso).isAfter(now);
+        } catch (RuntimeException ignored) {
+            return false;
+        }
+    }
+
+    private String truncateError(RuntimeException exception) {
+        String value = exception == null ? "" : safeText(exception.getMessage());
+        if (!StringUtils.hasText(value) && exception != null) {
+            value = exception.getClass().getSimpleName();
+        }
+        return value.length() <= 500 ? value : value.substring(0, 500);
+    }
+
+    private String hashUserId(String userId) {
+        try {
+            byte[] bytes = MessageDigest.getInstance("SHA-256")
+                    .digest(("account-purge:" + safeText(userId)).getBytes(StandardCharsets.UTF_8));
+            StringBuilder builder = new StringBuilder(bytes.length * 2);
+            for (byte value : bytes) {
+                builder.append(String.format("%02x", value & 0xff));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable.", exception);
+        }
     }
 
     private void purgeUserMedia(Users user) {
@@ -101,54 +297,107 @@ public class DeletedAccountPurgeService {
             return;
         }
         for (String imageUrl : user.getImages() == null ? List.<String>of() : user.getImages()) {
-            mediaStorageService.deletePublicObject(imageUrl);
+            deletePurgeMedia(imageUrl);
         }
     }
 
-    private List<String> purgeOwnedEvents(String userId) {
-        List<ActivityEvent> ownedEvents = activityEventsRepository.findByCreatorUserId(userId);
-        if (ownedEvents.isEmpty()) {
-            return List.of();
+    private List<ActivityEvent> findOwnedEventsForPurge(String userId) {
+        Map<String, ActivityEvent> eventsByKey = new LinkedHashMap<>();
+        addEvents(eventsByKey, activityEventsRepository.findByOwnerUserId(userId));
+        addEvents(eventsByKey, activityEventsRepository.findByCreatorUserId(userId));
+        return new ArrayList<>(eventsByKey.values());
+    }
+
+    private void addEvents(Map<String, ActivityEvent> eventsByKey, List<ActivityEvent> events) {
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            if (event == null) {
+                continue;
+            }
+            String key = safeText(event.getId());
+            if (!StringUtils.hasText(key)) {
+                key = safeText(event.getOwnerUserId()) + ":" + safeText(event.getType()) + ":" + safeText(event.getSourceId());
+            }
+            if (StringUtils.hasText(key)) {
+                eventsByKey.putIfAbsent(key, event);
+            }
         }
-        List<String> sourceIds = ownedEvents.stream()
+    }
+
+    private List<String> sourceIds(List<ActivityEvent> ownedEvents) {
+        return (ownedEvents == null ? List.<ActivityEvent>of() : ownedEvents).stream()
+                .filter(Objects::nonNull)
                 .map(ActivityEvent::getSourceId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
-        for (ActivityEvent event : ownedEvents) {
-            if (event != null) {
-                mediaStorageService.deletePublicObject(event.getImageUrl());
-            }
-        }
-        if (!sourceIds.isEmpty()) {
-            activityMembersRepository.deleteAll(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds));
-        }
-        activityEventsRepository.deleteAll(ownedEvents);
-        return sourceIds;
     }
 
-    private List<String> purgeOwnedAssets(String userId) {
-        List<Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
-        if (ownedAssets.isEmpty()) {
-            return List.of();
+    private void purgeOwnedEvents(List<ActivityEvent> ownedEvents, Collection<String> sourceIds) {
+        List<ActivityEvent> events = ownedEvents == null ? List.of() : ownedEvents;
+        for (ActivityEvent event : events) {
+            if (event != null) {
+                deletePurgeMedia(event.getImageUrl());
+            }
         }
-        List<String> assetIds = ownedAssets.stream()
+        if (sourceIds != null && !sourceIds.isEmpty()) {
+            List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds);
+            if (members != null && !members.isEmpty()) {
+                activityMembersRepository.deleteAll(members);
+            }
+        }
+        if (!events.isEmpty()) {
+            activityEventsRepository.deleteAll(events);
+        }
+    }
+
+    private List<String> assetIds(List<Asset> ownedAssets) {
+        return (ownedAssets == null ? List.<Asset>of() : ownedAssets).stream()
+                .filter(Objects::nonNull)
                 .map(Asset::getAssetId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
-        for (Asset asset : ownedAssets) {
+    }
+
+    private void purgeOwnedAssets(List<Asset> ownedAssets, Collection<String> assetIds) {
+        List<Asset> assets = ownedAssets == null ? List.of() : ownedAssets;
+        for (Asset asset : assets) {
             if (asset != null) {
-                mediaStorageService.deletePublicObject(asset.getImageUrl());
+                deletePurgeMedia(asset.getImageUrl());
             }
         }
-        if (!assetIds.isEmpty()) {
-            activityMembersRepository.deleteAll(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds));
+        if (assetIds != null && !assetIds.isEmpty()) {
+            List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
+            if (members != null && !members.isEmpty()) {
+                activityMembersRepository.deleteAll(members);
+            }
         }
-        assetsRepository.deleteAll(ownedAssets);
-        return assetIds;
+        if (!assets.isEmpty()) {
+            assetsRepository.deleteAll(assets);
+        }
+    }
+
+    private List<String> mergeIds(Collection<String> existing, Collection<String> discovered) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (String id : existing == null ? List.<String>of() : existing) {
+            String normalized = safeText(id);
+            if (StringUtils.hasText(normalized)) {
+                ids.add(normalized);
+            }
+        }
+        for (String id : discovered == null ? List.<String>of() : discovered) {
+            String normalized = safeText(id);
+            if (StringUtils.hasText(normalized)) {
+                ids.add(normalized);
+            }
+        }
+        return new ArrayList<>(ids);
+    }
+
+    private void deletePurgeMedia(String mediaUrlOrKey) {
+        mediaStorageService.deletePublicObjectOrThrow(mediaUrlOrKey);
     }
 
     private void purgeActivityMemberships(String userId) {
@@ -157,6 +406,26 @@ public class DeletedAccountPurgeService {
         addMemberships(membershipsByKey, activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId));
         if (!membershipsByKey.isEmpty()) {
             activityMembersRepository.deleteAll(membershipsByKey.values());
+        }
+    }
+
+    private void purgeManagedEventAdminReferences(String userId) {
+        List<ActivityEvent> managedEvents = activityEventsRepository.findByAdminsContaining(userId);
+        List<ActivityEvent> changedEvents = new ArrayList<>();
+        for (ActivityEvent event : managedEvents == null ? List.<ActivityEvent>of() : managedEvents) {
+            if (event == null || event.getAdmins() == null || event.getAdmins().isEmpty()) {
+                continue;
+            }
+            List<String> retainedAdmins = event.getAdmins().stream()
+                    .filter(adminId -> !userId.equals(safeText(adminId)))
+                    .toList();
+            if (retainedAdmins.size() != event.getAdmins().size()) {
+                event.setAdmins(new ArrayList<>(retainedAdmins));
+                changedEvents.add(event);
+            }
+        }
+        if (!changedEvents.isEmpty()) {
+            activityEventsRepository.saveAll(changedEvents);
         }
     }
 
@@ -328,9 +597,9 @@ public class DeletedAccountPurgeService {
             if (post == null) {
                 continue;
             }
-            mediaStorageService.deletePublicObject(post.getImageUrl());
+            deletePurgeMedia(post.getImageUrl());
             for (String imageUrl : post.getImageUrls() == null ? List.<String>of() : post.getImageUrls()) {
-                mediaStorageService.deletePublicObject(imageUrl);
+                deletePurgeMedia(imageUrl);
             }
         }
         if (posts != null && !posts.isEmpty()) {
@@ -350,12 +619,22 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("payments", List.of("userId"), userId);
         deleteDocumentsByAnyField("scheduledMessageTasks", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("scheduledMessageDeliveries", List.of("userId", "createdUser"), userId);
+        deleteDocumentsByAnyField("scheduledMessageRuns", List.of("createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("emailOutbox", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("notificationOutbox", List.of("recipientUserIds", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("shareTokens", List.of("ownerUserId"), userId);
         deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("affinityRecomputeTasks", List.of("targetId", "createdUser", "updatedUser"), userId);
+        deleteDocumentsByAnyField("affinityRecomputeTasks", List.of("targetId"), "USER:" + userId);
+        deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId);
+        anonymizeUserFieldsByAnyField("helpCenterAudit", List.of("actorUserId"), userId);
+        anonymizeUserFieldsByAnyField("helpCenterRevisions", List.of("createdUser", "updatedUser"), userId);
+        anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId);
+        anonymizeUserFieldsByAnyField("emailTemplates", List.of("createdUser", "updatedUser"), userId);
+        anonymizeUserFieldsByAnyField("emailCampaignRules", List.of("createdUser", "updatedUser"), userId);
+        anonymizeUserFieldsByAnyField("notificationRuleConfigs", List.of("createdUser", "updatedUser"), userId);
+        anonymizeUserFieldsByAnyField("affinityConfigs", List.of("changedUser"), userId);
     }
 
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {
@@ -372,8 +651,26 @@ public class DeletedAccountPurgeService {
         mongoTemplate.remove(Query.query(new Criteria().orOperator(criteria.toArray(Criteria[]::new))), collectionName);
     }
 
+    private void anonymizeUserFieldsByAnyField(String collectionName, List<String> fields, String userId) {
+        if (!StringUtils.hasText(collectionName) || fields == null || fields.isEmpty() || !StringUtils.hasText(userId)) {
+            return;
+        }
+        List<String> fieldNames = fields.stream()
+                .filter(StringUtils::hasText)
+                .toList();
+        if (fieldNames.isEmpty()) {
+            return;
+        }
+        for (String field : fieldNames) {
+            Update update = new Update();
+            update.set(field, "deleted-user");
+            mongoTemplate.updateMulti(Query.query(Criteria.where(field).is(userId)), update, collectionName);
+        }
+    }
+
     private void purgeUserChatActivity(String userId) {
         Map<String, ActivityChat> chatsByKey = new LinkedHashMap<>();
+        addChats(chatsByKey, activityChatsRepository.findByOwnerUserId(userId));
         addChats(chatsByKey, activityChatsRepository.findByMemberIdsContaining(userId));
         addChats(chatsByKey, activityChatsRepository.findByMessageSenderUserId(userId));
         addChats(chatsByKey, activityChatsRepository.findByMessageReadByUserId(userId));
@@ -391,6 +688,10 @@ public class DeletedAccountPurgeService {
             }
             Set<String> purgedMessageIds = collectSentMessageIds(chat, userId);
             boolean changed = removeMember(chat, userId);
+            if (userId.equals(safeText(chat.getOwnerUserId()))) {
+                chat.setOwnerUserId("deleted-user");
+                changed = true;
+            }
             for (ChatMessageRecord message : chat.getMessages() == null ? List.<ChatMessageRecord>of() : chat.getMessages()) {
                 if (message == null) {
                     continue;
@@ -471,8 +772,8 @@ public class DeletedAccountPurgeService {
             }
             String type = safeText(attachment.getType()).toLowerCase();
             if ("voice".equals(type) || "image".equals(type)) {
-                mediaStorageService.deletePublicObject(attachment.getUrl());
-                mediaStorageService.deletePublicObject(attachment.getPreviewUrl());
+                deletePurgeMedia(attachment.getUrl());
+                deletePurgeMedia(attachment.getPreviewUrl());
             }
         }
     }
