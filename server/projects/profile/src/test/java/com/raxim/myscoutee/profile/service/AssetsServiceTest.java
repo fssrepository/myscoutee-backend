@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.mongodb.client.result.UpdateResult;
+
 import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -22,6 +24,7 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
@@ -38,6 +41,7 @@ class AssetsServiceTest {
         AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
 
         Asset asset = asset();
         Users owner = user("u1", "Owner One", "OO");
@@ -54,7 +58,8 @@ class AssetsServiceTest {
                 .thenReturn(List.of(promotedMember));
         when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
         when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
-        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         AssetsService service = new AssetsService(
@@ -63,7 +68,7 @@ class AssetsServiceTest {
                 activityMembersRepository,
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
-                mock(MongoTemplate.class),
+                mongoTemplate,
                 mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -84,11 +89,98 @@ class AssetsServiceTest {
         assertThat(savedMember.getValue().getRole()).isEqualTo("Manager");
         assertThat(savedMember.getValue().getStatus()).isEqualTo("accepted");
 
-        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
-        verify(assetsRepository).save(savedAsset.capture());
-        assertThat(savedAsset.getValue().getAffinity()).isEqualTo(42d);
-        assertThat(savedAsset.getValue().getBoost()).isEqualTo(7d);
+        verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+    }
+
+    @Test
+    void makeManagerDoesNotPublishSideEffectsWhenAssetSnapshotChanged() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        Asset asset = asset();
+        Users owner = user("u1", "Owner One", "OO");
+        Users target = user("u2", "Member Two", "MT");
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(target));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.empty());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(0L, 0L, null));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AssetSourceRefreshProperties.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class));
+
+        AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
+
+        assertThat(card).isNull();
+        verify(affinityRecomputeTaskService, never()).enqueueAssetChanged(any(), any());
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
+    }
+
+    @Test
+    void takeOverDoesNotPublishSideEffectsWhenAssetSnapshotChanged() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        Asset asset = asset();
+        asset.setOwnerUserId("u1");
+        asset.setStatus("UR");
+        asset.setStatusBeforeSuppression("A");
+        Users manager = user("u2", "Manager Two", "MT");
+        ActivityMember managerMember = member("asset-1", "u2", "Manager", "accepted");
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(manager));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(managerMember));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(0L, 0L, null));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                mock(AssetSourceRefreshProperties.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                notificationOutboxService,
+                mock(ChatAttachmentLifecycleService.class));
+
+        AssetCardDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
+
+        assertThat(card).isNull();
+        verify(assetsRepository, never()).save(any(Asset.class));
+        verify(affinityRecomputeTaskService, never()).enqueueAssetChanged(any(), any());
+        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
 
     @Test
@@ -189,6 +281,40 @@ class AssetsServiceTest {
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
     }
 
+    @Test
+    void replaceEnqueuesRecomputeForSavedAssets() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        Users owner = user("u1", "Owner One", "OO");
+
+        when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of());
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
+        when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class));
+
+        service.replace(new AssetReplaceRequestDto("u1", List.of(assetCard("asset-1"))));
+
+        verify(assetsRepository).saveAll(any());
+        verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+    }
+
     private Asset asset() {
         Asset asset = new Asset();
         asset.setId("asset-doc-1");
@@ -212,6 +338,30 @@ class AssetsServiceTest {
                 "2026-05-11T10:00:00Z",
                 null)));
         return asset;
+    }
+
+    private AssetCardDto assetCard(String assetId) {
+        return new AssetCardDto(
+                assetId,
+                "Supplies",
+                "Camp Kit",
+                "",
+                "Camping",
+                "Austin",
+                2,
+                2,
+                "Shared camping kit.",
+                "",
+                "",
+                List.of(),
+                List.of(),
+                null,
+                "Public",
+                "A",
+                "u1",
+                "Owner One",
+                List.of(),
+                List.of());
     }
 
     private Users user(String userId, String name, String initials) {

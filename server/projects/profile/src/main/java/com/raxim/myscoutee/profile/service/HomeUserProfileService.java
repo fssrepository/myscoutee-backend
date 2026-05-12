@@ -386,6 +386,7 @@ public class HomeUserProfileService {
         slots.set(normalizedSlotIndex, normalizedImageUrl);
         user.setImages(normalizeStrings(slots));
         Users saved = usersRepository.save(user);
+        affinityRecomputeTaskService.enqueueUserChanged(resolvedUserId);
         adminTelemetryService.record(
                 "profile.fill.sampled",
                 "profiles",

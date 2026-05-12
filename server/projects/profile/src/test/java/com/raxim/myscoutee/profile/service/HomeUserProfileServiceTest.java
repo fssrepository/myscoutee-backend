@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
@@ -194,6 +195,17 @@ class HomeUserProfileServiceTest {
 
         assertThat(cards).extracting(Users::getId)
                 .containsExactly("near-fresh", "far-stale");
+    }
+
+    @Test
+    void profileImageSaveEnqueuesUserRecompute() {
+        Users active = user("active", 0d);
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(usersRepository.save(active)).thenReturn(active);
+
+        service.saveUserProfileImage("active", 0, "https://cdn.example.com/avatar.jpg");
+
+        verify(affinityRecomputeTaskService).enqueueUserChanged("active");
     }
 
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {

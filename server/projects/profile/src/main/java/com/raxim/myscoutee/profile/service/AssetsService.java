@@ -20,11 +20,15 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import com.mongodb.client.result.UpdateResult;
 
 import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
@@ -227,6 +231,9 @@ public class AssetsService {
         }
         if (!nextDocuments.isEmpty()) {
             assetsRepository.saveAll(nextDocuments);
+            for (Asset saved : nextDocuments) {
+                affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved == null ? null : saved.getAssetId()), normalizedUserId);
+            }
         }
     }
 
@@ -307,7 +314,9 @@ public class AssetsService {
         next.setUpdatedUser(normalizedUserId);
         next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
         next.setBoost(resolveAssetBoost(next, normalizedUserId));
-        assetsRepository.save(next);
+        if (!updateAssetTakeOverIfSnapshotCurrent(current, next)) {
+            return null;
+        }
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);
@@ -360,18 +369,108 @@ public class AssetsService {
         member.setActionAtIso(nowIso);
         member.setUpdatedDate(nowIso);
         member.setUpdatedUser(normalizedUserId);
-        activityMembersRepository.save(member);
+        ActivityMember promotedMember = promoteAssetMemberIfSnapshotCurrent(existingMember.orElse(null), member);
+        if (promotedMember == null) {
+            return null;
+        }
 
         Asset next = cloneAsset(current);
-        next.setRequests(promotedAssetRequests(current, member));
+        next.setRequests(promotedAssetRequests(current, promotedMember));
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(normalizedUserId);
         next.setAffinity(resolveAssetAffinity(next, next.getOwnerUserId()));
         next.setBoost(resolveAssetBoost(next, next.getOwnerUserId()));
-        assetsRepository.save(next);
+        if (!updateAssetManagerRequestsIfSnapshotCurrent(current, next)) {
+            return null;
+        }
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         enqueueAssetManagerPromotedNotification(next, normalizedUserId, normalizedTargetUserId);
         return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+    }
+
+    private boolean updateAssetTakeOverIfSnapshotCurrent(Asset current, Asset next) {
+        Update update = new Update()
+                .set("ownerUserId", normalizeId(next.getOwnerUserId()))
+                .set("status", safeText(next.getStatus()))
+                .unset("statusBeforeSuppression")
+                .set("updatedDate", safeText(next.getUpdatedDate()))
+                .set("updatedUser", safeText(next.getUpdatedUser()))
+                .set("affinity", next.getAffinity())
+                .set("boost", next.getBoost());
+        return updateAssetIfSnapshotCurrent(current, update);
+    }
+
+    private boolean updateAssetManagerRequestsIfSnapshotCurrent(Asset current, Asset next) {
+        Update update = new Update()
+                .set("requests", safeRequests(next.getRequests()))
+                .set("updatedDate", safeText(next.getUpdatedDate()))
+                .set("updatedUser", safeText(next.getUpdatedUser()))
+                .set("affinity", next.getAffinity())
+                .set("boost", next.getBoost());
+        return updateAssetIfSnapshotCurrent(current, update);
+    }
+
+    private boolean updateAssetIfSnapshotCurrent(Asset current, Update update) {
+        if (current == null || update == null || !StringUtils.hasText(normalizeId(current.getId()))) {
+            return false;
+        }
+        Criteria criteria = Criteria.where("_id").is(normalizeId(current.getId()))
+                .and("updatedDate").is(StringUtils.hasText(safeText(current.getUpdatedDate())) ? safeText(current.getUpdatedDate()) : null);
+        UpdateResult result = mongoTemplate.updateFirst(Query.query(criteria), update, Asset.class);
+        return result != null && result.getMatchedCount() > 0;
+    }
+
+    private ActivityMember promoteAssetMemberIfSnapshotCurrent(ActivityMember current, ActivityMember next) {
+        if (next == null) {
+            return null;
+        }
+        if (current == null) {
+            try {
+                return activityMembersRepository.save(next);
+            } catch (DuplicateKeyException ignored) {
+                return null;
+            }
+        }
+        Criteria criteria = memberSnapshotCriteria(current);
+        if (criteria == null) {
+            return null;
+        }
+        Update update = new Update()
+                .set("ownerType", safeText(next.getOwnerType()))
+                .set("ownerId", normalizeId(next.getOwnerId()))
+                .set("userId", normalizeId(next.getUserId()))
+                .set("role", safeText(next.getRole()))
+                .set("status", safeText(next.getStatus()))
+                .unset("pendingSource")
+                .unset("requestKind")
+                .unset("invitedByUserId")
+                .set("actionAtIso", safeText(next.getActionAtIso()))
+                .set("updatedDate", safeText(next.getUpdatedDate()))
+                .set("updatedUser", safeText(next.getUpdatedUser()));
+        UpdateResult result = mongoTemplate.updateFirst(Query.query(criteria), update, ActivityMember.class);
+        return result != null && result.getMatchedCount() > 0 ? next : null;
+    }
+
+    private Criteria memberSnapshotCriteria(ActivityMember current) {
+        String id = normalizeId(current == null ? null : current.getId());
+        Criteria criteria;
+        if (StringUtils.hasText(id)) {
+            criteria = Criteria.where("_id").is(id);
+        } else {
+            String ownerType = safeText(current == null ? null : current.getOwnerType());
+            String ownerId = normalizeId(current == null ? null : current.getOwnerId());
+            String userId = normalizeId(current == null ? null : current.getUserId());
+            if (!StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId) || !StringUtils.hasText(userId)) {
+                return null;
+            }
+            criteria = Criteria.where("ownerType").is(ownerType)
+                    .and("ownerId").is(ownerId)
+                    .and("userId").is(userId);
+        }
+        return criteria
+                .and("updatedDate").is(StringUtils.hasText(safeText(current.getUpdatedDate())) ? safeText(current.getUpdatedDate()) : null)
+                .and("role").is(StringUtils.hasText(safeText(current.getRole())) ? safeText(current.getRole()) : null)
+                .and("status").is(StringUtils.hasText(safeText(current.getStatus())) ? safeText(current.getStatus()) : null);
     }
 
     public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {

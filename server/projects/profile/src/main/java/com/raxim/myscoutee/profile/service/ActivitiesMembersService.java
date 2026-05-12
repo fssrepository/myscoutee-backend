@@ -462,6 +462,7 @@ public class ActivitiesMembersService {
         membersToSave.addAll(removedMembers);
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
+            enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
             adminTelemetryService.record("event.members.changed", ownerType, ownerId, actorUserId, membersToSave.size());
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
@@ -535,6 +536,7 @@ public class ActivitiesMembersService {
             current.setUpdatedDate(nowIso);
             current.setUpdatedUser(viewerUserId);
             activityMembersRepository.save(current);
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, viewerUserId);
             adminTelemetryService.record("event.member.joined", "events", normalizedEventId, viewerUserId);
             clearHandledInvitationRecords(normalizedEventId, List.of(current));
             if (accepted) {
@@ -600,6 +602,7 @@ public class ActivitiesMembersService {
 
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, actorUserId);
             adminTelemetryService.record("event.member.invited", "events", normalizedEventId, actorUserId, membersToSave.size());
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
             refreshEmbeddedEventMembers(normalizedEventId);
@@ -1444,6 +1447,7 @@ public class ActivitiesMembersService {
         }
 
         activityMembersRepository.saveAll(membersToSave);
+        enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, inviterUserId);
         createWaitlistInvitationRecords(normalizedEventId, preferredEventRecord, promotedUserIds, nowIso);
         eventInviteNotificationService.notifyInvitees(preferredEventRecord, promotedUserIds);
         refreshEmbeddedEventMembers(normalizedEventId);
@@ -1473,6 +1477,7 @@ public class ActivitiesMembersService {
         }
         if (!membersToSave.isEmpty()) {
             activityMembersRepository.saveAll(membersToSave);
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, eventId, resolveWaitlistInviterUserId(findPreferredEventRecord(eventId)));
             refreshEmbeddedEventMembers(eventId);
         }
     }
@@ -1721,6 +1726,20 @@ public class ActivitiesMembersService {
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, member));
         return next;
+    }
+
+    private void enqueueOwnerMembersChanged(String ownerType, String ownerId, String actorUserId) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedActorUserId = resolveActorUserId(actorUserId);
+        if (!StringUtils.hasText(normalizedOwnerId)) {
+            return;
+        }
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)) {
+            affinityRecomputeTaskService.enqueueEventMembersChanged(normalizedOwnerId, normalizedActorUserId);
+        } else if (OWNER_TYPE_ASSET.equals(normalizedOwnerType)) {
+            affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizedOwnerId, normalizedActorUserId);
+        }
     }
 
     private void refreshEmbeddedEventMembers(String eventId) {

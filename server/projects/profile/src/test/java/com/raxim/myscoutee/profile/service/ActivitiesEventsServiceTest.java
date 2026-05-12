@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -104,6 +106,38 @@ class ActivitiesEventsServiceTest {
         assertThat(page.records()).extracting(record -> record.id())
                 .containsExactly("known-event", "cold-event");
         verify(userAffinityEdgesRepository).findRelevantByUserIds(anyList());
+    }
+
+    @Test
+    void publishEnqueuesEventRecomputeForSavedLifecycleState() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent event = event("event-1", "host", 0d);
+        event.setType("hosting");
+        event.setStatus("DR");
+        event.setPublished(false);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "events", "event-1"))
+                .thenReturn(Optional.empty());
+        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "event-1"))
+                .thenReturn(Optional.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.publish(new EventActionRequestDto(
+                "host",
+                "hosting",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, double affinity) {

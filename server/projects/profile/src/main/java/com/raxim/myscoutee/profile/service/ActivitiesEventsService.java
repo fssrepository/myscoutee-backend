@@ -1451,7 +1451,9 @@ public class ActivitiesEventsService {
             next.normalizeLifecycleState();
             updated.add(next);
         }
-        return activityEventsRepository.saveAll(updated);
+        List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
+        affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
+        return saved;
     }
 
     private void syncStageReminderTasksForSavedEvents(List<ActivityEvent> documents, String actorUserId) {
