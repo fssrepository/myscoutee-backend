@@ -60,6 +60,8 @@ class ActivitiesEventsServiceTest {
     private ObjectProvider<EventScheduler> eventSchedulerProvider;
     @Mock
     private ActivitiesChatService activitiesChatService;
+    @Mock
+    private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -82,7 +84,8 @@ class ActivitiesEventsServiceTest {
                 chatAttachmentLifecycleService,
                 notificationOutboxService,
                 eventSchedulerProvider,
-                activitiesChatService);
+                activitiesChatService,
+                activitiesEventLeaderboardService);
     }
 
     @Test

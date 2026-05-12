@@ -455,6 +455,9 @@ public class ActivitiesMembersService {
         }
 
         nextDocuments = ensureOwnerAdminMembership(ownerType, ownerId, nextDocuments, existingByUserId, actorUserId, nowIso);
+        List<ActivityMember> joinedEventMembers = OWNER_TYPE_EVENT.equals(ownerType)
+                ? joinedAcceptedEventMembers(ownerType, ownerId, nextDocuments, existingByUserId)
+                : List.of();
         Set<String> retainedUserIds = nextDocuments.stream()
                 .map(ActivityMember::getUserId)
                 .map(this::normalizeId)
@@ -486,6 +489,7 @@ public class ActivitiesMembersService {
             processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
+            postEventMembershipChangeMessages(ownerId, joinedEventMembers, removedVisibleMembers);
         }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
@@ -1901,6 +1905,60 @@ public class ActivitiesMembersService {
                 ? displayName + " was reinstated to the event."
                 : displayName + " was disqualified from the event.";
         activitiesChatService.postSystemMessage(eventId, text, "member-" + action);
+    }
+
+    private List<ActivityMember> joinedAcceptedEventMembers(
+            String ownerType,
+            String ownerId,
+            List<ActivityMember> nextDocuments,
+            Map<String, ActivityMember> existingByUserId) {
+        if (!OWNER_TYPE_EVENT.equals(ownerType) || nextDocuments == null || nextDocuments.isEmpty()) {
+            return List.of();
+        }
+        return nextDocuments.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .filter(member -> !isAdminRoleForOwner(ownerType, resolveStoredRole(member, ownerType, ownerId)))
+                .filter(member -> {
+                    String userId = normalizeId(member.getUserId());
+                    ActivityMember existing = existingByUserId.get(userId);
+                    return existing == null || !STATUS_ACCEPTED.equals(normalizeStatus(existing.getStatus()));
+                })
+                .toList();
+    }
+
+    private void postEventMembershipChangeMessages(
+            String eventId,
+            List<ActivityMember> joinedMembers,
+            List<ActivityMember> removedMembers) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId) || activitiesChatService == null) {
+            return;
+        }
+        for (ActivityMember member : joinedMembers == null ? List.<ActivityMember>of() : joinedMembers) {
+            String displayName = memberDisplayName(member);
+            if (StringUtils.hasText(displayName)) {
+                activitiesChatService.postSystemMessage(normalizedEventId, displayName + " joined the event.", "member-joined");
+            }
+        }
+        for (ActivityMember member : removedMembers == null ? List.<ActivityMember>of() : removedMembers) {
+            if (member == null || !STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))) {
+                continue;
+            }
+            String displayName = memberDisplayName(member);
+            if (StringUtils.hasText(displayName)) {
+                activitiesChatService.postSystemMessage(normalizedEventId, displayName + " left the event.", "member-left");
+            }
+        }
+    }
+
+    private String memberDisplayName(ActivityMember member) {
+        String userId = normalizeId(member == null ? null : member.getUserId());
+        if (!StringUtils.hasText(userId)) {
+            return "";
+        }
+        Users user = usersRepository.findByUserId(userId).orElse(null);
+        return firstNonBlank(user == null ? null : user.getName(), userId);
     }
 
     private void refreshEmbeddedEventMembers(String eventId) {

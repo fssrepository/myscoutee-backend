@@ -63,6 +63,7 @@ public class DeletedAccountPurgeService {
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
     private final MediaStorageService mediaStorageService;
     private final MongoTemplate mongoTemplate;
+    private final PlatformParametersService platformParametersService;
 
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
@@ -72,7 +73,8 @@ public class DeletedAccountPurgeService {
             ActivityMembersRepository activityMembersRepository,
             AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaStorageService mediaStorageService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -81,17 +83,24 @@ public class DeletedAccountPurgeService {
         this.accountPurgeJobsRepository = accountPurgeJobsRepository;
         this.mediaStorageService = mediaStorageService;
         this.mongoTemplate = mongoTemplate;
+        this.platformParametersService = platformParametersService;
     }
 
     @Scheduled(fixedDelayString = "${users.deleted-account-purge-delay-ms:3600000}")
     public void purgeExpiredDeletedAccounts() {
         Instant now = Instant.now();
-        String purgeBeforeIso = now.minus(DELETE_GRACE_DAYS, ChronoUnit.DAYS).toString();
+        String purgeBeforeIso = now.minus(deleteGraceDays(), ChronoUnit.DAYS).toString();
         List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual("deleted", purgeBeforeIso);
         for (Users user : users == null ? List.<Users>of() : users) {
             purgeUser(user, null, now);
         }
         resumeDuePurgeJobs(now);
+    }
+
+    private int deleteGraceDays() {
+        return platformParametersService == null
+                ? DELETE_GRACE_DAYS
+                : platformParametersService.accountPurgeWindowDays(DELETE_GRACE_DAYS);
     }
 
     private void resumeDuePurgeJobs(Instant now) {

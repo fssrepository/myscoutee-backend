@@ -85,7 +85,8 @@ class DeletedAccountPurgeServiceTest {
                 activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
-                mongoTemplate);
+                mongoTemplate,
+                null);
 
         service.purgeExpiredDeletedAccounts();
 
@@ -128,7 +129,8 @@ class DeletedAccountPurgeServiceTest {
                 activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
-                mongoTemplate);
+                mongoTemplate,
+                null);
 
         service.purgeExpiredDeletedAccounts();
 

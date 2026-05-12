@@ -79,6 +79,22 @@ public class PlatformParametersService {
         return seconds(jobs().getLeaseDurationSeconds(), fallback, 1, 86_400);
     }
 
+    public long eventSchedulerPollDelayMs(long fallback) {
+        return millis(jobs().getEventSchedulerPollDelayMs(), fallback, 1_000L, 86_400_000L);
+    }
+
+    public long autoInviterCadenceMs(long fallback) {
+        return millis(jobs().getAutoInviterCadenceMs(), fallback, 60_000L, 86_400_000L);
+    }
+
+    public long notificationOutboxPollDelayMs(long fallback) {
+        return millis(jobs().getNotificationOutboxPollDelayMs(), fallback, 1_000L, 3_600_000L);
+    }
+
+    public int accountPurgeWindowDays(int fallback) {
+        return clampInt(jobs().getAccountPurgeWindowDays(), 1, 365, fallback);
+    }
+
     public Duration userChangedDebounce(Duration fallback) {
         return seconds(jobs().getUserChangedDebounceSeconds(), fallback, 0, 86_400);
     }
@@ -106,6 +122,13 @@ public class PlatformParametersService {
     private Duration seconds(Integer value, Duration fallback, int min, int max) {
         int normalized = clampInt(value, min, max, (int) Math.max(0, (fallback == null ? Duration.ZERO : fallback).toSeconds()));
         return Duration.ofSeconds(normalized);
+    }
+
+    private long millis(Integer value, long fallback, long min, long max) {
+        if (value == null || value.longValue() < min || value.longValue() > max) {
+            return Math.max(min, Math.min(max, fallback));
+        }
+        return value.longValue();
     }
 
     private int clampInt(Integer value, int min, int max, int fallback) {

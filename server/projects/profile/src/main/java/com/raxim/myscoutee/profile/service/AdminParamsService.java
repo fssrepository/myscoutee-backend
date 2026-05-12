@@ -246,10 +246,10 @@ public class AdminParamsService {
                 field("jobs.workerPollDelayMs", "Worker poll delay", "Worker", number(jobs.getWorkerPollDelayMs()), "ms"),
                 field("jobs.batchSize", "Batch size", "Worker", number(jobs.getBatchSize()), ""),
                 field("jobs.leaseDurationSeconds", "Lease duration", "Worker", number(jobs.getLeaseDurationSeconds()), "s"),
-                readOnlyField("jobs.process.eventSchedulerPollDelayMs", "Event scheduler poll", "Processes", 1800000d, "ms"),
-                readOnlyField("jobs.process.autoInviterCadenceMs", "Auto-inviter cadence", "Processes", 7200000d, "ms"),
-                readOnlyField("jobs.process.notificationOutboxPollDelayMs", "Notification outbox poll", "Processes", 60000d, "ms"),
-                readOnlyField("jobs.process.accountPurgeWindowDays", "Account purge window", "Processes", 30d, "d"),
+                field("jobs.process.eventSchedulerPollDelayMs", "Event scheduler poll", "Processes", number(jobs.getEventSchedulerPollDelayMs()), "ms"),
+                field("jobs.process.autoInviterCadenceMs", "Auto-inviter cadence", "Processes", number(jobs.getAutoInviterCadenceMs()), "ms"),
+                field("jobs.process.notificationOutboxPollDelayMs", "Notification outbox poll", "Processes", number(jobs.getNotificationOutboxPollDelayMs()), "ms"),
+                field("jobs.process.accountPurgeWindowDays", "Account purge window", "Processes", number(jobs.getAccountPurgeWindowDays()), "d"),
                 readOnlyField("jobs.policy.autoInviterScope", "Auto-inviter scope", "Policy", "Main event before tournament start"),
                 readOnlyField("jobs.policy.tournamentStart", "Tournament start", "Policy", "Manual admin start from first stage"),
                 readOnlyField("jobs.policy.stageProgression", "Stage progression", "Policy", "Admin finalizes scores before next stage"));
@@ -358,6 +358,10 @@ public class AdminParamsService {
         readInteger(fields.get("jobs.workerPollDelayMs"), 100, 3600000).ifPresent(jobs::setWorkerPollDelayMs);
         readInteger(fields.get("jobs.batchSize"), 1, 10000).ifPresent(jobs::setBatchSize);
         readInteger(fields.get("jobs.leaseDurationSeconds"), 1, 86400).ifPresent(jobs::setLeaseDurationSeconds);
+        readInteger(fields.get("jobs.process.eventSchedulerPollDelayMs"), 1000, 86400000).ifPresent(jobs::setEventSchedulerPollDelayMs);
+        readInteger(fields.get("jobs.process.autoInviterCadenceMs"), 60000, 86400000).ifPresent(jobs::setAutoInviterCadenceMs);
+        readInteger(fields.get("jobs.process.notificationOutboxPollDelayMs"), 1000, 3600000).ifPresent(jobs::setNotificationOutboxPollDelayMs);
+        readInteger(fields.get("jobs.process.accountPurgeWindowDays"), 1, 365).ifPresent(jobs::setAccountPurgeWindowDays);
         config.setJobs(jobs);
     }
 

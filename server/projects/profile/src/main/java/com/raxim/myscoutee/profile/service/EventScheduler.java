@@ -76,9 +76,12 @@ public class EventScheduler {
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final PlatformParametersService platformParametersService;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
+    private volatile Instant lastStageSchedulerRunAt = Instant.EPOCH;
+    private volatile Instant lastAutoInviterRunAt = Instant.EPOCH;
 
     @Value("${events.scheduler.enabled:false}")
     private boolean schedulerEnabled;
@@ -91,7 +94,8 @@ public class EventScheduler {
             ActivitiesMembersService activitiesMembersService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventInviteNotificationService eventInviteNotificationService,
-            NotificationRuleRegistryService notificationRuleRegistryService) {
+            NotificationRuleRegistryService notificationRuleRegistryService,
+            PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -100,16 +104,21 @@ public class EventScheduler {
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
+        this.platformParametersService = platformParametersService;
     }
 
-    @Scheduled(fixedDelayString = "${events.scheduler.poll-delay-ms:1800000}")
+    @Scheduled(fixedDelayString = "${events.scheduler.check-delay-ms:60000}")
     public void runScheduledWrappers() {
         if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
         }
 
         Instant now = Instant.now();
-        if (schedulerEnabled) {
+        if (schedulerEnabled && claimStageSchedulerRun(now)) {
+            int startReviewBackfillCount = backfillTournamentStartReviewStages(now);
+            if (startReviewBackfillCount > 0) {
+                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewBackfillCount);
+            }
             int reviewCount = closeEndedTournamentStagesForReview(now);
             if (reviewCount > 0) {
                 LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
@@ -130,8 +139,11 @@ public class EventScheduler {
         }
     }
 
-    @Scheduled(fixedDelayString = "${events.waitlist.inviter-delay-ms:7200000}")
+    @Scheduled(fixedDelayString = "${events.waitlist.inviter-check-delay-ms:60000}")
     public void runWaitlistInviter() {
+        if (!claimAutoInviterRun(Instant.now())) {
+            return;
+        }
         int invitedCount = activitiesMembersService.sweepEventWaitlists();
         if (invitedCount > 0) {
             LOGGER.info("Promoted {} event wait-list member(s) to invitations.", invitedCount);
@@ -143,6 +155,32 @@ public class EventScheduler {
         if (autoInvitedCount > 0) {
             LOGGER.info("Auto-invited {} event candidate(s) across {} event(s).", autoInvitedCount, autoInvitePlans.size());
         }
+    }
+
+    private synchronized boolean claimStageSchedulerRun(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        long delayMs = platformParametersService == null
+                ? 1_800_000L
+                : platformParametersService.eventSchedulerPollDelayMs(1_800_000L);
+        if (lastStageSchedulerRunAt != Instant.EPOCH
+                && effectiveNow.toEpochMilli() - lastStageSchedulerRunAt.toEpochMilli() < delayMs) {
+            return false;
+        }
+        lastStageSchedulerRunAt = effectiveNow;
+        return true;
+    }
+
+    private synchronized boolean claimAutoInviterRun(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        long delayMs = platformParametersService == null
+                ? 7_200_000L
+                : platformParametersService.autoInviterCadenceMs(7_200_000L);
+        if (lastAutoInviterRunAt != Instant.EPOCH
+                && effectiveNow.toEpochMilli() - lastAutoInviterRunAt.toEpochMilli() < delayMs) {
+            return false;
+        }
+        lastAutoInviterRunAt = effectiveNow;
+        return true;
     }
 
     public int closeEndedTournamentStagesForReview() {
@@ -185,6 +223,60 @@ public class EventScheduler {
             activityEventsRepository.saveAll(changedRecords);
         }
         return changedStageKeys.size();
+    }
+
+    int backfillTournamentStartReviewStages(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        String nowIso = effectiveNow.toString();
+        List<ActivityEvent> changedRecords = new ArrayList<>();
+        Set<String> changedStageKeys = new LinkedHashSet<>();
+
+        for (ActivityEvent event : activityEventsRepository.findAll()) {
+            if (!Boolean.TRUE.equals(event == null ? null : event.getAutoInviter()) || !shouldReviewTournamentStages(event)) {
+                continue;
+            }
+            List<SubEventFormItemDto> subEvents = safeSubEvents(event);
+            if (subEvents.isEmpty()) {
+                continue;
+            }
+            SubEventFormItemDto firstStage = subEvents.get(0);
+            if (!shouldMoveFirstStageToStartReview(firstStage, effectiveNow)) {
+                continue;
+            }
+            List<SubEventFormItemDto> updatedSubEvents = new ArrayList<>(subEvents);
+            updatedSubEvents.set(0, copySubEventWithStageStatus(
+                    firstStage,
+                    STAGE_STATUS_START_REVIEW,
+                    "awaiting-tournament-start",
+                    nowIso,
+                    null,
+                    null));
+            event.setSubEvents(updatedSubEvents);
+            event.setUpdatedDate(nowIso);
+            event.setUpdatedUser(MARKER_UPDATED_BY);
+            changedRecords.add(event);
+            changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(firstStage.id()));
+        }
+
+        if (!changedRecords.isEmpty()) {
+            activityEventsRepository.saveAll(changedRecords);
+        }
+        return changedStageKeys.size();
+    }
+
+    private boolean shouldMoveFirstStageToStartReview(SubEventFormItemDto firstStage, Instant now) {
+        if (firstStage == null || !isTournamentStage(firstStage)) {
+            return false;
+        }
+        if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(firstStage.stageStatus()))) {
+            return false;
+        }
+        if (StringUtils.hasText(safeText(firstStage.stageStatusUpdatedAt()))
+                || StringUtils.hasText(safeText(firstStage.stageFinalizedAt()))) {
+            return false;
+        }
+        Instant startAt = parseStageInstant(firstStage.startAt());
+        return startAt != null && startAt.isAfter(now);
     }
 
     private boolean shouldReviewTournamentStages(ActivityEvent event) {

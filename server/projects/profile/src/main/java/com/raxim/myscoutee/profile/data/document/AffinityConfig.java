@@ -792,6 +792,10 @@ public class AffinityConfig {
         private Integer workerPollDelayMs = 60000;
         private Integer batchSize = 50;
         private Integer leaseDurationSeconds = 600;
+        private Integer eventSchedulerPollDelayMs = 1800000;
+        private Integer autoInviterCadenceMs = 7200000;
+        private Integer notificationOutboxPollDelayMs = 60000;
+        private Integer accountPurgeWindowDays = 30;
 
         public Integer getUserChangedDebounceSeconds() {
             return userChangedDebounceSeconds;
@@ -863,6 +867,38 @@ public class AffinityConfig {
 
         public void setLeaseDurationSeconds(Integer leaseDurationSeconds) {
             this.leaseDurationSeconds = leaseDurationSeconds;
+        }
+
+        public Integer getEventSchedulerPollDelayMs() {
+            return eventSchedulerPollDelayMs;
+        }
+
+        public void setEventSchedulerPollDelayMs(Integer eventSchedulerPollDelayMs) {
+            this.eventSchedulerPollDelayMs = eventSchedulerPollDelayMs;
+        }
+
+        public Integer getAutoInviterCadenceMs() {
+            return autoInviterCadenceMs;
+        }
+
+        public void setAutoInviterCadenceMs(Integer autoInviterCadenceMs) {
+            this.autoInviterCadenceMs = autoInviterCadenceMs;
+        }
+
+        public Integer getNotificationOutboxPollDelayMs() {
+            return notificationOutboxPollDelayMs;
+        }
+
+        public void setNotificationOutboxPollDelayMs(Integer notificationOutboxPollDelayMs) {
+            this.notificationOutboxPollDelayMs = notificationOutboxPollDelayMs;
+        }
+
+        public Integer getAccountPurgeWindowDays() {
+            return accountPurgeWindowDays;
+        }
+
+        public void setAccountPurgeWindowDays(Integer accountPurgeWindowDays) {
+            this.accountPurgeWindowDays = accountPurgeWindowDays;
         }
     }
 

@@ -55,6 +55,8 @@ class EventSchedulerTest {
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
     private NotificationRuleRegistryService notificationRuleRegistryService;
+    @Mock
+    private PlatformParametersService platformParametersService;
 
     @Test
     void generatePriorityPlansIgnoresPendingInvitesWhenSizingBatch() {
@@ -411,7 +413,8 @@ class EventSchedulerTest {
                 activitiesMembersService,
                 activitiesEventLeaderboardService,
                 eventInviteNotificationService,
-                notificationRuleRegistryService);
+                notificationRuleRegistryService,
+                platformParametersService);
     }
 
     private Users user(String userId) {

@@ -73,6 +73,7 @@ public class NotificationOutboxWorkerService {
     private final int deliveryWindowStartHour;
     private final int deliveryWindowEndHour;
     private String lastWakeupStreamId = "0-0";
+    private volatile Instant lastScheduledPollAt = Instant.EPOCH;
 
     public NotificationOutboxWorkerService(
             ConfigProperties configProperties,
@@ -105,8 +106,15 @@ public class NotificationOutboxWorkerService {
         this.deliveryWindowEndHour = clampHour(deliveryWindowEndHour, 24);
     }
 
-    @Scheduled(fixedDelayString = "${notifications.outbox.worker-poll-delay-ms:60000}")
+    @Scheduled(fixedDelayString = "${notifications.outbox.worker-check-delay-ms:5000}")
     public void processDueNotifications() {
+        if (!claimScheduledPoll(Instant.now())) {
+            return;
+        }
+        processDueNotificationsNow();
+    }
+
+    private void processDueNotificationsNow() {
         if (!configProperties.isFirebaseEnabled() || !isInsideDeliveryWindow()) {
             return;
         }
@@ -182,11 +190,24 @@ public class NotificationOutboxWorkerService {
                     .filter(StringUtils::hasText)
                     .toList();
             lastWakeupStreamId = records.get(records.size() - 1).getId().getValue();
-            processDueNotifications();
+            processDueNotificationsNow();
             redisStreamRetentionService.deleteRecords(stringRedisTemplate, NotificationOutboxService.WAKEUP_STREAM_KEY, recordIds);
         } catch (RuntimeException exception) {
             LOGGER.debug("Notification outbox Redis wakeup read failed; scheduled polling remains active.", exception);
         }
+    }
+
+    private synchronized boolean claimScheduledPoll(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        long delayMs = platformParametersService == null
+                ? 60_000L
+                : platformParametersService.notificationOutboxPollDelayMs(60_000L);
+        if (lastScheduledPollAt != Instant.EPOCH
+                && effectiveNow.toEpochMilli() - lastScheduledPollAt.toEpochMilli() < delayMs) {
+            return false;
+        }
+        lastScheduledPollAt = effectiveNow;
+        return true;
     }
 
     private List<NotificationOutboxItem> dueItems(String nowIso, int limit) {
