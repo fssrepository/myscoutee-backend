@@ -594,7 +594,10 @@ public class ModelStatusPropagationService {
     }
 
     private List<String> activeResponsibleAssetUserIds(Asset asset) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return List.of();
+        }
+        String assetId = normalizeId(asset.getAssetId());
         if (!StringUtils.hasText(assetId)) {
             return List.of();
         }
@@ -625,7 +628,10 @@ public class ModelStatusPropagationService {
     }
 
     private List<String> activeEventAdminUserIds(ActivityEvent event) {
-        String sourceId = normalizeId(event == null ? null : event.getSourceId());
+        if (event == null) {
+            return List.of();
+        }
+        String sourceId = normalizeId(event.getSourceId());
         if (!StringUtils.hasText(sourceId)) {
             return List.of();
         }
@@ -657,7 +663,10 @@ public class ModelStatusPropagationService {
     }
 
     private List<String> eventMemberUserIds(ActivityEvent event) {
-        String sourceId = normalizeId(event == null ? null : event.getSourceId());
+        if (event == null) {
+            return List.of();
+        }
+        String sourceId = normalizeId(event.getSourceId());
         if (!StringUtils.hasText(sourceId)) {
             return List.of();
         }

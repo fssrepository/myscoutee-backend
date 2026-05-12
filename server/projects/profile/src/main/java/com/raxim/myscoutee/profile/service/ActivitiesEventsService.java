@@ -591,8 +591,11 @@ public class ActivitiesEventsService {
     }
 
     public EventRecordDto applyStageAction(EventStageActionRequestDto request) {
-        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
-        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (request == null) {
+            return null;
+        }
+        ViewerContext viewer = resolveViewer(request.userId());
+        String sourceId = normalizeId(request.sourceId());
         StageActionTarget actionTarget = resolveStageActionTarget(request);
         if (viewer == null || !StringUtils.hasText(sourceId) || actionTarget == null) {
             return null;
@@ -1042,9 +1045,15 @@ public class ActivitiesEventsService {
     }
 
     private void collectMemberNames(Map<String, String> namesByMemberId, EventLeaderboardGroupDto group) {
+        if (group == null) {
+            return;
+        }
         if (group.members() != null) {
             for (EventLeaderboardMemberDto member : group.members()) {
-                String memberId = normalizeId(member == null ? null : member.memberId());
+                if (member == null) {
+                    continue;
+                }
+                String memberId = normalizeId(member.memberId());
                 if (StringUtils.hasText(memberId)) {
                     namesByMemberId.putIfAbsent(memberId, safeText(member.memberName()));
                 }
@@ -1052,7 +1061,10 @@ public class ActivitiesEventsService {
         }
         if (group.scoreRows() != null) {
             for (EventLeaderboardScoreStandingRowDto row : group.scoreRows()) {
-                String memberId = normalizeId(row == null ? null : row.memberId());
+                if (row == null) {
+                    continue;
+                }
+                String memberId = normalizeId(row.memberId());
                 if (StringUtils.hasText(memberId)) {
                     namesByMemberId.putIfAbsent(memberId, safeText(row.memberName()));
                 }
@@ -1060,7 +1072,10 @@ public class ActivitiesEventsService {
         }
         if (group.fifaRows() != null) {
             for (EventLeaderboardFifaStandingRowDto row : group.fifaRows()) {
-                String memberId = normalizeId(row == null ? null : row.memberId());
+                if (row == null) {
+                    continue;
+                }
+                String memberId = normalizeId(row.memberId());
                 if (StringUtils.hasText(memberId)) {
                     namesByMemberId.putIfAbsent(memberId, safeText(row.memberName()));
                 }
@@ -1121,8 +1136,11 @@ public class ActivitiesEventsService {
     }
 
     private List<String> eventAudienceUserIds(ActivityEvent event) {
+        if (event == null) {
+            return List.of();
+        }
         LinkedHashSet<String> userIds = new LinkedHashSet<>();
-        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        String eventId = normalizeId(event.getSourceId());
         if (StringUtils.hasText(eventId)) {
             userIds.addAll(resolveAdminUserIds(eventId, event.getCreatorUserId()));
         }

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationChannelsDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationMessageDto;
@@ -426,6 +428,9 @@ public class AdminNotificationService {
                         timing.getMode(),
                         timing.getDelayMinutes(),
                         timing.getIntervalMinutes(),
+                        timing.getIntervalSeconds(),
+                        timing.getIntervalAmount(),
+                        timing.getIntervalUnit(),
                         timing.getMonth(),
                         timing.getDayOfMonth(),
                         timing.getTime(),
@@ -433,6 +438,9 @@ public class AdminNotificationService {
                         timing.getCronExpression()),
                 rule.getScheduleSlots() == null ? List.of() : rule.getScheduleSlots().stream()
                         .map(this::toScheduleSlotDto)
+                        .toList(),
+                rule.getParameters() == null ? List.of() : rule.getParameters().stream()
+                        .map(this::toParameterDto)
                         .toList(),
                 new AdminNotificationMessageDto(
                         message.getPushTitle(),
@@ -488,6 +496,9 @@ public class AdminNotificationService {
         timing.setMode(sourceTiming == null ? null : sourceTiming.mode());
         timing.setDelayMinutes(sourceTiming == null ? null : sourceTiming.delayMinutes());
         timing.setIntervalMinutes(sourceTiming == null ? null : sourceTiming.intervalMinutes());
+        timing.setIntervalSeconds(sourceTiming == null ? null : sourceTiming.intervalSeconds());
+        timing.setIntervalAmount(sourceTiming == null ? null : sourceTiming.intervalAmount());
+        timing.setIntervalUnit(sourceTiming == null ? null : sourceTiming.intervalUnit());
         timing.setMonth(sourceTiming == null ? null : sourceTiming.month());
         timing.setDayOfMonth(sourceTiming == null ? null : sourceTiming.dayOfMonth());
         timing.setTime(sourceTiming == null ? null : sourceTiming.time());
@@ -496,6 +507,9 @@ public class AdminNotificationService {
         rule.setTiming(timing);
         rule.setScheduleSlots(dto.scheduleSlots() == null ? List.of() : dto.scheduleSlots().stream()
                 .map(this::toScheduleSlotDocument)
+                .toList());
+        rule.setParameters(dto.parameters() == null ? List.of() : dto.parameters().stream()
+                .map(this::toParameterDocument)
                 .toList());
         AdminNotificationMessageDto sourceMessage = dto.message();
         NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
@@ -545,6 +559,54 @@ public class AdminNotificationService {
         slot.setActionKey(dto.actionKey());
         slot.setEnabled(dto.enabled());
         return slot;
+    }
+
+    private AdminParamFieldDto toParameterDto(NotificationRuleConfig.ParameterField field) {
+        return new AdminParamFieldDto(
+                field.getKey(),
+                field.getLabel(),
+                field.getLabelKey(),
+                field.getGroup(),
+                field.getGroupKey(),
+                field.getValueType(),
+                field.getNumberValue(),
+                field.getTextValue(),
+                field.getUnit(),
+                field.getOptions() == null ? List.of() : field.getOptions().stream()
+                        .map(option -> new AdminParamOptionDto(option.getValue(), option.getLabel(), option.getLabelKey()))
+                        .toList(),
+                field.getStrategy(),
+                field.getStrategyKey(),
+                field.getReadOnly());
+    }
+
+    private NotificationRuleConfig.ParameterField toParameterDocument(AdminParamFieldDto dto) {
+        NotificationRuleConfig.ParameterField field = new NotificationRuleConfig.ParameterField();
+        if (dto == null) {
+            return field;
+        }
+        field.setKey(dto.key());
+        field.setLabel(dto.label());
+        field.setLabelKey(dto.labelKey());
+        field.setGroup(dto.group());
+        field.setGroupKey(dto.groupKey());
+        field.setValueType(dto.valueType());
+        field.setNumberValue(dto.numberValue());
+        field.setTextValue(dto.textValue());
+        field.setUnit(dto.unit());
+        field.setOptions(dto.options() == null ? List.of() : dto.options().stream()
+                .map(option -> {
+                    NotificationRuleConfig.ParameterOption documentOption = new NotificationRuleConfig.ParameterOption();
+                    documentOption.setValue(option.value());
+                    documentOption.setLabel(option.label());
+                    documentOption.setLabelKey(option.labelKey());
+                    return documentOption;
+                })
+                .toList());
+        field.setStrategy(dto.strategy());
+        field.setStrategyKey(dto.strategyKey());
+        field.setReadOnly(dto.readOnly());
+        return field;
     }
 
     private AdminNotificationRunHistoryEntryDto toRunHistoryEntry(NotificationRuleConfig.RunHistoryEntry entry) {

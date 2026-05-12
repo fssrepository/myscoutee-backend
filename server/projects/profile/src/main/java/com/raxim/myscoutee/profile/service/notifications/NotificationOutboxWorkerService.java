@@ -174,6 +174,7 @@ public class NotificationOutboxWorkerService {
     }
 
     @Scheduled(fixedDelayString = "${notifications.outbox.wakeup-poll-delay-ms:5000}")
+    @SuppressWarnings("unchecked")
     public void processRedisWakeups() {
         if (stringRedisTemplate == null) {
             return;
@@ -370,7 +371,10 @@ public class NotificationOutboxWorkerService {
     private List<TokenRegistration> tokenRegistrations(List<Users> users) {
         LinkedHashMap<String, TokenRegistration> byToken = new LinkedHashMap<>();
         for (Users user : users == null ? List.<Users>of() : users) {
-            String userId = normalizeId(user == null ? null : user.getUserId());
+            if (user == null) {
+                continue;
+            }
+            String userId = normalizeId(user.getUserId());
             if (!StringUtils.hasText(userId) || user.getDevices() == null) {
                 continue;
             }
@@ -431,7 +435,11 @@ public class NotificationOutboxWorkerService {
     }
 
     private void markFailed(NotificationOutboxItem item, Exception exception, Instant now) {
-        int retryCount = Math.max(0, item == null || item.getRetryCount() == null ? 0 : item.getRetryCount()) + 1;
+        if (item == null) {
+            LOGGER.warn("Notification outbox delivery failed before item could be loaded.", exception);
+            return;
+        }
+        int retryCount = Math.max(0, item.getRetryCount() == null ? 0 : item.getRetryCount()) + 1;
         boolean exhausted = retryCount >= effectiveMaxRetries();
         String nowIso = now.toString();
         String nextRetryAt = now.plus(retryDelay(retryCount)).toString();
@@ -443,7 +451,7 @@ public class NotificationOutboxWorkerService {
                 .set("updatedDate", nowIso)
                 .unset("lockedUntil");
         mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(item.getId())), update, NotificationOutboxItem.class);
-        LOGGER.warn("Notification outbox item {} delivery failed.", item == null ? "" : item.getId(), exception);
+        LOGGER.warn("Notification outbox item {} delivery failed.", item.getId(), exception);
     }
 
     private Duration retryDelay(int retryCount) {

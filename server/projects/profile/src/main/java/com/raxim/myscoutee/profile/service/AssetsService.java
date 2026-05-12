@@ -452,14 +452,17 @@ public class AssetsService {
     }
 
     private Criteria memberSnapshotCriteria(ActivityMember current) {
-        String id = normalizeId(current == null ? null : current.getId());
+        if (current == null) {
+            return null;
+        }
+        String id = normalizeId(current.getId());
         Criteria criteria;
         if (StringUtils.hasText(id)) {
             criteria = Criteria.where("_id").is(id);
         } else {
-            String ownerType = safeText(current == null ? null : current.getOwnerType());
-            String ownerId = normalizeId(current == null ? null : current.getOwnerId());
-            String userId = normalizeId(current == null ? null : current.getUserId());
+            String ownerType = safeText(current.getOwnerType());
+            String ownerId = normalizeId(current.getOwnerId());
+            String userId = normalizeId(current.getUserId());
             if (!StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId) || !StringUtils.hasText(userId)) {
                 return null;
             }
@@ -1102,10 +1105,6 @@ public class AssetsService {
         return toDto(asset, Map.of(), null);
     }
 
-    private AssetCardDto toDto(Asset asset, Map<String, String> ownerNamesByUserId) {
-        return toDto(asset, ownerNamesByUserId, null);
-    }
-
     private AssetCardDto toDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
@@ -1456,7 +1455,7 @@ public class AssetsService {
                 "Asset unavailable",
                 assetTitle(asset) + " is no longer available.",
                 "/game",
-                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "asset-unavailable-" + assetId,
                 Map.of(
@@ -1490,7 +1489,7 @@ public class AssetsService {
                 "Asset restored",
                 assetTitle(asset) + " is available again.",
                 "/game",
-                firstNonBlank(asset.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(asset == null ? null : asset.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "asset-restored-" + assetId,
                 Map.of(
@@ -1502,7 +1501,10 @@ public class AssetsService {
     }
 
     private void enqueueAssetTakeOverNotification(Asset previous, Asset next, String actorUserId) {
-        String assetId = normalizeId(next == null ? null : next.getAssetId());
+        if (next == null) {
+            return;
+        }
+        String assetId = normalizeId(next.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
             return;
@@ -1524,7 +1526,7 @@ public class AssetsService {
                 title,
                 body,
                 "/game",
-                firstNonBlank(next.getImageUrl(), "/assets/logo/heart.webp"),
+                firstNonBlank(next == null ? null : next.getImageUrl(), "/assets/logo/heart.webp"),
                 "/assets/logo/heart.webp",
                 "asset-takeover-" + assetId,
                 Map.of(
@@ -1578,7 +1580,10 @@ public class AssetsService {
     }
 
     private List<String> activeResponsibleAssetUserIds(Asset asset) {
-        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (asset == null) {
+            return List.of();
+        }
+        String assetId = normalizeId(asset.getAssetId());
         if (!StringUtils.hasText(assetId)) {
             return List.of();
         }

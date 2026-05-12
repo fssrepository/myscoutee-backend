@@ -30,6 +30,7 @@ public class NotificationRuleConfig {
     private DeliveryChannels channels = new DeliveryChannels();
     private Timing timing = new Timing();
     private List<ScheduleSlot> scheduleSlots = new ArrayList<>();
+    private List<ParameterField> parameters = new ArrayList<>();
     private MessageTemplate message = new MessageTemplate();
     private RunState runState = new RunState();
     private List<RunHistoryEntry> runHistory = new ArrayList<>();
@@ -158,6 +159,14 @@ public class NotificationRuleConfig {
         this.scheduleSlots = scheduleSlots == null ? new ArrayList<>() : scheduleSlots;
     }
 
+    public List<ParameterField> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<ParameterField> parameters) {
+        this.parameters = parameters == null ? new ArrayList<>() : parameters;
+    }
+
     public MessageTemplate getMessage() {
         return message;
     }
@@ -257,6 +266,9 @@ public class NotificationRuleConfig {
         private String mode;
         private Integer delayMinutes;
         private Integer intervalMinutes;
+        private Integer intervalSeconds;
+        private Integer intervalAmount;
+        private String intervalUnit;
         private Integer month;
         private Integer dayOfMonth;
         private String time;
@@ -285,6 +297,30 @@ public class NotificationRuleConfig {
 
         public void setIntervalMinutes(Integer intervalMinutes) {
             this.intervalMinutes = intervalMinutes;
+        }
+
+        public Integer getIntervalSeconds() {
+            return intervalSeconds;
+        }
+
+        public void setIntervalSeconds(Integer intervalSeconds) {
+            this.intervalSeconds = intervalSeconds;
+        }
+
+        public Integer getIntervalAmount() {
+            return intervalAmount;
+        }
+
+        public void setIntervalAmount(Integer intervalAmount) {
+            this.intervalAmount = intervalAmount;
+        }
+
+        public String getIntervalUnit() {
+            return intervalUnit;
+        }
+
+        public void setIntervalUnit(String intervalUnit) {
+            this.intervalUnit = intervalUnit;
         }
 
         public Integer getMonth() {
@@ -410,6 +446,62 @@ public class NotificationRuleConfig {
         public void setEnabled(Boolean enabled) {
             this.enabled = enabled;
         }
+    }
+
+    public static class ParameterField {
+        private String key;
+        private String label;
+        private String labelKey;
+        private String group;
+        private String groupKey;
+        private String valueType;
+        private Double numberValue;
+        private String textValue;
+        private String unit;
+        private List<ParameterOption> options = new ArrayList<>();
+        private String strategy;
+        private String strategyKey;
+        private Boolean readOnly;
+
+        public String getKey() { return key; }
+        public void setKey(String key) { this.key = key; }
+        public String getLabel() { return label; }
+        public void setLabel(String label) { this.label = label; }
+        public String getLabelKey() { return labelKey; }
+        public void setLabelKey(String labelKey) { this.labelKey = labelKey; }
+        public String getGroup() { return group; }
+        public void setGroup(String group) { this.group = group; }
+        public String getGroupKey() { return groupKey; }
+        public void setGroupKey(String groupKey) { this.groupKey = groupKey; }
+        public String getValueType() { return valueType; }
+        public void setValueType(String valueType) { this.valueType = valueType; }
+        public Double getNumberValue() { return numberValue; }
+        public void setNumberValue(Double numberValue) { this.numberValue = numberValue; }
+        public String getTextValue() { return textValue; }
+        public void setTextValue(String textValue) { this.textValue = textValue; }
+        public String getUnit() { return unit; }
+        public void setUnit(String unit) { this.unit = unit; }
+        public List<ParameterOption> getOptions() { return options; }
+        public void setOptions(List<ParameterOption> options) { this.options = options == null ? new ArrayList<>() : options; }
+        public String getStrategy() { return strategy; }
+        public void setStrategy(String strategy) { this.strategy = strategy; }
+        public String getStrategyKey() { return strategyKey; }
+        public void setStrategyKey(String strategyKey) { this.strategyKey = strategyKey; }
+        public Boolean getReadOnly() { return readOnly; }
+        public void setReadOnly(Boolean readOnly) { this.readOnly = readOnly; }
+    }
+
+    public static class ParameterOption {
+        private String value;
+        private String label;
+        private String labelKey;
+
+        public String getValue() { return value; }
+        public void setValue(String value) { this.value = value; }
+        public String getLabel() { return label; }
+        public void setLabel(String label) { this.label = label; }
+        public String getLabelKey() { return labelKey; }
+        public void setLabelKey(String labelKey) { this.labelKey = labelKey; }
     }
 
     public static class MessageTemplate {

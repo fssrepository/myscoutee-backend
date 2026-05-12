@@ -175,7 +175,7 @@ public class NotificationOutboxService {
         if (!StringUtils.hasText(topicName)) {
             return null;
         }
-        boolean stableTopic = "true".equalsIgnoreCase(safeText(payload.get("stableTopic")))
+        boolean stableTopic = payload != null && "true".equalsIgnoreCase(safeText(payload.get("stableTopic")))
                 || recipientScope.startsWith("topic:")
                 || topicName.startsWith("platform-")
                 || topicName.startsWith("admin-")
@@ -183,7 +183,7 @@ public class NotificationOutboxService {
         if (!stableTopic) {
             return null;
         }
-        int threshold = readInt(payload.get("topicThreshold"), topicThreshold());
+        int threshold = readInt(payload == null ? null : payload.get("topicThreshold"), topicThreshold());
         return recipientCount == 0 || recipientCount >= Math.max(1, threshold) ? topicName : null;
     }
 

@@ -232,7 +232,7 @@ public class EventScheduler {
         Set<String> changedStageKeys = new LinkedHashSet<>();
 
         for (ActivityEvent event : activityEventsRepository.findAll()) {
-            if (!Boolean.TRUE.equals(event == null ? null : event.getAutoInviter()) || !shouldReviewTournamentStages(event)) {
+            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !shouldReviewTournamentStages(event)) {
                 continue;
             }
             List<SubEventFormItemDto> subEvents = safeSubEvents(event);

@@ -589,23 +589,6 @@ public class AdminParamsService {
                 false);
     }
 
-    private AdminParamFieldDto readOnlyField(String key, String label, String group, Double value, String unit) {
-        return new AdminParamFieldDto(
-                key,
-                label,
-                fieldLabelKey(key),
-                group,
-                groupLabelKey(group),
-                "number",
-                value,
-                null,
-                unit,
-                List.of(),
-                "",
-                strategyLabelKey(""),
-                true);
-    }
-
     private AdminParamFieldDto readOnlyField(String key, String label, String group, String value) {
         return new AdminParamFieldDto(
                 key,
