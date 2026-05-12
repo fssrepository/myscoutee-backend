@@ -13,7 +13,6 @@ metrics popup (visualize architecturally and statisticswise, how certain process
 
 ui
 -------
-scheduled job ui on admin, needs to be reviewed
 partition key - is it available in different country -- has it been implemented feature?
 smart list refactor (imagecard / singlerow/infocard)
 about page - landing size (before the login) -- maybe admin can edit (so edit surface)
