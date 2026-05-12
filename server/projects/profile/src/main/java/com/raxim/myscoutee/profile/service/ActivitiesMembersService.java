@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -23,6 +24,7 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
@@ -40,6 +42,9 @@ public class ActivitiesMembersService {
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
+    private static final String STATUS_DISQUALIFIED = "disqualified";
+    private static final String ACTION_DISQUALIFY = "disqualify";
+    private static final String ACTION_REINSTATE = "reinstate";
     private static final String REQUEST_KIND_JOIN = "join";
     private static final String REQUEST_KIND_INVITE = "invite";
     private static final String REQUEST_KIND_WAITLIST = "waitlist";
@@ -47,6 +52,7 @@ public class ActivitiesMembersService {
     private static final Set<String> OWNER_TYPES = Set.of("event", "subEvent", "group", "asset");
     private static final Set<String> ACCEPTED_STATUSES = Set.of(STATUS_ACCEPTED);
     private static final Set<String> ADMIN_ROLES = Set.of("Admin");
+    private static final Set<String> MANAGER_ROLES = Set.of("Admin", "Manager");
 
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -59,6 +65,7 @@ public class ActivitiesMembersService {
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
+    private final ActivitiesChatService activitiesChatService;
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
@@ -71,7 +78,8 @@ public class ActivitiesMembersService {
             EventParticipationTicketService eventParticipationTicketService,
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            ActivitiesChatService activitiesChatService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -83,6 +91,7 @@ public class ActivitiesMembersService {
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
+        this.activitiesChatService = activitiesChatService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -154,7 +163,10 @@ public class ActivitiesMembersService {
         }
         return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
+                .filter(member -> {
+                    String status = normalizeStatus(member.getStatus());
+                    return STATUS_ACCEPTED.equals(status) || STATUS_PENDING.equals(status);
+                })
                 .map(ActivityMember::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
@@ -478,6 +490,84 @@ public class ActivitiesMembersService {
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
         }
+    }
+
+    public List<ActivityMemberEntryDto> applyAction(ActivityMemberActionRequestDto request) {
+        if (request == null || request.owner() == null) {
+            return List.of();
+        }
+
+        String ownerType = normalizeOwnerType(request.owner().ownerType());
+        String ownerId = normalizeId(request.owner().ownerId());
+        String actorUserId = resolveActorUserId(request.actorUserId());
+        String targetUserId = normalizeId(request.targetUserId());
+        String action = normalizeMemberAction(request.action());
+        if (!StringUtils.hasText(ownerType)
+                || !StringUtils.hasText(ownerId)
+                || !StringUtils.hasText(actorUserId)
+                || !StringUtils.hasText(targetUserId)
+                || !StringUtils.hasText(action)
+                || !canManageOwnerMembers(ownerType, ownerId, actorUserId)
+                || actorUserId.equals(targetUserId)
+                || isProtectedOwnerMember(ownerType, ownerId, targetUserId)) {
+            return queryMembers(ownerType, ownerId);
+        }
+
+        List<ActivityMember> existing = loadStoredOwnerDocuments(ownerType, ownerId);
+        ActivityMember current = existing.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> targetUserId.equals(normalizeId(member.getUserId())))
+                .findFirst()
+                .orElse(null);
+        if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+            return queryMembers(ownerType, ownerId);
+        }
+
+        String currentStatus = normalizeStatus(current.getStatus());
+        String nextStatus;
+        if (ACTION_DISQUALIFY.equals(action)) {
+            if (!STATUS_ACCEPTED.equals(currentStatus)) {
+                return queryMembers(ownerType, ownerId);
+            }
+            nextStatus = STATUS_DISQUALIFIED;
+        } else if (ACTION_REINSTATE.equals(action)) {
+            if (!STATUS_DISQUALIFIED.equals(currentStatus)) {
+                return queryMembers(ownerType, ownerId);
+            }
+            nextStatus = STATUS_ACCEPTED;
+        } else {
+            return queryMembers(ownerType, ownerId);
+        }
+
+        String nowIso = Instant.now().toString();
+        ActivityMember next = cloneMember(current);
+        next.setStatus(nextStatus);
+        next.setPendingSource(null);
+        next.setRequestKind(null);
+        next.setInvitedByUserId(null);
+        next.setActionAtIso(nowIso);
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+        activityMembersRepository.save(next);
+
+        enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
+        adminTelemetryService.record(
+                ACTION_DISQUALIFY.equals(action) ? "event.member.disqualified" : "event.member.reinstated",
+                ownerType,
+                ownerId,
+                actorUserId,
+                1L,
+                Map.of("targetUserId", targetUserId));
+
+        if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
+            refreshEmbeddedEventMembers(ownerId);
+            postMemberActionChatMessage(ownerId, action, next);
+        } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
+            assetsService.syncRequestsFromMembers(ownerId, List.of(next));
+        }
+
+        return queryMembers(ownerType, ownerId);
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
@@ -1742,6 +1832,77 @@ public class ActivitiesMembersService {
         }
     }
 
+    private boolean canManageOwnerMembers(String ownerType, String ownerId, String actorUserId) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedOwnerType)
+                || !StringUtils.hasText(normalizedOwnerId)
+                || !StringUtils.hasText(normalizedActorUserId)) {
+            return false;
+        }
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)) {
+            ActivityEvent eventRecord = findPreferredEventRecord(normalizedOwnerId);
+            if (eventRecord != null) {
+                if (normalizedActorUserId.equals(normalizeId(eventRecord.getCreatorUserId()))
+                        || normalizeIds(eventRecord.getAdmins()).contains(normalizedActorUserId)) {
+                    return true;
+                }
+            }
+        } else if (OWNER_TYPE_ASSET.equals(normalizedOwnerType)) {
+            Asset asset = assetsService.findAssetByAssetId(normalizedOwnerId).orElse(null);
+            if (asset != null && normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+                return true;
+            }
+        }
+        return mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> normalizedActorUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getRole)
+                .map(this::safeText)
+                .anyMatch(MANAGER_ROLES::contains);
+    }
+
+    private boolean isProtectedOwnerMember(String ownerType, String ownerId, String targetUserId) {
+        String normalizedOwnerType = normalizeOwnerType(ownerType);
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        if (!StringUtils.hasText(normalizedTargetUserId)) {
+            return true;
+        }
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)) {
+            ActivityEvent eventRecord = findPreferredEventRecord(normalizedOwnerId);
+            if (eventRecord != null && normalizedTargetUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
+                return true;
+            }
+        } else if (OWNER_TYPE_ASSET.equals(normalizedOwnerType)) {
+            Asset asset = assetsService.findAssetByAssetId(normalizedOwnerId).orElse(null);
+            if (asset != null && normalizedTargetUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+                return true;
+            }
+        }
+        return mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> normalizedTargetUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .map(ActivityMember::getRole)
+                .map(this::safeText)
+                .anyMatch(MANAGER_ROLES::contains);
+    }
+
+    private void postMemberActionChatMessage(String eventId, String action, ActivityMember member) {
+        if (!StringUtils.hasText(normalizeId(eventId)) || member == null) {
+            return;
+        }
+        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
+        String displayName = firstNonBlank(user == null ? null : user.getName(), normalizeId(member.getUserId()));
+        String text = ACTION_REINSTATE.equals(action)
+                ? displayName + " was reinstated to the event."
+                : displayName + " was disqualified from the event.";
+        activitiesChatService.postSystemMessage(eventId, text, "member-" + action);
+    }
+
     private void refreshEmbeddedEventMembers(String eventId) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
@@ -1787,7 +1948,31 @@ public class ActivitiesMembersService {
         if (STATUS_DELETED.equals(normalizedStatus)) {
             return STATUS_DELETED;
         }
+        if (STATUS_DISQUALIFIED.equals(normalizedStatus)) {
+            return STATUS_DISQUALIFIED;
+        }
         return STATUS_ACCEPTED;
+    }
+
+    private String normalizeMemberAction(String action) {
+        String normalizedAction = safeText(action).toLowerCase(Locale.ROOT);
+        if (ACTION_DISQUALIFY.equals(normalizedAction)) {
+            return ACTION_DISQUALIFY;
+        }
+        if (ACTION_REINSTATE.equals(normalizedAction)) {
+            return ACTION_REINSTATE;
+        }
+        return "";
+    }
+
+    private Set<String> normalizeIds(Collection<String> values) {
+        if (values == null || values.isEmpty()) {
+            return Set.of();
+        }
+        return values.stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
     }
 
     private String resolvePendingSource(String pendingSource, String status) {
@@ -1978,6 +2163,9 @@ public class ActivitiesMembersService {
         }
         if (STATUS_DELETED.equals(status)) {
             return "No longer active in this event.";
+        }
+        if (STATUS_DISQUALIFIED.equals(status)) {
+            return "Disqualified from this event.";
         }
         if (REQUEST_KIND_WAITLIST.equals(requestKind)) {
             return "Waiting for a spot.";

@@ -245,7 +245,14 @@ public class AdminParamsService {
                 field("jobs.configChangedDebounceSeconds", "Config debounce", "Debounce", number(jobs.getConfigChangedDebounceSeconds()), "s"),
                 field("jobs.workerPollDelayMs", "Worker poll delay", "Worker", number(jobs.getWorkerPollDelayMs()), "ms"),
                 field("jobs.batchSize", "Batch size", "Worker", number(jobs.getBatchSize()), ""),
-                field("jobs.leaseDurationSeconds", "Lease duration", "Worker", number(jobs.getLeaseDurationSeconds()), "s"));
+                field("jobs.leaseDurationSeconds", "Lease duration", "Worker", number(jobs.getLeaseDurationSeconds()), "s"),
+                readOnlyField("jobs.process.eventSchedulerPollDelayMs", "Event scheduler poll", "Processes", 1800000d, "ms"),
+                readOnlyField("jobs.process.autoInviterCadenceMs", "Auto-inviter cadence", "Processes", 7200000d, "ms"),
+                readOnlyField("jobs.process.notificationOutboxPollDelayMs", "Notification outbox poll", "Processes", 60000d, "ms"),
+                readOnlyField("jobs.process.accountPurgeWindowDays", "Account purge window", "Processes", 30d, "d"),
+                readOnlyField("jobs.policy.autoInviterScope", "Auto-inviter scope", "Policy", "Main event before tournament start"),
+                readOnlyField("jobs.policy.tournamentStart", "Tournament start", "Policy", "Manual admin start from first stage"),
+                readOnlyField("jobs.policy.stageProgression", "Stage progression", "Policy", "Admin finalizes scores before next stage"));
     }
 
     private void applySection(String sectionKey, AffinityConfig config, Collection<AdminParamFieldDto> fields) {
@@ -557,7 +564,8 @@ public class AdminParamsService {
                 unit,
                 List.of(),
                 strategy,
-                strategyLabelKey(strategy));
+                strategyLabelKey(strategy),
+                false);
     }
 
     private AdminParamFieldDto textField(String key, String label, String group, String value, String strategy) {
@@ -573,7 +581,42 @@ public class AdminParamsService {
                 null,
                 optionsFor(key),
                 strategy,
-                strategyLabelKey(strategy));
+                strategyLabelKey(strategy),
+                false);
+    }
+
+    private AdminParamFieldDto readOnlyField(String key, String label, String group, Double value, String unit) {
+        return new AdminParamFieldDto(
+                key,
+                label,
+                fieldLabelKey(key),
+                group,
+                groupLabelKey(group),
+                "number",
+                value,
+                null,
+                unit,
+                List.of(),
+                "",
+                strategyLabelKey(""),
+                true);
+    }
+
+    private AdminParamFieldDto readOnlyField(String key, String label, String group, String value) {
+        return new AdminParamFieldDto(
+                key,
+                label,
+                fieldLabelKey(key),
+                group,
+                groupLabelKey(group),
+                "text",
+                null,
+                value,
+                null,
+                List.of(),
+                "",
+                strategyLabelKey(""),
+                true);
     }
 
     private List<AdminParamOptionDto> optionsFor(String key) {

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
@@ -25,6 +26,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventsServiceTest {
@@ -52,6 +54,12 @@ class ActivitiesEventsServiceTest {
     private MongoTemplate mongoTemplate;
     @Mock
     private ChatAttachmentLifecycleService chatAttachmentLifecycleService;
+    @Mock
+    private NotificationOutboxService notificationOutboxService;
+    @Mock
+    private ObjectProvider<EventScheduler> eventSchedulerProvider;
+    @Mock
+    private ActivitiesChatService activitiesChatService;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -71,7 +79,10 @@ class ActivitiesEventsServiceTest {
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 mongoTemplate,
-                chatAttachmentLifecycleService);
+                chatAttachmentLifecycleService,
+                notificationOutboxService,
+                eventSchedulerProvider,
+                activitiesChatService);
     }
 
     @Test

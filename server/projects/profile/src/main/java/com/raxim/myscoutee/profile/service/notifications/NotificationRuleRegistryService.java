@@ -260,10 +260,10 @@ public class NotificationRuleRegistryService {
         return List.of(
                 scheduledRule(
                         RULE_EVENT_RANDOM_GROUPS,
-                        "Random event",
+                        "Matched rooms",
                         "Scheduled",
                         "event.scheduler.random-groups",
-                        "Assigns accepted event members into generated random groups.",
+                        "Assigns accepted event members into generated rooms using affinity and prior-meeting signals.",
                         200,
                         false,
                         false,

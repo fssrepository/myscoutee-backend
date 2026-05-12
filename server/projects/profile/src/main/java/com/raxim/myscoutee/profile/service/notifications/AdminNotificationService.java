@@ -139,7 +139,7 @@ public class AdminNotificationService {
                             safeText(rule.getLabel()),
                             0,
                             "running",
-                            "Manual random event grouping started.",
+                            "Manual matched room assignment started.",
                             startedAtIso);
                 }
                 default -> {
@@ -194,7 +194,7 @@ public class AdminNotificationService {
             if (progress != null) {
                 progress.setAdminUserId(adminUserId);
                 progress.adoptRule(startedRule);
-                progress.raiseTo(1, "Loading published random event records.");
+                progress.raiseTo(1, "Loading published events for matched rooms.");
             }
             List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {
                 if (progress != null) {
@@ -251,7 +251,7 @@ public class AdminNotificationService {
         private final NotificationRuleConfig.RunState runtimeState = new NotificationRuleConfig.RunState();
         private final long expectedMillis = clampExpectedRandomRunMillis(expectedRandomRunMillis.get());
         private final AtomicInteger latestPercent = new AtomicInteger(0);
-        private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual random event grouping started.");
+        private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual matched room assignment started.");
         private volatile String adminUserId;
         private volatile List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory = List.of();
         private final ScheduledFuture<?> heartbeat;

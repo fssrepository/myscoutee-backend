@@ -52,6 +52,15 @@ public final class EventsDtos {
             String pendingReason) {
     }
 
+    public record EventStageActionRequestDto(
+            String userId,
+            String sourceId,
+            String subEventId,
+            Integer subEventIndex,
+            String action,
+            String reason) {
+    }
+
     public record EventFeedbackAnswerSubmitDto(
             String cardId,
             String kind,

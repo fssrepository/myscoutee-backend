@@ -39,7 +39,8 @@ public final class AdminDtos {
             String unit,
             List<AdminParamOptionDto> options,
             String strategy,
-            String strategyKey) {}
+            String strategyKey,
+            Boolean readOnly) {}
     public record AdminParamOptionDto(
             String value,
             String label,

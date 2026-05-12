@@ -158,6 +158,42 @@ public class ActivitiesChatService {
         return sendMessage(chatId, requestedUserId, text, clientId, null, List.of());
     }
 
+    public ChatMessageDto postSystemMessage(String chatId, String text, String systemType) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedText = normalizeText(text);
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
+            return null;
+        }
+        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty()) {
+            return null;
+        }
+
+        ChatMessageRecord messageRecord = buildSystemMessageRecord(normalizedText, systemType);
+        List<ActivityChat> updatedDocuments = new ArrayList<>();
+        for (ActivityChat existing : chatDocuments) {
+            ActivityChat next = copyChat(existing);
+            List<ChatMessageRecord> nextMessages = new ArrayList<>();
+            for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
+                nextMessages.add(copyMessageRecord(existingMessage));
+            }
+            nextMessages.add(copyMessageRecord(messageRecord));
+            next.setMessages(nextMessages);
+            next.setLastMessage(chatMessageSummary(messageRecord));
+            next.setLastSenderId("");
+            next.setDateIso(messageRecord.getSentAtIso());
+            next.setUnread(normalizeCount(existing.getUnread()) + 1);
+            updatedDocuments.add(next);
+        }
+        activityChatsRepository.saveAll(updatedDocuments);
+
+        ChatStreamEvent streamEvent = toStreamEvent(normalizedChatId, messageRecord);
+        publishChatEvent(streamEvent);
+        chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record("chat.message.system", "chats", normalizedChatId, "system");
+        return toMessageDto(messageRecord, "");
+    }
+
     public ChatMessageDto sendMessage(
             String chatId,
             String requestedUserId,
@@ -955,6 +991,28 @@ public class ActivitiesChatService {
         return message;
     }
 
+    private ChatMessageRecord buildSystemMessageRecord(String text, String systemType) {
+        Instant sentAt = Instant.now();
+        ChatAvatarRecord avatar = new ChatAvatarRecord();
+        avatar.setId("");
+        avatar.setInitials("MS");
+        avatar.setGender("system");
+        ChatMessageRecord message = new ChatMessageRecord();
+        message.setId(UUID.randomUUID().toString());
+        message.setClientId(firstNonBlank(systemType, "system"));
+        message.setSender("System");
+        message.setSenderAvatar(avatar);
+        message.setText(text);
+        message.setTime(CHAT_TIME_FORMATTER.format(sentAt));
+        message.setSentAtIso(sentAt.toString());
+        message.setMine(Boolean.FALSE);
+        message.setReadBy(new ArrayList<>());
+        message.setReplyTo(null);
+        message.setReactions(new ArrayList<>());
+        message.setAttachments(new ArrayList<>());
+        return message;
+    }
+
     private ChatStreamEvent toStreamEvent(String chatId, ChatMessageRecord messageRecord) {
         ChatAvatarRecord senderAvatar = messageRecord.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
@@ -1405,6 +1463,16 @@ public class ActivitiesChatService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String firstNonBlank(String... values) {
+        for (String value : values == null ? new String[0] : values) {
+            String normalized = safeText(value);
+            if (StringUtils.hasText(normalized)) {
+                return normalized;
+            }
+        }
+        return "";
     }
 
     private String normalizeChatContextFilter(String value) {
