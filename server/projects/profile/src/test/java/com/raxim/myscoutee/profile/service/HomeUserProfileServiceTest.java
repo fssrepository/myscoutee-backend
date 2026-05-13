@@ -72,6 +72,8 @@ class HomeUserProfileServiceTest {
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock
     private AdminTelemetryService adminTelemetryService;
+    @Mock
+    private AdminMenuCounterService adminMenuCounterService;
 
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -100,7 +102,8 @@ class HomeUserProfileServiceTest {
                 regionSecurityProperties,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
-                adminTelemetryService);
+                adminTelemetryService,
+                adminMenuCounterService);
     }
 
     @Test

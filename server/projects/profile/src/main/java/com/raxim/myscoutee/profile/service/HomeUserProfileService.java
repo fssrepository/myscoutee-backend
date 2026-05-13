@@ -182,6 +182,7 @@ public class HomeUserProfileService {
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
+    private final AdminMenuCounterService adminMenuCounterService;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -202,7 +203,8 @@ public class HomeUserProfileService {
             RegionSecurityProperties regionSecurityProperties,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            AdminMenuCounterService adminMenuCounterService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -222,6 +224,7 @@ public class HomeUserProfileService {
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
+        this.adminMenuCounterService = adminMenuCounterService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -1498,7 +1501,9 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.events()),
                 activities == null ? 0 : normalizeCount(activities.hosting()),
                 activities == null ? 0 : normalizeCount(activities.tickets()),
-                activities == null ? 0 : normalizeCount(activities.feedback()));
+                activities == null ? 0 : normalizeCount(activities.feedback()),
+                activities == null ? 0 : normalizeCount(activities.adminJobs()),
+                activities == null ? 0 : normalizeCount(activities.adminMetrics()));
     }
 
     private Users mergeUserDocument(Users current, UserDto user) {
@@ -1576,6 +1581,9 @@ public class HomeUserProfileService {
     private Users syncComputedUserActivities(Users user) {
         if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
             return user;
+        }
+        if (adminMenuCounterService.isAdminUser(user)) {
+            return adminMenuCounterService.syncAdminUserCounters(user);
         }
 
         Users.UserActivitiesRecord computed = buildComputedUserActivities(normalizeId(user.getId()), user.getActivities());
@@ -1674,7 +1682,9 @@ public class HomeUserProfileService {
                 eventMenuCounts.activeEvents(),
                 eventMenuCounts.hosting(),
                 countTicketRecords(userId),
-                countPendingEventFeedback(userId, eventRecords));
+                countPendingEventFeedback(userId, eventRecords),
+                existing == null ? 0 : normalizeCount(existing.adminJobs()),
+                existing == null ? 0 : normalizeCount(existing.adminMetrics()));
     }
 
     private List<ActivityEvent> queryEventRecords(String userId) {
@@ -1969,8 +1979,8 @@ public class HomeUserProfileService {
             String requestCursor,
             UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
-        String previousHostHash = cursorPart(requestCursor, 8);
-        String previousMemberHash = cursorPart(requestCursor, 9);
+        String previousHostHash = cursorPart(requestCursor, 10);
+        String previousMemberHash = cursorPart(requestCursor, 11);
         String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
         String nextMemberHash = impressionsFingerprint(impressions == null ? null : impressions.member());
         return new UserRealtimeCountersDto(
@@ -1981,6 +1991,8 @@ public class HomeUserProfileService {
                 counters.hosting(),
                 counters.tickets(),
                 counters.feedback(),
+                counters.adminJobs(),
+                counters.adminMetrics(),
                 StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
                 StringUtils.hasText(previousMemberHash) && !Objects.equals(previousMemberHash, nextMemberHash));
     }
@@ -1998,6 +2010,8 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.hosting())),
                 String.valueOf(normalizeCount(counters.tickets())),
                 String.valueOf(normalizeCount(counters.feedback())),
+                String.valueOf(normalizeCount(counters.adminJobs())),
+                String.valueOf(normalizeCount(counters.adminMetrics())),
                 impressionsFingerprint(impressions == null ? null : impressions.host()),
                 impressionsFingerprint(impressions == null ? null : impressions.member()));
     }
@@ -2015,7 +2029,9 @@ public class HomeUserProfileService {
                 && normalizeCount(left.events()) == normalizeCount(right.events())
                 && normalizeCount(left.hosting()) == normalizeCount(right.hosting())
                 && normalizeCount(left.tickets()) == normalizeCount(right.tickets())
-                && normalizeCount(left.feedback()) == normalizeCount(right.feedback());
+                && normalizeCount(left.feedback()) == normalizeCount(right.feedback())
+                && normalizeCount(left.adminJobs()) == normalizeCount(right.adminJobs())
+                && normalizeCount(left.adminMetrics()) == normalizeCount(right.adminMetrics());
     }
 
     private void recordSessionAction(String userId, String action, String metadata) {
@@ -2122,7 +2138,7 @@ public class HomeUserProfileService {
 
     private UserActivitiesDto toUserActivitiesDto(Users.UserActivitiesRecord activities) {
         if (activities == null) {
-            return new UserActivitiesDto(0, 0, 0, 0, 0, 0, 0);
+            return new UserActivitiesDto(0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2131,12 +2147,14 @@ public class HomeUserProfileService {
                 normalizeCount(activities.events()),
                 normalizeCount(activities.hosting()),
                 normalizeCount(activities.tickets()),
-                normalizeCount(activities.feedback()));
+                normalizeCount(activities.feedback()),
+                normalizeCount(activities.adminJobs()),
+                normalizeCount(activities.adminMetrics()));
     }
 
     private Users.UserActivitiesRecord toUserActivitiesRecord(UserActivitiesDto activities) {
         if (activities == null) {
-            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0);
+            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
@@ -2145,7 +2163,9 @@ public class HomeUserProfileService {
                 normalizeCount(activities.events()),
                 normalizeCount(activities.hosting()),
                 normalizeCount(activities.tickets()),
-                normalizeCount(activities.feedback()));
+                normalizeCount(activities.feedback()),
+                normalizeCount(activities.adminJobs()),
+                normalizeCount(activities.adminMetrics()));
     }
 
     private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord record) {

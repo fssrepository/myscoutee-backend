@@ -72,7 +72,7 @@ class PromotionalEmailRuleEvaluatorTest {
         user.setProfileStatus("public");
         user.setStatus("A");
         user.setCompletion(65);
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0));
         return user;
     }
 }

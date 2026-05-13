@@ -336,7 +336,9 @@ public class Users {
             Integer events,
             Integer hosting,
             Integer tickets,
-            Integer feedback) {
+            Integer feedback,
+            Integer adminJobs,
+            Integer adminMetrics) {
     }
 
     public record ProfileDetailGroupRecord(

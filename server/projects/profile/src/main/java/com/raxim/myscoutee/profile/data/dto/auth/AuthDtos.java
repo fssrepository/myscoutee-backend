@@ -41,7 +41,9 @@ public final class AuthDtos {
             Integer events,
             Integer hosting,
             Integer tickets,
-            Integer feedback) {
+            Integer feedback,
+            Integer adminJobs,
+            Integer adminMetrics) {
     }
 
     public record UserRealtimeCountersDto(
@@ -52,6 +54,8 @@ public final class AuthDtos {
             Integer hosting,
             Integer tickets,
             Integer feedback,
+            Integer adminJobs,
+            Integer adminMetrics,
             Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged) {
     }
@@ -87,7 +91,9 @@ public final class AuthDtos {
             Integer events,
             Integer hosting,
             Integer tickets,
-            Integer feedback) {
+            Integer feedback,
+            Integer adminJobs,
+            Integer adminMetrics) {
     }
 
     public record ProfileDetailRowDto(

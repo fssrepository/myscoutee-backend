@@ -149,14 +149,14 @@ public class AdminMonitoringService {
             Map<String, Long> alertCounters) {
         long profileWrites = sum(counters, "profile.registered", "profile.updated", "profile.deleted", "admin.user.blocked", "admin.user.unblocked");
         long deleted = counters.getOrDefault("profile.deleted", 0L);
-        long blocked = counters.getOrDefault("admin.user.blocked", 0L);
+        long statusPropagationSignals = sum(counters, "profile.deleted", "admin.user.blocked", "admin.user.unblocked");
         return category(
                 "users",
                 "admin.monitoring.category.users",
                 "admin.monitoring.category.users.summary",
                 "person",
                 "blue",
-                health(alertCounters.getOrDefault("users", 0L), deleted + blocked),
+                health(alertCounters.getOrDefault("users", 0L), statusPropagationSignals),
                 Math.max(categoryCounters.getOrDefault("users", 0L), profileWrites),
                 List.of(
                         node("users.ui", "admin.monitoring.node.profile.ui", "person", "source", "blue", List.of(
@@ -165,13 +165,13 @@ public class AdminMonitoringService {
                                 metric("registered", "admin.monitoring.metric.registered", counters.getOrDefault("profile.registered", 0L), "green", HEALTH_OK),
                                 metric("deleted", "admin.monitoring.metric.deleted", deleted, "red", deleted > 0 ? HEALTH_WATCH : HEALTH_OK))),
                         node("users.status", "admin.monitoring.node.status.propagation", "rule", "worker", "gold", List.of(
-                                metric("suppression-events", "admin.monitoring.metric.suppression.events", blocked, "gold", blocked > 0 ? HEALTH_WATCH : HEALTH_OK))),
+                                metric("status-propagation-signals", "admin.monitoring.metric.status.propagation.signals", statusPropagationSignals, "gold", statusPropagationSignals > 0 ? HEALTH_WATCH : HEALTH_OK))),
                         node("users.purge", "admin.monitoring.node.account.purge", "delete_sweep", "storage", "slate", List.of(
                                 metric("purge-signals", "admin.monitoring.metric.purge.signals", nodeCounters.getOrDefault("users.writes", 0L), "slate", HEALTH_OK)))
                 ),
                 edges(
                         edge("users.ui", "users.model", "admin.monitoring.edge.write.path", "blue", profileWrites),
-                        edge("users.model", "users.status", "admin.monitoring.edge.status.propagation", "gold", blocked),
+                        edge("users.model", "users.status", "admin.monitoring.edge.status.propagation", "gold", statusPropagationSignals),
                         edge("users.status", "users.purge", "admin.monitoring.edge.gdpr.window", "slate", deleted)));
     }
 

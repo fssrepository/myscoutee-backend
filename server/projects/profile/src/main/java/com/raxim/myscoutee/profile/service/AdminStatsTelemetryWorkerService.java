@@ -26,6 +26,7 @@ public class AdminStatsTelemetryWorkerService {
     private final ObjectMapper objectMapper;
     private final AdminStatsService adminStatsService;
     private final AdminMonitoringService adminMonitoringService;
+    private final AdminMenuCounterService adminMenuCounterService;
     private final AdminStatsProperties properties;
     private final RedisStreamRetentionService redisStreamRetentionService;
 
@@ -37,12 +38,14 @@ public class AdminStatsTelemetryWorkerService {
             ObjectMapper objectMapper,
             AdminStatsService adminStatsService,
             AdminMonitoringService adminMonitoringService,
+            AdminMenuCounterService adminMenuCounterService,
             AdminStatsProperties properties,
             RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.adminStatsService = adminStatsService;
         this.adminMonitoringService = adminMonitoringService;
+        this.adminMenuCounterService = adminMenuCounterService;
         this.properties = properties;
         this.redisStreamRetentionService = redisStreamRetentionService;
     }
@@ -63,6 +66,7 @@ public class AdminStatsTelemetryWorkerService {
             }
             if (records == null || records.isEmpty()) {
                 adminStatsService.refreshGraphScienceSnapshot();
+                adminMenuCounterService.refreshAdminMenuCounters();
                 return;
             }
 
@@ -88,6 +92,7 @@ public class AdminStatsTelemetryWorkerService {
             lastSeenId = latestId;
             adminStatsService.applyTelemetryEvents(events, latestId);
             adminMonitoringService.applyTelemetryEvents(events, latestId);
+            adminMenuCounterService.refreshAdminMenuCounters();
             redisStreamRetentionService.deleteRecords(stringRedisTemplate, properties.getStreamKey(), recordIds);
         } catch (Exception exception) {
             if (!streamUnavailableLogged) {
