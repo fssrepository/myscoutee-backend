@@ -11,13 +11,22 @@ but if the smaller one has an override rule that should be applied
 
 ui
 -------
+
+changes
+-------
 partition key - is it available in different country -- has it been implemented feature?
-smart list refactor (imagecard / singlerow/infocard)
+chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
 about page - landing size (before the login) -- maybe admin can edit (so edit surface)
+chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a save button at top, and probably remove backward/forward arrow as stepper)
+
+refactor
+--------
+smart list refactor (imagecard / singlerow/infocard)
+
+tiny
+----
 report user menu is bleeding out of the screen on mobile
 reload page - activity menubar stucks
-chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a save button at top, and probably remove backward/forward arrow as stepper)
-chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
 explore buttons are being clipped on mobile
 
 Commands
