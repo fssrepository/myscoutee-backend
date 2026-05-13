@@ -49,6 +49,7 @@ import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
 
@@ -65,6 +66,7 @@ public class NotificationOutboxWorkerService {
     private final StringRedisTemplate stringRedisTemplate;
     private final PlatformParametersService platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
+    private final AdminTelemetryService adminTelemetryService;
     private final int batchSize;
     private final int firebaseChunkSize;
     private final int maxRetries;
@@ -82,6 +84,7 @@ public class NotificationOutboxWorkerService {
             MongoTemplate mongoTemplate,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
             PlatformParametersService platformParametersService,
+            AdminTelemetryService adminTelemetryService,
             @Value("${notifications.outbox.batch-size:50}") int batchSize,
             @Value("${notifications.outbox.firebase-chunk-size:500}") int firebaseChunkSize,
             @Value("${notifications.outbox.max-retries:5}") int maxRetries,
@@ -97,6 +100,7 @@ public class NotificationOutboxWorkerService {
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
         this.platformParametersService = platformParametersService;
         this.redisStreamRetentionService = redisStreamRetentionService;
+        this.adminTelemetryService = adminTelemetryService;
         this.batchSize = Math.max(1, Math.min(500, batchSize));
         this.firebaseChunkSize = Math.max(1, Math.min(500, firebaseChunkSize));
         this.maxRetries = Math.max(1, maxRetries);
@@ -396,21 +400,31 @@ public class NotificationOutboxWorkerService {
             return;
         }
         List<Users> changedUsers = new ArrayList<>();
+        int removedTokenCount = 0;
         for (Users user : users) {
             if (user == null || user.getDevices() == null || user.getDevices().isEmpty()) {
                 continue;
             }
+            int originalSize = user.getDevices().size();
             List<Users.UserDeviceRecord> retained = user.getDevices().stream()
                     .filter(device -> device != null && !invalidTokens.contains(safeText(device.getFirebaseToken())))
                     .toList();
-            if (retained.size() == user.getDevices().size()) {
+            if (retained.size() == originalSize) {
                 continue;
             }
+            removedTokenCount += originalSize - retained.size();
             user.setDevices(retained);
             changedUsers.add(user);
         }
         if (!changedUsers.isEmpty()) {
             usersRepository.saveAll(changedUsers);
+            adminTelemetryService.record(
+                    "notification.tokens.removed",
+                    "notifications",
+                    "",
+                    "system",
+                    removedTokenCount,
+                    Map.of("users", Integer.toString(changedUsers.size())));
         }
     }
 

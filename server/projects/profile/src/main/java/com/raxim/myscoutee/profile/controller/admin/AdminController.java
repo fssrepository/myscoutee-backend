@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
@@ -28,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActio
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
+import com.raxim.myscoutee.profile.service.AdminMonitoringService;
 import com.raxim.myscoutee.profile.service.AdminParamsService;
 import com.raxim.myscoutee.profile.service.AdminStatsService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
@@ -45,6 +47,7 @@ public class AdminController {
     private final AdminNotificationService adminNotificationService;
     private final AdminStatsService adminStatsService;
     private final AdminParamsService adminParamsService;
+    private final AdminMonitoringService adminMonitoringService;
 
     public AdminController(
             AdminModerationService adminModerationService,
@@ -52,13 +55,15 @@ public class AdminController {
             IdeaPostsService ideaPostsService,
             AdminNotificationService adminNotificationService,
             AdminStatsService adminStatsService,
-            AdminParamsService adminParamsService) {
+            AdminParamsService adminParamsService,
+            AdminMonitoringService adminMonitoringService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
         this.adminNotificationService = adminNotificationService;
         this.adminStatsService = adminStatsService;
         this.adminParamsService = adminParamsService;
+        this.adminMonitoringService = adminMonitoringService;
     }
 
     @GetMapping("/dashboard")
@@ -69,6 +74,11 @@ public class AdminController {
     @GetMapping("/stats")
     public AdminStatsDashboardDto stats(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
         return adminStatsService.dashboard(adminUserId);
+    }
+
+    @GetMapping("/monitoring")
+    public AdminMonitoringStateDto monitoring(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminMonitoringService.state(adminUserId);
     }
 
     @GetMapping("/params")

@@ -240,6 +240,47 @@ public final class AdminDtos {
             Long total,
             String icon,
             String tone) {}
+    public record AdminMonitoringStateDto(
+            String generatedAtIso,
+            String source,
+            String health,
+            List<AdminMonitoringCategoryDto> categories) {}
+    public record AdminMonitoringCategoryDto(
+            String key,
+            String labelKey,
+            String summaryKey,
+            String icon,
+            String tone,
+            String health,
+            Long total,
+            List<AdminMonitoringNodeDto> nodes,
+            List<AdminMonitoringEdgeDto> edges) {}
+    public record AdminMonitoringNodeDto(
+            String id,
+            String labelKey,
+            String icon,
+            String kind,
+            String tone,
+            List<AdminMonitoringMetricDto> metrics) {}
+    public record AdminMonitoringMetricDto(
+            String key,
+            String labelKey,
+            Long value,
+            String valueLabel,
+            String tone,
+            String status,
+            List<AdminMonitoringMetricDetailRowDto> detailRows) {}
+    public record AdminMonitoringMetricDetailRowDto(
+            String key,
+            String labelKey,
+            String valueLabel,
+            String tone) {}
+    public record AdminMonitoringEdgeDto(
+            String from,
+            String to,
+            String labelKey,
+            String tone,
+            Long volume) {}
     public record AdminStatsTimelinePointDto(
             String dateKey,
             String label,

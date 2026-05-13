@@ -25,6 +25,7 @@ public class AdminStatsTelemetryWorkerService {
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final AdminStatsService adminStatsService;
+    private final AdminMonitoringService adminMonitoringService;
     private final AdminStatsProperties properties;
     private final RedisStreamRetentionService redisStreamRetentionService;
 
@@ -35,11 +36,13 @@ public class AdminStatsTelemetryWorkerService {
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
             AdminStatsService adminStatsService,
+            AdminMonitoringService adminMonitoringService,
             AdminStatsProperties properties,
             RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.adminStatsService = adminStatsService;
+        this.adminMonitoringService = adminMonitoringService;
         this.properties = properties;
         this.redisStreamRetentionService = redisStreamRetentionService;
     }
@@ -84,6 +87,7 @@ public class AdminStatsTelemetryWorkerService {
             }
             lastSeenId = latestId;
             adminStatsService.applyTelemetryEvents(events, latestId);
+            adminMonitoringService.applyTelemetryEvents(events, latestId);
             redisStreamRetentionService.deleteRecords(stringRedisTemplate, properties.getStreamKey(), recordIds);
         } catch (Exception exception) {
             if (!streamUnavailableLogged) {
