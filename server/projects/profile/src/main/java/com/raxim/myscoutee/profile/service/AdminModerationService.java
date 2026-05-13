@@ -117,7 +117,7 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Please update the reported behavior before your account is blocked.");
+                : "Please update the reported behavior before your account is blocked.", "picked");
         adminTelemetryService.record("admin.user.warned", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
@@ -137,7 +137,7 @@ public class AdminModerationService {
         }
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.");
+                : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.", "blocked");
         return dashboard(admin.id());
     }
 
@@ -286,7 +286,7 @@ public class AdminModerationService {
         }
     }
 
-    private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text) {
+    private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportCaseStatus) {
         Instant now = Instant.now();
         String nowIso = now.toString();
         String chatId = "c-support-admin-" + targetUserId;
@@ -304,7 +304,9 @@ public class AdminModerationService {
                 admin.id(),
                 nowIso,
                 userMessage,
-                true);
+                true,
+                supportCaseStatus,
+                admin);
         ActivityChat.ChatMessageRecord adminMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, true,
                 List.of());
         ActivityChat adminChat = appendSupportMessageForOwner(
@@ -317,7 +319,9 @@ public class AdminModerationService {
                 admin.id(),
                 nowIso,
                 adminMessage,
-                false);
+                false,
+                supportCaseStatus,
+                admin);
         chatsRepository.save(userChat);
         chatsRepository.save(adminChat);
     }
@@ -332,7 +336,9 @@ public class AdminModerationService {
             String lastSenderId,
             String dateIso,
             ActivityChat.ChatMessageRecord message,
-            boolean unreadForOwner) {
+            boolean unreadForOwner,
+            String supportCaseStatus,
+            AdminUserDto assignee) {
         ActivityChat chat = chatsRepository.findByOwnerUserIdAndChatId(ownerUserId, chatId).orElseGet(() -> {
             ActivityChat next = new ActivityChat();
             next.setMongoId(new ObjectId().toHexString());
@@ -349,6 +355,11 @@ public class AdminModerationService {
         chat.setLastMessage(lastMessage);
         chat.setLastSenderId(lastSenderId);
         chat.setDateIso(dateIso);
+        chat.setSupportCaseStatus(text(supportCaseStatus, "pending"));
+        chat.setSupportCaseAssigneeUserId(assignee == null ? "" : text(assignee.id(), ""));
+        chat.setSupportCaseAssigneeName(assignee == null ? "" : text(assignee.name(), ""));
+        chat.setSupportCaseAssigneeInitials(assignee == null ? "" : text(assignee.initials(), ""));
+        chat.setSupportCaseUpdatedAtIso(dateIso);
         chat.setUnread(unreadForOwner ? Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1) : 0);
         List<ActivityChat.ChatMessageRecord> messages = new ArrayList<>(chat.getMessages());
         messages.add(message);
@@ -438,7 +449,10 @@ public class AdminModerationService {
         if (!StringUtils.hasText(adminId) || !StringUtils.hasText(userId)) {
             return null;
         }
-        return chatsRepository.findByOwnerUserIdAndChatId(adminId, "c-support-admin-" + userId).orElse(null);
+        String chatId = "c-support-admin-" + userId;
+        return chatsRepository.findByOwnerUserIdAndChatId(adminId, chatId)
+                .or(() -> chatsRepository.findByChatId(chatId).stream().findFirst())
+                .orElse(null);
     }
 
     private int supportChatUnread(String adminUserId, String targetUserId) {

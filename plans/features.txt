@@ -9,8 +9,6 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-metrics popup (visualize architecturally and statisticswise, how certain process is built up + logs)
-
 ui
 -------
 partition key - is it available in different country -- has it been implemented feature?

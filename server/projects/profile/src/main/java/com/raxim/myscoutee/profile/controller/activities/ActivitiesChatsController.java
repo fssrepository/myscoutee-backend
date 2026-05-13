@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMes
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSupportCaseMutationRequestDto;
 import com.raxim.myscoutee.profile.service.ActivitiesChatService;
 
 @RestController
@@ -44,7 +45,9 @@ public class ActivitiesChatsController {
             @RequestParam(value = "cursor", required = false) String cursor,
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "rangeStartIso", required = false) String rangeStartIso,
-            @RequestParam(value = "rangeEndIso", required = false) String rangeEndIso) {
+            @RequestParam(value = "rangeEndIso", required = false) String rangeEndIso,
+            @RequestParam(value = "adminServiceOnly", required = false) Boolean adminServiceOnly,
+            @RequestParam(value = "supportCaseFilter", required = false) String supportCaseFilter) {
         return activitiesChatService.queryChatPage(
                 userId,
                 contextFilter,
@@ -54,7 +57,9 @@ public class ActivitiesChatsController {
                 cursor,
                 limit,
                 rangeStartIso,
-                rangeEndIso);
+                rangeEndIso,
+                adminServiceOnly,
+                supportCaseFilter);
     }
 
     @GetMapping("/{chatId}/messages")
@@ -146,5 +151,15 @@ public class ActivitiesChatsController {
                         request.firebaseToken())
                 : new ChatDeviceDeleteRequestDto(userId, deviceId, firebaseToken);
         activitiesChatService.deleteDevice(resolvedRequest);
+    }
+
+    @PostMapping("/{chatId}/support-case")
+    public ChatSummaryDto updateSupportCase(
+            @PathVariable("chatId") String chatId,
+            @RequestBody(required = false) ChatSupportCaseMutationRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        String actorUserId = request == null || request.userId() == null ? userId : request.userId();
+        String action = request == null ? null : request.action();
+        return activitiesChatService.updateSupportCase(chatId, actorUserId, action);
     }
 }

@@ -40,6 +40,11 @@ public class ActivityChat {
     private String groupId;
     private Double distanceKm;
     private Integer distanceMetersExact;
+    private String supportCaseStatus;
+    private String supportCaseAssigneeUserId;
+    private String supportCaseAssigneeName;
+    private String supportCaseAssigneeInitials;
+    private String supportCaseUpdatedAtIso;
     private List<ChatMessageRecord> messages = new ArrayList<>();
 
     public String getMongoId() {
@@ -168,6 +173,46 @@ public class ActivityChat {
 
     public void setDistanceMetersExact(Integer distanceMetersExact) {
         this.distanceMetersExact = distanceMetersExact;
+    }
+
+    public String getSupportCaseStatus() {
+        return supportCaseStatus;
+    }
+
+    public void setSupportCaseStatus(String supportCaseStatus) {
+        this.supportCaseStatus = supportCaseStatus;
+    }
+
+    public String getSupportCaseAssigneeUserId() {
+        return supportCaseAssigneeUserId;
+    }
+
+    public void setSupportCaseAssigneeUserId(String supportCaseAssigneeUserId) {
+        this.supportCaseAssigneeUserId = supportCaseAssigneeUserId;
+    }
+
+    public String getSupportCaseAssigneeName() {
+        return supportCaseAssigneeName;
+    }
+
+    public void setSupportCaseAssigneeName(String supportCaseAssigneeName) {
+        this.supportCaseAssigneeName = supportCaseAssigneeName;
+    }
+
+    public String getSupportCaseAssigneeInitials() {
+        return supportCaseAssigneeInitials;
+    }
+
+    public void setSupportCaseAssigneeInitials(String supportCaseAssigneeInitials) {
+        this.supportCaseAssigneeInitials = supportCaseAssigneeInitials;
+    }
+
+    public String getSupportCaseUpdatedAtIso() {
+        return supportCaseUpdatedAtIso;
+    }
+
+    public void setSupportCaseUpdatedAtIso(String supportCaseUpdatedAtIso) {
+        this.supportCaseUpdatedAtIso = supportCaseUpdatedAtIso;
     }
 
     public List<ChatMessageRecord> getMessages() {

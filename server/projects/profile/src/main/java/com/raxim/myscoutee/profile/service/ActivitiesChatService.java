@@ -47,6 +47,11 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 public class ActivitiesChatService {
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
+    private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
+    private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
+    private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
+    private static final String SUPPORT_CASE_FILTER_ALL = "all";
 
     private final ActivityChatsRepository activityChatsRepository;
     private final UsersRepository usersRepository;
@@ -55,6 +60,7 @@ public class ActivitiesChatService {
     private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
     private final ChatPushNotificationService chatPushNotificationService;
     private final AdminTelemetryService adminTelemetryService;
+    private final AdminMenuCounterService adminMenuCounterService;
 
     public ActivitiesChatService(
             ActivityChatsRepository activityChatsRepository,
@@ -63,7 +69,8 @@ public class ActivitiesChatService {
             ChatStreamPublisher chatStreamPublisher,
             ChatWebSocketSessionRegistry chatWebSocketSessionRegistry,
             ChatPushNotificationService chatPushNotificationService,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            AdminMenuCounterService adminMenuCounterService) {
         this.activityChatsRepository = activityChatsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -71,6 +78,7 @@ public class ActivitiesChatService {
         this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
         this.chatPushNotificationService = chatPushNotificationService;
         this.adminTelemetryService = adminTelemetryService;
+        this.adminMenuCounterService = adminMenuCounterService;
     }
 
     public List<ChatSummaryDto> queryChats(String requestedUserId) {
@@ -94,13 +102,14 @@ public class ActivitiesChatService {
             String cursor,
             Integer limitValue,
             String rangeStartIso,
-            String rangeEndIso) {
+            String rangeEndIso,
+            Boolean adminServiceOnly,
+            String supportCaseFilterValue) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
             return new ChatPageResponseDto(List.of(), 0, null);
         }
 
-        ensureOwnerCopiesForUser(userId);
         String contextFilter = normalizeChatContextFilter(contextFilterValue);
         String sort = normalizeChatQuerySort(sortValue, secondaryFilterValue);
         boolean sortAscending = resolveChatSortAscending(sort, sortDirectionValue);
@@ -109,7 +118,19 @@ public class ActivitiesChatService {
         if (rangeStartMs > rangeEndMs) {
             return new ChatPageResponseDto(List.of(), 0, null);
         }
+        if (Boolean.TRUE.equals(adminServiceOnly) && "service".equals(contextFilter)) {
+            return querySupportCasePage(
+                    userId,
+                    sort,
+                    sortAscending,
+                    cursor,
+                    limitValue,
+                    rangeStartMs,
+                    rangeEndMs,
+                    supportCaseFilterValue);
+        }
 
+        ensureOwnerCopiesForUser(userId);
         List<ChatSummaryProjection> projections = uniqueOwnerChats(activityChatsRepository.findByOwnerUserId(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryProjection)
@@ -130,6 +151,77 @@ public class ActivitiesChatService {
                 : null;
 
         return new ChatPageResponseDto(items, projections.size(), nextCursor);
+    }
+
+    private ChatPageResponseDto querySupportCasePage(
+            String userId,
+            String sort,
+            boolean sortAscending,
+            String cursor,
+            Integer limitValue,
+            long rangeStartMs,
+            long rangeEndMs,
+            String supportCaseFilterValue) {
+        Users actor = findUser(userId);
+        if (!isAdminUser(actor)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
+        }
+        String supportCaseFilter = normalizeSupportCaseFilter(supportCaseFilterValue);
+        List<ChatSummaryProjection> projections = uniqueSupportCaseChats(
+                activityChatsRepository.findByChannelType("serviceEvent"),
+                userId).stream()
+                .filter(this::isSupportCaseChat)
+                .map(this::toSummaryProjection)
+                .filter(Objects::nonNull)
+                .filter(item -> matchesSupportCaseFilter(item.summary(), supportCaseFilter))
+                .filter(item -> item.dateMs() >= rangeStartMs && item.dateMs() <= rangeEndMs)
+                .sorted(chatSummaryComparator(sort, sortAscending))
+                .toList();
+
+        int startIndex = resolveChatCursorStartIndex(projections, cursor);
+        int limit = normalizeChatPageLimit(limitValue);
+        int endIndex = Math.min(projections.size(), startIndex + limit);
+        List<ChatSummaryDto> items = projections.subList(startIndex, endIndex).stream()
+                .map(ChatSummaryProjection::summary)
+                .toList();
+        String nextCursor = endIndex < projections.size() && !items.isEmpty()
+                ? serializeChatCursor(items.get(items.size() - 1))
+                : null;
+        return new ChatPageResponseDto(items, projections.size(), nextCursor);
+    }
+
+    public ChatSummaryDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
+        String userId = requireResolvedUserId(requestedUserId);
+        Users actor = findUser(userId);
+        if (!isAdminUser(actor)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
+        }
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
+        }
+        String action = normalizeSupportCaseAction(actionValue);
+        if (!StringUtils.hasText(action)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
+        }
+
+        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(this::isSupportCaseChat)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case not found.");
+        }
+
+        SupportCaseState state = nextSupportCaseState(action, userId, actor);
+        List<ActivityChat> updatedDocuments = new ArrayList<>();
+        for (ActivityChat existing : chatDocuments) {
+            ActivityChat next = copyChat(existing);
+            applySupportCaseState(next, state);
+            updatedDocuments.add(next);
+        }
+        activityChatsRepository.saveAll(updatedDocuments);
+        adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
+
+        ActivityChat viewerChat = findOwnerChat(updatedDocuments, userId);
+        return toSummaryDto(viewerChat == null ? updatedDocuments.get(0) : viewerChat);
     }
 
     public List<ChatMessageDto> queryMessages(String chatId, String requestedUserId) {
@@ -469,6 +561,32 @@ public class ActivitiesChatService {
         return new ArrayList<>(uniqueByChatId.values());
     }
 
+    private List<ActivityChat> uniqueSupportCaseChats(List<ActivityChat> chatDocuments, String viewerUserId) {
+        if (chatDocuments == null || chatDocuments.isEmpty()) {
+            return List.of();
+        }
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        Map<String, ActivityChat> uniqueByChatId = new LinkedHashMap<>();
+        for (ActivityChat chat : chatDocuments) {
+            if (chat == null || !isSupportCaseChat(chat)) {
+                continue;
+            }
+            String chatId = normalizeId(chat.getChatId());
+            if (!StringUtils.hasText(chatId)) {
+                continue;
+            }
+            ActivityChat current = uniqueByChatId.get(chatId);
+            boolean chatBelongsToViewer = normalizedViewerUserId.equals(normalizeId(chat.getOwnerUserId()));
+            boolean currentBelongsToViewer = current != null && normalizedViewerUserId.equals(normalizeId(current.getOwnerUserId()));
+            if (current == null
+                    || (chatBelongsToViewer && !currentBelongsToViewer)
+                    || (!currentBelongsToViewer && sortableDate(chat.getDateIso()) > sortableDate(current.getDateIso()))) {
+                uniqueByChatId.put(chatId, chat);
+            }
+        }
+        return new ArrayList<>(uniqueByChatId.values());
+    }
+
     private List<ActivityChat> ensureOwnerCopies(List<ActivityChat> chatDocuments) {
         if (chatDocuments == null || chatDocuments.isEmpty()) {
             return List.of();
@@ -774,7 +892,12 @@ public class ActivitiesChatService {
                 chat.getSubEventId(),
                 chat.getGroupId(),
                 null,
-                null);
+                null,
+                isSupportCaseChat(chat) ? normalizeSupportCaseStatus(chat.getSupportCaseStatus()) : "",
+                safeText(chat.getSupportCaseAssigneeUserId()),
+                safeText(chat.getSupportCaseAssigneeName()),
+                safeText(chat.getSupportCaseAssigneeInitials()),
+                safeText(chat.getSupportCaseUpdatedAtIso()));
     }
 
     private ChatSummaryProjection toSummaryProjection(ActivityChat chat) {
@@ -1104,6 +1227,9 @@ public class ActivitiesChatService {
         if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }
+        if (isSupportCaseChat(chat) && isAdminUser(findUser(normalizedUserId))) {
+            return true;
+        }
         if (chat.getMemberIds() == null) {
             return false;
         }
@@ -1156,6 +1282,11 @@ public class ActivitiesChatService {
         copy.setGroupId(source.getGroupId());
         copy.setDistanceKm(null);
         copy.setDistanceMetersExact(null);
+        copy.setSupportCaseStatus(source.getSupportCaseStatus());
+        copy.setSupportCaseAssigneeUserId(source.getSupportCaseAssigneeUserId());
+        copy.setSupportCaseAssigneeName(source.getSupportCaseAssigneeName());
+        copy.setSupportCaseAssigneeInitials(source.getSupportCaseAssigneeInitials());
+        copy.setSupportCaseUpdatedAtIso(source.getSupportCaseUpdatedAtIso());
         List<ChatMessageRecord> copiedMessages = new ArrayList<>();
         for (ChatMessageRecord message : safeMessages(source.getMessages())) {
             copiedMessages.add(copyMessageRecord(message));
@@ -1506,6 +1637,78 @@ public class ActivitiesChatService {
         return true;
     }
 
+    private boolean matchesSupportCaseFilter(ChatSummaryDto item, String supportCaseFilter) {
+        String normalizedFilter = normalizeSupportCaseFilter(supportCaseFilter);
+        if (SUPPORT_CASE_FILTER_ALL.equals(normalizedFilter)) {
+            return true;
+        }
+        return normalizedFilter.equals(normalizeSupportCaseStatus(item == null ? null : item.supportCaseStatus()));
+    }
+
+    private boolean isSupportCaseChat(ActivityChat chat) {
+        if (chat == null) {
+            return false;
+        }
+        return StringUtils.hasText(safeText(chat.getSupportCaseStatus()))
+                || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
+    }
+
+    private boolean isAdminUser(Users user) {
+        return adminMenuCounterService.isAdminUser(user);
+    }
+
+    private String normalizeSupportCaseStatus(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            default -> SUPPORT_CASE_STATUS_PENDING;
+        };
+    }
+
+    private String normalizeSupportCaseFilter(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            default -> SUPPORT_CASE_FILTER_ALL;
+        };
+    }
+
+    private String normalizeSupportCaseAction(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "pick", "unpick", "solve", "block", "reopen" -> normalized;
+            default -> "";
+        };
+    }
+
+    private SupportCaseState nextSupportCaseState(String action, String actorUserId, Users actor) {
+        String nowIso = Instant.now().toString();
+        return switch (action) {
+            case "pick" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_PICKED, actorUserId, actor, nowIso);
+            case "solve" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_SOLVED, actorUserId, actor, nowIso);
+            case "block" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_BLOCKED, actorUserId, actor, nowIso);
+            case "unpick", "reopen" -> new SupportCaseState(SUPPORT_CASE_STATUS_PENDING, "", "", "", nowIso);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
+        };
+    }
+
+    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, Users actor, String nowIso) {
+        return new SupportCaseState(
+                status,
+                normalizeId(actorUserId),
+                resolveUserName(actor, actorUserId),
+                resolveUserInitials(actor, actorUserId),
+                nowIso);
+    }
+
+    private void applySupportCaseState(ActivityChat chat, SupportCaseState state) {
+        chat.setSupportCaseStatus(state.status());
+        chat.setSupportCaseAssigneeUserId(state.assigneeUserId());
+        chat.setSupportCaseAssigneeName(state.assigneeName());
+        chat.setSupportCaseAssigneeInitials(state.assigneeInitials());
+        chat.setSupportCaseUpdatedAtIso(state.updatedAtIso());
+    }
+
     private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
         String normalizedSort = safeText(sortValue).toLowerCase(Locale.ROOT);
         if ("relevance".equals(normalizedSort)) {
@@ -1629,5 +1832,13 @@ public class ActivitiesChatService {
     }
 
     private record ChatDocumentsSnapshot(String chatId, ActivityChat viewerChat, List<ActivityChat> chatDocuments) {
+    }
+
+    private record SupportCaseState(
+            String status,
+            String assigneeUserId,
+            String assigneeName,
+            String assigneeInitials,
+            String updatedAtIso) {
     }
 }

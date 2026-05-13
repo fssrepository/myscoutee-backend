@@ -17,6 +17,8 @@ public interface ActivityChatsRepository extends MongoRepository<ActivityChat, S
 
     List<ActivityChat> findByChatId(String chatId);
 
+    List<ActivityChat> findByChannelType(String channelType);
+
     List<ActivityChat> findByMemberIdsContaining(String userId);
 
     @Query("{ 'messages.attachments': { $elemMatch: { 'type': ?0, 'entityId': ?1 } } }")
