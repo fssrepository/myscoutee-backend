@@ -14,11 +14,12 @@ ui
 
 changes
 -------
-partition key - is it available in different country -- has it been implemented feature?
-chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
-about page - landing size (before the login) -- maybe admin can edit (so edit surface)
-chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a save button at top, and probably remove backward/forward arrow as stepper)
-junk load on first page, should show a loader instead of staying as empty screen (maybe lazy load)
+1) partition key - is it available in different country -- has it been implemented feature?
+2) chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
+3) chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a
+save button at top, and probably remove backward/forward arrow as stepper)
+4) supplies list -> should be converted to smart list and category menu items of header
+5) junk load on first page, should show a loader instead of staying as empty screen (maybe lazy load)
 
 refactor
 --------
