@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,8 @@ public class AdminModerationService {
     private final UsersRepository usersRepository;
     private final ActivityChatsRepository chatsRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AdminTelemetryService adminTelemetryService;
+    private final AdminMenuCounterService adminMenuCounterService;
 
     public AdminModerationService(
             ConfigProperties configProperties,
@@ -62,13 +65,17 @@ public class AdminModerationService {
             UserFeedbackSubmissionsRepository feedbackRepository,
             UsersRepository usersRepository,
             ActivityChatsRepository chatsRepository,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AdminTelemetryService adminTelemetryService,
+            AdminMenuCounterService adminMenuCounterService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
         this.usersRepository = usersRepository;
         this.chatsRepository = chatsRepository;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+        this.adminTelemetryService = adminTelemetryService;
+        this.adminMenuCounterService = adminMenuCounterService;
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
@@ -110,7 +117,8 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Please update the reported behavior before your account is blocked.");
+                : "Please update the reported behavior before your account is blocked.", "picked");
+        adminTelemetryService.record("admin.user.warned", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
 
@@ -125,10 +133,11 @@ public class AdminModerationService {
             user.setProfileStatus("blocked");
             usersRepository.save(user);
             affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
+            adminTelemetryService.record("admin.user.blocked", "moderation", targetUserId, admin.id());
         }
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.");
+                : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.", "blocked");
         return dashboard(admin.id());
     }
 
@@ -142,6 +151,7 @@ public class AdminModerationService {
         user.setPreviousProfileStatus(null);
         usersRepository.save(user);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
+        adminTelemetryService.record("admin.user.unblocked", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
 
@@ -166,8 +176,7 @@ public class AdminModerationService {
         String email = principal instanceof FirebasePrincipal firebasePrincipal
                 ? normalize(firebasePrincipal.getEmail())
                 : normalize(authentication == null ? null : authentication.getName());
-        String configured = normalize(configProperties.getAdminUser());
-        if (!StringUtils.hasText(email) || !StringUtils.hasText(configured) || !configured.equalsIgnoreCase(email)) {
+        if (!configProperties.isAdminUser(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
         }
         return withStoredAdminProfile(new AdminUserDto(
@@ -181,10 +190,7 @@ public class AdminModerationService {
     }
 
     private AdminUserDto withStoredAdminProfile(AdminUserDto admin) {
-        Users user = usersRepository.findByUserId(admin.id()).orElse(null);
-        if (user == null) {
-            return admin;
-        }
+        Users user = ensureStoredAdminUser(admin);
         String name = text(user.getName(), admin.name());
         String initials = text(user.getInitials(), admin.initials());
         String headline = text(user.getHeadline(), admin.headline());
@@ -198,6 +204,81 @@ public class AdminModerationService {
         return new AdminUserDto(admin.id(), name, initials, admin.email(), headline, about, images);
     }
 
+    private Users ensureStoredAdminUser(AdminUserDto admin) {
+        Users user = usersRepository.findByUserId(admin.id()).orElseGet(Users::new);
+        boolean changed = false;
+        if (!StringUtils.hasText(user.getMongoId())) {
+            user.setMongoId(new ObjectId().toHexString());
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getSyncKey())) {
+            user.setSyncKey(UUID.randomUUID().toString());
+            changed = true;
+        }
+        if (!admin.id().equals(user.getUserId())) {
+            user.setUserId(admin.id());
+            changed = true;
+        }
+        if (!admin.email().equals(normalize(user.getEmail()))) {
+            user.setEmail(admin.email());
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getName())) {
+            user.setName(admin.name());
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getInitials())) {
+            user.setInitials(admin.initials());
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getGender())) {
+            user.setGender("woman");
+            changed = true;
+        }
+        if (!"Admin workspace".equals(user.getStatusText())) {
+            user.setStatusText("Admin workspace");
+            changed = true;
+        }
+        if (!"Admin".equals(user.getHostTier())) {
+            user.setHostTier("Admin");
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getTraitLabel())) {
+            user.setTraitLabel("Safety");
+            changed = true;
+        }
+        if (user.getCompletion() == null || user.getCompletion() < 100) {
+            user.setCompletion(100);
+            changed = true;
+        }
+        if (user.getProfileFormVersion() == null || user.getProfileFormVersion() < 1) {
+            user.setProfileFormVersion(1);
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getHeadline())) {
+            user.setHeadline(admin.headline());
+            changed = true;
+        }
+        if (!StringUtils.hasText(user.getAbout())) {
+            user.setAbout(admin.about());
+            changed = true;
+        }
+        if (!"A".equals(user.getStatus())) {
+            user.setStatus("A");
+            changed = true;
+        }
+        if (!"public".equals(user.getProfileStatus())) {
+            user.setProfileStatus("public");
+            changed = true;
+        }
+        if (user.getActivities() == null) {
+            user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0));
+            changed = true;
+        }
+        Users saved = changed ? usersRepository.save(user) : user;
+        return adminMenuCounterService.syncAdminUserCounters(saved);
+    }
+
     private void ensureReportedUser(String targetUserId) {
         if (!StringUtils.hasText(targetUserId)
                 || reportsRepository.findByTargetUserIdOrderByCreatedDateDesc(targetUserId).isEmpty()) {
@@ -205,7 +286,7 @@ public class AdminModerationService {
         }
     }
 
-    private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text) {
+    private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportCaseStatus) {
         Instant now = Instant.now();
         String nowIso = now.toString();
         String chatId = "c-support-admin-" + targetUserId;
@@ -223,7 +304,9 @@ public class AdminModerationService {
                 admin.id(),
                 nowIso,
                 userMessage,
-                true);
+                true,
+                supportCaseStatus,
+                admin);
         ActivityChat.ChatMessageRecord adminMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, true,
                 List.of());
         ActivityChat adminChat = appendSupportMessageForOwner(
@@ -236,7 +319,9 @@ public class AdminModerationService {
                 admin.id(),
                 nowIso,
                 adminMessage,
-                false);
+                false,
+                supportCaseStatus,
+                admin);
         chatsRepository.save(userChat);
         chatsRepository.save(adminChat);
     }
@@ -251,7 +336,9 @@ public class AdminModerationService {
             String lastSenderId,
             String dateIso,
             ActivityChat.ChatMessageRecord message,
-            boolean unreadForOwner) {
+            boolean unreadForOwner,
+            String supportCaseStatus,
+            AdminUserDto assignee) {
         ActivityChat chat = chatsRepository.findByOwnerUserIdAndChatId(ownerUserId, chatId).orElseGet(() -> {
             ActivityChat next = new ActivityChat();
             next.setMongoId(new ObjectId().toHexString());
@@ -268,6 +355,11 @@ public class AdminModerationService {
         chat.setLastMessage(lastMessage);
         chat.setLastSenderId(lastSenderId);
         chat.setDateIso(dateIso);
+        chat.setSupportCaseStatus(text(supportCaseStatus, "pending"));
+        chat.setSupportCaseAssigneeUserId(assignee == null ? "" : text(assignee.id(), ""));
+        chat.setSupportCaseAssigneeName(assignee == null ? "" : text(assignee.name(), ""));
+        chat.setSupportCaseAssigneeInitials(assignee == null ? "" : text(assignee.initials(), ""));
+        chat.setSupportCaseUpdatedAtIso(dateIso);
         chat.setUnread(unreadForOwner ? Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1) : 0);
         List<ActivityChat.ChatMessageRecord> messages = new ArrayList<>(chat.getMessages());
         messages.add(message);
@@ -357,7 +449,10 @@ public class AdminModerationService {
         if (!StringUtils.hasText(adminId) || !StringUtils.hasText(userId)) {
             return null;
         }
-        return chatsRepository.findByOwnerUserIdAndChatId(adminId, "c-support-admin-" + userId).orElse(null);
+        String chatId = "c-support-admin-" + userId;
+        return chatsRepository.findByOwnerUserIdAndChatId(adminId, chatId)
+                .or(() -> chatsRepository.findByChatId(chatId).stream().findFirst())
+                .orElse(null);
     }
 
     private int supportChatUnread(String adminUserId, String targetUserId) {

@@ -9,21 +9,27 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-about page - landing size (before the login)
-the gdpr privacy shouldn't open if it's not needed (so not open and immediately close)
+ui
+-------
 
+changes
+-------
+1) partition key - is it available in different country -- has it been implemented feature?
+2) chat header should show the members of the chat (leaving the chat also should be notified - as leaving event)
+3) chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a
+save button at top, and probably remove backward/forward arrow as stepper)
+4) supplies list -> should be converted to smart list and category menu items of header
+5) junk load on first page, should show a loader instead of staying as empty screen (maybe lazy load)
+
+refactor
+--------
+smart list refactor (imagecard / singlerow/infocard)
+
+tiny
+----
 report user menu is bleeding out of the screen on mobile
-configureable matrix, to fine tune the algorithm - specify multipliers of profile data - normalize
-friends in common is a single rate, not a pair; home/activity UI must rate one person, hide the two-person search inputs there, and keep demo/mongo seeds aligned
-status-code migration note: use compact persisted/network status codes where possible to reduce payload size. Current suppression codes are B=blocked, D=deleted, I=inactive, UR=under review. Before converting existing long event statuses such as active/draft/trashed/hosting/invitation, add an explicit compatibility map so old UI/DTO logic does not break.
-
-fuggoben levo esemenynel a chat le van tiltva???
 reload page - activity menubar stucks
-affinity config (multiplier)+ telemetry menu
-asset take over - multi manager case also
-
-firebase worker with time window not to call the notification several times
-and when anything changes admin or members are needed to be notified
+explore buttons are being clipped on mobile
 
 Commands
 --------

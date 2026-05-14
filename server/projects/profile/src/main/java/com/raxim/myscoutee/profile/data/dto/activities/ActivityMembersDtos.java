@@ -18,4 +18,12 @@ public final class ActivityMembersDtos {
             List<ActivityMemberEntryDto> members,
             Integer capacityTotal) {
     }
+
+    public record ActivityMemberActionRequestDto(
+            ActivityMemberOwnerRefDto owner,
+            String actorUserId,
+            String targetUserId,
+            String action,
+            String reason) {
+    }
 }

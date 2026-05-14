@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.bson.Document;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
@@ -46,6 +47,11 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 public class ActivitiesChatService {
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
+    private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
+    private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
+    private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
+    private static final String SUPPORT_CASE_FILTER_ALL = "all";
 
     private final ActivityChatsRepository activityChatsRepository;
     private final UsersRepository usersRepository;
@@ -53,6 +59,8 @@ public class ActivitiesChatService {
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
     private final ChatPushNotificationService chatPushNotificationService;
+    private final AdminTelemetryService adminTelemetryService;
+    private final AdminMenuCounterService adminMenuCounterService;
 
     public ActivitiesChatService(
             ActivityChatsRepository activityChatsRepository,
@@ -60,13 +68,17 @@ public class ActivitiesChatService {
             HomeUserProfileService homeUserProfileService,
             ChatStreamPublisher chatStreamPublisher,
             ChatWebSocketSessionRegistry chatWebSocketSessionRegistry,
-            ChatPushNotificationService chatPushNotificationService) {
+            ChatPushNotificationService chatPushNotificationService,
+            AdminTelemetryService adminTelemetryService,
+            AdminMenuCounterService adminMenuCounterService) {
         this.activityChatsRepository = activityChatsRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
         this.chatPushNotificationService = chatPushNotificationService;
+        this.adminTelemetryService = adminTelemetryService;
+        this.adminMenuCounterService = adminMenuCounterService;
     }
 
     public List<ChatSummaryDto> queryChats(String requestedUserId) {
@@ -90,13 +102,14 @@ public class ActivitiesChatService {
             String cursor,
             Integer limitValue,
             String rangeStartIso,
-            String rangeEndIso) {
+            String rangeEndIso,
+            Boolean adminServiceOnly,
+            String supportCaseFilterValue) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
             return new ChatPageResponseDto(List.of(), 0, null);
         }
 
-        ensureOwnerCopiesForUser(userId);
         String contextFilter = normalizeChatContextFilter(contextFilterValue);
         String sort = normalizeChatQuerySort(sortValue, secondaryFilterValue);
         boolean sortAscending = resolveChatSortAscending(sort, sortDirectionValue);
@@ -105,7 +118,19 @@ public class ActivitiesChatService {
         if (rangeStartMs > rangeEndMs) {
             return new ChatPageResponseDto(List.of(), 0, null);
         }
+        if (Boolean.TRUE.equals(adminServiceOnly) && "service".equals(contextFilter)) {
+            return querySupportCasePage(
+                    userId,
+                    sort,
+                    sortAscending,
+                    cursor,
+                    limitValue,
+                    rangeStartMs,
+                    rangeEndMs,
+                    supportCaseFilterValue);
+        }
 
+        ensureOwnerCopiesForUser(userId);
         List<ChatSummaryProjection> projections = uniqueOwnerChats(activityChatsRepository.findByOwnerUserId(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryProjection)
@@ -126,6 +151,77 @@ public class ActivitiesChatService {
                 : null;
 
         return new ChatPageResponseDto(items, projections.size(), nextCursor);
+    }
+
+    private ChatPageResponseDto querySupportCasePage(
+            String userId,
+            String sort,
+            boolean sortAscending,
+            String cursor,
+            Integer limitValue,
+            long rangeStartMs,
+            long rangeEndMs,
+            String supportCaseFilterValue) {
+        Users actor = findUser(userId);
+        if (!isAdminUser(actor)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
+        }
+        String supportCaseFilter = normalizeSupportCaseFilter(supportCaseFilterValue);
+        List<ChatSummaryProjection> projections = uniqueSupportCaseChats(
+                activityChatsRepository.findByChannelType("serviceEvent"),
+                userId).stream()
+                .filter(this::isSupportCaseChat)
+                .map(this::toSummaryProjection)
+                .filter(Objects::nonNull)
+                .filter(item -> matchesSupportCaseFilter(item.summary(), supportCaseFilter))
+                .filter(item -> item.dateMs() >= rangeStartMs && item.dateMs() <= rangeEndMs)
+                .sorted(chatSummaryComparator(sort, sortAscending))
+                .toList();
+
+        int startIndex = resolveChatCursorStartIndex(projections, cursor);
+        int limit = normalizeChatPageLimit(limitValue);
+        int endIndex = Math.min(projections.size(), startIndex + limit);
+        List<ChatSummaryDto> items = projections.subList(startIndex, endIndex).stream()
+                .map(ChatSummaryProjection::summary)
+                .toList();
+        String nextCursor = endIndex < projections.size() && !items.isEmpty()
+                ? serializeChatCursor(items.get(items.size() - 1))
+                : null;
+        return new ChatPageResponseDto(items, projections.size(), nextCursor);
+    }
+
+    public ChatSummaryDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
+        String userId = requireResolvedUserId(requestedUserId);
+        Users actor = findUser(userId);
+        if (!isAdminUser(actor)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
+        }
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
+        }
+        String action = normalizeSupportCaseAction(actionValue);
+        if (!StringUtils.hasText(action)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
+        }
+
+        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(this::isSupportCaseChat)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case not found.");
+        }
+
+        SupportCaseState state = nextSupportCaseState(action, userId, actor);
+        List<ActivityChat> updatedDocuments = new ArrayList<>();
+        for (ActivityChat existing : chatDocuments) {
+            ActivityChat next = copyChat(existing);
+            applySupportCaseState(next, state);
+            updatedDocuments.add(next);
+        }
+        activityChatsRepository.saveAll(updatedDocuments);
+        adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
+
+        ActivityChat viewerChat = findOwnerChat(updatedDocuments, userId);
+        return toSummaryDto(viewerChat == null ? updatedDocuments.get(0) : viewerChat);
     }
 
     public List<ChatMessageDto> queryMessages(String chatId, String requestedUserId) {
@@ -152,6 +248,42 @@ public class ActivitiesChatService {
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text, String clientId) {
         return sendMessage(chatId, requestedUserId, text, clientId, null, List.of());
+    }
+
+    public ChatMessageDto postSystemMessage(String chatId, String text, String systemType) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedText = normalizeText(text);
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
+            return null;
+        }
+        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty()) {
+            return null;
+        }
+
+        ChatMessageRecord messageRecord = buildSystemMessageRecord(normalizedText, systemType);
+        List<ActivityChat> updatedDocuments = new ArrayList<>();
+        for (ActivityChat existing : chatDocuments) {
+            ActivityChat next = copyChat(existing);
+            List<ChatMessageRecord> nextMessages = new ArrayList<>();
+            for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
+                nextMessages.add(copyMessageRecord(existingMessage));
+            }
+            nextMessages.add(copyMessageRecord(messageRecord));
+            next.setMessages(nextMessages);
+            next.setLastMessage(chatMessageSummary(messageRecord));
+            next.setLastSenderId("");
+            next.setDateIso(messageRecord.getSentAtIso());
+            next.setUnread(normalizeCount(existing.getUnread()) + 1);
+            updatedDocuments.add(next);
+        }
+        activityChatsRepository.saveAll(updatedDocuments);
+
+        ChatStreamEvent streamEvent = toStreamEvent(normalizedChatId, messageRecord);
+        publishChatEvent(streamEvent);
+        chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record("chat.message.system", "chats", normalizedChatId, "system");
+        return toMessageDto(messageRecord, "");
     }
 
     public ChatMessageDto sendMessage(
@@ -191,6 +323,7 @@ public class ActivitiesChatService {
         ChatStreamEvent streamEvent = toStreamEvent(snapshot.chatId(), messageRecord);
         publishChatEvent(streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record("chat.message.sent", "chats", snapshot.chatId(), userId);
         return toMessageDto(messageRecord, userId);
     }
 
@@ -422,6 +555,32 @@ public class ActivitiesChatService {
             }
             ActivityChat current = uniqueByChatId.get(chatId);
             if (current == null || sortableDate(chat.getDateIso()) > sortableDate(current.getDateIso())) {
+                uniqueByChatId.put(chatId, chat);
+            }
+        }
+        return new ArrayList<>(uniqueByChatId.values());
+    }
+
+    private List<ActivityChat> uniqueSupportCaseChats(List<ActivityChat> chatDocuments, String viewerUserId) {
+        if (chatDocuments == null || chatDocuments.isEmpty()) {
+            return List.of();
+        }
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        Map<String, ActivityChat> uniqueByChatId = new LinkedHashMap<>();
+        for (ActivityChat chat : chatDocuments) {
+            if (chat == null || !isSupportCaseChat(chat)) {
+                continue;
+            }
+            String chatId = normalizeId(chat.getChatId());
+            if (!StringUtils.hasText(chatId)) {
+                continue;
+            }
+            ActivityChat current = uniqueByChatId.get(chatId);
+            boolean chatBelongsToViewer = normalizedViewerUserId.equals(normalizeId(chat.getOwnerUserId()));
+            boolean currentBelongsToViewer = current != null && normalizedViewerUserId.equals(normalizeId(current.getOwnerUserId()));
+            if (current == null
+                    || (chatBelongsToViewer && !currentBelongsToViewer)
+                    || (!currentBelongsToViewer && sortableDate(chat.getDateIso()) > sortableDate(current.getDateIso()))) {
                 uniqueByChatId.put(chatId, chat);
             }
         }
@@ -733,7 +892,12 @@ public class ActivitiesChatService {
                 chat.getSubEventId(),
                 chat.getGroupId(),
                 null,
-                null);
+                null,
+                isSupportCaseChat(chat) ? normalizeSupportCaseStatus(chat.getSupportCaseStatus()) : "",
+                safeText(chat.getSupportCaseAssigneeUserId()),
+                safeText(chat.getSupportCaseAssigneeName()),
+                safeText(chat.getSupportCaseAssigneeInitials()),
+                safeText(chat.getSupportCaseUpdatedAtIso()));
     }
 
     private ChatSummaryProjection toSummaryProjection(ActivityChat chat) {
@@ -755,15 +919,19 @@ public class ActivitiesChatService {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
         Users sender = findUser(senderId);
+        boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
+        String senderName = deletedSender ? deletedUserName() : message == null ? "" : safeText(message.getSender());
+        String senderInitials = deletedSender ? deletedUserInitials() : senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials());
+        String senderGender = deletedSender ? "deleted" : senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender());
         boolean deleted = StringUtils.hasText(message == null ? "" : message.getDeletedAtIso());
         return new ChatMessageDto(
                 message == null ? "" : safeText(message.getId()),
                 message == null ? "" : safeText(message.getClientId()),
                 senderId,
-                message == null ? "" : safeText(message.getSender()),
-                senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials()),
-                senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
-                resolveUserImageUrl(sender),
+                senderName,
+                senderInitials,
+                senderGender,
+                "deleted".equals(senderGender) ? "" : resolveUserImageUrl(sender),
                 deleted ? "" : message == null ? "" : safeText(message.getText()),
                 message == null ? Instant.now().toString() : safeText(message.getSentAtIso()),
                 Objects.equals(senderId, normalizeId(viewerUserId)),
@@ -796,12 +964,15 @@ public class ActivitiesChatService {
     }
 
     private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record) {
+        String userId = record == null ? "" : safeText(record.getUserId());
+        Users user = findUser(userId);
+        boolean deletedUser = isDeletedOrPurgedUser(user, userId);
         return new ChatMessageReactionDto(
                 record == null ? "" : safeText(record.getEmoji()),
-                record == null ? "" : safeText(record.getUserId()),
-                record == null ? "" : safeText(record.getUserName()),
-                record == null ? "" : safeText(record.getUserInitials()),
-                record == null ? "man" : normalizeGender(record.getUserGender()),
+                userId,
+                deletedUser ? deletedUserName() : record == null ? "" : safeText(record.getUserName()),
+                deletedUser ? deletedUserInitials() : record == null ? "" : safeText(record.getUserInitials()),
+                deletedUser ? "deleted" : record == null ? "man" : normalizeGender(record.getUserGender()),
                 record == null ? "" : safeText(record.getReactedAtIso()));
     }
 
@@ -813,12 +984,72 @@ public class ActivitiesChatService {
                 record == null ? "" : safeText(record.getEntityId()),
                 record == null ? "" : safeText(record.getAssetType()),
                 record == null ? "" : safeText(record.getOwnerUserId()),
+                record == null ? "available" : normalizeAttachmentStatus(record.getStatus()),
+                record == null ? "" : safeText(record.getUnavailableReason()),
                 record == null ? "" : safeText(record.getSubtitle()),
-                record == null ? "" : safeText(record.getDescription()),
+                record == null ? "" : presentationAttachmentDescription(record),
                 record == null ? "" : safeText(record.getUrl()),
                 record == null ? "" : safeText(record.getPreviewUrl()),
                 record == null ? "" : safeText(record.getMimeType()),
                 record == null ? null : record.getSizeBytes());
+    }
+
+    private String presentationAttachmentDescription(ChatMessageAttachmentRecord record) {
+        if (record == null) {
+            return "";
+        }
+        String type = safeText(record.getType()).toLowerCase(Locale.US);
+        if (!"poll".equals(type)) {
+            return safeText(record.getDescription());
+        }
+        return maskDeletedPollVotes(record.getDescription());
+    }
+
+    private String maskDeletedPollVotes(String description) {
+        String normalizedDescription = safeText(description);
+        if (!StringUtils.hasText(normalizedDescription)) {
+            return "";
+        }
+        try {
+            Document root = Document.parse(normalizedDescription);
+            Object optionsValue = root.get("options");
+            if (!(optionsValue instanceof List<?> optionNodes)) {
+                return normalizedDescription;
+            }
+            boolean changed = false;
+            for (Object option : optionNodes) {
+                if (!(option instanceof Document optionDocument)) {
+                    continue;
+                }
+                Object votesValue = optionDocument.get("votes");
+                if (!(votesValue instanceof List<?> voteNodes)) {
+                    continue;
+                }
+                for (Object vote : voteNodes) {
+                    if (!(vote instanceof Document voteObject)) {
+                        continue;
+                    }
+                    String userId = safeText(Objects.toString(voteObject.get("userId"), ""));
+                    if (!StringUtils.hasText(userId) || !isDeletedOrPurgedUser(findUser(userId), userId)) {
+                        continue;
+                    }
+                    changed = putIfChanged(voteObject, "name", deletedUserName()) || changed;
+                    changed = putIfChanged(voteObject, "initials", deletedUserInitials()) || changed;
+                    changed = putIfChanged(voteObject, "gender", "deleted") || changed;
+                }
+            }
+            return changed ? root.toJson() : normalizedDescription;
+        } catch (Exception ignored) {
+            return normalizedDescription;
+        }
+    }
+
+    private boolean putIfChanged(Document node, String key, String value) {
+        if (Objects.equals(safeText(Objects.toString(node.get(key), "")), safeText(value))) {
+            return false;
+        }
+        node.put(key, safeText(value));
+        return true;
     }
 
     private String chatMessageSummary(ChatMessageRecord message) {
@@ -849,11 +1080,14 @@ public class ActivitiesChatService {
 
     private ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record) {
         String userId = record == null ? "" : safeText(record.getId());
+        Users user = findUser(userId);
+        boolean deletedUser = isDeletedOrPurgedUser(user, userId);
+        String gender = deletedUser ? "deleted" : record == null ? "man" : normalizeGender(record.getGender());
         return new ChatReadAvatarDto(
                 userId,
-                record == null ? "" : safeText(record.getInitials()),
-                record == null ? "man" : normalizeGender(record.getGender()),
-                resolveUserImageUrl(findUser(userId)));
+                deletedUser ? deletedUserInitials() : record == null ? "" : safeText(record.getInitials()),
+                gender,
+                "deleted".equals(gender) ? "" : resolveUserImageUrl(user));
     }
 
     private ChatMessageRecord buildMessageRecord(
@@ -880,17 +1114,43 @@ public class ActivitiesChatService {
         return message;
     }
 
+    private ChatMessageRecord buildSystemMessageRecord(String text, String systemType) {
+        Instant sentAt = Instant.now();
+        ChatAvatarRecord avatar = new ChatAvatarRecord();
+        avatar.setId("");
+        avatar.setInitials("MS");
+        avatar.setGender("system");
+        ChatMessageRecord message = new ChatMessageRecord();
+        message.setId(UUID.randomUUID().toString());
+        message.setClientId(firstNonBlank(systemType, "system"));
+        message.setSender("System");
+        message.setSenderAvatar(avatar);
+        message.setText(text);
+        message.setTime(CHAT_TIME_FORMATTER.format(sentAt));
+        message.setSentAtIso(sentAt.toString());
+        message.setMine(Boolean.FALSE);
+        message.setReadBy(new ArrayList<>());
+        message.setReplyTo(null);
+        message.setReactions(new ArrayList<>());
+        message.setAttachments(new ArrayList<>());
+        return message;
+    }
+
     private ChatStreamEvent toStreamEvent(String chatId, ChatMessageRecord messageRecord) {
         ChatAvatarRecord senderAvatar = messageRecord.getSenderAvatar();
+        String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
+        Users sender = findUser(senderId);
+        boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
+        String senderGender = deletedSender ? "deleted" : senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender());
         return ChatStreamEvent.message(
                 chatId,
                 messageRecord.getId(),
                 safeText(messageRecord.getClientId()),
-                senderAvatar == null ? "" : safeText(senderAvatar.getId()),
-                safeText(messageRecord.getSender()),
-                senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
-                senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender()),
-                resolveUserImageUrl(findUser(senderAvatar == null ? "" : safeText(senderAvatar.getId()))),
+                senderId,
+                deletedSender ? deletedUserName() : safeText(messageRecord.getSender()),
+                deletedSender ? deletedUserInitials() : senderAvatar == null ? "CH" : safeText(senderAvatar.getInitials()),
+                senderGender,
+                "deleted".equals(senderGender) ? "" : resolveUserImageUrl(sender),
                 safeText(messageRecord.getText()),
                 safeText(messageRecord.getSentAtIso()),
                 safeReadBy(messageRecord.getReadBy()).stream()
@@ -967,6 +1227,9 @@ public class ActivitiesChatService {
         if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }
+        if (isSupportCaseChat(chat) && isAdminUser(findUser(normalizedUserId))) {
+            return true;
+        }
         if (chat.getMemberIds() == null) {
             return false;
         }
@@ -1019,6 +1282,11 @@ public class ActivitiesChatService {
         copy.setGroupId(source.getGroupId());
         copy.setDistanceKm(null);
         copy.setDistanceMetersExact(null);
+        copy.setSupportCaseStatus(source.getSupportCaseStatus());
+        copy.setSupportCaseAssigneeUserId(source.getSupportCaseAssigneeUserId());
+        copy.setSupportCaseAssigneeName(source.getSupportCaseAssigneeName());
+        copy.setSupportCaseAssigneeInitials(source.getSupportCaseAssigneeInitials());
+        copy.setSupportCaseUpdatedAtIso(source.getSupportCaseUpdatedAtIso());
         List<ChatMessageRecord> copiedMessages = new ArrayList<>();
         for (ChatMessageRecord message : safeMessages(source.getMessages())) {
             copiedMessages.add(copyMessageRecord(message));
@@ -1099,6 +1367,8 @@ public class ActivitiesChatService {
             record.setEntityId(safeText(attachment.entityId()));
             record.setAssetType(safeText(attachment.assetType()));
             record.setOwnerUserId(safeText(attachment.ownerUserId()));
+            record.setStatus(normalizeAttachmentStatus(attachment.status()));
+            record.setUnavailableReason(safeText(attachment.unavailableReason()));
             record.setSubtitle(safeText(attachment.subtitle()));
             record.setDescription(safeText(attachment.description()));
             record.setUrl(url);
@@ -1120,6 +1390,8 @@ public class ActivitiesChatService {
             copy.setEntityId(attachment.getEntityId());
             copy.setAssetType(attachment.getAssetType());
             copy.setOwnerUserId(attachment.getOwnerUserId());
+            copy.setStatus(normalizeAttachmentStatus(attachment.getStatus()));
+            copy.setUnavailableReason(attachment.getUnavailableReason());
             copy.setSubtitle(attachment.getSubtitle());
             copy.setDescription(attachment.getDescription());
             copy.setUrl(attachment.getUrl());
@@ -1191,6 +1463,23 @@ public class ActivitiesChatService {
         return usersRepository.findByUserId(userId).orElse(null);
     }
 
+    private boolean isDeletedOrPurgedUser(Users user, String userId) {
+        if (!StringUtils.hasText(safeText(userId))) {
+            return false;
+        }
+        return user == null
+                || "D".equalsIgnoreCase(safeText(user.getStatus()))
+                || "deleted".equalsIgnoreCase(safeText(user.getProfileStatus()));
+    }
+
+    private String deletedUserName() {
+        return "Deleted user";
+    }
+
+    private String deletedUserInitials() {
+        return "DU";
+    }
+
     private String requireResolvedUserId(String requestedUserId) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
@@ -1258,10 +1547,17 @@ public class ActivitiesChatService {
 
     private String normalizeGender(String value) {
         String normalized = safeText(value).toLowerCase(Locale.US);
+        if ("deleted".equals(normalized)) {
+            return "deleted";
+        }
         if (normalized.startsWith("w") || normalized.startsWith("f")) {
             return "woman";
         }
         return "man";
+    }
+
+    private String normalizeAttachmentStatus(String value) {
+        return "unavailable".equals(safeText(value)) ? "unavailable" : "available";
     }
 
     private List<ChatMessageRecord> safeMessages(List<ChatMessageRecord> messages) {
@@ -1300,6 +1596,16 @@ public class ActivitiesChatService {
         return value == null ? "" : value.trim();
     }
 
+    private String firstNonBlank(String... values) {
+        for (String value : values == null ? new String[0] : values) {
+            String normalized = safeText(value);
+            if (StringUtils.hasText(normalized)) {
+                return normalized;
+            }
+        }
+        return "";
+    }
+
     private String normalizeChatContextFilter(String value) {
         String normalized = safeText(value);
         if ("event".equalsIgnoreCase(normalized)
@@ -1329,6 +1635,78 @@ public class ActivitiesChatService {
             return "serviceEvent".equalsIgnoreCase(channelType);
         }
         return true;
+    }
+
+    private boolean matchesSupportCaseFilter(ChatSummaryDto item, String supportCaseFilter) {
+        String normalizedFilter = normalizeSupportCaseFilter(supportCaseFilter);
+        if (SUPPORT_CASE_FILTER_ALL.equals(normalizedFilter)) {
+            return true;
+        }
+        return normalizedFilter.equals(normalizeSupportCaseStatus(item == null ? null : item.supportCaseStatus()));
+    }
+
+    private boolean isSupportCaseChat(ActivityChat chat) {
+        if (chat == null) {
+            return false;
+        }
+        return StringUtils.hasText(safeText(chat.getSupportCaseStatus()))
+                || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
+    }
+
+    private boolean isAdminUser(Users user) {
+        return adminMenuCounterService.isAdminUser(user);
+    }
+
+    private String normalizeSupportCaseStatus(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            default -> SUPPORT_CASE_STATUS_PENDING;
+        };
+    }
+
+    private String normalizeSupportCaseFilter(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            default -> SUPPORT_CASE_FILTER_ALL;
+        };
+    }
+
+    private String normalizeSupportCaseAction(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "pick", "unpick", "solve", "block", "reopen" -> normalized;
+            default -> "";
+        };
+    }
+
+    private SupportCaseState nextSupportCaseState(String action, String actorUserId, Users actor) {
+        String nowIso = Instant.now().toString();
+        return switch (action) {
+            case "pick" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_PICKED, actorUserId, actor, nowIso);
+            case "solve" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_SOLVED, actorUserId, actor, nowIso);
+            case "block" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_BLOCKED, actorUserId, actor, nowIso);
+            case "unpick", "reopen" -> new SupportCaseState(SUPPORT_CASE_STATUS_PENDING, "", "", "", nowIso);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
+        };
+    }
+
+    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, Users actor, String nowIso) {
+        return new SupportCaseState(
+                status,
+                normalizeId(actorUserId),
+                resolveUserName(actor, actorUserId),
+                resolveUserInitials(actor, actorUserId),
+                nowIso);
+    }
+
+    private void applySupportCaseState(ActivityChat chat, SupportCaseState state) {
+        chat.setSupportCaseStatus(state.status());
+        chat.setSupportCaseAssigneeUserId(state.assigneeUserId());
+        chat.setSupportCaseAssigneeName(state.assigneeName());
+        chat.setSupportCaseAssigneeInitials(state.assigneeInitials());
+        chat.setSupportCaseUpdatedAtIso(state.updatedAtIso());
     }
 
     private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
@@ -1454,5 +1832,13 @@ public class ActivitiesChatService {
     }
 
     private record ChatDocumentsSnapshot(String chatId, ActivityChat viewerChat, List<ActivityChat> chatDocuments) {
+    }
+
+    private record SupportCaseState(
+            String status,
+            String assigneeUserId,
+            String assigneeName,
+            String assigneeInitials,
+            String updatedAtIso) {
     }
 }

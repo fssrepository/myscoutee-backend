@@ -7,6 +7,8 @@ public interface MediaObjectStoreClient {
 
     StoredObject getObject(String bucket, String key);
 
+    void deleteObject(String bucket, String key);
+
     record StoredObject(
             byte[] bytes,
             String contentType) {

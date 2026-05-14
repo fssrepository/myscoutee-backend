@@ -20,4 +20,5 @@ public interface AssetsRepository extends MongoRepository<Asset, String> {
     List<Asset> findByOwnerUserId(String ownerUserId);
 
     List<Asset> findByOwnerUserIdOrderByUpdatedDateDesc(String ownerUserId);
+
 }

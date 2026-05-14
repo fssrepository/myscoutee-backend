@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamOptionDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationChannelsDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationMessageDto;
@@ -33,6 +35,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationTim
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
+import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.EventScheduler;
 
 @Service
@@ -45,6 +48,7 @@ public class AdminNotificationService {
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EventScheduler eventScheduler;
     private final AdminModerationService adminModerationService;
+    private final AdminTelemetryService adminTelemetryService;
     private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
     private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
         Thread thread = new Thread(runnable, "admin-notification-runner");
@@ -61,11 +65,13 @@ public class AdminNotificationService {
             NotificationRuleRegistryService notificationRuleRegistryService,
             EmailTemplatesRepository emailTemplatesRepository,
             EventScheduler eventScheduler,
-            AdminModerationService adminModerationService) {
+            AdminModerationService adminModerationService,
+            AdminTelemetryService adminTelemetryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     @PreDestroy
@@ -90,7 +96,9 @@ public class AdminNotificationService {
         List<NotificationRuleConfig> documents = request == null || request.rules() == null
                 ? List.of()
                 : request.rules().stream().map(this::toDocument).toList();
-        return toState(notificationRuleRegistryService.saveRules(documents, admin.id()));
+        AdminNotificationCenterStateDto state = toState(notificationRuleRegistryService.saveRules(documents, admin.id()));
+        adminTelemetryService.record("jobs.config.saved", "jobs", "", admin.id(), documents.size());
+        return state;
     }
 
     public AdminNotificationRuleRunResultDto run(String ruleKey, AdminNotificationRuleRunRequestDto request) {
@@ -126,13 +134,14 @@ public class AdminNotificationService {
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     RandomRunProgress runProgress = progress;
                     runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress));
+                    adminTelemetryService.record("jobs.run.started", "jobs", normalizedRuleKey, admin.id());
                     String startedAtIso = startedAtIso(startedRule);
                     return new AdminNotificationRuleRunResultDto(
                             normalizedRuleKey,
                             safeText(rule.getLabel()),
                             0,
                             "running",
-                            "Manual random event grouping started.",
+                            "Manual matched room assignment started.",
                             startedAtIso);
                 }
                 default -> {
@@ -187,7 +196,7 @@ public class AdminNotificationService {
             if (progress != null) {
                 progress.setAdminUserId(adminUserId);
                 progress.adoptRule(startedRule);
-                progress.raiseTo(1, "Loading published random event records.");
+                progress.raiseTo(1, "Loading published events for matched rooms.");
             }
             List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {
                 if (progress != null) {
@@ -203,6 +212,7 @@ public class AdminNotificationService {
                     detail,
                     adminUserId,
                     progress == null ? null : progress.startedAt());
+            adminTelemetryService.record("jobs.run.completed", "jobs", ruleKey, adminUserId, Math.max(1, affectedUsers));
         } catch (Exception exception) {
             notificationRuleRegistryService.recordRun(
                     ruleKey,
@@ -211,6 +221,7 @@ public class AdminNotificationService {
                     safeText(exception.getMessage()),
                     adminUserId,
                     progress == null ? null : progress.startedAt());
+            adminTelemetryService.record("jobs.run.failed", "jobs", ruleKey, adminUserId);
         } finally {
             if (progress != null) {
                 progress.close();
@@ -242,7 +253,7 @@ public class AdminNotificationService {
         private final NotificationRuleConfig.RunState runtimeState = new NotificationRuleConfig.RunState();
         private final long expectedMillis = clampExpectedRandomRunMillis(expectedRandomRunMillis.get());
         private final AtomicInteger latestPercent = new AtomicInteger(0);
-        private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual random event grouping started.");
+        private final AtomicReference<String> latestDetail = new AtomicReference<>("Manual matched room assignment started.");
         private volatile String adminUserId;
         private volatile List<NotificationRuleConfig.RunHistoryEntry> runtimeHistory = List.of();
         private final ScheduledFuture<?> heartbeat;
@@ -417,6 +428,9 @@ public class AdminNotificationService {
                         timing.getMode(),
                         timing.getDelayMinutes(),
                         timing.getIntervalMinutes(),
+                        timing.getIntervalSeconds(),
+                        timing.getIntervalAmount(),
+                        timing.getIntervalUnit(),
                         timing.getMonth(),
                         timing.getDayOfMonth(),
                         timing.getTime(),
@@ -424,6 +438,9 @@ public class AdminNotificationService {
                         timing.getCronExpression()),
                 rule.getScheduleSlots() == null ? List.of() : rule.getScheduleSlots().stream()
                         .map(this::toScheduleSlotDto)
+                        .toList(),
+                rule.getParameters() == null ? List.of() : rule.getParameters().stream()
+                        .map(this::toParameterDto)
                         .toList(),
                 new AdminNotificationMessageDto(
                         message.getPushTitle(),
@@ -479,6 +496,9 @@ public class AdminNotificationService {
         timing.setMode(sourceTiming == null ? null : sourceTiming.mode());
         timing.setDelayMinutes(sourceTiming == null ? null : sourceTiming.delayMinutes());
         timing.setIntervalMinutes(sourceTiming == null ? null : sourceTiming.intervalMinutes());
+        timing.setIntervalSeconds(sourceTiming == null ? null : sourceTiming.intervalSeconds());
+        timing.setIntervalAmount(sourceTiming == null ? null : sourceTiming.intervalAmount());
+        timing.setIntervalUnit(sourceTiming == null ? null : sourceTiming.intervalUnit());
         timing.setMonth(sourceTiming == null ? null : sourceTiming.month());
         timing.setDayOfMonth(sourceTiming == null ? null : sourceTiming.dayOfMonth());
         timing.setTime(sourceTiming == null ? null : sourceTiming.time());
@@ -487,6 +507,9 @@ public class AdminNotificationService {
         rule.setTiming(timing);
         rule.setScheduleSlots(dto.scheduleSlots() == null ? List.of() : dto.scheduleSlots().stream()
                 .map(this::toScheduleSlotDocument)
+                .toList());
+        rule.setParameters(dto.parameters() == null ? List.of() : dto.parameters().stream()
+                .map(this::toParameterDocument)
                 .toList());
         AdminNotificationMessageDto sourceMessage = dto.message();
         NotificationRuleConfig.MessageTemplate message = new NotificationRuleConfig.MessageTemplate();
@@ -536,6 +559,54 @@ public class AdminNotificationService {
         slot.setActionKey(dto.actionKey());
         slot.setEnabled(dto.enabled());
         return slot;
+    }
+
+    private AdminParamFieldDto toParameterDto(NotificationRuleConfig.ParameterField field) {
+        return new AdminParamFieldDto(
+                field.getKey(),
+                field.getLabel(),
+                field.getLabelKey(),
+                field.getGroup(),
+                field.getGroupKey(),
+                field.getValueType(),
+                field.getNumberValue(),
+                field.getTextValue(),
+                field.getUnit(),
+                field.getOptions() == null ? List.of() : field.getOptions().stream()
+                        .map(option -> new AdminParamOptionDto(option.getValue(), option.getLabel(), option.getLabelKey()))
+                        .toList(),
+                field.getStrategy(),
+                field.getStrategyKey(),
+                field.getReadOnly());
+    }
+
+    private NotificationRuleConfig.ParameterField toParameterDocument(AdminParamFieldDto dto) {
+        NotificationRuleConfig.ParameterField field = new NotificationRuleConfig.ParameterField();
+        if (dto == null) {
+            return field;
+        }
+        field.setKey(dto.key());
+        field.setLabel(dto.label());
+        field.setLabelKey(dto.labelKey());
+        field.setGroup(dto.group());
+        field.setGroupKey(dto.groupKey());
+        field.setValueType(dto.valueType());
+        field.setNumberValue(dto.numberValue());
+        field.setTextValue(dto.textValue());
+        field.setUnit(dto.unit());
+        field.setOptions(dto.options() == null ? List.of() : dto.options().stream()
+                .map(option -> {
+                    NotificationRuleConfig.ParameterOption documentOption = new NotificationRuleConfig.ParameterOption();
+                    documentOption.setValue(option.value());
+                    documentOption.setLabel(option.label());
+                    documentOption.setLabelKey(option.labelKey());
+                    return documentOption;
+                })
+                .toList());
+        field.setStrategy(dto.strategy());
+        field.setStrategyKey(dto.strategyKey());
+        field.setReadOnly(dto.readOnly());
+        return field;
     }
 
     private AdminNotificationRunHistoryEntryDto toRunHistoryEntry(NotificationRuleConfig.RunHistoryEntry entry) {

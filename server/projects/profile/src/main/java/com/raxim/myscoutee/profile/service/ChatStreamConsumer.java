@@ -21,6 +21,7 @@ public class ChatStreamConsumer {
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final ChatWebSocketSessionRegistry sessionRegistry;
+    private final RedisStreamRetentionService redisStreamRetentionService;
 
     private String lastSeenId = "0-0";
     private boolean streamUnavailableLogged;
@@ -28,10 +29,12 @@ public class ChatStreamConsumer {
     public ChatStreamConsumer(
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
-            ChatWebSocketSessionRegistry sessionRegistry) {
+            ChatWebSocketSessionRegistry sessionRegistry,
+            RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.sessionRegistry = sessionRegistry;
+        this.redisStreamRetentionService = redisStreamRetentionService;
     }
 
     @Scheduled(fixedDelayString = "${chat.stream.poll-delay-ms:250}")
@@ -45,6 +48,9 @@ public class ChatStreamConsumer {
             if (records == null || records.isEmpty()) {
                 return;
             }
+            List<String> recordIds = records.stream()
+                    .map(record -> record.getId().getValue())
+                    .toList();
             for (MapRecord<String, Object, Object> record : records) {
                 lastSeenId = record.getId().getValue();
                 Object payload = record.getValue().get("payload");
@@ -58,6 +64,7 @@ public class ChatStreamConsumer {
                     // Ignore malformed records and keep draining the stream.
                 }
             }
+            redisStreamRetentionService.deleteRecords(stringRedisTemplate, ChatStreamPublisher.STREAM_KEY, recordIds);
         } catch (Exception exception) {
             if (!streamUnavailableLogged) {
                 LOGGER.warn("Chat Redis stream consumer paused because Redis is unavailable.", exception);

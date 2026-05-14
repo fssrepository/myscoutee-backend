@@ -13,9 +13,13 @@ public interface UsersRepository extends MongoRepository<Users, String> {
 
     List<Users> findByUserIdIn(Collection<String> userIds);
 
+    List<Users> findByEmailIn(Collection<String> emails);
+
     List<Users> findByProfileStatus(String profileStatus);
 
     List<Users> findByProfileStatusIn(Collection<String> profileStatuses);
+
+    List<Users> findByHostTier(String hostTier);
 
     List<Users> findByPartitionKey(String partitionKey);
 

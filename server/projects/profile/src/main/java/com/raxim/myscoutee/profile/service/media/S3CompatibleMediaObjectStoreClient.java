@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
@@ -63,6 +64,17 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
         } catch (S3Exception ex) {
             return null;
         }
+    }
+
+    @Override
+    public void deleteObject(String bucket, String key) {
+        if (!isEnabled() || !StringUtils.hasText(safeText(bucket)) || !StringUtils.hasText(safeText(key))) {
+            return;
+        }
+        s3Client.deleteObject(DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build());
     }
 
     private S3Client createClient(MediaStorageProperties storageProperties) {

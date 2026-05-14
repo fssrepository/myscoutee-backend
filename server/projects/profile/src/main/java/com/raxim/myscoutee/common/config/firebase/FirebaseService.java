@@ -66,7 +66,7 @@ public class FirebaseService {
     }
 
     private String resolveRole(String email) {
-        if (config.getAdminUser() != null && config.getAdminUser().trim().equalsIgnoreCase(normalizeEmail(email))) {
+        if (config.isAdminUser(normalizeEmail(email))) {
             return "A";
         }
         return "U";

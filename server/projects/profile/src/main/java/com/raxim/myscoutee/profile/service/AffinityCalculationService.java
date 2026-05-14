@@ -388,7 +388,24 @@ public class AffinityCalculationService {
         int maxMeters = rule == null || rule.getMaxMeters() == null || rule.getMaxMeters() <= 0
                 ? 50_000
                 : rule.getMaxMeters();
-        return clamp01(1d - Math.min(meters, maxMeters) / maxMeters);
+        double ratio = Math.min(meters, maxMeters) / maxMeters;
+        String strategy = normalize(rule == null ? null : rule.getStrategy());
+        return switch (strategy) {
+            case "exponential" -> exponentialDistanceSignal(ratio);
+            case "bucketed" -> bucketedDistanceSignal(ratio);
+            default -> clamp01(1d - ratio);
+        };
+    }
+
+    private double exponentialDistanceSignal(double distanceRatio) {
+        double ratio = clamp01(distanceRatio);
+        double floor = Math.exp(-3d);
+        return clamp01((Math.exp(-3d * ratio) - floor) / (1d - floor));
+    }
+
+    private double bucketedDistanceSignal(double distanceRatio) {
+        double ratio = clamp01(distanceRatio);
+        return clamp01(1d - Math.ceil(ratio * 10d) / 10d);
     }
 
     private void addImpressionSignals(List<Signal> signals, Users left, Users right, AffinityConfig config) {

@@ -27,7 +27,12 @@ public final class ActivityChatsDtos {
             String subEventId,
             String groupId,
             Double distanceKm,
-            Integer distanceMetersExact) {
+            Integer distanceMetersExact,
+            String supportCaseStatus,
+            String supportCaseAssigneeUserId,
+            String supportCaseAssigneeName,
+            String supportCaseAssigneeInitials,
+            String supportCaseUpdatedAtIso) {
     }
 
     public record ChatPageResponseDto(
@@ -81,6 +86,8 @@ public final class ActivityChatsDtos {
             String entityId,
             String assetType,
             String ownerUserId,
+            String status,
+            String unavailableReason,
             String subtitle,
             String description,
             String url,
@@ -154,5 +161,10 @@ public final class ActivityChatsDtos {
             String userId,
             String deviceId,
             String firebaseToken) {
+    }
+
+    public record ChatSupportCaseMutationRequestDto(
+            String userId,
+            String action) {
     }
 }

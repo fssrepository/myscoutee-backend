@@ -10,6 +10,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,9 +55,11 @@ class EventSchedulerTest {
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
     private NotificationRuleRegistryService notificationRuleRegistryService;
+    @Mock
+    private PlatformParametersService platformParametersService;
 
     @Test
-    void generatePriorityPlansPersistsInvitesAndSendsNotifications() {
+    void generatePriorityPlansIgnoresPendingInvitesWhenSizingBatch() {
         EventScheduler scheduler = createScheduler();
 
         ActivityEvent event = new ActivityEvent();
@@ -86,7 +89,7 @@ class EventSchedulerTest {
                         "event-1",
                         List.of(),
                         List.of("locked-1"),
-                        List.of(),
+                        List.of("pending-1", "pending-2"),
                         Set.of("creator-1"),
                         3));
         when(activitiesMembersService.inviteUsers("event-1", "creator-1", List.of("u1", "u2"), event))
@@ -269,7 +272,7 @@ class EventSchedulerTest {
         event.setPublished(true);
         event.setCreatorUserId("creator-1");
         event.setSubEvents(List.of(
-                explicitSubEvent("sub-1"),
+                withStageStatus(explicitSubEvent("sub-1"), "F"),
                 singleGroupSubEvent("sub-2", "next-group")));
 
         EventLeaderboardStateDto currentState = new EventLeaderboardStateDto(
@@ -376,6 +379,30 @@ class EventSchedulerTest {
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
+    @Test
+    void closeEndedTournamentStagesMovesOnlyActiveEndedStagesToReview() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setStatus("H");
+        event.setPublished(true);
+        event.setSubEventsDisplayMode("Tournament");
+        event.setSubEvents(List.of(
+                subEventWithStatus("stage-ended", "2026-05-12T10:00:00Z", null),
+                subEventWithStatus("stage-review", "2026-05-12T10:30:00Z", "SR"),
+                subEventWithStatus("stage-future", "2026-05-12T13:00:00Z", null)));
+        when(activityEventsRepository.findAll()).thenReturn(List.of(event));
+
+        int changed = scheduler.closeEndedTournamentStagesForReview(Instant.parse("2026-05-12T12:00:00Z"));
+
+        assertThat(changed).isEqualTo(1);
+        assertThat(event.getSubEvents().get(0).stageStatus()).isEqualTo("SR");
+        assertThat(event.getSubEvents().get(0).stageStatusReason()).isEqualTo("stage-ended");
+        assertThat(event.getSubEvents().get(1).stageStatus()).isEqualTo("SR");
+        assertThat(event.getSubEvents().get(2).stageStatus()).isNull();
+        verify(activityEventsRepository).saveAll(List.of(event));
+    }
+
     private EventScheduler createScheduler() {
         lenient().when(schedulerPlanMarkersRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
         return new EventScheduler(
@@ -386,7 +413,8 @@ class EventSchedulerTest {
                 activitiesMembersService,
                 activitiesEventLeaderboardService,
                 eventInviteNotificationService,
-                notificationRuleRegistryService);
+                notificationRuleRegistryService,
+                platformParametersService);
     }
 
     private Users user(String userId) {
@@ -437,6 +465,48 @@ class EventSchedulerTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    private SubEventFormItemDto subEventWithStatus(String id, String endAt, String stageStatus) {
+        return new SubEventFormItemDto(
+                id,
+                "Stage",
+                null,
+                "2026-05-12T09:00:00Z",
+                endAt,
+                null,
+                null,
+                List.of(group(id + ":group:1", "Group A")),
+                1,
+                2,
+                2,
+                "Score",
+                1,
+                false,
+                null,
+                2,
+                2,
+                2,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                stageStatus,
                 null,
                 null,
                 null,
@@ -521,5 +591,47 @@ class EventSchedulerTest {
                 null,
                 null,
                 null);
+    }
+
+    private SubEventFormItemDto withStageStatus(SubEventFormItemDto item, String stageStatus) {
+        return new SubEventFormItemDto(
+                item.id(),
+                item.name(),
+                item.description(),
+                item.startAt(),
+                item.endAt(),
+                item.location(),
+                item.createdByUserId(),
+                item.groups(),
+                item.tournamentGroupCount(),
+                item.tournamentGroupCapacityMin(),
+                item.tournamentGroupCapacityMax(),
+                item.tournamentLeaderboardType(),
+                item.tournamentAdvancePerGroup(),
+                item.optional(),
+                item.pricing(),
+                item.capacityMin(),
+                item.capacityMax(),
+                item.membersAccepted(),
+                item.membersPending(),
+                item.carsPending(),
+                item.accommodationPending(),
+                item.suppliesPending(),
+                item.carsAccepted(),
+                item.accommodationAccepted(),
+                item.suppliesAccepted(),
+                item.carsCapacityMin(),
+                item.carsCapacityMax(),
+                item.accommodationCapacityMin(),
+                item.accommodationCapacityMax(),
+                item.suppliesCapacityMin(),
+                item.suppliesCapacityMax(),
+                item.slotStartOffsetMinutes(),
+                item.slotDurationMinutes(),
+                stageStatus,
+                item.stageStatusReason(),
+                item.stageStatusUpdatedAt(),
+                item.stageFinalizedAt(),
+                item.stageFinalizedByUserId());
     }
 }

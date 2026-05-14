@@ -50,6 +50,8 @@ class UserRatesServiceTest {
     private UserAffinityEdgeService userAffinityEdgeService;
     @Mock
     private MongoTemplate mongoTemplate;
+    @Mock
+    private AdminTelemetryService adminTelemetryService;
 
     @Test
     void syncCalculatesBackendOwnedAffinityBeforeSaveAndRecomputesEdges() {
@@ -272,7 +274,8 @@ class UserRatesServiceTest {
                 homeUserProfileService,
                 affinityCalculationService,
                 userAffinityEdgeService,
-                mongoTemplate);
+                mongoTemplate,
+                adminTelemetryService);
     }
 
     private UserRatesService queryService(Map<String, Users> usersById, List<UserRate> records) {
@@ -291,9 +294,10 @@ class UserRatesServiceTest {
                         affinityConfigsRepository,
                         usersRepository,
                         userRatesRepository,
-                        userExperienceProfilesRepository),
+                userExperienceProfilesRepository),
                 userAffinityEdgeService,
-                mongoTemplate);
+                mongoTemplate,
+                adminTelemetryService);
     }
 
     private void stubUsers(Map<String, Users> usersById) {

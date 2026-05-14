@@ -10,6 +10,8 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 public interface AffinityRecomputeTasksRepository extends MongoRepository<AffinityRecomputeTask, String> {
     Optional<AffinityRecomputeTask> findByTaskKey(String taskKey);
 
+    long countByStatus(String status);
+
     List<AffinityRecomputeTask> findByStatusAndAvailableAtIsoLessThanEqualOrderByAvailableAtIsoAsc(
             String status,
             String availableAtIso);

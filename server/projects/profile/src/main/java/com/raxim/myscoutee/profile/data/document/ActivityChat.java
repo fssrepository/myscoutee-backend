@@ -40,6 +40,11 @@ public class ActivityChat {
     private String groupId;
     private Double distanceKm;
     private Integer distanceMetersExact;
+    private String supportCaseStatus;
+    private String supportCaseAssigneeUserId;
+    private String supportCaseAssigneeName;
+    private String supportCaseAssigneeInitials;
+    private String supportCaseUpdatedAtIso;
     private List<ChatMessageRecord> messages = new ArrayList<>();
 
     public String getMongoId() {
@@ -168,6 +173,46 @@ public class ActivityChat {
 
     public void setDistanceMetersExact(Integer distanceMetersExact) {
         this.distanceMetersExact = distanceMetersExact;
+    }
+
+    public String getSupportCaseStatus() {
+        return supportCaseStatus;
+    }
+
+    public void setSupportCaseStatus(String supportCaseStatus) {
+        this.supportCaseStatus = supportCaseStatus;
+    }
+
+    public String getSupportCaseAssigneeUserId() {
+        return supportCaseAssigneeUserId;
+    }
+
+    public void setSupportCaseAssigneeUserId(String supportCaseAssigneeUserId) {
+        this.supportCaseAssigneeUserId = supportCaseAssigneeUserId;
+    }
+
+    public String getSupportCaseAssigneeName() {
+        return supportCaseAssigneeName;
+    }
+
+    public void setSupportCaseAssigneeName(String supportCaseAssigneeName) {
+        this.supportCaseAssigneeName = supportCaseAssigneeName;
+    }
+
+    public String getSupportCaseAssigneeInitials() {
+        return supportCaseAssigneeInitials;
+    }
+
+    public void setSupportCaseAssigneeInitials(String supportCaseAssigneeInitials) {
+        this.supportCaseAssigneeInitials = supportCaseAssigneeInitials;
+    }
+
+    public String getSupportCaseUpdatedAtIso() {
+        return supportCaseUpdatedAtIso;
+    }
+
+    public void setSupportCaseUpdatedAtIso(String supportCaseUpdatedAtIso) {
+        this.supportCaseUpdatedAtIso = supportCaseUpdatedAtIso;
     }
 
     public List<ChatMessageRecord> getMessages() {
@@ -341,6 +386,8 @@ public class ActivityChat {
         private String entityId;
         private String assetType;
         private String ownerUserId;
+        private String status;
+        private String unavailableReason;
         private String subtitle;
         private String description;
         private String url;
@@ -360,6 +407,10 @@ public class ActivityChat {
         public void setAssetType(String assetType) { this.assetType = assetType; }
         public String getOwnerUserId() { return ownerUserId; }
         public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        public String getUnavailableReason() { return unavailableReason; }
+        public void setUnavailableReason(String unavailableReason) { this.unavailableReason = unavailableReason; }
         public String getSubtitle() { return subtitle; }
         public void setSubtitle(String subtitle) { this.subtitle = subtitle; }
         public String getDescription() { return description; }

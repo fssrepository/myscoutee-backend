@@ -137,7 +137,86 @@ public final class SharedDtos {
             Integer suppliesCapacityMin,
             Integer suppliesCapacityMax,
             Integer slotStartOffsetMinutes,
-            Integer slotDurationMinutes) {
+            Integer slotDurationMinutes,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId) {
+        public SubEventFormItemDto(
+                String id,
+                String name,
+                String description,
+                String startAt,
+                String endAt,
+                String location,
+                String createdByUserId,
+                List<SubEventGroupItemDto> groups,
+                Integer tournamentGroupCount,
+                Integer tournamentGroupCapacityMin,
+                Integer tournamentGroupCapacityMax,
+                String tournamentLeaderboardType,
+                Integer tournamentAdvancePerGroup,
+                Boolean optional,
+                PricingConfigDto pricing,
+                Integer capacityMin,
+                Integer capacityMax,
+                Integer membersAccepted,
+                Integer membersPending,
+                Integer carsPending,
+                Integer accommodationPending,
+                Integer suppliesPending,
+                Integer carsAccepted,
+                Integer accommodationAccepted,
+                Integer suppliesAccepted,
+                Integer carsCapacityMin,
+                Integer carsCapacityMax,
+                Integer accommodationCapacityMin,
+                Integer accommodationCapacityMax,
+                Integer suppliesCapacityMin,
+                Integer suppliesCapacityMax,
+                Integer slotStartOffsetMinutes,
+                Integer slotDurationMinutes) {
+            this(
+                    id,
+                    name,
+                    description,
+                    startAt,
+                    endAt,
+                    location,
+                    createdByUserId,
+                    groups,
+                    tournamentGroupCount,
+                    tournamentGroupCapacityMin,
+                    tournamentGroupCapacityMax,
+                    tournamentLeaderboardType,
+                    tournamentAdvancePerGroup,
+                    optional,
+                    pricing,
+                    capacityMin,
+                    capacityMax,
+                    membersAccepted,
+                    membersPending,
+                    carsPending,
+                    accommodationPending,
+                    suppliesPending,
+                    carsAccepted,
+                    accommodationAccepted,
+                    suppliesAccepted,
+                    carsCapacityMin,
+                    carsCapacityMax,
+                    accommodationCapacityMin,
+                    accommodationCapacityMax,
+                    suppliesCapacityMin,
+                    suppliesCapacityMax,
+                    slotStartOffsetMinutes,
+                    slotDurationMinutes,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
     }
 
     public record EventSlotTemplateDto(
@@ -255,7 +334,8 @@ public final class SharedDtos {
             String note,
             String requestKind,
             String requestedAtIso,
-            AssetRequestBookingDto booking) {
+            AssetRequestBookingDto booking,
+            List<String> menuActions) {
     }
 
     public record AssetCardDto(
@@ -277,6 +357,7 @@ public final class SharedDtos {
             String status,
             String ownerUserId,
             String ownerName,
-            List<AssetMemberRequestDto> requests) {
+            List<AssetMemberRequestDto> requests,
+            List<String> menuActions) {
     }
 }

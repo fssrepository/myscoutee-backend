@@ -51,6 +51,7 @@ public class Asset {
     private String visibility;
     private String status;
     private String statusBeforeSuppression;
+    private String trashedAtIso;
     private Double affinity;
     private Double boost;
     private String createdDate;
@@ -224,6 +225,14 @@ public class Asset {
 
     public void setStatusBeforeSuppression(String statusBeforeSuppression) {
         this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatus(statusBeforeSuppression) : null;
+    }
+
+    public String getTrashedAtIso() {
+        return trashedAtIso;
+    }
+
+    public void setTrashedAtIso(String trashedAtIso) {
+        this.trashedAtIso = trashedAtIso;
     }
 
     public Double getAffinity() {

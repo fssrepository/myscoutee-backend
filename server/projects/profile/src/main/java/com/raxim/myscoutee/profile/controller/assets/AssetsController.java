@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
@@ -64,9 +65,19 @@ public class AssetsController {
         assetsService.delete(request);
     }
 
+    @PostMapping("/restore")
+    public AssetCardDto restore(@RequestBody AssetDeleteRequestDto request) {
+        return assetsService.restore(request);
+    }
+
     @PostMapping("/take-over")
-    public void takeOver(@RequestBody AssetDeleteRequestDto request) {
-        assetsService.takeOver(request);
+    public AssetCardDto takeOver(@RequestBody AssetDeleteRequestDto request) {
+        return assetsService.takeOver(request);
+    }
+
+    @PostMapping("/make-manager")
+    public AssetCardDto makeManager(@RequestBody AssetMakeManagerRequestDto request) {
+        return assetsService.makeManager(request);
     }
 
     @PostMapping("/refresh-from-source")

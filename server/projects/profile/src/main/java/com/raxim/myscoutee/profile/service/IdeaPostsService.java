@@ -44,14 +44,17 @@ public class IdeaPostsService {
     private final ConfigProperties configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MediaStorageService mediaStorageService;
+    private final AdminTelemetryService adminTelemetryService;
 
     public IdeaPostsService(
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
-            MediaStorageService mediaStorageService) {
+            MediaStorageService mediaStorageService,
+            AdminTelemetryService adminTelemetryService) {
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
         this.mediaStorageService = mediaStorageService;
+        this.adminTelemetryService = adminTelemetryService;
     }
 
     public List<IdeaPostDto> publicPosts() {
@@ -129,7 +132,9 @@ public class IdeaPostsService {
         post.setSubmittedAtIso(submittedAtIso(request == null ? null : request.submittedAtIso(), post.getSubmittedAtIso(), nowIso));
         post.setUpdatedDate(nowIso);
         post.setUpdatedUser(actorUserId);
-        return toDto(ideaPostsRepository.save(post));
+        IdeaPost saved = ideaPostsRepository.save(post);
+        adminTelemetryService.record("article.saved", "content", saved.getId(), actorUserId);
+        return toDto(saved);
     }
 
     public List<IdeaPostDto> deletePost(String postId, IdeaPostAdminActionRequestDto request) {
@@ -146,6 +151,7 @@ public class IdeaPostsService {
                 post.setUpdatedDate(nowIso);
                 post.setUpdatedUser(actorUserId);
                 ideaPostsRepository.save(post);
+                adminTelemetryService.record("article.deleted", "content", post.getId(), actorUserId);
             });
         }
         return ideaPostsRepository.findAllByOrderBySubmittedAtIsoDesc().stream()
@@ -171,7 +177,9 @@ public class IdeaPostsService {
         post.setTrashedByUserId(null);
         post.setUpdatedDate(nowIso);
         post.setUpdatedUser(actorUserId);
-        return toDto(ideaPostsRepository.save(post));
+        IdeaPost saved = ideaPostsRepository.save(post);
+        adminTelemetryService.record("article.restored", "content", saved.getId(), actorUserId);
+        return toDto(saved);
     }
 
     private void ensureSeeded() {

@@ -11,6 +11,7 @@ import java.util.Optional;
 import jakarta.annotation.PostConstruct;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -45,14 +46,25 @@ public class AffinityRecomputeTaskService {
     private final AffinityRecomputeTasksRepository tasksRepository;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
+    private final PlatformParametersService platformParametersService;
 
+    @Autowired
     public AffinityRecomputeTaskService(
             AffinityRecomputeTasksRepository tasksRepository,
             AffinityRecomputeProperties properties,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            PlatformParametersService platformParametersService) {
         this.tasksRepository = tasksRepository;
         this.properties = properties;
         this.mongoTemplate = mongoTemplate;
+        this.platformParametersService = platformParametersService;
+    }
+
+    AffinityRecomputeTaskService(
+            AffinityRecomputeTasksRepository tasksRepository,
+            AffinityRecomputeProperties properties,
+            MongoTemplate mongoTemplate) {
+        this(tasksRepository, properties, mongoTemplate, null);
     }
 
     @PostConstruct
@@ -75,7 +87,7 @@ public class AffinityRecomputeTaskService {
     }
 
     public AffinityRecomputeTask enqueueUserChanged(String userId) {
-        return enqueue(TARGET_USER, userId, REASON_USER_CHANGED, properties.getUserChangedDebounce(), userId);
+        return enqueue(TARGET_USER, userId, REASON_USER_CHANGED, userChangedDebounce(), userId);
     }
 
     public AffinityRecomputeTask enqueueAdminStatusChanged(String userId) {
@@ -83,24 +95,24 @@ public class AffinityRecomputeTaskService {
     }
 
     public AffinityRecomputeTask enqueueEventChanged(String eventSourceId, String actorUserId) {
-        return enqueue(TARGET_EVENT, eventSourceId, REASON_EVENT_CHANGED, properties.getEventChangedDebounce(), actorUserId);
+        return enqueue(TARGET_EVENT, eventSourceId, REASON_EVENT_CHANGED, eventChangedDebounce(), actorUserId);
     }
 
     public AffinityRecomputeTask enqueueEventMembersChanged(String eventSourceId, String actorUserId) {
-        return enqueue(TARGET_EVENT, eventSourceId, REASON_EVENT_MEMBERS_CHANGED, properties.getEventMembersChangedDebounce(), actorUserId);
+        return enqueue(TARGET_EVENT, eventSourceId, REASON_EVENT_MEMBERS_CHANGED, eventMembersChangedDebounce(), actorUserId);
     }
 
     public AffinityRecomputeTask enqueueAssetChanged(String assetId, String actorUserId) {
-        return enqueue(TARGET_ASSET, assetId, REASON_ASSET_CHANGED, properties.getAssetChangedDebounce(), actorUserId);
+        return enqueue(TARGET_ASSET, assetId, REASON_ASSET_CHANGED, assetChangedDebounce(), actorUserId);
     }
 
     public AffinityRecomputeTask enqueueAssetRequestsChanged(String assetId, String actorUserId) {
-        return enqueue(TARGET_ASSET, assetId, REASON_ASSET_REQUESTS_CHANGED, properties.getAssetRequestsChangedDebounce(), actorUserId);
+        return enqueue(TARGET_ASSET, assetId, REASON_ASSET_REQUESTS_CHANGED, assetRequestsChangedDebounce(), actorUserId);
     }
 
     public AffinityRecomputeTask enqueueConfigChanged(String configId, String actorUserId) {
         String targetId = StringUtils.hasText(safeText(configId)) ? safeText(configId) : "active";
-        return enqueue(TARGET_CONFIG, targetId, REASON_CONFIG_CHANGED, properties.getConfigChangedDebounce(), actorUserId);
+        return enqueue(TARGET_CONFIG, targetId, REASON_CONFIG_CHANGED, configChangedDebounce(), actorUserId);
     }
 
     public AffinityRecomputeTask enqueue(
@@ -154,12 +166,63 @@ public class AffinityRecomputeTaskService {
 
     public Duration debounceForTarget(String targetType) {
         return switch (normalizeTargetType(targetType)) {
-            case TARGET_USER -> properties.getUserChangedDebounce();
-            case TARGET_EVENT -> properties.getEventChangedDebounce();
-            case TARGET_ASSET -> properties.getAssetChangedDebounce();
-            case TARGET_CONFIG -> properties.getConfigChangedDebounce();
+            case TARGET_USER -> userChangedDebounce();
+            case TARGET_EVENT -> eventChangedDebounce();
+            case TARGET_ASSET -> assetChangedDebounce();
+            case TARGET_CONFIG -> configChangedDebounce();
             default -> properties.getDefaultDebounce();
         };
+    }
+
+    public int dueTaskLimit() {
+        return platformParametersService == null
+                ? Math.max(1, properties.getDueTaskLimit())
+                : platformParametersService.jobBatchSize(Math.max(1, properties.getDueTaskLimit()));
+    }
+
+    public Duration leaseDuration() {
+        Duration fallback = properties.getLeaseDuration();
+        return platformParametersService == null ? fallback : platformParametersService.jobLeaseDuration(fallback);
+    }
+
+    public long workerPollDelayMs(long fallback) {
+        return platformParametersService == null ? fallback : platformParametersService.jobWorkerPollDelayMs(fallback);
+    }
+
+    private Duration userChangedDebounce() {
+        return platformParametersService == null
+                ? properties.getUserChangedDebounce()
+                : platformParametersService.userChangedDebounce(properties.getUserChangedDebounce());
+    }
+
+    private Duration eventChangedDebounce() {
+        return platformParametersService == null
+                ? properties.getEventChangedDebounce()
+                : platformParametersService.eventChangedDebounce(properties.getEventChangedDebounce());
+    }
+
+    private Duration eventMembersChangedDebounce() {
+        return platformParametersService == null
+                ? properties.getEventMembersChangedDebounce()
+                : platformParametersService.eventMembersChangedDebounce(properties.getEventMembersChangedDebounce());
+    }
+
+    private Duration assetChangedDebounce() {
+        return platformParametersService == null
+                ? properties.getAssetChangedDebounce()
+                : platformParametersService.assetChangedDebounce(properties.getAssetChangedDebounce());
+    }
+
+    private Duration assetRequestsChangedDebounce() {
+        return platformParametersService == null
+                ? properties.getAssetRequestsChangedDebounce()
+                : platformParametersService.assetRequestsChangedDebounce(properties.getAssetRequestsChangedDebounce());
+    }
+
+    private Duration configChangedDebounce() {
+        return platformParametersService == null
+                ? properties.getConfigChangedDebounce()
+                : platformParametersService.configChangedDebounce(properties.getConfigChangedDebounce());
     }
 
     private AffinityRecomputeTask saveMergedTask(

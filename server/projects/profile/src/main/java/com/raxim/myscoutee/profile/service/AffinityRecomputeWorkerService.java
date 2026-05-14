@@ -22,12 +22,15 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 
 @Service
 public class AffinityRecomputeWorkerService {
+    private static final long DEFAULT_WORKER_POLL_DELAY_MS = 60_000L;
+
     private final String workerId = "affinity-worker-" + UUID.randomUUID();
     private final AffinityRecomputeTaskService taskService;
     private final AffinityMaintenanceService affinityMaintenanceService;
     private final ModelStatusPropagationService modelStatusPropagationService;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
+    private volatile long lastScheduledRunMs = 0L;
 
     public AffinityRecomputeWorkerService(
             AffinityRecomputeTaskService taskService,
@@ -42,9 +45,12 @@ public class AffinityRecomputeWorkerService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    @Scheduled(fixedDelayString = "${affinity.recompute.worker-poll-delay-ms:60000}")
+    @Scheduled(fixedDelayString = "${affinity.recompute.worker-tick-ms:1000}")
     public void runDueTasks() {
         if (!properties.isEnabled()) {
+            return;
+        }
+        if (!shouldRunScheduledPass()) {
             return;
         }
         processDueTasks(Instant.now());
@@ -52,7 +58,7 @@ public class AffinityRecomputeWorkerService {
 
     public int processDueTasks(Instant now) {
         Instant effectiveNow = now == null ? Instant.now() : now;
-        List<AffinityRecomputeTask> dueTasks = taskService.findPendingDueTasks(effectiveNow, properties.getDueTaskLimit());
+        List<AffinityRecomputeTask> dueTasks = taskService.findPendingDueTasks(effectiveNow, effectiveDueTaskLimit());
         List<AffinityRecomputeTask> leasedTasks = new ArrayList<>();
         for (AffinityRecomputeTask task : dueTasks) {
             AffinityRecomputeTask leased = lease(task, effectiveNow);
@@ -295,8 +301,27 @@ public class AffinityRecomputeWorkerService {
     }
 
     private Duration effectiveLeaseDuration() {
-        Duration lease = properties.getLeaseDuration();
+        Duration lease = taskService.leaseDuration();
+        if (lease == null) {
+            lease = properties.getLeaseDuration();
+        }
         return lease == null || lease.isNegative() || lease.isZero() ? Duration.ofMinutes(10) : lease;
+    }
+
+    private int effectiveDueTaskLimit() {
+        int limit = taskService.dueTaskLimit();
+        return limit > 0 ? limit : Math.max(1, properties.getDueTaskLimit());
+    }
+
+    private boolean shouldRunScheduledPass() {
+        long nowMs = System.currentTimeMillis();
+        long pollDelayMs = Math.max(100L, taskService.workerPollDelayMs(DEFAULT_WORKER_POLL_DELAY_MS));
+        long previousRunMs = lastScheduledRunMs;
+        if (previousRunMs > 0L && nowMs - previousRunMs < pollDelayMs) {
+            return false;
+        }
+        lastScheduledRunMs = nowMs;
+        return true;
     }
 
     private String truncate(String value, int maxLength) {

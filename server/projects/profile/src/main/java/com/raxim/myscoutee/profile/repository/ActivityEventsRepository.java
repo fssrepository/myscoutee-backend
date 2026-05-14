@@ -32,4 +32,5 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
     boolean existsByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 
     List<ActivityEvent> findByAutoInviterTrue();
+
 }

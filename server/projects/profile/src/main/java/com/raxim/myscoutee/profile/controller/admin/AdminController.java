@@ -11,11 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationRuleSaveRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsHistoryDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsRevertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsSaveRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsStateDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
@@ -23,6 +29,9 @@ import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActio
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
+import com.raxim.myscoutee.profile.service.AdminMonitoringService;
+import com.raxim.myscoutee.profile.service.AdminParamsService;
+import com.raxim.myscoutee.profile.service.AdminStatsService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 import com.raxim.myscoutee.profile.service.IdeaPostsService;
 import com.raxim.myscoutee.profile.service.notifications.AdminNotificationService;
@@ -36,21 +45,62 @@ public class AdminController {
     private final HelpCenterService helpCenterService;
     private final IdeaPostsService ideaPostsService;
     private final AdminNotificationService adminNotificationService;
+    private final AdminStatsService adminStatsService;
+    private final AdminParamsService adminParamsService;
+    private final AdminMonitoringService adminMonitoringService;
 
     public AdminController(
             AdminModerationService adminModerationService,
             HelpCenterService helpCenterService,
             IdeaPostsService ideaPostsService,
-            AdminNotificationService adminNotificationService) {
+            AdminNotificationService adminNotificationService,
+            AdminStatsService adminStatsService,
+            AdminParamsService adminParamsService,
+            AdminMonitoringService adminMonitoringService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
         this.adminNotificationService = adminNotificationService;
+        this.adminStatsService = adminStatsService;
+        this.adminParamsService = adminParamsService;
+        this.adminMonitoringService = adminMonitoringService;
     }
 
     @GetMapping("/dashboard")
     public AdminDashboardDto dashboard(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
         return adminModerationService.dashboard(adminUserId);
+    }
+
+    @GetMapping("/stats")
+    public AdminStatsDashboardDto stats(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminStatsService.dashboard(adminUserId);
+    }
+
+    @GetMapping("/monitoring")
+    public AdminMonitoringStateDto monitoring(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminMonitoringService.state(adminUserId);
+    }
+
+    @GetMapping("/params")
+    public AdminParamsStateDto params(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminParamsService.state(adminUserId);
+    }
+
+    @PostMapping("/params")
+    public AdminParamsStateDto saveParams(@RequestBody(required = false) AdminParamsSaveRequestDto request) {
+        return adminParamsService.save(request);
+    }
+
+    @GetMapping("/params/{sectionKey}/history")
+    public AdminParamsHistoryDto paramsHistory(@PathVariable String sectionKey) {
+        return adminParamsService.history(sectionKey);
+    }
+
+    @PostMapping("/params/{sectionKey}/revert")
+    public AdminParamsStateDto revertParams(
+            @PathVariable String sectionKey,
+            @RequestBody(required = false) AdminParamsRevertRequestDto request) {
+        return adminParamsService.revert(sectionKey, request);
     }
 
     @PostMapping("/users/{userId}/warn")

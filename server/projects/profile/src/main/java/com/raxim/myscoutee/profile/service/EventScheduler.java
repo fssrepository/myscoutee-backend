@@ -4,12 +4,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -37,6 +40,7 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.PriorityGeneratorRequest;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorRequest;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -57,6 +61,12 @@ public class EventScheduler {
     private static final String MARKER_ACTION_GROUP_MEMBERS = "group-members";
     private static final String MARKER_ACTION_INVITE_BATCH = "invite-batch";
     private static final String MARKER_UPDATED_BY = "scheduler";
+    private static final String STAGE_STATUS_ACTIVE = "A";
+    private static final String STAGE_STATUS_START_REVIEW = "RS";
+    private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
+    private static final String STAGE_STATUS_FINALIZED = "F";
+    private static final String STAGE_STATUS_SUSPENDED = "S";
+    private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
 
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
@@ -66,9 +76,12 @@ public class EventScheduler {
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final PlatformParametersService platformParametersService;
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
+    private volatile Instant lastStageSchedulerRunAt = Instant.EPOCH;
+    private volatile Instant lastAutoInviterRunAt = Instant.EPOCH;
 
     @Value("${events.scheduler.enabled:false}")
     private boolean schedulerEnabled;
@@ -81,7 +94,8 @@ public class EventScheduler {
             ActivitiesMembersService activitiesMembersService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventInviteNotificationService eventInviteNotificationService,
-            NotificationRuleRegistryService notificationRuleRegistryService) {
+            NotificationRuleRegistryService notificationRuleRegistryService,
+            PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -90,15 +104,26 @@ public class EventScheduler {
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
+        this.platformParametersService = platformParametersService;
     }
 
-    @Scheduled(fixedDelayString = "${events.scheduler.poll-delay-ms:1800000}")
+    @Scheduled(fixedDelayString = "${events.scheduler.check-delay-ms:60000}")
     public void runScheduledWrappers() {
         if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
         }
 
         Instant now = Instant.now();
+        if (schedulerEnabled && claimStageSchedulerRun(now)) {
+            int startReviewBackfillCount = backfillTournamentStartReviewStages(now);
+            if (startReviewBackfillCount > 0) {
+                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewBackfillCount);
+            }
+            int reviewCount = closeEndedTournamentStagesForReview(now);
+            if (reviewCount > 0) {
+                LOGGER.info("Moved {} tournament stage(s) to score review.", reviewCount);
+            }
+        }
         if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
             notificationRuleRegistryService.beginRun(
                     NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
@@ -114,19 +139,251 @@ public class EventScheduler {
         }
     }
 
-    @Scheduled(fixedDelayString = "${events.waitlist.inviter-delay-ms:7200000}")
+    @Scheduled(fixedDelayString = "${events.waitlist.inviter-check-delay-ms:60000}")
     public void runWaitlistInviter() {
+        if (!claimAutoInviterRun(Instant.now())) {
+            return;
+        }
         int invitedCount = activitiesMembersService.sweepEventWaitlists();
         if (invitedCount > 0) {
             LOGGER.info("Promoted {} event wait-list member(s) to invitations.", invitedCount);
         }
+        List<InviteBatchPlan> autoInvitePlans = generatePriorityPlans();
+        int autoInvitedCount = autoInvitePlans.stream()
+                .mapToInt(plan -> plan == null || plan.invitedUserIds() == null ? 0 : plan.invitedUserIds().size())
+                .sum();
+        if (autoInvitedCount > 0) {
+            LOGGER.info("Auto-invited {} event candidate(s) across {} event(s).", autoInvitedCount, autoInvitePlans.size());
+        }
+    }
+
+    private synchronized boolean claimStageSchedulerRun(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        long delayMs = platformParametersService == null
+                ? 1_800_000L
+                : platformParametersService.eventSchedulerPollDelayMs(1_800_000L);
+        if (lastStageSchedulerRunAt != Instant.EPOCH
+                && effectiveNow.toEpochMilli() - lastStageSchedulerRunAt.toEpochMilli() < delayMs) {
+            return false;
+        }
+        lastStageSchedulerRunAt = effectiveNow;
+        return true;
+    }
+
+    private synchronized boolean claimAutoInviterRun(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        long delayMs = platformParametersService == null
+                ? 7_200_000L
+                : platformParametersService.autoInviterCadenceMs(7_200_000L);
+        if (lastAutoInviterRunAt != Instant.EPOCH
+                && effectiveNow.toEpochMilli() - lastAutoInviterRunAt.toEpochMilli() < delayMs) {
+            return false;
+        }
+        lastAutoInviterRunAt = effectiveNow;
+        return true;
+    }
+
+    public int closeEndedTournamentStagesForReview() {
+        return closeEndedTournamentStagesForReview(Instant.now());
+    }
+
+    int closeEndedTournamentStagesForReview(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        String nowIso = effectiveNow.toString();
+        List<ActivityEvent> changedRecords = new ArrayList<>();
+        Set<String> changedStageKeys = new LinkedHashSet<>();
+
+        for (ActivityEvent event : activityEventsRepository.findAll()) {
+            if (!shouldReviewTournamentStages(event)) {
+                continue;
+            }
+            List<SubEventFormItemDto> currentSubEvents = safeSubEvents(event);
+            if (currentSubEvents.isEmpty()) {
+                continue;
+            }
+            List<SubEventFormItemDto> updatedSubEvents = new ArrayList<>(currentSubEvents.size());
+            boolean changed = false;
+            for (SubEventFormItemDto subEvent : currentSubEvents) {
+                SubEventFormItemDto updated = closeStageForReviewIfDue(subEvent, effectiveNow, nowIso);
+                updatedSubEvents.add(updated);
+                if (updated != subEvent) {
+                    changed = true;
+                    changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(subEvent.id()));
+                }
+            }
+            if (changed) {
+                event.setSubEvents(updatedSubEvents);
+                event.setUpdatedDate(nowIso);
+                event.setUpdatedUser(MARKER_UPDATED_BY);
+                changedRecords.add(event);
+            }
+        }
+
+        if (!changedRecords.isEmpty()) {
+            activityEventsRepository.saveAll(changedRecords);
+        }
+        return changedStageKeys.size();
+    }
+
+    int backfillTournamentStartReviewStages(Instant now) {
+        Instant effectiveNow = now == null ? Instant.now() : now;
+        String nowIso = effectiveNow.toString();
+        List<ActivityEvent> changedRecords = new ArrayList<>();
+        Set<String> changedStageKeys = new LinkedHashSet<>();
+
+        for (ActivityEvent event : activityEventsRepository.findAll()) {
+            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !shouldReviewTournamentStages(event)) {
+                continue;
+            }
+            List<SubEventFormItemDto> subEvents = safeSubEvents(event);
+            if (subEvents.isEmpty()) {
+                continue;
+            }
+            SubEventFormItemDto firstStage = subEvents.get(0);
+            if (!shouldMoveFirstStageToStartReview(firstStage, effectiveNow)) {
+                continue;
+            }
+            List<SubEventFormItemDto> updatedSubEvents = new ArrayList<>(subEvents);
+            updatedSubEvents.set(0, copySubEventWithStageStatus(
+                    firstStage,
+                    STAGE_STATUS_START_REVIEW,
+                    "awaiting-tournament-start",
+                    nowIso,
+                    null,
+                    null));
+            event.setSubEvents(updatedSubEvents);
+            event.setUpdatedDate(nowIso);
+            event.setUpdatedUser(MARKER_UPDATED_BY);
+            changedRecords.add(event);
+            changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(firstStage.id()));
+        }
+
+        if (!changedRecords.isEmpty()) {
+            activityEventsRepository.saveAll(changedRecords);
+        }
+        return changedStageKeys.size();
+    }
+
+    private boolean shouldMoveFirstStageToStartReview(SubEventFormItemDto firstStage, Instant now) {
+        if (firstStage == null || !isTournamentStage(firstStage)) {
+            return false;
+        }
+        if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(firstStage.stageStatus()))) {
+            return false;
+        }
+        if (StringUtils.hasText(safeText(firstStage.stageStatusUpdatedAt()))
+                || StringUtils.hasText(safeText(firstStage.stageFinalizedAt()))) {
+            return false;
+        }
+        Instant startAt = parseStageInstant(firstStage.startAt());
+        return startAt != null && startAt.isAfter(now);
+    }
+
+    private boolean shouldReviewTournamentStages(ActivityEvent event) {
+        if (event == null || !Boolean.TRUE.equals(event.getPublished())) {
+            return false;
+        }
+        String status = normalizeId(event.getStatus()).toUpperCase(Locale.ROOT);
+        if ("T".equals(status) || "B".equals(status) || "D".equals(status) || "I".equals(status)) {
+            return false;
+        }
+        if ("TOURNAMENT".equalsIgnoreCase(safeText(event.getSubEventsDisplayMode()))) {
+            return true;
+        }
+        return safeSubEvents(event).stream().anyMatch(this::isTournamentStage);
+    }
+
+    private boolean isTournamentStage(SubEventFormItemDto subEvent) {
+        return subEvent != null
+                && ((subEvent.groups() != null && !subEvent.groups().isEmpty())
+                        || safeCount(subEvent.tournamentGroupCount()) > 0);
+    }
+
+    private SubEventFormItemDto closeStageForReviewIfDue(
+            SubEventFormItemDto subEvent,
+            Instant now,
+            String nowIso) {
+        if (subEvent == null || !isTournamentStage(subEvent)) {
+            return subEvent;
+        }
+        if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(subEvent.stageStatus()))) {
+            return subEvent;
+        }
+        Instant endAt = parseStageInstant(subEvent.endAt());
+        if (endAt == null || endAt.isAfter(now)) {
+            return subEvent;
+        }
+        return copySubEventWithStageStatus(
+                subEvent,
+                STAGE_STATUS_SCORE_REVIEW,
+                "stage-ended",
+                nowIso,
+                null,
+                null);
+    }
+
+    private SubEventFormItemDto copySubEventWithStageStatus(
+            SubEventFormItemDto subEvent,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId) {
+        return new SubEventFormItemDto(
+                subEvent.id(),
+                subEvent.name(),
+                subEvent.description(),
+                subEvent.startAt(),
+                subEvent.endAt(),
+                subEvent.location(),
+                subEvent.createdByUserId(),
+                subEvent.groups(),
+                subEvent.tournamentGroupCount(),
+                subEvent.tournamentGroupCapacityMin(),
+                subEvent.tournamentGroupCapacityMax(),
+                subEvent.tournamentLeaderboardType(),
+                subEvent.tournamentAdvancePerGroup(),
+                subEvent.optional(),
+                subEvent.pricing(),
+                subEvent.capacityMin(),
+                subEvent.capacityMax(),
+                subEvent.membersAccepted(),
+                subEvent.membersPending(),
+                subEvent.carsPending(),
+                subEvent.accommodationPending(),
+                subEvent.suppliesPending(),
+                subEvent.carsAccepted(),
+                subEvent.accommodationAccepted(),
+                subEvent.suppliesAccepted(),
+                subEvent.carsCapacityMin(),
+                subEvent.carsCapacityMax(),
+                subEvent.accommodationCapacityMin(),
+                subEvent.accommodationCapacityMax(),
+                subEvent.suppliesCapacityMin(),
+                subEvent.suppliesCapacityMax(),
+                subEvent.slotStartOffsetMinutes(),
+                subEvent.slotDurationMinutes(),
+                stageStatus,
+                stageStatusReason,
+                stageStatusUpdatedAt,
+                stageFinalizedAt,
+                stageFinalizedByUserId);
     }
 
     public List<GeneratedEventPlan> generateRandomPlans() {
-        return generateRandomPlans(null);
+        return generateRandomPlans(null, null);
     }
 
     public List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer) {
+        return generateRandomPlans(progressConsumer, null);
+    }
+
+    public List<GeneratedEventPlan> generateRandomPlansForEvents(Collection<String> sourceIds) {
+        return generateRandomPlans(null, sourceIds);
+    }
+
+    private List<GeneratedEventPlan> generateRandomPlans(Consumer<RandomPlanProgress> progressConsumer, Collection<String> sourceIds) {
+        Set<String> sourceIdFilter = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> eventRecords = activityEventsRepository.findAll();
         List<ActivityEvent> events = resolveCanonicalEvents(eventRecords);
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
@@ -143,6 +400,9 @@ public class EventScheduler {
             }
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) {
+                continue;
+            }
+            if (!sourceIdFilter.isEmpty() && !sourceIdFilter.contains(eventId)) {
                 continue;
             }
             candidateEventsById.put(eventId, event);
@@ -214,7 +474,9 @@ public class EventScheduler {
             if (eventGraph.getNodes().isEmpty()) return;
 
             // Standard for-loop inside the lambda, so we use 'continue' here
-            for (SubEventFormItemDto subEvent : safeSubEvents(event)) {
+            List<SubEventFormItemDto> subEvents = safeSubEvents(event);
+            for (int subEventIndex = 0; subEventIndex < subEvents.size(); subEventIndex += 1) {
+                SubEventFormItemDto subEvent = subEvents.get(subEventIndex);
                 String subEventId = normalizeId(subEvent == null ? null : subEvent.id());
                 if (!StringUtils.hasText(subEventId)) continue; 
                 int currentSubEvent = processedSubEvents.get() + 1;
@@ -226,6 +488,11 @@ public class EventScheduler {
                         requiredUserIds.size(),
                         observedQueries.get(),
                         "Processing sub-event " + currentSubEvent + "/" + totalSubEvents + ".");
+
+                if (!isStageAssignmentOpen(subEvents, subEventIndex)) {
+                    processedSubEvents.incrementAndGet();
+                    continue;
+                }
 
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
                         eventId, subEventId, subEvent, acceptedUserIds, true, "random", observedQueries, eventDocumentsById);
@@ -309,8 +576,18 @@ public class EventScheduler {
                 startPercent + Math.round(((endPercent - startPercent) * safeProcessed) / (float) safeTotal)));
     }
 
-public List<InviteBatchPlan> generatePriorityPlans() {
+    public List<InviteBatchPlan> generatePriorityPlans() {
+        return generatePriorityPlansForEvents(null);
+    }
+
+    public List<InviteBatchPlan> generatePriorityPlansForEvents(Collection<String> sourceIds) {
+        Set<String> requestedSourceIds = new LinkedHashSet<>(normalizeUserIds(sourceIds));
         List<ActivityEvent> events = resolveCanonicalEvents(activityEventsRepository.findByAutoInviterTrue());
+        if (!requestedSourceIds.isEmpty()) {
+            events = events.stream()
+                    .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
+                    .toList();
+        }
         
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
@@ -349,8 +626,8 @@ public List<InviteBatchPlan> generatePriorityPlans() {
             String eventId = normalizeId(event.getSourceId());
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
             
-            int activeMembers = snapshot == null ? 0 : snapshot.acceptedMembers() + snapshot.pendingMembers();
-            int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - activeMembers);
+            int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
+            int openSpots = Math.max(0, safeCount(event.getCapacityTotal()) - acceptedMembers);
             
             if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
@@ -358,6 +635,13 @@ public List<InviteBatchPlan> generatePriorityPlans() {
             if (snapshot != null) {
                 lockedUserIds.addAll(snapshot.acceptedMemberUserIds());
                 lockedUserIds.addAll(snapshot.pendingMemberUserIds());
+                snapshot.members().stream()
+                        .filter(Objects::nonNull)
+                        .filter(member -> MEMBER_STATUS_DISQUALIFIED.equals(safeText(member.getStatus())))
+                        .map(ActivityMember::getUserId)
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .forEach(lockedUserIds::add);
             }
             
             Set<String> candidateUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
@@ -429,6 +713,10 @@ public List<InviteBatchPlan> generatePriorityPlans() {
             for (int index = 0; index < subEvents.size(); index += 1) {
                 SubEventFormItemDto subEvent = subEvents.get(index);
                 if (subEvent == null || !StringUtils.hasText(normalizeId(subEvent.id()))) continue; // We are inside a standard for-loop here, so continue is fine
+                String stageStatus = normalizeStageStatus(subEvent.stageStatus());
+                if (STAGE_STATUS_START_REVIEW.equals(stageStatus) || STAGE_STATUS_SUSPENDED.equals(stageStatus)) {
+                    continue;
+                }
                 if (!(subEvent.groups() != null && !subEvent.groups().isEmpty() || safeCount(subEvent.tournamentGroupCount()) > 0)) {
                     continue;
                 }
@@ -448,6 +736,7 @@ public List<InviteBatchPlan> generatePriorityPlans() {
                 }
 
                 if (index + 1 >= subEvents.size()) continue;
+                if (!STAGE_STATUS_FINALIZED.equals(stageStatus)) continue;
 
                 Set<String> advancingUserIds = resolveAdvancingUserIds(state);
                 if (advancingUserIds.isEmpty()) continue;
@@ -975,6 +1264,46 @@ public List<InviteBatchPlan> generatePriorityPlans() {
 
     private void logDiagnostic(String wrapperType, String ownerId, String scopeId, String message) {
         LOGGER.warn("[scheduler:{}] owner={} scope={} {}", normalizeId(wrapperType), normalizeId(ownerId), normalizeId(scopeId), message);
+    }
+
+    private Instant parseStageInstant(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return null;
+        }
+        try {
+            return Instant.parse(text);
+        } catch (Exception ignored) {
+            // Fall through to local date-time parsing because editor values are often offset-free.
+        }
+        try {
+            return LocalDateTime.parse(text).atZone(ZoneId.systemDefault()).toInstant();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private String normalizeStageStatus(String status) {
+        String normalized = safeText(status).toUpperCase(Locale.ROOT);
+        return switch (normalized) {
+            case STAGE_STATUS_START_REVIEW, STAGE_STATUS_SCORE_REVIEW, STAGE_STATUS_FINALIZED, STAGE_STATUS_SUSPENDED -> normalized;
+            default -> STAGE_STATUS_ACTIVE;
+        };
+    }
+
+    private boolean isStageAssignmentOpen(List<SubEventFormItemDto> stages, int stageIndex) {
+        if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
+            return false;
+        }
+        String status = normalizeStageStatus(stages.get(stageIndex) == null ? null : stages.get(stageIndex).stageStatus());
+        if (!STAGE_STATUS_ACTIVE.equals(status)) {
+            return false;
+        }
+        if (stageIndex == 0) {
+            return true;
+        }
+        String previousStatus = normalizeStageStatus(stages.get(stageIndex - 1) == null ? null : stages.get(stageIndex - 1).stageStatus());
+        return STAGE_STATUS_FINALIZED.equals(previousStatus);
     }
 
     private boolean prefer(ActivityEvent next, ActivityEvent current) {

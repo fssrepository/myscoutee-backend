@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackState
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.service.ActivitiesEventFeedbackService;
@@ -99,6 +100,11 @@ public class ActivitiesEventsController {
     @PostMapping("/join")
     public EventRecordDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
+    }
+
+    @PostMapping("/stage-action")
+    public EventRecordDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
+        return activitiesEventsService.applyStageAction(request);
     }
 
     @GetMapping("/feedback")

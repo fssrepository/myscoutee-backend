@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -45,20 +46,46 @@ public class UserRatesService {
     private final AffinityCalculationService affinityCalculationService;
     private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
+    private final AdminTelemetryService adminTelemetryService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
+    @Autowired
     public UserRatesService(
             UserRatesRepository userRatesRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            AdminTelemetryService adminTelemetryService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.affinityCalculationService = affinityCalculationService;
         this.userAffinityEdgeService = userAffinityEdgeService;
         this.mongoTemplate = mongoTemplate;
+        this.adminTelemetryService = adminTelemetryService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+    }
+
+    UserRatesService(
+            UserRatesRepository userRatesRepository,
+            UsersRepository usersRepository,
+            HomeUserProfileService homeUserProfileService,
+            AffinityCalculationService affinityCalculationService,
+            UserAffinityEdgeService userAffinityEdgeService,
+            MongoTemplate mongoTemplate,
+            AdminTelemetryService adminTelemetryService) {
+        this(
+                userRatesRepository,
+                usersRepository,
+                homeUserProfileService,
+                affinityCalculationService,
+                userAffinityEdgeService,
+                mongoTemplate,
+                adminTelemetryService,
+                null);
     }
 
     @PostConstruct
@@ -161,8 +188,35 @@ public class UserRatesService {
             List<UserRate> savedRates = new ArrayList<>();
             userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
             userAffinityEdgeService.recomputeForRates(savedRates.isEmpty() ? normalizedRates : savedRates);
+            enqueueRateRecomputeTasks(savedRates.isEmpty() ? normalizedRates : savedRates);
+            adminTelemetryService.record("rates.synced", "matching", "", normalizedRates.get(0).getOwnerUserId(), normalizedRates.size());
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
+    }
+
+    private void enqueueRateRecomputeTasks(List<UserRate> rates) {
+        if (affinityRecomputeTaskService == null || rates == null || rates.isEmpty()) {
+            return;
+        }
+        LinkedHashSet<String> userIds = new LinkedHashSet<>();
+        for (UserRate rate : rates) {
+            if (rate == null) {
+                continue;
+            }
+            addIfText(userIds, rate.getOwnerUserId());
+            addIfText(userIds, rate.getRelatedUserId());
+            addIfText(userIds, rate.getSecondaryRelatedUserId());
+        }
+        for (String userId : userIds) {
+            affinityRecomputeTaskService.enqueueUserChanged(userId);
+        }
+    }
+
+    private void addIfText(Set<String> target, String value) {
+        String normalized = normalizeId(value);
+        if (target != null && StringUtils.hasText(normalized)) {
+            target.add(normalized);
+        }
     }
 
     private void ensureCanonicalUserRateIndexes() {

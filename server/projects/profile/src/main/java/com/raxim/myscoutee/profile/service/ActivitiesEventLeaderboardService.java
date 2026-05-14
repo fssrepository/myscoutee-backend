@@ -484,7 +484,12 @@ public class ActivitiesEventLeaderboardService {
                     subEvent.suppliesCapacityMin(),
                     subEvent.suppliesCapacityMax(),
                     subEvent.slotStartOffsetMinutes(),
-                    subEvent.slotDurationMinutes()));
+                    subEvent.slotDurationMinutes(),
+                    subEvent.stageStatus(),
+                    subEvent.stageStatusReason(),
+                    subEvent.stageStatusUpdatedAt(),
+                    subEvent.stageFinalizedAt(),
+                    subEvent.stageFinalizedByUserId()));
         }
         return updated;
     }

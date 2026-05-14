@@ -16,6 +16,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
+import com.raxim.myscoutee.common.config.properties.AdminStatsProperties;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.common.config.properties.EmailProperties;
 import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
@@ -29,6 +30,7 @@ import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
         EmailProperties.class,
         MediaStorageProperties.class,
         AssetSourceRefreshProperties.class,
+        AdminStatsProperties.class,
         AffinityRecomputeProperties.class,
         RegionSecurityProperties.class
 })
