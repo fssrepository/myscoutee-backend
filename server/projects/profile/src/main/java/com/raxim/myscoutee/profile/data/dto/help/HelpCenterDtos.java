@@ -18,6 +18,7 @@ public final class HelpCenterDtos {
     public record HelpCenterRevisionDto(
             String id,
             String documentKind,
+            String contextKey,
             String lang,
             String languageLabel,
             Integer version,
@@ -53,6 +54,7 @@ public final class HelpCenterDtos {
     public record HelpCenterRevisionSaveRequestDto(
             String actorUserId,
             String baseRevisionId,
+            String contextKey,
             String lang,
             String title,
             String summary,

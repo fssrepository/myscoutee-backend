@@ -36,6 +36,14 @@ public class HelpCenterController {
         return helpCenterService.activeState("privacy", lang, acceptLanguage);
     }
 
+    @GetMapping("/explanation/active")
+    public HelpCenterStateDto activeExplanation(
+            @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "contextKey", required = false) String contextKey) {
+        return helpCenterService.activeState("explanation", lang, acceptLanguage, contextKey);
+    }
+
     @GetMapping("/privacy/consents")
     public PrivacyConsentDto privacyConsent(
             @RequestParam("userId") String userId,

@@ -1,0 +1,35 @@
+{
+  "documentType": "explanation",
+  "contextKey": "home.game",
+  "lang": "hu",
+  "languageLabel": "Magyar",
+  "version": 1,
+  "title": "Kezdőlap magyarázat",
+  "summary": "Így működik a kezdőlap",
+  "description": "Rövid alkalmazáson belüli útmutató a kiválasztott képernyőhöz.",
+  "headerColor": "violet",
+  "active": true,
+  "sections": [
+    {
+      "id": "affinity",
+      "icon": "tune",
+      "title": "Szimpátia sáv",
+      "blurb": "Állítsd be, mennyire szimpatikus a kártya.",
+      "contentHtml": "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>"
+    },
+    {
+      "id": "profile",
+      "icon": "visibility",
+      "title": "Profil és képek",
+      "blurb": "A kártya több képet és részletes profilt is rejthet.",
+      "contentHtml": "<p>Tapints a képre a további fotókhoz, az eye ikon pedig megnyitja a profil részleteit.</p>"
+    },
+    {
+      "id": "history",
+      "icon": "history",
+      "title": "Előzmények",
+      "blurb": "A korábbi értékelések később is elérhetők.",
+      "contentHtml": "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p>"
+    }
+  ]
+}
