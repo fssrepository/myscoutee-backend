@@ -9,15 +9,6 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
 
-ui
--------
-
-changes
--------
-2) chatgpt chat - replace starbar to slider (i think it's better to make an arrow to continue instead of a
-save button at top, and probably remove backward/forward arrow as stepper)
-on logout is making load and block of spinner animatoon on landing site (but it's already loaded/cached) - fix
-
 Commands
 --------
 sudo ufw allow 'Nginx Full' (firewall check for 80/443)

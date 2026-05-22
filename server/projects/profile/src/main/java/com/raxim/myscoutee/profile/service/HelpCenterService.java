@@ -67,10 +67,13 @@ public class HelpCenterService {
             "events",
             "event.feedback");
     private static final Safelist HELP_HTML_SAFELIST = Safelist.relaxed()
-            .addTags("section", "article", "h3", "h4")
+            .addTags("section", "article", "figure", "figcaption", "h3", "h4")
             .addAttributes(":all", "class")
+            .addAttributes("img", "src", "alt", "title")
             .addAttributes("a", "target", "rel")
-            .addProtocols("a", "href", "http", "https", "mailto");
+            .addProtocols("a", "href", "http", "https", "mailto")
+            .addProtocols("img", "src", "http", "https", "data", "blob")
+            .preserveRelativeLinks(true);
 
     private final ConfigProperties configProperties;
     private final HelpCenterRevisionsRepository revisionsRepository;
@@ -453,12 +456,14 @@ public class HelpCenterService {
         if ("hu".equals(contentLang(lang))) {
             return List.of(
                     defaultSection("affinity", "tune", "Szimpátia sáv", "Állítsd be, mennyire szimpatikus a kártya.", "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>"),
-                    defaultSection("profile", "visibility", "Profil és képek", "A kártya több képet és részletes profilt is rejthet.", "<p>Tapints a képre a további fotókhoz, az eye ikon pedig megnyitja a profil részleteit.</p>"),
+                    defaultSection("profile", "visibility", "Profil és képek", "A kártya több képet és részletes profilt is rejthet.", "<p>Tapints a kép bal vagy jobb oszlopára a fotók lapozásához. A szem ikon megnyitja a profil részleteit.</p>"),
+                    defaultSection("filters", "filter_alt", "Szűrők és módok", "A felső sávval szűkítheted, kik jelenjenek meg.", "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hány szűrőcsoport aktív.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>"),
                     defaultSection("history", "history", "Előzmények", "A korábbi értékelések később is elérhetők.", "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p>"));
         }
         return List.of(
                 defaultSection("affinity", "tune", "Affinity slider", "Choose how strong the card feels for you.", "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>"),
-                defaultSection("profile", "visibility", "Profile and photos", "Cards can contain more photos and a profile detail view.", "<p>Tap the photo area to browse more images. Use the eye icon to open profile details.</p>"),
+                defaultSection("profile", "visibility", "Profile and photos", "Cards can contain more photos and a profile detail view.", "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>"),
+                defaultSection("filters", "filter_alt", "Filters and modes", "Use the top bar to narrow who appears.", "<p>The filter button opens profile filters. The number shows how many filter groups are active.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"),
                 defaultSection("history", "history", "History and edits", "Your previous ratings stay available.", "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>"));
     }
 

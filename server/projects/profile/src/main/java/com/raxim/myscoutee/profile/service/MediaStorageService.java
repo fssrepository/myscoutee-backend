@@ -19,7 +19,7 @@ import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredOb
 
 @Service
 public class MediaStorageService {
-    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat", "idea");
+    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat", "idea", "content");
 
     private final MediaStorageProperties properties;
     private final MediaObjectStoreClient objectStoreClient;
