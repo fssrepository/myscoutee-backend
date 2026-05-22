@@ -335,7 +335,11 @@ public class Users {
             Integer invitations,
             Integer events,
             Integer hosting,
+            Integer cars,
+            Integer accommodation,
+            Integer supplies,
             Integer tickets,
+            Integer contacts,
             Integer feedback,
             Integer adminJobs,
             Integer adminMetrics) {

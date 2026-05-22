@@ -156,6 +156,13 @@ public class AdminController {
         return helpCenterService.adminState(adminUserId, "privacy", lang);
     }
 
+    @GetMapping("/explanation")
+    public HelpCenterStateDto explanationState(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.adminState(adminUserId, "explanation", lang);
+    }
+
     @PostMapping("/help/revisions")
     public HelpCenterStateDto saveHelpRevision(@RequestBody(required = false) HelpCenterRevisionSaveRequestDto request) {
         return helpCenterService.saveRevision(request);
@@ -164,6 +171,11 @@ public class AdminController {
     @PostMapping("/privacy/revisions")
     public HelpCenterStateDto savePrivacyRevision(@RequestBody(required = false) HelpCenterRevisionSaveRequestDto request) {
         return helpCenterService.saveRevision(request, "privacy");
+    }
+
+    @PostMapping("/explanation/revisions")
+    public HelpCenterStateDto saveExplanationRevision(@RequestBody(required = false) HelpCenterRevisionSaveRequestDto request) {
+        return helpCenterService.saveRevision(request, "explanation");
     }
 
     @PostMapping("/help/revisions/{revisionId}/activate")
@@ -180,6 +192,13 @@ public class AdminController {
         return helpCenterService.activateRevision(revisionId, request, "privacy");
     }
 
+    @PostMapping("/explanation/revisions/{revisionId}/activate")
+    public HelpCenterStateDto activateExplanationRevision(
+            @PathVariable String revisionId,
+            @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
+        return helpCenterService.activateRevision(revisionId, request, "explanation");
+    }
+
     @DeleteMapping("/help/revisions/{revisionId}")
     public HelpCenterStateDto deleteHelpRevision(
             @PathVariable String revisionId,
@@ -192,6 +211,13 @@ public class AdminController {
             @PathVariable String revisionId,
             @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
         return helpCenterService.deleteRevision(revisionId, request, "privacy");
+    }
+
+    @DeleteMapping("/explanation/revisions/{revisionId}")
+    public HelpCenterStateDto deleteExplanationRevision(
+            @PathVariable String revisionId,
+            @RequestBody(required = false) HelpCenterAdminActionRequestDto request) {
+        return helpCenterService.deleteRevision(revisionId, request, "explanation");
     }
 
     @GetMapping("/ideas")

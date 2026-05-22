@@ -1,0 +1,42 @@
+{
+  "documentType": "explanation",
+  "contextKey": "home.game",
+  "lang": "en",
+  "languageLabel": "English",
+  "version": 1,
+  "title": "Home explanation",
+  "summary": "How the home screen works",
+  "description": "Short in-app guidance for the selected screen.",
+  "headerColor": "violet",
+  "active": true,
+  "sections": [
+    {
+      "id": "affinity",
+      "icon": "tune",
+      "title": "Affinity slider",
+      "blurb": "Pick how much affinity you feel for the card.",
+      "contentHtml": "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>"
+    },
+    {
+      "id": "profile",
+      "icon": "visibility",
+      "title": "Profile and photos",
+      "blurb": "Cards can contain more photos and a profile detail view.",
+      "contentHtml": "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>"
+    },
+    {
+      "id": "filters",
+      "icon": "filter_alt",
+      "title": "Filters and modes",
+      "blurb": "Use the top bar to narrow who appears.",
+      "contentHtml": "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"
+    },
+    {
+      "id": "history",
+      "icon": "history",
+      "title": "History and edits",
+      "blurb": "Your previous ratings stay available.",
+      "contentHtml": "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>"
+    }
+  ]
+}

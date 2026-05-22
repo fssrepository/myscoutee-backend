@@ -104,7 +104,11 @@ public class AdminMenuCounterService {
                 count(existing == null ? null : existing.invitations()),
                 count(existing == null ? null : existing.events()),
                 count(existing == null ? null : existing.hosting()),
+                count(existing == null ? null : existing.cars()),
+                count(existing == null ? null : existing.accommodation()),
+                count(existing == null ? null : existing.supplies()),
                 count(existing == null ? null : existing.tickets()),
+                count(existing == null ? null : existing.contacts()),
                 count(existing == null ? null : existing.feedback()),
                 counters.jobs(),
                 counters.metrics());
@@ -194,7 +198,11 @@ public class AdminMenuCounterService {
                 && Objects.equals(count(first.invitations()), count(second.invitations()))
                 && Objects.equals(count(first.events()), count(second.events()))
                 && Objects.equals(count(first.hosting()), count(second.hosting()))
+                && Objects.equals(count(first.cars()), count(second.cars()))
+                && Objects.equals(count(first.accommodation()), count(second.accommodation()))
+                && Objects.equals(count(first.supplies()), count(second.supplies()))
                 && Objects.equals(count(first.tickets()), count(second.tickets()))
+                && Objects.equals(count(first.contacts()), count(second.contacts()))
                 && Objects.equals(count(first.feedback()), count(second.feedback()))
                 && Objects.equals(count(first.adminJobs()), count(second.adminJobs()))
                 && Objects.equals(count(first.adminMetrics()), count(second.adminMetrics()));
