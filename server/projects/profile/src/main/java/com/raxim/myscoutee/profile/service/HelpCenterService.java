@@ -58,6 +58,10 @@ public class HelpCenterService {
     private static final String DEFAULT_PRIVACY_DESCRIPTION = "Before continuing, please review and accept how your data is used in MyScoutee.";
     private static final String DEFAULT_EXPLANATION_DESCRIPTION = "Short in-app guidance for the selected screen.";
     private static final String DEFAULT_EXPLANATION_CONTEXT = "home.game";
+    private static final String LEGACY_EXPLANATION_FILTER_COUNT_COPY_EN = "The number shows how many filter groups are active.";
+    private static final String UPDATED_EXPLANATION_FILTER_COUNT_COPY_EN = "The number shows how many results match the selected filter condition.";
+    private static final String LEGACY_EXPLANATION_FILTER_COUNT_COPY_HU = "A szám azt mutatja, hány szűrőcsoport aktív.";
+    private static final String UPDATED_EXPLANATION_FILTER_COUNT_COPY_HU = "A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.";
     private static final Set<String> EXPLANATION_CONTEXT_KEYS = Set.of(
             "home.game",
             "activities.rates",
@@ -345,6 +349,7 @@ public class HelpCenterService {
         for (ContentLanguageDto contentLanguage : contentLanguages()) {
             String language = contentLang(contentLanguage.lang());
             if (!revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language).isEmpty()) {
+                backfillExplanationFilterCountCopy(kind, language);
                 continue;
             }
             String nowIso = Instant.now().toString();
@@ -368,6 +373,40 @@ public class HelpCenterService {
             revision.setUpdatedUser("system");
             HelpCenterRevision saved = revisionsRepository.save(revision);
             audit("seed", "system", saved, "Seeded default " + documentLabel(kind).toLowerCase(Locale.ROOT) + " revision v1.");
+            backfillExplanationFilterCountCopy(kind, language);
+        }
+    }
+
+    private void backfillExplanationFilterCountCopy(String kind, String lang) {
+        if (!DOCUMENT_EXPLANATION.equals(kind)) {
+            return;
+        }
+        String language = contentLang(lang);
+        String legacyCopy = "hu".equals(language)
+                ? LEGACY_EXPLANATION_FILTER_COUNT_COPY_HU
+                : LEGACY_EXPLANATION_FILTER_COUNT_COPY_EN;
+        String updatedCopy = "hu".equals(language)
+                ? UPDATED_EXPLANATION_FILTER_COUNT_COPY_HU
+                : UPDATED_EXPLANATION_FILTER_COUNT_COPY_EN;
+        List<HelpCenterRevision> revisions = revisionsForKind(
+                revisionsRepository.findAllByOrderByVersionDesc(),
+                DOCUMENT_EXPLANATION,
+                language);
+        for (HelpCenterRevision revision : revisions) {
+            boolean changed = false;
+            for (HelpCenterSection section : revision.getSections()) {
+                if (!"filters".equals(section.getId()) || !StringUtils.hasText(section.getContentHtml())) {
+                    continue;
+                }
+                String updatedHtml = section.getContentHtml().replace(legacyCopy, updatedCopy);
+                if (!updatedHtml.equals(section.getContentHtml())) {
+                    section.setContentHtml(updatedHtml);
+                    changed = true;
+                }
+            }
+            if (changed) {
+                revisionsRepository.save(revision);
+            }
         }
     }
 
@@ -457,13 +496,13 @@ public class HelpCenterService {
             return List.of(
                     defaultSection("affinity", "tune", "Szimpátia sáv", "Állítsd be, mennyire szimpatikus a kártya.", "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>"),
                     defaultSection("profile", "visibility", "Profil és képek", "A kártya több képet és részletes profilt is rejthet.", "<p>Tapints a kép bal vagy jobb oszlopára a fotók lapozásához. A szem ikon megnyitja a profil részleteit.</p>"),
-                    defaultSection("filters", "filter_alt", "Szűrők és módok", "A felső sávval szűkítheted, kik jelenjenek meg.", "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hány szűrőcsoport aktív.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>"),
+                    defaultSection("filters", "filter_alt", "Szűrők és módok", "A felső sávval szűkítheted, kik jelenjenek meg.", "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>"),
                     defaultSection("history", "history", "Előzmények", "A korábbi értékelések később is elérhetők.", "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p>"));
         }
         return List.of(
                 defaultSection("affinity", "tune", "Affinity slider", "Choose how strong the card feels for you.", "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>"),
                 defaultSection("profile", "visibility", "Profile and photos", "Cards can contain more photos and a profile detail view.", "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>"),
-                defaultSection("filters", "filter_alt", "Filters and modes", "Use the top bar to narrow who appears.", "<p>The filter button opens profile filters. The number shows how many filter groups are active.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"),
+                defaultSection("filters", "filter_alt", "Filters and modes", "Use the top bar to narrow who appears.", "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"),
                 defaultSection("history", "history", "History and edits", "Your previous ratings stay available.", "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>"));
     }
 

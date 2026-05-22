@@ -29,7 +29,7 @@
       "icon": "filter_alt",
       "title": "Szűrők és módok",
       "blurb": "A felső sávval szűkítheted, kik jelenjenek meg.",
-      "contentHtml": "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hány szűrőcsoport aktív.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>"
+      "contentHtml": "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>"
     },
     {
       "id": "history",

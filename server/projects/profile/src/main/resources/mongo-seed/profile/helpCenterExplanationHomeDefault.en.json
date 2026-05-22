@@ -29,7 +29,7 @@
       "icon": "filter_alt",
       "title": "Filters and modes",
       "blurb": "Use the top bar to narrow who appears.",
-      "contentHtml": "<p>The filter button opens profile filters. The number shows how many filter groups are active.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"
+      "contentHtml": "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"
     },
     {
       "id": "history",
