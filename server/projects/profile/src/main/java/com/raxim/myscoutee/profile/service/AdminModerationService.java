@@ -272,7 +272,7 @@ public class AdminModerationService {
             changed = true;
         }
         if (user.getActivities() == null) {
-            user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0));
+            user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
             changed = true;
         }
         Users saved = changed ? usersRepository.save(user) : user;

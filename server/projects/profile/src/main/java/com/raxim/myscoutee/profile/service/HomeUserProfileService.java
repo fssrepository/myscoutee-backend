@@ -26,6 +26,7 @@ import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
@@ -59,6 +60,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinate
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
@@ -81,9 +83,14 @@ public class HomeUserProfileService {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String TYPE_HOSTING = "hosting";
     private static final String TYPE_INVITATIONS = "invitations";
+    private static final String ASSET_TYPE_CAR = "Car";
+    private static final String ASSET_TYPE_ACCOMMODATION = "Accommodation";
+    private static final String ASSET_TYPE_SUPPLIES = "Supplies";
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
+    private static final String ASSET_STATUS_DELETED = "D";
+    private static final String STATUS_TRASHED = "T";
     private static final double HOME_KNOWN_EDGE_SCORE = 1_000_000d;
     private static final double HOME_BRIDGE_COUNT_SCORE = 1_000_000d;
     private static final double HOME_BRIDGE_EDGE_SCORE = 250_000d;
@@ -170,6 +177,7 @@ public class HomeUserProfileService {
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
+    private final AssetsRepository assetsRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
@@ -192,6 +200,7 @@ public class HomeUserProfileService {
             ActivityChatsRepository activityChatsRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
+            AssetsRepository assetsRepository,
             EventParticipationTicketService eventParticipationTicketService,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
@@ -212,6 +221,7 @@ public class HomeUserProfileService {
         this.activityChatsRepository = activityChatsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
+        this.assetsRepository = assetsRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
@@ -1500,7 +1510,11 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.invitations()),
                 activities == null ? 0 : normalizeCount(activities.events()),
                 activities == null ? 0 : normalizeCount(activities.hosting()),
+                activities == null ? 0 : normalizeCount(activities.cars()),
+                activities == null ? 0 : normalizeCount(activities.accommodation()),
+                activities == null ? 0 : normalizeCount(activities.supplies()),
                 activities == null ? 0 : normalizeCount(activities.tickets()),
+                activities == null ? 0 : normalizeCount(activities.contacts()),
                 activities == null ? 0 : normalizeCount(activities.feedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()));
@@ -1675,13 +1689,18 @@ public class HomeUserProfileService {
     private Users.UserActivitiesRecord buildComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
         List<ActivityEvent> eventRecords = queryEventRecords(userId);
         EventMenuCounts eventMenuCounts = resolveEventMenuCounts(userId, eventRecords);
+        AssetMenuCounts assetMenuCounts = resolveAssetMenuCounts(userId);
         return new Users.UserActivitiesRecord(
                 queryGameStackUserRecords(userId).size(),
                 countUnreadChats(userId),
                 eventMenuCounts.invitations(),
                 eventMenuCounts.activeEvents(),
                 eventMenuCounts.hosting(),
+                assetMenuCounts.cars(),
+                assetMenuCounts.accommodation(),
+                assetMenuCounts.supplies(),
                 countTicketRecords(userId),
+                existing == null ? 0 : normalizeCount(existing.contacts()),
                 countPendingEventFeedback(userId, eventRecords),
                 existing == null ? 0 : normalizeCount(existing.adminJobs()),
                 existing == null ? 0 : normalizeCount(existing.adminMetrics()));
@@ -1748,6 +1767,7 @@ public class HomeUserProfileService {
 
         Map<String, ActivityEvent> preferredRecordsBySourceId = preferredEventRecordsBySourceId(
                 activityEventsRepository.findBySourceIdIn(sourceIds));
+        long nowMs = Instant.now().toEpochMilli();
         return Math.toIntExact(acceptedMemberRecords.stream()
                 .map(ActivityMember::getOwnerId)
                 .map(this::normalizeId)
@@ -1758,7 +1778,46 @@ public class HomeUserProfileService {
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
                 .filter(record -> !isHostingRecordForUser(record, userId))
+                .filter(record -> isUpcomingEventRecord(record, nowMs))
                 .count());
+    }
+
+    private AssetMenuCounts resolveAssetMenuCounts(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return new AssetMenuCounts(0, 0, 0);
+        }
+        int cars = 0;
+        int accommodation = 0;
+        int supplies = 0;
+        for (Asset asset : assetsRepository.findByOwnerUserId(normalizedUserId)) {
+            if (asset == null || isHiddenAsset(asset)) {
+                continue;
+            }
+            String type = safeText(asset.getType());
+            if (ASSET_TYPE_CAR.equals(type)) {
+                cars += 1;
+            } else if (ASSET_TYPE_ACCOMMODATION.equals(type)) {
+                accommodation += 1;
+            } else if (ASSET_TYPE_SUPPLIES.equals(type)) {
+                supplies += 1;
+            }
+        }
+        return new AssetMenuCounts(cars, accommodation, supplies);
+    }
+
+    private boolean isHiddenAsset(Asset asset) {
+        String status = safeText(asset == null ? null : asset.getStatus());
+        return ASSET_STATUS_DELETED.equals(status) || STATUS_TRASHED.equals(status);
+    }
+
+    private boolean isUpcomingEventRecord(ActivityEvent record, long nowMs) {
+        long endAtMs = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (endAtMs > 0L) {
+            return endAtMs > nowMs;
+        }
+        long startAtMs = toSortableDate(record == null ? null : record.getStartAtIso());
+        return startAtMs <= 0L || startAtMs > nowMs;
     }
 
     private ActivityEvent resolvePreferredEventRecord(String eventId) {
@@ -1979,8 +2038,9 @@ public class HomeUserProfileService {
             String requestCursor,
             UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
-        String previousHostHash = cursorPart(requestCursor, 10);
-        String previousMemberHash = cursorPart(requestCursor, 11);
+        int fingerprintOffset = cursorPartCount(requestCursor) >= 16 ? 14 : 10;
+        String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
+        String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
         String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
         String nextMemberHash = impressionsFingerprint(impressions == null ? null : impressions.member());
         return new UserRealtimeCountersDto(
@@ -1989,7 +2049,11 @@ public class HomeUserProfileService {
                 counters.invitations(),
                 counters.events(),
                 counters.hosting(),
+                counters.cars(),
+                counters.accommodation(),
+                counters.supplies(),
                 counters.tickets(),
+                counters.contacts(),
                 counters.feedback(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
@@ -2008,7 +2072,11 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.invitations())),
                 String.valueOf(normalizeCount(counters.events())),
                 String.valueOf(normalizeCount(counters.hosting())),
+                String.valueOf(normalizeCount(counters.cars())),
+                String.valueOf(normalizeCount(counters.accommodation())),
+                String.valueOf(normalizeCount(counters.supplies())),
                 String.valueOf(normalizeCount(counters.tickets())),
+                String.valueOf(normalizeCount(counters.contacts())),
                 String.valueOf(normalizeCount(counters.feedback())),
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
@@ -2028,7 +2096,11 @@ public class HomeUserProfileService {
                 && normalizeCount(left.invitations()) == normalizeCount(right.invitations())
                 && normalizeCount(left.events()) == normalizeCount(right.events())
                 && normalizeCount(left.hosting()) == normalizeCount(right.hosting())
+                && normalizeCount(left.cars()) == normalizeCount(right.cars())
+                && normalizeCount(left.accommodation()) == normalizeCount(right.accommodation())
+                && normalizeCount(left.supplies()) == normalizeCount(right.supplies())
                 && normalizeCount(left.tickets()) == normalizeCount(right.tickets())
+                && normalizeCount(left.contacts()) == normalizeCount(right.contacts())
                 && normalizeCount(left.feedback()) == normalizeCount(right.feedback())
                 && normalizeCount(left.adminJobs()) == normalizeCount(right.adminJobs())
                 && normalizeCount(left.adminMetrics()) == normalizeCount(right.adminMetrics());
@@ -2138,7 +2210,7 @@ public class HomeUserProfileService {
 
     private UserActivitiesDto toUserActivitiesDto(Users.UserActivitiesRecord activities) {
         if (activities == null) {
-            return new UserActivitiesDto(0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new UserActivitiesDto(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2146,7 +2218,11 @@ public class HomeUserProfileService {
                 normalizeCount(activities.invitations()),
                 normalizeCount(activities.events()),
                 normalizeCount(activities.hosting()),
+                normalizeCount(activities.cars()),
+                normalizeCount(activities.accommodation()),
+                normalizeCount(activities.supplies()),
                 normalizeCount(activities.tickets()),
+                normalizeCount(activities.contacts()),
                 normalizeCount(activities.feedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()));
@@ -2154,7 +2230,7 @@ public class HomeUserProfileService {
 
     private Users.UserActivitiesRecord toUserActivitiesRecord(UserActivitiesDto activities) {
         if (activities == null) {
-            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
@@ -2162,7 +2238,11 @@ public class HomeUserProfileService {
                 normalizeCount(activities.invitations()),
                 normalizeCount(activities.events()),
                 normalizeCount(activities.hosting()),
+                normalizeCount(activities.cars()),
+                normalizeCount(activities.accommodation()),
+                normalizeCount(activities.supplies()),
                 normalizeCount(activities.tickets()),
+                normalizeCount(activities.contacts()),
                 normalizeCount(activities.feedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()));
@@ -2666,6 +2746,14 @@ public class HomeUserProfileService {
         return parts.length > index ? safeText(parts[index]) : "";
     }
 
+    private int cursorPartCount(String cursor) {
+        String normalizedCursor = safeText(cursor);
+        if (!StringUtils.hasText(normalizedCursor)) {
+            return 0;
+        }
+        return normalizedCursor.split(":", -1).length;
+    }
+
     private String impressionsFingerprint(UserImpressionsSectionDto section) {
         if (section == null) {
             return "";
@@ -2802,5 +2890,11 @@ public class HomeUserProfileService {
             int invitations,
             int activeEvents,
             int hosting) {
+    }
+
+    private record AssetMenuCounts(
+            int cars,
+            int accommodation,
+            int supplies) {
     }
 }

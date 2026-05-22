@@ -22,6 +22,7 @@ import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
@@ -50,6 +51,8 @@ class HomeUserProfileServiceTest {
     private ActivityEventsRepository activityEventsRepository;
     @Mock
     private ActivityMembersRepository activityMembersRepository;
+    @Mock
+    private AssetsRepository assetsRepository;
     @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
@@ -83,6 +86,7 @@ class HomeUserProfileServiceTest {
         lenient().when(userRatesRepository.findByOwnerUserId("active")).thenReturn(List.of());
         lenient().when(userRatesRepository.findByOwnerUserIdAndMode("active", "pair")).thenReturn(List.of());
         lenient().when(activityMembersRepository.findAll()).thenReturn(List.of());
+        lenient().when(assetsRepository.findByOwnerUserId("active")).thenReturn(List.of());
         service = new HomeUserProfileService(
                 usersRepository,
                 userFilterPreferencesRepository,
@@ -91,6 +95,7 @@ class HomeUserProfileServiceTest {
                 activityChatsRepository,
                 activityEventsRepository,
                 activityMembersRepository,
+                assetsRepository,
                 eventParticipationTicketService,
                 eventFeedbackStatesRepository,
                 eventFeedbackAnswersRepository,
