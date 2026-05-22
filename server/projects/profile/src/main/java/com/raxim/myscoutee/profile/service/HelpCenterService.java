@@ -58,6 +58,7 @@ public class HelpCenterService {
     private static final String DEFAULT_PRIVACY_DESCRIPTION = "Before continuing, please review and accept how your data is used in MyScoutee.";
     private static final String DEFAULT_EXPLANATION_DESCRIPTION = "Short in-app guidance for the selected screen.";
     private static final String DEFAULT_EXPLANATION_CONTEXT = "home.game";
+    private static final String EXPLANATION_ACTIVITY_RATES_CONTEXT = "activities.rates";
     private static final String LEGACY_EXPLANATION_FILTER_COUNT_COPY_EN = "The number shows how many filter groups are active.";
     private static final String UPDATED_EXPLANATION_FILTER_COUNT_COPY_EN = "The number shows how many results match the selected filter condition.";
     private static final String LEGACY_EXPLANATION_FILTER_COUNT_COPY_HU = "A szám azt mutatja, hány szűrőcsoport aktív.";
@@ -130,7 +131,7 @@ public class HelpCenterService {
         if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
             return new HelpCenterStateDto(null, List.of(), List.of(), contentLanguages());
         }
-        ensureDefaultRevision(kind, language);
+        ensureDefaultRevision(kind, language, context);
         HelpCenterRevision active = revisionsForKind(
                     revisionsRepository.findAllByOrderByVersionDesc(),
                     kind,
@@ -172,7 +173,7 @@ public class HelpCenterService {
         String language = contentLang(request == null ? null : request.lang());
         String context = contextKey(kind, request == null ? null : request.contextKey(), true);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
-        ensureDefaultRevision(kind, language);
+        ensureDefaultRevision(kind, language, context);
         List<HelpCenterSection> sections = normalizeSections(request == null ? null : request.sections(), kind);
         List<HelpCenterRevision> currentRevisions = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context);
         Integer nextVersion = currentRevisions.stream()
@@ -189,7 +190,7 @@ public class HelpCenterService {
         revision.setVersion(nextVersion);
         revision.setActive(false);
         revision.setTitle(text(request == null ? null : request.title(), defaultTitle(kind, nextVersion, language)));
-        revision.setSummary(text(request == null ? null : request.summary(), defaultSummary(kind, language)));
+        revision.setSummary(text(request == null ? null : request.summary(), defaultSummary(kind, language, context)));
         revision.setDescription(text(request == null ? null : request.description(), defaultDescription(kind, language)));
         revision.setHeaderColor(headerColor(request == null ? null : request.headerColor()));
         revision.setSections(sections);
@@ -344,28 +345,38 @@ public class HelpCenterService {
     }
 
     private void ensureDefaultRevision(String kind, String lang) {
+        ensureDefaultRevision(kind, lang, null);
+    }
+
+    private void ensureDefaultRevision(String kind, String lang, String contextKey) {
+        String context = contextKey(kind, contextKey, false);
+        if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
+            ensureDefaultRevision(kind, lang, DEFAULT_EXPLANATION_CONTEXT);
+            ensureDefaultRevision(kind, lang, EXPLANATION_ACTIVITY_RATES_CONTEXT);
+            return;
+        }
         dropLegacyVersionIndex();
         backfillDocumentTypes();
         for (ContentLanguageDto contentLanguage : contentLanguages()) {
             String language = contentLang(contentLanguage.lang());
-            if (!revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language).isEmpty()) {
+            if (!revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context).isEmpty()) {
                 backfillExplanationFilterCountCopy(kind, language);
                 continue;
             }
             String nowIso = Instant.now().toString();
-            HelpCenterRevision revision = seedRevision(kind, language);
+            HelpCenterRevision revision = seedRevision(kind, language, context);
             revision.setDocumentType(kind);
             revision.setLang(language);
             revision.setContextKey(revisionContext(revision));
             revision.setLanguageLabel(languageLabel(language));
             revision.setVersion(revision.getVersion() == null || revision.getVersion() <= 0 ? 1 : revision.getVersion());
             revision.setActive(true);
-            revision.setTitle(text(revision.getTitle(), defaultRevisionTitle(kind, language)));
-            revision.setSummary(text(revision.getSummary(), defaultSummary(kind, language)));
+            revision.setTitle(text(revision.getTitle(), defaultRevisionTitle(kind, language, context)));
+            revision.setSummary(text(revision.getSummary(), defaultSummary(kind, language, context)));
             revision.setDescription(text(revision.getDescription(), defaultDescription(kind, language)));
             revision.setHeaderColor(headerColor(revision.getHeaderColor()));
             revision.setSections(revision.getSections() == null || revision.getSections().isEmpty()
-                    ? defaultSections(kind, language)
+                    ? defaultSections(kind, language, context)
                     : normalizeSections(revision.getSections().stream().map(this::toSectionDtoForSeed).toList(), kind));
             revision.setCreatedDate(nowIso);
             revision.setCreatedUser("system");
@@ -411,8 +422,12 @@ public class HelpCenterService {
     }
 
     private List<HelpCenterSection> defaultSections(String kind, String lang) {
+        return defaultSections(kind, lang, null);
+    }
+
+    private List<HelpCenterSection> defaultSections(String kind, String lang, String contextKey) {
         if (DOCUMENT_EXPLANATION.equals(kind)) {
-            return defaultExplanationSections(lang);
+            return defaultExplanationSections(lang, contextKey);
         }
         if ("hu".equals(contentLang(lang))) {
             return DOCUMENT_PRIVACY.equals(kind) ? defaultPrivacySectionsHu() : defaultHelpSectionsHu();
@@ -491,7 +506,10 @@ public class HelpCenterService {
                 defaultSection("safety", "verified_user", "Profilok és biztonság", "Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.", "<p><strong>Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.</strong></p><p>A profilkészültség valós időben frissül, ahogy a felhasználók kitöltik a fontos mezőket.</p><ul><li>Élő profilkészültségi visszajelzés</li><li>Felhasználójelentési és visszajelzési folyamatok</li><li>Adatvédelmi és hozzáférési kontrollok</li></ul>"));
     }
 
-    private List<HelpCenterSection> defaultExplanationSections(String lang) {
+    private List<HelpCenterSection> defaultExplanationSections(String lang, String contextKey) {
+        if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(contextKey(DOCUMENT_EXPLANATION, contextKey, false))) {
+            return defaultActivityRatesExplanationSections(lang);
+        }
         if ("hu".equals(contentLang(lang))) {
             return List.of(
                     defaultSection("affinity", "tune", "Szimpátia sáv", "Állítsd be, mennyire szimpatikus a kártya.", "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>"),
@@ -504,6 +522,23 @@ public class HelpCenterService {
                 defaultSection("profile", "visibility", "Profile and photos", "Cards can contain more photos and a profile detail view.", "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>"),
                 defaultSection("filters", "filter_alt", "Filters and modes", "Use the top bar to narrow who appears.", "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"),
                 defaultSection("history", "history", "History and edits", "Your previous ratings stay available.", "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>"));
+    }
+
+    private List<HelpCenterSection> defaultActivityRatesExplanationSections(String lang) {
+        if ("hu".equals(contentLang(lang))) {
+            return List.of(
+                    defaultSection("activity-tabs", "star", "Tevékenység fülek", "Az első gombbal válthatsz értékelések, chatek és események között.", "<p>A jelvény azt mutatja, hány elem érhető el az adott területen. Nyisd meg a menüt, ha az értékelésekről chatekre vagy eseményfeladatokra váltanál.</p>"),
+                    defaultSection("activity-rate-filter", "north_east", "Értékelési szűrő", "A második gomb szűkíti, mely értékeléskártyák jelenjenek meg.", "<p>Választhatsz adott, kapott, kölcsönös, találkozott vagy páros értékeléseket. A jelvény száma a kiválasztott értékelési szűrő találatszáma.</p>"),
+                    defaultSection("activity-distance-sort", "route", "Rendezés és távolság", "A Legutóbbi és Távolság gombok a lista sorrendjét váltják.", "<p>A Legutóbbi a friss értékelési aktivitást tartja elöl. A Távolság a profil vagy pár távolsága szerint csoportosít, ezért a távolságjelző lesz a fő tájékozódási pont.</p>"),
+                    defaultSection("activity-card-actions", "visibility", "Kártyák és műveletek", "Minden kártyán együtt látszik a személy, a pontszámod és a profilnyitás.", "<p>A csillagos jelvény az aktuális értékelési értéket mutatja. A pontszám/kártya kiválasztásával módosíthatod az értékelést, a szem gombbal pedig megnyithatod a profilt.</p>"),
+                    defaultSection("activity-panel-actions", "fullscreen", "Panelműveletek", "A jobb felső gombok módot váltanak vagy bezárják a panelt.", "<p>A teljes képernyős mód fókuszált értékelési folyamatra vált. A bezárás gomb kilép a Tevékenységek panelből, és visszavisz az előző képernyőre.</p>"));
+        }
+        return List.of(
+                defaultSection("activity-tabs", "star", "Activity tabs", "Use the first button to switch between ratings, chats, and events.", "<p>The badge shows how many items are available in that area. Open the menu when you want to move from rating people to chats or event work.</p>"),
+                defaultSection("activity-rate-filter", "north_east", "Rating filter", "The second button narrows which rating cards are shown.", "<p>Choose given, received, mutual, met, or pair-based ratings. The number on the badge is the count for the selected rating filter.</p>"),
+                defaultSection("activity-distance-sort", "route", "Sort and distance", "Latest and Distance change the list order.", "<p>Latest keeps recent rating activity first. Distance groups cards by how far away the profile or pair is, so the distance marker can become the main scanning cue.</p>"),
+                defaultSection("activity-card-actions", "visibility", "Cards and actions", "Each card combines the person, your score, and profile access.", "<p>The star badge shows the current rating value. Select the rating badge/card to edit the score, and use the eye button to open profile details.</p>"),
+                defaultSection("activity-panel-actions", "fullscreen", "Panel actions", "The top-right controls change the panel mode or close it.", "<p>Fullscreen expands rating into a focused flow. The close button exits the Activities panel and returns you to the previous screen.</p>"));
     }
 
     private List<HelpCenterSection> defaultPrivacySectionsHu() {
@@ -653,12 +688,17 @@ public class HelpCenterService {
         return section;
     }
 
-    private HelpCenterRevision seedRevision(String kind, String lang) {
+    private HelpCenterRevision seedRevision(String kind, String lang, String contextKey) {
         String language = contentLang(lang);
-        Resource resource = resourceLoader.getResource(seedResourcePath(kind, language));
+        String context = contextKey(kind, contextKey, false);
+        Resource resource = resourceLoader.getResource(seedResourcePath(kind, language, context));
         if (resource.exists()) {
             try (InputStream inputStream = resource.getInputStream()) {
-                return objectMapper.readValue(inputStream, HelpCenterRevision.class);
+                HelpCenterRevision revision = objectMapper.readValue(inputStream, HelpCenterRevision.class);
+                if (DOCUMENT_EXPLANATION.equals(kind) && StringUtils.hasText(context)) {
+                    revision.setContextKey(context);
+                }
+                return revision;
             } catch (IOException ignored) {
                 // Fall back to the built-in seed if the JSON resource is unavailable or malformed.
             }
@@ -666,23 +706,25 @@ public class HelpCenterService {
         HelpCenterRevision revision = new HelpCenterRevision();
         revision.setDocumentType(kind);
         revision.setLang(language);
-        revision.setContextKey(DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(revision.getContextKey())
-                ? DEFAULT_EXPLANATION_CONTEXT
+        revision.setContextKey(DOCUMENT_EXPLANATION.equals(kind) && StringUtils.hasText(context)
+                ? context
                 : contextKey(kind, revision.getContextKey(), false));
         revision.setLanguageLabel(languageLabel(language));
         revision.setVersion(1);
-        revision.setTitle(defaultRevisionTitle(kind, language));
-        revision.setSummary(defaultSummary(kind, language));
+        revision.setTitle(defaultRevisionTitle(kind, language, context));
+        revision.setSummary(defaultSummary(kind, language, context));
         revision.setDescription(defaultDescription(kind, language));
         revision.setHeaderColor("amber");
-        revision.setSections(defaultSections(kind, language));
+        revision.setSections(defaultSections(kind, language, context));
         return revision;
     }
 
-    private String seedResourcePath(String kind, String lang) {
+    private String seedResourcePath(String kind, String lang, String contextKey) {
         String documentName = DOCUMENT_PRIVACY.equals(kind) ? "Privacy" : "Help";
         if (DOCUMENT_EXPLANATION.equals(kind)) {
-            documentName = "ExplanationHome";
+            documentName = EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(contextKey)
+                    ? "ExplanationActivitiesRates"
+                    : "ExplanationHome";
         }
         return DEFAULT_SEED_RESOURCE_PREFIX + documentName + "Default." + contentLang(lang) + ".json";
     }
@@ -758,7 +800,7 @@ public class HelpCenterService {
                 language,
                 languageLabel(language),
                 revision.getVersion(),
-                text(revision.getTitle(), defaultRevisionTitle(kind, language)),
+                text(revision.getTitle(), defaultRevisionTitle(kind, language, revisionContext(revision))),
                 normalize(revision.getSummary()),
                 text(revision.getDescription(), defaultDescription(kind, language)),
                 headerColor(revision.getHeaderColor()),
@@ -1016,11 +1058,19 @@ public class HelpCenterService {
     }
 
     private String defaultRevisionTitle(String kind, String lang) {
+        return defaultRevisionTitle(kind, lang, null);
+    }
+
+    private String defaultRevisionTitle(String kind, String lang, String contextKey) {
+        String context = contextKey(kind, contextKey, false);
         if ("hu".equals(contentLang(lang))) {
             if (DOCUMENT_PRIVACY.equals(kind)) {
                 return "Adatvédelem";
             }
             if (DOCUMENT_EXPLANATION.equals(kind)) {
+                if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
+                    return "Tevékenységek magyarázat";
+                }
                 return "Kezdőlap magyarázat";
             }
             return "MyScoutee súgó";
@@ -1029,17 +1079,28 @@ public class HelpCenterService {
             return "Data privacy";
         }
         if (DOCUMENT_EXPLANATION.equals(kind)) {
+            if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
+                return "Activity ratings explanation";
+            }
             return "Home explanation";
         }
         return "MyScoutee help";
     }
 
     private String defaultSummary(String kind, String lang) {
+        return defaultSummary(kind, lang, null);
+    }
+
+    private String defaultSummary(String kind, String lang, String contextKey) {
+        String context = contextKey(kind, contextKey, false);
         if ("hu".equals(contentLang(lang))) {
             if (DOCUMENT_PRIVACY.equals(kind)) {
                 return "Adatvédelem elsőként";
             }
             if (DOCUMENT_EXPLANATION.equals(kind)) {
+                if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
+                    return "Így működik az értékelési panel";
+                }
                 return "Így működik a kezdőlap";
             }
             return "Mit tehetsz a MyScoutee-ban";
@@ -1048,6 +1109,9 @@ public class HelpCenterService {
             return "Privacy first";
         }
         if (DOCUMENT_EXPLANATION.equals(kind)) {
+            if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
+                return "How the activity ratings panel works";
+            }
             return "How the home screen works";
         }
         return "What you can do in MyScoutee";
