@@ -66,6 +66,7 @@ public class ChatAttachmentLifecycleService {
                 }
             }
             if (changed) {
+                chat.refreshMessageSearchFields();
                 changedChats.add(chat);
             }
         }

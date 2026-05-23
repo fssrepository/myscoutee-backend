@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
@@ -67,6 +69,7 @@ public class ActivitiesMembersService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final ActivitiesChatService activitiesChatService;
+    private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
             ActivityMembersRepository activityMembersRepository,
@@ -600,6 +603,7 @@ public class ActivitiesMembersService {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
 
+        synchronized (eventJoinLock(normalizedEventId)) {
         List<ActivityMember> existing = mergeDerivedOwnerMembers(
                 OWNER_TYPE_EVENT,
                 normalizedEventId,
@@ -614,6 +618,10 @@ public class ActivitiesMembersService {
         ActivityMember current = existingByUserId.get(viewerUserId);
         if (current != null && ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+        if (accepted && isCapacityFullForJoin(eventRecord, existing, viewerUserId)) {
+            accepted = false;
+            waitingList = true;
         }
         if (isDerivedMember(current)) {
             current = null;
@@ -652,6 +660,24 @@ public class ActivitiesMembersService {
             refreshEmbeddedEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+    }
+
+    private Object eventJoinLock(String eventId) {
+        return eventJoinLocks.computeIfAbsent(eventId, ignored -> new Object());
+    }
+
+    private boolean isCapacityFullForJoin(ActivityEvent eventRecord, List<ActivityMember> existing, String joiningUserId) {
+        int capacityTotal = Math.max(0, eventRecord == null || eventRecord.getCapacityTotal() == null ? 0 : eventRecord.getCapacityTotal());
+        if (capacityTotal <= 0) {
+            return false;
+        }
+        long acceptedMembers = existing.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !joiningUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
+                .count();
+        return acceptedMembers >= capacityTotal;
     }
 
     private String pendingJoinRequestKind(boolean waitingList, boolean approvalRequested) {

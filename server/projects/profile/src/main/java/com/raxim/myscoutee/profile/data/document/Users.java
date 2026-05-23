@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
+@CompoundIndexes({
+        @CompoundIndex(name = "users_profile_status", def = "{'profileStatus': 1}"),
+        @CompoundIndex(name = "users_profile_status_deleted", def = "{'profileStatus': 1, 'deletedAtIso': 1}"),
+        @CompoundIndex(name = "users_host_tier", def = "{'hostTier': 1}")
+})
 public class Users {
     @Id
     private String mongoId;

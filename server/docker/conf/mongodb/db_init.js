@@ -71,6 +71,47 @@ const requiredCollections = [
     { name: 'event_location_geo' }
   );
 
+  portalDb.chats.createIndex(
+    { ownerUserId: 1, id: 1 },
+    { name: 'chat_owner_public_id', unique: true }
+  );
+  portalDb.chats.createIndex(
+    { id: 1 },
+    { name: 'chat_public_id_lookup' }
+  );
+  portalDb.chats.createIndex(
+    { ownerUserId: 1, dateIso: -1 },
+    { name: 'chat_owner_date' }
+  );
+  portalDb.chats.createIndex(
+    { memberIds: 1, dateIso: -1 },
+    { name: 'chat_member_date' }
+  );
+  portalDb.chats.createIndex(
+    { channelType: 1, dateIso: -1 },
+    { name: 'chat_channel_date' }
+  );
+  portalDb.chats.createIndex(
+    { messageSenderUserIds: 1, dateIso: -1 },
+    { name: 'chat_message_sender_date' }
+  );
+  portalDb.chats.createIndex(
+    { messageReadByUserIds: 1, dateIso: -1 },
+    { name: 'chat_message_reader_date' }
+  );
+  portalDb.chats.createIndex(
+    { messageReactionUserIds: 1, dateIso: -1 },
+    { name: 'chat_message_reaction_date' }
+  );
+  portalDb.chats.createIndex(
+    { messageAttachmentKeys: 1, dateIso: -1 },
+    { name: 'chat_message_attachment_date' }
+  );
+  portalDb.chats.createIndex(
+    { pollVoterUserIds: 1, dateIso: -1 },
+    { name: 'chat_poll_voter_date' }
+  );
+
   portalDb.userExperienceProfiles.createIndex(
     { userId: 1 },
     { name: 'user_experience_profiles_user_id', unique: true }

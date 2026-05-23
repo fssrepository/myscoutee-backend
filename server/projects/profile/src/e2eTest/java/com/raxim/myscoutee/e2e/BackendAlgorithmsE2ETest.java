@@ -179,6 +179,7 @@ class BackendAlgorithmsE2ETest {
         assertThat(completedRule.path("runState").path("lastRunCount").asInt()).isEqualTo(20);
         assertThat(Duration.between(randomRunStarted, Instant.now())).isLessThan(Duration.ofSeconds(20));
         assertRandomGroupsWereAssignedByAffinityClusters();
+        assertAdminNotificationRuleEditingRoundTripsThroughHttp();
 
         postOk("/activities/events/publish", Map.of(
                 "userId", userId(41),
@@ -192,6 +193,70 @@ class BackendAlgorithmsE2ETest {
 
         assertScoreLeaderboardOverHttp();
         assertFifaLeaderboardTieBreaksOverHttp();
+    }
+
+    private void assertAdminNotificationRuleEditingRoundTripsThroughHttp() {
+        JsonNode initialState = getJson("/admin/notifications?adminUserId=" + ADMIN_ID);
+        assertThat(ruleByKey(initialState, NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                .path("enabled").asBoolean()).isTrue();
+
+        JsonNode savedState = postJson("/admin/notifications", Map.of(
+                "adminUserId", ADMIN_ID,
+                "rules", List.of(editedAutoInviterRule())));
+        JsonNode savedRule = ruleByKey(savedState, NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER);
+        assertThat(savedRule.path("enabled").asBoolean()).isFalse();
+        assertThat(savedRule.path("priority").asInt()).isEqualTo(777);
+        assertThat(savedRule.path("description").asString()).isEqualTo("E2E edited auto inviter cadence.");
+        assertThat(savedRule.path("timing").path("intervalAmount").asInt()).isEqualTo(5);
+        assertThat(savedRule.path("timing").path("intervalUnit").asString()).isEqualTo("minutes");
+        assertThat(savedRule.path("message").path("pushTitle").asString()).isEqualTo("E2E Auto Invite");
+
+        JsonNode runtimeRule = getJson("/admin/notifications/"
+                + NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER
+                + "/runtime?adminUserId=" + ADMIN_ID);
+        assertThat(runtimeRule.path("enabled").asBoolean()).isFalse();
+        assertThat(runtimeRule.path("updatedUser").asString()).isEqualTo(ADMIN_ID);
+    }
+
+    private Map<String, Object> editedAutoInviterRule() {
+        Map<String, Object> rule = new LinkedHashMap<>();
+        rule.put("ruleKey", NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER);
+        rule.put("label", "admin.jobs.rule.event.auto.inviter");
+        rule.put("category", "admin.jobs.category.scheduled");
+        rule.put("description", "E2E edited auto inviter cadence.");
+        rule.put("actionKey", "event.scheduler.auto-inviter");
+        rule.put("triggerKind", "scheduled_process");
+        rule.put("enabled", false);
+        rule.put("manualRunEnabled", false);
+        rule.put("adminManageable", true);
+        rule.put("priority", 777);
+        rule.put("channels", Map.of(
+                        "pushEnabled", true,
+                        "emailEnabled", false,
+                        "inAppEnabled", true,
+                        "supportChatEnabled", false));
+        rule.put("timing", Map.of(
+                        "mode", "interval",
+                        "intervalAmount", 5,
+                        "intervalUnit", "minutes",
+                        "time", "09:15",
+                        "timezone", "UTC"));
+        rule.put("scheduleSlots", List.of(Map.of(
+                        "id", "e2e-auto-inviter-slot",
+                        "frequency", "daily",
+                        "time", "09:15",
+                        "timezone", "UTC",
+                        "actionKey", "event.scheduler.auto-inviter",
+                        "enabled", true)));
+        rule.put("parameters", List.of());
+        rule.put("message", Map.of(
+                        "pushTitle", "E2E Auto Invite",
+                        "pushBody", "Edited through backend e2e.",
+                        "emailTemplateKey", "",
+                        "emailSubject", "",
+                        "emailBody", "",
+                        "ctaPath", "/game"));
+        return rule;
     }
 
     private JsonNode waitForRandomGroupingRun() {
@@ -422,6 +487,15 @@ class BackendAlgorithmsE2ETest {
             }
         }
         throw new AssertionError("Missing group " + groupId + " in " + state);
+    }
+
+    private JsonNode ruleByKey(JsonNode state, String ruleKey) {
+        for (JsonNode rule : state.path("rules")) {
+            if (ruleKey.equals(rule.path("ruleKey").asString())) {
+                return rule;
+            }
+        }
+        throw new AssertionError("Missing notification rule " + ruleKey + " in " + state);
     }
 
     private List<String> ids(JsonNode array) {

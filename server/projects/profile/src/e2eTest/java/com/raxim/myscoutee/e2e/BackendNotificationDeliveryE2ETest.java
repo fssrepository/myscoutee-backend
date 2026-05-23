@@ -54,7 +54,6 @@ import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway;
-import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway.FirebaseBatchSendResult;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -456,17 +455,19 @@ class BackendNotificationDeliveryE2ETest {
         }
 
         @Override
-        public FirebaseBatchSendResult sendAll(List<Message> messages, List<String> tokens) throws FirebaseMessagingException {
+        public FirebaseMessagingGateway.FirebaseBatchSendResult sendAll(List<Message> messages, List<String> tokens)
+                throws FirebaseMessagingException {
             List<String> copiedTokens = List.copyOf(tokens == null ? List.of() : tokens);
             directCalls.add(copiedTokens);
-            return FirebaseBatchSendResult.allSuccessful(copiedTokens.size());
+            return FirebaseMessagingGateway.FirebaseBatchSendResult.allSuccessful(copiedTokens.size());
         }
 
         @Override
-        public FirebaseBatchSendResult sendMulticast(MulticastMessage message, List<String> tokens) throws FirebaseMessagingException {
+        public FirebaseMessagingGateway.FirebaseBatchSendResult sendMulticast(MulticastMessage message, List<String> tokens)
+                throws FirebaseMessagingException {
             List<String> copiedTokens = List.copyOf(tokens == null ? List.of() : tokens);
             multicastCalls.add(copiedTokens);
-            return FirebaseBatchSendResult.allSuccessful(copiedTokens.size());
+            return FirebaseMessagingGateway.FirebaseBatchSendResult.allSuccessful(copiedTokens.size());
         }
 
         void reset() {

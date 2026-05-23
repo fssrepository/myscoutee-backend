@@ -18,7 +18,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

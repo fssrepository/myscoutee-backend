@@ -14,6 +14,7 @@ import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider
 import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
 import com.raxim.myscoutee.common.config.firebase.FirebaseService;
+import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 
 @Configuration
@@ -22,13 +23,16 @@ public class WebSecurityConfig {
 
     private final FirebaseService firebaseService;
     private final FirebaseAuthenticationProvider firebaseProvider;
+    private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final ConfigProperties configProperties;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
+            FirebaseTokenVerifier firebaseTokenVerifier,
             ConfigProperties configProperties) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
+        this.firebaseTokenVerifier = firebaseTokenVerifier;
         this.configProperties = configProperties;
     }
 
@@ -51,7 +55,6 @@ public class WebSecurityConfig {
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",
-                            "/admin/**",
                             "/css/**",
                             "/js/**",
                             "/img/**",
@@ -71,7 +74,8 @@ public class WebSecurityConfig {
                         authorizeRequests.requestMatchers("/activities/chats/**").authenticated()
                                 .anyRequest().denyAll();
                     } else {
-                        authorizeRequests.anyRequest().authenticated();
+                        authorizeRequests.requestMatchers("/admin/**").hasAuthority("A")
+                                .anyRequest().authenticated();
                     }
                 })
                 .httpBasic(httpBasic -> httpBasic.disable())
@@ -80,7 +84,7 @@ public class WebSecurityConfig {
     }
 
     private FirebaseFilter tokenAuthorizationFilter() {
-        return new FirebaseFilter(firebaseService, configProperties);
+        return new FirebaseFilter(firebaseService, configProperties, firebaseTokenVerifier);
     }
 
     private SessionMongoRoutingFilter sessionMongoRoutingFilter() {

@@ -723,10 +723,12 @@ public class ActivitiesEventsService {
                 waitingList = waitingList || isRecordFull(slotRecord);
                 accepted = !waitingList && isConfirmedBooking(request, preferred);
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
-                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
+                ActivitiesMembersService.OwnerMembersSnapshot slotSnapshot =
+                        activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
+                boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
-                if (accepted) {
+                if (joinedSlot) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                     postMemberJoinedMessage(sourceId, viewer.user());
                 }
@@ -738,14 +740,23 @@ public class ActivitiesEventsService {
             }
         }
 
-        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
+        boolean joined = isAcceptedMember(snapshot, viewer.userId());
         affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
-        if (accepted) {
+        if (joined) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
             postMemberJoinedMessage(sourceId, viewer.user());
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
+    }
+
+    private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        return StringUtils.hasText(normalizedUserId)
+                && snapshot != null
+                && snapshot.acceptedMemberUserIds().contains(normalizedUserId);
     }
 
     private StageActionTarget resolveStageActionTarget(EventStageActionRequestDto request) {

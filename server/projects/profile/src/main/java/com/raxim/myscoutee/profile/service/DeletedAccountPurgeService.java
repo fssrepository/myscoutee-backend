@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -684,7 +683,7 @@ public class DeletedAccountPurgeService {
         addChats(chatsByKey, activityChatsRepository.findByMessageSenderUserId(userId));
         addChats(chatsByKey, activityChatsRepository.findByMessageReadByUserId(userId));
         addChats(chatsByKey, activityChatsRepository.findByMessageReactionUserId(userId));
-        addChats(chatsByKey, activityChatsRepository.findByPollAttachmentDescriptionMatching(pollVoteUserPattern(userId)));
+        addChats(chatsByKey, activityChatsRepository.findByPollVoterUserId(userId));
         if (chatsByKey.isEmpty()) {
             return;
         }
@@ -723,6 +722,7 @@ public class DeletedAccountPurgeService {
             }
             if (changed) {
                 refreshChatSummary(chat);
+                chat.refreshMessageSearchFields();
                 changedChats.add(chat);
             }
         }
@@ -943,10 +943,6 @@ public class DeletedAccountPurgeService {
             case "link" -> "Shared a link";
             default -> StringUtils.hasText(attachment.getTitle()) ? safeText(attachment.getTitle()) : "Shared an attachment";
         };
-    }
-
-    private String pollVoteUserPattern(String userId) {
-        return "\\\"userId\\\"\\s*:\\s*\\\"" + Pattern.quote(userId) + "\\\"";
     }
 
     private String safeText(String value) {

@@ -63,7 +63,6 @@ import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient;
-import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredObject;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -904,7 +903,7 @@ class BackendContentMediaE2ETest {
     }
 
     private static class InMemoryMediaObjectStoreClient implements MediaObjectStoreClient {
-        private final Map<String, StoredObject> objects = new ConcurrentHashMap<>();
+        private final Map<String, MediaObjectStoreClient.StoredObject> objects = new ConcurrentHashMap<>();
 
         @Override
         public boolean isEnabled() {
@@ -913,16 +912,16 @@ class BackendContentMediaE2ETest {
 
         @Override
         public void putObject(String bucket, String key, String contentType, byte[] bytes) {
-            objects.put(storageKey(bucket, key), new StoredObject(bytes.clone(), contentType));
+            objects.put(storageKey(bucket, key), new MediaObjectStoreClient.StoredObject(bytes.clone(), contentType));
         }
 
         @Override
-        public StoredObject getObject(String bucket, String key) {
-            StoredObject stored = objects.get(storageKey(bucket, key));
+        public MediaObjectStoreClient.StoredObject getObject(String bucket, String key) {
+            MediaObjectStoreClient.StoredObject stored = objects.get(storageKey(bucket, key));
             if (stored == null || stored.bytes() == null) {
                 return null;
             }
-            return new StoredObject(stored.bytes().clone(), stored.contentType());
+            return new MediaObjectStoreClient.StoredObject(stored.bytes().clone(), stored.contentType());
         }
 
         @Override

@@ -13,6 +13,7 @@ import jakarta.annotation.PostConstruct;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -128,17 +129,14 @@ public class AffinityRecomputeTaskService {
         }
 
         String taskKey = taskKey(normalizedTargetType, normalizedTargetId);
-        for (int attempt = 0; attempt < 2; attempt += 1) {
+        for (int attempt = 0; attempt < 5; attempt += 1) {
             try {
                 return saveMergedTask(taskKey, normalizedTargetType, normalizedTargetId, reason, debounce, actorUserId);
-            } catch (DuplicateKeyException ignored) {
-                // Another writer created the collapsed target task; retry against the stored document.
+            } catch (DuplicateKeyException | OptimisticLockingFailureException ignored) {
+                // Another writer created or updated the collapsed target task; retry against the stored document.
             }
         }
-        return tasksRepository.findByTaskKey(taskKey)
-                .map(existing -> merge(existing, reason, availableAt(debounce), actorUserId))
-                .map(tasksRepository::save)
-                .orElse(null);
+        return tasksRepository.findByTaskKey(taskKey).orElse(null);
     }
 
     public List<AffinityRecomputeTask> findPendingDueTasks(Instant now, int limit) {

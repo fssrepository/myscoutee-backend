@@ -92,7 +92,6 @@ class BackendChatMediaE2ETest {
     private static final String DEMO_DB = "ms_chat_media_demo_" + DB_SUFFIX;
     private static final String SENDER_ID = userId(1);
     private static final String READER_ID = userId(2);
-    private static final String SECOND_RECIPIENT_ID = userId(3);
     private static final String REPORTER_ID = userId(4);
     private static final String ADMIN_ID = userId(50);
     private static final String CHAT_ID = "e2e-chat-media-main";

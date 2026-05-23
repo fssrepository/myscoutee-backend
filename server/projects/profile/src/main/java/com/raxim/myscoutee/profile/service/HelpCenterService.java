@@ -60,6 +60,7 @@ public class HelpCenterService {
     private static final String DEFAULT_EXPLANATION_CONTEXT = "home.game";
     private static final String EXPLANATION_ACTIVITY_RATES_CONTEXT = "activities.rates";
     private static final String EXPLANATION_CHATS_CONTEXT = "chats";
+    private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
     private static final String EXPLANATION_ASSETS_CONTEXT = "assets";
     private static final String EXPLANATION_ASSETS_CAR_CONTEXT = "assets.car";
     private static final String EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT = "assets.accommodation";
@@ -81,6 +82,7 @@ public class HelpCenterService {
             "home.game",
             "activities.rates",
             EXPLANATION_CHATS_CONTEXT,
+            EXPLANATION_CONTACTS_CONTEXT,
             "profile.editor",
             "profile.view",
             EXPLANATION_ASSETS_CONTEXT,
@@ -894,6 +896,9 @@ public class HelpCenterService {
         if (EXPLANATION_CHATS_CONTEXT.equals(context)) {
             return defaultChatsExplanationSections(lang);
         }
+        if (EXPLANATION_CONTACTS_CONTEXT.equals(context)) {
+            return defaultContactsExplanationSections(lang);
+        }
         if (isAssetExplanationContext(context)) {
             return defaultAssetsExplanationSections(lang);
         }
@@ -966,6 +971,19 @@ public class HelpCenterService {
                 defaultSection("activity-chat-channels", "account_tree", "Channel types", "Different chats are for different jobs.", "<p><strong>Main event</strong> is the broad event chat. <strong>Sub event</strong> is for one stage or optional part. <strong>Group</strong> is for a smaller team inside the event. <strong>Service</strong> or <strong>Organizer</strong> is for questions, support, notifications, or admin handling.</p><p>This keeps planning tidy: you can ask a ticket question in organizer chat, arrange a stage in sub-event chat, and talk with only your group in group chat.</p>"),
                 defaultSection("activity-chat-message-window", "mark_chat_unread", "Opening messages", "Tap a row to open the conversation and the typing box.", "<p>The top bar shows the channel name. The member button opens people in the chat, the context button opens the related event or group area, and the pin icon opens messages marked as important.</p><p>Messages are bubbles: other people are on the left, your messages are on the right. A bubble can hold text, an image, a voice clip, a poll, a shared event, or a shared asset card.</p><p>Tap a message to select it. Floating buttons appear for reply, reaction, and more actions. The menu can show View, Reply, Edit, Unsend, Mark important/remove important, or Report depending on the message and your role.</p>"),
                 defaultSection("activity-chat-tools", "add_circle", "Useful chat tools", "Chats are for coordination, not only hello messages.", "<p>The plus button beside Write message opens the same tools you use in the real chat: upload image, send voice clip, create poll, share event, and share asset.</p><p>Polls and shared event or asset cards appear inside the message stream, so people can vote or open the shared item later. Use it for practical planning: meeting spot, who brings what, rides, tickets, approvals, or last-minute changes.</p>"));
+    }
+
+    private List<HelpCenterSection> defaultContactsExplanationSections(String lang) {
+        if ("hu".equals(contentLang(lang))) {
+            return List.of(
+                    defaultSection("contacts-list", "contacts", "Kapcsolatlista", "Ez a saját, gyorsan elérhető kapcsolatlistád.", "<p>A keresővel név alapján szűrheted a mentett kapcsolatokat. A <strong>Kapcsolat létrehozása</strong> gombbal kiválasztasz egy tagot, és hozzáadod a saját listádhoz.</p><p>Az üres lista csak azt jelenti, hogy ide még nem mentettél senkit. Ettől az eseményekben, chatekben, értékelésekben és profilokon semmi nem tűnik el.</p>"),
+                    defaultSection("contacts-card", "badge", "Egy kapcsolatkártya", "A sor megmutatja, ki az ember, és milyen gyors eléréseket mentettél hozzá.", "<p>Az avatar és a név azonosítja az embert. A szem gomb megnyitja a profilt. A hárompontos gomb nyitja a kártyaműveleteket: mentett elérési módok, szerkesztés és törlés.</p><p>A város alatti chipek egyérintéses elérések, például telefon, email, WhatsApp, Telegram, Facebook, Instagram, LinkedIn vagy weboldal, attól függően, mit mentettél.</p>"),
+                    defaultSection("contacts-private-methods", "alternate_email", "Privátabb elérési módok", "Barátokhoz vagy megbízható kapcsolatokhoz több praktikus adatot is menthetsz.", "<p>A nyilvános profilmezők ettől külön maradnak. Ha valakit jobban ismersz, például barátok vagytok, itt tarthatsz privátabb elérési módokat: emailt, telefonszámot, közösségi profilt, weboldalt vagy más hasznos linket.</p><p>A <strong>Szerkesztés</strong> alatt adhatsz hozzá, módosíthatsz vagy törölhetsz módszereket. Ezek a saját gyorsgombjaid ehhez a mentett kapcsolathoz; a kapcsolat törlése csak ebből a listából veszi ki.</p>"));
+        }
+        return List.of(
+                defaultSection("contacts-list", "contacts", "Your contact list", "This is your private quick-reach list.", "<p>Use the search field to filter saved contacts by name. <strong>Create contact</strong> lets you pick a member and add that person to your own list.</p><p>An empty list only means you have not saved anyone here yet. It does not remove people from events, chats, ratings, or profiles.</p>"),
+                defaultSection("contacts-card", "badge", "Reading a contact card", "Each row shows who the person is and the shortcuts you saved.", "<p>The avatar and name identify the person. The eye button opens the profile. The three-dot button opens the card actions: saved contact methods, Edit, and Delete.</p><p>The chips below the city are one-tap ways to reach that person, such as phone, email, WhatsApp, Telegram, Facebook, Instagram, LinkedIn, or a website, depending on what you saved.</p>"),
+                defaultSection("contacts-private-methods", "alternate_email", "Private contact methods", "Friends or trusted contacts can have richer reach details.", "<p>Public profile fields stay separate from this list. When you know someone well, for example after becoming friends, you can keep more private ways to reach them here: email, phone, social handle, website, or another useful link.</p><p>Use <strong>Edit</strong> to add, change, or remove methods. These are your quick shortcuts for that saved contact; deleting the contact only removes it from this list.</p>"));
     }
 
     private List<HelpCenterSection> defaultAssetsExplanationSections(String lang) {
@@ -1207,6 +1225,8 @@ public class HelpCenterService {
                 documentName = "ExplanationActivitiesRates";
             } else if (EXPLANATION_CHATS_CONTEXT.equals(contextKey)) {
                 documentName = "ExplanationChats";
+            } else if (EXPLANATION_CONTACTS_CONTEXT.equals(contextKey)) {
+                documentName = "ExplanationContacts";
             } else if (isAssetExplanationContext(contextKey)) {
                 documentName = "ExplanationAssets";
             } else if (EXPLANATION_EVENTS_CONTEXT.equals(contextKey)) {
@@ -1338,9 +1358,18 @@ public class HelpCenterService {
     private String defaultPanelSpan(String sectionId) {
         String id = normalize(sectionId);
         if ("affinity-network".equals(id)
+                || "activity-event-entry".equals(id)
+                || "activity-event-actions".equals(id)
+                || "activity-event-hosting".equals(id)
                 || "activity-chat-message-window".equals(id)
+                || "contacts-list".equals(id)
+                || "contacts-card".equals(id)
+                || "contacts-private-methods".equals(id)
+                || "assets-entry".equals(id)
+                || "assets-card".equals(id)
                 || "assets-editor".equals(id)
                 || "assets-requests".equals(id)
+                || "assets-scope".equals(id)
                 || "event-editor-main".equals(id)
                 || "event-editor-subevents".equals(id)) {
             return "span-2";
@@ -1621,6 +1650,9 @@ public class HelpCenterService {
                 if (EXPLANATION_CHATS_CONTEXT.equals(context)) {
                     return "Chatek magyarázat";
                 }
+                if (EXPLANATION_CONTACTS_CONTEXT.equals(context)) {
+                    return "Kapcsolatok magyarázat";
+                }
                 if (EXPLANATION_ASSETS_CAR_CONTEXT.equals(context)) {
                     return "Autó eszközök magyarázat";
                 }
@@ -1655,6 +1687,9 @@ public class HelpCenterService {
             }
             if (EXPLANATION_CHATS_CONTEXT.equals(context)) {
                 return "Chats explanation";
+            }
+            if (EXPLANATION_CONTACTS_CONTEXT.equals(context)) {
+                return "Contacts explanation";
             }
             if (EXPLANATION_ASSETS_CAR_CONTEXT.equals(context)) {
                 return "Car assets explanation";
@@ -1695,6 +1730,9 @@ public class HelpCenterService {
                 if (EXPLANATION_CHATS_CONTEXT.equals(context)) {
                     return "Chatlisták, csatornatípusok és az üzenetablak";
                 }
+                if (EXPLANATION_CONTACTS_CONTEXT.equals(context)) {
+                    return "Mentett kapcsolatok, kártyák, privátabb elérések és szerkesztés";
+                }
                 if (EXPLANATION_ASSETS_CAR_CONTEXT.equals(context)) {
                     return "Saját autók, kérések és szerkesztés";
                 }
@@ -1729,6 +1767,9 @@ public class HelpCenterService {
             }
             if (EXPLANATION_CHATS_CONTEXT.equals(context)) {
                 return "Chat lists, channel types, and the message window";
+            }
+            if (EXPLANATION_CONTACTS_CONTEXT.equals(context)) {
+                return "Saved contacts, cards, private reach methods, and editing";
             }
             if (EXPLANATION_ASSETS_CAR_CONTEXT.equals(context)) {
                 return "Own cars, requests, and editing";

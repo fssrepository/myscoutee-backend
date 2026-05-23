@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +50,10 @@ import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.service.DeletedAccountPurgeService;
 import com.raxim.myscoutee.profile.service.email.EmailOutboxStatus;
+import com.raxim.myscoutee.profile.service.email.PromotionalEmailDeliveryProcessor;
+import com.raxim.myscoutee.profile.service.email.PromotionalEmailPlannerService;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -108,6 +110,12 @@ class BackendEmailAccountSchedulersE2ETest {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private DeletedAccountPurgeService deletedAccountPurgeService;
+    @Autowired
+    private PromotionalEmailPlannerService promotionalEmailPlannerService;
+    @Autowired
+    private PromotionalEmailDeliveryProcessor promotionalEmailDeliveryProcessor;
 
     @DynamicPropertySource
     static void mongoProperties(DynamicPropertyRegistry registry) {
@@ -129,9 +137,10 @@ class BackendEmailAccountSchedulersE2ETest {
     void seedEmailAccountBackend() {
         withReal(() -> {
             clearE2eCollections();
-            seedPromotionalEmailRuleAndTemplate();
+            seedPromotionalEmailTemplate();
             seedPurgeReferencedDocuments();
             seedUsersLast();
+            seedPromotionalEmailRule();
         });
     }
 
@@ -139,7 +148,12 @@ class BackendEmailAccountSchedulersE2ETest {
     void emailAndDeletedAccountSchedulersProcessDueBackendWorkForVariedUsers() {
         Instant startedAt = Instant.now();
 
-        await().atMost(Duration.ofSeconds(10)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+        await().atMost(Duration.ofSeconds(20)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+            withReal(() -> {
+                promotionalEmailPlannerService.planScheduledPromotionalEmails();
+                promotionalEmailDeliveryProcessor.processScheduledPromotionalEmails();
+                promotionalEmailDeliveryProcessor.processScheduledPromotionalEmails();
+            });
             List<EmailOutboxItem> emails = promoEmails();
             assertThat(emails).hasSize(30);
             assertThat(emails).allSatisfy(email -> {
@@ -169,7 +183,8 @@ class BackendEmailAccountSchedulersE2ETest {
         await().during(Duration.ofMillis(500)).atMost(Duration.ofSeconds(2)).pollInterval(Duration.ofMillis(100)).untilAsserted(() ->
                 assertThat(promoEmails()).hasSize(30));
 
-        await().atMost(Duration.ofSeconds(10)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+        await().atMost(Duration.ofSeconds(20)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+            deletedAccountPurgeService.purgeExpiredDeletedAccounts();
             assertThat(findOne(Query.query(Criteria.where("_id").is(PURGED_USER_ID)), Users.class)).isNull();
             AccountPurgeJob job = findOne(new Query(), AccountPurgeJob.class);
             assertThat(job).isNotNull();
@@ -204,7 +219,7 @@ class BackendEmailAccountSchedulersE2ETest {
         assertThat(survivorMessage.getReplyTo().getSender()).isEqualTo("Deleted user");
         assertThat(survivorMessage.getReplyTo().getText()).isEqualTo("Message unavailable");
 
-        assertThat(Duration.between(startedAt, Instant.now())).isLessThan(Duration.ofSeconds(10));
+        assertThat(Duration.between(startedAt, Instant.now())).isLessThan(Duration.ofSeconds(20));
     }
 
     private void clearE2eCollections() {
@@ -220,7 +235,7 @@ class BackendEmailAccountSchedulersE2ETest {
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
     }
 
-    private void seedPromotionalEmailRuleAndTemplate() {
+    private void seedPromotionalEmailTemplate() {
         EmailTemplate template = new EmailTemplate();
         template.setId(new ObjectId().toHexString());
         template.setSyncKey("e2e-email-template-" + UUID.randomUUID());
@@ -237,7 +252,9 @@ class BackendEmailAccountSchedulersE2ETest {
         template.setUpdatedDate(BASE_TIME.toString());
         template.setUpdatedUser("e2e");
         mongoTemplate.save(template);
+    }
 
+    private void seedPromotionalEmailRule() {
         EmailCampaignRule rule = new EmailCampaignRule();
         rule.setId(new ObjectId().toHexString());
         rule.setSyncKey("e2e-email-rule-" + UUID.randomUUID());

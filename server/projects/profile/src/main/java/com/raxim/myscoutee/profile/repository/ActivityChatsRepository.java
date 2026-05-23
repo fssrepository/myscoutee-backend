@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 
@@ -21,18 +20,37 @@ public interface ActivityChatsRepository extends MongoRepository<ActivityChat, S
 
     List<ActivityChat> findByMemberIdsContaining(String userId);
 
-    @Query("{ 'messages.attachments': { $elemMatch: { 'type': ?0, 'entityId': ?1 } } }")
-    List<ActivityChat> findByMessageAttachmentTypeAndEntityId(String type, String entityId);
+    List<ActivityChat> findByMessageAttachmentKeys(String attachmentKey);
 
-    @Query("{ 'messages.senderAvatar.id': ?0 }")
-    List<ActivityChat> findByMessageSenderUserId(String userId);
+    List<ActivityChat> findByMessageSenderUserIds(String userId);
 
-    @Query("{ 'messages.readBy.id': ?0 }")
-    List<ActivityChat> findByMessageReadByUserId(String userId);
+    List<ActivityChat> findByMessageReadByUserIds(String userId);
 
-    @Query("{ 'messages.reactions.userId': ?0 }")
-    List<ActivityChat> findByMessageReactionUserId(String userId);
+    List<ActivityChat> findByMessageReactionUserIds(String userId);
 
-    @Query("{ 'messages.attachments': { $elemMatch: { 'type': 'poll', 'description': { $regex: ?0 } } } }")
-    List<ActivityChat> findByPollAttachmentDescriptionMatching(String pattern);
+    List<ActivityChat> findByPollVoterUserIds(String userId);
+
+    default List<ActivityChat> findByMessageAttachmentTypeAndEntityId(String type, String entityId) {
+        return findByMessageAttachmentKeys(ActivityChat.messageAttachmentKey(type, entityId));
+    }
+
+    default List<ActivityChat> findByMessageSenderUserId(String userId) {
+        return findByMessageSenderUserIds(normalize(userId));
+    }
+
+    default List<ActivityChat> findByMessageReadByUserId(String userId) {
+        return findByMessageReadByUserIds(normalize(userId));
+    }
+
+    default List<ActivityChat> findByMessageReactionUserId(String userId) {
+        return findByMessageReactionUserIds(normalize(userId));
+    }
+
+    default List<ActivityChat> findByPollVoterUserId(String userId) {
+        return findByPollVoterUserIds(normalize(userId));
+    }
+
+    private static String normalize(String value) {
+        return value == null ? "" : value.trim();
+    }
 }

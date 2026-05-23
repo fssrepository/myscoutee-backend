@@ -120,6 +120,13 @@ ensure_collection_indexes() {
 db.getCollection('chats').createIndex({ ownerUserId: 1, id: 1 }, { name: 'chat_owner_public_id', unique: true });
 db.getCollection('chats').createIndex({ id: 1 }, { name: 'chat_public_id_lookup' });
 db.getCollection('chats').createIndex({ ownerUserId: 1, dateIso: -1 }, { name: 'chat_owner_date' });
+db.getCollection('chats').createIndex({ memberIds: 1, dateIso: -1 }, { name: 'chat_member_date' });
+db.getCollection('chats').createIndex({ channelType: 1, dateIso: -1 }, { name: 'chat_channel_date' });
+db.getCollection('chats').createIndex({ messageSenderUserIds: 1, dateIso: -1 }, { name: 'chat_message_sender_date' });
+db.getCollection('chats').createIndex({ messageReadByUserIds: 1, dateIso: -1 }, { name: 'chat_message_reader_date' });
+db.getCollection('chats').createIndex({ messageReactionUserIds: 1, dateIso: -1 }, { name: 'chat_message_reaction_date' });
+db.getCollection('chats').createIndex({ messageAttachmentKeys: 1, dateIso: -1 }, { name: 'chat_message_attachment_date' });
+db.getCollection('chats').createIndex({ pollVoterUserIds: 1, dateIso: -1 }, { name: 'chat_poll_voter_date' });
 " >/dev/null
       ;;
     events)
