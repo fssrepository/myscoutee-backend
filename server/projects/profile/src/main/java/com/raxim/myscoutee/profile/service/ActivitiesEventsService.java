@@ -533,6 +533,15 @@ public class ActivitiesEventsService {
         runInitialAutoInviteBatch(updated);
     }
 
+    public void unpublish(EventActionRequestDto request) {
+        List<ActivityEvent> updated = updateItemState(request, current -> {
+            current.setStatus(STATUS_DRAFT);
+            current.setPublished(false);
+        });
+        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        markEventAttachmentsUnavailable(updated, "unpublished");
+    }
+
     public void restore(EventActionRequestDto request) {
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(TYPE_HOSTING.equals(normalizeType(current.getType())) ? STATUS_HOSTING : STATUS_ACTIVE);
@@ -2220,19 +2229,22 @@ public class ActivitiesEventsService {
         ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, targetType, sourceId)
                 .orElse(null);
         ActivityEvent document = existing == null ? new ActivityEvent() : cloneDocument(existing);
+        boolean publishedManageMode = isPublishedEventManageUpdate(existing);
         String nowIso = Instant.now().toString();
-        String parentEventId = safeText(request.parentEventId());
+        String parentEventId = publishedManageMode ? safeText(existing.getParentEventId()) : safeText(request.parentEventId());
         if (!StringUtils.hasText(parentEventId) && existing != null) {
             parentEventId = safeText(existing.getParentEventId());
         }
-        String slotTemplateId = safeText(request.slotTemplateId());
+        String slotTemplateId = publishedManageMode ? safeText(existing.getSlotTemplateId()) : safeText(request.slotTemplateId());
         if (!StringUtils.hasText(slotTemplateId) && existing != null) {
             slotTemplateId = safeText(existing.getSlotTemplateId());
         }
-        boolean generated = request.generated() != null
+        boolean generated = publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getGenerated())
+                : request.generated() != null
                 ? Boolean.TRUE.equals(request.generated())
                 : existing != null && Boolean.TRUE.equals(existing.getGenerated());
-        String requestedEventType = safeText(request.eventType());
+        String requestedEventType = publishedManageMode ? safeText(existing.getEventType()) : safeText(request.eventType());
         if (!StringUtils.hasText(requestedEventType) && existing != null) {
             requestedEventType = safeText(existing.getEventType());
         }
@@ -2265,19 +2277,28 @@ public class ActivitiesEventsService {
         document.setIsInvitation(false);
         document.setIsHosting(TYPE_HOSTING.equals(targetType));
         document.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
-        document.setPublished(TYPE_HOSTING.equals(targetType) ? !Boolean.FALSE.equals(request.published()) : Boolean.TRUE);
+        boolean nextPublished = publishedManageMode
+                || !TYPE_HOSTING.equals(targetType)
+                || !Boolean.FALSE.equals(request.published());
+        document.setPublished(nextPublished);
         document.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
         document.setCreatorUserId(ownerUserId);
         document.setCreatorName(resolveCreatorName(request.creatorName(), creator));
         document.setCreatorInitials(resolveCreatorInitials(request.creatorInitials(), creator, request.creatorName()));
         document.setCreatorGender(resolveCreatorGender(request.creatorGender(), creator));
         document.setCreatorCity(resolveCreatorCity(request.creatorCity(), creator));
-        document.setVisibility(resolveVisibility(request.visibility(), existing, targetType));
-        document.setBlindMode(resolveBlindMode(request.blindMode(), existing));
-        String normalizedFrequency = normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
+        document.setVisibility(publishedManageMode ? safeText(existing.getVisibility()) : resolveVisibility(request.visibility(), existing, targetType));
+        document.setBlindMode(publishedManageMode ? safeText(existing.getBlindMode()) : resolveBlindMode(request.blindMode(), existing));
+        String normalizedFrequency = publishedManageMode
+                ? normalizeEventFrequency(existing == null ? null : existing.getFrequency())
+                : normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
         document.setFrequency(normalizedFrequency);
-        document.setStartAtIso(normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
-        document.setEndAtIso(normalizeDateTime(request.endAt(), document.getStartAtIso()));
+        document.setStartAtIso(publishedManageMode
+                ? normalizeDateTime(existing == null ? null : existing.getStartAtIso(), nowIso)
+                : normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
+        document.setEndAtIso(publishedManageMode
+                ? normalizeDateTime(existing == null ? null : existing.getEndAtIso(), document.getStartAtIso())
+                : normalizeDateTime(request.endAt(), document.getStartAtIso()));
         document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
         document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
@@ -2288,15 +2309,31 @@ public class ActivitiesEventsService {
                         ? cloneLocation(existing.getLocationCoordinates())
                         : toLocationCoordinatesDto(creator == null ? null : creator.getLocationCoordinates())));
         document.setLocationGeo(toGeoPoint(document.getLocationCoordinates()));
-        document.setCapacityMin(nullableCount(request.capacityMin()));
-        document.setCapacityMax(nullableCount(request.capacityMax()));
-        document.setCapacityTotal(resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
+        Integer requestedCapacityMax = nullableCount(request.capacityMax());
+        Integer effectiveCapacityMax = publishedManageMode
+                ? resolvePublishedCapacityMax(existing, requestedCapacityMax, acceptedMembers)
+                : requestedCapacityMax;
+        document.setCapacityMin(publishedManageMode
+                ? nullableCount(existing == null ? null : existing.getCapacityMin())
+                : nullableCount(request.capacityMin()));
+        document.setCapacityMax(effectiveCapacityMax);
+        document.setCapacityTotal(publishedManageMode
+                ? resolvePublishedCapacityTotal(existing, effectiveCapacityMax, acceptedMembers, syncedMembersSnapshot)
+                : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
-        document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
-        document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
-        boolean slotsEnabled = !slotEvent && !"One-time".equals(normalizedFrequency);
+        document.setTicketing(publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getTicketing())
+                : request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
+        document.setPricing(publishedManageMode
+                ? existing == null ? null : clonePricing(existing.getPricing())
+                : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
+        boolean slotsEnabled = publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
+                : !slotEvent && !"One-time".equals(normalizedFrequency);
         document.setSlotsEnabled(slotsEnabled);
-        document.setSlotTemplates(slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        document.setSlotTemplates(publishedManageMode
+                ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
+                : slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
         document.setParentEventId(slotEvent ? parentEventId : null);
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
@@ -2304,8 +2341,12 @@ public class ActivitiesEventsService {
         document.setAcceptedMembers(acceptedMembers);
         document.setPendingMembers(pendingMembers);
         document.setTopics(normalizeStrings(request.topics()));
-        document.setSubEvents(cloneSubEvents(request.subEvents()));
-        document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
+        document.setSubEvents(publishedManageMode
+                ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
+                : cloneSubEvents(request.subEvents()));
+        document.setSubEventsDisplayMode(publishedManageMode
+                ? safeText(existing == null ? null : existing.getSubEventsDisplayMode())
+                : safeText(request.subEventsDisplayMode()));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
@@ -2379,6 +2420,32 @@ public class ActivitiesEventsService {
             return Math.max(acceptedMembers, syncedMembersSnapshot.capacityTotal());
         }
         return Math.max(acceptedMembers, existing == null ? 0 : normalizeCount(existing.getCapacityTotal()));
+    }
+
+    private boolean isPublishedEventManageUpdate(ActivityEvent existing) {
+        return existing != null
+                && !Boolean.FALSE.equals(existing.getPublished())
+                && !STATUS_DRAFT.equals(safeText(existing.getStatus()));
+    }
+
+    private Integer resolvePublishedCapacityMax(ActivityEvent existing, Integer requestedCapacityMax, int acceptedMembers) {
+        int existingMax = normalizeCount(existing == null ? null : existing.getCapacityMax());
+        int requestedMax = requestedCapacityMax == null ? 0 : Math.max(0, requestedCapacityMax);
+        int nextMax = Math.max(Math.max(existingMax, requestedMax), Math.max(0, acceptedMembers));
+        return nextMax > 0 ? nextMax : null;
+    }
+
+    private int resolvePublishedCapacityTotal(
+            ActivityEvent existing,
+            Integer capacityMax,
+            int acceptedMembers,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        int snapshotCapacity = syncedMembersSnapshot != null && syncedMembersSnapshot.capacityTotal() != null
+                ? Math.max(0, syncedMembersSnapshot.capacityTotal())
+                : 0;
+        return Math.max(
+                Math.max(normalizeCount(existing == null ? null : existing.getCapacityTotal()), snapshotCapacity),
+                Math.max(Math.max(capacityMax == null ? 0 : capacityMax, acceptedMembers), 0));
     }
 
     private String resolveExistingId(String ownerUserId, String type, String sourceId, ActivityEvent existing) {
