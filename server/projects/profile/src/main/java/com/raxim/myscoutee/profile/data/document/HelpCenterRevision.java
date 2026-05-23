@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "helpCenterRevisions")
 @CompoundIndexes({
@@ -44,6 +45,7 @@ public class HelpCenterRevision {
     private String updatedUser;
 
     public static class HelpCenterSection {
+        @Field("id")
         private String id;
         private String icon;
         private String title;

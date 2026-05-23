@@ -90,6 +90,11 @@ collection_is_seed_managed() {
 clear_collection() {
   local target_db="$1"
   local collection_name="$2"
+  local clear_command="db.getCollection('${collection_name}').deleteMany({})"
+
+  if [ "${collection_name}" = "helpCenterRevisions" ]; then
+    clear_command="db.getCollection('${collection_name}').drop()"
+  fi
 
   mongosh \
     --host "${mongo_host}" \
@@ -99,7 +104,13 @@ clear_collection() {
     --authenticationDatabase "${target_db}" \
     --quiet \
     "${target_db}" \
-    --eval "db.getCollection('${collection_name}').deleteMany({})" >/dev/null
+    --eval "${clear_command}" >/dev/null
+}
+
+collection_should_replace_on_import() {
+  local collection_name="$1"
+
+  [ "${replace_collections}" = "true" ] || [ "${collection_name}" = "helpCenterRevisions" ]
 }
 
 ensure_collection_indexes() {
@@ -206,6 +217,24 @@ db.getCollection('userAffinityEdges').createIndex({ leftUserId: 1, edgeWeight: -
 db.getCollection('userAffinityEdges').createIndex({ rightUserId: 1, edgeWeight: -1 }, { name: 'user_affinity_edge_right_weight' });
 " >/dev/null
       ;;
+    helpCenterRevisions)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('helpCenterRevisions').createIndex({ documentType: 1, lang: 1, contextKey: 1, version: -1 }, { name: 'help_revision_document_lang_context_version', unique: true });
+db.getCollection('helpCenterRevisions').createIndex({ documentType: 1, lang: 1, contextKey: 1, active: 1, version: -1 }, { name: 'help_revision_document_lang_context_active' });
+db.getCollection('helpCenterRevisions').createIndex({ documentType: 1 }, { name: 'help_revision_document_type' });
+db.getCollection('helpCenterRevisions').createIndex({ lang: 1 }, { name: 'help_revision_lang' });
+db.getCollection('helpCenterRevisions').createIndex({ contextKey: 1 }, { name: 'help_revision_context_key' });
+db.getCollection('helpCenterRevisions').createIndex({ active: 1 }, { name: 'help_revision_active' });
+" >/dev/null
+      ;;
   esac
 }
 
@@ -223,7 +252,7 @@ import_json_file() {
   # All seed files are JSON arrays of documents. If the file contains no object
   # start at all, it is just an empty array like "[]", which mongoimport rejects.
   if ! json_file_has_documents "${jsonfile}"; then
-    if [ "${replace_collections}" = "true" ] && database_has_wildcard_seed_rule "${target_db}"; then
+    if collection_should_replace_on_import "${collection_name}" && database_has_wildcard_seed_rule "${target_db}"; then
       clear_collection "${target_db}" "${collection_name}"
       ensure_collection_indexes "${target_db}" "${collection_name}"
       echo "Cleared ${target_db}.${collection_name} because the seed file ${jsonfile} is empty."
@@ -234,7 +263,7 @@ import_json_file() {
     return 0
   fi
 
-  if [ "${replace_collections}" = "true" ]; then
+  if collection_should_replace_on_import "${collection_name}"; then
     clear_collection "${target_db}" "${collection_name}"
   fi
 
