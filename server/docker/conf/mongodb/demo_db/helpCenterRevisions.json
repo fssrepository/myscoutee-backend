@@ -1,0 +1,258 @@
+[
+  {
+    "_id": "help-center-explanation-home-en-v1",
+    "documentType": "explanation",
+    "contextKey": "home.game",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": true,
+    "title": "Home explanation",
+    "summary": "How the home screen works",
+    "description": "Short in-app guidance for the selected screen.",
+    "headerColor": "violet",
+    "createdDate": "2026-05-23T21:25:55.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-05-23T21:25:55.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "affinity",
+        "icon": "tune",
+        "title": "Affinity slider",
+        "blurb": "Pick how much affinity you feel for the card.",
+        "contentHtml": "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "affinity-network",
+        "icon": "hub",
+        "title": "Affinity and group chats",
+        "blurb": "Your answer helps find a small group where conversation is easier to start.",
+        "contentHtml": "<p>When you choose 1-10, you are saying how much you would like to talk with this person. That number is not used alone: it matters more when interest is mutual, recent, and stronger than the usual background noise.</p><p>If several people seem likely to enjoy meeting each other, MyScoutee can place them into a random group chat of 6-12 people. It is still a fresh group, but it is nudged toward people who already have enough shared interest to make the first message feel less awkward.</p>",
+        "panelSpan": "span-2",
+        "optional": false
+      },
+      {
+        "id": "profile",
+        "icon": "visibility",
+        "title": "Profile and photos",
+        "blurb": "Cards can contain more photos and a profile detail view.",
+        "contentHtml": "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "filters",
+        "icon": "filter_alt",
+        "title": "Filters and modes",
+        "blurb": "Use the top bar to narrow who appears.",
+        "contentHtml": "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "history",
+        "icon": "history",
+        "title": "History and edits",
+        "blurb": "Your previous ratings stay available.",
+        "contentHtml": "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      }
+    ]
+  },
+  {
+    "_id": "help-center-explanation-home-hu-v1",
+    "documentType": "explanation",
+    "contextKey": "home.game",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": true,
+    "title": "Kezdőlap magyarázat",
+    "summary": "Így működik a kezdőlap",
+    "description": "Rövid alkalmazáson belüli útmutató a kiválasztott képernyőhöz.",
+    "headerColor": "violet",
+    "createdDate": "2026-05-23T21:25:55.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-05-23T21:25:55.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "affinity",
+        "icon": "tune",
+        "title": "Szimpátia sáv",
+        "blurb": "Állítsd be, mennyire szimpatikus a kártya.",
+        "contentHtml": "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "affinity-network",
+        "icon": "hub",
+        "title": "Szimpátia és csoportchat",
+        "blurb": "A válaszod segít olyan kis csoportot találni, ahol könnyebb elkezdeni beszélgetni.",
+        "contentHtml": "<p>Amikor 1 és 10 között választasz, azt jelzed, mennyire szívesen beszélgetnél ezzel az emberrel. Nem csak ez az egy szám dönt: többet ér, ha a szimpátia kölcsönös, friss, és a szokásos háttérzajhoz képest is erős.</p><p>Ha több embernél látszik, hogy jó eséllyel szívesen ismerkednének egymással, a MyScoutee kioszthat egy 6-12 fős véletlenszerű csoportos chatet. A csoport továbbra is új és laza, csak olyan irányba van terelve, ahol az első üzenet kevésbé kínos.</p>",
+        "panelSpan": "span-2",
+        "optional": false
+      },
+      {
+        "id": "profile",
+        "icon": "visibility",
+        "title": "Profil és képek",
+        "blurb": "A kártya több képet és részletes profilt is rejthet.",
+        "contentHtml": "<p>Tapints a kép bal vagy jobb oszlopára a fotók lapozásához. A szem ikon megnyitja a profil részleteit.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "filters",
+        "icon": "filter_alt",
+        "title": "Szűrők és módok",
+        "blurb": "A felső sávval szűkítheted, kik jelenjenek meg.",
+        "contentHtml": "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "history",
+        "icon": "history",
+        "title": "Előzmények",
+        "blurb": "A korábbi értékelések később is elérhetők.",
+        "contentHtml": "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      }
+    ]
+  },
+  {
+    "_id": "help-center-explanation-assets-en-v1",
+    "documentType": "explanation",
+    "contextKey": "assets",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": true,
+    "title": "Assets explanation",
+    "summary": "Own assets, requests, event resources, and tickets",
+    "description": "Short in-app guidance for the selected screen.",
+    "headerColor": "violet",
+    "createdDate": "2026-05-23T21:49:08.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-05-23T21:49:08.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "assets-entry",
+        "icon": "inventory_2",
+        "title": "Your assets",
+        "blurb": "This popup starts from the things you own, not one specific event.",
+        "contentHtml": "<p>The type menu switches between <strong>Car</strong>, <strong>Accommodation</strong>, <strong>Supplies</strong>, and <strong>Ticket</strong>. The red number is the count for that type.</p><p><strong>Car</strong>, <strong>Accommodation</strong>, and <strong>Supplies</strong> are editable assets you own. The plus button creates a new one. <strong>Ticket</strong> is different: it is for entry codes and scanning, not editing a physical asset.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "assets-card",
+        "icon": "view_agenda",
+        "title": "Reading one asset card",
+        "blurb": "This is a short, readable version of one asset.",
+        "contentHtml": "<p>The picture is the asset photo. If there is no image, the card shows the built-in no-image state. The small icon shows the type. The title is the asset name, the line under it can show type, category, or city, and the text is a practical note.</p><p>The right badge is the useful number: seats, beds, quantity, or pending requests. The three-dot menu has owner actions: <strong>Share</strong>, <strong>Edit</strong>, and <strong>Delete</strong>. For accommodation, a location/map button can also appear.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "assets-editor",
+        "icon": "edit",
+        "title": "Shared asset editor",
+        "blurb": "Car, accommodation, and supplies use the same base editor.",
+        "contentHtml": "<p>For every real asset, you can add images, a source link, type, title, category, capacity, quantity, description, visibility, optional price, and lending policies.</p><p><strong>Public</strong> can appear broadly in Asset Discovery. <strong>Friends only</strong> limits it to your friend/network circle. <strong>Invitation only</strong> is not for normal discovery; it is for direct sharing or assignment.</p>",
+        "panelSpan": "span-2",
+        "optional": false
+      },
+      {
+        "id": "assets-requests",
+        "icon": "assignment",
+        "title": "Requests and helpers",
+        "blurb": "Open the badge when someone wants to use something you own.",
+        "contentHtml": "<p>The requests popup can switch between all rows, active items, pending requests, and borrowed items. A row shows who requested it, which event or use case it belongs to, the time window, and how much capacity remains.</p><p>For a pending request, you can approve or reject it. Accepted people can become a <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p>",
+        "panelSpan": "span-2",
+        "optional": false
+      },
+      {
+        "id": "assets-scope",
+        "icon": "travel_explore",
+        "title": "Where an asset can be used",
+        "blurb": "Visibility controls discovery; event screens assign the asset.",
+        "contentHtml": "<p>Your own asset can appear in <strong>Asset Discovery</strong> when its visibility allows it. Other people can find and request it there.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That event context can add extra state, but those states are not the meaning of the normal own-assets list.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      }
+    ]
+  },
+  {
+    "_id": "help-center-explanation-assets-hu-v1",
+    "documentType": "explanation",
+    "contextKey": "assets",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": true,
+    "title": "Eszközök magyarázat",
+    "summary": "Saját eszközök, kérések, esemény-erőforrások és jegyek",
+    "description": "Rövid alkalmazáson belüli útmutató a kiválasztott képernyőhöz.",
+    "headerColor": "violet",
+    "createdDate": "2026-05-23T21:49:08.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-05-23T21:49:08.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "assets-entry",
+        "icon": "inventory_2",
+        "title": "Saját eszközeid",
+        "blurb": "Ez a popup a saját dolgaidból indul ki, nem egy konkrét eseményből.",
+        "contentHtml": "<p>A típusmenü vált: <strong>Autó</strong>, <strong>Ingatlan</strong>, <strong>Kellékek</strong> és <strong>Jegy</strong>. A piros szám az adott típus darabszáma.</p><p>Az <strong>Autó</strong>, <strong>Ingatlan</strong> és <strong>Kellékek</strong> szerkeszthető saját eszközök. A plusz gomb újat hoz létre. A <strong>Jegy</strong> más: belépőkódokra és szkennelésre való, nem tárgyi eszköz szerkesztésére.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "assets-card",
+        "icon": "view_agenda",
+        "title": "Egy eszközkártya",
+        "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
+        "contentHtml": "<p>A kép az eszköz fotója; ha nincs kép, a kártya a beépített nincs-kép jelzést mutatja. A kis ikon a típust jelzi. A cím az eszköz neve, alatta típus/kategória/város, a szöveg pedig praktikus megjegyzés.</p><p>A jobb oldali jelvény a hasznos szám: férőhely, ágy, mennyiség vagy függő kérés. A hárompontos menüben tulajdonosi műveletek vannak: <strong>Megosztás</strong>, <strong>Szerkesztés</strong>, <strong>Törlés</strong>. Ingatlannál helyszín/térkép gomb is megjelenhet.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      },
+      {
+        "id": "assets-editor",
+        "icon": "edit",
+        "title": "Közös eszközszerkesztő",
+        "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
+        "contentHtml": "<p>Minden valódi eszköznél képet/forráslinket, típust, címet, kategóriát, kapacitást, mennyiséget, leírást, láthatóságot, opcionális árat és kölcsönzési szabályokat adhatsz meg.</p><p>A <strong>Public</strong> szélesen megjelenhet az Eszköz Felfedezésben. A <strong>Friends only</strong> az ismerősi/hálózati körre szűkít. Az <strong>Invitation only</strong> nem normál felfedezésre való, hanem közvetlen megosztásra vagy hozzárendelésre.</p>",
+        "panelSpan": "span-2",
+        "optional": false
+      },
+      {
+        "id": "assets-requests",
+        "icon": "assignment",
+        "title": "Kérések és segítők",
+        "blurb": "A jelvényt nyisd meg, ha valaki használni szeretné, ami a tied.",
+        "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p>",
+        "panelSpan": "span-2",
+        "optional": false
+      },
+      {
+        "id": "assets-scope",
+        "icon": "travel_explore",
+        "title": "Hol használható egy eszköz",
+        "blurb": "A láthatóság a felfedezést szabályozza; az eseményképernyők hozzárendelnek.",
+        "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p>",
+        "panelSpan": "span-1",
+        "optional": false
+      }
+    ]
+  }
+]
