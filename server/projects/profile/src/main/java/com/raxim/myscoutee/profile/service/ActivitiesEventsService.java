@@ -2229,22 +2229,23 @@ public class ActivitiesEventsService {
         ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, targetType, sourceId)
                 .orElse(null);
         ActivityEvent document = existing == null ? new ActivityEvent() : cloneDocument(existing);
-        boolean publishedManageMode = isPublishedEventManageUpdate(existing);
+        ActivityEvent publishedExisting = isPublishedEventManageUpdate(existing) ? existing : null;
+        boolean publishedManageMode = publishedExisting != null;
         String nowIso = Instant.now().toString();
-        String parentEventId = publishedManageMode ? safeText(existing.getParentEventId()) : safeText(request.parentEventId());
+        String parentEventId = publishedExisting != null ? safeText(publishedExisting.getParentEventId()) : safeText(request.parentEventId());
         if (!StringUtils.hasText(parentEventId) && existing != null) {
             parentEventId = safeText(existing.getParentEventId());
         }
-        String slotTemplateId = publishedManageMode ? safeText(existing.getSlotTemplateId()) : safeText(request.slotTemplateId());
+        String slotTemplateId = publishedExisting != null ? safeText(publishedExisting.getSlotTemplateId()) : safeText(request.slotTemplateId());
         if (!StringUtils.hasText(slotTemplateId) && existing != null) {
             slotTemplateId = safeText(existing.getSlotTemplateId());
         }
-        boolean generated = publishedManageMode
-                ? existing != null && Boolean.TRUE.equals(existing.getGenerated())
+        boolean generated = publishedExisting != null
+                ? Boolean.TRUE.equals(publishedExisting.getGenerated())
                 : request.generated() != null
                 ? Boolean.TRUE.equals(request.generated())
                 : existing != null && Boolean.TRUE.equals(existing.getGenerated());
-        String requestedEventType = publishedManageMode ? safeText(existing.getEventType()) : safeText(request.eventType());
+        String requestedEventType = publishedExisting != null ? safeText(publishedExisting.getEventType()) : safeText(request.eventType());
         if (!StringUtils.hasText(requestedEventType) && existing != null) {
             requestedEventType = safeText(existing.getEventType());
         }
@@ -2287,8 +2288,8 @@ public class ActivitiesEventsService {
         document.setCreatorInitials(resolveCreatorInitials(request.creatorInitials(), creator, request.creatorName()));
         document.setCreatorGender(resolveCreatorGender(request.creatorGender(), creator));
         document.setCreatorCity(resolveCreatorCity(request.creatorCity(), creator));
-        document.setVisibility(publishedManageMode ? safeText(existing.getVisibility()) : resolveVisibility(request.visibility(), existing, targetType));
-        document.setBlindMode(publishedManageMode ? safeText(existing.getBlindMode()) : resolveBlindMode(request.blindMode(), existing));
+        document.setVisibility(publishedExisting != null ? safeText(publishedExisting.getVisibility()) : resolveVisibility(request.visibility(), existing, targetType));
+        document.setBlindMode(publishedExisting != null ? safeText(publishedExisting.getBlindMode()) : resolveBlindMode(request.blindMode(), existing));
         String normalizedFrequency = publishedManageMode
                 ? normalizeEventFrequency(existing == null ? null : existing.getFrequency())
                 : normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));

@@ -14,10 +14,10 @@ public final class DemoSessionRequestSupport {
     }
 
     public static boolean isAllowedDemoSessionRequest(HttpServletRequest request) {
-        if (!isDemoSessionRequest(request)) {
+        if (request == null || !isDemoSessionRequest(request)) {
             return false;
         }
-        String requestUri = request == null ? null : request.getRequestURI();
+        String requestUri = request.getRequestURI();
         return StringUtils.hasText(requestUri) && requestUri.startsWith(ACTIVITIES_CHATS_ROUTE);
     }
 
