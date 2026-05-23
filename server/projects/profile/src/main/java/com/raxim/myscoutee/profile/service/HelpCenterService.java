@@ -1164,6 +1164,7 @@ public class HelpCenterService {
         section.setTitle(title);
         section.setBlurb(blurb);
         section.setContentHtml(sanitizeHtml(contentHtml));
+        section.setPanelSpan(defaultPanelSpan(id));
         section.setOptional(false);
         return section;
     }
@@ -1227,6 +1228,7 @@ public class HelpCenterService {
                 normalize(section == null ? null : section.getBlurb()),
                 normalize(section == null ? null : section.getContentHtml()),
                 normalizeImageUrls(section == null ? null : section.getImageUrls()),
+                normalizePanelSpan(section == null ? null : section.getPanelSpan(), section == null ? null : section.getId()),
                 section != null && Boolean.TRUE.equals(section.getOptional()));
     }
 
@@ -1258,6 +1260,7 @@ public class HelpCenterService {
             section.setBlurb(normalize(source == null ? null : source.blurb()));
             section.setContentHtml(html);
             section.setImageUrls(normalizeImageUrls(source == null ? null : source.imageUrls()));
+            section.setPanelSpan(normalizePanelSpan(source == null ? null : source.panelSpan(), id));
             section.setOptional(DOCUMENT_PRIVACY.equals(kind) && source != null && Boolean.TRUE.equals(source.optional()));
             normalized.add(section);
         }
@@ -1314,7 +1317,35 @@ public class HelpCenterService {
                 normalize(section.getBlurb()),
                 normalize(section.getContentHtml()),
                 normalizeImageUrls(section.getImageUrls()),
+                normalizePanelSpan(section.getPanelSpan(), section.getId()),
                 DOCUMENT_PRIVACY.equals(kind) && Boolean.TRUE.equals(section.getOptional()));
+    }
+
+    private String normalizePanelSpan(String panelSpan, String sectionId) {
+        String normalized = normalize(panelSpan).toLowerCase(Locale.ROOT);
+        if ("span-1".equals(normalized) || "compact".equals(normalized) || "single".equals(normalized) || "one".equals(normalized) || "1".equals(normalized)) {
+            return "span-1";
+        }
+        if ("span-2".equals(normalized) || "wide".equals(normalized) || "double".equals(normalized) || "two".equals(normalized) || "2".equals(normalized)) {
+            return "span-2";
+        }
+        if ("span-3".equals(normalized) || "full".equals(normalized) || "row".equals(normalized) || "all".equals(normalized) || "3".equals(normalized)) {
+            return "span-3";
+        }
+        return defaultPanelSpan(sectionId);
+    }
+
+    private String defaultPanelSpan(String sectionId) {
+        String id = normalize(sectionId);
+        if ("affinity-network".equals(id)
+                || "activity-chat-message-window".equals(id)
+                || "assets-editor".equals(id)
+                || "assets-requests".equals(id)
+                || "event-editor-main".equals(id)
+                || "event-editor-subevents".equals(id)) {
+            return "span-2";
+        }
+        return "span-1";
     }
 
     private List<String> normalizeImageUrls(List<String> imageUrls) {

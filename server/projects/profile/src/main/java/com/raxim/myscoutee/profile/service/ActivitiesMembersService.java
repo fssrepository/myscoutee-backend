@@ -47,6 +47,7 @@ public class ActivitiesMembersService {
     private static final String ACTION_REINSTATE = "reinstate";
     private static final String REQUEST_KIND_JOIN = "join";
     private static final String REQUEST_KIND_INVITE = "invite";
+    private static final String REQUEST_KIND_APPROVAL = "approval";
     private static final String REQUEST_KIND_WAITLIST = "waitlist";
     private static final String REQUEST_KIND_WAITLIST_INVITE = "waitlist-invite";
     private static final Set<String> OWNER_TYPES = Set.of("event", "subEvent", "group", "asset");
@@ -583,6 +584,16 @@ public class ActivitiesMembersService {
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted, boolean waitingList) {
+        return requestJoin(eventId, viewer, eventRecord, accepted, waitingList, false);
+    }
+
+    public OwnerMembersSnapshot requestJoin(
+            String eventId,
+            Users viewer,
+            ActivityEvent eventRecord,
+            boolean accepted,
+            boolean waitingList,
+            boolean approvalRequested) {
         String normalizedEventId = normalizeId(eventId);
         String viewerUserId = viewer == null ? null : normalizeId(viewer.getId());
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(viewerUserId)) {
@@ -623,7 +634,7 @@ public class ActivitiesMembersService {
             current.setRole(normalizeRole(current.getRole(), viewerUserId, OWNER_TYPE_EVENT, normalizedEventId));
             current.setStatus(accepted ? STATUS_ACCEPTED : "pending");
             current.setPendingSource(accepted ? null : "member");
-            current.setRequestKind(accepted ? null : (waitingList ? REQUEST_KIND_WAITLIST : REQUEST_KIND_JOIN));
+            current.setRequestKind(accepted ? null : pendingJoinRequestKind(waitingList, approvalRequested));
             current.setInvitedByUserId(null);
             current.setActionAtIso(nowIso);
             current.setMetAtIso(normalizeDateTime(current.getMetAtIso(), nowIso));
@@ -641,6 +652,16 @@ public class ActivitiesMembersService {
             refreshEmbeddedEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+    }
+
+    private String pendingJoinRequestKind(boolean waitingList, boolean approvalRequested) {
+        if (waitingList) {
+            return REQUEST_KIND_WAITLIST;
+        }
+        if (approvalRequested) {
+            return REQUEST_KIND_APPROVAL;
+        }
+        return REQUEST_KIND_JOIN;
     }
 
     public List<String> inviteUsers(String eventId, String inviterUserId, List<String> invitedUserIds, ActivityEvent eventRecord) {
@@ -2054,6 +2075,9 @@ public class ActivitiesMembersService {
         if (REQUEST_KIND_INVITE.equals(normalizedRequestKind)) {
             return REQUEST_KIND_INVITE;
         }
+        if (REQUEST_KIND_APPROVAL.equals(normalizedRequestKind)) {
+            return REQUEST_KIND_APPROVAL;
+        }
         if (REQUEST_KIND_WAITLIST.equals(normalizedRequestKind)) {
             return REQUEST_KIND_WAITLIST;
         }
@@ -2233,7 +2257,7 @@ public class ActivitiesMembersService {
         if (REQUEST_KIND_WAITLIST_INVITE.equals(requestKind)) {
             return "Invitation pending.";
         }
-        if (REQUEST_KIND_JOIN.equals(requestKind) || "member".equals(pendingSource)) {
+        if (REQUEST_KIND_APPROVAL.equals(requestKind) || REQUEST_KIND_JOIN.equals(requestKind) || "member".equals(pendingSource)) {
             return "Waiting for admin approval.";
         }
         return "Invitation pending.";

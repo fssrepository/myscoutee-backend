@@ -709,6 +709,7 @@ public class ActivitiesEventsService {
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
         }
+        boolean approvalRequested = isApprovalRequested(request);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
         boolean accepted = !waitingList && isConfirmedBooking(request, preferred);
 
@@ -721,8 +722,8 @@ public class ActivitiesEventsService {
             if (slotRecord != null) {
                 waitingList = waitingList || isRecordFull(slotRecord);
                 accepted = !waitingList && isConfirmedBooking(request, preferred);
-                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
-                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList);
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
+                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
                 affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
                 if (accepted) {
@@ -737,7 +738,7 @@ public class ActivitiesEventsService {
             }
         }
 
-        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
+        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
         affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
         if (accepted) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);

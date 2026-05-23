@@ -33,6 +33,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -63,6 +64,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 @Tag("e2e")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(
         classes = {Main.class, BackendLifecycleE2ETest.E2eInfrastructure.class},
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -316,6 +318,51 @@ class BackendLifecycleE2ETest {
                 AffinityRecomputeTask.class))).isNotEmpty();
     }
 
+    @Test
+    void paymentRefundAndPendingApprovalEdgesWorkThroughHttp() {
+        String partialEventId = "e2e-life-payment-partial";
+        String noRefundEventId = "e2e-life-payment-none";
+        String approvalEventId = "e2e-life-payment-approval";
+
+        publishPaymentEdgeEvent(partialEventId, Instant.now().plus(Duration.ofDays(3)), true);
+        String partialSessionId = checkoutPayAndJoinEdgeEvent(partialEventId, userId(7), null);
+        postOk("/activities/events/trash", Map.of(
+                "userId", userId(7),
+                "type", "events",
+                "sourceId", partialEventId));
+        Payment partialPayment = findPayment(partialSessionId);
+        assertThat(partialPayment.getBookingStatus()).isEqualTo("cancelled");
+        assertThat(partialPayment.getRefundStatus()).isEqualTo("partial");
+        assertThat(partialPayment.getRefundedAmount()).isEqualTo(40.0d);
+        assertThat(partialPayment.getRefundCurrency()).isEqualTo("EUR");
+        assertThat(partialPayment.getRefundRuleId()).isEqualTo("edge-partial-1d");
+        assertThat(partialPayment.getStatus()).isEqualTo("partially_refunded");
+        assertThat(getJson("/assets/tickets?userId=" + userId(7)).path("total").asInt()).isZero();
+
+        publishPaymentEdgeEvent(noRefundEventId, Instant.now().plus(Duration.ofHours(10)), true);
+        String noRefundSessionId = checkoutPayAndJoinEdgeEvent(noRefundEventId, userId(8), null);
+        postOk("/activities/events/trash", Map.of(
+                "userId", userId(8),
+                "type", "events",
+                "sourceId", noRefundEventId));
+        Payment noRefundPayment = findPayment(noRefundSessionId);
+        assertThat(noRefundPayment.getBookingStatus()).isEqualTo("cancelled");
+        assertThat(noRefundPayment.getRefundStatus()).isEqualTo("not_eligible");
+        assertThat(noRefundPayment.getRefundedAmount()).isZero();
+        assertThat(noRefundPayment.getRefundedAtIso()).isNull();
+        assertThat(noRefundPayment.getStatus()).isEqualTo("approved");
+
+        publishPaymentEdgeEvent(approvalEventId, Instant.now().plus(Duration.ofDays(3)), false);
+        String approvalSessionId = checkoutPayAndJoinEdgeEvent(approvalEventId, userId(9), "approval");
+        ActivityMember approvalMember = findMember("event", approvalEventId, userId(9));
+        assertThat(approvalMember.getStatus()).isEqualTo("pending");
+        assertThat(approvalMember.getRequestKind()).isEqualTo("approval");
+        Payment approvalPayment = findPayment(approvalSessionId);
+        assertThat(approvalPayment.getBookingStatus()).isEqualTo("initiated");
+        assertThat(approvalPayment.getJoinedAtIso()).isNull();
+        assertThat(getJson("/assets/tickets?userId=" + userId(9)).path("total").asInt()).isZero();
+    }
+
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
@@ -451,6 +498,113 @@ class BackendLifecycleE2ETest {
         payload.put("acceptedPolicyIds", List.of("policy-cancel-1d"));
         payload.put("paymentSessionId", paymentSessionId);
         payload.put("bookingConfirmed", bookingConfirmed);
+        payload.put("pendingReason", pendingReason);
+        return payload;
+    }
+
+    private void publishPaymentEdgeEvent(String eventId, Instant startAt, boolean fullRefundRule) {
+        postOk("/activities/events/sync", paymentEdgeEventPayload(eventId, startAt, fullRefundRule));
+        postOk("/activities/events/publish", Map.of(
+                "userId", HOST_ID,
+                "type", "hosting",
+                "sourceId", eventId));
+    }
+
+    private String checkoutPayAndJoinEdgeEvent(String eventId, String userId, String pendingReason) {
+        JsonNode checkout = postJson("/activities/events/checkout", edgeCheckoutPayload(eventId, userId));
+        String paymentSessionId = checkout.path("id").asString();
+        assertThat(paymentSessionId).isNotBlank();
+        postJson("/activities/events/pay?paymentSessionId=" + paymentSessionId, edgeCheckoutPayload(eventId, userId));
+        JsonNode joined = postJson("/activities/events/join", edgeJoinPayload(eventId, userId, paymentSessionId, pendingReason));
+        assertThat(joined.path("id").asString()).isEqualTo(eventId);
+        return paymentSessionId;
+    }
+
+    private Map<String, Object> paymentEdgeEventPayload(String eventId, Instant startAt, boolean fullRefundRule) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("id", eventId);
+        payload.put("target", "hosting");
+        payload.put("title", "Payment Edge " + eventId);
+        payload.put("shortDescription", "Backend e2e payment edge event");
+        payload.put("timeframe", "Payment edge");
+        payload.put("activity", 3);
+        payload.put("startAt", startAt.toString());
+        payload.put("endAt", startAt.plus(Duration.ofHours(2)).toString());
+        payload.put("imageUrl", "https://example.test/events/payment-edge.png");
+        payload.put("capacityMin", 1);
+        payload.put("capacityMax", 5);
+        payload.put("capacityTotal", 5);
+        payload.put("ticketing", true);
+        payload.put("pricing", edgePricing(fullRefundRule));
+        payload.put("frequency", "One-time");
+        payload.put("visibility", "Public");
+        payload.put("blindMode", "Visible");
+        payload.put("published", false);
+        payload.put("creatorUserId", HOST_ID);
+        payload.put("creatorName", "Lifecycle User 01");
+        payload.put("creatorInitials", "LU");
+        payload.put("creatorGender", "woman");
+        payload.put("creatorCity", "Bratislava");
+        payload.put("location", "Payment Edge Arena");
+        payload.put("locationCoordinates", new LocationCoordinatesDto(48.1486d, 17.1077d));
+        payload.put("topics", List.of("payments"));
+        return payload;
+    }
+
+    private Map<String, Object> edgePricing(boolean fullRefundRule) {
+        List<Map<String, Object>> rules = new ArrayList<>();
+        if (fullRefundRule) {
+            rules.add(Map.of(
+                    "id", "edge-full-7d",
+                    "offsetUnit", "days",
+                    "offsetValue", 7,
+                    "refundKind", "full",
+                    "refundValue", 100d));
+        }
+        rules.add(Map.of(
+                "id", "edge-partial-1d",
+                "offsetUnit", "days",
+                "offsetValue", 1,
+                "refundKind", "percent",
+                "refundValue", 40d));
+
+        Map<String, Object> pricing = new LinkedHashMap<>();
+        pricing.put("mode", "paid");
+        pricing.put("basePrice", 100d);
+        pricing.put("currency", "EUR");
+        pricing.put("taxMode", "included");
+        pricing.put("chargeType", "per_person");
+        pricing.put("cancellationPolicy", Map.of(
+                "enabled", true,
+                "rules", rules));
+        return pricing;
+    }
+
+    private Map<String, Object> edgeCheckoutPayload(String eventId, String userId) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("userId", userId);
+        payload.put("sourceId", eventId);
+        payload.put("acceptedPolicyIds", List.of("edge-policy"));
+        payload.put("lineItems", List.of(Map.of(
+                "id", "edge-ticket",
+                "kind", "event-ticket",
+                "label", "Payment edge ticket",
+                "detail", "One edge event seat",
+                "amount", 100d,
+                "currency", "EUR")));
+        payload.put("totalAmount", 100d);
+        payload.put("currency", "EUR");
+        return payload;
+    }
+
+    private Map<String, Object> edgeJoinPayload(String eventId, String userId, String paymentSessionId, String pendingReason) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("userId", userId);
+        payload.put("type", "events");
+        payload.put("sourceId", eventId);
+        payload.put("acceptedPolicyIds", List.of("edge-policy"));
+        payload.put("paymentSessionId", paymentSessionId);
+        payload.put("bookingConfirmed", true);
         payload.put("pendingReason", pendingReason);
         return payload;
     }

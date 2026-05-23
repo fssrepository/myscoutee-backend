@@ -90,9 +90,10 @@ public class ShareTokensService {
         if (event == null) {
             return null;
         }
+        String eventId = StringUtils.hasText(event.getSourceId()) ? event.getSourceId() : event.getId();
         return new ShareTokenResolvedItemDto(
                 KIND_EVENT,
-                safeText(event.getId()),
+                safeText(eventId),
                 null,
                 null,
                 safeText(event.getTitle()),
