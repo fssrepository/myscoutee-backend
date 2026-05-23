@@ -305,10 +305,16 @@ FRONTEND_SOURCE_DIR="${BUILD_OUTPUT_DIR}" \
   bash "${SYNC_SCRIPT}" "${BUILD_MODE}"
 
 echo "Starting nginx asset sync watcher..."
-FRONTEND_SOURCE_DIR="${BUILD_OUTPUT_DIR}" \
-  NGINX_HTML_DIR="${NGINX_HTML_DIR:-/workspace/nginx-html}" \
-  SKIP_INITIAL_SYNC="true" \
-  bash "${SYNC_SCRIPT}" "${BUILD_MODE}" watch &
+(
+  while true; do
+    FRONTEND_SOURCE_DIR="${BUILD_OUTPUT_DIR}" \
+      NGINX_HTML_DIR="${NGINX_HTML_DIR:-/workspace/nginx-html}" \
+      SKIP_INITIAL_SYNC="true" \
+      bash "${SYNC_SCRIPT}" "${BUILD_MODE}" watch || true
+    echo "nginx asset sync watcher restarting in 3s..."
+    sleep 3
+  done
+) &
 sync_pid=$!
 
-wait -n "${build_pid}" "${source_sync_pid}" "${sync_pid}"
+wait -n "${build_pid}" "${source_sync_pid}"
