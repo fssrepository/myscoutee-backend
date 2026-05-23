@@ -43,6 +43,21 @@ sourceSets {
             srcDirs = ['src/test/resources']
         }
     }
+    e2eTest {
+        java {
+            srcDirs = ['src/e2eTest/java']
+        }
+        resources {
+            srcDirs = ['src/e2eTest/resources']
+        }
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    e2eTestImplementation.extendsFrom testImplementation
+    e2eTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -73,7 +88,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.integration:spring-integration-test'
-	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.7.0'
+	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.7.0'
 }
 
 tasks.named('jacocoTestReport') {
@@ -88,6 +103,24 @@ tasks.named('test') {
 	useJUnitPlatform()
 
 	finalizedBy jacocoTestReport
+}
+
+tasks.register('e2eTest', Test) {
+	description = 'Runs backend HTTP e2e tests. Disabled from check unless -PrunE2e=true is supplied.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.e2eTest.output.classesDirs
+	classpath = sourceSets.e2eTest.runtimeClasspath
+	shouldRunAfter test
+	useJUnitPlatform {
+		includeTags 'e2e'
+	}
+}
+
+tasks.named('check') {
+	if (project.hasProperty('runE2e')) {
+		dependsOn tasks.named('e2eTest')
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {

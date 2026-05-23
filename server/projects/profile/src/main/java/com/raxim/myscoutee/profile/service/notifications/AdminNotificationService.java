@@ -16,6 +16,8 @@ import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.algo.gen.GeneratorModels.GeneratedEventPlan;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 import com.raxim.myscoutee.profile.data.document.NotificationRuleConfig;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamFieldDto;
@@ -133,7 +135,10 @@ public class AdminNotificationService {
             switch (normalizedRuleKey) {
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     RandomRunProgress runProgress = progress;
-                    runExecutor.submit(() -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress));
+                    MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+                    runExecutor.submit(() -> runWithMongoSessionMode(
+                            sessionMode,
+                            () -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress)));
                     adminTelemetryService.record("jobs.run.started", "jobs", normalizedRuleKey, admin.id());
                     String startedAtIso = startedAtIso(startedRule);
                     return new AdminNotificationRuleRunResultDto(
@@ -226,6 +231,16 @@ public class AdminNotificationService {
             if (progress != null) {
                 progress.close();
             }
+        }
+    }
+
+    private void runWithMongoSessionMode(MongoSessionMode sessionMode, Runnable runnable) {
+        MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
+        try {
+            MongoSessionModeContext.set(sessionMode);
+            runnable.run();
+        } finally {
+            MongoSessionModeContext.set(previousMode);
         }
     }
 

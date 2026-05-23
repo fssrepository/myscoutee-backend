@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,6 +24,7 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 
 @Service
 public class AffinityRecomputeWorkerService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AffinityRecomputeWorkerService.class);
     private static final long DEFAULT_WORKER_POLL_DELAY_MS = 60_000L;
 
     private final String workerId = "affinity-worker-" + UUID.randomUUID();
@@ -50,10 +53,14 @@ public class AffinityRecomputeWorkerService {
         if (!properties.isEnabled()) {
             return;
         }
-        if (!shouldRunScheduledPass()) {
-            return;
+        try {
+            if (!shouldRunScheduledPass()) {
+                return;
+            }
+            processDueTasks(Instant.now());
+        } catch (RuntimeException exception) {
+            LOGGER.debug("Affinity recompute worker tick skipped after a transient failure.", exception);
         }
-        processDueTasks(Instant.now());
     }
 
     public int processDueTasks(Instant now) {

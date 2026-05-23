@@ -43,17 +43,14 @@ public class IdeaPostsService {
 
     private final ConfigProperties configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
-    private final MediaStorageService mediaStorageService;
     private final AdminTelemetryService adminTelemetryService;
 
     public IdeaPostsService(
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
-            MediaStorageService mediaStorageService,
             AdminTelemetryService adminTelemetryService) {
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
-        this.mediaStorageService = mediaStorageService;
         this.adminTelemetryService = adminTelemetryService;
     }
 
@@ -184,10 +181,14 @@ public class IdeaPostsService {
 
     private void ensureSeeded() {
         List<IdeaPost> current = ideaPostsRepository.findAll();
+        List<IdeaPost> defaults = defaultPosts();
+        java.util.Map<String, IdeaPost> defaultById = defaults.stream()
+                .collect(java.util.stream.Collectors.toMap(IdeaPost::getId, post -> post));
         boolean changed = false;
         for (IdeaPost post : current) {
             String language = contentLang(post.getLang());
             String contentKey = contentKeyFromId(post.getId());
+            IdeaPost seedPost = defaultById.get(post.getId());
             if (!StringUtils.hasText(post.getLang())) {
                 post.setLang(language);
                 changed = true;
@@ -200,6 +201,15 @@ public class IdeaPostsService {
                 post.setContentKey(contentKey);
                 changed = true;
             }
+            if (seedPost != null && shouldRefreshSeedImage(post, seedPost)) {
+                String previousImageUrl = normalize(post.getImageUrl());
+                post.setImageUrl(seedPost.getImageUrl());
+                post.setImageUrls(seedPost.getImageUrls());
+                if (StringUtils.hasText(previousImageUrl)) {
+                    post.setContentHtml(normalize(post.getContentHtml()).replace(previousImageUrl, seedPost.getImageUrl()));
+                }
+                changed = true;
+            }
         }
         if (changed) {
             ideaPostsRepository.saveAll(current);
@@ -207,7 +217,7 @@ public class IdeaPostsService {
         Set<String> currentIds = current.stream()
                 .map(IdeaPost::getId)
                 .collect(java.util.stream.Collectors.toSet());
-        List<IdeaPost> missing = defaultPosts().stream()
+        List<IdeaPost> missing = defaults.stream()
                 .filter(post -> !currentIds.contains(post.getId()))
                 .toList();
         if (!missing.isEmpty()) {
@@ -369,17 +379,40 @@ public class IdeaPostsService {
 
     private String seedImageUrl(String postId) {
         String svg = seedImageSvg(postId);
-        String storedUrl = mediaStorageService.storeImageBytes(
-                "idea",
-                "system",
-                postId,
-                postId + ".svg",
-                "image/svg+xml",
-                svg.getBytes(StandardCharsets.UTF_8));
-        if (StringUtils.hasText(storedUrl)) {
-            return storedUrl;
-        }
         return "data:image/svg+xml;charset=UTF-8," + UriUtils.encode(svg, StandardCharsets.UTF_8);
+    }
+
+    private boolean shouldRefreshSeedImage(IdeaPost post, IdeaPost seedPost) {
+        String seedImageUrl = normalize(seedPost.getImageUrl());
+        if (!StringUtils.hasText(seedImageUrl)) {
+            return false;
+        }
+        String currentImageUrl = normalize(post.getImageUrl());
+        if (!StringUtils.hasText(currentImageUrl)) {
+            return true;
+        }
+        if (seedImageUrl.equals(currentImageUrl)) {
+            return post.getImageUrls() == null || !post.getImageUrls().contains(seedImageUrl);
+        }
+        return isManagedSeedImageUrl(post.getId(), currentImageUrl);
+    }
+
+    private boolean isManagedSeedImageUrl(String postId, String imageUrl) {
+        String normalized = normalize(imageUrl);
+        if (normalized.startsWith("data:image/svg+xml")) {
+            return true;
+        }
+        String decoded = decodeUrl(normalized);
+        return decoded.contains("/media/public")
+                && decoded.contains("key=idea/system/" + normalize(postId) + "/");
+    }
+
+    private String decodeUrl(String value) {
+        try {
+            return UriUtils.decode(normalize(value), StandardCharsets.UTF_8);
+        } catch (RuntimeException ex) {
+            return normalize(value);
+        }
     }
 
     private String seedImageSvg(String postId) {

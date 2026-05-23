@@ -159,8 +159,9 @@ public class AdminController {
     @GetMapping("/explanation")
     public HelpCenterStateDto explanationState(
             @RequestParam(value = "adminUserId", required = false) String adminUserId,
-            @RequestParam(value = "lang", required = false) String lang) {
-        return helpCenterService.adminState(adminUserId, "explanation", lang);
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "contextKey", required = false) String contextKey) {
+        return helpCenterService.adminState(adminUserId, "explanation", lang, contextKey);
     }
 
     @PostMapping("/help/revisions")

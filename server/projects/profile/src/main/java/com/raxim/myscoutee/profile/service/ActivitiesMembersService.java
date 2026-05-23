@@ -607,6 +607,7 @@ public class ActivitiesMembersService {
         if (isDerivedMember(current)) {
             current = null;
         }
+        boolean newMember = current == null;
         if (current == null) {
             current = new ActivityMember();
             current.setId(new ObjectId().toHexString());
@@ -617,7 +618,7 @@ public class ActivitiesMembersService {
             current.setCreatedDate(Instant.now().toString());
             current.setCreatedUser(viewerUserId);
         }
-        if (accepted || !ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
+        if (accepted || newMember || !ACCEPTED_STATUSES.contains(normalizeStatus(current.getStatus()))) {
             String nowIso = Instant.now().toString();
             current.setRole(normalizeRole(current.getRole(), viewerUserId, OWNER_TYPE_EVENT, normalizedEventId));
             current.setStatus(accepted ? STATUS_ACCEPTED : "pending");
@@ -636,6 +637,7 @@ public class ActivitiesMembersService {
             if (accepted) {
                 processEventWaitlist(normalizedEventId, eventRecord, true);
             }
+            eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
             refreshEmbeddedEventMembers(normalizedEventId);
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);

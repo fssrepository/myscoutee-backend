@@ -49,6 +49,7 @@ public class HelpCenterRevision {
         private String title;
         private String blurb;
         private String contentHtml;
+        private List<String> imageUrls = new ArrayList<>();
         private Boolean optional;
 
         public String getId() {
@@ -89,6 +90,14 @@ public class HelpCenterRevision {
 
         public void setContentHtml(String contentHtml) {
             this.contentHtml = contentHtml;
+        }
+
+        public List<String> getImageUrls() {
+            return imageUrls;
+        }
+
+        public void setImageUrls(List<String> imageUrls) {
+            this.imageUrls = imageUrls == null ? new ArrayList<>() : new ArrayList<>(imageUrls);
         }
 
         public Boolean getOptional() {

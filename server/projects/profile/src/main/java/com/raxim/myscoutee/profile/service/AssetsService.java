@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -120,7 +121,9 @@ public class AssetsService {
             return List.of();
         }
 
-        List<Asset> assets = queryOwnerAndManagedAssets(normalizedUserId);
+        List<Asset> assets = queryOwnerAssets(normalizedUserId).stream()
+                .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
         return assets.stream()
                 .map(asset -> toDto(asset, ownerNamesByUserId, normalizedUserId))
@@ -195,7 +198,6 @@ public class AssetsService {
             return;
         }
 
-        ensureOwnerAssetsBootstrapped(normalizedUserId);
         List<Asset> existing = assetsRepository.findByOwnerUserId(normalizedUserId);
         Map<String, Asset> existingByAssetId = new LinkedHashMap<>();
         for (Asset asset : existing) {
@@ -246,7 +248,6 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return;
         }
-        ensureOwnerAssetsBootstrapped(normalizedUserId);
         assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
                 .filter(asset -> !STATUS_TRASHED.equals(safeText(asset.getStatus())))
                 .map(asset -> toTrashedAsset(asset, normalizedUserId, Instant.now().toString()))
@@ -265,7 +266,6 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;
         }
-        ensureOwnerAssetsBootstrapped(normalizedUserId);
         Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
         if (current == null || !STATUS_TRASHED.equals(safeText(current.getStatus()))) {
             return null;
@@ -583,7 +583,6 @@ public class AssetsService {
             return null;
         }
 
-        ensureOwnerAssetsBootstrapped(ownerUserId);
         Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, normalizeId(assetDto.id())).orElse(null);
         Asset saved = toDocument(assetDto, ownerUserId, existing);
         if (saved == null) {
@@ -663,23 +662,6 @@ public class AssetsService {
                     previousPaymentSessionId,
                     assetRequestBookingStartAtIso(previousRequest),
                     previousCancellationPolicy);
-        }
-    }
-
-    private void ensureOwnerAssetsBootstrapped(String ownerUserId) {
-        if (!assetsRepository.findByOwnerUserId(ownerUserId).isEmpty()) {
-            return;
-        }
-        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
-        if (wrapper == null) {
-            return;
-        }
-
-        List<Asset> bootstrapped = readLegacyAssets(wrapper).stream()
-                .filter(asset -> ownerUserId.equals(normalizeId(asset.getOwnerUserId())))
-                .toList();
-        if (!bootstrapped.isEmpty()) {
-            assetsRepository.saveAll(bootstrapped);
         }
     }
 
@@ -983,48 +965,7 @@ public class AssetsService {
     }
 
     private List<Asset> queryOwnerAssets(String ownerUserId) {
-        List<Asset> existingAssets = assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(ownerUserId);
-        if (!existingAssets.isEmpty()) {
-            return existingAssets;
-        }
-
-        ensureOwnerAssetsBootstrapped(ownerUserId);
         return assetsRepository.findByOwnerUserIdOrderByUpdatedDateDesc(ownerUserId);
-    }
-
-    private List<Asset> queryOwnerAndManagedAssets(String userId) {
-        LinkedHashMap<String, Asset> assetsById = new LinkedHashMap<>();
-        for (Asset asset : queryOwnerAssets(userId)) {
-            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-            if (StringUtils.hasText(assetId)) {
-                assetsById.put(assetId, asset);
-            }
-        }
-        List<ActivityMember> managerMemberships = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId);
-        List<String> managedAssetIds = (managerMemberships == null ? List.<ActivityMember>of() : managerMemberships).stream()
-                .filter(Objects::nonNull)
-                .filter(member -> MEMBER_STATUS_ACCEPTED.equals(safeText(member.getStatus())))
-                .filter(member -> isManagerRole(member.getRole()))
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .toList();
-        if (!managedAssetIds.isEmpty()) {
-            for (Asset asset : assetsRepository.findByAssetIdIn(managedAssetIds)) {
-                String assetId = normalizeId(asset == null ? null : asset.getAssetId());
-                if (StringUtils.hasText(assetId)) {
-                    assetsById.putIfAbsent(assetId, asset);
-                }
-            }
-        }
-        return assetsById.values().stream()
-                .sorted(Comparator
-                        .comparing((Asset asset) -> toSortableDate(asset == null ? null : asset.getUpdatedDate()))
-                        .reversed()
-                        .thenComparing(asset -> safeText(asset == null ? null : asset.getTitle()))
-                        .thenComparing(asset -> normalizeId(asset == null ? null : asset.getAssetId()), Comparator.nullsLast(String::compareTo)))
-                .toList();
     }
 
     private Map<String, String> resolveOwnerNamesByUserId(List<Asset> assets) {
@@ -1272,12 +1213,25 @@ public class AssetsService {
     }
 
     private boolean isSuppressedLifecycleStatus(String status) {
-        String normalized = safeText(status);
+        String normalized = normalizeLifecycleStatusCode(status);
         return STATUS_UNDER_REVIEW.equals(normalized)
                 || STATUS_BLOCKED.equals(normalized)
                 || STATUS_DELETED.equals(normalized)
                 || STATUS_INACTIVE.equals(normalized)
                 || STATUS_TRASHED.equals(normalized);
+    }
+
+    private String normalizeLifecycleStatusCode(String status) {
+        String normalized = safeText(status);
+        return switch (normalized.toLowerCase(Locale.ROOT)) {
+            case "active" -> STATUS_ACTIVE;
+            case "under-review", "under review" -> STATUS_UNDER_REVIEW;
+            case "blocked" -> STATUS_BLOCKED;
+            case "deleted" -> STATUS_DELETED;
+            case "inactive" -> STATUS_INACTIVE;
+            case "trashed", "trash" -> STATUS_TRASHED;
+            default -> normalized;
+        };
     }
 
     private boolean isEligibleAssetManager(Asset asset, String userId) {

@@ -149,8 +149,8 @@ public class EventGeneratorByScore implements EventGenerator<List<GeneratorModel
                         accumulator.goalsFor() - accumulator.goalsAgainst()))
                 .sorted(Comparator
                         .comparingInt(GeneratorModels.FifaStandingRow::points).reversed()
-                        .thenComparingInt(GeneratorModels.FifaStandingRow::goalDiff).reversed()
-                        .thenComparingInt(GeneratorModels.FifaStandingRow::goalsFor).reversed()
+                        .thenComparing(Comparator.comparingInt(GeneratorModels.FifaStandingRow::goalDiff).reversed())
+                        .thenComparing(Comparator.comparingInt(GeneratorModels.FifaStandingRow::goalsFor).reversed())
                         .thenComparing(GeneratorModels.FifaStandingRow::memberName)
                         .thenComparing(GeneratorModels.FifaStandingRow::memberId))
                 .toList();

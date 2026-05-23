@@ -541,6 +541,7 @@ public class ActivitiesEventsService {
             current.setTrashedAtIso(null);
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        markEventAttachmentsAvailable(updated);
     }
 
     public void takeOver(EventActionRequestDto request) {
@@ -1246,13 +1247,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isConfirmedBooking(EventActionRequestDto request, ActivityEvent preferred) {
-        if (isWaitlistRequested(request)) {
-            return false;
-        }
-        String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
-        if (StringUtils.hasText(paymentSessionId)) {
-            // A checkout session means the booking flow started, but we keep the
-            // membership pending until the server confirms the join separately.
+        if (isWaitlistRequested(request) || isApprovalRequested(request)) {
             return false;
         }
         if (!Boolean.TRUE.equals(preferred == null ? null : preferred.getTicketing())) {
@@ -1263,6 +1258,10 @@ public class ActivitiesEventsService {
 
     private boolean isWaitlistRequested(EventActionRequestDto request) {
         return "waitlist".equals(safeText(request == null ? null : request.pendingReason()));
+    }
+
+    private boolean isApprovalRequested(EventActionRequestDto request) {
+        return "approval".equals(safeText(request == null ? null : request.pendingReason()));
     }
 
     private boolean isRecordFull(ActivityEvent record) {
@@ -1364,9 +1363,12 @@ public class ActivitiesEventsService {
         if (TYPE_HOSTING.equals(targetType)) {
             ActivityEvent eventsOverlay = cloneDocument(baseRecord);
             eventsOverlay.setType(TYPE_EVENTS);
-            eventsOverlay.setStatus(STATUS_ACTIVE);
+            eventsOverlay.setStatus(Boolean.FALSE.equals(baseRecord.getPublished()) || STATUS_DRAFT.equals(safeText(baseRecord.getStatus()))
+                    ? STATUS_DRAFT
+                    : STATUS_ACTIVE);
             eventsOverlay.setIsHosting(false);
             eventsOverlay.setIsInvitation(false);
+            eventsOverlay.setPublished(!STATUS_DRAFT.equals(safeText(eventsOverlay.getStatus())));
             eventsOverlay.setId(resolveExistingId(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
             eventsOverlay.setSyncKey(resolveExistingSyncKey(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
             eventsOverlay.setAdmins(resolveAdminUserIds(sourceId, baseRecord.getCreatorUserId()));
@@ -1700,6 +1702,9 @@ public class ActivitiesEventsService {
         ActivityEvent projection = cloneDocument(record);
         projection.setOwnerUserId(ownerUserId);
         projection.setType(TYPE_EVENTS);
+        if (STATUS_HOSTING.equals(safeText(projection.getStatus()))) {
+            projection.setStatus(STATUS_ACTIVE);
+        }
         projection.setIsAdmin(false);
         projection.setIsInvitation(false);
         projection.setIsHosting(false);
