@@ -1381,7 +1381,7 @@ public class ActivitiesEventsService {
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, targetType, syncedMembersSnapshot);
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         documentsToSave.add(baseRecord);
-        if (TYPE_HOSTING.equals(targetType)) {
+        if (TYPE_HOSTING.equals(targetType) && !Boolean.FALSE.equals(baseRecord.getPublished())) {
             ActivityEvent eventsOverlay = cloneDocument(baseRecord);
             eventsOverlay.setType(TYPE_EVENTS);
             eventsOverlay.setStatus(Boolean.FALSE.equals(baseRecord.getPublished()) || STATUS_DRAFT.equals(safeText(baseRecord.getStatus()))
@@ -1465,11 +1465,7 @@ public class ActivitiesEventsService {
                 .filter(record -> TYPE_INVITATIONS.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> !isTrashScopeStatus(record))
                 .toList();
-        List<ActivityEvent> myEventItems = userItems.stream()
-                .filter(record -> TYPE_HOSTING.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .filter(record -> isViewerAdmin(record, viewer.userId()))
-                .filter(record -> !isTrashScopeStatus(record))
-                .toList();
+        List<ActivityEvent> myEventItems = queryMyEventScopeRecords(viewer, userItems);
         List<ActivityEvent> draftItems = myEventItems.stream()
                 .filter(record -> Boolean.FALSE.equals(record.getPublished()))
                 .toList();
@@ -1634,7 +1630,7 @@ public class ActivitiesEventsService {
                 continue;
             }
             if (TYPE_EVENTS.equals(normalizeType(record.getType())) && isViewerAdmin(record, viewer.userId())) {
-                myEventRecordsBySourceId.put(normalizeId(record.getSourceId()), buildHostingProjection(viewer.userId(), record));
+                myEventRecordsBySourceId.putIfAbsent(normalizeId(record.getSourceId()), buildHostingProjection(viewer.userId(), record));
             }
         }
         return new ArrayList<>(myEventRecordsBySourceId.values()).stream()
@@ -1644,9 +1640,14 @@ public class ActivitiesEventsService {
 
     private ActivityEvent buildHostingProjection(String viewerUserId, ActivityEvent source) {
         ActivityEvent projection = cloneDocument(source);
+        String sourceStatus = safeText(source.getStatus());
+        if (!StringUtils.hasText(sourceStatus) || STATUS_ACTIVE.equals(sourceStatus) || STATUS_HOSTING.equals(sourceStatus)) {
+            sourceStatus = Boolean.FALSE.equals(source.getPublished()) ? STATUS_DRAFT : STATUS_HOSTING;
+        }
         projection.setOwnerUserId(viewerUserId);
         projection.setType(TYPE_HOSTING);
-        projection.setStatus(STATUS_HOSTING);
+        projection.setStatus(sourceStatus);
+        projection.setPublished(STATUS_DRAFT.equals(sourceStatus) ? Boolean.FALSE : source.getPublished());
         projection.setIsHosting(true);
         projection.setIsInvitation(false);
         projection.setIsAdmin(true);
