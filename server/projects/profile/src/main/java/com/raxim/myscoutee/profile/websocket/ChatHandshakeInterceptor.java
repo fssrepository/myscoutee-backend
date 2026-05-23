@@ -11,7 +11,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
+import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 
 @Component
 public class ChatHandshakeInterceptor implements HandshakeInterceptor {
@@ -46,7 +46,7 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
         }
         String sessionKind = queryParams.getFirst("sessionKind");
         if (!StringUtils.hasText(sessionKind)) {
-            sessionKind = request.getHeaders().getFirst(SessionMongoRoutingFilter.SESSION_KIND_HEADER);
+            sessionKind = request.getHeaders().getFirst(DemoSessionRequestSupport.SESSION_KIND_HEADER);
         }
         if (StringUtils.hasText(sessionKind)) {
             attributes.put(SESSION_KIND_ATTRIBUTE, sessionKind.trim());

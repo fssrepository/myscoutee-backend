@@ -496,7 +496,7 @@ public class AssetsService {
             org.jsoup.nodes.Document document = Jsoup.connect(normalizedUrl)
                     .userAgent("Mozilla/5.0 (compatible; MyScouteeBot/1.0)")
                     .timeout(Math.max(1000, assetSourceRefreshProperties.getTimeoutMs()))
-                    .followRedirects(true)
+                    .followRedirects(false)
                     .get();
             String finalUrl = normalizeExternalUrl(document.location());
             String title = firstMetaContent(document, "property", "og:title");

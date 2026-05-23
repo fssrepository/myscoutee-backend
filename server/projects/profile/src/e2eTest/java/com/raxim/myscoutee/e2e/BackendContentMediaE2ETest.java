@@ -124,6 +124,8 @@ class BackendContentMediaE2ETest {
     private ObjectMapper objectMapper;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private InMemoryMediaObjectStoreClient mediaObjectStoreClient;
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
@@ -309,6 +311,23 @@ class BackendContentMediaE2ETest {
                 "message", "E2E unblock"), DEMO_SESSION);
         JsonNode unblockedUser = getJson("/auth/me?userId=" + TARGET_ID, DEMO_SESSION);
         assertThat(unblockedUser.path("profileStatus").asString()).isEqualTo("public");
+    }
+
+    @Test
+    void failedProfileImageUploadLeavesProfileAndStorageCleanThroughHttp() {
+        assertThat(getJson("/auth/me?userId=" + MEDIA_USER_ID).path("images")).isEmpty();
+
+        mediaObjectStoreClient.failNextPut();
+        int status = uploadStatus("/auth/me/profile-image", "image", Map.of(
+                "userId", MEDIA_USER_ID,
+                "slotIndex", "0"),
+                "profile.png",
+                "image/png",
+                pngBytes());
+
+        assertThat(status).isEqualTo(503);
+        assertThat(getJson("/auth/me?userId=" + MEDIA_USER_ID).path("images")).isEmpty();
+        assertThat(mediaObjectStoreClient.storedObjectCount()).isZero();
     }
 
     private void clearE2eCollections() {
@@ -897,13 +916,14 @@ class BackendContentMediaE2ETest {
 
         @Bean
         @Primary
-        MediaObjectStoreClient mediaObjectStoreClient() {
+        InMemoryMediaObjectStoreClient mediaObjectStoreClient() {
             return new InMemoryMediaObjectStoreClient();
         }
     }
 
     private static class InMemoryMediaObjectStoreClient implements MediaObjectStoreClient {
         private final Map<String, MediaObjectStoreClient.StoredObject> objects = new ConcurrentHashMap<>();
+        private volatile boolean failNextPut;
 
         @Override
         public boolean isEnabled() {
@@ -912,6 +932,10 @@ class BackendContentMediaE2ETest {
 
         @Override
         public void putObject(String bucket, String key, String contentType, byte[] bytes) {
+            if (failNextPut) {
+                failNextPut = false;
+                throw new IllegalStateException("E2E media store failure");
+            }
             objects.put(storageKey(bucket, key), new MediaObjectStoreClient.StoredObject(bytes.clone(), contentType));
         }
 
@@ -927,6 +951,14 @@ class BackendContentMediaE2ETest {
         @Override
         public void deleteObject(String bucket, String key) {
             objects.remove(storageKey(bucket, key));
+        }
+
+        void failNextPut() {
+            failNextPut = true;
+        }
+
+        int storedObjectCount() {
+            return objects.size();
         }
 
         private String storageKey(String bucket, String key) {

@@ -94,6 +94,7 @@ class BackendChatMediaE2ETest {
     private static final String READER_ID = userId(2);
     private static final String REPORTER_ID = userId(4);
     private static final String ADMIN_ID = userId(50);
+    private static final String OUTSIDER_ID = userId(51);
     private static final String CHAT_ID = "e2e-chat-media-main";
     private static final String SUPPORT_CHAT_ID = "c-support-admin-e2e-chat-media";
     private static final String EVENT_ID = "e2e-chat-shared-event";
@@ -272,6 +273,96 @@ class BackendChatMediaE2ETest {
         assertThat(findChat(REPORTER_ID, SUPPORT_CHAT_ID).getSupportCaseStatus()).isEqualTo("pending");
     }
 
+    @Test
+    void chatMessageEndpointsFilterNonMembersButAllowAdminsOnSupportChatsThroughHttp() {
+        getExpectStatus("/activities/chats/" + CHAT_ID + "/messages?userId=" + OUTSIDER_ID, 404);
+        postExpectStatus("/activities/chats/" + CHAT_ID + "/messages?userId=" + OUTSIDER_ID,
+                Map.of("text", "Non-member should not be able to post"),
+                404);
+        assertThat(ids(getJson("/activities/chats?userId=" + OUTSIDER_ID), "id")).doesNotContain(CHAT_ID);
+
+        JsonNode adminSupportMessages = getJson("/activities/chats/" + SUPPORT_CHAT_ID + "/messages?userId=" + ADMIN_ID);
+        assertThat(adminSupportMessages).isEmpty();
+        assertThat(findChat(ADMIN_ID, SUPPORT_CHAT_ID).getSupportCaseStatus()).isEqualTo("pending");
+    }
+
+    @Test
+    void nonAuthorCannotEditOrDeleteChatMessagesButCanReactThroughHttp() {
+        JsonNode posted = postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "Author-owned message"));
+        String messageId = posted.path("id").asString();
+
+        postExpectStatus("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/edit?userId=" + READER_ID,
+                Map.of("text", "Reader should not edit this"),
+                403);
+        postExpectStatus("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/delete?userId=" + READER_ID,
+                Map.of(),
+                403);
+
+        JsonNode reacted = postJson("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/reaction?userId=" + READER_ID,
+                Map.of("emoji", ":eyes:"));
+        assertThat(reacted.path("text").asString()).isEqualTo("Author-owned message");
+        assertThat(reacted.path("deletedAtIso").asString()).isBlank();
+        assertThat(reactionEmojis(reacted)).containsExactly(":eyes:");
+    }
+
+    @Test
+    void deletedChatMessagesRejectFurtherContentMutationsThroughHttp() {
+        JsonNode posted = postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "Message that will be deleted", "attachments", initialAttachments()));
+        String messageId = posted.path("id").asString();
+
+        JsonNode deleted = postJson("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/delete?userId=" + SENDER_ID,
+                Map.of());
+        assertThat(deleted.path("deletedAtIso").asString()).isNotBlank();
+
+        postExpectStatus("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/edit?userId=" + SENDER_ID,
+                Map.of("text", "No edit after delete"),
+                400);
+        postExpectStatus("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/attachments?userId=" + SENDER_ID,
+                Map.of("attachments", updatedAttachments()),
+                400);
+
+        JsonNode afterRejectedMutations = messageById(
+                getJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID),
+                messageId);
+        assertThat(afterRejectedMutations.path("text").asString()).isBlank();
+        assertThat(afterRejectedMutations.path("attachments")).isEmpty();
+    }
+
+    @Test
+    void chatDeviceUpsertUpdateAndDeleteStayScopedToUserThroughHttp() {
+        postOk("/activities/chats/devices?userId=" + SENDER_ID, Map.of(
+                "deviceId", "device-main",
+                "platform", "web",
+                "firebaseToken", "token-original",
+                "notificationsEnabled", true));
+        postOk("/activities/chats/devices?userId=" + SENDER_ID, Map.of(
+                "deviceId", "device-main",
+                "platform", "web",
+                "firebaseToken", "token-updated",
+                "notificationsEnabled", false));
+
+        Users sender = findUser(SENDER_ID);
+        assertThat(sender.getDevices()).hasSize(1);
+        assertThat(sender.getDevices().get(0).getFirebaseToken()).isEqualTo("token-updated");
+        assertThat(sender.getDevices().get(0).getNotificationsEnabled()).isFalse();
+
+        deleteOk("/activities/chats/devices?userId=" + SENDER_ID, Map.of("deviceId", "device-main"));
+        assertThat(findUser(SENDER_ID).getDevices()).isEmpty();
+        assertThat(findUser(READER_ID).getDevices()).isEmpty();
+    }
+
+    @Test
+    void invalidSupportCaseActionsAreRejectedWithoutChangingCaseStateThroughHttp() {
+        postExpectStatus("/activities/chats/" + SUPPORT_CHAT_ID + "/support-case?userId=" + ADMIN_ID,
+                Map.of("userId", ADMIN_ID, "action", "teleport"),
+                400);
+        ActivityChat supportChat = findChat(REPORTER_ID, SUPPORT_CHAT_ID);
+        assertThat(supportChat.getSupportCaseStatus()).isEqualTo("pending");
+        assertThat(supportChat.getSupportCaseAssigneeUserId()).isBlank();
+    }
+
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
         mongoTemplate.remove(new Query(), ActivityChat.class);
@@ -283,7 +374,7 @@ class BackendChatMediaE2ETest {
 
     private void seedUsers() {
         List<Users> users = new ArrayList<>();
-        for (int index = 1; index <= 50; index += 1) {
+        for (int index = 1; index <= 51; index += 1) {
             String id = userId(index);
             Users user = user(id, "Chat User " + String.format("%02d", index));
             if (ADMIN_ID.equals(id)) {
@@ -489,6 +580,12 @@ class BackendChatMediaE2ETest {
         return chat;
     }
 
+    private Users findUser(String userId) {
+        Users user = fromReal(() -> mongoTemplate.findById(userId, Users.class));
+        assertThat(user).as("user %s", userId).isNotNull();
+        return user;
+    }
+
     private NotificationOutboxItem findOnlyChatNotification() {
         List<NotificationOutboxItem> notifications = findChatNotifications();
         assertThat(notifications).hasSize(1);
@@ -511,6 +608,16 @@ class BackendChatMediaE2ETest {
         return parse(response.body());
     }
 
+    private void getExpectStatus(String path, int expectedStatus) {
+        HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
+                .header("Accept", "application/json")
+                .GET()
+                .build());
+        assertThat(response.statusCode())
+                .as(path + " body=" + response.body())
+                .isEqualTo(expectedStatus);
+    }
+
     private JsonNode postJson(String path, Object body) {
         HttpResponse<String> response = post(path, body);
         return parse(response.body());
@@ -525,6 +632,16 @@ class BackendChatMediaE2ETest {
         assertThat(response.statusCode())
                 .as(path + " body=" + response.body())
                 .isEqualTo(expectedStatus);
+    }
+
+    private void deleteOk(String path, Object body) {
+        String json = writeJson(body);
+        HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .method("DELETE", HttpRequest.BodyPublishers.ofString(json))
+                .build());
+        assertOk(path, response.statusCode(), response.body());
     }
 
     private HttpResponse<String> post(String path, Object body) {

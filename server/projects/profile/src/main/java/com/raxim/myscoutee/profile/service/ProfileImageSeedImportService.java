@@ -30,7 +30,7 @@ public class ProfileImageSeedImportService {
     private final MediaStorageService mediaStorageService;
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(CONNECT_TIMEOUT)
-            .followRedirects(HttpClient.Redirect.NORMAL)
+            .followRedirects(HttpClient.Redirect.NEVER)
             .build();
 
     public ProfileImageSeedImportService(
@@ -163,7 +163,7 @@ public class ProfileImageSeedImportService {
         }
 
         if (allowedHosts.isEmpty()) {
-            return true;
+            return false;
         }
 
         String host = safeText(uri.getHost()).toLowerCase(Locale.ROOT);

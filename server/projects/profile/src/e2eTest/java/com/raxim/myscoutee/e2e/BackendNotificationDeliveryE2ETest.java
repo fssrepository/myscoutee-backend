@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,6 +41,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
 import com.mongodb.client.MongoClient;
@@ -186,6 +188,106 @@ class BackendNotificationDeliveryE2ETest {
         });
     }
 
+    @Test
+    void notificationWorkerSkipsDisabledDevicesAndRecordsPartialFirebaseFailuresInOneGroupedSend() {
+        String disabledUserId = recipientUserIds().get(0);
+        String invalidTokenUserId = recipientUserIds().get(1);
+        registerDevicesOverHttp(Set.of(disabledUserId));
+        firebaseGateway.failInvalidTokens(tokenFor(invalidTokenUserId));
+
+        postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "Backend notification partial failure e2e"));
+        awaitOutboxItem(NotificationOutboxItem.STATUS_PENDING);
+
+        configProperties.setFirebaseEnabled(true);
+
+        await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+            NotificationOutboxItem sent = findNotification();
+            assertThat(sent).isNotNull();
+            assertThat(sent.getStatus()).isEqualTo(NotificationOutboxItem.STATUS_SENT);
+            assertThat(sent.getTokenSuccessCount()).isEqualTo(48);
+            assertThat(sent.getTokenFailureCount()).isEqualTo(1);
+
+            assertThat(firebaseGateway.multicastCalls()).hasSize(1);
+            assertThat(firebaseGateway.directCallCount()).isZero();
+            assertThat(firebaseGateway.topicCallCount()).isZero();
+            assertThat(firebaseGateway.multicastTokens()).hasSize(49);
+            assertThat(firebaseGateway.multicastTokens()).doesNotContain(tokenFor(disabledUserId));
+            assertThat(firebaseGateway.multicastTokens()).contains(tokenFor(invalidTokenUserId));
+
+            Users invalidTokenUser = userById(invalidTokenUserId);
+            assertThat(invalidTokenUser.getDevices())
+                    .extracting(Users.UserDeviceRecord::getFirebaseToken)
+                    .doesNotContain(tokenFor(invalidTokenUserId));
+
+            Users disabledUser = userById(disabledUserId);
+            assertThat(disabledUser.getDevices()).hasSize(1);
+            assertThat(disabledUser.getDevices().get(0).getNotificationsEnabled()).isFalse();
+        });
+    }
+
+    @Test
+    void notificationWorkerMarksNoTokenRecipientsSentWithoutCallingFirebase() {
+        postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "Backend notification without registered devices"));
+        awaitOutboxItem(NotificationOutboxItem.STATUS_PENDING);
+
+        configProperties.setFirebaseEnabled(true);
+
+        await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+            NotificationOutboxItem sent = findNotification();
+            assertThat(sent).isNotNull();
+            assertThat(sent.getStatus()).isEqualTo(NotificationOutboxItem.STATUS_SENT);
+            assertThat(sent.getTokenSuccessCount()).isZero();
+            assertThat(sent.getTokenFailureCount()).isZero();
+            assertThat(firebaseGateway.multicastCalls()).isEmpty();
+            assertThat(firebaseGateway.directCallCount()).isZero();
+            assertThat(firebaseGateway.topicCallCount()).isZero();
+        });
+    }
+
+    @Test
+    void singleRecipientNotificationUsesDirectFirebaseSendAndExcludesSenderDevice() {
+        String recipientUserId = recipientUserIds().get(0);
+        withReal(() -> {
+            ActivityChat chat = mongoTemplate.findById(CHAT_ID + ":" + SENDER_ID, ActivityChat.class);
+            assertThat(chat).isNotNull();
+            chat.setMemberIds(List.of(recipientUserId));
+            mongoTemplate.save(chat);
+        });
+        postOk("/activities/chats/devices?userId=" + SENDER_ID, Map.of(
+                "userId", SENDER_ID,
+                "deviceId", "device-" + SENDER_ID,
+                "platform", "web",
+                "firebaseToken", tokenFor(SENDER_ID),
+                "notificationsEnabled", true));
+        postOk("/activities/chats/devices?userId=" + recipientUserId, Map.of(
+                "userId", recipientUserId,
+                "deviceId", "device-" + recipientUserId,
+                "platform", "web",
+                "firebaseToken", tokenFor(recipientUserId),
+                "notificationsEnabled", true));
+
+        postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "Backend notification direct delivery"));
+        NotificationOutboxItem pending = awaitOutboxItem(NotificationOutboxItem.STATUS_PENDING);
+        assertThat(pending.getRecipientUserIds()).containsExactly(recipientUserId);
+        assertThat(pending.getDeliveryStrategy()).isEqualTo("direct");
+
+        configProperties.setFirebaseEnabled(true);
+
+        await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
+            NotificationOutboxItem sent = findNotification();
+            assertThat(sent).isNotNull();
+            assertThat(sent.getStatus()).isEqualTo(NotificationOutboxItem.STATUS_SENT);
+            assertThat(sent.getTokenSuccessCount()).isEqualTo(1);
+            assertThat(sent.getTokenFailureCount()).isZero();
+            assertThat(firebaseGateway.directTokens()).containsExactly(tokenFor(recipientUserId));
+            assertThat(firebaseGateway.multicastCalls()).isEmpty();
+            assertThat(firebaseGateway.directTokens()).doesNotContain(tokenFor(SENDER_ID));
+        });
+    }
+
     private NotificationOutboxItem awaitOutboxItem(String expectedStatus) {
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
             NotificationOutboxItem item = findNotification();
@@ -203,6 +305,10 @@ class BackendNotificationDeliveryE2ETest {
     }
 
     private void registerDevicesOverHttp() {
+        registerDevicesOverHttp(Set.of());
+    }
+
+    private void registerDevicesOverHttp(Set<String> disabledUserIds) {
         List<String> allUsers = new ArrayList<>(recipientUserIds());
         allUsers.add(SENDER_ID);
         allUsers.add(OUTSIDER_ID);
@@ -212,7 +318,7 @@ class BackendNotificationDeliveryE2ETest {
                     "deviceId", "device-" + userId,
                     "platform", "web",
                     "firebaseToken", tokenFor(userId),
-                    "notificationsEnabled", true));
+                    "notificationsEnabled", !disabledUserIds.contains(userId)));
         }
     }
 
@@ -333,6 +439,12 @@ class BackendNotificationDeliveryE2ETest {
         return "token-" + userId;
     }
 
+    private Users userById(String userId) {
+        Users user = fromReal(() -> mongoTemplate.findById(userId, Users.class));
+        assertThat(user).isNotNull();
+        return user;
+    }
+
     private void withReal(Runnable action) {
         MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
         try {
@@ -447,6 +559,7 @@ class BackendNotificationDeliveryE2ETest {
     static class RecordingFirebaseMessagingGateway implements FirebaseMessagingGateway {
         private final CopyOnWriteArrayList<List<String>> multicastCalls = new CopyOnWriteArrayList<>();
         private final CopyOnWriteArrayList<List<String>> directCalls = new CopyOnWriteArrayList<>();
+        private final CopyOnWriteArrayList<String> invalidTokens = new CopyOnWriteArrayList<>();
         private final AtomicInteger topicCalls = new AtomicInteger();
 
         @Override
@@ -459,7 +572,7 @@ class BackendNotificationDeliveryE2ETest {
                 throws FirebaseMessagingException {
             List<String> copiedTokens = List.copyOf(tokens == null ? List.of() : tokens);
             directCalls.add(copiedTokens);
-            return FirebaseMessagingGateway.FirebaseBatchSendResult.allSuccessful(copiedTokens.size());
+            return batchResult(copiedTokens);
         }
 
         @Override
@@ -467,13 +580,19 @@ class BackendNotificationDeliveryE2ETest {
                 throws FirebaseMessagingException {
             List<String> copiedTokens = List.copyOf(tokens == null ? List.of() : tokens);
             multicastCalls.add(copiedTokens);
-            return FirebaseMessagingGateway.FirebaseBatchSendResult.allSuccessful(copiedTokens.size());
+            return batchResult(copiedTokens);
         }
 
         void reset() {
             multicastCalls.clear();
             directCalls.clear();
+            invalidTokens.clear();
             topicCalls.set(0);
+        }
+
+        void failInvalidTokens(String... tokens) {
+            invalidTokens.clear();
+            invalidTokens.addAll(List.of(tokens == null ? new String[0] : tokens));
         }
 
         List<List<String>> multicastCalls() {
@@ -488,8 +607,28 @@ class BackendNotificationDeliveryE2ETest {
             return directCalls.size();
         }
 
+        List<String> directTokens() {
+            return directCalls.stream().flatMap(List::stream).toList();
+        }
+
         int topicCallCount() {
             return topicCalls.get();
+        }
+
+        private FirebaseMessagingGateway.FirebaseBatchSendResult batchResult(List<String> tokens) {
+            int success = 0;
+            int failure = 0;
+            List<FirebaseMessagingGateway.FirebaseTokenSendResult> responses = new ArrayList<>();
+            for (String token : tokens == null ? List.<String>of() : tokens) {
+                if (invalidTokens.contains(token)) {
+                    failure += 1;
+                    responses.add(new FirebaseMessagingGateway.FirebaseTokenSendResult(false, MessagingErrorCode.INVALID_ARGUMENT));
+                } else {
+                    success += 1;
+                    responses.add(FirebaseMessagingGateway.FirebaseTokenSendResult.success());
+                }
+            }
+            return new FirebaseMessagingGateway.FirebaseBatchSendResult(success, failure, responses);
         }
     }
 }

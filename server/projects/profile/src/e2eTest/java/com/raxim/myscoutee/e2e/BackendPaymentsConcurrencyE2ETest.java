@@ -49,6 +49,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Payment;
@@ -160,13 +161,46 @@ class BackendPaymentsConcurrencyE2ETest {
                 "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(3), 30d));
         assertThat(wrongUserPay.statusCode()).isEqualTo(409);
+
+        HttpResponse<String> wrongSourcePay = postRaw(
+                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                checkoutPayload("another-event", userId(2), 30d));
+        assertThat(wrongSourcePay.statusCode()).isEqualTo(409);
+
+        HttpResponse<String> wrongAmountPay = postRaw(
+                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 31d));
+        assertThat(wrongAmountPay.statusCode()).isEqualTo(409);
+
+        Map<String, Object> wrongCurrencyPayload = checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d);
+        wrongCurrencyPayload.put("currency", "USD");
+        wrongCurrencyPayload.put("lineItems", List.of(Map.of(
+                "id", "ticket",
+                "kind", "event-ticket",
+                "label", "Ticket",
+                "detail", "One seat",
+                "amount", 30d,
+                "currency", "USD")));
+        HttpResponse<String> wrongCurrencyPay = postRaw(
+                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                wrongCurrencyPayload);
+        assertThat(wrongCurrencyPay.statusCode()).isEqualTo(409);
+
         Payment protectedPayment = onlyPayment(IDEMPOTENT_EVENT_ID, userId(2));
         assertThat(protectedPayment.getUserId()).isEqualTo(userId(2));
         assertThat(protectedPayment.getAmount()).isEqualTo(30d);
+        assertThat(protectedPayment.getCurrency()).isEqualTo("EUR");
+        assertThat(paymentsForEvent(IDEMPOTENT_EVENT_ID)).hasSize(1);
+        assertThat(paymentsForEvent("another-event")).isEmpty();
 
         HttpResponse<String> failingCheckout = postRaw("/activities/events/checkout?provider=e2e-fail",
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(4), 30d));
         assertThat(failingCheckout.statusCode()).isGreaterThanOrEqualTo(500);
+        assertThat(paymentsForUser(userId(4))).isEmpty();
+
+        HttpResponse<String> missingSessionPay = postRaw("/activities/events/pay?provider=e2e",
+                checkoutPayload(IDEMPOTENT_EVENT_ID, userId(4), 30d));
+        assertThat(missingSessionPay.statusCode()).isEqualTo(400);
         assertThat(paymentsForUser(userId(4))).isEmpty();
 
         postJson("/activities/events/join", joinPayload(IDEMPOTENT_EVENT_ID, userId(2), paymentSessionId));
@@ -175,6 +209,95 @@ class BackendPaymentsConcurrencyE2ETest {
                 .containsExactly(userId(2));
         assertThat(getJson("/assets/tickets?userId=" + userId(2)).path("total").asInt()).isEqualTo(1);
         assertThat(onlyPayment(IDEMPOTENT_EVENT_ID, userId(2)).getBookingStatus()).isEqualTo("joined");
+    }
+
+    @Test
+    void pendingAndWaitlistPaidJoinsDoNotRecordPaymentOrPostMemberJoinedChatSideEffectsThroughHttp() {
+        String eventId = "e2e-pay-side-effects";
+        publishPaidEvent(eventId, 2);
+        seedEventChat(eventId);
+
+        String acceptedSessionId = postJson("/activities/events/checkout?provider=e2e",
+                checkoutPayload(eventId, userId(2), 12d)).path("id").asString();
+        postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + acceptedSessionId,
+                checkoutPayload(eventId, userId(2), 12d));
+        postJson("/activities/events/join", joinPayload(eventId, userId(2), acceptedSessionId));
+
+        ActivityChat afterAccepted = eventChat(eventId);
+        assertThat(afterAccepted.getMessages()).hasSize(1);
+        assertThat(afterAccepted.getMessages().get(0).getClientId()).isEqualTo("member-joined");
+        assertThat(onlyPayment(eventId, userId(2)).getBookingStatus()).isEqualTo("joined");
+
+        String waitlistSessionId = postJson("/activities/events/checkout?provider=e2e",
+                checkoutPayload(eventId, userId(3), 12d)).path("id").asString();
+        postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + waitlistSessionId,
+                checkoutPayload(eventId, userId(3), 12d));
+        postJson("/activities/events/join", joinPayload(eventId, userId(3), waitlistSessionId));
+
+        ActivityMember waitlistMember = nonHostMembers(members(eventId, "pending")).get(0);
+        assertThat(waitlistMember.getUserId()).isEqualTo(userId(3));
+        assertThat(waitlistMember.getRequestKind()).isEqualTo("waitlist");
+        assertThat(onlyPayment(eventId, userId(3)).getBookingStatus()).isEqualTo("initiated");
+        assertThat(eventChat(eventId).getMessages()).hasSize(1);
+
+        String approvalEventId = "e2e-pay-approval-side-effects";
+        publishPaidEvent(approvalEventId, 4);
+        seedEventChat(approvalEventId);
+        String approvalSessionId = postJson("/activities/events/checkout?provider=e2e",
+                checkoutPayload(approvalEventId, userId(4), 12d)).path("id").asString();
+        postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + approvalSessionId,
+                checkoutPayload(approvalEventId, userId(4), 12d));
+        Map<String, Object> approvalJoinPayload = joinPayload(approvalEventId, userId(4), approvalSessionId);
+        approvalJoinPayload.put("pendingReason", "approval");
+        postJson("/activities/events/join", approvalJoinPayload);
+
+        ActivityMember approvalMember = members(approvalEventId, "pending").stream()
+                .filter(member -> userId(4).equals(member.getUserId()))
+                .findFirst()
+                .orElseThrow();
+        assertThat(approvalMember.getRequestKind()).isEqualTo("approval");
+        assertThat(onlyPayment(approvalEventId, userId(4)).getBookingStatus()).isEqualTo("initiated");
+        assertThat(eventChat(approvalEventId).getMessages()).isEmpty();
+    }
+
+    @Test
+    void duplicateCheckoutCreatesIndependentPendingSessionsForSameUserSourceAmountAndCurrencyThroughHttp() {
+        String eventId = "e2e-pay-duplicate-checkout";
+        publishPaidEvent(eventId, 3);
+
+        JsonNode firstCheckout = postJson("/activities/events/checkout?provider=e2e",
+                checkoutPayload(eventId, userId(5), 12d));
+        JsonNode secondCheckout = postJson("/activities/events/checkout?provider=e2e",
+                checkoutPayload(eventId, userId(5), 12d));
+
+        assertThat(secondCheckout.path("id").asString()).isNotEqualTo(firstCheckout.path("id").asString());
+        assertThat(paymentsForEvent(eventId)).hasSize(2)
+                .allSatisfy(payment -> {
+                    assertThat(payment.getUserId()).isEqualTo(userId(5));
+                    assertThat(payment.getBookingStatus()).isEqualTo("initiated");
+                    assertThat(payment.getAmount()).isEqualTo(12d);
+                    assertThat(payment.getCurrency()).isEqualTo("EUR");
+                });
+    }
+
+    @Test
+    void failedProviderPayLeavesCheckoutUnapprovedAndWithoutMembershipSideEffectsThroughHttp() {
+        String eventId = "e2e-pay-provider-failure";
+        publishPaidEvent(eventId, 3);
+        seedEventChat(eventId);
+
+        JsonNode checkout = postJson("/activities/events/checkout?provider=e2e",
+                checkoutPayload(eventId, userId(6), 12d));
+        String paymentSessionId = checkout.path("id").asString();
+        HttpResponse<String> failedPay = postRaw("/activities/events/pay?provider=e2e-fail&paymentSessionId=" + paymentSessionId,
+                checkoutPayload(eventId, userId(6), 12d));
+
+        assertThat(failedPay.statusCode()).isEqualTo(502);
+        Payment payment = onlyPayment(eventId, userId(6));
+        assertThat(payment.getBookingStatus()).isEqualTo("initiated");
+        assertThat(payment.getJoinedAtIso()).isNull();
+        assertThat(members(eventId).stream().map(ActivityMember::getUserId).toList()).doesNotContain(userId(6));
+        assertThat(eventChat(eventId).getMessages()).isEmpty();
     }
 
     @Test
@@ -242,6 +365,7 @@ class BackendPaymentsConcurrencyE2ETest {
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Payment.class);
+        mongoTemplate.remove(new Query(), ActivityChat.class);
     }
 
     private void seedUsers() {
@@ -344,6 +468,32 @@ class BackendPaymentsConcurrencyE2ETest {
         payload.put("paymentSessionId", paymentSessionId);
         payload.put("bookingConfirmed", true);
         return payload;
+    }
+
+    private void seedEventChat(String eventId) {
+        withReal(() -> {
+            ActivityChat chat = new ActivityChat();
+            chat.setMongoId(eventId + ":" + HOST_ID);
+            chat.setChatId(eventId);
+            chat.setOwnerUserId(HOST_ID);
+            chat.setTitle("Payment side effects chat");
+            chat.setAvatar("/assets/logo/heart.webp");
+            chat.setMemberIds(List.of(HOST_ID));
+            chat.setUnread(0);
+            chat.setDateIso(BASE_TIME.toString());
+            chat.setChannelType("event");
+            chat.setEventId(eventId);
+            chat.setMessages(new ArrayList<>());
+            mongoTemplate.save(chat);
+        });
+    }
+
+    private ActivityChat eventChat(String eventId) {
+        ActivityChat chat = fromReal(() -> mongoTemplate.findOne(
+                Query.query(Criteria.where("chatId").is(eventId).and("ownerUserId").is(HOST_ID)),
+                ActivityChat.class));
+        assertThat(chat).isNotNull();
+        return chat;
     }
 
     private List<ActivityMember> members(String eventId) {

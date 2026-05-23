@@ -4,7 +4,7 @@ ARG TZ=Europe/Brussels
 ENV TZ=${TZ}
 
 RUN apt-get update &&\
-    apt-get install -y cron nano curl inotify-tools tzdata &&\
+    apt-get install -y cron nano curl inotify-tools openssl tzdata &&\
     ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime &&\
     echo "${TZ}" > /etc/timezone &&\
     apt-get clean &&\

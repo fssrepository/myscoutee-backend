@@ -362,6 +362,199 @@ class BackendLifecycleE2ETest {
         assertThat(getJson("/assets/tickets?userId=" + userId(9)).path("total").asInt()).isZero();
     }
 
+    @Test
+    void eventExplorePaginationFiltersVisibilityAndOpenSpotContractsWorkThroughHttp() {
+        String publicFirst = "e2e-life-explore-public-1";
+        String publicSecond = "e2e-life-explore-public-2";
+        String fullEvent = "e2e-life-explore-full";
+        String invitationOnlyEvent = "e2e-life-explore-invitation-only";
+        String unpublishedEvent = "e2e-life-explore-unpublished";
+
+        publishExploreEvent(publicFirst, BASE_TIME.plus(Duration.ofDays(2)), 5, "Public", true);
+        publishExploreEvent(publicSecond, BASE_TIME.plus(Duration.ofDays(3)), 5, "Public", true);
+        publishExploreEvent(fullEvent, BASE_TIME.plus(Duration.ofDays(4)), 1, "Public", true);
+        publishExploreEvent(invitationOnlyEvent, BASE_TIME.plus(Duration.ofDays(5)), 5, "Invitation only", true);
+        publishExploreEvent(unpublishedEvent, BASE_TIME.plus(Duration.ofDays(6)), 5, "Public", false);
+
+        JsonNode firstPage = postJson("/activities/events/explore", Map.of(
+                "userId", OUTSIDER_ID,
+                "order", "upcoming",
+                "view", "day",
+                "topic", "payments",
+                "limit", 2));
+        assertThat(firstPage.path("total").asInt()).isEqualTo(3);
+        List<String> firstIds = ids(firstPage.path("records"), "id");
+        assertThat(firstIds).hasSize(2);
+        assertThat(firstIds).doesNotContain(invitationOnlyEvent, unpublishedEvent);
+        assertThat(firstPage.path("nextCursor").asString()).isNotBlank();
+
+        JsonNode secondPage = postJson("/activities/events/explore", Map.of(
+                "userId", OUTSIDER_ID,
+                "order", "upcoming",
+                "view", "day",
+                "topic", "payments",
+                "limit", 2,
+                "cursor", firstPage.path("nextCursor").asString()));
+        List<String> secondIds = ids(secondPage.path("records"), "id");
+        assertThat(secondIds).hasSize(1);
+        assertThat(secondIds).doesNotContainAnyElementsOf(firstIds);
+        assertThat(secondPage.path("nextCursor").isNull()).isTrue();
+
+        List<String> allPagedIds = new ArrayList<>();
+        allPagedIds.addAll(firstIds);
+        allPagedIds.addAll(secondIds);
+        assertThat(allPagedIds).containsExactly(publicFirst, publicSecond, fullEvent);
+
+        JsonNode openSpotsOnly = postJson("/activities/events/explore", Map.of(
+                "userId", OUTSIDER_ID,
+                "order", "upcoming",
+                "view", "day",
+                "topic", "payments",
+                "openSpotsOnly", true,
+                "limit", 10));
+        assertThat(ids(openSpotsOnly.path("records"), "id"))
+                .contains(publicFirst, publicSecond)
+                .doesNotContain(fullEvent, invitationOnlyEvent, unpublishedEvent);
+
+        JsonNode excluded = postJson("/activities/events/explore", Map.of(
+                "userId", OUTSIDER_ID,
+                "order", "upcoming",
+                "view", "day",
+                "topic", "payments",
+                "excludedSourceIds", List.of(publicFirst),
+                "limit", 10));
+        assertThat(ids(excluded.path("records"), "id")).doesNotContain(publicFirst);
+    }
+
+    @Test
+    void eventExploreFriendsOnlyUsesBackendFriendGateThroughHttp() {
+        String friendUserId = firstUserWithFriendshipToHost(true);
+        String nonFriendUserId = firstUserWithFriendshipToHost(false);
+        String publicEvent = "e2e-life-friend-public";
+        String friendsOnlyEvent = "e2e-life-friend-only";
+
+        publishExploreEvent(publicEvent, BASE_TIME.plus(Duration.ofDays(7)), 5, "Public", true);
+        publishExploreEvent(friendsOnlyEvent, BASE_TIME.plus(Duration.ofDays(8)), 5, "Friends only", true);
+
+        JsonNode friendExplore = postJson("/activities/events/explore", Map.of(
+                "userId", friendUserId,
+                "topic", "explore",
+                "order", "upcoming",
+                "limit", 10));
+        assertThat(ids(friendExplore.path("records"), "id")).contains(publicEvent, friendsOnlyEvent);
+
+        JsonNode nonFriendExplore = postJson("/activities/events/explore", Map.of(
+                "userId", nonFriendUserId,
+                "topic", "explore",
+                "order", "upcoming",
+                "limit", 10));
+        assertThat(ids(nonFriendExplore.path("records"), "id"))
+                .contains(publicEvent)
+                .doesNotContain(friendsOnlyEvent);
+
+        JsonNode friendOnlyFilter = postJson("/activities/events/explore", Map.of(
+                "userId", friendUserId,
+                "topic", "explore",
+                "friendsOnly", true,
+                "limit", 10));
+        assertThat(ids(friendOnlyFilter.path("records"), "id")).contains(publicEvent, friendsOnlyEvent);
+    }
+
+    @Test
+    void eventTrashRestoreKeepsExploreTrashAndHostingListsConsistentThroughHttp() {
+        postOk("/activities/events/sync", eventSyncPayload(false));
+        postOk("/activities/events/publish", Map.of(
+                "userId", HOST_ID,
+                "type", "hosting",
+                "sourceId", EVENT_ID));
+
+        assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
+                .contains(EVENT_ID);
+
+        postOk("/activities/events/trash", Map.of(
+                "userId", HOST_ID,
+                "type", "hosting",
+                "sourceId", EVENT_ID));
+        assertThat(findEvent(HOST_ID, "hosting", EVENT_ID).getStatus()).isEqualTo("T");
+        assertThat(ids(getJson("/activities/events/trash?userId=" + HOST_ID), "id")).contains(EVENT_ID);
+        assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
+                .doesNotContain(EVENT_ID);
+
+        postOk("/activities/events/restore", Map.of(
+                "userId", HOST_ID,
+                "type", "hosting",
+                "sourceId", EVENT_ID));
+        assertThat(findEvent(HOST_ID, "hosting", EVENT_ID).getStatus()).isEqualTo("H");
+        assertThat(ids(getJson("/activities/events/hosting?userId=" + HOST_ID), "id")).contains(EVENT_ID);
+        assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
+                .contains(EVENT_ID);
+    }
+
+    @Test
+    void assetExploreFiltersVisibilityTypeAndTrashRestoreThroughHttp() {
+        String publicCar = "e2e-life-public-car";
+        String publicTent = "e2e-life-public-tent";
+        String invitationCar = "e2e-life-invite-car";
+
+        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(publicCar, "Car", "Public")));
+        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(publicTent, "Tent", "Public")));
+        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(invitationCar, "Car", "Invitation only")));
+
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
+                .contains(publicCar)
+                .doesNotContain(publicTent, invitationCar);
+
+        postOk("/assets/delete", Map.of("userId", ASSET_OWNER_ID, "assetId", publicCar));
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
+                .doesNotContain(publicCar, invitationCar);
+
+        postOk("/assets/restore", Map.of("userId", ASSET_OWNER_ID, "assetId", publicCar));
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
+                .contains(publicCar)
+                .doesNotContain(invitationCar);
+    }
+
+    @Test
+    void unauthorizedMemberActionsLeaveAcceptedMemberAndTicketUntouchedThroughHttp() {
+        postOk("/activities/events/sync", eventSyncPayload(false));
+        postOk("/activities/events/publish", Map.of(
+                "userId", HOST_ID,
+                "type", "hosting",
+                "sourceId", EVENT_ID));
+        JsonNode checkout = postJson("/activities/events/checkout", checkoutPayload(PAID_MEMBER_ID));
+        String paymentSessionId = checkout.path("id").asString();
+        postJson("/activities/events/pay?paymentSessionId=" + paymentSessionId, checkoutPayload(PAID_MEMBER_ID));
+        postJson("/activities/events/join", joinPayload(PAID_MEMBER_ID, paymentSessionId, true, null));
+
+        JsonNode afterOutsiderAction = postJson("/activities/events/members/action",
+                memberActionByActor(OUTSIDER_ID, PAID_MEMBER_ID, "disqualify"));
+        assertThat(memberStatus(afterOutsiderAction, PAID_MEMBER_ID)).isEqualTo("accepted");
+        assertThat(findMember("event", EVENT_ID, PAID_MEMBER_ID).getStatus()).isEqualTo("accepted");
+        assertThat(getJson("/assets/tickets?userId=" + PAID_MEMBER_ID).path("total").asInt()).isEqualTo(1);
+    }
+
+    @Test
+    void eventJoinIsIdempotentForAcceptedMembersThroughHttp() {
+        postOk("/activities/events/sync", eventSyncPayload(false));
+        postOk("/activities/events/publish", Map.of(
+                "userId", HOST_ID,
+                "type", "hosting",
+                "sourceId", EVENT_ID));
+        JsonNode checkout = postJson("/activities/events/checkout", checkoutPayload(PAID_MEMBER_ID));
+        String paymentSessionId = checkout.path("id").asString();
+        postJson("/activities/events/pay?paymentSessionId=" + paymentSessionId, checkoutPayload(PAID_MEMBER_ID));
+
+        postJson("/activities/events/join", joinPayload(PAID_MEMBER_ID, paymentSessionId, true, null));
+        postJson("/activities/events/join", joinPayload(PAID_MEMBER_ID, paymentSessionId, true, null));
+
+        assertThat(findMembers("event", EVENT_ID).stream()
+                .filter(member -> PAID_MEMBER_ID.equals(member.getUserId()))
+                .toList()).hasSize(1);
+        assertThat(findMember("event", EVENT_ID, PAID_MEMBER_ID).getStatus()).isEqualTo("accepted");
+        assertThat(findPayment(paymentSessionId).getBookingStatus()).isEqualTo("joined");
+        assertThat(getJson("/assets/tickets?userId=" + PAID_MEMBER_ID).path("total").asInt()).isEqualTo(1);
+    }
+
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
@@ -509,6 +702,26 @@ class BackendLifecycleE2ETest {
                 "sourceId", eventId));
     }
 
+    private void publishExploreEvent(
+            String eventId,
+            Instant startAt,
+            int capacityTotal,
+            String visibility,
+            boolean publish) {
+        Map<String, Object> payload = paymentEdgeEventPayload(eventId, startAt, false);
+        payload.put("capacityMax", capacityTotal);
+        payload.put("capacityTotal", capacityTotal);
+        payload.put("visibility", visibility);
+        payload.put("topics", List.of("payments", "explore"));
+        postOk("/activities/events/sync", payload);
+        if (publish) {
+            postOk("/activities/events/publish", Map.of(
+                    "userId", HOST_ID,
+                    "type", "hosting",
+                    "sourceId", eventId));
+        }
+    }
+
     private String checkoutPayAndJoinEdgeEvent(String eventId, String userId, String pendingReason) {
         JsonNode checkout = postJson("/activities/events/checkout", edgeCheckoutPayload(eventId, userId));
         String paymentSessionId = checkout.path("id").asString();
@@ -609,11 +822,40 @@ class BackendLifecycleE2ETest {
     }
 
     private Map<String, Object> memberAction(String targetUserId, String action) {
+        return memberActionByActor(HOST_ID, targetUserId, action);
+    }
+
+    private Map<String, Object> memberActionByActor(String actorUserId, String targetUserId, String action) {
         return Map.of(
                 "owner", Map.of("ownerType", "event", "ownerId", EVENT_ID),
-                "actorUserId", HOST_ID,
+                "actorUserId", actorUserId,
                 "targetUserId", targetUserId,
                 "action", action);
+    }
+
+    private String firstUserWithFriendshipToHost(boolean expectedFriend) {
+        for (int index = 2; index <= 50; index += 1) {
+            String candidate = userId(index);
+            if (hasDeterministicFriendship(HOST_ID, candidate) == expectedFriend) {
+                return candidate;
+            }
+        }
+        throw new AssertionError("Missing " + (expectedFriend ? "friend" : "non-friend") + " fixture for " + HOST_ID);
+    }
+
+    private boolean hasDeterministicFriendship(String leftUserId, String rightUserId) {
+        String firstId = leftUserId.compareTo(rightUserId) <= 0 ? leftUserId : rightUserId;
+        String secondId = leftUserId.compareTo(rightUserId) <= 0 ? rightUserId : leftUserId;
+        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
+        return (seed % 100) < 32;
+    }
+
+    private int hashText(String value) {
+        int hash = 0;
+        for (int index = 0; index < value.length(); index += 1) {
+            hash = (hash * 31 + value.charAt(index)) % 104729;
+        }
+        return Math.abs(hash);
     }
 
     private Map<String, Object> resourceAssetCard() {
@@ -676,6 +918,23 @@ class BackendLifecycleE2ETest {
         return asset;
     }
 
+    private Map<String, Object> assetCard(String assetId, String type, String visibility) {
+        Map<String, Object> asset = new LinkedHashMap<>();
+        asset.put("id", assetId);
+        asset.put("type", type);
+        asset.put("title", "Lifecycle " + type + " " + assetId);
+        asset.put("subtitle", "Explore contract asset");
+        asset.put("category", "Car".equals(type) ? "Transport" : "Camp");
+        asset.put("city", "Bratislava");
+        asset.put("capacityTotal", 4);
+        asset.put("quantity", 1);
+        asset.put("details", "Asset explore e2e fixture");
+        asset.put("imageUrl", "https://example.test/assets/" + assetId + ".png");
+        asset.put("routes", List.of("Lifecycle Arena"));
+        asset.put("visibility", visibility);
+        return asset;
+    }
+
     private ActivityEvent findEvent(String ownerUserId, String type, String sourceId) {
         ActivityEvent event = fromReal(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("ownerUserId").is(ownerUserId)
@@ -702,6 +961,13 @@ class BackendLifecycleE2ETest {
                                 .toList())
                 .isNotNull();
         return member;
+    }
+
+    private List<ActivityMember> findMembers(String ownerType, String ownerId) {
+        return fromReal(() -> mongoTemplate.find(
+                Query.query(Criteria.where("ownerType").is(ownerType)
+                        .and("ownerId").is(ownerId)),
+                ActivityMember.class));
     }
 
     private Asset findAsset(String assetId) {

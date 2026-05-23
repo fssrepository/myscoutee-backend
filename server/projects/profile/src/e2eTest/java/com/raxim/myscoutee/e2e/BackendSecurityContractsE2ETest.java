@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterAll;
@@ -27,10 +28,12 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import com.google.firebase.auth.FirebaseToken;
+import com.raxim.myscoutee.common.config.FirebaseConfig;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
+import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -116,6 +119,28 @@ class BackendSecurityContractsE2ETest {
     }
 
     @Test
+    void firebaseEnabledAdminRoutesDoNotTreatDemoSessionHeaderAsAdminBypass() {
+        HttpResponse<String> demoHeaderWithoutToken = getWithDemoSessionHeader("/admin/dashboard?adminUserId=e2e-security-admin");
+        assertThat(demoHeaderWithoutToken.statusCode())
+                .as("demo routing header must not bypass Firebase admin authentication, body=" + demoHeaderWithoutToken.body())
+                .isIn(401, 403);
+
+        HttpResponse<String> demoHeaderNormalUser = getWithDemoSessionHeader(
+                "/admin/dashboard?adminUserId=e2e-security-admin",
+                "normal-user-token");
+        assertThat(demoHeaderNormalUser.statusCode())
+                .as("demo routing header must not turn a normal Firebase user into admin, body=" + demoHeaderNormalUser.body())
+                .isEqualTo(403);
+
+        HttpResponse<String> demoHeaderAdmin = getWithDemoSessionHeader(
+                "/admin/dashboard?adminUserId=e2e-security-admin",
+                "admin-token");
+        assertThat(demoHeaderAdmin.statusCode())
+                .as("configured admin should still work when the frontend sends session routing headers, body=" + demoHeaderAdmin.body())
+                .isBetween(200, 299);
+    }
+
+    @Test
     void firebaseEnabledAdminRoutesRejectNormalUsersAndAllowConfiguredAdmins() {
         HttpResponse<String> normalUserResponse = get(
                 "/admin/params?adminUserId=e2e-security-admin",
@@ -132,6 +157,36 @@ class BackendSecurityContractsE2ETest {
                 .isBetween(200, 299);
     }
 
+    @Test
+    void invalidFirebaseTokensDoNotReachAdminRoutesOrFallbackToDevUser() {
+        HttpResponse<String> invalidTokenResponse = get(
+                "/admin/monitoring?adminUserId=e2e-security-admin",
+                "unknown-token");
+        assertThat(invalidTokenResponse.statusCode())
+                .as("invalid Firebase token must be rejected, body=" + invalidTokenResponse.body())
+                .isIn(401, 403);
+
+        HttpResponse<String> malformedHeaderResponse = send(HttpRequest.newBuilder(uri("/admin/monitoring?adminUserId=e2e-security-admin"))
+                .header("Accept", "application/json")
+                .header("Authorization", "Token unknown-token")
+                .GET()
+                .build());
+        assertThat(malformedHeaderResponse.statusCode())
+                .as("malformed auth header must not bypass Firebase, body=" + malformedHeaderResponse.body())
+                .isIn(401, 403);
+    }
+
+    @Test
+    void firebaseEnabledAdminMutationRoutesRejectNormalUsers() {
+        HttpResponse<String> normalUserResponse = post(
+                "/admin/notifications",
+                "normal-user-token",
+                Map.of("adminUserId", "e2e-security-admin", "rules", java.util.List.of()));
+        assertThat(normalUserResponse.statusCode())
+                .as("authenticated non-admins should not mutate admin notification rules, body=" + normalUserResponse.body())
+                .isEqualTo(403);
+    }
+
     private HttpResponse<String> get(String path) {
         return send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
@@ -142,6 +197,32 @@ class BackendSecurityContractsE2ETest {
     private HttpResponse<String> get(String path, String token) {
         return send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build());
+    }
+
+    private HttpResponse<String> post(String path, String token, Object body) {
+        return send(HttpRequest.newBuilder(uri(path))
+                .header("Accept", "application/json")
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .POST(HttpRequest.BodyPublishers.ofString(body == null ? "{}" : body.toString()))
+                .build());
+    }
+
+    private HttpResponse<String> getWithDemoSessionHeader(String path) {
+        return send(HttpRequest.newBuilder(uri(path))
+                .header("Accept", "application/json")
+                .header("X-App-Session-Kind", "demo")
+                .GET()
+                .build());
+    }
+
+    private HttpResponse<String> getWithDemoSessionHeader(String path, String token) {
+        return send(HttpRequest.newBuilder(uri(path))
+                .header("Accept", "application/json")
+                .header("X-App-Session-Kind", "demo")
                 .header("Authorization", "Bearer " + token)
                 .GET()
                 .build());
@@ -183,6 +264,17 @@ class BackendSecurityContractsE2ETest {
                 case "normal-user-token" -> credential(USER_EMAIL);
                 case "admin-token" -> credential(ADMIN_EMAIL);
                 default -> throw new FirebaseTokenInvalidException("Unknown e2e Firebase token");
+            };
+        }
+
+        @Bean
+        @Primary
+        FirebaseConfig firebaseConfig(ConfigProperties configProperties) {
+            return new FirebaseConfig(configProperties) {
+                @Override
+                public void init() {
+                    // The e2e security tests exercise the HTTP auth filter with a fake verifier.
+                }
             };
         }
 

@@ -4,14 +4,21 @@ import java.io.IOException;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class SessionMongoRoutingFilter extends OncePerRequestFilter {
-    public static final String SESSION_KIND_HEADER = "X-App-Session-Kind";
+    public static final String SESSION_KIND_HEADER = DemoSessionRequestSupport.SESSION_KIND_HEADER;
     private static final String DEMO_USERS_ROUTE = "/auth/demo-users";
+    private final ConfigProperties configProperties;
+
+    public SessionMongoRoutingFilter(ConfigProperties configProperties) {
+        this.configProperties = configProperties;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -31,7 +38,14 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
         if (requestUri != null && requestUri.endsWith(DEMO_USERS_ROUTE)) {
             return MongoSessionMode.DEMO;
         }
-        String sessionKind = request == null ? null : request.getHeader(SESSION_KIND_HEADER);
-        return MongoSessionMode.fromRequestValue(sessionKind);
+        if (DemoSessionRequestSupport.isAllowedDemoSessionRequest(request)) {
+            return MongoSessionMode.DEMO;
+        }
+        if (configProperties != null && configProperties.isFirebaseEnabled()) {
+            return MongoSessionMode.REAL;
+        }
+        return DemoSessionRequestSupport.isDemoSessionRequest(request)
+                ? MongoSessionMode.DEMO
+                : MongoSessionMode.REAL;
     }
 }

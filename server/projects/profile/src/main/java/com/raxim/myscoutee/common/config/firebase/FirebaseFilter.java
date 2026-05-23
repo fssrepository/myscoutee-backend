@@ -61,7 +61,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (FirebaseTokenInvalidException e) {
-            throw new SecurityException(e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Firebase token.");
         }
     }
 
@@ -107,9 +107,15 @@ public class FirebaseFilter extends OncePerRequestFilter {
         }
         String queryToken = request.getParameter("token");
         if (queryToken != null && !queryToken.isBlank()) {
-            return queryToken.trim();
+            return isWebSocketTokenRequest(request) ? queryToken.trim() : null;
         }
         return null;
+    }
+
+    private boolean isWebSocketTokenRequest(HttpServletRequest request) {
+        String requestUri = request == null ? "" : request.getRequestURI();
+        return requestUri.endsWith("/activities/chats/ws")
+                || requestUri.endsWith("/admin/notifications/ws");
     }
 
     private void setAuthentication(UserDetails userDetails, Object credentials) {

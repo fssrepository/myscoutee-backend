@@ -155,6 +155,11 @@ class BackendSchedulersE2ETest {
             assertThat(reminderEmail.getSubject()).contains("Scheduler Stage");
         });
 
+        await().during(Duration.ofMillis(600)).atMost(Duration.ofSeconds(3)).pollInterval(Duration.ofMillis(100)).untilAsserted(() ->
+                assertThat(fromReal(() -> mongoTemplate.count(Query.query(Criteria.where("ruleKey").is(STAGE_TASK_KEY)), EmailOutboxItem.class)))
+                        .as("completed scheduler task should not create duplicate reminder emails on repeated polls")
+                        .isEqualTo(1));
+
         await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
             ScheduledMessageTask inactiveTask = findOne(
                     Query.query(Criteria.where("taskKey").is(INACTIVE_TASK_KEY)),

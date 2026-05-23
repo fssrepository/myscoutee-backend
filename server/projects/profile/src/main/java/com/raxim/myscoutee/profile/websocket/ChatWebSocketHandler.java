@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
@@ -142,8 +143,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private MongoSessionMode resolveSessionMode(WebSocketSession session) {
         Object value = session.getAttributes().get(ChatHandshakeInterceptor.SESSION_KIND_ATTRIBUTE);
-        return value instanceof String sessionKind
-                ? MongoSessionMode.fromRequestValue(sessionKind)
+        return value instanceof String sessionKind && DemoSessionRequestSupport.isDemoSessionKind(sessionKind)
+                ? MongoSessionMode.DEMO
                 : MongoSessionMode.REAL;
     }
 
@@ -168,7 +169,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 return principalUserId;
             }
         }
-        if (configProperties.isFirebaseEnabled()) {
+        if (configProperties.isFirebaseEnabled() && resolveSessionMode(session) != MongoSessionMode.DEMO) {
             return null;
         }
         return resolveRequestedUserId(session);

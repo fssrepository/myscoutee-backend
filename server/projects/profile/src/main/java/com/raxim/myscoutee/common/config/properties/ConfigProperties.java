@@ -13,6 +13,7 @@ public class ConfigProperties {
     private boolean firebaseEnabled = false;
     private boolean chatOnlyMode = false;
     private String devUser = "dev@myscoutee.local";
+    private String websocketAllowedOriginPatterns = "http://localhost,http://localhost:4200,https://localhost,https://localhost:4200";
 
     public String getAdminUser() {
         return adminUser;
@@ -66,5 +67,21 @@ public class ConfigProperties {
 
     public void setDevUser(String devUser) {
         this.devUser = devUser;
+    }
+
+    public String getWebsocketAllowedOriginPatterns() {
+        return websocketAllowedOriginPatterns;
+    }
+
+    public void setWebsocketAllowedOriginPatterns(String websocketAllowedOriginPatterns) {
+        this.websocketAllowedOriginPatterns = websocketAllowedOriginPatterns;
+    }
+
+    public List<String> getWebsocketAllowedOriginPatternList() {
+        return Arrays.stream((websocketAllowedOriginPatterns == null ? "" : websocketAllowedOriginPatterns).split("[,;]"))
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
     }
 }

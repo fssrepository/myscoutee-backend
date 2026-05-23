@@ -15,6 +15,9 @@ const requiredCollections = [
   'i18n_messages'
 ];
 
+const appUsername = process.env.MONGO_APP_USERNAME || 'guest';
+const appPassword = process.env.MONGO_APP_PASSWORD || 'guest';
+
 ['demo_db', 'myscoutee_db'].forEach(databaseName => {
   const portalDb = db.getSiblingDB(databaseName);
   const existingCollections = new Set(portalDb.getCollectionNames());
@@ -126,10 +129,10 @@ const requiredCollections = [
     { name: 'i18n_messages_key_lang', unique: true }
   );
 
-  if (!portalDb.getUser('guest')) {
+  if (!portalDb.getUser(appUsername)) {
     portalDb.createUser({
-      user: 'guest',
-      pwd: 'guest',
+      user: appUsername,
+      pwd: appPassword,
       roles: [
         { role: 'readWrite', db: databaseName }
       ]

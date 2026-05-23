@@ -59,6 +59,8 @@ Thumbs.db
 /server/docker/conf/nginx/app/myscoutee
 
 # local secrets
+/server/.env.secret
+/server/.env.secrets
 /frontend/src/secrets/keys.ts
 /server/projects/profile/secrets/application-dev-secrets.yaml
 /server/projects/profile/secrets/firebase-service-account.json
@@ -66,3 +68,6 @@ Thumbs.db
 /server/projects/profile/secrets/*.yaml
 /server/projects/profile/secrets/*.yml
 !/server/projects/profile/secrets/README.md
+/server/docker/conf/nginx/keys/*.key
+/server/docker/conf/nginx/keys/*.crt
+!/server/docker/conf/nginx/keys/README.md

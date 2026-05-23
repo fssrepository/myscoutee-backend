@@ -62,6 +62,7 @@ public class MediaController {
         }
         return ResponseEntity.ok()
                 .contentType(resolveMediaType(stored.contentType()))
+                .header("X-Content-Type-Options", "nosniff")
                 .cacheControl(CacheControl.maxAge(Duration.ofDays(365)).cachePublic())
                 .body(stored.bytes());
     }
