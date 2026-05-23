@@ -34,6 +34,7 @@ public class AffinityRecomputeWorkerService {
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
     private volatile long lastScheduledRunMs = 0L;
+    private volatile long cachedWorkerPollDelayMs = DEFAULT_WORKER_POLL_DELAY_MS;
 
     public AffinityRecomputeWorkerService(
             AffinityRecomputeTaskService taskService,
@@ -322,8 +323,13 @@ public class AffinityRecomputeWorkerService {
 
     private boolean shouldRunScheduledPass() {
         long nowMs = System.currentTimeMillis();
-        long pollDelayMs = Math.max(100L, taskService.workerPollDelayMs(DEFAULT_WORKER_POLL_DELAY_MS));
         long previousRunMs = lastScheduledRunMs;
+        long pollDelayMs = cachedWorkerPollDelayMs;
+        if (previousRunMs > 0L && nowMs - previousRunMs < pollDelayMs) {
+            return false;
+        }
+        pollDelayMs = Math.max(100L, taskService.workerPollDelayMs(DEFAULT_WORKER_POLL_DELAY_MS));
+        cachedWorkerPollDelayMs = pollDelayMs;
         if (previousRunMs > 0L && nowMs - previousRunMs < pollDelayMs) {
             return false;
         }
