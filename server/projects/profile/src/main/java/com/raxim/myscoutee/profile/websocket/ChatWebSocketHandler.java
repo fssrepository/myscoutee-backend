@@ -17,6 +17,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
 import com.raxim.myscoutee.profile.service.ActivitiesChatService;
@@ -84,23 +85,28 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     return;
                 }
                 if ("edit".equalsIgnoreCase(type)) {
-                    activitiesChatService.editMessage(chatId, userId, request.messageId(), request.text());
+                    ChatMessageDto saved = activitiesChatService.editMessage(chatId, userId, request.messageId(), request.text());
+                    sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("delete".equalsIgnoreCase(type)) {
-                    activitiesChatService.deleteMessage(chatId, userId, request.messageId());
+                    ChatMessageDto saved = activitiesChatService.deleteMessage(chatId, userId, request.messageId());
+                    sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("pin".equalsIgnoreCase(type)) {
-                    activitiesChatService.pinMessage(chatId, userId, request.messageId(), request.pinned());
+                    ChatMessageDto saved = activitiesChatService.pinMessage(chatId, userId, request.messageId(), request.pinned());
+                    sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("reaction".equalsIgnoreCase(type)) {
-                    activitiesChatService.reactToMessage(chatId, userId, request.messageId(), request.emoji());
+                    ChatMessageDto saved = activitiesChatService.reactToMessage(chatId, userId, request.messageId(), request.emoji());
+                    sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("attachments".equalsIgnoreCase(type)) {
-                    activitiesChatService.updateMessageAttachments(chatId, userId, request.messageId(), request.attachments());
+                    ChatMessageDto saved = activitiesChatService.updateMessageAttachments(chatId, userId, request.messageId(), request.attachments());
+                    sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if (!type.isEmpty() && !"message".equalsIgnoreCase(type)) {
@@ -109,7 +115,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 if (!StringUtils.hasText(request.text()) && (request.attachments() == null || request.attachments().isEmpty())) {
                     return;
                 }
-                activitiesChatService.sendMessage(chatId, userId, request.text(), request.clientId(), request.replyTo(), request.attachments());
+                ChatMessageDto saved = activitiesChatService.sendMessage(chatId, userId, request.text(), request.clientId(), request.replyTo(), request.attachments());
+                sessionRegistry.sendAck(session, chatId, saved);
             });
         } catch (Exception exception) {
             LOGGER.warn("Unable to store websocket chat update. chatId={}, userId={}, type={}, messageId={}, clientId={}",

@@ -14,7 +14,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -45,6 +51,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesChatService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
     private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
@@ -57,17 +64,16 @@ public class ActivitiesChatService {
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ChatStreamPublisher chatStreamPublisher;
-    private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
     private final ChatPushNotificationService chatPushNotificationService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
+    private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
     public ActivitiesChatService(
             ActivityChatsRepository activityChatsRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
             ChatStreamPublisher chatStreamPublisher,
-            ChatWebSocketSessionRegistry chatWebSocketSessionRegistry,
             ChatPushNotificationService chatPushNotificationService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService) {
@@ -75,10 +81,14 @@ public class ActivitiesChatService {
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.chatStreamPublisher = chatStreamPublisher;
-        this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
         this.chatPushNotificationService = chatPushNotificationService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
+    }
+
+    @PreDestroy
+    void shutdownChatWriteExecutor() {
+        chatWriteExecutor.shutdownNow();
     }
 
     public List<ChatSummaryDto> queryChats(String requestedUserId) {
@@ -262,6 +272,8 @@ public class ActivitiesChatService {
         }
 
         ChatMessageRecord messageRecord = buildSystemMessageRecord(normalizedText, systemType);
+        ChatStreamEvent streamEvent = toStreamEvent(normalizedChatId, messageRecord);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         for (ActivityChat existing : chatDocuments) {
             ActivityChat next = copyChat(existing);
@@ -278,9 +290,7 @@ public class ActivitiesChatService {
             updatedDocuments.add(next);
         }
         activityChatsRepository.saveAll(updatedDocuments);
-
-        ChatStreamEvent streamEvent = toStreamEvent(normalizedChatId, messageRecord);
-        publishChatEvent(streamEvent);
+        observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.system", "chats", normalizedChatId, "system");
         return toMessageDto(messageRecord, "");
@@ -303,6 +313,8 @@ public class ActivitiesChatService {
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         Users sender = findUser(userId);
         ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
+        ChatStreamEvent streamEvent = toStreamEvent(snapshot.chatId(), messageRecord);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
         List<ActivityChat> updatedDocuments = new ArrayList<>();
         for (ActivityChat existing : snapshot.chatDocuments()) {
             ActivityChat next = copyChat(existing);
@@ -319,9 +331,7 @@ public class ActivitiesChatService {
             updatedDocuments.add(next);
         }
         activityChatsRepository.saveAll(updatedDocuments);
-
-        ChatStreamEvent streamEvent = toStreamEvent(snapshot.chatId(), messageRecord);
-        publishChatEvent(streamEvent);
+        observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.sent", "chats", snapshot.chatId(), userId);
         return toMessageDto(messageRecord, userId);
@@ -1182,10 +1192,26 @@ public class ActivitiesChatService {
     }
 
     private void publishChatEvent(ChatStreamEvent streamEvent) {
-        // Always fan out to sockets on this node right away so the sender gets the
-        // persisted websocket echo even if Redis stream delivery is delayed.
-        chatWebSocketSessionRegistry.broadcast(streamEvent);
         chatStreamPublisher.publish(streamEvent);
+    }
+
+    private CompletableFuture<Boolean> publishChatEventAsync(ChatStreamEvent streamEvent) {
+        return CompletableFuture.supplyAsync(() -> chatStreamPublisher.publish(streamEvent), chatWriteExecutor);
+    }
+
+    private void observeChatEventPublish(CompletableFuture<Boolean> redisPublish, ChatStreamEvent streamEvent) {
+        if (redisPublish == null) {
+            return;
+        }
+        redisPublish.whenComplete((published, exception) -> {
+            if (exception != null) {
+                LOGGER.warn("Unable to publish chat event to Redis for chat {}.", streamEvent == null ? null : streamEvent.chatId(), exception);
+                return;
+            }
+            if (!Boolean.TRUE.equals(published)) {
+                LOGGER.warn("Chat event was persisted to Mongo but not published to Redis for chat {}.", streamEvent == null ? null : streamEvent.chatId());
+            }
+        });
     }
 
     private ActivityChat findOwnerChat(List<ActivityChat> chats, String ownerUserId) {

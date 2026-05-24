@@ -62,6 +62,8 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.service.ChatStreamPublisher;
 import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
 import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.profile.websocket.ChatHandshakeInterceptor;
+import com.raxim.myscoutee.profile.websocket.ChatWebSocketHandler;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -118,6 +120,8 @@ class BackendChatStreamSchedulerE2ETest {
     private MongoTemplate mongoTemplate;
     @Autowired
     private ChatWebSocketSessionRegistry sessionRegistry;
+    @Autowired
+    private ChatWebSocketHandler chatWebSocketHandler;
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
@@ -168,7 +172,8 @@ class BackendChatStreamSchedulerE2ETest {
                 Map.of("text", "Stream scheduler broadcast from HTTP"));
         String messageId = posted.path("id").asString();
         assertThat(messageId).isNotBlank();
-        assertThat(E2eInfrastructure.redisStream.size()).isEqualTo(1);
+        await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(50)).untilAsserted(() ->
+                assertThat(E2eInfrastructure.redisStream.size()).isEqualTo(1));
 
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
             assertThat(recipientMessages).hasSize(1);
@@ -182,10 +187,76 @@ class BackendChatStreamSchedulerE2ETest {
         assertThat(outsiderMessages).isEmpty();
     }
 
+    @Test
+    void scheduledChatStreamConsumerDeliversEachPublishedMessageOnce() throws Exception {
+        CopyOnWriteArrayList<String> recipientMessages = new CopyOnWriteArrayList<>();
+        WebSocketSession recipientSession = session("recipient-session", recipientMessages);
+        sessionRegistry.register(CHAT_ID, RECIPIENT_ID, recipientSession);
+
+        JsonNode firstPosted = postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "First Redis fanout frame"));
+        JsonNode secondPosted = postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
+                Map.of("text", "Second Redis fanout frame"));
+        String firstMessageId = firstPosted.path("id").asString();
+        String secondMessageId = secondPosted.path("id").asString();
+        assertThat(firstMessageId).isNotBlank();
+        assertThat(secondMessageId).isNotBlank();
+
+        await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() -> {
+            assertThat(E2eInfrastructure.redisStream.deliveredCount()).isEqualTo(2);
+            assertThat(recipientMessages).hasSize(2);
+        });
+
+        assertThat(recipientMessages).extracting(message -> parse(message).path("message").path("id").asString())
+                .containsExactly(firstMessageId, secondMessageId);
+    }
+
+    @Test
+    void websocketMessageSendsMongoAckDirectlyAndUsesRedisForRoomFanout() throws Exception {
+        CopyOnWriteArrayList<String> senderMessages = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<String> recipientMessages = new CopyOnWriteArrayList<>();
+        WebSocketSession senderSession = session("sender-session", senderMessages, Map.of(
+                ChatHandshakeInterceptor.CHAT_ID_ATTRIBUTE, CHAT_ID,
+                ChatHandshakeInterceptor.USER_ID_ATTRIBUTE, SENDER_ID));
+        WebSocketSession recipientSession = session("recipient-session", recipientMessages, Map.of(
+                ChatHandshakeInterceptor.CHAT_ID_ATTRIBUTE, CHAT_ID,
+                ChatHandshakeInterceptor.USER_ID_ATTRIBUTE, RECIPIENT_ID));
+        chatWebSocketHandler.afterConnectionEstablished(senderSession);
+        chatWebSocketHandler.afterConnectionEstablished(recipientSession);
+
+        String clientId = "e2e-direct-ack-client";
+        chatWebSocketHandler.handleMessage(senderSession, new TextMessage(writeJson(Map.of(
+                "type", "message",
+                "clientId", clientId,
+                "text", "Mongo ack is direct; room fanout is Redis"))));
+
+        await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(50)).untilAsserted(() -> {
+            assertThat(senderMessages.stream().map(this::parse).map(node -> node.path("type").asString()))
+                    .contains("ack", "message");
+            assertThat(recipientMessages.stream().map(this::parse).map(node -> node.path("type").asString()))
+                    .containsExactly("message");
+        });
+
+        JsonNode ack = senderMessages.stream()
+                .map(this::parse)
+                .filter(node -> "ack".equals(node.path("type").asString()))
+                .findFirst()
+                .orElseThrow();
+        assertThat(ack.path("clientId").asString()).isEqualTo(clientId);
+        assertThat(ack.path("message").path("clientId").asString()).isEqualTo(clientId);
+        assertThat(recipientMessages).extracting(message -> parse(message).path("type").asString())
+                .doesNotContain("ack");
+    }
+
     private WebSocketSession session(String id, CopyOnWriteArrayList<String> messages) throws Exception {
+        return session(id, messages, Map.of());
+    }
+
+    private WebSocketSession session(String id, CopyOnWriteArrayList<String> messages, Map<String, Object> attributes) throws Exception {
         WebSocketSession session = mock(WebSocketSession.class);
         when(session.getId()).thenReturn(id);
         when(session.isOpen()).thenReturn(true);
+        when(session.getAttributes()).thenReturn(new LinkedHashMap<>(attributes));
         doAnswer(invocation -> {
             TextMessage message = invocation.getArgument(0);
             messages.add(message.getPayload());
@@ -392,6 +463,10 @@ class BackendChatStreamSchedulerE2ETest {
 
         int size() {
             return records.size();
+        }
+
+        long deliveredCount() {
+            return deliveredThrough.get();
         }
 
         void clear() {

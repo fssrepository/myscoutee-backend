@@ -12,6 +12,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -21,7 +22,7 @@ public class ChatWebSocketSessionRegistry {
 
     private final ObjectMapper objectMapper;
     private final Map<String, Map<String, SessionRef>> sessionsByChatId = new ConcurrentHashMap<>();
-    private final Map<String, String> lastPayloadBySessionId = new ConcurrentHashMap<>();
+    private final Map<String, Object> sendLocksBySessionId = new ConcurrentHashMap<>();
 
     public ChatWebSocketSessionRegistry(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -45,7 +46,7 @@ public class ChatWebSocketSessionRegistry {
                 sessionsByChatId.remove(entry.getKey());
             }
         }
-        lastPayloadBySessionId.remove(session.getId());
+        sendLocksBySessionId.remove(session.getId());
     }
 
     public boolean isUserConnected(String chatId, String userId) {
@@ -82,16 +83,42 @@ public class ChatWebSocketSessionRegistry {
             ChatSocketEventDto socketEvent = event.toSocketEvent(sessionRef.userId());
             try {
                 String payload = objectMapper.writeValueAsString(socketEvent);
-                String previousPayload = lastPayloadBySessionId.put(session.getId(), payload);
-                if (payload.equals(previousPayload)) {
-                    continue;
-                }
-                session.sendMessage(new TextMessage(payload));
+                sendPayload(session, payload);
             } catch (IOException exception) {
                 unregister(session);
             } catch (Exception exception) {
                 LOGGER.warn("Unable to send websocket chat event to session {}.", session.getId(), exception);
                 unregister(session);
+            }
+        }
+    }
+
+    public void sendAck(WebSocketSession session, String chatId, ChatMessageDto message) {
+        if (session == null || !session.isOpen() || message == null || !StringUtils.hasText(chatId)) {
+            return;
+        }
+        try {
+            String payload = objectMapper.writeValueAsString(new ChatSocketEventDto(
+                    "ack",
+                    chatId,
+                    message,
+                    null,
+                    null,
+                    message.id(),
+                    message.clientId(),
+                    null));
+            sendPayload(session, payload);
+        } catch (Exception exception) {
+            LOGGER.warn("Unable to send websocket chat ack to session {}.", session.getId(), exception);
+            unregister(session);
+        }
+    }
+
+    private void sendPayload(WebSocketSession session, String payload) throws IOException {
+        Object lock = sendLocksBySessionId.computeIfAbsent(session.getId(), key -> new Object());
+        synchronized (lock) {
+            if (session.isOpen()) {
+                session.sendMessage(new TextMessage(payload));
             }
         }
     }
