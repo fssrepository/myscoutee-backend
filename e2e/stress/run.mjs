@@ -1,5 +1,9 @@
 #!/usr/bin/env node
+import { execFile } from 'node:child_process';
+import { mkdir, writeFile } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { assertDemoUsers, assertAuthMe, assertAssets, assertChats, assertEventList, assertEventPage } from '../server/lib/contracts.mjs';
@@ -10,6 +14,7 @@ import { createHttpClient } from '../shared/http.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..');
 const serverRoot = path.join(repoRoot, 'e2e/server');
+const execFileAsync = promisify(execFile);
 const args = parseArgs(process.argv.slice(2));
 
 if (args.list) {
@@ -27,17 +32,44 @@ if ((mode === 'playground' || mode === 'stress') && scenario.resetPlayground !==
 }
 
 const metrics = [];
+const startedAtIso = new Date().toISOString();
 const startedAt = performance.now();
-await Promise.all(Array.from({ length: scenario.users ?? 1 }, async (_item, index) => {
-  const vu = index + 1;
-  const rampDelayMs = rampDelay(index, scenario.users ?? 1, scenario.rampUpMs ?? 0);
-  await sleep(rampDelayMs);
-  await runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, vu, startedAt });
-}));
+const resourceMonitor = args.record ? startResourceMonitor() : null;
+let runError = null;
+try {
+  await Promise.all(Array.from({ length: scenario.users ?? 1 }, async (_item, index) => {
+    const vu = index + 1;
+    const rampDelayMs = rampDelay(index, scenario.users ?? 1, scenario.rampUpMs ?? 0);
+    await sleep(rampDelayMs);
+    await runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, vu, startedAt });
+  }));
+} catch (error) {
+  runError = error;
+} finally {
+  await resourceMonitor?.stop();
+}
+const endedAtIso = new Date().toISOString();
 
 const summary = summarize(metrics);
-printSummary(scenario, summary);
-const failed = evaluateThresholds(summary, scenario.thresholds ?? {});
+const artifactDir = args.record
+  ? await writeArtifacts({
+    scenario,
+    summary,
+    metrics,
+    resources: resourceMonitor?.samples ?? [],
+    startedAtIso,
+    endedAtIso,
+    baseUrl,
+    mode,
+    runError,
+    artifactsDir: args.artifactsDir
+  })
+  : '';
+printSummary(scenario, summary, { artifactDir });
+if (runError) {
+  console.error(`stress runner error: ${runError.stack ?? runError.message}`);
+}
+const failed = evaluateThresholds(summary, scenario.thresholds ?? {}) || Boolean(runError);
 process.exitCode = failed ? 1 : 0;
 
 async function runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, vu, startedAt }) {
@@ -253,13 +285,240 @@ function summarizeByStep(metrics) {
   }));
 }
 
-function printSummary(scenario, summary) {
+function printSummary(scenario, summary, options = {}) {
   console.log(`\nstress scenario: ${scenario.name ?? scenario.id}`);
   console.log(`requests: ${summary.total}, passed: ${summary.passed}, failed: ${summary.failed}, errorRate: ${(summary.errorRate * 100).toFixed(2)}%`);
   console.log(`latency ms: avg=${Math.round(summary.avgMs)} p50=${Math.round(summary.p50Ms)} p90=${Math.round(summary.p90Ms)} p95=${Math.round(summary.p95Ms)} p99=${Math.round(summary.p99Ms)} max=${Math.round(summary.maxMs)}`);
   for (const item of summary.byStep) {
     console.log(`- ${item.step}: total=${item.total} failed=${item.failed} p95=${Math.round(item.p95Ms)}ms max=${Math.round(item.maxMs)}ms`);
   }
+  if (options.artifactDir) {
+    console.log(`artifacts: ${options.artifactDir}`);
+  }
+}
+
+function startResourceMonitor() {
+  const intervalMs = Math.max(500, Number(process.env.E2E_STRESS_RESOURCE_INTERVAL_MS ?? 2000) || 2000);
+  const samples = [];
+  let pending = Promise.resolve();
+  let stopped = false;
+
+  async function sample() {
+    if (stopped) {
+      return;
+    }
+    const sampledAtIso = new Date().toISOString();
+    const host = sampleHost();
+    const docker = await sampleDocker();
+    samples.push({ sampledAtIso, host, docker });
+  }
+
+  const schedule = () => {
+    pending = pending.then(sample).catch(error => {
+      samples.push({
+        sampledAtIso: new Date().toISOString(),
+        host: sampleHost(),
+        docker: { error: error.message }
+      });
+    });
+  };
+  schedule();
+  const timer = setInterval(schedule, intervalMs);
+
+  return {
+    samples,
+    async stop() {
+      stopped = true;
+      clearInterval(timer);
+      await pending;
+    }
+  };
+}
+
+function sampleHost() {
+  const totalMemBytes = os.totalmem();
+  const freeMemBytes = os.freemem();
+  return {
+    totalMemBytes,
+    freeMemBytes,
+    usedMemBytes: totalMemBytes - freeMemBytes,
+    loadAvg: os.loadavg(),
+    cpuCount: os.cpus().length,
+    uptimeSec: os.uptime()
+  };
+}
+
+async function sampleDocker() {
+  try {
+    const result = await execFileAsync('docker', ['stats', '--no-stream', '--format', '{{json .}}'], {
+      timeout: Number(process.env.E2E_STRESS_DOCKER_STATS_TIMEOUT_MS ?? 5000),
+      maxBuffer: 1024 * 1024
+    });
+    return result.stdout
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+      .map(line => JSON.parse(line));
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+async function writeArtifacts({ scenario, summary, metrics, resources, startedAtIso, endedAtIso, baseUrl, mode, runError, artifactsDir }) {
+  const rootDir = artifactsDir
+    ? path.resolve(artifactsDir)
+    : path.join(repoRoot, '.e2e-artifacts', 'stress');
+  const runDir = path.join(rootDir, `${safeName(scenario.id ?? 'scenario')}-${startedAtIso.replace(/[:.]/g, '-')}`);
+  await mkdir(runDir, { recursive: true });
+
+  const payload = {
+    scenario: {
+      id: scenario.id,
+      name: scenario.name,
+      mode,
+      baseUrl,
+      users: scenario.users ?? 1,
+      rampUpMs: scenario.rampUpMs ?? 0,
+      durationMs: scenario.durationMs ?? 0,
+      iterations: scenario.iterations ?? null,
+      thresholds: scenario.thresholds ?? {}
+    },
+    startedAtIso,
+    endedAtIso,
+    summary,
+    resourceSummary: summarizeResources(resources),
+    runError: runError ? { message: runError.message, stack: runError.stack } : null
+  };
+
+  await writeFile(path.join(runDir, 'summary.json'), `${JSON.stringify(payload, null, 2)}\n`);
+  await writeFile(path.join(runDir, 'metrics.json'), `${JSON.stringify(metrics, null, 2)}\n`);
+  await writeFile(path.join(runDir, 'resources.json'), `${JSON.stringify(resources, null, 2)}\n`);
+  await writeFile(path.join(runDir, 'index.md'), renderArtifactIndex(payload));
+  return runDir;
+}
+
+function renderArtifactIndex(payload) {
+  const resourceSummary = payload.resourceSummary;
+  const lines = [
+    `# ${payload.scenario.name ?? payload.scenario.id}`,
+    '',
+    `- Scenario: \`${payload.scenario.id}\``,
+    `- Mode/base URL: \`${payload.scenario.mode}\` at \`${payload.scenario.baseUrl}\``,
+    `- Started: ${payload.startedAtIso}`,
+    `- Ended: ${payload.endedAtIso}`,
+    `- Requests: ${payload.summary.total} total, ${payload.summary.passed} passed, ${payload.summary.failed} failed`,
+    `- Error rate: ${(payload.summary.errorRate * 100).toFixed(2)}%`,
+    `- Latency: avg ${Math.round(payload.summary.avgMs)}ms, p95 ${Math.round(payload.summary.p95Ms)}ms, p99 ${Math.round(payload.summary.p99Ms)}ms, max ${Math.round(payload.summary.maxMs)}ms`,
+    `- Host memory peak: ${formatBytes(resourceSummary.host.maxUsedMemBytes)} used, min free ${formatBytes(resourceSummary.host.minFreeMemBytes)}`,
+    `- Host load peak: ${resourceSummary.host.maxLoadAvg1.toFixed(2)} over ${resourceSummary.host.cpuCount} CPUs`,
+    '',
+    '## Step Latency',
+    '',
+    '| Step | Total | Failed | p95 | Max |',
+    '| --- | ---: | ---: | ---: | ---: |',
+    ...payload.summary.byStep.map(item => `| ${escapeTable(item.step)} | ${item.total} | ${item.failed} | ${Math.round(item.p95Ms)}ms | ${Math.round(item.maxMs)}ms |`),
+    '',
+    '## Container Peaks',
+    '',
+    '| Container | Max CPU | Max Memory |',
+    '| --- | ---: | ---: |',
+    ...resourceSummary.containers.map(item => `| ${escapeTable(item.name)} | ${item.maxCpuPercent.toFixed(2)}% | ${formatBytes(item.maxMemBytes)} |`),
+    ''
+  ];
+  if (payload.runError) {
+    lines.push('## Runner Error', '', '```', payload.runError.stack ?? payload.runError.message, '```', '');
+  }
+  lines.push('Raw files: `summary.json`, `metrics.json`, `resources.json`.', '');
+  return `${lines.join('\n')}\n`;
+}
+
+function summarizeResources(resources) {
+  const hostSummary = {
+    cpuCount: 0,
+    minFreeMemBytes: Number.POSITIVE_INFINITY,
+    maxUsedMemBytes: 0,
+    maxLoadAvg1: 0
+  };
+  const containers = new Map();
+
+  for (const sample of resources) {
+    if (sample.host) {
+      hostSummary.cpuCount = sample.host.cpuCount ?? hostSummary.cpuCount;
+      hostSummary.minFreeMemBytes = Math.min(hostSummary.minFreeMemBytes, sample.host.freeMemBytes ?? Number.POSITIVE_INFINITY);
+      hostSummary.maxUsedMemBytes = Math.max(hostSummary.maxUsedMemBytes, sample.host.usedMemBytes ?? 0);
+      hostSummary.maxLoadAvg1 = Math.max(hostSummary.maxLoadAvg1, sample.host.loadAvg?.[0] ?? 0);
+    }
+    if (!Array.isArray(sample.docker)) {
+      continue;
+    }
+    for (const item of sample.docker) {
+      const name = item.Name ?? item.NameOrID ?? item.Container ?? item.ID ?? 'unknown';
+      const current = containers.get(name) ?? { name, maxCpuPercent: 0, maxMemBytes: 0 };
+      current.maxCpuPercent = Math.max(current.maxCpuPercent, parsePercent(item.CPUPerc));
+      current.maxMemBytes = Math.max(current.maxMemBytes, parseDockerMemoryBytes(item.MemUsage));
+      containers.set(name, current);
+    }
+  }
+
+  if (!Number.isFinite(hostSummary.minFreeMemBytes)) {
+    hostSummary.minFreeMemBytes = 0;
+  }
+
+  return {
+    host: hostSummary,
+    containers: [...containers.values()].sort((a, b) => b.maxMemBytes - a.maxMemBytes)
+  };
+}
+
+function parsePercent(value) {
+  const parsed = Number.parseFloat(`${value ?? ''}`.replace('%', ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function parseDockerMemoryBytes(value) {
+  const firstPart = `${value ?? ''}`.split('/')[0].trim();
+  const match = firstPart.match(/^([\d.]+)\s*([kmgtp]?i?b?)$/i);
+  if (!match) {
+    return 0;
+  }
+  const amount = Number.parseFloat(match[1]);
+  const unit = match[2].toLowerCase();
+  const multipliers = {
+    b: 1,
+    kb: 1000,
+    kib: 1024,
+    mb: 1000 ** 2,
+    mib: 1024 ** 2,
+    gb: 1000 ** 3,
+    gib: 1024 ** 3,
+    tb: 1000 ** 4,
+    tib: 1024 ** 4,
+    pb: 1000 ** 5,
+    pib: 1024 ** 5
+  };
+  return Number.isFinite(amount) ? amount * (multipliers[unit] ?? 1) : 0;
+}
+
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return '0 B';
+  }
+  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+  let value = bytes;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+function escapeTable(value) {
+  return `${value ?? ''}`.replace(/\|/g, '\\|').replace(/\n/g, ' ');
+}
+
+function safeName(value) {
+  return `${value}`.replace(/[^a-zA-Z0-9_.-]+/g, '-');
 }
 
 function evaluateThresholds(summary, thresholds) {
@@ -308,11 +567,18 @@ function sleep(ms) {
 }
 
 function parseArgs(argv) {
-  const args = { list: false, scenario: '' };
+  const args = { list: false, scenario: '', record: false, artifactsDir: '' };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === '--list') {
       args.list = true;
+    } else if (arg === '--record') {
+      args.record = true;
+    } else if (arg === '--artifacts-dir') {
+      args.artifactsDir = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--artifacts-dir=')) {
+      args.artifactsDir = arg.slice('--artifacts-dir='.length);
     } else if (arg === '--scenario') {
       args.scenario = argv[index + 1] ?? '';
       index += 1;
