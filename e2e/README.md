@@ -122,6 +122,20 @@ Run a longer read sweep:
 node e2e/stress/run.mjs --scenario server-read-sweep
 ```
 
+Run a stateful WebSocket room simulation against the disposable playground
+database. This opens many chat sockets into one seeded room, sends messages
+round-robin from the sockets, verifies room fanout, and records host/container
+metrics:
+
+```bash
+node e2e/stress/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record
+```
+
+The WebSocket room simulation expects the backend to be running against
+`playground_db`; it aborts if the prepared room is not visible through the
+backend. Recorded artifacts include delivery latency, duplicate/replay latency,
+Redis event/write stream length samples, and host/container resource samples.
+
 Run destructive playground flows under load:
 
 ```bash
