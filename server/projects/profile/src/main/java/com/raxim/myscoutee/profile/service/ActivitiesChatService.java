@@ -310,13 +310,14 @@ public class ActivitiesChatService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat message text is required.");
         }
 
-        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        ChatDocumentsSnapshot accessSnapshot = requireChatAccessForSend(chatId, userId);
         Users sender = findUser(userId);
         ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
-        ChatStreamEvent streamEvent = toStreamEvent(snapshot.chatId(), messageRecord);
+        ChatStreamEvent streamEvent = toStreamEvent(accessSnapshot.chatId(), messageRecord);
         CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
+        List<ActivityChat> chatDocuments = chatDocumentsForMutation(accessSnapshot, userId);
         List<ActivityChat> updatedDocuments = new ArrayList<>();
-        for (ActivityChat existing : snapshot.chatDocuments()) {
+        for (ActivityChat existing : chatDocuments) {
             ActivityChat next = copyChat(existing);
             List<ChatMessageRecord> nextMessages = new ArrayList<>();
             for (ChatMessageRecord existingMessage : safeMessages(existing.getMessages())) {
@@ -333,7 +334,7 @@ public class ActivitiesChatService {
         activityChatsRepository.saveAll(updatedDocuments);
         observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
-        adminTelemetryService.record("chat.message.sent", "chats", snapshot.chatId(), userId);
+        adminTelemetryService.record("chat.message.sent", "chats", accessSnapshot.chatId(), userId);
         return toMessageDto(messageRecord, userId);
     }
 
@@ -544,6 +545,27 @@ public class ActivitiesChatService {
             viewerChat = createdViewerChat;
         }
         return new ChatDocumentsSnapshot(normalizedChatId, viewerChat, chatDocuments);
+    }
+
+    private ChatDocumentsSnapshot requireChatAccessForSend(String chatId, String userId) {
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        ActivityChat viewerChat = activityChatsRepository
+                .findByOwnerUserIdAndChatId(userId, normalizedChatId)
+                .orElse(null);
+        if (viewerChat != null && hasChatAccess(viewerChat, userId)) {
+            return new ChatDocumentsSnapshot(normalizedChatId, viewerChat, List.of());
+        }
+        return requireChat(normalizedChatId, userId);
+    }
+
+    private List<ActivityChat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
+        if (snapshot != null && snapshot.chatDocuments() != null && !snapshot.chatDocuments().isEmpty()) {
+            return snapshot.chatDocuments();
+        }
+        return requireChat(snapshot == null ? "" : snapshot.chatId(), userId).chatDocuments();
     }
 
     private void ensureOwnerCopiesForUser(String userId) {

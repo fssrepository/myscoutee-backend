@@ -1,9 +1,11 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.StreamOffset;
@@ -21,6 +23,7 @@ public class ChatStreamConsumer {
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final ChatWebSocketSessionRegistry sessionRegistry;
+    private final long blockMs;
 
     private String lastSeenId = "0-0";
     private boolean streamUnavailableLogged;
@@ -28,13 +31,15 @@ public class ChatStreamConsumer {
     public ChatStreamConsumer(
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
-            ChatWebSocketSessionRegistry sessionRegistry) {
+            ChatWebSocketSessionRegistry sessionRegistry,
+            @Value("${chat.stream.block-ms:100}") long blockMs) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.sessionRegistry = sessionRegistry;
+        this.blockMs = Math.max(0L, blockMs);
     }
 
-    @Scheduled(fixedDelayString = "${chat.stream.poll-delay-ms:250}")
+    @Scheduled(fixedDelayString = "${chat.stream.poll-delay-ms:25}")
     public void poll() {
         try {
             List<MapRecord<String, Object, Object>> records = readRecords();
@@ -68,8 +73,12 @@ public class ChatStreamConsumer {
 
     @SuppressWarnings("unchecked")
     private List<MapRecord<String, Object, Object>> readRecords() {
+        StreamReadOptions options = StreamReadOptions.empty().count(100);
+        if (blockMs > 0L) {
+            options = options.block(Duration.ofMillis(blockMs));
+        }
         return stringRedisTemplate.opsForStream().read(
-                StreamReadOptions.empty().count(100),
+                options,
                 StreamOffset.create(ChatStreamPublisher.STREAM_KEY, ReadOffset.from(lastSeenId)));
     }
 }
