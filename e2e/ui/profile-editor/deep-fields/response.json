@@ -1,0 +1,13 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-profile-editor",
+    ".profile-editor-wrap"
+  ],
+  "network": [
+    "/api/auth/me",
+    "/api/auth/me/profile"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true
+}

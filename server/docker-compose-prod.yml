@@ -38,7 +38,6 @@ services:
       - 80:80
       - 443:443
       - 127.0.0.1:27017-27019:27017-27019
-      - 127.0.0.1:5005:5005
     volumes:
       - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
       - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
@@ -62,6 +61,8 @@ services:
     image: ${MONGO_IMAGE}
     container_name: mongodb
     hostname: mongodb
+    env_file:
+      - .env.secrets
     #restart: always
     #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     environment:
@@ -70,8 +71,6 @@ services:
       MONGO_SEED_DIRECTORY: myscoutee_db
       MONGO_IMPORT_ALL_SEED_DATABASES: "true"
       MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB}
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpw
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
@@ -98,10 +97,10 @@ services:
     image: ${MINIO_IMAGE}
     container_name: minio
     hostname: minio
+    env_file:
+      - .env.secrets
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./data/minio:/data
@@ -118,34 +117,30 @@ services:
          TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
     hostname: myscoutee
+    env_file:
+      - .env.secrets
     environment:
-      SPRING_PROFILES_ACTIVE: "dev"
-      SPRING_MONGODB_URI: "mongodb://guest:guest@mongodb:27017/${MONGO_REAL_DATABASE}?authSource=${MONGO_REAL_DATABASE}"
+      SPRING_PROFILES_ACTIVE: "prod"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_REAL_DATABASE}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
-      MONGODB_USERNAME: "guest"
-      MONGODB_PASSWORD: "guest"
       SPRING_DATA_REDIS_HOST: "redis"
       SPRING_DATA_REDIS_PORT: "6379"
-      FIREBASE_ENABLED: "false"
+      FIREBASE_ENABLED: "${FIREBASE_ENABLED:-true}"
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
+      WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
       MEDIA_OBJECT_STORE_REGION: "eu-central-1"
-      MEDIA_OBJECT_STORE_ACCESS_KEY: "${MINIO_ROOT_USER}"
-      MEDIA_OBJECT_STORE_SECRET_KEY: "${MINIO_ROOT_PASSWORD}"
       MEDIA_BUCKET: "${MEDIA_BUCKET}"
       MEDIA_OBJECT_STORE_PATH_STYLE: "true"
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
-      JAVA_TOOL_OPTIONS: >
-              --enable-native-access=ALL-UNNAMED
-              -Xdebug
-              -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
     volumes:
+      - ./projects/profile/secrets/firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:

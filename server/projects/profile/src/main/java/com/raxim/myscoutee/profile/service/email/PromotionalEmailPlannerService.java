@@ -107,10 +107,10 @@ public class PromotionalEmailPlannerService {
         List<EmailCampaignRule> rules = emailCampaignRulesRepository.findAll();
         cancelSuspendedRuleTasks(rules);
         for (EmailCampaignRule rule : emailCampaignRulesRepository.findByEnabledTrueOrderByPriorityDescRuleKeyAsc()) {
-            if (rule == null || !isDue(rule, now) || isRuleRunning(rule)) {
+            if (rule == null || !isDue(rule, now)) {
                 continue;
             }
-            startRuleWorker(rule);
+            startRuleWorkerIfIdle(rule);
         }
     }
 
@@ -141,14 +141,19 @@ public class PromotionalEmailPlannerService {
         return queued;
     }
 
-    private void startRuleWorker(EmailCampaignRule rule) {
+    private synchronized boolean startRuleWorkerIfIdle(EmailCampaignRule rule) {
         String ruleKey = safeText(rule.getRuleKey());
         if (!StringUtils.hasText(ruleKey)) {
-            return;
+            return false;
+        }
+        Future<?> current = runningRuleTasks.get(ruleKey);
+        if (current != null && !current.isDone() && !current.isCancelled()) {
+            return false;
         }
         markRuleRunning(ruleKey);
         Future<?> task = ruleExecutor.submit(() -> runRuleWorker(ruleKey));
         runningRuleTasks.put(ruleKey, task);
+        return true;
     }
 
     private void runRuleWorker(String ruleKey) {
@@ -176,18 +181,21 @@ public class PromotionalEmailPlannerService {
                 LOGGER.warn("Scheduled email campaign rule {} failed.", ruleKey, exception);
             }
         } finally {
-            runningRuleTasks.remove(ruleKey);
-            if (StringUtils.hasText(runId)) {
-                scheduledMessageAuditService.finishRun(
-                        runId,
-                        result.affectedCount(),
-                        result.notificationCount(),
-                        result.emailQueuedCount(),
-                        result.failedCount(),
-                        status,
-                        detail);
+            try {
+                if (StringUtils.hasText(runId)) {
+                    scheduledMessageAuditService.finishRun(
+                            runId,
+                            result.affectedCount(),
+                            result.notificationCount(),
+                            result.emailQueuedCount(),
+                            result.failedCount(),
+                            status,
+                            detail);
+                }
+                markRuleFinished(ruleKey, result.affectedCount(), status, detail);
+            } finally {
+                runningRuleTasks.remove(ruleKey);
             }
-            markRuleFinished(ruleKey, result.affectedCount(), status, detail);
         }
     }
 
@@ -385,11 +393,6 @@ public class PromotionalEmailPlannerService {
             markRuleFinished(entry.getKey(), 0, "suspended", detail);
         }
         runningRuleTasks.clear();
-    }
-
-    private boolean isRuleRunning(EmailCampaignRule rule) {
-        Future<?> task = runningRuleTasks.get(safeText(rule == null ? null : rule.getRuleKey()));
-        return task != null && !task.isDone() && !task.isCancelled();
     }
 
     private void markRuleRunning(String ruleKey) {

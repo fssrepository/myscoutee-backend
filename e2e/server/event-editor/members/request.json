@@ -1,0 +1,17 @@
+{
+  "name": "event editor members",
+  "group": "event-editor",
+  "order": 800,
+  "method": "GET",
+  "path": "/api/activities/events/members",
+  "requires": ["event"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "ownerType": "event",
+    "ownerId": "{{eventId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

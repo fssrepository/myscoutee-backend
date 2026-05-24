@@ -1,0 +1,16 @@
+{
+  "name": "admin notification center state",
+  "group": "admin",
+  "order": 1035,
+  "method": "GET",
+  "path": "/api/admin/notifications",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}"
+  },
+  "expectedStatus": 200,
+  "script": "assert.mjs",
+  "maxMs": 8000
+}

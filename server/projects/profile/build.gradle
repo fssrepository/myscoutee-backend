@@ -43,6 +43,21 @@ sourceSets {
             srcDirs = ['src/test/resources']
         }
     }
+    e2eTest {
+        java {
+            srcDirs = ['src/e2eTest/java']
+        }
+        resources {
+            srcDirs = ['src/e2eTest/resources']
+        }
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    e2eTestImplementation.extendsFrom testImplementation
+    e2eTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -58,6 +73,7 @@ dependencies {
 	}
 	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-data'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -73,7 +89,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.integration:spring-integration-test'
-	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.7.0'
+	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.7.0'
 }
 
 tasks.named('jacocoTestReport') {
@@ -90,6 +106,60 @@ tasks.named('test') {
 	finalizedBy jacocoTestReport
 }
 
+tasks.register('bootRunPlayground', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Runs the profile app against disposable playground_db for HTTP e2e flow tests.'
+	group = 'application'
+
+	mainClass = 'com.raxim.myscoutee.Main'
+	classpath = sourceSets.main.runtimeClasspath
+
+	def playgroundDb = providers.environmentVariable('MONGO_PLAYGROUND_DATABASE').orElse('playground_db')
+	environment 'SPRING_PROFILES_ACTIVE', providers.environmentVariable('SPRING_PROFILES_ACTIVE').orElse('dev').get()
+	environment 'MONGODB_DATABASE', playgroundDb.get()
+	environment 'MONGODB_DEMO_DATABASE', playgroundDb.get()
+	environment 'FIREBASE_ENABLED', 'false'
+	environment 'PAYMENT_ENABLE_PAY', providers.environmentVariable('PAYMENT_ENABLE_PAY').orElse('false').get()
+	environment 'MEDIA_ENABLED', providers.environmentVariable('MEDIA_ENABLED').orElse('true').get()
+	environment 'E2E_PLAYGROUND_MODE', 'true'
+}
+
+tasks.register('bootRunStress', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Runs the profile app in disposable playground_db mode for external stress collections.'
+	group = 'application'
+
+	mainClass = 'com.raxim.myscoutee.Main'
+	classpath = sourceSets.main.runtimeClasspath
+
+	def playgroundDb = providers.environmentVariable('MONGO_PLAYGROUND_DATABASE').orElse('playground_db')
+	environment 'SPRING_PROFILES_ACTIVE', providers.environmentVariable('SPRING_PROFILES_ACTIVE').orElse('dev').get()
+	environment 'MONGODB_DATABASE', playgroundDb.get()
+	environment 'MONGODB_DEMO_DATABASE', playgroundDb.get()
+	environment 'FIREBASE_ENABLED', 'false'
+	environment 'PAYMENT_ENABLE_PAY', providers.environmentVariable('PAYMENT_ENABLE_PAY').orElse('false').get()
+	environment 'MEDIA_ENABLED', providers.environmentVariable('MEDIA_ENABLED').orElse('true').get()
+	environment 'E2E_PLAYGROUND_MODE', 'true'
+	environment 'E2E_STRESS_MODE', 'true'
+	jvmArgs '-Xms512m', '-Xmx2g'
+}
+
+tasks.register('e2eTest', Test) {
+	description = 'Runs backend HTTP e2e tests. Disabled from check unless -PrunE2e=true is supplied.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.e2eTest.output.classesDirs
+	classpath = sourceSets.e2eTest.runtimeClasspath
+	shouldRunAfter test
+	useJUnitPlatform {
+		includeTags 'e2e'
+	}
+}
+
+tasks.named('check') {
+	if (project.hasProperty('runE2e')) {
+		dependsOn tasks.named('e2eTest')
+	}
+}
+
 tasks.withType(JavaCompile).configureEach {
 	options.compilerArgs += ['-parameters']
 }
@@ -98,7 +168,10 @@ sonar {
     properties {
 		property 'sonar.projectKey', 'fssrepository_myscoutee_AYnBBjoHSeqh8PdnQJtM'
 		property 'sonar.projectName', 'myscoutee'
-		property 'sonar.token', 'sqp_f93823b500ff50e1259d61e67f709d22446e3369'
+		def sonarToken = providers.environmentVariable('SONAR_TOKEN').orNull
+		if (sonarToken) {
+			property 'sonar.token', sonarToken
+		}
         property 'sonar.host.url', 'http://localhost:9000'
 		property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jacoco.xml"
     }

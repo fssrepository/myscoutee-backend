@@ -1,0 +1,10 @@
+{
+  "name": "game surface uses backend session data",
+  "group": "game",
+  "order": 20,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 30000
+}

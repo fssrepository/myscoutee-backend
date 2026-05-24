@@ -17,6 +17,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class NotificationOutboxService {
     private final PlatformParametersService platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
 
+    @Autowired
     public NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,

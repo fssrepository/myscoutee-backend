@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,6 +26,7 @@ import org.springframework.util.StringUtils;
 import org.bson.Document;
 import com.raxim.myscoutee.profile.data.document.AccountPurgeJob;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageReactionRecord;
@@ -39,6 +39,7 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.IdeaPost;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
@@ -57,6 +58,7 @@ public class DeletedAccountPurgeService {
 
     private final UsersRepository usersRepository;
     private final ActivityChatsRepository activityChatsRepository;
+    private final ActivityChatMessagesRepository activityChatMessagesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final AssetsRepository assetsRepository;
     private final ActivityMembersRepository activityMembersRepository;
@@ -68,6 +70,7 @@ public class DeletedAccountPurgeService {
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
             ActivityChatsRepository activityChatsRepository,
+            ActivityChatMessagesRepository activityChatMessagesRepository,
             ActivityEventsRepository activityEventsRepository,
             AssetsRepository assetsRepository,
             ActivityMembersRepository activityMembersRepository,
@@ -77,6 +80,7 @@ public class DeletedAccountPurgeService {
             PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;
         this.activityChatsRepository = activityChatsRepository;
+        this.activityChatMessagesRepository = activityChatMessagesRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.assetsRepository = assetsRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -681,30 +685,43 @@ public class DeletedAccountPurgeService {
         Map<String, ActivityChat> chatsByKey = new LinkedHashMap<>();
         addChats(chatsByKey, activityChatsRepository.findByOwnerUserId(userId));
         addChats(chatsByKey, activityChatsRepository.findByMemberIdsContaining(userId));
-        addChats(chatsByKey, activityChatsRepository.findByMessageSenderUserId(userId));
-        addChats(chatsByKey, activityChatsRepository.findByMessageReadByUserId(userId));
-        addChats(chatsByKey, activityChatsRepository.findByMessageReactionUserId(userId));
-        addChats(chatsByKey, activityChatsRepository.findByPollAttachmentDescriptionMatching(pollVoteUserPattern(userId)));
-        if (chatsByKey.isEmpty()) {
+        Set<String> chatIds = new LinkedHashSet<>();
+        addMessageChatIds(chatIds, activityChatMessagesRepository.findByMessageSenderUserId(userId));
+        addMessageChatIds(chatIds, activityChatMessagesRepository.findByMessageReadByUserId(userId));
+        addMessageChatIds(chatIds, activityChatMessagesRepository.findByMessageReactionUserId(userId));
+        addMessageChatIds(chatIds, activityChatMessagesRepository.findByPollVoterUserId(userId));
+        for (ActivityChat chat : chatsByKey.values()) {
+            String chatId = safeText(chat == null ? null : chat.getChatId());
+            if (StringUtils.hasText(chatId)) {
+                chatIds.add(chatId);
+            }
+        }
+        for (String chatId : chatIds) {
+            addChats(chatsByKey, activityChatsRepository.findByChatId(chatId));
+        }
+        if (chatsByKey.isEmpty() && chatIds.isEmpty()) {
             return;
         }
 
-        String purgeAtIso = Instant.now().toString();
-        List<ActivityChat> changedChats = new ArrayList<>();
-        for (ActivityChat chat : chatsByKey.values()) {
-            if (chat == null) {
+        Map<String, List<ActivityChatMessage>> messagesByChatId = new LinkedHashMap<>();
+        for (String chatId : chatIds) {
+            String normalizedChatId = safeText(chatId);
+            if (!StringUtils.hasText(normalizedChatId)) {
                 continue;
             }
-            Set<String> purgedMessageIds = collectSentMessageIds(chat, userId);
-            boolean changed = removeMember(chat, userId);
-            if (userId.equals(safeText(chat.getOwnerUserId()))) {
-                chat.setOwnerUserId("deleted-user");
-                changed = true;
-            }
-            for (ChatMessageRecord message : chat.getMessages() == null ? List.<ChatMessageRecord>of() : chat.getMessages()) {
+            messagesByChatId.put(normalizedChatId, activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId));
+        }
+
+        String purgeAtIso = Instant.now().toString();
+        List<ActivityChatMessage> changedMessages = new ArrayList<>();
+        Set<String> summaryRefreshChatIds = new LinkedHashSet<>();
+        for (Map.Entry<String, List<ActivityChatMessage>> entry : messagesByChatId.entrySet()) {
+            Set<String> purgedMessageIds = collectSentMessageIds(entry.getValue(), userId);
+            for (ActivityChatMessage message : entry.getValue()) {
                 if (message == null) {
                     continue;
                 }
+                boolean changed = false;
                 boolean sentByUser = isSentByUser(message, userId);
                 if (sentByUser) {
                     purgeMessageMedia(message);
@@ -720,14 +737,40 @@ public class DeletedAccountPurgeService {
                     message.setDeletedByName("Deleted user");
                     changed = true;
                 }
+                if (changed) {
+                    message.refreshMessageSearchFields();
+                    changedMessages.add(message);
+                    summaryRefreshChatIds.add(entry.getKey());
+                }
+            }
+        }
+
+        List<ActivityChat> changedChats = new ArrayList<>();
+        for (ActivityChat chat : chatsByKey.values()) {
+            if (chat == null) {
+                continue;
+            }
+            boolean changed = removeMember(chat, userId);
+            if (userId.equals(safeText(chat.getOwnerUserId()))) {
+                chat.setOwnerUserId("deleted-user");
+                changed = true;
             }
             if (changed) {
-                refreshChatSummary(chat);
+                String chatId = safeText(chat.getChatId());
+                if (StringUtils.hasText(chatId)) {
+                    summaryRefreshChatIds.add(chatId);
+                }
                 changedChats.add(chat);
             }
         }
+        if (!changedMessages.isEmpty()) {
+            activityChatMessagesRepository.saveAll(changedMessages);
+        }
         if (!changedChats.isEmpty()) {
             activityChatsRepository.saveAll(changedChats);
+        }
+        for (String chatId : summaryRefreshChatIds) {
+            refreshChatSummary(chatId);
         }
     }
 
@@ -746,9 +789,21 @@ public class DeletedAccountPurgeService {
         }
     }
 
-    private Set<String> collectSentMessageIds(ActivityChat chat, String userId) {
+    private void addMessageChatIds(Set<String> chatIds, List<ActivityChatMessage> messages) {
+        if (chatIds == null) {
+            return;
+        }
+        for (ActivityChatMessage message : messages == null ? List.<ActivityChatMessage>of() : messages) {
+            String chatId = safeText(message == null ? null : message.getChatId());
+            if (StringUtils.hasText(chatId)) {
+                chatIds.add(chatId);
+            }
+        }
+    }
+
+    private Set<String> collectSentMessageIds(List<? extends ChatMessageRecord> messages, String userId) {
         Set<String> ids = new LinkedHashSet<>();
-        for (ChatMessageRecord message : chat == null || chat.getMessages() == null ? List.<ChatMessageRecord>of() : chat.getMessages()) {
+        for (ChatMessageRecord message : messages == null ? List.<ChatMessageRecord>of() : messages) {
             String messageId = safeText(message == null ? null : message.getId());
             if (StringUtils.hasText(messageId) && isSentByUser(message, userId)) {
                 ids.add(messageId);
@@ -901,20 +956,35 @@ public class DeletedAccountPurgeService {
         return true;
     }
 
-    private void refreshChatSummary(ActivityChat chat) {
-        ChatMessageRecord latest = latestMessage(chat.getMessages());
-        if (latest == null) {
-            chat.setLastMessage("");
-            chat.setLastSenderId("");
+    private void refreshChatSummary(String chatId) {
+        String normalizedChatId = safeText(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
             return;
         }
-        ChatAvatarRecord senderAvatar = latest.getSenderAvatar();
-        chat.setLastSenderId(senderAvatar == null ? "" : safeText(senderAvatar.getId()));
-        chat.setLastMessage(messageSummary(latest));
+        ChatMessageRecord latest = latestMessage(activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId));
+        List<ActivityChat> changedChats = new ArrayList<>();
+        for (ActivityChat chat : activityChatsRepository.findByChatId(normalizedChatId)) {
+            if (chat == null) {
+                continue;
+            }
+            if (latest == null) {
+                chat.setLastMessage("");
+                chat.setLastSenderId("");
+            } else {
+                ChatAvatarRecord senderAvatar = latest.getSenderAvatar();
+                chat.setLastSenderId(senderAvatar == null ? "" : safeText(senderAvatar.getId()));
+                chat.setLastMessage(messageSummary(latest));
+            }
+            changedChats.add(chat);
+        }
+        if (!changedChats.isEmpty()) {
+            activityChatsRepository.saveAll(changedChats);
+        }
     }
 
-    private ChatMessageRecord latestMessage(List<ChatMessageRecord> messages) {
-        return (messages == null ? List.<ChatMessageRecord>of() : messages).stream()
+    private ChatMessageRecord latestMessage(List<? extends ChatMessageRecord> messages) {
+        List<? extends ChatMessageRecord> safeMessages = messages == null ? List.of() : messages;
+        return safeMessages.stream()
                 .filter(Objects::nonNull)
                 .reduce((first, second) -> second)
                 .orElse(null);
@@ -943,10 +1013,6 @@ public class DeletedAccountPurgeService {
             case "link" -> "Shared a link";
             default -> StringUtils.hasText(attachment.getTitle()) ? safeText(attachment.getTitle()) : "Shared an attachment";
         };
-    }
-
-    private String pollVoteUserPattern(String userId) {
-        return "\\\"userId\\\"\\s*:\\s*\\\"" + Pattern.quote(userId) + "\\\"";
     }
 
     private String safeText(String value) {

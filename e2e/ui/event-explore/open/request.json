@@ -1,0 +1,10 @@
+{
+  "name": "event explore opens from navigator menu",
+  "group": "event-explore",
+  "order": 60,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 35000
+}

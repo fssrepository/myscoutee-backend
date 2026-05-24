@@ -20,6 +20,15 @@ import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredOb
 @Service
 public class MediaStorageService {
     private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat", "idea", "content");
+    private static final Set<String> ALLOWED_IMAGE_CONTENT_TYPES = Set.of("image/jpeg", "image/png", "image/webp", "image/gif");
+    private static final Set<String> ALLOWED_AUDIO_CONTENT_TYPES = Set.of(
+            "audio/mpeg",
+            "audio/mp4",
+            "audio/aac",
+            "audio/ogg",
+            "audio/webm",
+            "audio/wav",
+            "audio/x-wav");
 
     private final MediaStorageProperties properties;
     private final MediaObjectStoreClient objectStoreClient;
@@ -90,6 +99,12 @@ public class MediaStorageService {
         }
         String contentType = normalizeContentType(contentTypeValue);
         if (!contentType.startsWith(safeText(requiredContentTypePrefix))) {
+            return null;
+        }
+        if ("image/".equals(requiredContentTypePrefix) && !ALLOWED_IMAGE_CONTENT_TYPES.contains(contentType)) {
+            return null;
+        }
+        if ("audio/".equals(requiredContentTypePrefix) && !ALLOWED_AUDIO_CONTENT_TYPES.contains(contentType)) {
             return null;
         }
         try {

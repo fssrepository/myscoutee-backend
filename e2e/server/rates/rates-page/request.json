@@ -1,0 +1,21 @@
+{
+  "name": "activities rate smart-list page",
+  "group": "rates",
+  "order": 410,
+  "method": "GET",
+  "path": "/api/activities/rates/page",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}",
+    "mode": "single",
+    "direction": "given",
+    "sort": "date",
+    "sortDirection": "desc",
+    "limit": "12"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

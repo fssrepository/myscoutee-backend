@@ -39,6 +39,8 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels.InviteBatchPlan;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.PriorityGeneratorRequest;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomGroupTarget;
 import com.raxim.myscoutee.algo.gen.GeneratorModels.RandomTargetedGeneratorRequest;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
@@ -461,7 +463,8 @@ public class EventScheduler {
                 observedQueries.get(), "Starting random assignment for " + totalSubEvents + " sub-event(s).");
 
         // --- PHASE 2: PARALLEL EXECUTION ---
-        events.parallelStream().forEach(event -> {
+        MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+        events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
             if (event == null || !Boolean.TRUE.equals(event.getPublished())) return; // Use return instead of continue in lambda
 
             String eventId = normalizeId(event.getSourceId());
@@ -540,7 +543,7 @@ public class EventScheduler {
                     "Processed " + processed + "/" + snapshotsByEventId.size() + " random event(s), "
                             + requiredUserIds.size() + " candidate user(s), "
                             + observedQueries.get() + " backend lookup(s).");
-        });
+        }));
         publishRandomProgress(progressConsumer, 96, snapshotsByEventId.size(), snapshotsByEventId.size(), requiredUserIds.size(),
                 observedQueries.get(), "Finalizing random event groups after " + observedQueries.get() + " backend lookup(s).");
         
@@ -620,7 +623,8 @@ public class EventScheduler {
         List<InviteBatchPlan> plans = Collections.synchronizedList(new ArrayList<>());
 
         // --- PHASE 2: PARALLEL EXECUTION ---
-        events.parallelStream().forEach(event -> {
+        MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+        events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) return;
             
             String eventId = normalizeId(event.getSourceId());
@@ -664,7 +668,7 @@ public class EventScheduler {
                 // Thread-safe addition
                 plans.add(new InviteBatchPlan(eventId, persistedInviteUserIds));
             }
-        });
+        }));
         
         return plans;
     }
@@ -697,7 +701,8 @@ public class EventScheduler {
 
         // --- PHASE 2: PARALLEL EXECUTION ---
         // Process every event concurrently across all available CPU cores!
-        events.parallelStream().forEach(event -> {
+        MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+        events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
             if (event == null || event.getSubEvents() == null) return; // 'return' replaces 'continue' in lambdas
             
             String eventId = normalizeId(event.getSourceId());
@@ -761,9 +766,19 @@ public class EventScheduler {
                         event, eventGraph, advancingUserIds, nextTargets, "score", 
                         "score:" + eventId + ":" + subEventId + "->" + nextSubEventId);
             }
-        }); // End of parallel stream
+        })); // End of parallel stream
 
         return states;
+    }
+
+    private void withMongoSessionMode(MongoSessionMode sessionMode, Runnable action) {
+        MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
+        try {
+            MongoSessionModeContext.set(sessionMode);
+            action.run();
+        } finally {
+            MongoSessionModeContext.set(previousMode);
+        }
     }
 
     private FGraph buildGraphSnapshot(Set<String> requiredUserIds) {

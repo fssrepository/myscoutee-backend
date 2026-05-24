@@ -1,0 +1,14 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-activities",
+    ".activities-popup"
+  ],
+  "text": [
+    "Activities"
+  ],
+  "network": [
+    "/api/activities/events"
+  ],
+  "maxMs": 35000
+}

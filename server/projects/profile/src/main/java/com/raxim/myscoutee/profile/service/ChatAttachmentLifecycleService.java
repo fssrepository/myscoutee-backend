@@ -7,10 +7,9 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageRecord;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 
 @Service
 public class ChatAttachmentLifecycleService {
@@ -19,10 +18,10 @@ public class ChatAttachmentLifecycleService {
     private static final String STATUS_AVAILABLE = "available";
     private static final String STATUS_UNAVAILABLE = "unavailable";
 
-    private final ActivityChatsRepository activityChatsRepository;
+    private final ActivityChatMessagesRepository activityChatMessagesRepository;
 
-    public ChatAttachmentLifecycleService(ActivityChatsRepository activityChatsRepository) {
-        this.activityChatsRepository = activityChatsRepository;
+    public ChatAttachmentLifecycleService(ActivityChatMessagesRepository activityChatMessagesRepository) {
+        this.activityChatMessagesRepository = activityChatMessagesRepository;
     }
 
     public void markEventUnavailable(String eventId, String reason) {
@@ -48,29 +47,25 @@ public class ChatAttachmentLifecycleService {
             return;
         }
 
-        List<ActivityChat> changedChats = new ArrayList<>();
-        for (ActivityChat chat : activityChatsRepository.findByMessageAttachmentTypeAndEntityId(normalizedType, normalizedEntityId)) {
-            if (chat == null || chat.getMessages() == null || chat.getMessages().isEmpty()) {
+        List<ActivityChatMessage> changedMessages = new ArrayList<>();
+        for (ActivityChatMessage message : activityChatMessagesRepository.findByMessageAttachmentTypeAndEntityId(normalizedType, normalizedEntityId)) {
+            if (message == null || message.getAttachments() == null || message.getAttachments().isEmpty()) {
                 continue;
             }
             boolean changed = false;
-            for (ChatMessageRecord message : chat.getMessages()) {
-                if (message == null || message.getAttachments() == null || message.getAttachments().isEmpty()) {
+            for (ChatMessageAttachmentRecord attachment : message.getAttachments()) {
+                if (!matchesAttachment(attachment, normalizedType, normalizedEntityId)) {
                     continue;
                 }
-                for (ChatMessageAttachmentRecord attachment : message.getAttachments()) {
-                    if (!matchesAttachment(attachment, normalizedType, normalizedEntityId)) {
-                        continue;
-                    }
-                    changed = applyAttachmentStatus(attachment, status, reason) || changed;
-                }
+                changed = applyAttachmentStatus(attachment, status, reason) || changed;
             }
             if (changed) {
-                changedChats.add(chat);
+                message.refreshMessageSearchFields();
+                changedMessages.add(message);
             }
         }
-        if (!changedChats.isEmpty()) {
-            activityChatsRepository.saveAll(changedChats);
+        if (!changedMessages.isEmpty()) {
+            activityChatMessagesRepository.saveAll(changedMessages);
         }
     }
 

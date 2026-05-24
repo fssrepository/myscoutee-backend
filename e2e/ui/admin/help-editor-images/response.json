@@ -1,0 +1,21 @@
+{
+  "urlPath": "/admin/workspace",
+  "selectors": [
+    ".popup-panel-help-editor",
+    "app-editable-image-carousel",
+    ".editable-image-carousel"
+  ],
+  "absentSelectors": [
+    ".explanation-popup",
+    ".confirmation-dialog",
+    ".popup-loading-overlay"
+  ],
+  "network": [
+    "/api/admin/dashboard",
+    "/api/admin/explanation"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 80000
+}

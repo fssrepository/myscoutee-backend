@@ -1,0 +1,17 @@
+{
+  "name": "privacy consent state for active user",
+  "group": "content",
+  "order": 245,
+  "method": "GET",
+  "path": "/api/privacy/active",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "lang": "en"
+  },
+  "expectedStatus": 200,
+  "script": "assert.mjs",
+  "maxMs": 5000
+}

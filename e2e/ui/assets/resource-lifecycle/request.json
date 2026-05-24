@@ -1,0 +1,11 @@
+{
+  "name": "owned asset and sub-event resource lifecycle works through the UI",
+  "group": "assets",
+  "order": 82,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 220000
+}

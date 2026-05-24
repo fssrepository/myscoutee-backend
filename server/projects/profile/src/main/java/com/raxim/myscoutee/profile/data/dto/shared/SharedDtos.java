@@ -3,6 +3,8 @@ package com.raxim.myscoutee.profile.data.dto.shared;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 
 public final class SharedDtos {
@@ -97,6 +99,7 @@ public final class SharedDtos {
     }
 
     public record SubEventGroupItemDto(
+            @Field("id")
             String id,
             String name,
             Integer capacityMin,
@@ -105,6 +108,7 @@ public final class SharedDtos {
     }
 
     public record SubEventFormItemDto(
+            @Field("id")
             String id,
             String name,
             String description,

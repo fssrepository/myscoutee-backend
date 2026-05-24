@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "helpCenterRevisions")
 @CompoundIndexes({
@@ -44,11 +45,14 @@ public class HelpCenterRevision {
     private String updatedUser;
 
     public static class HelpCenterSection {
+        @Field("id")
         private String id;
         private String icon;
         private String title;
         private String blurb;
         private String contentHtml;
+        private List<String> imageUrls = new ArrayList<>();
+        private String panelSpan;
         private Boolean optional;
 
         public String getId() {
@@ -89,6 +93,22 @@ public class HelpCenterRevision {
 
         public void setContentHtml(String contentHtml) {
             this.contentHtml = contentHtml;
+        }
+
+        public List<String> getImageUrls() {
+            return imageUrls;
+        }
+
+        public void setImageUrls(List<String> imageUrls) {
+            this.imageUrls = imageUrls == null ? new ArrayList<>() : new ArrayList<>(imageUrls);
+        }
+
+        public String getPanelSpan() {
+            return panelSpan;
+        }
+
+        public void setPanelSpan(String panelSpan) {
+            this.panelSpan = panelSpan;
         }
 
         public Boolean getOptional() {

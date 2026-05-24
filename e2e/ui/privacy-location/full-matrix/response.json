@@ -1,0 +1,21 @@
+{
+  "selectors": [
+    ".game-page"
+  ],
+  "absentSelectors": [
+    ".entry-consent-overlay",
+    ".confirmation-dialog",
+    ".demo-login-overlay",
+    "app-navigator-privacy-popup",
+    ".navigator-settings-popup-shell"
+  ],
+  "network": [
+    "/api/auth/eligibility",
+    "/api/auth/demo-users",
+    "/api/privacy/consents"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 120000
+}

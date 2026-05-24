@@ -1,0 +1,37 @@
+# Disposable full-stack playground mode for destructive e2e/stress tests.
+# Usage:
+#   MONGO_PLAYGROUND_DATABASE=playground_db docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build
+#
+# This keeps the normal demo_db volume untouched and points both real/demo routing
+# at the playground database so tests can mutate freely.
+
+services:
+  mongodb:
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_APP_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_DEMO_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_REAL_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_PLAYGROUND_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_SEED_DIRECTORY: ${MONGO_PLAYGROUND_SEED_DIRECTORY:-playground_db}
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_PLAYGROUND_DATABASE:-playground_db}:*
+    volumes:
+      - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
+      - ./data/mongodb/playground-data:/data/db
+      - ./docker/scripts:/scripts
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  mongodb-sync:
+    environment:
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_PLAYGROUND_DATABASE:-playground_db}:*
+      MONGO_PLAYGROUND_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+
+  profilemanagement:
+    environment:
+      MONGODB_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGODB_DEMO_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      E2E_PLAYGROUND_MODE: "true"
+      FIREBASE_ENABLED: "false"
+      MEDIA_ENABLED: "true"
+      PAYMENT_ENABLE_PAY: "false"

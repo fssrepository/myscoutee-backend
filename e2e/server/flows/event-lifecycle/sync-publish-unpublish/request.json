@@ -1,0 +1,113 @@
+{
+  "name": "playground event lifecycle: sync draft, publish, unpublish, trash, restore",
+  "group": "flows",
+  "order": 9000,
+  "method": "POST",
+  "path": "/api/activities/events/sync",
+  "script": "event-lifecycle.mjs",
+  "mutation": true,
+  "playgroundOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed host profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{playgroundUserId}}",
+        "name": "E2E Host",
+        "age": 31,
+        "birthday": "1995-01-12",
+        "city": "Bratislava",
+        "height": "180 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "EH",
+        "gender": "man",
+        "statusText": "Playground host",
+        "profileStatus": "public",
+        "locationCoordinates": {
+          "latitude": 48.1486,
+          "longitude": 17.1077
+        },
+        "images": []
+      }
+    },
+    {
+      "name": "seed member profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{playgroundSecondUserId}}",
+        "name": "E2E Member",
+        "age": 29,
+        "birthday": "1997-03-05",
+        "city": "Bratislava",
+        "height": "168 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "EM",
+        "gender": "woman",
+        "statusText": "Playground member",
+        "profileStatus": "public",
+        "locationCoordinates": {
+          "latitude": 48.149,
+          "longitude": 17.108
+        },
+        "images": []
+      }
+    }
+  ],
+  "body": {
+    "syncKey": "e2e-flow-event-{{runId}}",
+    "id": "e2e-flow-event-{{runId}}",
+    "target": "hosting",
+    "title": "E2E Playground Event",
+    "shortDescription": "Created by the Postman-like playground collection.",
+    "timeframe": "Tomorrow evening",
+    "activity": 5,
+    "isAdmin": false,
+    "startAt": "2026-06-15T18:00:00Z",
+    "endAt": "2026-06-15T20:00:00Z",
+    "distanceKm": 1.2,
+    "imageUrl": "",
+    "acceptedMembers": 1,
+    "pendingMembers": 0,
+    "capacityTotal": 8,
+    "capacityMin": 2,
+    "capacityMax": 8,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "slotsEnabled": false,
+    "eventType": "meetup",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "published": false,
+    "creatorUserId": "{{playgroundUserId}}",
+    "creatorName": "E2E Host",
+    "creatorInitials": "EH",
+    "creatorGender": "man",
+    "creatorCity": "Bratislava",
+    "location": "Bratislava",
+    "locationCoordinates": {
+      "latitude": 48.1486,
+      "longitude": 17.1077
+    },
+    "topics": ["e2e", "playground"],
+    "subEvents": [],
+    "subEventsDisplayMode": "list"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

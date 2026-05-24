@@ -1,0 +1,10 @@
+{
+  "name": "privacy and location entry plus navigator matrix",
+  "group": "privacy-location",
+  "order": 25,
+  "route": "/",
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 120000
+}

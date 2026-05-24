@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "body": {
+    "type": "object",
+    "required": ["token"],
+    "properties": {
+      "token": {
+        "type": "string",
+        "minLength": 6
+      }
+    }
+  }
+}

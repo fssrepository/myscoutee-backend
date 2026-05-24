@@ -1,0 +1,10 @@
+{
+  "name": "collected local image URLs are reachable",
+  "group": "media",
+  "order": 5000,
+  "method": "GET",
+  "path": "/api/health",
+  "expectedStatus": 200,
+  "maxMs": 2500,
+  "script": "media-images.mjs"
+}

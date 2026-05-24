@@ -1,0 +1,16 @@
+{
+  "name": "activities event list",
+  "group": "events",
+  "order": 500,
+  "method": "GET",
+  "path": "/api/activities/events",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

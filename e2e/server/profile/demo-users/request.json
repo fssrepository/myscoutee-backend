@@ -1,0 +1,12 @@
+{
+  "name": "available demo users",
+  "group": "profile",
+  "order": 100,
+  "method": "GET",
+  "path": "/api/auth/demo-users",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

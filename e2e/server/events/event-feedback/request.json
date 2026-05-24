@@ -1,0 +1,16 @@
+{
+  "name": "event feedback state",
+  "group": "events",
+  "order": 530,
+  "method": "GET",
+  "path": "/api/activities/events/feedback",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

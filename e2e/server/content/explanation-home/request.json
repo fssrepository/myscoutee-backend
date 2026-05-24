@@ -1,0 +1,13 @@
+{
+  "name": "active explanation document for home/help carousel",
+  "group": "content",
+  "order": 240,
+  "method": "GET",
+  "path": "/api/explanation/active",
+  "params": {
+    "lang": "en",
+    "contextKey": "home.game"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

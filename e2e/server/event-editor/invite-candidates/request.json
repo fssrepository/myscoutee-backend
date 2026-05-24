@@ -1,0 +1,19 @@
+{
+  "name": "event editor invite candidates",
+  "group": "event-editor",
+  "order": 820,
+  "method": "POST",
+  "path": "/api/activities/events/invite-candidates",
+  "requires": ["event"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "activeUserId": "{{userId}}",
+    "ownerType": "event",
+    "ownerId": "{{eventId}}",
+    "sort": "name"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

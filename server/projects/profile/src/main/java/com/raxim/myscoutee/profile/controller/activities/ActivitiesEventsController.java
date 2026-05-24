@@ -87,6 +87,11 @@ public class ActivitiesEventsController {
         activitiesEventsService.publish(request);
     }
 
+    @PostMapping("/unpublish")
+    public void unpublish(@RequestBody EventActionRequestDto request) {
+        activitiesEventsService.unpublish(request);
+    }
+
     @PostMapping("/restore")
     public void restore(@RequestBody EventActionRequestDto request) {
         activitiesEventsService.restore(request);

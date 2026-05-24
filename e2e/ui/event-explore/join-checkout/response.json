@@ -1,0 +1,11 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-event-explore"
+  ],
+  "network": [
+    "/api/activities/events/explore",
+    "/api/activities/events/join"
+  ],
+  "noCrashText": true
+}

@@ -6,14 +6,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
+import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
 import com.raxim.myscoutee.common.config.firebase.FirebaseService;
+import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 
 @Configuration
@@ -22,13 +26,16 @@ public class WebSecurityConfig {
 
     private final FirebaseService firebaseService;
     private final FirebaseAuthenticationProvider firebaseProvider;
+    private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final ConfigProperties configProperties;
 
     public WebSecurityConfig(FirebaseService firebaseService,
             FirebaseAuthenticationProvider firebaseProvider,
+            FirebaseTokenVerifier firebaseTokenVerifier,
             ConfigProperties configProperties) {
         this.firebaseService = firebaseService;
         this.firebaseProvider = firebaseProvider;
+        this.firebaseTokenVerifier = firebaseTokenVerifier;
         this.configProperties = configProperties;
     }
 
@@ -42,16 +49,15 @@ public class WebSecurityConfig {
         http.addFilterBefore(sessionMongoRoutingFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(tokenAuthorizationFilter(), SessionMongoRoutingFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
+                    authorizeRequests.requestMatchers("/shutdown").denyAll();
+                    authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
                     authorizeRequests.requestMatchers(
                             "/health",
-                            "/metrics",
-                            "/shutdown",
                             "/error",
                             "/auth/eligibility",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",
-                            "/admin/**",
                             "/css/**",
                             "/js/**",
                             "/img/**",
@@ -71,20 +77,29 @@ public class WebSecurityConfig {
                         authorizeRequests.requestMatchers("/activities/chats/**").authenticated()
                                 .anyRequest().denyAll();
                     } else {
-                        authorizeRequests.anyRequest().authenticated();
+                        authorizeRequests.requestMatchers(DemoSessionRequestSupport::isAllowedDemoSessionRequest).permitAll();
+                        authorizeRequests.requestMatchers("/admin/**", "/api/admin/**").hasAuthority("A")
+                                .anyRequest().authenticated();
                     }
                 })
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.deny())
+                        .referrerPolicy(referrerPolicy -> referrerPolicy
+                                .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .permissionsPolicyHeader(permissionsPolicy -> permissionsPolicy
+                                .policy("geolocation=(), microphone=(), camera=()")))
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .csrf(csrf -> csrf.disable());
         return http.build();
     }
 
     private FirebaseFilter tokenAuthorizationFilter() {
-        return new FirebaseFilter(firebaseService, configProperties);
+        return new FirebaseFilter(firebaseService, configProperties, firebaseTokenVerifier);
     }
 
     private SessionMongoRoutingFilter sessionMongoRoutingFilter() {
-        return new SessionMongoRoutingFilter();
+        return new SessionMongoRoutingFilter(configProperties);
     }
 
     @Bean

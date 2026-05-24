@@ -1,0 +1,12 @@
+{
+  "name": "active help document",
+  "group": "content",
+  "order": 220,
+  "method": "GET",
+  "path": "/api/help/active",
+  "params": {
+    "lang": "en"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

@@ -9,13 +9,31 @@ const requiredCollections = [
   'events',
   'eventFeedbackStates',
   'eventFeedbackAnswers',
+  'helpCenterRevisions',
+  'helpCenterAudit',
+  'privacyConsents',
   'userExperienceProfiles',
   'countryPartitions',
   'i18n_bundles',
   'i18n_messages'
 ];
 
-['demo_db', 'myscoutee_db'].forEach(databaseName => {
+const appUsername = process.env.MONGO_APP_USERNAME || 'guest';
+const appPassword = process.env.MONGO_APP_PASSWORD || 'guest';
+
+const configuredDatabases = [
+  'demo_db',
+  'myscoutee_db',
+  process.env.MONGO_INITDB_DATABASE,
+  process.env.MONGO_APP_DATABASE,
+  process.env.MONGO_DEMO_DATABASE,
+  process.env.MONGO_REAL_DATABASE,
+  process.env.MONGO_PLAYGROUND_DATABASE
+]
+  .map(value => (value || '').trim())
+  .filter(Boolean);
+
+Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   const portalDb = db.getSiblingDB(databaseName);
   const existingCollections = new Set(portalDb.getCollectionNames());
 
@@ -71,6 +89,55 @@ const requiredCollections = [
     { name: 'event_location_geo' }
   );
 
+  portalDb.chats.createIndex(
+    { ownerUserId: 1, id: 1 },
+    { name: 'chat_owner_public_id', unique: true }
+  );
+  portalDb.chats.createIndex(
+    { id: 1 },
+    { name: 'chat_public_id_lookup' }
+  );
+  portalDb.chats.createIndex(
+    { ownerUserId: 1, dateIso: -1 },
+    { name: 'chat_owner_date' }
+  );
+  portalDb.chats.createIndex(
+    { memberIds: 1, dateIso: -1 },
+    { name: 'chat_member_date' }
+  );
+  portalDb.chats.createIndex(
+    { channelType: 1, dateIso: -1 },
+    { name: 'chat_channel_date' }
+  );
+  portalDb.chatMessages.createIndex(
+    { chatId: 1, id: 1 },
+    { name: 'chat_message_lookup', unique: true }
+  );
+  portalDb.chatMessages.createIndex(
+    { chatId: 1, sentAtIso: -1, id: -1 },
+    { name: 'chat_message_page_desc' }
+  );
+  portalDb.chatMessages.createIndex(
+    { messageSenderUserIds: 1, sentAtIso: -1 },
+    { name: 'chat_message_sender_date' }
+  );
+  portalDb.chatMessages.createIndex(
+    { messageReadByUserIds: 1, sentAtIso: -1 },
+    { name: 'chat_message_reader_date' }
+  );
+  portalDb.chatMessages.createIndex(
+    { messageReactionUserIds: 1, sentAtIso: -1 },
+    { name: 'chat_message_reaction_date' }
+  );
+  portalDb.chatMessages.createIndex(
+    { messageAttachmentKeys: 1, sentAtIso: -1 },
+    { name: 'chat_message_attachment_date' }
+  );
+  portalDb.chatMessages.createIndex(
+    { pollVoterUserIds: 1, sentAtIso: -1 },
+    { name: 'chat_poll_voter_date' }
+  );
+
   portalDb.userExperienceProfiles.createIndex(
     { userId: 1 },
     { name: 'user_experience_profiles_user_id', unique: true }
@@ -85,10 +152,10 @@ const requiredCollections = [
     { name: 'i18n_messages_key_lang', unique: true }
   );
 
-  if (!portalDb.getUser('guest')) {
+  if (!portalDb.getUser(appUsername)) {
     portalDb.createUser({
-      user: 'guest',
-      pwd: 'guest',
+      user: appUsername,
+      pwd: appPassword,
       roles: [
         { role: 'readWrite', db: databaseName }
       ]

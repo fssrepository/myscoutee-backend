@@ -33,11 +33,14 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class ActivitiesEventFeedbackService {
+    private static final String OWNER_TYPE_EVENT = "event";
+
     private final HomeUserProfileService homeUserProfileService;
     private final ActivityEventsRepository activityEventsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
+    private final ActivitiesMembersService activitiesMembersService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
 
@@ -47,6 +50,7 @@ public class ActivitiesEventFeedbackService {
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UsersRepository usersRepository,
+            ActivitiesMembersService activitiesMembersService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService) {
         this.homeUserProfileService = homeUserProfileService;
@@ -54,6 +58,7 @@ public class ActivitiesEventFeedbackService {
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.usersRepository = usersRepository;
+        this.activitiesMembersService = activitiesMembersService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
     }
@@ -236,7 +241,10 @@ public class ActivitiesEventFeedbackService {
             return null;
         }
         boolean ownsEventRecord = activityEventsRepository.existsByOwnerUserIdAndSourceId(userId, normalizedEventId);
-        return ownsEventRecord ? userId : null;
+        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        boolean acceptedMember = membersSnapshot != null && membersSnapshot.acceptedMemberUserIds().contains(userId);
+        return ownsEventRecord || acceptedMember ? userId : null;
     }
 
     private EventFeedbackState findOrCreateState(String userId, String eventId, String nowIso) {

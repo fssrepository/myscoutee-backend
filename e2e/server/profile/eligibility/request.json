@@ -1,0 +1,13 @@
+{
+  "name": "location eligibility payload",
+  "group": "profile",
+  "order": 130,
+  "method": "GET",
+  "path": "/api/auth/eligibility",
+  "params": {
+    "latitude": "48.1486",
+    "longitude": "17.1077"
+  },
+  "expectedStatus": 200,
+  "maxMs": 3000
+}

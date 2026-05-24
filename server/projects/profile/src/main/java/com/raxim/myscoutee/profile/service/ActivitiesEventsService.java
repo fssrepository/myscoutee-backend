@@ -527,10 +527,20 @@ public class ActivitiesEventsService {
             current.setPublished(true);
             current.setSubEvents(ensureTournamentStartReviewStage(current.getSubEvents(), nowIso));
         });
+        List<ActivityEvent> publishedDocuments = ensurePublishedHostingEventOverlays(updated, request == null ? null : request.userId());
+        syncStageReminderTasksForSavedEvents(publishedDocuments, request == null ? null : request.userId());
+        markEventAttachmentsAvailable(publishedDocuments);
+        enqueueTournamentStartReviewNotifications(publishedDocuments, request == null ? null : request.userId());
+        runInitialAutoInviteBatch(publishedDocuments);
+    }
+
+    public void unpublish(EventActionRequestDto request) {
+        List<ActivityEvent> updated = updateItemState(request, current -> {
+            current.setStatus(STATUS_DRAFT);
+            current.setPublished(false);
+        });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsAvailable(updated);
-        enqueueTournamentStartReviewNotifications(updated, request == null ? null : request.userId());
-        runInitialAutoInviteBatch(updated);
+        markEventAttachmentsUnavailable(updated, "unpublished");
     }
 
     public void restore(EventActionRequestDto request) {
@@ -541,6 +551,7 @@ public class ActivitiesEventsService {
             current.setTrashedAtIso(null);
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+        markEventAttachmentsAvailable(updated);
     }
 
     public void takeOver(EventActionRequestDto request) {
@@ -708,6 +719,7 @@ public class ActivitiesEventsService {
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
             return toEventRecordDto(preferred, viewer);
         }
+        boolean approvalRequested = isApprovalRequested(request);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
         boolean accepted = !waitingList && isConfirmedBooking(request, preferred);
 
@@ -720,11 +732,13 @@ public class ActivitiesEventsService {
             if (slotRecord != null) {
                 waitingList = waitingList || isRecordFull(slotRecord);
                 accepted = !waitingList && isConfirmedBooking(request, preferred);
-                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
-                activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList);
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
+                ActivitiesMembersService.OwnerMembersSnapshot slotSnapshot =
+                        activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
+                boolean joinedSlot = isAcceptedMember(slotSnapshot, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
-                if (accepted) {
+                if (joinedSlot) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                     postMemberJoinedMessage(sourceId, viewer.user());
                 }
@@ -736,14 +750,23 @@ public class ActivitiesEventsService {
             }
         }
 
-        activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList);
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
+        boolean joined = isAcceptedMember(snapshot, viewer.userId());
         affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
-        if (accepted) {
+        if (joined) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
             postMemberJoinedMessage(sourceId, viewer.user());
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
+    }
+
+    private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        return StringUtils.hasText(normalizedUserId)
+                && snapshot != null
+                && snapshot.acceptedMemberUserIds().contains(normalizedUserId);
     }
 
     private StageActionTarget resolveStageActionTarget(EventStageActionRequestDto request) {
@@ -1246,13 +1269,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isConfirmedBooking(EventActionRequestDto request, ActivityEvent preferred) {
-        if (isWaitlistRequested(request)) {
-            return false;
-        }
-        String paymentSessionId = request == null ? null : normalizeId(request.paymentSessionId());
-        if (StringUtils.hasText(paymentSessionId)) {
-            // A checkout session means the booking flow started, but we keep the
-            // membership pending until the server confirms the join separately.
+        if (isWaitlistRequested(request) || isApprovalRequested(request)) {
             return false;
         }
         if (!Boolean.TRUE.equals(preferred == null ? null : preferred.getTicketing())) {
@@ -1263,6 +1280,10 @@ public class ActivitiesEventsService {
 
     private boolean isWaitlistRequested(EventActionRequestDto request) {
         return "waitlist".equals(safeText(request == null ? null : request.pendingReason()));
+    }
+
+    private boolean isApprovalRequested(EventActionRequestDto request) {
+        return "approval".equals(safeText(request == null ? null : request.pendingReason()));
     }
 
     private boolean isRecordFull(ActivityEvent record) {
@@ -1361,12 +1382,15 @@ public class ActivitiesEventsService {
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, targetType, syncedMembersSnapshot);
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         documentsToSave.add(baseRecord);
-        if (TYPE_HOSTING.equals(targetType)) {
+        if (TYPE_HOSTING.equals(targetType) && !Boolean.FALSE.equals(baseRecord.getPublished())) {
             ActivityEvent eventsOverlay = cloneDocument(baseRecord);
             eventsOverlay.setType(TYPE_EVENTS);
-            eventsOverlay.setStatus(STATUS_ACTIVE);
+            eventsOverlay.setStatus(Boolean.FALSE.equals(baseRecord.getPublished()) || STATUS_DRAFT.equals(safeText(baseRecord.getStatus()))
+                    ? STATUS_DRAFT
+                    : STATUS_ACTIVE);
             eventsOverlay.setIsHosting(false);
             eventsOverlay.setIsInvitation(false);
+            eventsOverlay.setPublished(!STATUS_DRAFT.equals(safeText(eventsOverlay.getStatus())));
             eventsOverlay.setId(resolveExistingId(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
             eventsOverlay.setSyncKey(resolveExistingSyncKey(baseRecord.getOwnerUserId(), TYPE_EVENTS, sourceId, null));
             eventsOverlay.setAdmins(resolveAdminUserIds(sourceId, baseRecord.getCreatorUserId()));
@@ -1442,11 +1466,7 @@ public class ActivitiesEventsService {
                 .filter(record -> TYPE_INVITATIONS.equals(resolveViewerScopedEventType(record, viewer.userId())))
                 .filter(record -> !isTrashScopeStatus(record))
                 .toList();
-        List<ActivityEvent> myEventItems = userItems.stream()
-                .filter(record -> TYPE_HOSTING.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .filter(record -> isViewerAdmin(record, viewer.userId()))
-                .filter(record -> !isTrashScopeStatus(record))
-                .toList();
+        List<ActivityEvent> myEventItems = queryMyEventScopeRecords(viewer, userItems);
         List<ActivityEvent> draftItems = myEventItems.stream()
                 .filter(record -> Boolean.FALSE.equals(record.getPublished()))
                 .toList();
@@ -1611,7 +1631,7 @@ public class ActivitiesEventsService {
                 continue;
             }
             if (TYPE_EVENTS.equals(normalizeType(record.getType())) && isViewerAdmin(record, viewer.userId())) {
-                myEventRecordsBySourceId.put(normalizeId(record.getSourceId()), buildHostingProjection(viewer.userId(), record));
+                myEventRecordsBySourceId.putIfAbsent(normalizeId(record.getSourceId()), buildHostingProjection(viewer.userId(), record));
             }
         }
         return new ArrayList<>(myEventRecordsBySourceId.values()).stream()
@@ -1621,9 +1641,14 @@ public class ActivitiesEventsService {
 
     private ActivityEvent buildHostingProjection(String viewerUserId, ActivityEvent source) {
         ActivityEvent projection = cloneDocument(source);
+        String sourceStatus = safeText(source.getStatus());
+        if (!StringUtils.hasText(sourceStatus) || STATUS_ACTIVE.equals(sourceStatus) || STATUS_HOSTING.equals(sourceStatus)) {
+            sourceStatus = Boolean.FALSE.equals(source.getPublished()) ? STATUS_DRAFT : STATUS_HOSTING;
+        }
         projection.setOwnerUserId(viewerUserId);
         projection.setType(TYPE_HOSTING);
-        projection.setStatus(STATUS_HOSTING);
+        projection.setStatus(sourceStatus);
+        projection.setPublished(STATUS_DRAFT.equals(sourceStatus) ? Boolean.FALSE : source.getPublished());
         projection.setIsHosting(true);
         projection.setIsInvitation(false);
         projection.setIsAdmin(true);
@@ -1700,6 +1725,9 @@ public class ActivitiesEventsService {
         ActivityEvent projection = cloneDocument(record);
         projection.setOwnerUserId(ownerUserId);
         projection.setType(TYPE_EVENTS);
+        if (STATUS_HOSTING.equals(safeText(projection.getStatus()))) {
+            projection.setStatus(STATUS_ACTIVE);
+        }
         projection.setIsAdmin(false);
         projection.setIsInvitation(false);
         projection.setIsHosting(false);
@@ -2188,6 +2216,53 @@ public class ActivitiesEventsService {
         return overlay;
     }
 
+    private List<ActivityEvent> ensurePublishedHostingEventOverlays(List<ActivityEvent> documents, String actorUserId) {
+        if (documents == null || documents.isEmpty()) {
+            return List.of();
+        }
+
+        List<ActivityEvent> overlays = new ArrayList<>();
+        String nowIso = Instant.now().toString();
+        for (ActivityEvent document : documents) {
+            if (document == null
+                    || !TYPE_HOSTING.equals(normalizeType(document.getType()))
+                    || !Boolean.TRUE.equals(document.getPublished())) {
+                continue;
+            }
+            String sourceId = normalizeId(document.getSourceId());
+            String ownerUserId = normalizeId(document.getOwnerUserId());
+            if (!StringUtils.hasText(ownerUserId)) {
+                ownerUserId = normalizeId(document.getCreatorUserId());
+            }
+            if (!StringUtils.hasText(sourceId) || !StringUtils.hasText(ownerUserId)) {
+                continue;
+            }
+
+            ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, TYPE_EVENTS, sourceId)
+                    .orElse(null);
+            ActivityEvent overlay = cloneDocument(document);
+            overlay.setId(existing != null && StringUtils.hasText(existing.getId()) ? existing.getId() : resolveExistingId(ownerUserId, TYPE_EVENTS, sourceId, null));
+            overlay.setSyncKey(existing != null && StringUtils.hasText(existing.getSyncKey()) ? existing.getSyncKey() : resolveExistingSyncKey(ownerUserId, TYPE_EVENTS, sourceId, null));
+            overlay.setOwnerUserId(ownerUserId);
+            overlay.setType(TYPE_EVENTS);
+            overlay.setStatus(STATUS_ACTIVE);
+            overlay.setIsHosting(false);
+            overlay.setIsInvitation(false);
+            overlay.setPublished(true);
+            overlay.setAdmins(resolveAdminUserIds(sourceId, overlay.getCreatorUserId()));
+            overlay.setUpdatedDate(nowIso);
+            overlay.setUpdatedUser(firstNonBlank(actorUserId, ownerUserId));
+            overlay.normalizeLifecycleState();
+            overlays.add(overlay);
+        }
+
+        if (overlays.isEmpty()) {
+            return documents;
+        }
+        List<ActivityEvent> savedOverlays = activityEventsRepository.saveAll(overlays);
+        return concat(documents, savedOverlays);
+    }
+
     private ActivityEvent buildSyncedRecord(
             ActivitiesEventSyncPayloadDto request,
             Users creator,
@@ -2203,19 +2278,23 @@ public class ActivitiesEventsService {
         ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, targetType, sourceId)
                 .orElse(null);
         ActivityEvent document = existing == null ? new ActivityEvent() : cloneDocument(existing);
+        ActivityEvent publishedExisting = isPublishedEventManageUpdate(existing) ? existing : null;
+        boolean publishedManageMode = publishedExisting != null;
         String nowIso = Instant.now().toString();
-        String parentEventId = safeText(request.parentEventId());
+        String parentEventId = publishedExisting != null ? safeText(publishedExisting.getParentEventId()) : safeText(request.parentEventId());
         if (!StringUtils.hasText(parentEventId) && existing != null) {
             parentEventId = safeText(existing.getParentEventId());
         }
-        String slotTemplateId = safeText(request.slotTemplateId());
+        String slotTemplateId = publishedExisting != null ? safeText(publishedExisting.getSlotTemplateId()) : safeText(request.slotTemplateId());
         if (!StringUtils.hasText(slotTemplateId) && existing != null) {
             slotTemplateId = safeText(existing.getSlotTemplateId());
         }
-        boolean generated = request.generated() != null
+        boolean generated = publishedExisting != null
+                ? Boolean.TRUE.equals(publishedExisting.getGenerated())
+                : request.generated() != null
                 ? Boolean.TRUE.equals(request.generated())
                 : existing != null && Boolean.TRUE.equals(existing.getGenerated());
-        String requestedEventType = safeText(request.eventType());
+        String requestedEventType = publishedExisting != null ? safeText(publishedExisting.getEventType()) : safeText(request.eventType());
         if (!StringUtils.hasText(requestedEventType) && existing != null) {
             requestedEventType = safeText(existing.getEventType());
         }
@@ -2248,19 +2327,28 @@ public class ActivitiesEventsService {
         document.setIsInvitation(false);
         document.setIsHosting(TYPE_HOSTING.equals(targetType));
         document.setIsTrashed(existing != null && Boolean.TRUE.equals(existing.getIsTrashed()));
-        document.setPublished(TYPE_HOSTING.equals(targetType) ? !Boolean.FALSE.equals(request.published()) : Boolean.TRUE);
+        boolean nextPublished = publishedManageMode
+                || !TYPE_HOSTING.equals(targetType)
+                || !Boolean.FALSE.equals(request.published());
+        document.setPublished(nextPublished);
         document.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
         document.setCreatorUserId(ownerUserId);
         document.setCreatorName(resolveCreatorName(request.creatorName(), creator));
         document.setCreatorInitials(resolveCreatorInitials(request.creatorInitials(), creator, request.creatorName()));
         document.setCreatorGender(resolveCreatorGender(request.creatorGender(), creator));
         document.setCreatorCity(resolveCreatorCity(request.creatorCity(), creator));
-        document.setVisibility(resolveVisibility(request.visibility(), existing, targetType));
-        document.setBlindMode(resolveBlindMode(request.blindMode(), existing));
-        String normalizedFrequency = normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
+        document.setVisibility(publishedExisting != null ? safeText(publishedExisting.getVisibility()) : resolveVisibility(request.visibility(), existing, targetType));
+        document.setBlindMode(publishedExisting != null ? safeText(publishedExisting.getBlindMode()) : resolveBlindMode(request.blindMode(), existing));
+        String normalizedFrequency = publishedManageMode
+                ? normalizeEventFrequency(existing == null ? null : existing.getFrequency())
+                : normalizeEventFrequency(StringUtils.hasText(request.frequency()) ? request.frequency().trim() : safeText(existing == null ? null : existing.getFrequency()));
         document.setFrequency(normalizedFrequency);
-        document.setStartAtIso(normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
-        document.setEndAtIso(normalizeDateTime(request.endAt(), document.getStartAtIso()));
+        document.setStartAtIso(publishedManageMode
+                ? normalizeDateTime(existing == null ? null : existing.getStartAtIso(), nowIso)
+                : normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
+        document.setEndAtIso(publishedManageMode
+                ? normalizeDateTime(existing == null ? null : existing.getEndAtIso(), document.getStartAtIso())
+                : normalizeDateTime(request.endAt(), document.getStartAtIso()));
         document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
         document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
@@ -2271,15 +2359,31 @@ public class ActivitiesEventsService {
                         ? cloneLocation(existing.getLocationCoordinates())
                         : toLocationCoordinatesDto(creator == null ? null : creator.getLocationCoordinates())));
         document.setLocationGeo(toGeoPoint(document.getLocationCoordinates()));
-        document.setCapacityMin(nullableCount(request.capacityMin()));
-        document.setCapacityMax(nullableCount(request.capacityMax()));
-        document.setCapacityTotal(resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
+        Integer requestedCapacityMax = nullableCount(request.capacityMax());
+        Integer effectiveCapacityMax = publishedManageMode
+                ? resolvePublishedCapacityMax(existing, requestedCapacityMax, acceptedMembers)
+                : requestedCapacityMax;
+        document.setCapacityMin(publishedManageMode
+                ? nullableCount(existing == null ? null : existing.getCapacityMin())
+                : nullableCount(request.capacityMin()));
+        document.setCapacityMax(effectiveCapacityMax);
+        document.setCapacityTotal(publishedManageMode
+                ? resolvePublishedCapacityTotal(existing, effectiveCapacityMax, acceptedMembers, syncedMembersSnapshot)
+                : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
-        document.setTicketing(request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
-        document.setPricing(request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
-        boolean slotsEnabled = !slotEvent && !"One-time".equals(normalizedFrequency);
+        document.setTicketing(publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getTicketing())
+                : request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
+        document.setPricing(publishedManageMode
+                ? existing == null ? null : clonePricing(existing.getPricing())
+                : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
+        boolean slotsEnabled = publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
+                : !slotEvent && !"One-time".equals(normalizedFrequency);
         document.setSlotsEnabled(slotsEnabled);
-        document.setSlotTemplates(slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
+        document.setSlotTemplates(publishedManageMode
+                ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
+                : slotEvent || !slotsEnabled ? List.of() : cloneSlotTemplates(request.slotTemplates()));
         document.setParentEventId(slotEvent ? parentEventId : null);
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
@@ -2287,8 +2391,12 @@ public class ActivitiesEventsService {
         document.setAcceptedMembers(acceptedMembers);
         document.setPendingMembers(pendingMembers);
         document.setTopics(normalizeStrings(request.topics()));
-        document.setSubEvents(cloneSubEvents(request.subEvents()));
-        document.setSubEventsDisplayMode(safeText(request.subEventsDisplayMode()));
+        document.setSubEvents(publishedManageMode
+                ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
+                : cloneSubEvents(request.subEvents()));
+        document.setSubEventsDisplayMode(publishedManageMode
+                ? safeText(existing == null ? null : existing.getSubEventsDisplayMode())
+                : safeText(request.subEventsDisplayMode()));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
@@ -2362,6 +2470,32 @@ public class ActivitiesEventsService {
             return Math.max(acceptedMembers, syncedMembersSnapshot.capacityTotal());
         }
         return Math.max(acceptedMembers, existing == null ? 0 : normalizeCount(existing.getCapacityTotal()));
+    }
+
+    private boolean isPublishedEventManageUpdate(ActivityEvent existing) {
+        return existing != null
+                && !Boolean.FALSE.equals(existing.getPublished())
+                && !STATUS_DRAFT.equals(safeText(existing.getStatus()));
+    }
+
+    private Integer resolvePublishedCapacityMax(ActivityEvent existing, Integer requestedCapacityMax, int acceptedMembers) {
+        int existingMax = normalizeCount(existing == null ? null : existing.getCapacityMax());
+        int requestedMax = requestedCapacityMax == null ? 0 : Math.max(0, requestedCapacityMax);
+        int nextMax = Math.max(Math.max(existingMax, requestedMax), Math.max(0, acceptedMembers));
+        return nextMax > 0 ? nextMax : null;
+    }
+
+    private int resolvePublishedCapacityTotal(
+            ActivityEvent existing,
+            Integer capacityMax,
+            int acceptedMembers,
+            ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
+        int snapshotCapacity = syncedMembersSnapshot != null && syncedMembersSnapshot.capacityTotal() != null
+                ? Math.max(0, syncedMembersSnapshot.capacityTotal())
+                : 0;
+        return Math.max(
+                Math.max(normalizeCount(existing == null ? null : existing.getCapacityTotal()), snapshotCapacity),
+                Math.max(Math.max(capacityMax == null ? 0 : capacityMax, acceptedMembers), 0));
     }
 
     private String resolveExistingId(String ownerUserId, String type, String sourceId, ActivityEvent existing) {

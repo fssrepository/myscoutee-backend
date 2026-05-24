@@ -2,7 +2,9 @@ package com.raxim.myscoutee.profile.data.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -45,6 +47,8 @@ public class ActivityChat {
     private String supportCaseAssigneeName;
     private String supportCaseAssigneeInitials;
     private String supportCaseUpdatedAtIso;
+
+    @Transient
     private List<ChatMessageRecord> messages = new ArrayList<>();
 
     public String getMongoId() {
@@ -221,6 +225,19 @@ public class ActivityChat {
 
     public void setMessages(List<ChatMessageRecord> messages) {
         this.messages = messages == null ? new ArrayList<>() : messages;
+    }
+
+    public static String messageAttachmentKey(String type, String entityId) {
+        String normalizedType = normalizeText(type).toLowerCase(Locale.ROOT);
+        String normalizedEntityId = normalizeText(entityId);
+        if (normalizedType.isBlank() || normalizedEntityId.isBlank()) {
+            return "";
+        }
+        return normalizedType + ":" + normalizedEntityId;
+    }
+
+    private static String normalizeText(String value) {
+        return value == null ? "" : value.trim();
     }
 
     public static class ChatMessageRecord {

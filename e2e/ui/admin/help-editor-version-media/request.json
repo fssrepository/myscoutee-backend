@@ -1,0 +1,21 @@
+{
+  "name": "admin help editor creates revision and adds/removes media",
+  "group": "admin",
+  "order": 82,
+  "route": "/admin/workspace",
+  "localStorage": {
+    "app-session": "{{adminAppSession}}",
+    "demo-active-user": "{{adminUserId}}",
+    "myscoutee-admin-session": "{{adminSession}}"
+  },
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "tags": [
+    "help-editor",
+    "revision",
+    "media",
+    "version"
+  ],
+  "maxMs": 120000
+}

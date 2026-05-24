@@ -33,13 +33,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.google.firebase.messaging.BatchResponse;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.SendResponse;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import com.google.firebase.messaging.WebpushNotification;
@@ -52,6 +49,8 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.AdminTelemetryService;
 import com.raxim.myscoutee.profile.service.PlatformParametersService;
 import com.raxim.myscoutee.profile.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway.FirebaseBatchSendResult;
+import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway.FirebaseTokenSendResult;
 
 @Service
 public class NotificationOutboxWorkerService {
@@ -67,6 +66,7 @@ public class NotificationOutboxWorkerService {
     private final PlatformParametersService platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
     private final AdminTelemetryService adminTelemetryService;
+    private final FirebaseMessagingGateway firebaseMessagingGateway;
     private final int batchSize;
     private final int firebaseChunkSize;
     private final int maxRetries;
@@ -85,6 +85,7 @@ public class NotificationOutboxWorkerService {
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
             PlatformParametersService platformParametersService,
             AdminTelemetryService adminTelemetryService,
+            FirebaseMessagingGateway firebaseMessagingGateway,
             @Value("${notifications.outbox.batch-size:50}") int batchSize,
             @Value("${notifications.outbox.firebase-chunk-size:500}") int firebaseChunkSize,
             @Value("${notifications.outbox.max-retries:5}") int maxRetries,
@@ -101,6 +102,7 @@ public class NotificationOutboxWorkerService {
         this.platformParametersService = platformParametersService;
         this.redisStreamRetentionService = redisStreamRetentionService;
         this.adminTelemetryService = adminTelemetryService;
+        this.firebaseMessagingGateway = firebaseMessagingGateway;
         this.batchSize = Math.max(1, Math.min(500, batchSize));
         this.firebaseChunkSize = Math.max(1, Math.min(500, firebaseChunkSize));
         this.maxRetries = Math.max(1, maxRetries);
@@ -112,6 +114,9 @@ public class NotificationOutboxWorkerService {
 
     @Scheduled(fixedDelayString = "${notifications.outbox.worker-check-delay-ms:5000}")
     public void processDueNotifications() {
+        if (!configProperties.isFirebaseEnabled()) {
+            return;
+        }
         if (!claimScheduledPoll(Instant.now())) {
             return;
         }
@@ -254,7 +259,7 @@ public class NotificationOutboxWorkerService {
 
     private DeliveryResult deliver(NotificationOutboxItem item) throws FirebaseMessagingException {
         if (DELIVERY_STRATEGY_TOPIC.equals(safeText(item.getDeliveryStrategy())) && StringUtils.hasText(safeText(item.getTopicName()))) {
-            FirebaseMessaging.getInstance().send(buildTopicMessage(item, safeText(item.getTopicName())));
+            firebaseMessagingGateway.send(buildTopicMessage(item, safeText(item.getTopicName())));
             return new DeliveryResult(1, 0, Set.of());
         }
         List<Users> users = usersRepository.findByUserIdIn(compactIds(item.getRecipientUserIds()));
@@ -279,9 +284,11 @@ public class NotificationOutboxWorkerService {
             List<Message> messages = chunk.stream()
                     .map(registration -> buildTokenMessage(item, registration.token()))
                     .toList();
-            BatchResponse response = FirebaseMessaging.getInstance().sendAll(messages);
-            success += response.getSuccessCount();
-            failure += response.getFailureCount();
+            FirebaseBatchSendResult response = firebaseMessagingGateway.sendAll(
+                    messages,
+                    chunk.stream().map(TokenRegistration::token).toList());
+            success += response.successCount();
+            failure += response.failureCount();
             collectInvalidTokens(chunk, response, invalidTokens);
         }
         return new DeliveryResult(success, failure, invalidTokens);
@@ -295,9 +302,9 @@ public class NotificationOutboxWorkerService {
         for (int index = 0; index < registrations.size(); index += firebaseChunkSize) {
             List<TokenRegistration> chunk = registrations.subList(index, Math.min(index + firebaseChunkSize, registrations.size()));
             List<String> tokens = chunk.stream().map(TokenRegistration::token).toList();
-            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(buildMessage(item, tokens));
-            success += response.getSuccessCount();
-            failure += response.getFailureCount();
+            FirebaseBatchSendResult response = firebaseMessagingGateway.sendMulticast(buildMessage(item, tokens), tokens);
+            success += response.successCount();
+            failure += response.failureCount();
             collectInvalidTokens(chunk, response, invalidTokens);
         }
         return new DeliveryResult(success, failure, invalidTokens);
@@ -305,12 +312,12 @@ public class NotificationOutboxWorkerService {
 
     private void collectInvalidTokens(
             List<TokenRegistration> chunk,
-            BatchResponse response,
+            FirebaseBatchSendResult response,
             LinkedHashSet<String> invalidTokens) {
-        List<SendResponse> responses = response == null ? List.of() : response.getResponses();
+        List<FirebaseTokenSendResult> responses = response == null ? List.of() : response.responses();
         for (int responseIndex = 0; responseIndex < responses.size() && responseIndex < chunk.size(); responseIndex += 1) {
-            SendResponse sendResponse = responses.get(responseIndex);
-            if (sendResponse != null && !sendResponse.isSuccessful() && isInvalidToken(sendResponse.getException())) {
+            FirebaseTokenSendResult sendResponse = responses.get(responseIndex);
+            if (sendResponse != null && !sendResponse.successful() && isInvalidToken(sendResponse.errorCode())) {
                 invalidTokens.add(chunk.get(responseIndex).token());
             }
         }
@@ -428,11 +435,10 @@ public class NotificationOutboxWorkerService {
         }
     }
 
-    private boolean isInvalidToken(FirebaseMessagingException exception) {
-        if (exception == null) {
+    private boolean isInvalidToken(MessagingErrorCode code) {
+        if (code == null) {
             return false;
         }
-        MessagingErrorCode code = exception.getMessagingErrorCode();
         return MessagingErrorCode.UNREGISTERED.equals(code) || MessagingErrorCode.INVALID_ARGUMENT.equals(code);
     }
 

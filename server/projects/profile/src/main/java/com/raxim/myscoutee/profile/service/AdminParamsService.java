@@ -43,16 +43,19 @@ public class AdminParamsService {
     private final ObjectMapper objectMapper;
     private final NotificationOutboxService notificationOutboxService;
     private final AdminAudienceService adminAudienceService;
+    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
 
     public AdminParamsService(
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
             NotificationOutboxService notificationOutboxService,
-            AdminAudienceService adminAudienceService) {
+            AdminAudienceService adminAudienceService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.objectMapper = objectMapper;
         this.notificationOutboxService = notificationOutboxService;
         this.adminAudienceService = adminAudienceService;
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 
     public AdminParamsStateDto state(String adminUserId) {
@@ -424,6 +427,7 @@ public class AdminParamsService {
         next.setChangedSection(sectionKey);
         next.setChangeSummary(summary);
         AffinityConfig saved = affinityConfigsRepository.save(next);
+        affinityRecomputeTaskService.enqueueConfigChanged(saved == null ? null : saved.getKey(), actorUserId);
         notifyAdminParameterChange(saved, sectionKey, actorUserId, summary);
     }
 

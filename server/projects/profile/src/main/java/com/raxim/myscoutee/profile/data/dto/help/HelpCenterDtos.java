@@ -13,6 +13,8 @@ public final class HelpCenterDtos {
             String title,
             String blurb,
             String contentHtml,
+            List<String> imageUrls,
+            String panelSpan,
             Boolean optional) {}
 
     public record HelpCenterRevisionDto(

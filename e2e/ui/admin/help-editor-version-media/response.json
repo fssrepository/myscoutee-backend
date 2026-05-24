@@ -1,0 +1,18 @@
+{
+  "urlPath": "/admin/workspace",
+  "selectors": [
+    ".popup-panel-help-editor",
+    ".help-editor-revision-card"
+  ],
+  "absentSelectors": [
+    ".confirmation-dialog",
+    ".popup-loading-overlay"
+  ],
+  "network": [
+    "/api/admin/explanation/revisions/"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 120000
+}

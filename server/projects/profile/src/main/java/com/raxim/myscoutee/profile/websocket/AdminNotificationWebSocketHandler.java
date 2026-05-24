@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.websocket;
 
 import org.springframework.stereotype.Component;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.StringUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
@@ -52,7 +53,9 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
     private boolean hasAdminAccess(WebSocketSession session) {
         FirebasePrincipal principal = resolvePrincipal(session);
         if (principal != null) {
-            return true;
+            return principal.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .anyMatch("A"::equals);
         }
         if (configProperties.isFirebaseEnabled()) {
             return false;

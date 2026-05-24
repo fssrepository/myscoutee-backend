@@ -1,0 +1,9 @@
+{
+  "name": "nginx serves the application shell",
+  "group": "health",
+  "order": 10,
+  "method": "GET",
+  "path": "/",
+  "expectedStatus": 200,
+  "maxMs": 1500
+}

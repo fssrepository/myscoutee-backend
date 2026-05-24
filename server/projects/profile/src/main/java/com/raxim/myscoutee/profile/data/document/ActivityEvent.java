@@ -24,6 +24,9 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
         @CompoundIndex(name = "event_owner_type_status_start", def = "{'ownerUserId': 1, 'type': 1, 'status': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_owner_source", def = "{'ownerUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1, 'type': 1}"),
+        @CompoundIndex(name = "event_creator_start", def = "{'creatorUserId': 1, 'startAtIso': 1}"),
+        @CompoundIndex(name = "event_admins_lookup", def = "{'admins': 1, 'startAtIso': 1}"),
+        @CompoundIndex(name = "event_auto_inviter_start", def = "{'autoInviter': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
         @CompoundIndex(name = "event_explore_candidates_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_explore_feed_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'published': 1, 'startAtIso': 1, 'sourceId': 1}")

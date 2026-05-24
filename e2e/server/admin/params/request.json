@@ -1,0 +1,15 @@
+{
+  "name": "admin params",
+  "group": "admin",
+  "order": 1030,
+  "method": "GET",
+  "path": "/api/admin/params",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

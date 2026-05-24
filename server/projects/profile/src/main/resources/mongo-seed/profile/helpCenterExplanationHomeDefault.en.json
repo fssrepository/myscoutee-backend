@@ -18,6 +18,13 @@
       "contentHtml": "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>"
     },
     {
+      "id": "affinity-network",
+      "icon": "hub",
+      "title": "Affinity and group chats",
+      "blurb": "Your answer helps find a small group where conversation is easier to start.",
+      "contentHtml": "<p>When you choose 1-10, you are saying how much you would like to talk with this person. That number is not used alone: it matters more when interest is mutual, recent, and stronger than the usual background noise.</p><p>If several people seem likely to enjoy meeting each other, MyScoutee can place them into a random group chat of 6-12 people. It is still a fresh group, but it is nudged toward people who already have enough shared interest to make the first message feel less awkward.</p>"
+    },
+    {
       "id": "profile",
       "icon": "visibility",
       "title": "Profile and photos",

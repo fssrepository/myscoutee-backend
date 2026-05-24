@@ -24,8 +24,8 @@ public class MongoRoutingConfig {
             @Value("${SPRING_MONGODB_URI:}") String springMongoUri,
             @Value("${spring.mongodb.host:${MONGODB_HOST:localhost}}") String host,
             @Value("${spring.mongodb.port:${MONGODB_PORT:27017}}") Integer port,
-            @Value("${spring.mongodb.username:${MONGODB_USERNAME:guest}}") String username,
-            @Value("${spring.mongodb.password:${MONGODB_PASSWORD:guest}}") String password,
+            @Value("${spring.mongodb.username:${MONGODB_USERNAME:${MONGO_APP_USERNAME:guest}}}") String username,
+            @Value("${spring.mongodb.password:${MONGODB_PASSWORD:${MONGO_APP_PASSWORD:guest}}}") String password,
             @Value("${spring.mongodb.database:${MONGODB_DATABASE:demo_db}}") String database) {
         String realMongoUri = StringUtils.hasText(springMongoUri)
                 ? springMongoUri.trim()
@@ -38,8 +38,8 @@ public class MongoRoutingConfig {
             @Value("${MONGODB_DEMO_URI:}") String demoMongoUri,
             @Value("${spring.mongodb.host:${MONGODB_HOST:localhost}}") String host,
             @Value("${spring.mongodb.port:${MONGODB_PORT:27017}}") Integer port,
-            @Value("${spring.mongodb.username:${MONGODB_USERNAME:guest}}") String username,
-            @Value("${spring.mongodb.password:${MONGODB_PASSWORD:guest}}") String password,
+            @Value("${spring.mongodb.username:${MONGODB_USERNAME:${MONGO_APP_USERNAME:guest}}}") String username,
+            @Value("${spring.mongodb.password:${MONGODB_PASSWORD:${MONGO_APP_PASSWORD:guest}}}") String password,
             @Value("${MONGODB_DEMO_DATABASE:${spring.mongodb.database:${MONGODB_DATABASE:demo_db}}}") String demoDatabase) {
         String resolvedDemoMongoUri = StringUtils.hasText(demoMongoUri)
                 ? demoMongoUri.trim()

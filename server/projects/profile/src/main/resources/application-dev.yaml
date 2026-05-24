@@ -17,6 +17,7 @@ config:
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:./secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}
   dev-user: ${DEV_USER:dev@myscoutee.local}
+  websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://localhost,http://localhost:4200,https://localhost,https://localhost:4200}
 
 assets:
   source-refresh:
@@ -32,8 +33,8 @@ media:
   enabled: ${MEDIA_ENABLED:true}
   endpoint: ${MEDIA_OBJECT_STORE_ENDPOINT:http://localhost:9000}
   region: ${MEDIA_OBJECT_STORE_REGION:eu-central-1}
-  access-key: ${MEDIA_OBJECT_STORE_ACCESS_KEY:minioadmin}
-  secret-key: ${MEDIA_OBJECT_STORE_SECRET_KEY:minioadmin}
+  access-key: ${MEDIA_OBJECT_STORE_ACCESS_KEY:${MINIO_ROOT_USER:minioadmin}}
+  secret-key: ${MEDIA_OBJECT_STORE_SECRET_KEY:${MINIO_ROOT_PASSWORD:minioadmin}}
   bucket: ${MEDIA_BUCKET:myscoutee-media}
   path-style-access: ${MEDIA_OBJECT_STORE_PATH_STYLE:true}
 
@@ -78,8 +79,8 @@ spring:
   mongodb:
     host: ${MONGODB_HOST:localhost}
     port: ${MONGODB_PORT:27017}
-    username: ${MONGODB_USERNAME:guest}
-    password: ${MONGODB_PASSWORD:guest}
+    username: ${MONGODB_USERNAME:${MONGO_APP_USERNAME:guest}}
+    password: ${MONGODB_PASSWORD:${MONGO_APP_PASSWORD:guest}}
     database: ${MONGODB_DATABASE:demo_db}
   data:
     redis:

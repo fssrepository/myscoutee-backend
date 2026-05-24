@@ -1,0 +1,9 @@
+{
+  "name": "Spring health through nginx api routing",
+  "group": "health",
+  "order": 20,
+  "method": "GET",
+  "path": "/api/health",
+  "expectedStatus": 200,
+  "maxMs": 2500
+}

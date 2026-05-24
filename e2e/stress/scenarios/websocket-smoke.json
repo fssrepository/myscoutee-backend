@@ -1,0 +1,25 @@
+{
+  "name": "WebSocket connection smoke",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 3,
+  "rampUpMs": 1000,
+  "iterations": 3,
+  "thinkTimeMs": 100,
+  "thinkTimeJitterMs": 50,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 5000,
+    "maxMs": 10000
+  },
+  "steps": [
+    {
+      "name": "chat websocket",
+      "collectionCase": "websocket/chat-connect"
+    },
+    {
+      "name": "admin notifications websocket",
+      "collectionCase": "websocket/admin-notifications-connect"
+    }
+  ]
+}

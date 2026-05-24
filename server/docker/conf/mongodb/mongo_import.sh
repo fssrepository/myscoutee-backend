@@ -6,8 +6,8 @@ seed_dir_name="${MONGO_SEED_DIRECTORY:-${db_name}}"
 seed_root="/docker-entrypoint-initdb.d"
 mongo_host="${MONGO_IMPORT_HOST:-127.0.0.1}"
 mongo_port="${MONGO_IMPORT_PORT:-27017}"
-mongo_username="${MONGO_IMPORT_USERNAME:-guest}"
-mongo_password="${MONGO_IMPORT_PASSWORD:-guest}"
+mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
+mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
 allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages}"
@@ -90,6 +90,11 @@ collection_is_seed_managed() {
 clear_collection() {
   local target_db="$1"
   local collection_name="$2"
+  local clear_command="db.getCollection('${collection_name}').deleteMany({})"
+
+  if [ "${collection_name}" = "helpCenterRevisions" ]; then
+    clear_command="db.getCollection('${collection_name}').drop()"
+  fi
 
   mongosh \
     --host "${mongo_host}" \
@@ -99,7 +104,13 @@ clear_collection() {
     --authenticationDatabase "${target_db}" \
     --quiet \
     "${target_db}" \
-    --eval "db.getCollection('${collection_name}').deleteMany({})" >/dev/null
+    --eval "${clear_command}" >/dev/null
+}
+
+collection_should_replace_on_import() {
+  local collection_name="$1"
+
+  [ "${replace_collections}" = "true" ] || [ "${collection_name}" = "helpCenterRevisions" ]
 }
 
 ensure_collection_indexes() {
@@ -120,6 +131,27 @@ ensure_collection_indexes() {
 db.getCollection('chats').createIndex({ ownerUserId: 1, id: 1 }, { name: 'chat_owner_public_id', unique: true });
 db.getCollection('chats').createIndex({ id: 1 }, { name: 'chat_public_id_lookup' });
 db.getCollection('chats').createIndex({ ownerUserId: 1, dateIso: -1 }, { name: 'chat_owner_date' });
+db.getCollection('chats').createIndex({ memberIds: 1, dateIso: -1 }, { name: 'chat_member_date' });
+db.getCollection('chats').createIndex({ channelType: 1, dateIso: -1 }, { name: 'chat_channel_date' });
+" >/dev/null
+      ;;
+    chatMessages)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('chatMessages').createIndex({ chatId: 1, id: 1 }, { name: 'chat_message_lookup', unique: true });
+db.getCollection('chatMessages').createIndex({ chatId: 1, sentAtIso: -1, id: -1 }, { name: 'chat_message_page_desc' });
+db.getCollection('chatMessages').createIndex({ messageSenderUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_sender_date' });
+db.getCollection('chatMessages').createIndex({ messageReadByUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_reader_date' });
+db.getCollection('chatMessages').createIndex({ messageReactionUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_reaction_date' });
+db.getCollection('chatMessages').createIndex({ messageAttachmentKeys: 1, sentAtIso: -1 }, { name: 'chat_message_attachment_date' });
+db.getCollection('chatMessages').createIndex({ pollVoterUserIds: 1, sentAtIso: -1 }, { name: 'chat_poll_voter_date' });
 " >/dev/null
       ;;
     events)
@@ -199,6 +231,24 @@ db.getCollection('userAffinityEdges').createIndex({ leftUserId: 1, edgeWeight: -
 db.getCollection('userAffinityEdges').createIndex({ rightUserId: 1, edgeWeight: -1 }, { name: 'user_affinity_edge_right_weight' });
 " >/dev/null
       ;;
+    helpCenterRevisions)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('helpCenterRevisions').createIndex({ documentType: 1, lang: 1, contextKey: 1, version: -1 }, { name: 'help_revision_document_lang_context_version', unique: true });
+db.getCollection('helpCenterRevisions').createIndex({ documentType: 1, lang: 1, contextKey: 1, active: 1, version: -1 }, { name: 'help_revision_document_lang_context_active' });
+db.getCollection('helpCenterRevisions').createIndex({ documentType: 1 }, { name: 'help_revision_document_type' });
+db.getCollection('helpCenterRevisions').createIndex({ lang: 1 }, { name: 'help_revision_lang' });
+db.getCollection('helpCenterRevisions').createIndex({ contextKey: 1 }, { name: 'help_revision_context_key' });
+db.getCollection('helpCenterRevisions').createIndex({ active: 1 }, { name: 'help_revision_active' });
+" >/dev/null
+      ;;
   esac
 }
 
@@ -216,7 +266,7 @@ import_json_file() {
   # All seed files are JSON arrays of documents. If the file contains no object
   # start at all, it is just an empty array like "[]", which mongoimport rejects.
   if ! json_file_has_documents "${jsonfile}"; then
-    if [ "${replace_collections}" = "true" ] && database_has_wildcard_seed_rule "${target_db}"; then
+    if collection_should_replace_on_import "${collection_name}" && database_has_wildcard_seed_rule "${target_db}"; then
       clear_collection "${target_db}" "${collection_name}"
       ensure_collection_indexes "${target_db}" "${collection_name}"
       echo "Cleared ${target_db}.${collection_name} because the seed file ${jsonfile} is empty."
@@ -227,7 +277,7 @@ import_json_file() {
     return 0
   fi
 
-  if [ "${replace_collections}" = "true" ]; then
+  if collection_should_replace_on_import "${collection_name}"; then
     clear_collection "${target_db}" "${collection_name}"
   fi
 
@@ -257,7 +307,7 @@ import_seed_directory() {
     return 0
   fi
 
-  find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
+  find "${seed_dir}" -maxdepth 1 \( -type f -o -type l \) -name '*.json' | sort | while read -r jsonfile; do
     import_json_file "${target_db}" "${jsonfile}"
   done
 }

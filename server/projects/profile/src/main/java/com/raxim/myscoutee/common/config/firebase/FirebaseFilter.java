@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.common.config.firebase;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
@@ -27,10 +24,15 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     private final FirebaseService firebaseService;
     private final ConfigProperties configProperties;
+    private final FirebaseTokenVerifier firebaseTokenVerifier;
 
-    public FirebaseFilter(FirebaseService firebaseService, ConfigProperties configProperties) {
+    public FirebaseFilter(
+            FirebaseService firebaseService,
+            ConfigProperties configProperties,
+            FirebaseTokenVerifier firebaseTokenVerifier) {
         this.firebaseService = firebaseService;
         this.configProperties = configProperties;
+        this.firebaseTokenVerifier = firebaseTokenVerifier;
     }
 
     @Override
@@ -59,18 +61,12 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } catch (FirebaseTokenInvalidException e) {
-            throw new SecurityException(e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Firebase token.");
         }
     }
 
     public FirebaseCredential parseToken(String firebaseToken) {
-        Objects.requireNonNull(firebaseToken, "FirebaseToken must not be null or blank");
-        try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
-            return new FirebaseCredential(decodedToken);
-        } catch (Exception e) {
-            throw new FirebaseTokenInvalidException(e.getMessage());
-        }
+        return firebaseTokenVerifier.verify(firebaseToken);
     }
 
     private void authenticateWithoutFirebase(HttpServletRequest request) {
@@ -111,9 +107,15 @@ public class FirebaseFilter extends OncePerRequestFilter {
         }
         String queryToken = request.getParameter("token");
         if (queryToken != null && !queryToken.isBlank()) {
-            return queryToken.trim();
+            return isWebSocketTokenRequest(request) ? queryToken.trim() : null;
         }
         return null;
+    }
+
+    private boolean isWebSocketTokenRequest(HttpServletRequest request) {
+        String requestUri = request == null ? "" : request.getRequestURI();
+        return requestUri.endsWith("/activities/chats/ws")
+                || requestUri.endsWith("/admin/notifications/ws");
     }
 
     private void setAuthentication(UserDetails userDetails, Object credentials) {

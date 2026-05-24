@@ -1,0 +1,609 @@
+#!/usr/bin/env node
+import { execFile } from 'node:child_process';
+import { mkdir, writeFile } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { promisify } from 'node:util';
+import { fileURLToPath } from 'node:url';
+
+import { assertDemoUsers, assertAuthMe, assertAssets, assertChats, assertEventList, assertEventPage } from '../server/lib/contracts.mjs';
+import { resetPlaygroundDatabase } from '../server/hooks/playground-db.mjs';
+import { discoverCollection, runCase } from '../shared/collection-runner.mjs';
+import { createHttpClient } from '../shared/http.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(__dirname, '..', '..');
+const serverRoot = path.join(repoRoot, 'e2e/server');
+const execFileAsync = promisify(execFile);
+const args = parseArgs(process.argv.slice(2));
+
+if (args.list) {
+  await listScenarios();
+  process.exit(0);
+}
+
+const scenario = await loadScenario(args.scenario);
+const serverCases = new Map((await discoverCollection(serverRoot)).map(testCase => [testCase.id, testCase]));
+const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'http://localhost';
+const mode = process.env.E2E_STRESS_MODE ?? scenario.mode ?? 'contract';
+
+if ((mode === 'playground' || mode === 'stress') && scenario.resetPlayground !== false && process.env.E2E_SKIP_PLAYGROUND_RESET !== 'true') {
+  await resetPlaygroundDatabase(createContext({ baseUrl, mode, runId: 'stress-reset', vu: 0 }));
+}
+
+const metrics = [];
+const startedAtIso = new Date().toISOString();
+const startedAt = performance.now();
+const resourceMonitor = args.record ? startResourceMonitor() : null;
+let runError = null;
+try {
+  await Promise.all(Array.from({ length: scenario.users ?? 1 }, async (_item, index) => {
+    const vu = index + 1;
+    const rampDelayMs = rampDelay(index, scenario.users ?? 1, scenario.rampUpMs ?? 0);
+    await sleep(rampDelayMs);
+    await runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, vu, startedAt });
+  }));
+} catch (error) {
+  runError = error;
+} finally {
+  await resourceMonitor?.stop();
+}
+const endedAtIso = new Date().toISOString();
+
+const summary = summarize(metrics);
+const artifactDir = args.record
+  ? await writeArtifacts({
+    scenario,
+    summary,
+    metrics,
+    resources: resourceMonitor?.samples ?? [],
+    startedAtIso,
+    endedAtIso,
+    baseUrl,
+    mode,
+    runError,
+    artifactsDir: args.artifactsDir
+  })
+  : '';
+printSummary(scenario, summary, { artifactDir });
+if (runError) {
+  console.error(`stress runner error: ${runError.stack ?? runError.message}`);
+}
+const failed = evaluateThresholds(summary, scenario.thresholds ?? {}) || Boolean(runError);
+process.exitCode = failed ? 1 : 0;
+
+async function runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, vu, startedAt }) {
+  const durationMs = Number(scenario.durationMs ?? 0);
+  const iterations = Number(scenario.iterations ?? 1);
+  let iteration = 0;
+  while (true) {
+    iteration += 1;
+    if (durationMs > 0 && performance.now() - startedAt >= durationMs) {
+      return;
+    }
+    if (durationMs <= 0 && iteration > iterations) {
+      return;
+    }
+    for (const [stepIndex, step] of scenario.steps.entries()) {
+      const runId = `${scenario.id ?? 'scenario'}-vu${vu}-i${iteration}-s${stepIndex + 1}-${Date.now()}`;
+      const ctx = createContext({ baseUrl, mode, runId, vu });
+      const started = performance.now();
+      let ok = true;
+      let status = 0;
+      let error = '';
+      try {
+        const result = await runStep(step, ctx, serverCases);
+        status = result?.status ?? 0;
+      } catch (err) {
+        ok = false;
+        status = err.result?.status ?? 0;
+        error = err.message;
+      }
+      const duration = performance.now() - started;
+      metrics.push({
+        step: step.name ?? step.collectionCase ?? `${step.method ?? 'GET'} ${step.path}`,
+        vu,
+        iteration,
+        ok,
+        status,
+        durationMs: duration,
+        error
+      });
+      if (!ok && scenario.failFast) {
+        return;
+      }
+      await sleep(jitter(scenario.thinkTimeMs ?? 0, scenario.thinkTimeJitterMs ?? 0));
+    }
+  }
+}
+
+async function runStep(step, ctx, serverCases) {
+  if (step.collectionCase) {
+    const testCase = serverCases.get(step.collectionCase);
+    if (!testCase) {
+      throw new Error(`Unknown collection case ${step.collectionCase}`);
+    }
+    if (testCase.request.playgroundOnly && ctx.mode !== 'playground' && ctx.mode !== 'stress') {
+      throw new Error(`${step.collectionCase} requires playground/stress mode`);
+    }
+    return runCase(testCase, ctx);
+  }
+  const request = interpolate(step, ctx.vars);
+  return ctx.http.request(request.method ?? 'GET', request.path, {
+    params: request.params,
+    headers: request.headers,
+    json: request.body,
+    expectedStatus: request.expectedStatus,
+    allowStatuses: request.allowStatuses,
+    timeoutMs: request.timeoutMs
+  });
+}
+
+function createContext({ baseUrl, mode, runId, vu }) {
+  const ctx = {
+    mode,
+    http: createHttpClient({
+      baseUrl,
+      timeoutMs: Number(process.env.E2E_STRESS_HTTP_TIMEOUT_MS ?? process.env.E2E_HTTP_TIMEOUT_MS ?? 15000)
+    }),
+    defaultMaxMs: Number(process.env.E2E_STRESS_DEFAULT_MAX_MS ?? process.env.E2E_DEFAULT_MAX_MS ?? 5000),
+    vars: {
+      adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
+      playgroundUserId: `${process.env.E2E_PLAYGROUND_USER_ID ?? 'e2e-host'}-${runId}`,
+      playgroundSecondUserId: `${process.env.E2E_PLAYGROUND_SECOND_USER_ID ?? 'e2e-member'}-${runId}`,
+      runId,
+      vu: String(vu)
+    }
+  };
+  ctx.resolveRequirement = requirement => resolveRequirement(ctx, requirement);
+  return ctx;
+}
+
+async function resolveRequirement(ctx, requirement) {
+  if (requirement === 'demoUser') {
+    if (!ctx.vars.userId) {
+      const result = await ctx.http.get('/api/auth/demo-users', { headers: demoHeaders() });
+      assertDemoUsers(result.data, ctx);
+    }
+    return;
+  }
+  if (requirement === 'userProfile') {
+    await resolveRequirement(ctx, 'demoUser');
+    const result = await ctx.http.get('/api/auth/me', {
+      params: { userId: ctx.vars.userId },
+      headers: demoHeaders()
+    });
+    assertAuthMe(result.data, ctx);
+    return;
+  }
+  if (requirement === 'event' || requirement === 'subEvent') {
+    await resolveRequirement(ctx, 'demoUser');
+    const result = await ctx.http.post('/api/activities/events/explore', {
+      headers: demoHeaders(),
+      json: { userId: ctx.vars.userId, limit: 25 }
+    });
+    if (Array.isArray(result.data)) {
+      assertEventList(result.data, ctx, 'stress event requirement');
+    } else {
+      assertEventPage(result.data, ctx, 'stress event requirement');
+    }
+    if (requirement === 'subEvent' && !ctx.vars.subEventId) {
+      throw new Error('No subEvent available for stress requirement');
+    }
+    return;
+  }
+  if (requirement === 'asset') {
+    await resolveRequirement(ctx, 'demoUser');
+    const result = await ctx.http.get('/api/assets', {
+      params: { userId: ctx.vars.userId },
+      headers: demoHeaders()
+    });
+    assertAssets(result.data, ctx, 'stress asset requirement');
+    return;
+  }
+  if (requirement === 'chat') {
+    await resolveRequirement(ctx, 'demoUser');
+    for (const userId of candidateDemoUserIds(ctx)) {
+      delete ctx.vars.chatId;
+      const result = await ctx.http.get('/api/activities/chats', {
+        params: { userId },
+        headers: demoHeaders()
+      });
+      assertChats(result.data, ctx, 'stress chat requirement');
+      if (ctx.vars.chatId) {
+        ctx.vars.userId = userId;
+        return;
+      }
+    }
+    throw new Error('No chat was available for stress chat requirement');
+  }
+  throw new Error(`Unknown stress requirement: ${requirement}`);
+}
+
+function candidateDemoUserIds(ctx) {
+  const users = Array.isArray(ctx.vars.demoUsers) ? ctx.vars.demoUsers : [];
+  const envPreferred = `${process.env.E2E_DEMO_USER_ID ?? ''}`.trim();
+  return [
+    envPreferred,
+    ctx.vars.userId,
+    ...users
+      .filter(user => !user.deletedAtIso && user.profileStatus !== 'deleted')
+      .map(user => user.id)
+  ].map(value => `${value ?? ''}`.trim()).filter((value, index, values) => value && values.indexOf(value) === index);
+}
+
+async function loadScenario(name) {
+  const scenarioName = name || process.env.E2E_STRESS_SCENARIO || 'server-contract-smoke';
+  const scenarioPath = path.join(__dirname, 'scenarios', `${scenarioName}.json`);
+  const scenario = JSON.parse(await import('node:fs/promises').then(fs => fs.readFile(scenarioPath, 'utf8')));
+  scenario.id ??= scenarioName;
+  return scenario;
+}
+
+async function listScenarios() {
+  const { readdir, readFile } = await import('node:fs/promises');
+  const files = (await readdir(path.join(__dirname, 'scenarios'))).filter(file => file.endsWith('.json')).sort();
+  for (const file of files) {
+    const scenario = JSON.parse(await readFile(path.join(__dirname, 'scenarios', file), 'utf8'));
+    console.log(`${file.replace(/\.json$/, '')} [${scenario.mode ?? 'contract'}] users=${scenario.users ?? 1} iterations=${scenario.iterations ?? '-'} durationMs=${scenario.durationMs ?? '-'} - ${scenario.name ?? ''}`);
+  }
+}
+
+function summarize(metrics) {
+  const durations = metrics.map(item => item.durationMs).sort((a, b) => a - b);
+  const failed = metrics.filter(item => !item.ok).length;
+  const total = metrics.length;
+  return {
+    total,
+    failed,
+    passed: total - failed,
+    errorRate: total === 0 ? 0 : failed / total,
+    minMs: durations[0] ?? 0,
+    maxMs: durations[durations.length - 1] ?? 0,
+    avgMs: durations.reduce((sum, value) => sum + value, 0) / Math.max(1, durations.length),
+    p50Ms: percentile(durations, 0.50),
+    p90Ms: percentile(durations, 0.90),
+    p95Ms: percentile(durations, 0.95),
+    p99Ms: percentile(durations, 0.99),
+    byStep: summarizeByStep(metrics)
+  };
+}
+
+function summarizeByStep(metrics) {
+  const groups = new Map();
+  for (const item of metrics) {
+    const list = groups.get(item.step) ?? [];
+    list.push(item);
+    groups.set(item.step, list);
+  }
+  return [...groups.entries()].map(([step, items]) => ({
+    step,
+    total: items.length,
+    failed: items.filter(item => !item.ok).length,
+    p95Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.95),
+    maxMs: Math.max(...items.map(item => item.durationMs))
+  }));
+}
+
+function printSummary(scenario, summary, options = {}) {
+  console.log(`\nstress scenario: ${scenario.name ?? scenario.id}`);
+  console.log(`requests: ${summary.total}, passed: ${summary.passed}, failed: ${summary.failed}, errorRate: ${(summary.errorRate * 100).toFixed(2)}%`);
+  console.log(`latency ms: avg=${Math.round(summary.avgMs)} p50=${Math.round(summary.p50Ms)} p90=${Math.round(summary.p90Ms)} p95=${Math.round(summary.p95Ms)} p99=${Math.round(summary.p99Ms)} max=${Math.round(summary.maxMs)}`);
+  for (const item of summary.byStep) {
+    console.log(`- ${item.step}: total=${item.total} failed=${item.failed} p95=${Math.round(item.p95Ms)}ms max=${Math.round(item.maxMs)}ms`);
+  }
+  if (options.artifactDir) {
+    console.log(`artifacts: ${options.artifactDir}`);
+  }
+}
+
+function startResourceMonitor() {
+  const intervalMs = Math.max(500, Number(process.env.E2E_STRESS_RESOURCE_INTERVAL_MS ?? 2000) || 2000);
+  const samples = [];
+  let pending = Promise.resolve();
+  let stopped = false;
+
+  async function sample() {
+    if (stopped) {
+      return;
+    }
+    const sampledAtIso = new Date().toISOString();
+    const host = sampleHost();
+    const docker = await sampleDocker();
+    samples.push({ sampledAtIso, host, docker });
+  }
+
+  const schedule = () => {
+    pending = pending.then(sample).catch(error => {
+      samples.push({
+        sampledAtIso: new Date().toISOString(),
+        host: sampleHost(),
+        docker: { error: error.message }
+      });
+    });
+  };
+  schedule();
+  const timer = setInterval(schedule, intervalMs);
+
+  return {
+    samples,
+    async stop() {
+      stopped = true;
+      clearInterval(timer);
+      await pending;
+    }
+  };
+}
+
+function sampleHost() {
+  const totalMemBytes = os.totalmem();
+  const freeMemBytes = os.freemem();
+  return {
+    totalMemBytes,
+    freeMemBytes,
+    usedMemBytes: totalMemBytes - freeMemBytes,
+    loadAvg: os.loadavg(),
+    cpuCount: os.cpus().length,
+    uptimeSec: os.uptime()
+  };
+}
+
+async function sampleDocker() {
+  try {
+    const result = await execFileAsync('docker', ['stats', '--no-stream', '--format', '{{json .}}'], {
+      timeout: Number(process.env.E2E_STRESS_DOCKER_STATS_TIMEOUT_MS ?? 5000),
+      maxBuffer: 1024 * 1024
+    });
+    return result.stdout
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+      .map(line => JSON.parse(line));
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+async function writeArtifacts({ scenario, summary, metrics, resources, startedAtIso, endedAtIso, baseUrl, mode, runError, artifactsDir }) {
+  const rootDir = artifactsDir
+    ? path.resolve(artifactsDir)
+    : path.join(repoRoot, '.e2e-artifacts', 'stress');
+  const runDir = path.join(rootDir, `${safeName(scenario.id ?? 'scenario')}-${startedAtIso.replace(/[:.]/g, '-')}`);
+  await mkdir(runDir, { recursive: true });
+
+  const payload = {
+    scenario: {
+      id: scenario.id,
+      name: scenario.name,
+      mode,
+      baseUrl,
+      users: scenario.users ?? 1,
+      rampUpMs: scenario.rampUpMs ?? 0,
+      durationMs: scenario.durationMs ?? 0,
+      iterations: scenario.iterations ?? null,
+      thresholds: scenario.thresholds ?? {}
+    },
+    startedAtIso,
+    endedAtIso,
+    summary,
+    resourceSummary: summarizeResources(resources),
+    runError: runError ? { message: runError.message, stack: runError.stack } : null
+  };
+
+  await writeFile(path.join(runDir, 'summary.json'), `${JSON.stringify(payload, null, 2)}\n`);
+  await writeFile(path.join(runDir, 'metrics.json'), `${JSON.stringify(metrics, null, 2)}\n`);
+  await writeFile(path.join(runDir, 'resources.json'), `${JSON.stringify(resources, null, 2)}\n`);
+  await writeFile(path.join(runDir, 'index.md'), renderArtifactIndex(payload));
+  return runDir;
+}
+
+function renderArtifactIndex(payload) {
+  const resourceSummary = payload.resourceSummary;
+  const lines = [
+    `# ${payload.scenario.name ?? payload.scenario.id}`,
+    '',
+    `- Scenario: \`${payload.scenario.id}\``,
+    `- Mode/base URL: \`${payload.scenario.mode}\` at \`${payload.scenario.baseUrl}\``,
+    `- Started: ${payload.startedAtIso}`,
+    `- Ended: ${payload.endedAtIso}`,
+    `- Requests: ${payload.summary.total} total, ${payload.summary.passed} passed, ${payload.summary.failed} failed`,
+    `- Error rate: ${(payload.summary.errorRate * 100).toFixed(2)}%`,
+    `- Latency: avg ${Math.round(payload.summary.avgMs)}ms, p95 ${Math.round(payload.summary.p95Ms)}ms, p99 ${Math.round(payload.summary.p99Ms)}ms, max ${Math.round(payload.summary.maxMs)}ms`,
+    `- Host memory peak: ${formatBytes(resourceSummary.host.maxUsedMemBytes)} used, min free ${formatBytes(resourceSummary.host.minFreeMemBytes)}`,
+    `- Host load peak: ${resourceSummary.host.maxLoadAvg1.toFixed(2)} over ${resourceSummary.host.cpuCount} CPUs`,
+    '',
+    '## Step Latency',
+    '',
+    '| Step | Total | Failed | p95 | Max |',
+    '| --- | ---: | ---: | ---: | ---: |',
+    ...payload.summary.byStep.map(item => `| ${escapeTable(item.step)} | ${item.total} | ${item.failed} | ${Math.round(item.p95Ms)}ms | ${Math.round(item.maxMs)}ms |`),
+    '',
+    '## Container Peaks',
+    '',
+    '| Container | Max CPU | Max Memory |',
+    '| --- | ---: | ---: |',
+    ...resourceSummary.containers.map(item => `| ${escapeTable(item.name)} | ${item.maxCpuPercent.toFixed(2)}% | ${formatBytes(item.maxMemBytes)} |`),
+    ''
+  ];
+  if (payload.runError) {
+    lines.push('## Runner Error', '', '```', payload.runError.stack ?? payload.runError.message, '```', '');
+  }
+  lines.push('Raw files: `summary.json`, `metrics.json`, `resources.json`.', '');
+  return `${lines.join('\n')}\n`;
+}
+
+function summarizeResources(resources) {
+  const hostSummary = {
+    cpuCount: 0,
+    minFreeMemBytes: Number.POSITIVE_INFINITY,
+    maxUsedMemBytes: 0,
+    maxLoadAvg1: 0
+  };
+  const containers = new Map();
+
+  for (const sample of resources) {
+    if (sample.host) {
+      hostSummary.cpuCount = sample.host.cpuCount ?? hostSummary.cpuCount;
+      hostSummary.minFreeMemBytes = Math.min(hostSummary.minFreeMemBytes, sample.host.freeMemBytes ?? Number.POSITIVE_INFINITY);
+      hostSummary.maxUsedMemBytes = Math.max(hostSummary.maxUsedMemBytes, sample.host.usedMemBytes ?? 0);
+      hostSummary.maxLoadAvg1 = Math.max(hostSummary.maxLoadAvg1, sample.host.loadAvg?.[0] ?? 0);
+    }
+    if (!Array.isArray(sample.docker)) {
+      continue;
+    }
+    for (const item of sample.docker) {
+      const name = item.Name ?? item.NameOrID ?? item.Container ?? item.ID ?? 'unknown';
+      const current = containers.get(name) ?? { name, maxCpuPercent: 0, maxMemBytes: 0 };
+      current.maxCpuPercent = Math.max(current.maxCpuPercent, parsePercent(item.CPUPerc));
+      current.maxMemBytes = Math.max(current.maxMemBytes, parseDockerMemoryBytes(item.MemUsage));
+      containers.set(name, current);
+    }
+  }
+
+  if (!Number.isFinite(hostSummary.minFreeMemBytes)) {
+    hostSummary.minFreeMemBytes = 0;
+  }
+
+  return {
+    host: hostSummary,
+    containers: [...containers.values()].sort((a, b) => b.maxMemBytes - a.maxMemBytes)
+  };
+}
+
+function parsePercent(value) {
+  const parsed = Number.parseFloat(`${value ?? ''}`.replace('%', ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function parseDockerMemoryBytes(value) {
+  const firstPart = `${value ?? ''}`.split('/')[0].trim();
+  const match = firstPart.match(/^([\d.]+)\s*([kmgtp]?i?b?)$/i);
+  if (!match) {
+    return 0;
+  }
+  const amount = Number.parseFloat(match[1]);
+  const unit = match[2].toLowerCase();
+  const multipliers = {
+    b: 1,
+    kb: 1000,
+    kib: 1024,
+    mb: 1000 ** 2,
+    mib: 1024 ** 2,
+    gb: 1000 ** 3,
+    gib: 1024 ** 3,
+    tb: 1000 ** 4,
+    tib: 1024 ** 4,
+    pb: 1000 ** 5,
+    pib: 1024 ** 5
+  };
+  return Number.isFinite(amount) ? amount * (multipliers[unit] ?? 1) : 0;
+}
+
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return '0 B';
+  }
+  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+  let value = bytes;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+function escapeTable(value) {
+  return `${value ?? ''}`.replace(/\|/g, '\\|').replace(/\n/g, ' ');
+}
+
+function safeName(value) {
+  return `${value}`.replace(/[^a-zA-Z0-9_.-]+/g, '-');
+}
+
+function evaluateThresholds(summary, thresholds) {
+  let failed = false;
+  const checks = [
+    ['errorRate', summary.errorRate, thresholds.errorRate],
+    ['p95Ms', summary.p95Ms, thresholds.p95Ms],
+    ['p99Ms', summary.p99Ms, thresholds.p99Ms],
+    ['maxMs', summary.maxMs, thresholds.maxMs]
+  ];
+  for (const [name, actual, expected] of checks) {
+    if (expected === undefined) {
+      continue;
+    }
+    if (actual > Number(expected)) {
+      failed = true;
+      console.error(`threshold failed: ${name} actual=${actual} expected<=${expected}`);
+    }
+  }
+  return failed;
+}
+
+function percentile(values, ratio) {
+  if (values.length === 0) {
+    return 0;
+  }
+  const index = Math.min(values.length - 1, Math.ceil(values.length * ratio) - 1);
+  return values[index];
+}
+
+function rampDelay(index, users, rampUpMs) {
+  if (users <= 1 || rampUpMs <= 0) {
+    return 0;
+  }
+  return Math.round((rampUpMs / users) * index);
+}
+
+function jitter(baseMs, jitterMs) {
+  const base = Number(baseMs) || 0;
+  const jitter = Number(jitterMs) || 0;
+  return Math.max(0, base + (Math.random() * jitter * 2) - jitter);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, Math.max(0, Number(ms) || 0)));
+}
+
+function parseArgs(argv) {
+  const args = { list: false, scenario: '', record: false, artifactsDir: '' };
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--list') {
+      args.list = true;
+    } else if (arg === '--record') {
+      args.record = true;
+    } else if (arg === '--artifacts-dir') {
+      args.artifactsDir = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--artifacts-dir=')) {
+      args.artifactsDir = arg.slice('--artifacts-dir='.length);
+    } else if (arg === '--scenario') {
+      args.scenario = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--scenario=')) {
+      args.scenario = arg.slice('--scenario='.length);
+    } else if (!arg.startsWith('-') && !args.scenario) {
+      args.scenario = arg;
+    }
+  }
+  return args;
+}
+
+function interpolate(value, vars) {
+  if (typeof value === 'string') {
+    return value.replace(/\{\{\s*([a-zA-Z0-9_.-]+)\s*\}\}/g, (_match, key) => vars[key] ?? '');
+  }
+  if (Array.isArray(value)) {
+    return value.map(item => interpolate(item, vars));
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, interpolate(entry, vars)]));
+  }
+  return value;
+}
+
+function demoHeaders() {
+  return { 'X-App-Session-Kind': 'demo' };
+}

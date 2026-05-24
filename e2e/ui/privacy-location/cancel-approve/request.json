@@ -1,0 +1,9 @@
+{
+  "name": "entry location dialog can be cancelled and then approved",
+  "group": "privacy-location",
+  "order": 24,
+  "route": "/",
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 45000
+}

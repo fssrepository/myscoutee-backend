@@ -32,7 +32,7 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 27017-27019:27017-27019
+      - 127.0.0.1:27017-27019:27017-27019
     volumes:
       - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
       - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
@@ -56,6 +56,8 @@ services:
     image: ${MONGO_IMAGE}
     container_name: mongodb
     hostname: mongodb
+    env_file:
+      - .env.secrets
     #restart: always
     #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     environment:
@@ -63,8 +65,6 @@ services:
       MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
       MONGO_SEED_DIRECTORY: demo_db
       MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB}
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpw
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
@@ -86,17 +86,19 @@ services:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: mongodb-sync
     hostname: mongodb-sync
+    env_file:
+      - .env.secrets
     command: >
       bash -lc '
       watch_roots="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db";
       debounce_seconds="$${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}";
       wait_for_mongo() {
-        until mongosh --host mongodb --port 27017 --username guest --password guest --authenticationDatabase demo_db --quiet demo_db --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; do
+        until mongosh --host mongodb --port 27017 --username "$${MONGO_APP_USERNAME:-guest}" --password "$${MONGO_APP_PASSWORD:-guest}" --authenticationDatabase demo_db --quiet demo_db --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; do
           sleep 2;
         done;
       };
       import_all() {
-        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME=guest MONGO_IMPORT_PASSWORD=guest MONGO_IMPORT_ALL_SEED_DATABASES=true MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
+        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME="$${MONGO_APP_USERNAME:-guest}" MONGO_IMPORT_PASSWORD="$${MONGO_APP_PASSWORD:-guest}" MONGO_IMPORT_ALL_SEED_DATABASES=true MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
       };
       import_file() {
         changed_file="$$1";
@@ -105,7 +107,7 @@ services:
           */myscoutee_db/*.json) target_db="myscoutee_db" ;;
           *) return 0 ;;
         esac;
-        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME=guest MONGO_IMPORT_PASSWORD=guest MONGO_APP_DATABASE="$$target_db" MONGO_IMPORT_SINGLE_FILE="$$changed_file" MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
+        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME="$${MONGO_APP_USERNAME:-guest}" MONGO_IMPORT_PASSWORD="$${MONGO_APP_PASSWORD:-guest}" MONGO_APP_DATABASE="$$target_db" MONGO_IMPORT_SINGLE_FILE="$$changed_file" MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
       };
       wait_for_mongo;
       import_all;
@@ -146,10 +148,10 @@ services:
     image: ${MINIO_IMAGE}
     container_name: minio
     hostname: minio
+    env_file:
+      - .env.secrets
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./data/minio:/data
@@ -167,6 +169,8 @@ services:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
     hostname: myscoutee
+    env_file:
+      - .env.secrets
     working_dir: /workspace
     user: "${UID:-1000}:${GID:-1000}"
     command:
@@ -180,22 +184,18 @@ services:
       PROFILEMANAGEMENT_DEBUG_PORT: "${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
       SPRING_PROFILES_ACTIVE: "dev"
       SPRING_DEVTOOLS_RESTART_ENABLED: "${PROFILEMANAGEMENT_HOT_RELOAD:-true}"
-      SPRING_MONGODB_URI: "mongodb://guest:guest@mongodb:27017/${MONGO_DEMO_DATABASE}?authSource=${MONGO_DEMO_DATABASE}"
       MONGODB_HOST: "mongodb"
       MONGODB_DATABASE: "${MONGO_DEMO_DATABASE}"
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
-      MONGODB_USERNAME: "guest"
-      MONGODB_PASSWORD: "guest"
       SPRING_DATA_REDIS_HOST: "redis"
       SPRING_DATA_REDIS_PORT: "6379"
+      CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
       FIREBASE_ENABLED: "false"
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
       MEDIA_OBJECT_STORE_REGION: "eu-central-1"
-      MEDIA_OBJECT_STORE_ACCESS_KEY: "${MINIO_ROOT_USER}"
-      MEDIA_OBJECT_STORE_SECRET_KEY: "${MINIO_ROOT_PASSWORD}"
       MEDIA_BUCKET: "${MEDIA_BUCKET}"
       MEDIA_OBJECT_STORE_PATH_STYLE: "true"
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
@@ -203,7 +203,7 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
     ports:
-      - "${PROFILEMANAGEMENT_DEBUG_PORT:-5005}:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
+      - "127.0.0.1:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
     volumes:
       - ./:/workspace
       - /etc/timezone:/etc/timezone:ro

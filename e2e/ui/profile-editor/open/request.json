@@ -1,0 +1,10 @@
+{
+  "name": "profile editor opens from navigator menu",
+  "group": "profile-editor",
+  "order": 50,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 35000
+}

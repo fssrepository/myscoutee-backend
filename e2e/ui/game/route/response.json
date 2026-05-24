@@ -1,0 +1,14 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".game-page",
+    ".game-card-deck",
+    "button.user-selector-btn-global",
+    "button[aria-label=\"Open profile filters\"]"
+  ],
+  "network": [
+    "/api/auth/me",
+    "/api/game-cards/query"
+  ],
+  "maxMs": 30000
+}

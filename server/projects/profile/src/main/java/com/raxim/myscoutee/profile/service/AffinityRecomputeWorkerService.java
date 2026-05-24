@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,6 +24,7 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 
 @Service
 public class AffinityRecomputeWorkerService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AffinityRecomputeWorkerService.class);
     private static final long DEFAULT_WORKER_POLL_DELAY_MS = 60_000L;
 
     private final String workerId = "affinity-worker-" + UUID.randomUUID();
@@ -31,6 +34,7 @@ public class AffinityRecomputeWorkerService {
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
     private volatile long lastScheduledRunMs = 0L;
+    private volatile long cachedWorkerPollDelayMs = DEFAULT_WORKER_POLL_DELAY_MS;
 
     public AffinityRecomputeWorkerService(
             AffinityRecomputeTaskService taskService,
@@ -50,10 +54,14 @@ public class AffinityRecomputeWorkerService {
         if (!properties.isEnabled()) {
             return;
         }
-        if (!shouldRunScheduledPass()) {
-            return;
+        try {
+            if (!shouldRunScheduledPass()) {
+                return;
+            }
+            processDueTasks(Instant.now());
+        } catch (RuntimeException exception) {
+            LOGGER.debug("Affinity recompute worker tick skipped after a transient failure.", exception);
         }
-        processDueTasks(Instant.now());
     }
 
     public int processDueTasks(Instant now) {
@@ -315,8 +323,13 @@ public class AffinityRecomputeWorkerService {
 
     private boolean shouldRunScheduledPass() {
         long nowMs = System.currentTimeMillis();
-        long pollDelayMs = Math.max(100L, taskService.workerPollDelayMs(DEFAULT_WORKER_POLL_DELAY_MS));
         long previousRunMs = lastScheduledRunMs;
+        long pollDelayMs = cachedWorkerPollDelayMs;
+        if (previousRunMs > 0L && nowMs - previousRunMs < pollDelayMs) {
+            return false;
+        }
+        pollDelayMs = Math.max(100L, taskService.workerPollDelayMs(DEFAULT_WORKER_POLL_DELAY_MS));
+        cachedWorkerPollDelayMs = pollDelayMs;
         if (previousRunMs > 0L && nowMs - previousRunMs < pollDelayMs) {
             return false;
         }

@@ -1,0 +1,16 @@
+{
+  "name": "owned assets for asset editor",
+  "group": "assets",
+  "order": 600,
+  "method": "GET",
+  "path": "/api/assets",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

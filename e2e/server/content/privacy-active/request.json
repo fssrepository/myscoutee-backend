@@ -1,0 +1,12 @@
+{
+  "name": "active privacy document",
+  "group": "content",
+  "order": 230,
+  "method": "GET",
+  "path": "/api/privacy/active",
+  "params": {
+    "lang": "en"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

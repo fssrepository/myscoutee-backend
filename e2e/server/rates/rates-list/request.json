@@ -1,0 +1,16 @@
+{
+  "name": "activities rate list",
+  "group": "rates",
+  "order": 400,
+  "method": "GET",
+  "path": "/api/activities/rates",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

@@ -1,0 +1,18 @@
+{
+  "name": "visible assets for event resource picker",
+  "group": "assets",
+  "order": 610,
+  "method": "GET",
+  "path": "/api/assets/explore",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}",
+    "type": "place",
+    "category": ""
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

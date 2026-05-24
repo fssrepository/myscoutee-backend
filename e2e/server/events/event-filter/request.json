@@ -1,0 +1,23 @@
+{
+  "name": "activities event filtered page",
+  "group": "events",
+  "order": 510,
+  "method": "POST",
+  "path": "/api/activities/events/filter",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "userId": "{{userId}}",
+    "filter": "all",
+    "hostingPublicationFilter": "all",
+    "secondaryFilter": "recent",
+    "sort": "date",
+    "view": "day",
+    "limit": 12,
+    "cursor": null
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

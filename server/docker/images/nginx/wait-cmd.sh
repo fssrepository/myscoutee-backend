@@ -6,6 +6,25 @@ LETSENCRYPT_ENABLED=${LETSENCRYPT_ENABLED:-false}
 
 echo "Starting Nginx with LETSENCRYPT_ENABLED=$LETSENCRYPT_ENABLED for DOMAIN=$DOMAIN"
 
+ensure_default_certificate() {
+    local cert_path="/etc/nginx/keys/nginx.crt"
+    local key_path="/etc/nginx/keys/nginx-nopass.key"
+
+    if [ -f "$cert_path" ] && [ -f "$key_path" ]; then
+        return
+    fi
+
+    mkdir -p /etc/nginx/keys
+    openssl req -x509 -nodes -newkey rsa:2048 \
+        -keyout "$key_path" \
+        -out "$cert_path" \
+        -days 365 \
+        -subj "/CN=localhost" >/dev/null 2>&1
+    chmod 600 "$key_path"
+}
+
+ensure_default_certificate
+
 # Replace ${DOMAIN} in all config files
 find /etc/nginx/conf.d -type f -name "*.conf" -exec sed -i "s/\${DOMAIN}/$DOMAIN/g" {} +
 

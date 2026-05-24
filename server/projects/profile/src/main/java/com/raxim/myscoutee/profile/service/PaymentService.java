@@ -9,11 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
@@ -51,6 +54,7 @@ public class PaymentService {
                 : resolveProcessor(normalizedProvider).checkout(request);
 
         Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
+        ensurePaymentRequestCompatible(payment, request);
         hydratePaymentRequest(payment, request, normalizedProvider);
         payment.setCheckoutSessionId(sessionDto.id());
         if (!enablePay) {
@@ -67,6 +71,7 @@ public class PaymentService {
     public EventCheckoutSessionDto pay(EventCheckoutRequestDto request, String paymentSessionId, String provider) {
         String normalizedProvider = normalizeProvider(provider);
         Payment payment = findByAnySessionId(paymentSessionId).orElseGet(Payment::new);
+        ensurePaymentRequestCompatible(payment, request);
         EventCheckoutSessionDto sessionDto = !enablePay
                 ? createDummySession(request, paymentSessionId)
                 : resolveProcessor(normalizedProvider).pay(request, paymentSessionId);
@@ -270,6 +275,28 @@ public class PaymentService {
                 .or(() -> paymentsRepository.findById(normalizedSessionId));
     }
 
+    private void ensurePaymentRequestCompatible(Payment payment, EventCheckoutRequestDto request) {
+        if (payment == null) {
+            return;
+        }
+        ensureSameValue("user", payment.getUserId(), normalizeId(request == null ? null : request.userId()));
+        ensureSameValue("source", payment.getSourceId(), normalizeId(request == null ? null : request.sourceId()));
+        ensureSameValue("currency", payment.getCurrency(), request == null ? null : safeCurrency(request.currency()));
+        double requestedAmount = request == null ? 0D : safeAmount(request.totalAmount());
+        double existingAmount = safeAmount(payment.getAmount());
+        if (existingAmount > 0D && requestedAmount > 0D && roundMoney(existingAmount) != roundMoney(requestedAmount)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment session amount cannot be changed.");
+        }
+    }
+
+    private void ensureSameValue(String label, String existing, String requested) {
+        String normalizedExisting = normalizeId(existing);
+        String normalizedRequested = normalizeId(requested);
+        if (hasText(normalizedExisting) && hasText(normalizedRequested) && !normalizedExisting.equals(normalizedRequested)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment session " + label + " cannot be changed.");
+        }
+    }
+
     private RefundComputation computeRefund(
             double paidAmount,
             String currency,
@@ -359,7 +386,7 @@ public class PaymentService {
     }
 
     private EventCheckoutSessionDto createDummySession(EventCheckoutRequestDto request, String existingSessionId) {
-        String sessionId = hasText(existingSessionId) ? existingSessionId.trim() : "dummy_" + System.currentTimeMillis();
+        String sessionId = hasText(existingSessionId) ? existingSessionId.trim() : "dummy_" + UUID.randomUUID();
         return new EventCheckoutSessionDto(
                 sessionId,
                 "dummy",

@@ -1,0 +1,28 @@
+{
+  "name": "Opt-in server capacity probe",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 12,
+  "rampUpMs": 15000,
+  "durationMs": 120000,
+  "thinkTimeMs": 75,
+  "thinkTimeJitterMs": 75,
+  "thresholds": {
+    "errorRate": 0.02,
+    "p95Ms": 12000,
+    "p99Ms": 20000
+  },
+  "steps": [
+    { "collectionCase": "health/spring-health" },
+    { "collectionCase": "profile/demo-users" },
+    { "collectionCase": "profile/auth-me" },
+    { "collectionCase": "game/cards-query" },
+    { "collectionCase": "events/event-explore" },
+    { "collectionCase": "events/event-filter" },
+    { "collectionCase": "assets/owned" },
+    { "collectionCase": "chats/page" },
+    { "collectionCase": "websocket/chat-connect" },
+    { "collectionCase": "websocket/admin-notifications-connect" },
+    { "collectionCase": "admin/dashboard" }
+  ]
+}

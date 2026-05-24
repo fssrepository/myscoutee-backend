@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +21,31 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import static org.mockito.Mockito.mock;
 
 class AffinityRecomputeWorkerServiceTest {
+    @Test
+    void scheduledTickDoesNotReloadWorkerPollDelayUntilCachedDelayElapses() {
+        AffinityRecomputeTaskService taskService = mock(AffinityRecomputeTaskService.class);
+        AffinityMaintenanceService affinityMaintenanceService = mock(AffinityMaintenanceService.class);
+        ModelStatusPropagationService modelStatusPropagationService = mock(ModelStatusPropagationService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AffinityRecomputeProperties properties = new AffinityRecomputeProperties();
+        properties.setDueTaskLimit(10);
+        when(taskService.workerPollDelayMs(60_000L)).thenReturn(60_000L);
+        when(taskService.dueTaskLimit()).thenReturn(10);
+        when(taskService.findPendingDueTasks(any(Instant.class), eq(10))).thenReturn(List.of());
+
+        AffinityRecomputeWorkerService worker = new AffinityRecomputeWorkerService(
+                taskService,
+                affinityMaintenanceService,
+                modelStatusPropagationService,
+                properties,
+                mongoTemplate);
+
+        worker.runDueTasks();
+        worker.runDueTasks();
+
+        verify(taskService, times(1)).workerPollDelayMs(60_000L);
+    }
+
     @Test
     void userTargetRefreshesUserThenEmitsCollapsedEventAndAssetTasks() {
         AffinityRecomputeTaskService taskService = mock(AffinityRecomputeTaskService.class);

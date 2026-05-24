@@ -1,0 +1,10 @@
+{
+  "name": "event explore filters and opens an event detail editor view",
+  "group": "event-explore",
+  "order": 61,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 70000
+}

@@ -122,7 +122,7 @@ public class EventParticipationTicketService {
                 continue;
             }
             String memberStatus = normalizeMemberStatus(member.getStatus());
-            if ("deleted".equals(memberStatus)) {
+            if ("deleted".equals(memberStatus) || "disqualified".equals(memberStatus)) {
                 continue;
             }
             if ("pending".equals(memberStatus)) {
@@ -491,6 +491,9 @@ public class EventParticipationTicketService {
         }
         if ("deleted".equals(normalized)) {
             return "deleted";
+        }
+        if ("disqualified".equals(normalized)) {
+            return "disqualified";
         }
         return "accepted";
     }

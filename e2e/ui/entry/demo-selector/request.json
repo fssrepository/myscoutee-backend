@@ -1,0 +1,15 @@
+{
+  "name": "entry login approves location and opens demo selector",
+  "group": "entry",
+  "order": 11,
+  "route": "/",
+  "geolocation": {
+    "latitude": 47.5004928,
+    "longitude": 19.0742528,
+    "accuracy": 20,
+    "grant": false
+  },
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 45000
+}

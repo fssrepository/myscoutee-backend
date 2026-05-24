@@ -18,6 +18,13 @@
       "contentHtml": "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>"
     },
     {
+      "id": "affinity-network",
+      "icon": "hub",
+      "title": "Szimpátia és csoportchat",
+      "blurb": "A válaszod segít olyan kis csoportot találni, ahol könnyebb elkezdeni beszélgetni.",
+      "contentHtml": "<p>Amikor 1 és 10 között választasz, azt jelzed, mennyire szívesen beszélgetnél ezzel az emberrel. Nem csak ez az egy szám dönt: többet ér, ha a szimpátia kölcsönös, friss, és a szokásos háttérzajhoz képest is erős.</p><p>Ha több embernél látszik, hogy jó eséllyel szívesen ismerkednének egymással, a MyScoutee kioszthat egy 6-12 fős véletlenszerű csoportos chatet. A csoport továbbra is új és laza, csak olyan irányba van terelve, ahol az első üzenet kevésbé kínos.</p>"
+    },
+    {
       "id": "profile",
       "icon": "visibility",
       "title": "Profil és képek",

@@ -1,0 +1,11 @@
+{
+  "name": "profile editor uploads, replaces, removes, and reloads media",
+  "group": "profile-editor",
+  "order": 54,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 120000
+}

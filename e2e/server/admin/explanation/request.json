@@ -1,0 +1,17 @@
+{
+  "name": "admin explanation editor state",
+  "group": "admin",
+  "order": 1060,
+  "method": "GET",
+  "path": "/api/admin/explanation",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}",
+    "lang": "en",
+    "contextKey": "home.game"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

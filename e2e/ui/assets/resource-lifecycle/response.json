@@ -1,0 +1,14 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-assets",
+    ".experience-item-card"
+  ],
+  "network": [
+    "/api/assets",
+    "/api/activities/events/subevent-resources",
+    "/api/activities/events/subevent-resources/replace"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true
+}

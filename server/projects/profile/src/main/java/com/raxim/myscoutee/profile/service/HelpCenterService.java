@@ -1,7 +1,5 @@
 package com.raxim.myscoutee.profile.service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,8 +12,6 @@ import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.http.HttpStatus;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -24,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -35,7 +30,6 @@ import com.raxim.myscoutee.profile.data.document.HelpCenterRevision.HelpCenterSe
 import com.raxim.myscoutee.profile.data.document.PrivacyConsent;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAuditEntryDto;
-import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.ContentLanguageDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterSectionDto;
@@ -53,28 +47,31 @@ public class HelpCenterService {
     private static final String DOCUMENT_EXPLANATION = "explanation";
     private static final String DEFAULT_LANG = "en";
     private static final String LEGACY_VERSION_INDEX = "help_revision_version";
-    private static final String DEFAULT_SEED_RESOURCE_PREFIX = "classpath:mongo-seed/profile/helpCenter";
-    private static final String DEFAULT_HELP_DESCRIPTION = "MyScoutee helps you plan events end-to-end: invite people, split into stages/groups, assign resources, and coordinate in context chats.";
-    private static final String DEFAULT_PRIVACY_DESCRIPTION = "Before continuing, please review and accept how your data is used in MyScoutee.";
-    private static final String DEFAULT_EXPLANATION_DESCRIPTION = "Short in-app guidance for the selected screen.";
     private static final String DEFAULT_EXPLANATION_CONTEXT = "home.game";
     private static final String EXPLANATION_ACTIVITY_RATES_CONTEXT = "activities.rates";
-    private static final String LEGACY_EXPLANATION_FILTER_COUNT_COPY_EN = "The number shows how many filter groups are active.";
-    private static final String UPDATED_EXPLANATION_FILTER_COUNT_COPY_EN = "The number shows how many results match the selected filter condition.";
-    private static final String LEGACY_EXPLANATION_FILTER_COUNT_COPY_HU = "A szám azt mutatja, hány szűrőcsoport aktív.";
-    private static final String UPDATED_EXPLANATION_FILTER_COUNT_COPY_HU = "A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.";
-    private static final Set<String> LEGACY_ACTIVITY_RATES_EXPLANATION_SECTION_IDS = Set.of(
-            "activity-tabs",
-            "activity-distance-sort",
-            "activity-card-actions",
-            "activity-panel-actions");
+    private static final String EXPLANATION_CHATS_CONTEXT = "chats";
+    private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
+    private static final String EXPLANATION_ASSETS_CONTEXT = "assets";
+    private static final String EXPLANATION_ASSETS_CAR_CONTEXT = "assets.car";
+    private static final String EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT = "assets.accommodation";
+    private static final String EXPLANATION_ASSETS_SUPPLIES_CONTEXT = "assets.supplies";
+    private static final String EXPLANATION_ASSETS_TICKETS_CONTEXT = "assets.tickets";
+    private static final String EXPLANATION_EVENTS_CONTEXT = "events";
+    private static final String EXPLANATION_EVENT_EDITOR_CONTEXT = "event.editor";
     private static final Set<String> EXPLANATION_CONTEXT_KEYS = Set.of(
             "home.game",
             "activities.rates",
+            EXPLANATION_CHATS_CONTEXT,
+            EXPLANATION_CONTACTS_CONTEXT,
             "profile.editor",
             "profile.view",
-            "assets",
-            "events",
+            EXPLANATION_ASSETS_CONTEXT,
+            EXPLANATION_ASSETS_CAR_CONTEXT,
+            EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT,
+            EXPLANATION_ASSETS_SUPPLIES_CONTEXT,
+            EXPLANATION_ASSETS_TICKETS_CONTEXT,
+            EXPLANATION_EVENTS_CONTEXT,
+            EXPLANATION_EVENT_EDITOR_CONTEXT,
             "event.feedback");
     private static final Safelist HELP_HTML_SAFELIST = Safelist.relaxed()
             .addTags("section", "article", "figure", "figcaption", "h3", "h4")
@@ -90,8 +87,6 @@ public class HelpCenterService {
     private final HelpCenterAuditRepository auditRepository;
     private final PrivacyConsentsRepository privacyConsentsRepository;
     private final MongoTemplate mongoTemplate;
-    private final ObjectMapper objectMapper;
-    private final ResourceLoader resourceLoader;
     private final AdminTelemetryService adminTelemetryService;
 
     public HelpCenterService(
@@ -100,16 +95,12 @@ public class HelpCenterService {
             HelpCenterAuditRepository auditRepository,
             PrivacyConsentsRepository privacyConsentsRepository,
             MongoTemplate mongoTemplate,
-            ObjectMapper objectMapper,
-            ResourceLoader resourceLoader,
             AdminTelemetryService adminTelemetryService) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
         this.privacyConsentsRepository = privacyConsentsRepository;
         this.mongoTemplate = mongoTemplate;
-        this.objectMapper = objectMapper;
-        this.resourceLoader = resourceLoader;
         this.adminTelemetryService = adminTelemetryService;
     }
 
@@ -134,9 +125,9 @@ public class HelpCenterService {
         String language = requestContentLang(lang, acceptLanguage);
         String context = contextKey(kind, contextKey, false);
         if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
-            return new HelpCenterStateDto(null, List.of(), List.of(), contentLanguages());
+            return new HelpCenterStateDto(null, List.of(), List.of(), List.of());
         }
-        ensureDefaultRevision(kind, language, context);
+        prepareRevisionCollection(kind, language, context);
         HelpCenterRevision active = revisionsForKind(
                     revisionsRepository.findAllByOrderByVersionDesc(),
                     kind,
@@ -150,7 +141,7 @@ public class HelpCenterService {
                 active == null ? null : toRevisionDto(active),
                 active == null ? List.of() : List.of(toRevisionDto(active)),
                 List.of(),
-                contentLanguages());
+                List.of());
     }
 
     public HelpCenterStateDto adminState(String adminUserId) {
@@ -162,11 +153,16 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto adminState(String adminUserId, String documentType, String lang) {
+        return adminState(adminUserId, documentType, lang, null);
+    }
+
+    public HelpCenterStateDto adminState(String adminUserId, String documentType, String lang, String contextKey) {
         String kind = documentKind(documentType);
         String language = contentLang(lang);
+        String context = contextKey(kind, contextKey, false);
         ensureAdmin(adminUserId);
-        ensureDefaultRevision(kind, language);
-        return fullState(kind, language);
+        prepareRevisionCollection(kind, language, context);
+        return fullState(kind, language, context);
     }
 
     public HelpCenterStateDto saveRevision(HelpCenterRevisionSaveRequestDto request) {
@@ -178,7 +174,6 @@ public class HelpCenterService {
         String language = contentLang(request == null ? null : request.lang());
         String context = contextKey(kind, request == null ? null : request.contextKey(), true);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
-        ensureDefaultRevision(kind, language, context);
         List<HelpCenterSection> sections = normalizeSections(request == null ? null : request.sections(), kind);
         List<HelpCenterRevision> currentRevisions = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context);
         Integer nextVersion = currentRevisions.stream()
@@ -195,8 +190,8 @@ public class HelpCenterService {
         revision.setVersion(nextVersion);
         revision.setActive(false);
         revision.setTitle(text(request == null ? null : request.title(), defaultTitle(kind, nextVersion, language)));
-        revision.setSummary(text(request == null ? null : request.summary(), defaultSummary(kind, language, context)));
-        revision.setDescription(text(request == null ? null : request.description(), defaultDescription(kind, language)));
+        revision.setSummary(normalize(request == null ? null : request.summary()));
+        revision.setDescription(normalize(request == null ? null : request.description()));
         revision.setHeaderColor(headerColor(request == null ? null : request.headerColor()));
         revision.setSections(sections);
         revision.setCreatedDate(nowIso);
@@ -210,7 +205,7 @@ public class HelpCenterService {
                 ? "Created v" + saved.getVersion() + " from " + baseRevisionId + "."
                 : "Created v" + saved.getVersion() + ".");
         adminTelemetryService.record("content.revision.saved", "content", saved.getId(), actorUserId);
-        return fullState(kind, language);
+        return fullState(kind, language, context);
     }
 
     public HelpCenterStateDto activateRevision(String revisionId, HelpCenterAdminActionRequestDto request) {
@@ -244,7 +239,7 @@ public class HelpCenterService {
         revisionsRepository.saveAll(revisions);
         audit("activate", actorUserId, target, "Activated v" + target.getVersion() + ".");
         adminTelemetryService.record("content.revision.activated", "content", target.getId(), actorUserId);
-        return fullState(kind, language);
+        return fullState(kind, language, targetContext);
     }
 
     public HelpCenterStateDto deleteRevision(String revisionId, HelpCenterAdminActionRequestDto request) {
@@ -276,7 +271,7 @@ public class HelpCenterService {
                 revisionsRepository.save(next);
             });
         }
-        return fullState(kind, language);
+        return fullState(kind, language, targetContext);
     }
 
     public PrivacyConsentDto privacyConsent(String userId, String revisionId, Integer revisionVersion) {
@@ -298,7 +293,7 @@ public class HelpCenterService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
         }
 
-        ensureDefaultRevision(DOCUMENT_PRIVACY);
+        prepareRevisionCollection(DOCUMENT_PRIVACY);
         HelpCenterRevision revision = revisionsRepository.findById(revisionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Privacy revision not found."));
         if (!DOCUMENT_PRIVACY.equals(revisionKind(revision))) {
@@ -328,8 +323,13 @@ public class HelpCenterService {
     }
 
     private HelpCenterStateDto fullState(String kind, String lang) {
+        return fullState(kind, lang, null);
+    }
+
+    private HelpCenterStateDto fullState(String kind, String lang, String contextKey) {
         String language = contentLang(lang);
-        List<HelpCenterRevision> revisions = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language);
+        String context = contextKey(kind, contextKey, false);
+        List<HelpCenterRevision> revisions = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context);
         HelpCenterRevision active = revisions.stream()
                 .filter(revision -> Boolean.TRUE.equals(revision.getActive()))
                 .max(Comparator.comparing(HelpCenterRevision::getVersion, Comparator.nullsLast(Integer::compareTo)))
@@ -342,449 +342,21 @@ public class HelpCenterService {
                 active == null ? null : toRevisionDto(active),
                 revisions.stream().map(this::toRevisionDto).toList(),
                 auditTrail.stream().map(this::toAuditDto).toList(),
-                contentLanguages());
+                List.of());
     }
 
-    private void ensureDefaultRevision(String kind) {
-        ensureDefaultRevision(kind, DEFAULT_LANG);
+    private void prepareRevisionCollection(String kind) {
+        prepareRevisionCollection(kind, DEFAULT_LANG);
     }
 
-    private void ensureDefaultRevision(String kind, String lang) {
-        ensureDefaultRevision(kind, lang, null);
+    private void prepareRevisionCollection(String kind, String lang) {
+        prepareRevisionCollection(kind, lang, null);
     }
 
-    private void ensureDefaultRevision(String kind, String lang, String contextKey) {
-        String context = contextKey(kind, contextKey, false);
-        if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
-            ensureDefaultRevision(kind, lang, DEFAULT_EXPLANATION_CONTEXT);
-            ensureDefaultRevision(kind, lang, EXPLANATION_ACTIVITY_RATES_CONTEXT);
-            return;
-        }
+    private void prepareRevisionCollection(String kind, String lang, String contextKey) {
+        contextKey(kind, contextKey, false);
         dropLegacyVersionIndex();
         backfillDocumentTypes();
-        for (ContentLanguageDto contentLanguage : contentLanguages()) {
-            String language = contentLang(contentLanguage.lang());
-            if (!revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context).isEmpty()) {
-                backfillExplanationFilterCountCopy(kind, language);
-                backfillActivityRatesExplanationCopy(kind, language);
-                continue;
-            }
-            String nowIso = Instant.now().toString();
-            HelpCenterRevision revision = seedRevision(kind, language, context);
-            revision.setDocumentType(kind);
-            revision.setLang(language);
-            revision.setContextKey(revisionContext(revision));
-            revision.setLanguageLabel(languageLabel(language));
-            revision.setVersion(revision.getVersion() == null || revision.getVersion() <= 0 ? 1 : revision.getVersion());
-            revision.setActive(true);
-            revision.setTitle(text(revision.getTitle(), defaultRevisionTitle(kind, language, context)));
-            revision.setSummary(text(revision.getSummary(), defaultSummary(kind, language, context)));
-            revision.setDescription(text(revision.getDescription(), defaultDescription(kind, language)));
-            revision.setHeaderColor(headerColor(revision.getHeaderColor()));
-            revision.setSections(revision.getSections() == null || revision.getSections().isEmpty()
-                    ? defaultSections(kind, language, context)
-                    : normalizeSections(revision.getSections().stream().map(this::toSectionDtoForSeed).toList(), kind));
-            revision.setCreatedDate(nowIso);
-            revision.setCreatedUser("system");
-            revision.setUpdatedDate(nowIso);
-            revision.setUpdatedUser("system");
-            HelpCenterRevision saved = revisionsRepository.save(revision);
-            audit("seed", "system", saved, "Seeded default " + documentLabel(kind).toLowerCase(Locale.ROOT) + " revision v1.");
-            backfillExplanationFilterCountCopy(kind, language);
-            backfillActivityRatesExplanationCopy(kind, language);
-        }
-    }
-
-    private void backfillExplanationFilterCountCopy(String kind, String lang) {
-        if (!DOCUMENT_EXPLANATION.equals(kind)) {
-            return;
-        }
-        String language = contentLang(lang);
-        String legacyCopy = "hu".equals(language)
-                ? LEGACY_EXPLANATION_FILTER_COUNT_COPY_HU
-                : LEGACY_EXPLANATION_FILTER_COUNT_COPY_EN;
-        String updatedCopy = "hu".equals(language)
-                ? UPDATED_EXPLANATION_FILTER_COUNT_COPY_HU
-                : UPDATED_EXPLANATION_FILTER_COUNT_COPY_EN;
-        List<HelpCenterRevision> revisions = revisionsForKind(
-                revisionsRepository.findAllByOrderByVersionDesc(),
-                DOCUMENT_EXPLANATION,
-                language);
-        for (HelpCenterRevision revision : revisions) {
-            boolean changed = false;
-            for (HelpCenterSection section : revision.getSections()) {
-                if (!"filters".equals(section.getId()) || !StringUtils.hasText(section.getContentHtml())) {
-                    continue;
-                }
-                String updatedHtml = section.getContentHtml().replace(legacyCopy, updatedCopy);
-                if (!updatedHtml.equals(section.getContentHtml())) {
-                    section.setContentHtml(updatedHtml);
-                    changed = true;
-                }
-            }
-            if (changed) {
-                revisionsRepository.save(revision);
-            }
-        }
-    }
-
-    private void backfillActivityRatesExplanationCopy(String kind, String lang) {
-        if (!DOCUMENT_EXPLANATION.equals(kind)) {
-            return;
-        }
-        String language = contentLang(lang);
-        List<HelpCenterRevision> revisions = revisionsForKind(
-                revisionsRepository.findAllByOrderByVersionDesc(),
-                DOCUMENT_EXPLANATION,
-                language,
-                EXPLANATION_ACTIVITY_RATES_CONTEXT);
-        for (HelpCenterRevision revision : revisions) {
-            if (!isLegacyActivityRatesExplanation(revision)) {
-                continue;
-            }
-            revision.setTitle(defaultRevisionTitle(DOCUMENT_EXPLANATION, language, EXPLANATION_ACTIVITY_RATES_CONTEXT));
-            revision.setSummary(defaultSummary(DOCUMENT_EXPLANATION, language, EXPLANATION_ACTIVITY_RATES_CONTEXT));
-            revision.setSections(defaultActivityRatesExplanationSections(language));
-            revision.setUpdatedDate(Instant.now().toString());
-            revision.setUpdatedUser(StringUtils.hasText(revision.getUpdatedUser()) ? revision.getUpdatedUser() : "system");
-            revisionsRepository.save(revision);
-        }
-    }
-
-    private boolean isLegacyActivityRatesExplanation(HelpCenterRevision revision) {
-        if (revision == null || revision.getSections() == null) {
-            return false;
-        }
-        return revision.getSections().stream().anyMatch(section -> {
-            String id = normalize(section.getId());
-            String title = text(section.getTitle(), "");
-            String contentHtml = text(section.getContentHtml(), "");
-            return LEGACY_ACTIVITY_RATES_EXPLANATION_SECTION_IDS.contains(id)
-                    || "Panel actions".equals(title)
-                    || "Panelműveletek".equals(title)
-                    || contentHtml.contains("The top-right controls change the panel mode or close it.")
-                    || contentHtml.contains("A jobb felső gombok módot váltanak vagy bezárják a panelt.");
-        });
-    }
-
-    private List<HelpCenterSection> defaultSections(String kind, String lang) {
-        return defaultSections(kind, lang, null);
-    }
-
-    private List<HelpCenterSection> defaultSections(String kind, String lang, String contextKey) {
-        if (DOCUMENT_EXPLANATION.equals(kind)) {
-            return defaultExplanationSections(lang, contextKey);
-        }
-        if ("hu".equals(contentLang(lang))) {
-            return DOCUMENT_PRIVACY.equals(kind) ? defaultPrivacySectionsHu() : defaultHelpSectionsHu();
-        }
-        if (DOCUMENT_PRIVACY.equals(kind)) {
-            return defaultPrivacySections();
-        }
-        return List.of(
-                defaultSection(
-                        "events",
-                        "event_note",
-                        "Events and Sub Events",
-                        "Build the full event flow with stages or optional items.",
-                        """
-                        <p><strong>Build the full event flow with stages or optional items.</strong></p>
-                        <p>Create a main event, then split execution into sub events for stages, side activities, or optional sessions.</p>
-                        <p>Each sub event carries its own date range, description, and status so planning stays clean and trackable.</p>
-                        <ul>
-                          <li>Supports casual and tournament structures</li>
-                          <li>Keeps stage context visible in related screens</li>
-                          <li>Lets hosts edit details without losing hierarchy</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "resources",
-                        "inventory_2",
-                        "Resources and Capacity",
-                        "Assign people, cars, accommodation, and supplies with limits.",
-                        """
-                        <p><strong>Assign people, cars, accommodation, and supplies with limits.</strong></p>
-                        <p>Use resource menus to assign assets into sub events and groups, then adjust capacity ranges directly where needed.</p>
-                        <p>Badges summarize pending requests and remaining capacity so action priorities are visible at a glance.</p>
-                        <ul>
-                          <li>Capacity min/max control per assignment</li>
-                          <li>Contextual badges for pending requests</li>
-                          <li>Route and location support for travel resources</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "activities",
-                        "forum",
-                        "Activities and Chats",
-                        "Coordinate with context-aware channels and filters.",
-                        """
-                        <p><strong>Coordinate with context-aware channels and filters.</strong></p>
-                        <p>Chat channels follow event scope: main event, optional sub event, and group channels can all coexist.</p>
-                        <p>Context actions in chat headers help jump directly to related event/sub-event views and resources.</p>
-                        <ul>
-                          <li>Fast channel filtering by context</li>
-                          <li>Unread counters scoped to relevant channels</li>
-                          <li>Works for both mobile and desktop flows</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "safety",
-                        "verified_user",
-                        "Profiles and Safety",
-                        "Improve trust with profile quality and moderation tools.",
-                        """
-                        <p><strong>Improve trust with profile quality and moderation tools.</strong></p>
-                        <p>Profile completion updates in real time as users fill key fields and detail sections.</p>
-                        <p>Safety controls include report tools, privacy visibility options, and clear moderation pathways.</p>
-                        <ul>
-                          <li>Live profile completion feedback</li>
-                          <li>Report user and feedback workflows</li>
-                          <li>Privacy and access visibility controls</li>
-                        </ul>
-                        """));
-    }
-
-    private List<HelpCenterSection> defaultHelpSectionsHu() {
-        return List.of(
-                defaultSection("events", "event_note", "Események és alesemények", "Építsd fel a teljes eseményfolyamatot szakaszokkal vagy opcionális elemekkel.", "<p><strong>Építsd fel a teljes eseményfolyamatot szakaszokkal vagy opcionális elemekkel.</strong></p><p>Hozz létre fő eseményt, majd bontsd aleseményekre szakaszokhoz, mellékprogramokhoz vagy opcionális alkalmakhoz.</p><ul><li>Alkalmi és verseny jellegű struktúrák támogatása</li><li>A szakaszkontextus látható marad</li><li>A szervezők a hierarchia elvesztése nélkül szerkeszthetnek</li></ul>"),
-                defaultSection("resources", "inventory_2", "Erőforrások és kapacitás", "Rendelj embereket, autókat, szállást és kellékeket limitekkel.", "<p><strong>Rendelj embereket, autókat, szállást és kellékeket limitekkel.</strong></p><p>Az erőforrásmenükben eszközöket rendelhetsz aleseményekhez és csoportokhoz, majd közvetlenül állíthatod a kapacitásokat.</p><ul><li>Minimum/maximum kapacitás feladatonként</li><li>Kontextusos jelvények függő kérésekhez</li><li>Útvonal- és helytámogatás utazási erőforrásokhoz</li></ul>"),
-                defaultSection("activities", "forum", "Tevékenységek és csevegések", "Koordinálj kontextustudatos csatornákkal és szűrőkkel.", "<p><strong>Koordinálj kontextustudatos csatornákkal és szűrőkkel.</strong></p><p>A csevegőcsatornák követik az esemény hatókörét: fő esemény, opcionális alesemény és csoportcsatorna is együtt létezhet.</p><ul><li>Gyors csatornaszűrés kontextus szerint</li><li>Olvasatlan számlálók releváns csatornákra szűkítve</li><li>Mobilon és asztali nézetben is működik</li></ul>"),
-                defaultSection("safety", "verified_user", "Profilok és biztonság", "Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.", "<p><strong>Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.</strong></p><p>A profilkészültség valós időben frissül, ahogy a felhasználók kitöltik a fontos mezőket.</p><ul><li>Élő profilkészültségi visszajelzés</li><li>Felhasználójelentési és visszajelzési folyamatok</li><li>Adatvédelmi és hozzáférési kontrollok</li></ul>"));
-    }
-
-    private List<HelpCenterSection> defaultExplanationSections(String lang, String contextKey) {
-        if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(contextKey(DOCUMENT_EXPLANATION, contextKey, false))) {
-            return defaultActivityRatesExplanationSections(lang);
-        }
-        if ("hu".equals(contentLang(lang))) {
-            return List.of(
-                    defaultSection("affinity", "tune", "Szimpátia sáv", "Állítsd be, mennyire szimpatikus a kártya.", "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>"),
-                    defaultSection("profile", "visibility", "Profil és képek", "A kártya több képet és részletes profilt is rejthet.", "<p>Tapints a kép bal vagy jobb oszlopára a fotók lapozásához. A szem ikon megnyitja a profil részleteit.</p>"),
-                    defaultSection("filters", "filter_alt", "Szűrők és módok", "A felső sávval szűkítheted, kik jelenjenek meg.", "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>"),
-                    defaultSection("history", "history", "Előzmények", "A korábbi értékelések később is elérhetők.", "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p>"));
-        }
-        return List.of(
-                defaultSection("affinity", "tune", "Affinity slider", "Choose how strong the card feels for you.", "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>"),
-                defaultSection("profile", "visibility", "Profile and photos", "Cards can contain more photos and a profile detail view.", "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>"),
-                defaultSection("filters", "filter_alt", "Filters and modes", "Use the top bar to narrow who appears.", "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>"),
-                defaultSection("history", "history", "History and edits", "Your previous ratings stay available.", "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>"));
-    }
-
-    private List<HelpCenterSection> defaultActivityRatesExplanationSections(String lang) {
-        if ("hu".equals(contentLang(lang))) {
-            return List.of(
-                    defaultSection("activity-primary-menu", "star", "Tevékenység menü", "Az első eszköztári menü az egész Tevékenységek panelt váltja.", "<p>Itt válthatsz az <strong>Értékelések</strong>, <strong>Chatek</strong> és <strong>Események</strong> között. Az Értékelések vagy Chatek jelvénye az adott terület aktivitásszáma, nem az értékelési szűrő találatszáma.</p><p>Ha kilépsz az Értékelések nézetből, a függő értékelési irányváltások mentődnek, és a teljes képernyős értékelés bezár.</p>"),
-                    defaultSection("activity-rate-filter", "north_east", "Értékeléstípus menü", "A második eszköztári menü dönti el, mely értékeléskártyák látszanak.", "<p>A <strong>Preferenciák</strong> alatt az egyéni Adott, Kapott, Kölcsönös és Találkozott értékelések vannak. A <strong>Javaslatok</strong> alatt a páros Adott és Kapott értékelések vannak.</p><p>A gombon és az egyes opciókon látható jelvény az adott értékelési szűrő pontos találatszáma. A Social kapcsoló azt állítja, hogy az adott csoportban bekerüljenek-e a közösségi kontextusú kártyák.</p>"),
-                    defaultSection("activity-header-controls", "route", "Fejléc gombok", "A jobb felső gombok külön menük és műveletek.", "<p>A <strong>Legutóbbi</strong> a másodlagos rendezési menüt nyitja: friss, releváns vagy korábbi értékelések. A <strong>Távolság</strong> a nézetmenüt nyitja: hónap, hét, nap vagy távolság.</p><p>Távolság nézetben a <strong>10 km</strong> jellegű sávok csoportcímkék az aktuális listához. Az X bezárja a Tevékenységek panelt.</p>"),
-                    defaultSection("activity-card-media", "visibility", "Fotók és profil", "A kártyán képváltás és profilnyitás is van.", "<p>A felső kis képsávok jelzik, hogy több fotó van a kártyán. Kattints egy sávra vagy a kép megfelelő részére a fotóváltáshoz.</p><p>A szem gomb megnyitja az adott profilt. Ha kis avatar/számláló jelvény jelenik meg a kártyán, az a kapcsolódó profilra vagy közösségi kontextusra mutat.</p>"),
-                    defaultSection("activity-score-badge", "star", "Csillagos értékelő jelvény", "A csillagos jelvény az értékelés vezérlője, nem általános kártyapont.", "<p>A jelvény a saját aktuális értékedet mutatja, vagy <strong>Értékelés</strong> feliratot, ha még nincs érték. Kattintásra megnyitja az értékelő szerkesztőt; ugyanarra a kijelölt jelvényre kattintva bezárja.</p><p>Az 1-10-es alsó csillagsávval mentheted az értéket. A Páros Kapott kártyák lehetnek csak olvashatók: ilyenkor a jelvény tiltott, és a kapott páros átlagot mutathatja a saját szerkeszthető érték helyett.</p>"),
-                    defaultSection("activity-fullscreen", "fullscreen", "Teljes képernyős értékelés", "A narancs teljes képernyő ikon az értékelési folyamatot váltja.", "<p>Távolság alapú Értékelések nézetben a teljes képernyő gomb fókuszált, kártyánkénti értékelésre vált. Ugyanez a gomb kilépés ikonra vált, és visszavisz a normál listához.</p><p>Szerkeszthető teljes képernyős nézetben az alsó csillagok az aktuális kártyát értékelik. Csak olvasható Páros Kapott módban a teljes képernyő navigálásra szolgál, nem szerkesztésre.</p>"));
-        }
-        return List.of(
-                defaultSection("activity-primary-menu", "star", "Activity menu", "The first toolbar menu switches the whole Activities panel.", "<p>Open it to move between <strong>Ratings</strong>, <strong>Chats</strong>, and <strong>Events</strong>. The badge on Ratings or Chats is that area&rsquo;s activity count, not the count from the rating-type filter.</p><p>When you leave Ratings, pending score direction changes are committed and fullscreen rating is closed.</p>"),
-                defaultSection("activity-rate-filter", "north_east", "Rating type menu", "The second toolbar menu decides which rating cards appear.", "<p><strong>Preferences</strong> contains individual Given, Received, Mutual, and Met ratings. <strong>Suggestions</strong> contains pair Given and Received ratings.</p><p>The badge on this button and on each option is the number of cards matching that exact rating filter. The Social toggle changes whether social-context cards are included for that group.</p>"),
-                defaultSection("activity-header-controls", "route", "Header controls", "The top-right buttons are separate menus and actions.", "<p><strong>Recent</strong> opens the secondary order menu: recent, relevant, or past ratings. <strong>Distance</strong> opens the view menu: month, week, day, or distance.</p><p>When Distance view is selected, markers such as <strong>10 km</strong> are group labels for the current list. The X closes the Activities panel.</p>"),
-                defaultSection("activity-card-media", "visibility", "Photos and profile", "The card itself has image navigation and profile access.", "<p>The small image bars show that the card has multiple photos. Click a bar or the image area to switch photos.</p><p>The eye button opens that person&rsquo;s profile. If a small avatar/counter badge appears on a card, it points to the connecting profile or shared social context.</p>"),
-                defaultSection("activity-score-badge", "star", "Star rating badge", "The star badge is the rating control, not a generic card score.", "<p>The badge shows your current rating value, or <strong>Rate</strong> when you have not rated yet. Click it to open the rating editor; click the same selected badge again to close it.</p><p>Use the 1-10 star dock to save a value. Pair Received cards can be read-only: their badge is disabled and may show the received pair average instead of your editable score.</p>"),
-                defaultSection("activity-fullscreen", "fullscreen", "Fullscreen rating", "The orange fullscreen icon changes the rating workflow.", "<p>In distance-based Ratings, the fullscreen button opens a focused card-by-card rating flow. The same button becomes fullscreen-exit and returns you to the normal list.</p><p>In editable fullscreen views, the bottom stars rate the current card. In read-only pair-received mode, fullscreen uses navigation instead of editing.</p>"));
-    }
-
-    private List<HelpCenterSection> defaultPrivacySectionsHu() {
-        return List.of(
-                defaultSection("privacy", "policy", "Adatvédelem", "Hogyan kezeli a MyScoutee a profilhoz, eseményekhez és közösségi aktivitáshoz kapcsolódó személyes adatokat.", "<p>Hogyan kezeli a MyScoutee a profilhoz, eseményekhez és közösségi aktivitáshoz kapcsolódó személyes adatokat.</p><p><strong>Utolsó frissítés:</strong> 2026. február 1.</p>"),
-                defaultSection("contact-details", "contact_mail", "Kapcsolati adatok", "Kihez fordulhatsz adatvédelemmel és adatkezeléssel kapcsolatban.", "<ul><li><strong>Adatkezelő:</strong> MyScoutee demo platform</li><li><strong>Támogatási email:</strong> privacy@myscoutee.app</li><li><strong>DPO kapcsolat:</strong> dpo@myscoutee.app</li></ul>"),
-                defaultSection("legal-basis", "gavel", "Jogalap", "Miért kezel adatokat a MyScoutee a termék- és biztonsági folyamatokhoz.", "<ul><li>Szerződés teljesítése a fiók- és eseményfunkciókhoz.</li><li>Jogos érdek a platform biztonsága és a visszaélések megelőzése érdekében.</li><li>Hozzájárulás opcionális profiladatokhoz, pontos helykoordinátákhoz és marketingkommunikációhoz.</li></ul>"),
-                defaultSection("your-rights", "fact_check", "Jogaid", "A fiókodhoz és személyes adataidhoz kapcsolódó jogaid.", "<h4>Hozzáférés</h4><ul><li>Kérhetsz másolatot a tárolt személyes adataidról.</li></ul><h4>Helyesbítés</h4><ul><li>Javíthatod a pontatlan profil- vagy fiókadatokat.</li></ul><h4>Törlés</h4><ul><li>Kérheted a fiók és a személyes adatok törlését, ahol ez jogilag lehetséges.</li></ul>"),
-                defaultSection("data-categories", "category", "Adatkategóriák", "Milyen adattípusokat kezelhet a MyScoutee.", "<h4>Fiók és azonosítás</h4><ul><li>Név</li><li>Születésnap</li><li>Lakóhely városa</li><li>Nem</li><li>Profilképek</li></ul><h4>Aktivitási adatok</h4><ul><li>Csevegések</li><li>Meghívások</li><li>Események</li><li>Értékelések</li></ul>"),
-                defaultSection("purposes", "tips_and_updates", "Célok", "Hogyan támogatják az adatok a profil-, esemény-, chat- és bizalmi funkciókat.", "<ul><li>Profil-, chat-, esemény- és szervezői funkciók működtetése.</li><li>Releváns tagok ajánlása és a felfedezés minőségének javítása.</li><li>Visszaélések, spam és gyanús aktivitás észlelése.</li></ul>"),
-                defaultSection("retention", "schedule", "Megőrzés", "Mennyi ideig őrizzük meg az adatokat.", "<ul><li>Fiókprofil-adatok: amíg a fiók aktív.</li><li>Biztonsági és auditnaplók: jogi vagy megfelelőségi igény szerint.</li><li>Törölt fiókok: az adatok a megőrzési idő után törlődnek vagy anonimizálódnak.</li></ul>"),
-                defaultSection("sharing", "share", "Harmadik felekkel megosztás", "Mikor kerülhetnek adatok a MyScoutee-n kívülre.", "<ul><li>Szolgáltatókkal tárhely, analitika és támogatási működés céljából.</li><li>Hatóságokkal csak akkor, ha alkalmazandó jog előírja.</li><li>Személyes adatot nem értékesítünk.</li></ul>"),
-                defaultSection("security", "security", "Biztonság", "Az adatok védelmét szolgáló kontrollok.", "<ul><li>Szerepköralapú hozzáférés belső eszközökhöz.</li><li>Titkosított adatátvitel.</li><li>Üzemeltetési monitorozás és incidenskezelési folyamatok.</li></ul>"));
-    }
-
-    private List<HelpCenterSection> defaultPrivacySections() {
-        return List.of(
-                defaultSection(
-                        "privacy",
-                        "policy",
-                        "Privacy",
-                        "How myscoutee handles personal data for profile, events, and social activity (including GDPR rights).",
-                        """
-                        <p>How myscoutee handles personal data for profile, events, and social activity (including GDPR rights).</p>
-                        <p><strong>Last updated:</strong> February 1, 2026</p>
-                        """),
-                defaultSection(
-                        "contact-details",
-                        "contact_mail",
-                        "Contact details",
-                        "Who to contact about privacy and data protection.",
-                        """
-                        <ul>
-                          <li><strong>Data Controller:</strong> myscoutee demo platform</li>
-                          <li><strong>Support Email:</strong> privacy@myscoutee.app</li>
-                          <li><strong>DPO Contact:</strong> dpo@myscoutee.app</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "legal-basis",
-                        "gavel",
-                        "Legal basis",
-                        "Why MyScoutee processes data for product and safety workflows.",
-                        """
-                        <ul>
-                          <li>Contract performance for account and event features.</li>
-                          <li>Legitimate interest for platform safety and abuse prevention.</li>
-                          <li>Consent for optional profile details, precise location coordinates, and marketing communication.</li>
-                          <li>Legal obligation for security logs and compliance records.</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "your-rights",
-                        "fact_check",
-                        "Your rights",
-                        "Rights available for your account and personal data.",
-                        """
-                        <h4>Access</h4>
-                        <ul><li>Request a copy of your stored personal data.</li></ul>
-                        <h4>Rectification</h4>
-                        <ul><li>Correct inaccurate profile or account details.</li></ul>
-                        <h4>Erasure</h4>
-                        <ul><li>Request account and personal data deletion where legally possible.</li></ul>
-                        <h4>Portability</h4>
-                        <ul><li>Export your data in a commonly used machine-readable format.</li></ul>
-                        <h4>Restriction / Objection</h4>
-                        <ul><li>Limit or object to specific processing activities.</li></ul>
-                        """),
-                defaultSection(
-                        "data-categories",
-                        "category",
-                        "Data categories",
-                        "Types of data MyScoutee may process.",
-                        """
-                        <h4>Account & Identity</h4>
-                        <ul><li>Name</li><li>Birthday</li><li>Home city</li><li>Gender</li><li>Profile images</li></ul>
-                        <h4>Location & Coordinates</h4>
-                        <ul><li>Approximate location (city/region)</li><li>Precise GPS coordinates (latitude/longitude) when requested</li><li>Location update timestamps for event logistics</li></ul>
-                        <h4>Activity Data</h4>
-                        <ul><li>Chats</li><li>Invitations</li><li>Events</li><li>Hosting interactions</li><li>Ratings</li></ul>
-                        <h4>Preference Data</h4>
-                        <ul><li>Interests</li><li>Values</li><li>Visibility settings</li><li>Language preferences</li></ul>
-                        <h4>Technical Data</h4>
-                        <ul><li>Device/browser metadata</li><li>IP/log records</li><li>Session events</li></ul>
-                        """),
-                defaultSection(
-                        "purposes",
-                        "tips_and_updates",
-                        "Purposes",
-                        "How data supports profile, event, chat, and trust features.",
-                        """
-                        <ul>
-                          <li>Operate profile, chat, event, and hosting features.</li>
-                          <li>Match relevant members and improve discovery quality.</li>
-                          <li>Support location-based matching and distance-aware event coordination.</li>
-                          <li>Detect abuse, spam, and suspicious platform activity.</li>
-                          <li>Support account requests and compliance processes.</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "retention",
-                        "schedule",
-                        "Retention",
-                        "How long data is kept.",
-                        """
-                        <ul>
-                          <li>Account profile data: retained while account is active.</li>
-                          <li>Precise location coordinates: stored only for active location-enabled features and deleted when no longer required.</li>
-                          <li>Safety and audit logs: retained based on legal/compliance needs.</li>
-                          <li>Deleted accounts: data removed or anonymized after retention window.</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "sharing",
-                        "share",
-                        "Third-party sharing",
-                        "When data may be shared outside MyScoutee.",
-                        """
-                        <ul>
-                          <li>Service providers for hosting, analytics, and support operations.</li>
-                          <li>Authorities only when required by applicable law.</li>
-                          <li>No sale of personal data.</li>
-                        </ul>
-                        """),
-                defaultSection(
-                        "security",
-                        "security",
-                        "Security",
-                        "Controls used to protect data.",
-                        """
-                        <ul>
-                          <li>Role-based access control for internal tools.</li>
-                          <li>Encrypted transport for data in transit.</li>
-                          <li>Operational monitoring and incident response procedures.</li>
-                        </ul>
-                        """));
-    }
-
-    private HelpCenterSection defaultSection(String id, String icon, String title, String blurb, String contentHtml) {
-        HelpCenterSection section = new HelpCenterSection();
-        section.setId(id);
-        section.setIcon(icon);
-        section.setTitle(title);
-        section.setBlurb(blurb);
-        section.setContentHtml(sanitizeHtml(contentHtml));
-        section.setOptional(false);
-        return section;
-    }
-
-    private HelpCenterRevision seedRevision(String kind, String lang, String contextKey) {
-        String language = contentLang(lang);
-        String context = contextKey(kind, contextKey, false);
-        Resource resource = resourceLoader.getResource(seedResourcePath(kind, language, context));
-        if (resource.exists()) {
-            try (InputStream inputStream = resource.getInputStream()) {
-                HelpCenterRevision revision = objectMapper.readValue(inputStream, HelpCenterRevision.class);
-                if (DOCUMENT_EXPLANATION.equals(kind) && StringUtils.hasText(context)) {
-                    revision.setContextKey(context);
-                }
-                return revision;
-            } catch (IOException ignored) {
-                // Fall back to the built-in seed if the JSON resource is unavailable or malformed.
-            }
-        }
-        HelpCenterRevision revision = new HelpCenterRevision();
-        revision.setDocumentType(kind);
-        revision.setLang(language);
-        revision.setContextKey(DOCUMENT_EXPLANATION.equals(kind) && StringUtils.hasText(context)
-                ? context
-                : contextKey(kind, revision.getContextKey(), false));
-        revision.setLanguageLabel(languageLabel(language));
-        revision.setVersion(1);
-        revision.setTitle(defaultRevisionTitle(kind, language, context));
-        revision.setSummary(defaultSummary(kind, language, context));
-        revision.setDescription(defaultDescription(kind, language));
-        revision.setHeaderColor("amber");
-        revision.setSections(defaultSections(kind, language, context));
-        return revision;
-    }
-
-    private String seedResourcePath(String kind, String lang, String contextKey) {
-        String documentName = DOCUMENT_PRIVACY.equals(kind) ? "Privacy" : "Help";
-        if (DOCUMENT_EXPLANATION.equals(kind)) {
-            documentName = EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(contextKey)
-                    ? "ExplanationActivitiesRates"
-                    : "ExplanationHome";
-        }
-        return DEFAULT_SEED_RESOURCE_PREFIX + documentName + "Default." + contentLang(lang) + ".json";
-    }
-
-    private HelpCenterSectionDto toSectionDtoForSeed(HelpCenterSection section) {
-        return new HelpCenterSectionDto(
-                normalize(section == null ? null : section.getId()),
-                normalize(section == null ? null : section.getIcon()),
-                normalize(section == null ? null : section.getTitle()),
-                normalize(section == null ? null : section.getBlurb()),
-                normalize(section == null ? null : section.getContentHtml()),
-                section != null && Boolean.TRUE.equals(section.getOptional()));
     }
 
     private List<HelpCenterSection> normalizeSections(List<HelpCenterSectionDto> sections, String kind) {
@@ -814,6 +386,8 @@ public class HelpCenterService {
             section.setTitle(title);
             section.setBlurb(normalize(source == null ? null : source.blurb()));
             section.setContentHtml(html);
+            section.setImageUrls(normalizeImageUrls(source == null ? null : source.imageUrls()));
+            section.setPanelSpan(normalizePanelSpan(source == null ? null : source.panelSpan(), id));
             section.setOptional(DOCUMENT_PRIVACY.equals(kind) && source != null && Boolean.TRUE.equals(source.optional()));
             normalized.add(section);
         }
@@ -848,9 +422,9 @@ public class HelpCenterService {
                 language,
                 languageLabel(language),
                 revision.getVersion(),
-                text(revision.getTitle(), defaultRevisionTitle(kind, language, revisionContext(revision))),
+                text(revision.getTitle(), defaultTitle(kind, revision.getVersion(), language)),
                 normalize(revision.getSummary()),
-                text(revision.getDescription(), defaultDescription(kind, language)),
+                normalize(revision.getDescription()),
                 headerColor(revision.getHeaderColor()),
                 revision.getSections() == null
                         ? List.of()
@@ -869,7 +443,64 @@ public class HelpCenterService {
                 text(section.getTitle(), documentLabel(kind) + " section"),
                 normalize(section.getBlurb()),
                 normalize(section.getContentHtml()),
+                normalizeImageUrls(section.getImageUrls()),
+                normalizePanelSpan(section.getPanelSpan(), section.getId()),
                 DOCUMENT_PRIVACY.equals(kind) && Boolean.TRUE.equals(section.getOptional()));
+    }
+
+    private String normalizePanelSpan(String panelSpan, String sectionId) {
+        String normalized = normalize(panelSpan).toLowerCase(Locale.ROOT);
+        if ("span-1".equals(normalized) || "compact".equals(normalized) || "single".equals(normalized) || "one".equals(normalized) || "1".equals(normalized)) {
+            return "span-1";
+        }
+        if ("span-2".equals(normalized) || "wide".equals(normalized) || "double".equals(normalized) || "two".equals(normalized) || "2".equals(normalized)) {
+            return "span-2";
+        }
+        if ("span-3".equals(normalized) || "full".equals(normalized) || "row".equals(normalized) || "all".equals(normalized) || "3".equals(normalized)) {
+            return "span-3";
+        }
+        return defaultPanelSpan(sectionId);
+    }
+
+    private String defaultPanelSpan(String sectionId) {
+        String id = normalize(sectionId);
+        if ("affinity-network".equals(id)
+                || "activity-event-entry".equals(id)
+                || "activity-event-actions".equals(id)
+                || "activity-event-hosting".equals(id)
+                || "activity-chat-message-window".equals(id)
+                || "contacts-list".equals(id)
+                || "contacts-card".equals(id)
+                || "contacts-private-methods".equals(id)
+                || "assets-entry".equals(id)
+                || "assets-card".equals(id)
+                || "assets-editor".equals(id)
+                || "assets-requests".equals(id)
+                || "assets-scope".equals(id)
+                || "event-editor-main".equals(id)
+                || "event-editor-subevents".equals(id)) {
+            return "span-2";
+        }
+        return "span-1";
+    }
+
+    private List<String> normalizeImageUrls(List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return List.of();
+        }
+        List<String> normalized = new ArrayList<>();
+        Set<String> seen = new LinkedHashSet<>();
+        for (String imageUrl : imageUrls) {
+            String value = normalize(imageUrl);
+            if (!StringUtils.hasText(value) || !seen.add(value)) {
+                continue;
+            }
+            normalized.add(value);
+            if (normalized.size() >= 8) {
+                break;
+            }
+        }
+        return normalized;
     }
 
     private HelpCenterAuditEntryDto toAuditDto(HelpCenterAuditEntry entry) {
@@ -1013,7 +644,7 @@ public class HelpCenterService {
                 }
             }
         } catch (RuntimeException ignored) {
-            // Startup seeding should still work if the index metadata cannot be read in a transient state.
+            // Content reads should continue if index metadata is temporarily unavailable.
         }
     }
 
@@ -1087,15 +718,6 @@ public class HelpCenterService {
     }
 
     private String defaultTitle(String kind, Integer version, String lang) {
-        if ("hu".equals(contentLang(lang))) {
-            if (DOCUMENT_PRIVACY.equals(kind)) {
-                return "Adatvédelmi verzió v" + version;
-            }
-            if (DOCUMENT_EXPLANATION.equals(kind)) {
-                return "Magyarázat verzió v" + version;
-            }
-            return "Súgó verzió v" + version;
-        }
         if (DOCUMENT_PRIVACY.equals(kind)) {
             return "Privacy revision v" + version;
         }
@@ -1103,91 +725,6 @@ public class HelpCenterService {
             return "Explanation revision v" + version;
         }
         return "Help revision v" + version;
-    }
-
-    private String defaultRevisionTitle(String kind, String lang) {
-        return defaultRevisionTitle(kind, lang, null);
-    }
-
-    private String defaultRevisionTitle(String kind, String lang, String contextKey) {
-        String context = contextKey(kind, contextKey, false);
-        if ("hu".equals(contentLang(lang))) {
-            if (DOCUMENT_PRIVACY.equals(kind)) {
-                return "Adatvédelem";
-            }
-            if (DOCUMENT_EXPLANATION.equals(kind)) {
-                if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
-                    return "Tevékenységek magyarázat";
-                }
-                return "Kezdőlap magyarázat";
-            }
-            return "MyScoutee súgó";
-        }
-        if (DOCUMENT_PRIVACY.equals(kind)) {
-            return "Data privacy";
-        }
-        if (DOCUMENT_EXPLANATION.equals(kind)) {
-            if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
-                return "Activity ratings explanation";
-            }
-            return "Home explanation";
-        }
-        return "MyScoutee help";
-    }
-
-    private String defaultSummary(String kind, String lang) {
-        return defaultSummary(kind, lang, null);
-    }
-
-    private String defaultSummary(String kind, String lang, String contextKey) {
-        String context = contextKey(kind, contextKey, false);
-        if ("hu".equals(contentLang(lang))) {
-            if (DOCUMENT_PRIVACY.equals(kind)) {
-                return "Adatvédelem elsőként";
-            }
-            if (DOCUMENT_EXPLANATION.equals(kind)) {
-                if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
-                    return "Így működik az értékelési panel";
-                }
-                return "Így működik a kezdőlap";
-            }
-            return "Mit tehetsz a MyScoutee-ban";
-        }
-        if (DOCUMENT_PRIVACY.equals(kind)) {
-            return "Privacy first";
-        }
-        if (DOCUMENT_EXPLANATION.equals(kind)) {
-            if (EXPLANATION_ACTIVITY_RATES_CONTEXT.equals(context)) {
-                return "How the activity ratings panel works";
-            }
-            return "How the home screen works";
-        }
-        return "What you can do in MyScoutee";
-    }
-
-    private String defaultDescription(String kind, String lang) {
-        if ("hu".equals(contentLang(lang))) {
-            if (DOCUMENT_PRIVACY.equals(kind)) {
-                return "Folytatás előtt nézd át és fogadd el, hogyan használja a MyScoutee az adataidat.";
-            }
-            if (DOCUMENT_EXPLANATION.equals(kind)) {
-                return "Rövid alkalmazáson belüli útmutató a kiválasztott képernyőhöz.";
-            }
-            return "A MyScoutee segít az eseményeket elejétől végéig megtervezni: meghívások, szakaszok és csoportok, erőforrások, valamint kontextushoz kötött csevegések.";
-        }
-        if (DOCUMENT_PRIVACY.equals(kind)) {
-            return DEFAULT_PRIVACY_DESCRIPTION;
-        }
-        if (DOCUMENT_EXPLANATION.equals(kind)) {
-            return DEFAULT_EXPLANATION_DESCRIPTION;
-        }
-        return DEFAULT_HELP_DESCRIPTION;
-    }
-
-    private List<ContentLanguageDto> contentLanguages() {
-        return List.of(
-                new ContentLanguageDto("en", "English"),
-                new ContentLanguageDto("hu", "Magyar"));
     }
 
     private String contentLang(String value) {

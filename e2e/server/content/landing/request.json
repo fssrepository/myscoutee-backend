@@ -1,0 +1,12 @@
+{
+  "name": "landing content payload",
+  "group": "content",
+  "order": 200,
+  "method": "GET",
+  "path": "/api/landing/content",
+  "params": {
+    "lang": "en"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

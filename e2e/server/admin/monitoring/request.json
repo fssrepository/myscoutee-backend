@@ -1,0 +1,15 @@
+{
+  "name": "admin monitoring",
+  "group": "admin",
+  "order": 1020,
+  "method": "GET",
+  "path": "/api/admin/monitoring",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

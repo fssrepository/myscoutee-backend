@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,18 +68,26 @@ class AdminParamsServiceTest {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         AdminAudienceService adminAudienceService = mock(AdminAudienceService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
         when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
         when(repository.findByActiveTrue()).thenReturn(List.of(current));
         when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(current));
-        when(repository.save(any(AffinityConfig.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(repository.save(any(AffinityConfig.class))).thenAnswer(invocation -> {
+            AffinityConfig saved = invocation.getArgument(0);
+            if (saved.getId() == null) {
+                saved.setId("params-v2");
+            }
+            return saved;
+        });
         when(adminAudienceService.adminNotificationRecipientUserIds("admin-demo-ava"))
                 .thenReturn(List.of("admin-demo-ava", "admin-demo-noel"));
 
-        service(repository, notificationOutboxService, adminAudienceService)
+        service(repository, notificationOutboxService, adminAudienceService, affinityRecomputeTaskService)
                 .save(new AdminParamsSaveRequestDto("admin-demo-ava", "matching", List.of(), null));
 
+        verify(affinityRecomputeTaskService).enqueueConfigChanged(eq("default"), eq("admin-demo-ava"));
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(notification.capture());
         assertThat(notification.getValue().recipientUserIds())
@@ -90,19 +99,21 @@ class AdminParamsServiceTest {
     }
 
     private AdminParamsService service(AffinityConfigsRepository repository) {
-        return service(repository, mock(NotificationOutboxService.class), mock(AdminAudienceService.class));
+        return service(repository, mock(NotificationOutboxService.class), mock(AdminAudienceService.class), mock(AffinityRecomputeTaskService.class));
     }
 
     private AdminParamsService service(
             AffinityConfigsRepository repository,
             NotificationOutboxService notificationOutboxService,
-            AdminAudienceService adminAudienceService) {
+            AdminAudienceService adminAudienceService,
+            AffinityRecomputeTaskService affinityRecomputeTaskService) {
         ObjectMapper objectMapper = JsonMapper.builder().build();
         return new AdminParamsService(
                 repository,
                 objectMapper,
                 notificationOutboxService,
-                adminAudienceService);
+                adminAudienceService,
+                affinityRecomputeTaskService);
     }
 
     private AffinityConfig config(int version, boolean active, String changedSection, String summary) {

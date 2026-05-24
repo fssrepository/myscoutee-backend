@@ -1,0 +1,22 @@
+{
+  "urlPath": "/",
+  "initial": {
+    "selectors": [
+      "app-entry-shell",
+      ".entry-shell",
+      ".entry-cta-primary"
+    ],
+    "text": [
+      "Stop Swiping.",
+      "Start Connecting."
+    ],
+    "network": [
+      "/api/landing/content"
+    ]
+  },
+  "selectors": [
+    "app-entry-shell",
+    ".entry-shell"
+  ],
+  "maxMs": 30000
+}

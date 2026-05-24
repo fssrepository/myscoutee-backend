@@ -1,0 +1,9 @@
+{
+  "name": "shared help session route renders browser page",
+  "group": "help-session",
+  "order": 40,
+  "route": "/admin/help/e2e-placeholder-token",
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 25000
+}

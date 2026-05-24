@@ -38,14 +38,25 @@ if ! command -v rsync >/dev/null 2>&1; then
   exit 1
 fi
 
-if [[ ! -d "${SOURCE_DIR}" ]]; then
-  echo "Error: source directory not found: ${SOURCE_DIR}" >&2
-  exit 1
-fi
-
 mkdir -p "${TARGET_DIR}"
 
 SYNC_DEBOUNCE_SECONDS="${SYNC_DEBOUNCE_SECONDS:-2}"
+
+wait_for_source_dir() {
+  if [[ -d "${SOURCE_DIR}" ]]; then
+    return 0
+  fi
+
+  if [[ "${WATCH_MODE}" != "watch" ]]; then
+    echo "Error: source directory not found: ${SOURCE_DIR}" >&2
+    exit 1
+  fi
+
+  until [[ -d "${SOURCE_DIR}" ]]; do
+    echo "Waiting for frontend source directory: ${SOURCE_DIR}" >&2
+    sleep 1
+  done
+}
 
 wait_for_quiet_period() {
   if [[ "${WATCH_MODE}" != "watch" ]]; then
@@ -65,6 +76,8 @@ sync_once() {
   local rsync_log
   local attempt=1
   rsync_log="$(mktemp)"
+
+  wait_for_source_dir
 
   while true; do
     if rsync -a --delete "${SOURCE_DIR}/" "${TARGET_DIR}/" 2>"${rsync_log}"; then
@@ -91,6 +104,8 @@ sync_once() {
   done
 }
 
+wait_for_source_dir
+
 if [[ "${SKIP_INITIAL_SYNC}" != "true" ]]; then
   wait_for_quiet_period
   sync_once
@@ -103,7 +118,12 @@ if [[ "${WATCH_MODE}" == "watch" ]]; then
   fi
 
   echo "Watching ${SOURCE_DIR} ..."
-  while inotifywait -r -e create,delete,modify,move "${SOURCE_DIR}" >/dev/null 2>&1; do
+  while true; do
+    wait_for_source_dir
+    if ! inotifywait -r -e create,delete,modify,move "${SOURCE_DIR}" >/dev/null 2>&1; then
+      sleep 1
+      continue
+    fi
     wait_for_quiet_period
     sync_once
   done
