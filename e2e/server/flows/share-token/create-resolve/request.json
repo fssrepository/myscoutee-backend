@@ -1,0 +1,80 @@
+{
+  "name": "playground share token: create and resolve asset token",
+  "group": "flows",
+  "order": 9030,
+  "method": "POST",
+  "path": "/api/share-tokens",
+  "script": "share-token.mjs",
+  "mutation": true,
+  "playgroundOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed share token owner profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{playgroundUserId}}",
+        "name": "E2E Share Owner",
+        "age": 31,
+        "birthday": "1995-01-12",
+        "city": "Bratislava",
+        "height": "180 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "SO",
+        "gender": "man",
+        "statusText": "Playground share token owner",
+        "profileStatus": "public",
+        "images": []
+      }
+    },
+    {
+      "name": "seed share token asset",
+      "method": "POST",
+      "path": "/api/assets/upsert",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "userId": "{{playgroundUserId}}",
+        "asset": {
+          "id": "e2e-share-asset-{{runId}}",
+          "type": "Accommodation",
+          "title": "E2E Share Token Venue",
+          "subtitle": "Disposable share-token asset",
+          "category": "venue",
+          "city": "Bratislava",
+          "capacityTotal": 8,
+          "quantity": 1,
+          "details": "Seeded by the share-token flow.",
+          "imageUrl": "",
+          "sourceLink": "",
+          "routes": [],
+          "policies": [],
+          "visibility": "Public",
+          "status": "active",
+          "ownerUserId": "{{playgroundUserId}}",
+          "ownerName": "E2E Share Owner",
+          "requests": [],
+          "menuActions": []
+        }
+      }
+    }
+  ],
+  "body": {
+    "kind": "asset",
+    "entityId": "e2e-share-asset-{{runId}}",
+    "assetType": "Accommodation",
+    "ownerUserId": "{{playgroundUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

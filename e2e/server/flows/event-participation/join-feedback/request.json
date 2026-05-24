@@ -1,0 +1,113 @@
+{
+  "name": "playground event participation: publish, join, feedback note/remove/restore",
+  "group": "flows",
+  "order": 9060,
+  "method": "POST",
+  "path": "/api/activities/events/sync",
+  "script": "event-participation.mjs",
+  "mutation": true,
+  "playgroundOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed participation host profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{playgroundUserId}}",
+        "name": "E2E Participation Host",
+        "age": 31,
+        "birthday": "1995-01-12",
+        "city": "Bratislava",
+        "height": "180 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "PH",
+        "gender": "man",
+        "statusText": "Playground participation host",
+        "profileStatus": "public",
+        "locationCoordinates": {
+          "latitude": 48.1486,
+          "longitude": 17.1077
+        },
+        "images": []
+      }
+    },
+    {
+      "name": "seed participation member profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{playgroundSecondUserId}}",
+        "name": "E2E Participation Member",
+        "age": 29,
+        "birthday": "1997-03-05",
+        "city": "Bratislava",
+        "height": "168 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "PM",
+        "gender": "woman",
+        "statusText": "Playground participation member",
+        "profileStatus": "public",
+        "locationCoordinates": {
+          "latitude": 48.149,
+          "longitude": 17.108
+        },
+        "images": []
+      }
+    }
+  ],
+  "body": {
+    "syncKey": "e2e-participation-event-{{runId}}",
+    "id": "e2e-participation-event-{{runId}}",
+    "target": "hosting",
+    "title": "E2E Participation Event",
+    "shortDescription": "Created by the participation playground collection.",
+    "timeframe": "Tomorrow evening",
+    "activity": 5,
+    "isAdmin": false,
+    "startAt": "2026-06-16T18:00:00Z",
+    "endAt": "2026-06-16T20:00:00Z",
+    "distanceKm": 1.2,
+    "imageUrl": "",
+    "acceptedMembers": 1,
+    "pendingMembers": 0,
+    "capacityTotal": 8,
+    "capacityMin": 2,
+    "capacityMax": 8,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": true,
+    "slotsEnabled": false,
+    "eventType": "meetup",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "published": true,
+    "creatorUserId": "{{playgroundUserId}}",
+    "creatorName": "E2E Participation Host",
+    "creatorInitials": "PH",
+    "creatorGender": "man",
+    "creatorCity": "Bratislava",
+    "location": "Bratislava",
+    "locationCoordinates": {
+      "latitude": 48.1486,
+      "longitude": 17.1077
+    },
+    "topics": ["e2e", "participation"],
+    "subEvents": [],
+    "subEventsDisplayMode": "list"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

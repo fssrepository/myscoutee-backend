@@ -13,6 +13,12 @@ assert.mjs         optional script for deeper assertions and follow-up calls
 The runner can execute one case, one group, all safe server contracts, UI route
 checks, or playground mutation/stress flows.
 
+Server endpoint coverage and the latest local validation summary are tracked in:
+
+```text
+e2e/server/SERVER_ENDPOINT_COVERAGE.md
+```
+
 ## Server Contract Mode
 
 Contract mode is safe by default. It targets the already-running dev compose

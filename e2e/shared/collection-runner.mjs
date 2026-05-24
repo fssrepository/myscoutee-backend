@@ -60,6 +60,9 @@ export async function runCollection(options) {
       if (error.details) {
         console.error(`  details: ${JSON.stringify(error.details).slice(0, 1200)}`);
       }
+      if (process.env.E2E_PRINT_STACK === 'true' && error.stack) {
+        console.error(error.stack.split('\n').slice(0, 10).join('\n'));
+      }
       if (error.result && record) {
         await recordCase(artifactsDir, testCase, error.result, error);
       }

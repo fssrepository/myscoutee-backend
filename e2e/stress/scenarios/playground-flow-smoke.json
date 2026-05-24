@@ -21,6 +21,26 @@
     {
       "name": "asset lifecycle",
       "collectionCase": "flows/assets/upsert-delete-restore"
+    },
+    {
+      "name": "profile state",
+      "collectionCase": "flows/profile-state/save-preferences-experiences-rates"
+    },
+    {
+      "name": "share token",
+      "collectionCase": "flows/share-token/create-resolve"
+    },
+    {
+      "name": "chat lifecycle",
+      "collectionCase": "flows/chat/message-lifecycle"
+    },
+    {
+      "name": "help revision",
+      "collectionCase": "flows/help-revision/create-delete"
+    },
+    {
+      "name": "event participation",
+      "collectionCase": "flows/event-participation/join-feedback"
     }
   ]
 }

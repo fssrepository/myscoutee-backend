@@ -219,6 +219,7 @@ export function assertEvent(value, path = 'event') {
   if (event.subEvents !== null && event.subEvents !== undefined) {
     expectArray(event.subEvents, `${path}.subEvents`);
   }
+  return event;
 }
 
 export function rememberFirstEvent(ctx, events) {

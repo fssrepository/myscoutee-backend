@@ -71,17 +71,6 @@ async function resolveRequirement(requirement) {
   throw new Error(`Unknown server e2e requirement: ${requirement}`);
 }
 
-async function ensureDemoUser() {
-  if (ctx.vars.userId) {
-    return;
-  }
-  const result = await ctx.http.get('/api/auth/demo-users', {
-    headers: demoHeaders(),
-    timeoutMs: 15000
-  });
-  assertDemoUsers(result.data, ctx);
-}
-
 async function ensureUserProfile() {
   if (ctx.vars.userProfileLoaded) {
     return;
@@ -131,7 +120,7 @@ async function ensureAsset() {
   if (ctx.vars.assetId) {
     return;
   }
-  await ensureDemoUser();
+  await ensureDemoUser({ preserveSelectedUser: true });
   const result = await ctx.http.get('/api/assets', {
     params: { userId: ctx.vars.userId },
     headers: demoHeaders()
@@ -143,7 +132,7 @@ async function ensureChat() {
   if (ctx.vars.chatId) {
     return;
   }
-  await ensureDemoUser();
+  await ensureDemoUser({ preserveSelectedUser: true });
   for (const userId of candidateDemoUserIds()) {
     delete ctx.vars.chatId;
     const result = await ctx.http.get('/api/activities/chats', {
@@ -157,6 +146,21 @@ async function ensureChat() {
     }
   }
   throw new Error('No chat was available for chat requirement');
+}
+
+async function ensureDemoUser(options = {}) {
+  if (ctx.vars.userId && Array.isArray(ctx.vars.demoUsers) && ctx.vars.demoUsers.length > 0) {
+    return;
+  }
+  const existingUserId = ctx.vars.userId;
+  const result = await ctx.http.get('/api/auth/demo-users', {
+    headers: demoHeaders(),
+    timeoutMs: 15000
+  });
+  assertDemoUsers(result.data, ctx);
+  if (options.preserveSelectedUser && existingUserId) {
+    ctx.vars.userId = existingUserId;
+  }
 }
 
 function demoHeaders() {
