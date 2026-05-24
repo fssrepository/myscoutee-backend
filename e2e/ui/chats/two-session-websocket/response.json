@@ -1,0 +1,21 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-event-chat",
+    ".chat-message"
+  ],
+  "absentSelectors": [
+    ".explanation-popup",
+    ".confirmation-dialog",
+    ".popup-loading-overlay",
+    ".chat-message-pending",
+    ".chat-message-timed-out"
+  ],
+  "network": [
+    "/api/activities/chats"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 140000
+}

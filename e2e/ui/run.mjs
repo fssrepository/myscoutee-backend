@@ -185,6 +185,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
   const scriptName = testCase.request.script ?? 'assert.mjs';
   const script = await import(pathToFileURL(path.join(testCase.dir, scriptName)).href);
   const request = materializeRequest(testCase.request, ctx);
+  const auxiliaryBrowsers = [];
   if (request.geolocation) {
     await page.setGeolocation(request.geolocation);
   }
@@ -229,6 +230,24 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
             });
           }
           return childPage;
+        },
+        newIsolatedRecordedPage: async (name, options = {}) => {
+          const childBrowser = await launchChromeBrowser({
+            baseUrl: options.baseUrl ?? ctx.baseUrl,
+            viewport: options.viewport ?? page.viewport ?? ctx.viewport
+          });
+          auxiliaryBrowsers.push(childBrowser);
+          const childPage = await childBrowser.newPage({
+            viewport: options.viewport ?? page.viewport ?? ctx.viewport
+          });
+          auxiliaryPages.push(childPage);
+          if (record) {
+            attachStepRecorder(childPage, artifactsDir, {
+              ...testCase,
+              id: `${testCase.id}/${slugifyStepName(name)}`
+            });
+          }
+          return childPage;
         }
       });
     }
@@ -253,6 +272,9 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
     for (const childPage of auxiliaryPages) {
       auxiliarySteps.push(...(childPage.recordedSteps ?? []));
       await childPage.close().catch(() => undefined);
+    }
+    for (const childBrowser of auxiliaryBrowsers) {
+      await childBrowser.close().catch(() => undefined);
     }
   }
 }

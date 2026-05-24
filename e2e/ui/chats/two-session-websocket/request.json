@@ -1,0 +1,19 @@
+{
+  "name": "two different demo users exchange chat messages through websocket UI",
+  "group": "chats",
+  "order": 92,
+  "route": "/game",
+  "localStorage": {
+    "app-session": "{\"kind\":\"demo\",\"userId\":\"bf057de7c586eede7e84bdc7\"}",
+    "demo-active-user": "bf057de7c586eede7e84bdc7"
+  },
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "tags": [
+    "chat",
+    "websocket",
+    "two-user"
+  ],
+  "maxMs": 140000
+}

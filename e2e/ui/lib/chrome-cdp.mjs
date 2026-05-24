@@ -309,6 +309,19 @@ export class ChromePage {
     }).catch(() => undefined);
   }
 
+  async setGeolocationPermission(setting) {
+    const normalized = `${setting ?? ''}`.trim();
+    assert(['granted', 'denied', 'prompt'].includes(normalized), 'Geolocation permission setting must be granted, denied, or prompt', {
+      setting
+    });
+    const origin = new URL(this.browser.baseUrl).origin;
+    await this.connection.send('Browser.setPermission', {
+      origin,
+      permission: { name: 'geolocation' },
+      setting: normalized
+    });
+  }
+
   async resetPermissions() {
     await this.connection.send('Browser.resetPermissions').catch(() => undefined);
   }
@@ -591,6 +604,47 @@ export class ChromePage {
       return true;
     }, selector);
     assert(clicked, `Should click ${selector}`);
+  }
+
+  async setFileInputFiles(selector, filePaths, options = {}) {
+    const files = Array.isArray(filePaths) ? filePaths : [filePaths];
+    const index = Math.max(0, Math.trunc(Number(options.index ?? 0) || 0));
+    await this.waitForSelector(selector, {
+      visible: false,
+      timeoutMs: options.timeoutMs ?? 15000
+    });
+    const expression = `(() => Array.from(document.querySelectorAll(${JSON.stringify(selector)}))[${index}] ?? null)()`;
+    const result = await this.connection.send('Runtime.evaluate', {
+      expression,
+      awaitPromise: true,
+      returnByValue: false,
+      userGesture: true
+    });
+    if (result.exceptionDetails) {
+      throw new Error(result.exceptionDetails.exception?.description ?? result.exceptionDetails.text ?? 'Runtime.evaluate failed');
+    }
+    const objectId = result.result?.objectId;
+    assert(objectId, `Should resolve file input ${selector} at index ${index}`);
+    try {
+      await this.connection.send('DOM.setFileInputFiles', {
+        objectId,
+        files
+      });
+    } finally {
+      await this.connection.send('Runtime.releaseObject', { objectId }).catch(() => undefined);
+    }
+    if (options.dispatchChange !== false) {
+      const changed = await this.evaluate(({ selector, index }) => {
+        const input = Array.from(document.querySelectorAll(selector))[index];
+        if (!(input instanceof HTMLInputElement)) {
+          return false;
+        }
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
+      }, { selector, index });
+      assert(changed, `Should dispatch change for file input ${selector} at index ${index}`);
+    }
   }
 
   async clickByText(selector, text, options = {}) {

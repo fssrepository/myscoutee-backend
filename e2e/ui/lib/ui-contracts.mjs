@@ -56,13 +56,104 @@ export async function assertBrowserExpectations(page, expected = {}) {
 }
 
 export async function openNavigatorMenu(page) {
-  await settleFirstRunOverlays(page);
-  await page.waitFor('global navigator button enabled', async () => page.evaluate(() => {
-    const button = document.querySelector('button.user-selector-btn-global');
-    return Boolean(button && !button.disabled);
-  }));
-  await page.click('button.user-selector-btn-global');
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await settleFirstRunOverlays(page, { timeoutMs: attempt === 0 ? 15000 : 5000 });
+    if (await page.isSelectorVisible('.user-menu-panel.open')) {
+      return;
+    }
+    await waitForNavigatorButtonReady(page);
+    await page.mouseClickVisible('button.user-selector-btn-global:not(.is-covered)');
+    const opened = await waitForNavigatorMenuOrBlockingOverlay(page, 5000);
+    if (opened && await page.isSelectorVisible('.user-menu-panel.open')) {
+      return;
+    }
+    await settleFirstRunOverlays(page, { timeoutMs: 5000 });
+  }
+  const snapshot = await navigatorMenuSnapshot(page);
+  page.recordFinding?.({
+    severity: 'error',
+    title: 'Navigator menu did not open after clicking the visible avatar button',
+    details: snapshot
+  });
   await page.waitForSelector('.user-menu-panel.open');
+}
+
+async function waitForNavigatorButtonReady(page) {
+  await page.waitFor('visible global navigator button enabled', async () => page.evaluate(() => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none'
+        && style.pointerEvents !== 'none';
+    };
+    return Array.from(document.querySelectorAll('button.user-selector-btn-global'))
+      .some(button => visible(button) && !button.disabled && !button.classList.contains('is-covered'));
+  }));
+}
+
+async function waitForNavigatorMenuOrBlockingOverlay(page, timeoutMs = 5000) {
+  return page.waitFor('navigator menu or blocking overlay after avatar click', async () => page.evaluate(() => {
+    const visible = element => {
+      if (!element) {
+        return false;
+      }
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    return visible(document.querySelector('.user-menu-panel.open'))
+      || visible(document.querySelector('.explanation-popup'))
+      || visible(document.querySelector('.app-install-prompt'))
+      || visible(document.querySelector('app-navigator-privacy-popup'));
+  }), timeoutMs).then(() => true).catch(() => false);
+}
+
+async function navigatorMenuSnapshot(page) {
+  return page.evaluate(() => {
+    const visible = element => {
+      if (!element) {
+        return false;
+      }
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return {
+        visible: rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none',
+        rect: {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        },
+        visibility: style.visibility,
+        display: style.display,
+        pointerEvents: style.pointerEvents,
+        disabled: Boolean(element.disabled),
+        classes: element.className,
+        ariaLabel: element.getAttribute('aria-label'),
+        title: element.getAttribute('title')
+      };
+    };
+    return {
+      url: window.location.href,
+      bodyClasses: document.body.className,
+      buttons: Array.from(document.querySelectorAll('button.user-selector-btn-global')).map(visible),
+      menuPanel: visible(document.querySelector('.user-menu-panel')),
+      openMenuPanel: visible(document.querySelector('.user-menu-panel.open')),
+      explanationPopup: visible(document.querySelector('.explanation-popup')),
+      installPrompt: visible(document.querySelector('.app-install-prompt')),
+      privacyPopup: visible(document.querySelector('app-navigator-privacy-popup')),
+      assetPopup: visible(document.querySelector('.popup-panel-assets'))
+    };
+  });
 }
 
 export async function assertActiveBackendCalls(page, patterns) {
@@ -382,6 +473,7 @@ export async function settleFirstRunOverlays(page, options = {}) {
   const timeoutMs = Number(options.timeoutMs ?? 15000);
   await approveNavigatorPrivacyIfPresent(page, timeoutMs);
   await closeExplanationPopupIfPresent(page, timeoutMs);
+  await dismissInstallPromptIfPresent(page, timeoutMs);
 }
 
 export async function acceptEntryPrivacyIfPresent(page, timeoutMs = 15000) {
@@ -421,7 +513,36 @@ export async function closeExplanationPopupIfPresent(page, timeoutMs = 15000) {
   if (!(await page.isSelectorVisible('.explanation-popup'))) {
     return false;
   }
-  await page.clickVisible('.explanation-popup__header-action', { timeoutMs });
+  const clicked = await page.evaluate(() => {
+    const normalize = value => `${value ?? ''}`
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const buttons = Array.from(document.querySelectorAll('.explanation-popup button'))
+      .filter(button => visible(button) && !button.disabled);
+    const action = buttons.find(button => {
+      const text = normalize(button.textContent);
+      return text.includes('got it') || text.includes('ertem');
+    }) ?? document.querySelector('.explanation-popup__header-action');
+    if (!action || action.disabled) {
+      return false;
+    }
+    action.scrollIntoView({ block: 'center', inline: 'center' });
+    action.click();
+    return true;
+  });
+  if (!clicked) {
+    await page.clickVisible('.explanation-popup__header-action', { timeoutMs });
+  }
   await page.waitForSelectorHidden('.explanation-popup', { timeoutMs });
   await page.recordStep('explanation-popup-closed');
   return true;
@@ -434,6 +555,36 @@ export async function closeExplanationPopupEventually(page, timeoutMs = 8000) {
     }).catch(() => undefined);
   }
   return closeExplanationPopupIfPresent(page, timeoutMs);
+}
+
+export async function dismissInstallPromptIfPresent(page, timeoutMs = 15000) {
+  if (!(await page.isSelectorVisible('.app-install-prompt'))) {
+    return false;
+  }
+  const clicked = await page.evaluate(() => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const buttons = Array.from(document.querySelectorAll('.app-install-prompt button'))
+      .filter(button => visible(button) && !button.disabled);
+    const later = buttons.find(button => (button.textContent ?? '').trim().toLowerCase().includes('later'))
+      ?? buttons[0];
+    if (!later) {
+      return false;
+    }
+    later.scrollIntoView({ block: 'center', inline: 'center' });
+    later.click();
+    return true;
+  });
+  assert(clicked, 'Install prompt should expose a dismiss/later button');
+  await page.waitForSelectorHidden('.app-install-prompt', { timeoutMs });
+  await page.recordStep('install-prompt-dismissed');
+  return true;
 }
 
 async function clickDemoUser(page, userId, timeoutMs) {

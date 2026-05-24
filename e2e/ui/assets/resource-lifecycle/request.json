@@ -1,5 +1,5 @@
 {
-  "name": "owned asset can be created, saved, and reopened from the UI",
+  "name": "owned asset and sub-event resource lifecycle works through the UI",
   "group": "assets",
   "order": 82,
   "route": "/game",
@@ -7,5 +7,5 @@
   "script": "assert.mjs",
   "fullStackOnly": true,
   "mutation": true,
-  "maxMs": 100000
+  "maxMs": 220000
 }
