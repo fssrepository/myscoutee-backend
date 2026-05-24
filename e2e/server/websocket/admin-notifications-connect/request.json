@@ -1,0 +1,14 @@
+{
+  "name": "admin notifications websocket opens",
+  "group": "websocket",
+  "order": 770,
+  "transport": "websocket",
+  "path": "/api/admin/notifications/ws",
+  "params": {
+    "adminUserId": "{{adminUserId}}"
+  },
+  "holdOpenMs": 300,
+  "expectedStatus": 101,
+  "script": "assert.mjs",
+  "maxMs": 5000
+}

@@ -1,0 +1,13 @@
+{
+  "urlPath": "/admin/workspace",
+  "selectors": [
+    ".popup-panel-help-editor",
+    "app-editable-image-carousel",
+    ".editable-image-carousel"
+  ],
+  "network": [
+    "/api/admin/dashboard",
+    "/api/admin/explanation"
+  ],
+  "maxMs": 50000
+}

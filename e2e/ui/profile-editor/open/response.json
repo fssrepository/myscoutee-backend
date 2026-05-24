@@ -1,0 +1,11 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".profile-editor-wrap",
+    ".popup-panel-profile-editor"
+  ],
+  "network": [
+    "/api/auth/me"
+  ],
+  "maxMs": 35000
+}

@@ -1,0 +1,16 @@
+{
+  "name": "received event feedback",
+  "group": "events",
+  "order": 540,
+  "method": "GET",
+  "path": "/api/activities/events/feedback/received",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

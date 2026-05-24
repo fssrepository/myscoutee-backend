@@ -1,0 +1,12 @@
+{
+  "name": "remote i18n bundle",
+  "group": "content",
+  "order": 210,
+  "method": "GET",
+  "path": "/api/i18n/bundle",
+  "params": {
+    "lang": "hu"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "body": {
+    "type": "object",
+    "required": ["status"],
+    "properties": {
+      "status": { "type": "string", "minLength": 1 }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "event explore page",
+  "group": "events",
+  "order": 520,
+  "method": "POST",
+  "path": "/api/activities/events/explore",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "userId": "{{userId}}",
+    "order": "date",
+    "view": "list",
+    "friendsOnly": false,
+    "openSpotsOnly": false,
+    "topic": "",
+    "limit": 12,
+    "cursor": null,
+    "excludedSourceIds": []
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

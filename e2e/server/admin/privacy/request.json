@@ -1,0 +1,16 @@
+{
+  "name": "admin privacy editor state",
+  "group": "admin",
+  "order": 1050,
+  "method": "GET",
+  "path": "/api/admin/privacy",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}",
+    "lang": "en"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

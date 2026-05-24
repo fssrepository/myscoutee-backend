@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -129,7 +130,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void publishEnqueuesEventRecomputeForSavedLifecycleState() {
+    void publishCreatesExploreOverlayAndEnqueuesEventRecomputeForSavedLifecycleState() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -157,6 +158,22 @@ class ActivitiesEventsServiceTest {
                 null,
                 null));
 
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository, times(2)).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getAllValues().get(0)).singleElement().satisfies(record -> {
+            assertThat(record.getSourceId()).isEqualTo("event-1");
+            assertThat(record.getType()).isEqualTo("hosting");
+            assertThat(record.getStatus()).isEqualTo("H");
+            assertThat(record.getPublished()).isTrue();
+        });
+        assertThat(savedCaptor.getAllValues().get(1)).singleElement().satisfies(record -> {
+            assertThat(record.getSourceId()).isEqualTo("event-1");
+            assertThat(record.getType()).isEqualTo("events");
+            assertThat(record.getStatus()).isEqualTo("A");
+            assertThat(record.getPublished()).isTrue();
+            assertThat(record.getIsHosting()).isFalse();
+        });
         verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
     }
 

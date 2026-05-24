@@ -1,0 +1,9 @@
+{
+  "name": "entry landing opens demo selector through backend",
+  "group": "entry",
+  "order": 10,
+  "route": "/",
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 30000
+}

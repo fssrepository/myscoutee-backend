@@ -1,0 +1,16 @@
+{
+  "name": "profile editor user payload",
+  "group": "profile",
+  "order": 110,
+  "method": "GET",
+  "path": "/api/auth/me",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

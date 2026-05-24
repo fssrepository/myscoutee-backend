@@ -8,31 +8,3 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
-
-Commands
---------
-sudo ufw allow 'Nginx Full' (firewall check for 80/443)
-ssh -L 5005:localhost:5005 your-user@myscoutee.com (debug port)
-
-ng serve --ssl
-ng serve --host 0.0.0.0 --port 4200
-
-git submodule sync
-git submodule update --init --remote
-
-git config --global user.email {email}
-git config --global user.name {name}
-git config --global user.password {personal access token - Profile -> Settings -> Develpoper Settings (last menu item)}
-
-gradle build
-docker compose build --no-cache
-docker compose up
-
-adb kill-server
-adb start-server
-adb devices
-
-Ctrl+Shift+P → Java: Clean Java Language Server Workspace
-
-ng build --source-map --optimization=false --named-chunks
-source-map-explorer ./dev/*.js

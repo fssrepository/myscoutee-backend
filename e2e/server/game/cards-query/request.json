@@ -1,0 +1,22 @@
+{
+  "name": "home/game card query payload",
+  "group": "game",
+  "order": 300,
+  "method": "POST",
+  "path": "/api/game-cards/query",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "userId": "{{userId}}",
+    "mode": "single",
+    "leftQuery": null,
+    "rightQuery": null,
+    "filterPreferences": null,
+    "cursor": null,
+    "pageSize": 10
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

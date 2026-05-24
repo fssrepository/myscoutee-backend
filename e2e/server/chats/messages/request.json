@@ -1,0 +1,16 @@
+{
+  "name": "chat messages",
+  "group": "chats",
+  "order": 720,
+  "method": "GET",
+  "path": "/api/activities/chats/{{chatId}}/messages",
+  "requires": ["chat"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

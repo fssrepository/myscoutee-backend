@@ -1,0 +1,19 @@
+{
+  "name": "asset ticket page",
+  "group": "assets",
+  "order": 620,
+  "method": "GET",
+  "path": "/api/assets/tickets",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}",
+    "page": "0",
+    "pageSize": "12",
+    "order": "upcoming"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

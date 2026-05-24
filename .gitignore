@@ -36,6 +36,7 @@
 
 # misc
 .sass-cache
+.e2e-artifacts/
 connect.lock
 coverage
 libpeerconnection.log

@@ -21,7 +21,19 @@ const requiredCollections = [
 const appUsername = process.env.MONGO_APP_USERNAME || 'guest';
 const appPassword = process.env.MONGO_APP_PASSWORD || 'guest';
 
-['demo_db', 'myscoutee_db'].forEach(databaseName => {
+const configuredDatabases = [
+  'demo_db',
+  'myscoutee_db',
+  process.env.MONGO_INITDB_DATABASE,
+  process.env.MONGO_APP_DATABASE,
+  process.env.MONGO_DEMO_DATABASE,
+  process.env.MONGO_REAL_DATABASE,
+  process.env.MONGO_PLAYGROUND_DATABASE
+]
+  .map(value => (value || '').trim())
+  .filter(Boolean);
+
+Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   const portalDb = db.getSiblingDB(databaseName);
   const existingCollections = new Set(portalDb.getCollectionNames());
 

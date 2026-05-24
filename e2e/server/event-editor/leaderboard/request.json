@@ -1,0 +1,17 @@
+{
+  "name": "event editor leaderboard state",
+  "group": "event-editor",
+  "order": 840,
+  "method": "GET",
+  "path": "/api/activities/events/leaderboard",
+  "requires": ["subEvent"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "eventId": "{{eventId}}",
+    "subEventId": "{{subEventId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

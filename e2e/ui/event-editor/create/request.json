@@ -1,0 +1,10 @@
+{
+  "name": "event editor create flow opens from activities UI",
+  "group": "event-editor",
+  "order": 70,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 45000
+}

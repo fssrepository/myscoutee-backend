@@ -73,6 +73,7 @@ dependencies {
 	}
 	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-data'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -103,6 +104,42 @@ tasks.named('test') {
 	useJUnitPlatform()
 
 	finalizedBy jacocoTestReport
+}
+
+tasks.register('bootRunPlayground', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Runs the profile app against disposable playground_db for HTTP e2e flow tests.'
+	group = 'application'
+
+	mainClass = 'com.raxim.myscoutee.Main'
+	classpath = sourceSets.main.runtimeClasspath
+
+	def playgroundDb = providers.environmentVariable('MONGO_PLAYGROUND_DATABASE').orElse('playground_db')
+	environment 'SPRING_PROFILES_ACTIVE', providers.environmentVariable('SPRING_PROFILES_ACTIVE').orElse('dev').get()
+	environment 'MONGODB_DATABASE', playgroundDb.get()
+	environment 'MONGODB_DEMO_DATABASE', playgroundDb.get()
+	environment 'FIREBASE_ENABLED', 'false'
+	environment 'PAYMENT_ENABLE_PAY', providers.environmentVariable('PAYMENT_ENABLE_PAY').orElse('false').get()
+	environment 'MEDIA_ENABLED', providers.environmentVariable('MEDIA_ENABLED').orElse('true').get()
+	environment 'E2E_PLAYGROUND_MODE', 'true'
+}
+
+tasks.register('bootRunStress', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Runs the profile app in disposable playground_db mode for external stress collections.'
+	group = 'application'
+
+	mainClass = 'com.raxim.myscoutee.Main'
+	classpath = sourceSets.main.runtimeClasspath
+
+	def playgroundDb = providers.environmentVariable('MONGO_PLAYGROUND_DATABASE').orElse('playground_db')
+	environment 'SPRING_PROFILES_ACTIVE', providers.environmentVariable('SPRING_PROFILES_ACTIVE').orElse('dev').get()
+	environment 'MONGODB_DATABASE', playgroundDb.get()
+	environment 'MONGODB_DEMO_DATABASE', playgroundDb.get()
+	environment 'FIREBASE_ENABLED', 'false'
+	environment 'PAYMENT_ENABLE_PAY', providers.environmentVariable('PAYMENT_ENABLE_PAY').orElse('false').get()
+	environment 'MEDIA_ENABLED', providers.environmentVariable('MEDIA_ENABLED').orElse('true').get()
+	environment 'E2E_PLAYGROUND_MODE', 'true'
+	environment 'E2E_STRESS_MODE', 'true'
+	jvmArgs '-Xms512m', '-Xmx2g'
 }
 
 tasks.register('e2eTest', Test) {

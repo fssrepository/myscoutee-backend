@@ -1,0 +1,11 @@
+{
+  "urlPath": "/admin/workspace",
+  "selectors": [
+    ".admin-workspace",
+    "button.user-selector-btn-global"
+  ],
+  "network": [
+    "/api/admin/dashboard"
+  ],
+  "maxMs": 35000
+}

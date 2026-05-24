@@ -527,10 +527,11 @@ public class ActivitiesEventsService {
             current.setPublished(true);
             current.setSubEvents(ensureTournamentStartReviewStage(current.getSubEvents(), nowIso));
         });
-        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsAvailable(updated);
-        enqueueTournamentStartReviewNotifications(updated, request == null ? null : request.userId());
-        runInitialAutoInviteBatch(updated);
+        List<ActivityEvent> publishedDocuments = ensurePublishedHostingEventOverlays(updated, request == null ? null : request.userId());
+        syncStageReminderTasksForSavedEvents(publishedDocuments, request == null ? null : request.userId());
+        markEventAttachmentsAvailable(publishedDocuments);
+        enqueueTournamentStartReviewNotifications(publishedDocuments, request == null ? null : request.userId());
+        runInitialAutoInviteBatch(publishedDocuments);
     }
 
     public void unpublish(EventActionRequestDto request) {
@@ -2213,6 +2214,53 @@ public class ActivitiesEventsService {
         overlay.setUpdatedUser(ownerUserId);
         overlay.normalizeLifecycleState();
         return overlay;
+    }
+
+    private List<ActivityEvent> ensurePublishedHostingEventOverlays(List<ActivityEvent> documents, String actorUserId) {
+        if (documents == null || documents.isEmpty()) {
+            return List.of();
+        }
+
+        List<ActivityEvent> overlays = new ArrayList<>();
+        String nowIso = Instant.now().toString();
+        for (ActivityEvent document : documents) {
+            if (document == null
+                    || !TYPE_HOSTING.equals(normalizeType(document.getType()))
+                    || !Boolean.TRUE.equals(document.getPublished())) {
+                continue;
+            }
+            String sourceId = normalizeId(document.getSourceId());
+            String ownerUserId = normalizeId(document.getOwnerUserId());
+            if (!StringUtils.hasText(ownerUserId)) {
+                ownerUserId = normalizeId(document.getCreatorUserId());
+            }
+            if (!StringUtils.hasText(sourceId) || !StringUtils.hasText(ownerUserId)) {
+                continue;
+            }
+
+            ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, TYPE_EVENTS, sourceId)
+                    .orElse(null);
+            ActivityEvent overlay = cloneDocument(document);
+            overlay.setId(existing != null && StringUtils.hasText(existing.getId()) ? existing.getId() : resolveExistingId(ownerUserId, TYPE_EVENTS, sourceId, null));
+            overlay.setSyncKey(existing != null && StringUtils.hasText(existing.getSyncKey()) ? existing.getSyncKey() : resolveExistingSyncKey(ownerUserId, TYPE_EVENTS, sourceId, null));
+            overlay.setOwnerUserId(ownerUserId);
+            overlay.setType(TYPE_EVENTS);
+            overlay.setStatus(STATUS_ACTIVE);
+            overlay.setIsHosting(false);
+            overlay.setIsInvitation(false);
+            overlay.setPublished(true);
+            overlay.setAdmins(resolveAdminUserIds(sourceId, overlay.getCreatorUserId()));
+            overlay.setUpdatedDate(nowIso);
+            overlay.setUpdatedUser(firstNonBlank(actorUserId, ownerUserId));
+            overlay.normalizeLifecycleState();
+            overlays.add(overlay);
+        }
+
+        if (overlays.isEmpty()) {
+            return documents;
+        }
+        List<ActivityEvent> savedOverlays = activityEventsRepository.saveAll(overlays);
+        return concat(documents, savedOverlays);
     }
 
     private ActivityEvent buildSyncedRecord(

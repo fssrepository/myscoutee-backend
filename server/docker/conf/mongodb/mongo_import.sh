@@ -293,7 +293,7 @@ import_seed_directory() {
     return 0
   fi
 
-  find "${seed_dir}" -maxdepth 1 -type f -name '*.json' | sort | while read -r jsonfile; do
+  find "${seed_dir}" -maxdepth 1 \( -type f -o -type l \) -name '*.json' | sort | while read -r jsonfile; do
     import_json_file "${target_db}" "${jsonfile}"
   done
 }

@@ -1,0 +1,7 @@
+{
+  "status": 200,
+  "body": {
+    "type": "object",
+    "required": ["eligible", "securityGateEnabled", "locationRequired"]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "admin dashboard",
+  "group": "admin",
+  "order": 1000,
+  "method": "GET",
+  "path": "/api/admin/dashboard",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

@@ -1,0 +1,8 @@
+{
+  "urlPath": "/admin/help/e2e-placeholder-token",
+  "selectors": [
+    "app-root"
+  ],
+  "noFailedApi": false,
+  "maxMs": 25000
+}

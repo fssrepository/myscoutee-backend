@@ -43,3 +43,10 @@ Prod Image Mode (keeps dev compose untouched)
 * `cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod`
 * Run dockerized stack with baked nginx image:
 * `cd server && docker compose -f docker-compose.prod-image.yml up --build`
+
+Full Integration E2E Collections
+--------------------------------
+* Postman-like server/API and UI collections live under `./e2e`.
+* Safe contract checks against the normal dev stack: `node e2e/server/run.mjs`
+* Disposable mutation/stress checks use `playground_db`: `cd server && docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build`
+* Details: `./e2e/README.md`

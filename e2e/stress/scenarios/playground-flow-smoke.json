@@ -1,0 +1,26 @@
+{
+  "name": "Playground mutation flow smoke",
+  "mode": "stress",
+  "baseUrl": "http://localhost",
+  "users": 2,
+  "rampUpMs": 1000,
+  "iterations": 1,
+  "thinkTimeMs": 250,
+  "thinkTimeJitterMs": 100,
+  "resetPlayground": true,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 20000,
+    "maxMs": 45000
+  },
+  "steps": [
+    {
+      "name": "event lifecycle",
+      "collectionCase": "flows/event-lifecycle/sync-publish-unpublish"
+    },
+    {
+      "name": "asset lifecycle",
+      "collectionCase": "flows/assets/upsert-delete-restore"
+    }
+  ]
+}

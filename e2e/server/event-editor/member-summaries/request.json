@@ -1,0 +1,21 @@
+{
+  "name": "event editor member summaries",
+  "group": "event-editor",
+  "order": 810,
+  "method": "POST",
+  "path": "/api/activities/events/members/summaries",
+  "requires": ["event"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "owners": [
+      {
+        "ownerType": "event",
+        "ownerId": "{{eventId}}"
+      }
+    ]
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

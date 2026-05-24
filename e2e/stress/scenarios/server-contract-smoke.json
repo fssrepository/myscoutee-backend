@@ -1,0 +1,37 @@
+{
+  "name": "Server contract smoke load",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 2,
+  "rampUpMs": 1000,
+  "iterations": 2,
+  "thinkTimeMs": 150,
+  "thinkTimeJitterMs": 75,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 8000,
+    "maxMs": 15000
+  },
+  "steps": [
+    {
+      "name": "health",
+      "collectionCase": "health/spring-health"
+    },
+    {
+      "name": "demo users",
+      "collectionCase": "profile/demo-users"
+    },
+    {
+      "name": "landing content",
+      "collectionCase": "content/landing"
+    },
+    {
+      "name": "game cards",
+      "collectionCase": "game/cards-query"
+    },
+    {
+      "name": "event explore",
+      "collectionCase": "events/event-explore"
+    }
+  ]
+}

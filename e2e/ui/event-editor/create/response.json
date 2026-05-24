@@ -1,0 +1,12 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".event-editor-popup-shell",
+    ".popup-panel-event-editor",
+    "button[aria-label=\"Save event\"]"
+  ],
+  "network": [
+    "/api/activities/events"
+  ],
+  "maxMs": 45000
+}

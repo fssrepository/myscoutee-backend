@@ -1,0 +1,17 @@
+{
+  "name": "profile realtime counters snapshot",
+  "group": "profile",
+  "order": 140,
+  "method": "POST",
+  "path": "/api/auth/me/realtime/long-poll",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "userId": "{{userId}}",
+    "cursor": null
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}
