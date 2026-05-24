@@ -1,7 +1,8 @@
 import { assert } from '../../../shared/assertions.mjs';
-import { openNavigatorMenu } from '../../lib/ui-contracts.mjs';
+import { openNavigatorMenu, waitForVisibleText } from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
+  const marker = `UI E2E help ${Date.now().toString(36)}`;
   await page.waitForSelector('.admin-workspace');
   await openNavigatorMenu(page);
   await page.recordStep('admin-navigator-menu-open');
@@ -35,6 +36,40 @@ export async function assertUi({ page }) {
       .filter(value => value && value !== 'none');
   });
   assert(backgrounds.length > 0, 'Help editor explanation carousel should render seeded image backgrounds');
+  const imageUrls = backgrounds.map(extractCssBackgroundUrl).filter(Boolean);
+  assert(imageUrls.length > 0, 'Help editor carousel backgrounds should expose image URLs', { backgrounds });
+  const loadedImages = await page.evaluate(async imageUrls => {
+    const loadImage = url => new Promise(resolve => {
+      const image = new Image();
+      const timeout = window.setTimeout(() => resolve({ url, ok: false, reason: 'timeout' }), 10000);
+      image.onload = () => {
+        window.clearTimeout(timeout);
+        resolve({ url, ok: image.naturalWidth > 0, width: image.naturalWidth, height: image.naturalHeight });
+      };
+      image.onerror = () => {
+        window.clearTimeout(timeout);
+        resolve({ url, ok: false, reason: 'error' });
+      };
+      image.src = url;
+    });
+    return Promise.all(imageUrls.map(loadImage));
+  }, imageUrls);
+  assert(loadedImages.every(item => item.ok), 'Help editor MiniIO carousel images should load in the browser', {
+    loadedImages
+  });
+  await page.recordStep('explanation-edit-carousel-images-loaded');
+
+  await updateDraftContent(page, marker);
+  await page.recordStep('explanation-edit-content-updated');
+  await page.clickVisible('.help-editor-draft-row .help-editor-confirm-btn');
+  await page.waitForNetwork('/api/admin/explanation', { timeoutMs: 30000 });
+  await waitForVisibleText(page, '.popup-panel-help-editor', marker, 30000);
+  await page.recordStep('explanation-revision-saved-visible');
+}
+
+function extractCssBackgroundUrl(value) {
+  const match = `${value ?? ''}`.match(/^url\(["']?(.+?)["']?\)$/);
+  return match?.[1] ?? '';
 }
 
 async function clickVisibleHelpEditorEditButton(page) {
@@ -99,4 +134,17 @@ async function ensureDraftExplanationSectionOpen(page) {
     return true;
   });
   assert(opened, 'Help editor draft section should be openable');
+}
+
+async function updateDraftContent(page, marker) {
+  await page.fillVisible('.help-editor-draft-title-input', `${marker} title`);
+  await page.fillVisible('.help-editor-draft-summary-input', `${marker} header`);
+  await page.fillVisible('textarea[name="helpDescription"]', `${marker} description`);
+
+  await page.fillVisible('.help-editor-section-title-input', `${marker} section`);
+  if ((await page.visibleCount('.help-editor-html-textarea')) === 0) {
+    await page.clickVisible('.help-editor-edit-section .help-editor-mode-toggle');
+  }
+  await page.waitForSelector('.help-editor-html-textarea');
+  await page.fillVisible('.help-editor-html-textarea', `<p>${marker} body saved by UI e2e.</p>`);
 }

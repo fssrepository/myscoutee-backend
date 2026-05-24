@@ -1,0 +1,11 @@
+{
+  "name": "profile editor persists deep fields, chips, languages, and privacy",
+  "group": "profile-editor",
+  "order": 53,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 110000
+}

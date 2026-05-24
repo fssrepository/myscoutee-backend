@@ -1,0 +1,11 @@
+{
+  "name": "activities rates smart-list filters, calendar views, pagination, and rating dock",
+  "group": "activities",
+  "order": 55,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 90000
+}

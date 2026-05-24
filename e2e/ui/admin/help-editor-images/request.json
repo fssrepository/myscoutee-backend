@@ -10,5 +10,6 @@
   },
   "script": "assert.mjs",
   "fullStackOnly": true,
-  "maxMs": 50000
+  "mutation": true,
+  "maxMs": 80000
 }

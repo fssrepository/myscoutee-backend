@@ -220,8 +220,10 @@ export class ChromePage {
     this.viewport = viewport;
     this.network = [];
     this.failedNetwork = [];
+    this.requests = new Map();
     this.consoleMessages = [];
     this.pageErrors = [];
+    this.uiFindings = [];
   }
 
   async init() {
@@ -232,6 +234,12 @@ export class ChromePage {
       this.connection.send('Log.enable')
     ]);
     await this.setViewport(this.viewport);
+    this.connection.on('Network.requestWillBeSent', params => {
+      this.requests.set(params.requestId, {
+        url: params.request?.url ?? '',
+        method: params.request?.method ?? ''
+      });
+    });
     this.connection.on('Network.responseReceived', params => {
       this.network.push({
         url: params.response?.url ?? '',
@@ -242,8 +250,11 @@ export class ChromePage {
       });
     });
     this.connection.on('Network.loadingFailed', params => {
+      const request = this.requests.get(params.requestId) ?? {};
       this.failedNetwork.push({
         requestId: params.requestId,
+        url: request.url ?? '',
+        method: request.method ?? '',
         type: params.type,
         errorText: params.errorText,
         blockedReason: params.blockedReason
@@ -395,6 +406,149 @@ export class ChromePage {
     }, selector);
   }
 
+  async visibleCount(selector) {
+    return this.evaluate(selector => {
+      return Array.from(document.querySelectorAll(selector)).filter(element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      }).length;
+    }, selector);
+  }
+
+  async textContent(selector, options = {}) {
+    await this.waitForSelector(selector, { timeoutMs: options.timeoutMs ?? 15000 });
+    return this.evaluate(selector => document.querySelector(selector)?.textContent ?? '', selector);
+  }
+
+  async fill(selector, value, options = {}) {
+    await this.waitForSelector(selector, { timeoutMs: options.timeoutMs ?? 15000 });
+    const filled = await this.evaluate(({ selector, value }) => {
+      const element = document.querySelector(selector);
+      if (!element || !('value' in element)) {
+        return false;
+      }
+      element.scrollIntoView({ block: 'center', inline: 'center' });
+      element.focus();
+      element.value = `${value ?? ''}`;
+      element.dispatchEvent(new Event('input', { bubbles: true }));
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+      element.blur();
+      return true;
+    }, { selector, value });
+    assert(filled, `Should fill ${selector}`);
+  }
+
+  async fillVisible(selector, value, options = {}) {
+    const timeoutMs = Number(options.timeoutMs ?? 15000);
+    await this.waitFor(`${selector} visible input`, async () => {
+      return this.visibleCount(selector).then(count => count > 0);
+    }, timeoutMs);
+    const filled = await this.evaluate(({ selector, value }) => {
+      const isVisible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      const element = Array.from(document.querySelectorAll(selector))
+        .find(item => isVisible(item) && 'value' in item);
+      if (!element) {
+        return false;
+      }
+      element.scrollIntoView({ block: 'center', inline: 'center' });
+      element.focus();
+      element.value = `${value ?? ''}`;
+      element.dispatchEvent(new Event('input', { bubbles: true }));
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+      element.blur();
+      return true;
+    }, { selector, value });
+    assert(filled, `Should fill visible ${selector}`);
+  }
+
+  async clickVisible(selector, options = {}) {
+    const timeoutMs = Number(options.timeoutMs ?? 15000);
+    await this.waitFor(`${selector} visible`, async () => {
+      return this.visibleCount(selector).then(count => count > 0);
+    }, timeoutMs);
+    const clicked = await this.evaluate(selector => {
+      const isVisible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      const element = Array.from(document.querySelectorAll(selector))
+        .find(item => isVisible(item) && !item.disabled);
+      if (!element) {
+        return false;
+      }
+      element.scrollIntoView({ block: 'center', inline: 'center' });
+      element.click();
+      return true;
+    }, selector);
+    assert(clicked, `Should click visible ${selector}`);
+  }
+
+  async mouseClickVisible(selector, options = {}) {
+    const timeoutMs = Number(options.timeoutMs ?? 15000);
+    await this.waitFor(`${selector} visible mouse target`, async () => {
+      return this.visibleCount(selector).then(count => count > 0);
+    }, timeoutMs);
+    const point = await this.evaluate(selector => {
+      const isVisible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      const element = Array.from(document.querySelectorAll(selector))
+        .find(item => isVisible(item) && !item.disabled);
+      if (!element) {
+        return null;
+      }
+      element.scrollIntoView({ block: 'center', inline: 'center' });
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    }, selector);
+    assert(point, `Should find visible mouse target ${selector}`);
+    await this.connection.send('Input.dispatchMouseEvent', {
+      type: 'mouseMoved',
+      x: point.x,
+      y: point.y,
+      button: 'none'
+    });
+    await this.connection.send('Input.dispatchMouseEvent', {
+      type: 'mousePressed',
+      x: point.x,
+      y: point.y,
+      button: 'left',
+      buttons: 1,
+      clickCount: 1
+    });
+    await this.connection.send('Input.dispatchMouseEvent', {
+      type: 'mouseReleased',
+      x: point.x,
+      y: point.y,
+      button: 'left',
+      buttons: 0,
+      clickCount: 1
+    });
+  }
+
   async waitForText(text, options = {}) {
     const timeoutMs = Number(options.timeoutMs ?? 15000);
     const needle = `${text}`;
@@ -490,9 +644,18 @@ export class ChromePage {
     return this.stepRecorder(name, this);
   }
 
+  recordFinding(finding) {
+    this.uiFindings.push({
+      severity: finding?.severity ?? 'info',
+      title: finding?.title ?? 'UI finding',
+      details: finding?.details ?? null
+    });
+  }
+
   clearNetworkLog() {
     this.network = [];
     this.failedNetwork = [];
+    this.requests = new Map();
     this.consoleMessages = [];
     this.pageErrors = [];
   }

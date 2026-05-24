@@ -1,0 +1,11 @@
+{
+  "name": "event editor creates event, saves, and reloads it from backend list",
+  "group": "event-editor",
+  "order": 71,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 100000
+}

@@ -9,19 +9,20 @@ import { launchChromeBrowser } from './lib/chrome-cdp.mjs';
 import { assertBrowserExpectations, performDemoLogin } from './lib/ui-contracts.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const args = parseCommonArgs(process.argv.slice(2));
+const rawArgs = process.argv.slice(2);
+const args = parseCommonArgs(stripUiArgs(rawArgs));
+const uiArgs = parseUiArgs(rawArgs);
 const baseUrl = process.env.E2E_UI_BASE_URL ?? 'http://localhost';
-const artifactsDir = path.join(__dirname, '..', '..', '.e2e-artifacts', 'ui');
+const artifactsDir = process.env.E2E_UI_ARTIFACTS_DIR
+  ? path.resolve(process.env.E2E_UI_ARTIFACTS_DIR)
+  : path.join(__dirname, '..', '..', '.e2e-artifacts', uiArgs.artifactName);
 
 const ctx = {
   mode: process.env.E2E_UI_MODE ?? 'full',
   baseUrl,
   vars: {},
   defaultMaxMs: Number(process.env.E2E_UI_DEFAULT_MAX_MS ?? 20000),
-  viewport: {
-    width: Number(process.env.E2E_UI_VIEWPORT_WIDTH ?? 1440),
-    height: Number(process.env.E2E_UI_VIEWPORT_HEIGHT ?? 950)
-  }
+  viewport: uiArgs.viewport
 };
 const DEFAULT_UI_USER_ID = 'bf057de7c586eede7e84bdc7';
 
@@ -121,12 +122,23 @@ async function runUiCollection(options) {
         if (options.record) {
           attachStepRecorder(page, options.artifactsDir, testCase);
         }
-        const result = await runUiCase({ page, testCase, ctx: options.ctx, record: options.record, artifactsDir: options.artifactsDir });
+        const result = await runUiCase({
+          browser,
+          page,
+          testCase,
+          ctx: options.ctx,
+          record: options.record,
+          artifactsDir: options.artifactsDir
+        });
         summary.passed += 1;
         summary.results.push(resultSummaryFor(testCase, {
           status: 'passed',
           durationMs: result.durationMs,
-          steps: page.recordedSteps ?? [],
+          steps: [
+            ...(page.recordedSteps ?? []),
+            ...(result.auxiliarySteps ?? [])
+          ],
+          uiFindings: page.uiFindings ?? [],
           record: options.record,
           artifactsDir: options.artifactsDir
         }));
@@ -145,6 +157,7 @@ async function runUiCollection(options) {
           status: 'failed',
           error: error.message,
           steps: page?.recordedSteps ?? [],
+          uiFindings: page?.uiFindings ?? [],
           record: options.record,
           artifactsDir: options.artifactsDir
         }));
@@ -164,8 +177,10 @@ async function runUiCollection(options) {
   return summary;
 }
 
-async function runUiCase({ page, testCase, ctx, record, artifactsDir }) {
+async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir }) {
   const started = performance.now();
+  const auxiliaryPages = [];
+  const auxiliarySteps = [];
   const expected = await readJsonOptional(testCase.dir, 'response.json');
   const scriptName = testCase.request.script ?? 'assert.mjs';
   const script = await import(pathToFileURL(path.join(testCase.dir, scriptName)).href);
@@ -184,33 +199,62 @@ async function runUiCase({ page, testCase, ctx, record, artifactsDir }) {
     assert(ctx.suiteDemoStorage?.localStorage?.['app-session'], 'suiteDemoLogin requires a completed suite demo login');
   }
 
-  await page.primeOrigin(storage);
-  await page.navigate(request.route ?? request.path ?? '/', {
-    loadTimeoutMs: request.loadTimeoutMs ?? ctx.defaultMaxMs
-  });
-  await page.recordStep('01-route-loaded');
-  if (expected?.urlPath) {
-    await page.waitForUrlPath(expected.urlPath, request.waitTimeoutMs ?? ctx.defaultMaxMs);
+  try {
+    await page.primeOrigin(storage);
+    await page.navigate(request.route ?? request.path ?? '/', {
+      loadTimeoutMs: request.loadTimeoutMs ?? ctx.defaultMaxMs
+    });
+    await page.recordStep('01-route-loaded');
+    if (expected?.urlPath) {
+      await page.waitForUrlPath(expected.urlPath, request.waitTimeoutMs ?? ctx.defaultMaxMs);
+    }
+    await assertBrowserExpectations(page, expected?.initial ?? {});
+    if (script?.assertUi) {
+      await script.assertUi({
+        page,
+        browser,
+        ctx,
+        request,
+        expected,
+        testCase,
+        newRecordedPage: async (name, options = {}) => {
+          const childPage = await browser.newPage({
+            viewport: options.viewport ?? page.viewport ?? ctx.viewport
+          });
+          auxiliaryPages.push(childPage);
+          if (record) {
+            attachStepRecorder(childPage, artifactsDir, {
+              ...testCase,
+              id: `${testCase.id}/${slugifyStepName(name)}`
+            });
+          }
+          return childPage;
+        }
+      });
+    }
+    await assertBrowserExpectations(page, expected ?? {});
+    const durationMs = performance.now() - started;
+    const result = {
+      status: 'browser',
+      durationMs,
+      url: await page.evaluate(() => window.location.href),
+      network: page.network,
+      failedNetwork: page.failedNetwork,
+      pageErrors: page.pageErrors,
+      uiFindings: page.uiFindings ?? [],
+      auxiliarySteps
+    };
+    expectDuration(result, Number(request.maxMs ?? expected?.maxMs ?? ctx.defaultMaxMs), testCase.id);
+    if (record) {
+      await recordUiCase(artifactsDir, testCase, page, result);
+    }
+    return result;
+  } finally {
+    for (const childPage of auxiliaryPages) {
+      auxiliarySteps.push(...(childPage.recordedSteps ?? []));
+      await childPage.close().catch(() => undefined);
+    }
   }
-  await assertBrowserExpectations(page, expected?.initial ?? {});
-  if (script?.assertUi) {
-    await script.assertUi({ page, ctx, request, expected, testCase });
-  }
-  await assertBrowserExpectations(page, expected ?? {});
-  const durationMs = performance.now() - started;
-  const result = {
-    status: 'browser',
-    durationMs,
-    url: await page.evaluate(() => window.location.href),
-    network: page.network,
-    failedNetwork: page.failedNetwork,
-    pageErrors: page.pageErrors
-  };
-  expectDuration(result, Number(request.maxMs ?? expected?.maxMs ?? ctx.defaultMaxMs), testCase.id);
-  if (record) {
-    await recordUiCase(artifactsDir, testCase, page, result);
-  }
-  return result;
 }
 
 function materializeRequest(request, ctx) {
@@ -299,7 +343,8 @@ async function recordUiCase(artifactsDir, testCase, page, result) {
     network: page.network,
     failedNetwork: page.failedNetwork,
     consoleMessages: page.consoleMessages,
-    pageErrors: page.pageErrors
+    pageErrors: page.pageErrors,
+    uiFindings: page.uiFindings ?? []
   }, null, 2));
 }
 
@@ -314,7 +359,7 @@ function attachStepRecorder(page, artifactsDir, testCase) {
     await mkdir(caseDir, { recursive: true });
     const screenshot = await currentPage.screenshot();
     await writeFile(path.join(caseDir, filename), screenshot);
-    const relativePath = `.e2e-artifacts/ui/${testCase.id}/steps/${filename}`;
+    const relativePath = `./${testCase.id}/steps/${filename}`;
     page.recordedSteps.push({
       name,
       path: relativePath
@@ -324,7 +369,7 @@ function attachStepRecorder(page, artifactsDir, testCase) {
 }
 
 function resultSummaryFor(testCase, result = {}) {
-  const artifactPath = `.e2e-artifacts/ui/${testCase.id}`;
+  const artifactPath = `./${testCase.id}`;
   const response = testCase.response ?? {};
   return {
     id: testCase.id,
@@ -341,6 +386,7 @@ function resultSummaryFor(testCase, result = {}) {
     screenshot: result.record ? `${artifactPath}/screenshot.png` : null,
     resultJson: result.record ? `${artifactPath}/result.json` : null,
     steps: result.steps ?? [],
+    uiFindings: result.uiFindings ?? [],
     expected: collectBrowserExpectations(response)
   };
 }
@@ -365,7 +411,23 @@ function collectBrowserExpectations(response = {}) {
         ...(response.initial?.network ?? []),
         ...(response.network ?? [])
       ])
-    ]
+    ],
+    absentSelectors: [
+      ...new Set([
+        ...(response.initial?.absentSelectors ?? []),
+        ...(response.absentSelectors ?? [])
+      ])
+    ],
+    minVisible: [
+      ...(response.initial?.minVisible ?? []),
+      ...(response.minVisible ?? [])
+    ],
+    guardrails: [
+      response.noCrashText === true ? 'no crash text' : null,
+      response.noBrokenImages === true ? 'no broken visible images' : null,
+      response.noConsoleErrors === true ? 'no console errors' : null,
+      response.noFailedNetwork === true ? 'no failed network loads' : null
+    ].filter(Boolean)
   };
 }
 
@@ -375,6 +437,7 @@ async function writeUiArtifactIndex(artifactsDir, summary, ctx) {
   const json = {
     generatedAt,
     baseUrl: ctx.baseUrl,
+    viewport: ctx.viewport,
     summary: {
       passed: summary.passed,
       failed: summary.failed,
@@ -385,6 +448,7 @@ async function writeUiArtifactIndex(artifactsDir, summary, ctx) {
   };
   await writeFile(path.join(artifactsDir, 'index.json'), JSON.stringify(json, null, 2));
   await writeFile(path.join(artifactsDir, 'index.md'), renderUiArtifactIndex(json));
+  await writeFile(path.join(artifactsDir, 'findings.md'), renderUiFindings(json));
 }
 
 function renderUiArtifactIndex(report) {
@@ -393,6 +457,7 @@ function renderUiArtifactIndex(report) {
     '',
     `Generated: ${report.generatedAt}`,
     `Base URL: ${report.baseUrl}`,
+    `Viewport: ${report.viewport.width}x${report.viewport.height}`,
     `Summary: ${report.summary.passed} passed, ${report.summary.failed} failed, ${report.summary.skipped} skipped, ${report.summary.total} selected`,
     ''
   ];
@@ -431,7 +496,56 @@ function renderUiArtifactIndex(report) {
     if (result.resultJson) {
       lines.push(`Network/result: [open](${relativeArtifactLink(result.resultJson)})`);
     }
+    if ((result.uiFindings ?? []).length > 0) {
+      lines.push('UI findings:');
+      for (const finding of result.uiFindings) {
+        lines.push(`- ${finding.severity ?? 'info'}: ${finding.title ?? 'UI finding'}`);
+      }
+    }
     appendExpectationLines(lines, result.expected);
+    lines.push('');
+  }
+  return `${lines.join('\n')}\n`;
+}
+
+function renderUiFindings(report) {
+  const lines = [
+    '# UI E2E Findings',
+    '',
+    `Generated: ${report.generatedAt}`,
+    `Base URL: ${report.baseUrl}`,
+    `Viewport: ${report.viewport.width}x${report.viewport.height}`,
+    ''
+  ];
+  const failed = report.results.filter(result => result.status === 'failed');
+  const weird = report.results.flatMap(result => (result.uiFindings ?? []).map(finding => ({ result, finding })));
+  if (failed.length === 0 && weird.length === 0) {
+    lines.push('No fatal failures or recorded visual findings.');
+    return `${lines.join('\n')}\n`;
+  }
+  if (failed.length > 0) {
+    lines.push('## Fatal Failures');
+    lines.push('');
+    for (const result of failed) {
+      lines.push(`- ${result.id}: ${result.error ?? 'failed'}`);
+      if (result.screenshot) {
+        lines.push(`  Screenshot: ${relativeArtifactLink(result.screenshot)}`);
+      }
+    }
+    lines.push('');
+  }
+  if (weird.length > 0) {
+    lines.push('## Weird Or Visual Findings');
+    lines.push('');
+    for (const { result, finding } of weird) {
+      lines.push(`- ${result.id}: ${finding.severity ?? 'info'} - ${finding.title ?? 'UI finding'}`);
+      if (result.screenshot) {
+        lines.push(`  Screenshot: ${relativeArtifactLink(result.screenshot)}`);
+      }
+      if (finding.details) {
+        lines.push(`  Details: \`${JSON.stringify(finding.details).slice(0, 1200)}\``);
+      }
+    }
     lines.push('');
   }
   return `${lines.join('\n')}\n`;
@@ -439,8 +553,11 @@ function renderUiArtifactIndex(report) {
 
 function appendExpectationLines(lines, expected) {
   const selectors = expected.selectors ?? [];
+  const absentSelectors = expected.absentSelectors ?? [];
+  const minVisible = expected.minVisible ?? [];
   const text = expected.text ?? [];
   const network = expected.network ?? [];
+  const guardrails = expected.guardrails ?? [];
   if (expected.urlPath) {
     lines.push(`Expected path: \`${expected.urlPath}\``);
   }
@@ -450,13 +567,25 @@ function appendExpectationLines(lines, expected) {
   if (text.length > 0) {
     lines.push(`Expected text: ${text.map(item => `\`${item}\``).join(', ')}`);
   }
+  if (absentSelectors.length > 0) {
+    lines.push(`Expected absent selectors: ${absentSelectors.map(item => `\`${item}\``).join(', ')}`);
+  }
+  if (minVisible.length > 0) {
+    lines.push(`Expected minimum visible: ${minVisible.map(item => `\`${typeof item === 'string' ? item : `${item.selector} >= ${item.min ?? 1}`}\``).join(', ')}`);
+  }
   if (network.length > 0) {
     lines.push(`Expected backend calls: ${network.map(item => `\`${item}\``).join(', ')}`);
+  }
+  if (guardrails.length > 0) {
+    lines.push(`Guardrails: ${guardrails.map(item => `\`${item}\``).join(', ')}`);
   }
 }
 
 function relativeArtifactLink(artifactPath) {
-  return artifactPath.replace(/^\.e2e-artifacts\/ui\//, './');
+  if (artifactPath.startsWith('./') || artifactPath.startsWith('../')) {
+    return artifactPath;
+  }
+  return artifactPath.replace(/^\.e2e-artifacts\/[^/]+\//, './');
 }
 
 function slugifyStepName(value) {
@@ -476,4 +605,72 @@ function statusLabel(status) {
     return 'FAIL';
   }
   return 'SKIP';
+}
+
+function parseUiArgs(argv) {
+  const envViewport = {
+    width: Number(process.env.E2E_UI_VIEWPORT_WIDTH ?? 1440),
+    height: Number(process.env.E2E_UI_VIEWPORT_HEIGHT ?? 950)
+  };
+  let viewport = envViewport;
+  let artifactName = 'ui';
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--mobile') {
+      viewport = { width: 390, height: 844 };
+      artifactName = 'ui-mobile';
+    } else if (arg === '--desktop') {
+      viewport = { width: 1440, height: 950 };
+      artifactName = 'ui';
+    } else if (arg === '--viewport') {
+      const parsed = parseViewport(argv[index + 1]);
+      if (parsed) {
+        viewport = parsed;
+        artifactName = `ui-${parsed.width}x${parsed.height}`;
+      }
+      index += 1;
+    } else if (arg.startsWith('--viewport=')) {
+      const parsed = parseViewport(arg.slice('--viewport='.length));
+      if (parsed) {
+        viewport = parsed;
+        artifactName = `ui-${parsed.width}x${parsed.height}`;
+      }
+    }
+  }
+
+  if (process.env.E2E_UI_VIEWPORT_WIDTH || process.env.E2E_UI_VIEWPORT_HEIGHT) {
+    artifactName = process.env.E2E_UI_ARTIFACTS_NAME ?? artifactName;
+  }
+
+  return { viewport, artifactName };
+}
+
+function stripUiArgs(argv) {
+  const stripped = [];
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--mobile' || arg === '--desktop' || arg.startsWith('--viewport=')) {
+      continue;
+    }
+    if (arg === '--viewport') {
+      index += 1;
+      continue;
+    }
+    stripped.push(arg);
+  }
+  return stripped;
+}
+
+function parseViewport(value) {
+  const match = `${value ?? ''}`.trim().match(/^(\d{3,5})x(\d{3,5})$/i);
+  if (!match) {
+    return null;
+  }
+  const width = Number(match[1]);
+  const height = Number(match[2]);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    return null;
+  }
+  return { width, height };
 }

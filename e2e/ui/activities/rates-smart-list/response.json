@@ -1,0 +1,20 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-activities",
+    ".activities-popup",
+    ".activities-rate-profile-card"
+  ],
+  "absentSelectors": [
+    ".explanation-popup",
+    ".confirmation-dialog",
+    ".popup-loading-overlay"
+  ],
+  "network": [
+    "/api/activities/rates/page"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 90000
+}

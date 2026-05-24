@@ -5,9 +5,17 @@
     "app-editable-image-carousel",
     ".editable-image-carousel"
   ],
+  "absentSelectors": [
+    ".explanation-popup",
+    ".confirmation-dialog",
+    ".popup-loading-overlay"
+  ],
   "network": [
     "/api/admin/dashboard",
     "/api/admin/explanation"
   ],
-  "maxMs": 50000
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 80000
 }

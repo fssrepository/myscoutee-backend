@@ -1,0 +1,12 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-assets",
+    ".experience-item-card"
+  ],
+  "network": [
+    "/api/assets"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true
+}

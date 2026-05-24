@@ -1,0 +1,11 @@
+{
+  "name": "event explore join/checkout path opens and submits through the UI",
+  "group": "event-explore",
+  "order": 66,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 120000
+}

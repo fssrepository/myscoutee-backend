@@ -1,0 +1,11 @@
+{
+  "name": "profile editor edits fields, saves, and reloads backend values",
+  "group": "profile-editor",
+  "order": 51,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 80000
+}

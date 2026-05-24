@@ -1,0 +1,20 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".popup-panel-event-explore",
+    ".popup-panel-event-editor"
+  ],
+  "absentSelectors": [
+    ".explanation-popup",
+    ".confirmation-dialog",
+    ".popup-loading-overlay"
+  ],
+  "network": [
+    "/api/activities/events",
+    "/api/activities/events/explore"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true,
+  "noConsoleErrors": true,
+  "maxMs": 70000
+}

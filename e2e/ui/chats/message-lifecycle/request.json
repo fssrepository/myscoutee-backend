@@ -1,0 +1,11 @@
+{
+  "name": "chat popup sends, reacts, pins, edits, and unsends through the UI",
+  "group": "chats",
+  "order": 90,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "maxMs": 140000
+}

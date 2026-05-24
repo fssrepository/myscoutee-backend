@@ -4,11 +4,23 @@ export async function assertBrowserExpectations(page, expected = {}) {
   for (const selector of expected.selectors ?? []) {
     await page.waitForSelector(selector, { timeoutMs: expected.timeoutMs });
   }
+  for (const selector of expected.absentSelectors ?? []) {
+    await assertNoVisibleSelector(page, selector);
+  }
   for (const selector of expected.optionalSelectors ?? []) {
     await page.waitForSelector(selector, { timeoutMs: expected.timeoutMs }).catch(() => undefined);
   }
+  for (const item of expected.minVisible ?? []) {
+    const selector = typeof item === 'string' ? item : item.selector;
+    const min = typeof item === 'string' ? 1 : Number(item.min ?? 1);
+    const label = typeof item === 'string' ? item : item.label ?? selector;
+    await assertVisibleCount(page, selector, min, label);
+  }
   for (const text of expected.text ?? []) {
     await page.waitForText(text, { timeoutMs: expected.timeoutMs });
+  }
+  for (const text of expected.notText ?? []) {
+    await assertTextAbsent(page, text);
   }
   for (const networkPattern of expected.network ?? []) {
     await page.waitForNetwork(networkPattern, { timeoutMs: expected.timeoutMs });
@@ -25,6 +37,21 @@ export async function assertBrowserExpectations(page, expected = {}) {
     assert(failedApiResponses.length === 0, 'Browser should not receive failed API responses', {
       failedApiResponses
     });
+  }
+  if (expected.noFailedNetwork === true) {
+    assert(page.failedNetwork.length === 0, 'Browser should not have failed network loads', {
+      failedNetwork: page.failedNetwork
+    });
+  }
+  if (expected.noConsoleErrors === true) {
+    const consoleErrors = page.consoleMessages.filter(entry => entry.type === 'error');
+    assert(consoleErrors.length === 0, 'Browser console should not log errors', { consoleErrors });
+  }
+  if (expected.noCrashText === true) {
+    await assertNoVisibleCrashFallback(page);
+  }
+  if (expected.noBrokenImages === true) {
+    await assertNoBrokenImages(page);
   }
 }
 
@@ -47,14 +74,280 @@ export async function assertActiveBackendCalls(page, patterns) {
 }
 
 export async function assertVisibleCount(page, selector, minCount, label = selector) {
-  const count = await page.evaluate(selector => {
-    return Array.from(document.querySelectorAll(selector)).filter(element => {
+  const count = await page.visibleCount(selector);
+  assert(count >= minCount, `${label} should have at least ${minCount} visible item(s)`, { count });
+}
+
+export async function waitForVisibleCount(page, selector, minCount, label = selector, timeoutMs = 30000) {
+  await page.waitFor(`${label} visible count >= ${minCount}`, async () => {
+    const count = await page.visibleCount(selector);
+    return count >= minCount;
+  }, timeoutMs);
+}
+
+export async function waitForSmartListSettled(page, rootSelector, timeoutMs = 45000) {
+  await page.waitFor(`${rootSelector} smart-list settled`, async () => {
+    return page.evaluate(rootSelector => {
+      const root = document.querySelector(rootSelector) ?? document;
+      const visible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      const loadingBars = Array.from(root.querySelectorAll('.header-progress-bar.is-state-loading, .header-progress-bar.is-state-loading-overdue'))
+        .filter(visible);
+      const overlays = Array.from(root.querySelectorAll('.popup-loading-overlay, .smart-list__loading'))
+        .filter(visible);
+      return loadingBars.length === 0 && overlays.length === 0;
+    }, rootSelector);
+  }, timeoutMs);
+}
+
+export async function assertInfoCardMenuAnchored(page, options = {}) {
+  const geometry = await inspectInfoCardMenuAnchor(page, options);
+  const maxHorizontalDrift = Number(options.maxHorizontalDriftPx ?? 48);
+  const maxVerticalGap = Number(options.maxVerticalGapPx ?? 24);
+  assert(geometry.found, 'Info-card action menu should be open before checking anchoring', geometry);
+  assert(geometry.menuOverlapsCardHorizontally, 'Info-card action menu should stay horizontally anchored to its card', geometry);
+  assert(geometry.opensUp || geometry.opensDown, 'Info-card action menu should open above or below the three-dot trigger', geometry);
+  assert(geometry.horizontalDrift <= maxHorizontalDrift, 'Info-card action menu should not drift away from its trigger', {
+    ...geometry,
+    maxHorizontalDrift
+  });
+  assert(geometry.verticalGap <= maxVerticalGap, 'Info-card action menu should stay close to its trigger vertically', {
+    ...geometry,
+    maxVerticalGap
+  });
+  return geometry;
+}
+
+export async function recordInfoCardMenuAnchorFinding(page, options = {}) {
+  const geometry = await inspectInfoCardMenuAnchor(page, options);
+  const maxHorizontalDrift = Number(options.maxHorizontalDriftPx ?? 48);
+  const maxVerticalGap = Number(options.maxVerticalGapPx ?? 24);
+  const ok = geometry.found
+    && geometry.menuOverlapsCardHorizontally
+    && (geometry.opensUp || geometry.opensDown)
+    && geometry.horizontalDrift <= maxHorizontalDrift
+    && geometry.verticalGap <= maxVerticalGap;
+  if (!ok && typeof page.recordFinding === 'function') {
+    page.recordFinding({
+      severity: options.severity ?? 'warning',
+      title: options.title ?? 'Info-card action menu is not anchored cleanly to its trigger',
+      details: {
+        ...geometry,
+        maxHorizontalDrift,
+        maxVerticalGap
+      }
+    });
+  }
+  return { ok, geometry };
+}
+
+export async function inspectInfoCardMenuAnchor(page, options = {}) {
+  const settleMs = Number(options.settleMs ?? 250);
+  if (settleMs > 0) {
+    await page.evaluate(ms => new Promise(resolve => window.setTimeout(resolve, ms)), settleMs);
+  }
+  return page.evaluate(() => {
+    const visible = element => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
-      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-    }).length;
-  }, selector);
-  assert(count >= minCount, `${label} should have at least ${minCount} visible item(s)`, { count });
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const menu = Array.from(document.querySelectorAll('.ui-info-card__menu.is-open, .ui-info-card__menu, .activities-event-action-menu.item-action-menu.is-open'))
+      .find(visible);
+    const trigger = Array.from(document.querySelectorAll('.ui-info-card__menu-trigger.is-open, .experience-action-menu-trigger.is-open'))
+      .filter(visible)
+      .map(element => ({
+        element,
+        rect: element.getBoundingClientRect(),
+        card: element.closest('.ui-info-card, .experience-item-card, .activities-row-item')
+      }))
+      .filter(item => item.card)
+      [0] ?? null;
+    const card = trigger?.card ?? null;
+    if (!trigger || !card || !menu) {
+      return {
+        found: false,
+        visibleOpenTriggers: Array.from(document.querySelectorAll('.ui-info-card__menu-trigger.is-open, .experience-action-menu-trigger.is-open')).filter(visible).length,
+        visibleTriggers: Array.from(document.querySelectorAll('.ui-info-card__menu-trigger, .experience-action-menu-trigger')).filter(visible).length,
+        visibleMenus: Array.from(document.querySelectorAll('.ui-info-card__menu.is-open, .ui-info-card__menu, .activities-event-action-menu.item-action-menu.is-open')).filter(visible).length
+      };
+    }
+    const triggerRect = trigger.rect;
+    const cardRect = card.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const triggerCenterX = triggerRect.left + triggerRect.width / 2;
+    const menuCenterX = menuRect.left + menuRect.width / 2;
+    const horizontalDrift = Math.abs(menuRect.right - triggerRect.right);
+    const opensDown = menuRect.top >= triggerRect.bottom;
+    const opensUp = menuRect.bottom <= triggerRect.top;
+    const verticalGap = opensDown
+      ? menuRect.top - triggerRect.bottom
+      : opensUp
+        ? triggerRect.top - menuRect.bottom
+        : 0;
+    return {
+      found: true,
+      triggerRect,
+      cardRect,
+      menuRect,
+      horizontalDrift,
+      verticalGap,
+      opensUp,
+      opensDown,
+      menuOverlapsCardHorizontally: menuRect.right >= cardRect.left && menuRect.left <= cardRect.right
+    };
+  });
+}
+
+export async function assertNoDocumentHorizontalOverflow(page, options = {}) {
+  const tolerance = Number(options.tolerancePx ?? 4);
+  const metrics = await page.evaluate(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    return {
+      viewportWidth: window.innerWidth,
+      rootClientWidth: root.clientWidth,
+      rootScrollWidth: root.scrollWidth,
+      bodyClientWidth: body?.clientWidth ?? 0,
+      bodyScrollWidth: body?.scrollWidth ?? 0
+    };
+  });
+  const overflow = Math.max(
+    metrics.rootScrollWidth - metrics.rootClientWidth,
+    metrics.bodyScrollWidth - metrics.bodyClientWidth
+  );
+  assert(overflow <= tolerance, 'Document should not have unexpected horizontal overflow', {
+    ...metrics,
+    overflow,
+    tolerance
+  });
+}
+
+export async function smartListSnapshot(page, rootSelector) {
+  return page.evaluate(rootSelector => {
+    const root = document.querySelector(rootSelector) ?? document;
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const list = root.querySelector('.smart-list');
+    const items = Array.from(root.querySelectorAll('.smart-list__item-shell, .experience-item-card, .activities-row-item'))
+      .filter(visible)
+      .map(element => ({
+        text: (element.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 180),
+        group: element.getAttribute('data-group-label') || ''
+      }));
+    return {
+      itemCount: items.length,
+      groups: Array.from(root.querySelectorAll('.smart-list__group-marker'))
+        .filter(visible)
+        .map(element => ({
+          label: (element.textContent ?? '').trim(),
+          attr: element.getAttribute('data-group-label') || ''
+        })),
+      stickyLabel: (root.querySelector('.smart-list__sticky, .smart-list__sticky-label')?.textContent ?? '').trim(),
+      isCalendar: Boolean(root.querySelector('.smart-list--calendar')),
+      scrollTop: list?.scrollTop ?? 0,
+      scrollHeight: list?.scrollHeight ?? 0,
+      clientHeight: list?.clientHeight ?? 0,
+      items
+    };
+  }, rootSelector);
+}
+
+export async function scrollSmartList(page, rootSelector, amount = 900) {
+  await page.evaluate(({ rootSelector, amount }) => {
+    const root = document.querySelector(rootSelector) ?? document;
+    const list = root.querySelector('.smart-list');
+    if (list) {
+      list.scrollBy({ top: amount, left: 0, behavior: 'instant' });
+      list.dispatchEvent(new Event('scroll', { bubbles: true }));
+    }
+  }, { rootSelector, amount });
+}
+
+export async function assertNoVisibleSelector(page, selector, label = selector) {
+  const count = await page.visibleCount(selector);
+  assert(count === 0, `${label} should not be visible`, { count });
+}
+
+export async function assertTextAbsent(page, text) {
+  const needle = `${text ?? ''}`;
+  const present = await page.evaluate(needle => document.body.innerText.includes(needle), needle);
+  assert(!present, `Page should not contain text ${needle}`);
+}
+
+export async function assertNoVisibleCrashFallback(page) {
+  const crashTexts = await page.evaluate(() => {
+    const bodyText = document.body.innerText || '';
+    return [
+      'Application error',
+      'Something went wrong',
+      'Cannot read properties',
+      'TypeError:',
+      'ReferenceError:',
+      'Unhandled Promise rejection',
+      'NG0'
+    ].filter(text => bodyText.includes(text));
+  });
+  assert(crashTexts.length === 0, 'Page should not show crash/fallback text', { crashTexts });
+}
+
+export async function assertNoBrokenImages(page, options = {}) {
+  const ignore = (options.ignore ?? []).map(item => `${item}`);
+  const brokenImages = await page.evaluate(ignore => {
+    const isVisible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    return Array.from(document.querySelectorAll('img'))
+      .filter(image => isVisible(image))
+      .filter(image => {
+        const src = image.currentSrc || image.src || '';
+        return src && !ignore.some(pattern => src.includes(pattern));
+      })
+      .filter(image => image.complete && image.naturalWidth === 0)
+      .map(image => ({
+        src: image.currentSrc || image.src || '',
+        alt: image.alt || '',
+        selector: image.className || image.closest('[class]')?.className || image.tagName.toLowerCase()
+      }));
+  }, ignore);
+  assert(brokenImages.length === 0, 'Visible images should load successfully', { brokenImages });
+}
+
+export async function waitForVisibleText(page, selector, text, timeoutMs = 15000) {
+  const needle = `${text ?? ''}`;
+  await page.waitFor(`${selector} visible text ${needle}`, async () => {
+    return page.evaluate(({ selector, needle }) => {
+      return Array.from(document.querySelectorAll(selector)).some(element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none'
+          && (element.textContent ?? '').includes(needle);
+      });
+    }, { selector, needle });
+  }, timeoutMs);
 }
 
 export async function performDemoLogin(page, options = {}) {
@@ -128,10 +421,19 @@ export async function closeExplanationPopupIfPresent(page, timeoutMs = 15000) {
   if (!(await page.isSelectorVisible('.explanation-popup'))) {
     return false;
   }
-  await page.click('.explanation-popup__header-action', { timeoutMs });
+  await page.clickVisible('.explanation-popup__header-action', { timeoutMs });
   await page.waitForSelectorHidden('.explanation-popup', { timeoutMs });
   await page.recordStep('explanation-popup-closed');
   return true;
+}
+
+export async function closeExplanationPopupEventually(page, timeoutMs = 8000) {
+  if (!(await page.isSelectorVisible('.explanation-popup'))) {
+    await page.waitForSelector('.explanation-popup', {
+      timeoutMs: Math.min(Number(timeoutMs) || 8000, 8000)
+    }).catch(() => undefined);
+  }
+  return closeExplanationPopupIfPresent(page, timeoutMs);
 }
 
 async function clickDemoUser(page, userId, timeoutMs) {

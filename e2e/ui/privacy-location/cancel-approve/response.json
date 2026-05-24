@@ -1,0 +1,12 @@
+{
+  "urlPath": "/",
+  "selectors": [
+    ".demo-login-overlay",
+    ".demo-user-item"
+  ],
+  "network": [
+    "/api/auth/eligibility",
+    "/api/auth/demo-users"
+  ],
+  "noCrashText": true
+}
