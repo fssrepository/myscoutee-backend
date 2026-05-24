@@ -24,6 +24,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -34,6 +35,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminFeedbackDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReportDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReportedUserDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
+import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
@@ -55,6 +57,7 @@ public class AdminModerationService {
     private final UserFeedbackSubmissionsRepository feedbackRepository;
     private final UsersRepository usersRepository;
     private final ActivityChatsRepository chatsRepository;
+    private final ActivityChatMessagesRepository chatMessagesRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
@@ -65,6 +68,7 @@ public class AdminModerationService {
             UserFeedbackSubmissionsRepository feedbackRepository,
             UsersRepository usersRepository,
             ActivityChatsRepository chatsRepository,
+            ActivityChatMessagesRepository chatMessagesRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService) {
@@ -73,6 +77,7 @@ public class AdminModerationService {
         this.feedbackRepository = feedbackRepository;
         this.usersRepository = usersRepository;
         this.chatsRepository = chatsRepository;
+        this.chatMessagesRepository = chatMessagesRepository;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
@@ -294,6 +299,7 @@ public class AdminModerationService {
         Users targetUser = usersRepository.findByUserId(targetUserId).orElse(null);
         ActivityChat.ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
         ActivityChat.ChatMessageRecord userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
+        chatMessagesRepository.save(ActivityChatMessage.fromRecord(chatId, userMessage));
         ActivityChat userChat = appendSupportMessageForOwner(
                 targetUserId,
                 chatId,
@@ -303,12 +309,9 @@ public class AdminModerationService {
                 text,
                 admin.id(),
                 nowIso,
-                userMessage,
                 true,
                 supportCaseStatus,
                 admin);
-        ActivityChat.ChatMessageRecord adminMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, true,
-                List.of());
         ActivityChat adminChat = appendSupportMessageForOwner(
                 admin.id(),
                 chatId,
@@ -318,7 +321,6 @@ public class AdminModerationService {
                 text,
                 admin.id(),
                 nowIso,
-                adminMessage,
                 false,
                 supportCaseStatus,
                 admin);
@@ -335,7 +337,6 @@ public class AdminModerationService {
             String lastMessage,
             String lastSenderId,
             String dateIso,
-            ActivityChat.ChatMessageRecord message,
             boolean unreadForOwner,
             String supportCaseStatus,
             AdminUserDto assignee) {
@@ -361,9 +362,6 @@ public class AdminModerationService {
         chat.setSupportCaseAssigneeInitials(assignee == null ? "" : text(assignee.initials(), ""));
         chat.setSupportCaseUpdatedAtIso(dateIso);
         chat.setUnread(unreadForOwner ? Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1) : 0);
-        List<ActivityChat.ChatMessageRecord> messages = new ArrayList<>(chat.getMessages());
-        messages.add(message);
-        chat.setMessages(messages);
         return chat;
     }
 
@@ -468,7 +466,7 @@ public class AdminModerationService {
                 report.getEventStartAtIso(), report.getMemberEntryId(), report.getSourceType(), report.getSourceId(), report.getSourceText(),
                 report.getChatId(), report.getMessageId(), report.getAssetId(), report.getAssetType(),
                 chat == null ? null : chat.getTitle(),
-                chat == null ? List.of() : chat.getMessages().stream().map(this::toChatMessage).toList(),
+                chat == null ? List.of() : chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(chat.getChatId()).stream().map(this::toChatMessage).toList(),
                 report.getCreatedDate());
     }
 
@@ -505,8 +503,7 @@ public class AdminModerationService {
         if (chat == null || !StringUtils.hasText(normalizedMessageId) || !StringUtils.hasText(normalizedTargetUserId)) {
             return false;
         }
-        return chat.getMessages().stream()
-                .filter(message -> message != null)
+        return chatMessagesRepository.findByChatIdAndMessageId(chat.getChatId(), normalizedMessageId).stream()
                 .anyMatch(message -> normalizedMessageId.equals(normalize(message.getId()))
                         && message.getSenderAvatar() != null
                         && normalizedTargetUserId.equals(normalize(message.getSenderAvatar().getId())));

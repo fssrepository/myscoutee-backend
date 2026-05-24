@@ -124,6 +124,7 @@ const now = new Date().toISOString();
 const userIds = Array.from({ length: clientCount }, (_, index) => userPrefix + '-' + String(index + 1).padStart(4, '0'));
 db.users.deleteMany({ userId: { $regex: userPrefixRegex } });
 db.chats.deleteMany({ id: chatId });
+db.chatMessages.deleteMany({ chatId });
 db.users.insertMany(userIds.map((userId, index) => ({
   _id: userId,
   userId,
@@ -152,13 +153,7 @@ db.chats.insertMany(userIds.map((userId, index) => ({
   channelType: 'e2eRoom',
   eventId: '',
   subEventId: '',
-  groupId: '',
-  messages: [],
-  messageSenderUserIds: [],
-  messageReadByUserIds: [],
-  messageReactionUserIds: [],
-  messageAttachmentKeys: [],
-  pollVoterUserIds: []
+  groupId: ''
 })), { ordered: false });
 printjson({ ok: true, db: db.getName(), chatId, users: userIds.length, ownerCopies: userIds.length });
 `;
@@ -513,6 +508,7 @@ function buildSummary({
       messages: config.messages,
       sendRatePerSec: config.sendRatePerSec,
       connectConcurrency: config.connectConcurrency,
+      warmupMs: config.warmupMs,
       minDeliveryRatio: config.minDeliveryRatio
     },
     startedAtIso,
@@ -557,6 +553,7 @@ function renderIndex(summary) {
     `- Database: \`${summary.scenario.database}\``,
     `- Chat: \`${summary.scenario.chatId}\``,
     `- Clients: ${summary.scenario.clients}`,
+    `- Warmup: ${summary.scenario.warmupMs}ms`,
     `- Messages sent: ${summary.send.sent}/${summary.send.attempted}`,
     `- Expected deliveries: ${summary.delivery.expected}`,
     `- Received deliveries: ${summary.delivery.received}`,
@@ -591,6 +588,7 @@ function renderIndex(summary) {
 function printSummary(summary, artifactDir) {
   console.log('\nwebsocket room simulation');
   console.log(`clients: opened ${summary.connect.opened}/${summary.connect.attempted}, open p95=${Math.round(summary.connect.p95OpenMs)}ms max=${Math.round(summary.connect.maxOpenMs)}ms`);
+  console.log(`warmup: ${summary.scenario.warmupMs}ms after client opens`);
   console.log(`messages: sent ${summary.send.sent}/${summary.send.attempted}, complete fanout ${summary.delivery.completeMessages}/${summary.send.sent}`);
   console.log(`deliveries: ${summary.delivery.received}/${summary.delivery.expected} (${(summary.delivery.deliveryRatio * 100).toFixed(2)}%), missing=${summary.delivery.missing}`);
   console.log(`duplicate frames ignored: ${summary.delivery.duplicateFrames}`);
@@ -870,7 +868,7 @@ function resolveConfig(args) {
     deliveryTimeoutMs: numberArg(args.deliveryTimeoutMs, process.env.E2E_WS_ROOM_DELIVERY_TIMEOUT_MS, 60000),
     closeTimeoutMs: numberArg(args.closeTimeoutMs, process.env.E2E_WS_ROOM_CLOSE_TIMEOUT_MS, 5000),
     prepareTimeoutMs: numberArg(args.prepareTimeoutMs, process.env.E2E_WS_ROOM_PREPARE_TIMEOUT_MS, 120000),
-    warmupMs: numberArg(args.warmupMs, process.env.E2E_WS_ROOM_WARMUP_MS, 1000),
+    warmupMs: numberArg(args.warmupMs, process.env.E2E_WS_ROOM_WARMUP_MS, 5000),
     minDeliveryRatio: decimalArg(args.minDeliveryRatio, process.env.E2E_WS_ROOM_MIN_DELIVERY_RATIO, 0.98),
     progressEvery: numberArg(args.progressEvery, process.env.E2E_WS_ROOM_PROGRESS_EVERY, 50),
     progressEveryMessages: numberArg(args.progressEveryMessages, process.env.E2E_WS_ROOM_PROGRESS_EVERY_MESSAGES, 5),
@@ -916,6 +914,8 @@ function printHelp() {
 
 Requires the backend to run against playground_db. The script seeds a disposable
 room named e2e-ws-room and user ids named e2e-ws-room-user-0001...
+The default warmup waits 5000ms after all client sockets report open, because
+large handshake batches can still be finishing server-side registration.
 `);
 }
 

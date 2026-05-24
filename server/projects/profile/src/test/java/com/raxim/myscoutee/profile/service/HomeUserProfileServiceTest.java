@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
@@ -47,6 +48,8 @@ class HomeUserProfileServiceTest {
     private UserRatesRepository userRatesRepository;
     @Mock
     private ActivityChatsRepository activityChatsRepository;
+    @Mock
+    private ActivityChatMessagesRepository activityChatMessagesRepository;
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
@@ -93,6 +96,7 @@ class HomeUserProfileServiceTest {
                 userAffinityEdgesRepository,
                 userRatesRepository,
                 activityChatsRepository,
+                activityChatMessagesRepository,
                 activityEventsRepository,
                 activityMembersRepository,
                 assetsRepository,

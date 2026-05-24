@@ -57,6 +57,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
@@ -175,6 +176,7 @@ public class HomeUserProfileService {
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
     private final ActivityChatsRepository activityChatsRepository;
+    private final ActivityChatMessagesRepository activityChatMessagesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
@@ -198,6 +200,7 @@ public class HomeUserProfileService {
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
             ActivityChatsRepository activityChatsRepository,
+            ActivityChatMessagesRepository activityChatMessagesRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
@@ -219,6 +222,7 @@ public class HomeUserProfileService {
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityChatsRepository = activityChatsRepository;
+        this.activityChatMessagesRepository = activityChatMessagesRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
@@ -474,7 +478,7 @@ public class HomeUserProfileService {
             if (reportedChat == null) {
                 return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
             }
-            reportedChatMessage = findChatMessage(reportedChat, messageId);
+            reportedChatMessage = findChatMessage(reportedChat.getChatId(), messageId);
             chatId = normalizeOptionalText(reportedChat.getChatId());
             messageId = normalizeOptionalText(reportedChatMessage == null ? messageId : reportedChatMessage.getId());
             sourceType = "chat";
@@ -1904,7 +1908,7 @@ public class HomeUserProfileService {
         if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
             return null;
         }
-        ActivityChat.ChatMessageRecord message = findChatMessage(chat, normalizedMessageId);
+        ActivityChat.ChatMessageRecord message = findChatMessage(normalizedChatId, normalizedMessageId);
         if (message == null || message.getSenderAvatar() == null) {
             return null;
         }
@@ -1921,15 +1925,14 @@ public class HomeUserProfileService {
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private ActivityChat.ChatMessageRecord findChatMessage(ActivityChat chat, String messageId) {
+    private ActivityChat.ChatMessageRecord findChatMessage(String chatId, String messageId) {
+        String normalizedChatId = normalizeId(chatId);
         String normalizedMessageId = normalizeId(messageId);
-        if (chat == null || !StringUtils.hasText(normalizedMessageId)) {
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedMessageId)) {
             return null;
         }
-        return chat.getMessages().stream()
-                .filter(Objects::nonNull)
-                .filter(message -> normalizedMessageId.equals(normalizeId(message.getId())))
-                .findFirst()
+        return activityChatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
+                .map(message -> (ActivityChat.ChatMessageRecord) message)
                 .orElse(null);
     }
 

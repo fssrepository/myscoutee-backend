@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -41,6 +42,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.AccountPurgeJob;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -205,14 +207,18 @@ class BackendEmailAccountSchedulersE2ETest {
         assertThat(scrubbedChat).isNotNull();
         assertThat(scrubbedChat.getOwnerUserId()).isEqualTo("deleted-user");
         assertThat(scrubbedChat.getMemberIds()).containsExactly(SURVIVOR_ID);
-        ActivityChat.ChatMessageRecord deletedMessage = scrubbedChat.getMessages().get(0);
+        List<ActivityChatMessage> scrubbedMessages = findAll(
+                Query.query(Criteria.where("chatId").is(PURGE_CHAT_ID)).with(Sort.by(Sort.Direction.ASC, "sentAtIso")),
+                ActivityChatMessage.class);
+        assertThat(scrubbedMessages).hasSize(2);
+        ActivityChat.ChatMessageRecord deletedMessage = scrubbedMessages.get(0);
         assertThat(deletedMessage.getText()).isBlank();
         assertThat(deletedMessage.getSender()).isEqualTo("Deleted user");
         assertThat(deletedMessage.getSenderAvatar().getInitials()).isEqualTo("DU");
         assertThat(deletedMessage.getSenderAvatar().getGender()).isEqualTo("deleted");
         assertThat(deletedMessage.getAttachments()).isEmpty();
         assertThat(deletedMessage.getDeletedAtIso()).isNotBlank();
-        ActivityChat.ChatMessageRecord survivorMessage = scrubbedChat.getMessages().get(1);
+        ActivityChat.ChatMessageRecord survivorMessage = scrubbedMessages.get(1);
         assertThat(survivorMessage.getReadBy()).isEmpty();
         assertThat(survivorMessage.getReactions()).isEmpty();
         assertThat(survivorMessage.getPinnedByUserId()).isNull();
@@ -232,6 +238,7 @@ class BackendEmailAccountSchedulersE2ETest {
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Asset.class);
         mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
     }
 
@@ -326,7 +333,10 @@ class BackendEmailAccountSchedulersE2ETest {
         mongoTemplate.save(asset);
 
         mongoTemplate.save(member("asset-member", "asset", PURGED_ASSET_ID, SURVIVOR_ID));
-        mongoTemplate.save(purgeChat());
+        ActivityChat purgeChat = purgeChat();
+        mongoTemplate.save(purgeChat);
+        mongoTemplate.save(ActivityChatMessage.fromRecord(PURGE_CHAT_ID, purgedUserMessage()));
+        mongoTemplate.save(ActivityChatMessage.fromRecord(PURGE_CHAT_ID, survivorReplyMessage()));
         mongoTemplate.save(notificationReferencingPurgedUser());
     }
 

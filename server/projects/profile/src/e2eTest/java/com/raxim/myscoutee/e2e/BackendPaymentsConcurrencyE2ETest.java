@@ -50,6 +50,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Payment;
@@ -223,9 +224,9 @@ class BackendPaymentsConcurrencyE2ETest {
                 checkoutPayload(eventId, userId(2), 12d));
         postJson("/activities/events/join", joinPayload(eventId, userId(2), acceptedSessionId));
 
-        ActivityChat afterAccepted = eventChat(eventId);
-        assertThat(afterAccepted.getMessages()).hasSize(1);
-        assertThat(afterAccepted.getMessages().get(0).getClientId()).isEqualTo("member-joined");
+        List<ActivityChatMessage> afterAcceptedMessages = chatMessages(eventId);
+        assertThat(afterAcceptedMessages).hasSize(1);
+        assertThat(afterAcceptedMessages.get(0).getClientId()).isEqualTo("member-joined");
         assertThat(onlyPayment(eventId, userId(2)).getBookingStatus()).isEqualTo("joined");
 
         String waitlistSessionId = postJson("/activities/events/checkout?provider=e2e",
@@ -238,7 +239,7 @@ class BackendPaymentsConcurrencyE2ETest {
         assertThat(waitlistMember.getUserId()).isEqualTo(userId(3));
         assertThat(waitlistMember.getRequestKind()).isEqualTo("waitlist");
         assertThat(onlyPayment(eventId, userId(3)).getBookingStatus()).isEqualTo("initiated");
-        assertThat(eventChat(eventId).getMessages()).hasSize(1);
+        assertThat(chatMessages(eventId)).hasSize(1);
 
         String approvalEventId = "e2e-pay-approval-side-effects";
         publishPaidEvent(approvalEventId, 4);
@@ -257,7 +258,7 @@ class BackendPaymentsConcurrencyE2ETest {
                 .orElseThrow();
         assertThat(approvalMember.getRequestKind()).isEqualTo("approval");
         assertThat(onlyPayment(approvalEventId, userId(4)).getBookingStatus()).isEqualTo("initiated");
-        assertThat(eventChat(approvalEventId).getMessages()).isEmpty();
+        assertThat(chatMessages(approvalEventId)).isEmpty();
     }
 
     @Test
@@ -297,7 +298,7 @@ class BackendPaymentsConcurrencyE2ETest {
         assertThat(payment.getBookingStatus()).isEqualTo("initiated");
         assertThat(payment.getJoinedAtIso()).isNull();
         assertThat(members(eventId).stream().map(ActivityMember::getUserId).toList()).doesNotContain(userId(6));
-        assertThat(eventChat(eventId).getMessages()).isEmpty();
+        assertThat(chatMessages(eventId)).isEmpty();
     }
 
     @Test
@@ -366,6 +367,7 @@ class BackendPaymentsConcurrencyE2ETest {
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Payment.class);
         mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
     }
 
     private void seedUsers() {
@@ -483,9 +485,14 @@ class BackendPaymentsConcurrencyE2ETest {
             chat.setDateIso(BASE_TIME.toString());
             chat.setChannelType("event");
             chat.setEventId(eventId);
-            chat.setMessages(new ArrayList<>());
             mongoTemplate.save(chat);
         });
+    }
+
+    private List<ActivityChatMessage> chatMessages(String eventId) {
+        return fromReal(() -> mongoTemplate.find(
+                Query.query(Criteria.where("chatId").is(eventId)),
+                ActivityChatMessage.class));
     }
 
     private ActivityChat eventChat(String eventId) {

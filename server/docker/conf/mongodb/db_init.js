@@ -109,24 +109,32 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { channelType: 1, dateIso: -1 },
     { name: 'chat_channel_date' }
   );
-  portalDb.chats.createIndex(
-    { messageSenderUserIds: 1, dateIso: -1 },
+  portalDb.chatMessages.createIndex(
+    { chatId: 1, id: 1 },
+    { name: 'chat_message_lookup', unique: true }
+  );
+  portalDb.chatMessages.createIndex(
+    { chatId: 1, sentAtIso: -1, id: -1 },
+    { name: 'chat_message_page_desc' }
+  );
+  portalDb.chatMessages.createIndex(
+    { messageSenderUserIds: 1, sentAtIso: -1 },
     { name: 'chat_message_sender_date' }
   );
-  portalDb.chats.createIndex(
-    { messageReadByUserIds: 1, dateIso: -1 },
+  portalDb.chatMessages.createIndex(
+    { messageReadByUserIds: 1, sentAtIso: -1 },
     { name: 'chat_message_reader_date' }
   );
-  portalDb.chats.createIndex(
-    { messageReactionUserIds: 1, dateIso: -1 },
+  portalDb.chatMessages.createIndex(
+    { messageReactionUserIds: 1, sentAtIso: -1 },
     { name: 'chat_message_reaction_date' }
   );
-  portalDb.chats.createIndex(
-    { messageAttachmentKeys: 1, dateIso: -1 },
+  portalDb.chatMessages.createIndex(
+    { messageAttachmentKeys: 1, sentAtIso: -1 },
     { name: 'chat_message_attachment_date' }
   );
-  portalDb.chats.createIndex(
-    { pollVoterUserIds: 1, dateIso: -1 },
+  portalDb.chatMessages.createIndex(
+    { pollVoterUserIds: 1, sentAtIso: -1 },
     { name: 'chat_poll_voter_date' }
   );
 

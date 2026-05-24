@@ -37,6 +37,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Payment;
@@ -144,7 +145,7 @@ class BackendIndexesPerformanceE2ETest {
     }
 
     private void assertDevelopmentChatSeedIncludesParentSearchFields() {
-        String seed = readRepoFile("../../docker/conf/mongodb/demo_db/chats.json");
+        String seed = readRepoFile("../../docker/conf/mongodb/demo_db/chatMessages.json");
         assertThat(seed).contains(
                 "\"messageSenderUserIds\"",
                 "\"messageReadByUserIds\"",
@@ -154,13 +155,13 @@ class BackendIndexesPerformanceE2ETest {
     }
 
     private void assertChatParentSearchFieldsAreMaintained() {
-        ActivityChat chat = mongoTemplate.findById("perf-u01:perf-chat-1", ActivityChat.class);
-        assertThat(chat).isNotNull();
-        assertThat(chat.getMessageSenderUserIds()).contains("perf-u02");
-        assertThat(chat.getMessageReadByUserIds()).contains("perf-u03");
-        assertThat(chat.getMessageReactionUserIds()).contains("perf-u04");
-        assertThat(chat.getMessageAttachmentKeys()).contains(ActivityChat.messageAttachmentKey("event", "perf-event-1"));
-        assertThat(chat.getPollVoterUserIds()).contains("perf-u05");
+        ActivityChatMessage message = mongoTemplate.findById("chat-message:perf-chat-1:perf-message-1", ActivityChatMessage.class);
+        assertThat(message).isNotNull();
+        assertThat(message.getMessageSenderUserIds()).contains("perf-u02");
+        assertThat(message.getMessageReadByUserIds()).contains("perf-u03");
+        assertThat(message.getMessageReactionUserIds()).contains("perf-u04");
+        assertThat(message.getMessageAttachmentKeys()).contains(ActivityChatMessage.messageAttachmentKey("event", "perf-event-1"));
+        assertThat(message.getPollVoterUserIds()).contains("perf-u05");
     }
 
     private List<String> chatIndexNames() {
@@ -296,7 +297,7 @@ class BackendIndexesPerformanceE2ETest {
             chat.setChannelType(index % 6 == 0 ? "serviceEvent" : "direct");
             chat.setUnread(index % 3);
             if (index == 1) {
-                chat.setMessages(List.of(seedSearchMessage()));
+                mongoTemplate.save(ActivityChatMessage.fromRecord(chatId, seedSearchMessage()));
             }
             mongoTemplate.save(chat);
         }

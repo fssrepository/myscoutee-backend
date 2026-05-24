@@ -19,38 +19,4 @@ public interface ActivityChatsRepository extends MongoRepository<ActivityChat, S
     List<ActivityChat> findByChannelType(String channelType);
 
     List<ActivityChat> findByMemberIdsContaining(String userId);
-
-    List<ActivityChat> findByMessageAttachmentKeys(String attachmentKey);
-
-    List<ActivityChat> findByMessageSenderUserIds(String userId);
-
-    List<ActivityChat> findByMessageReadByUserIds(String userId);
-
-    List<ActivityChat> findByMessageReactionUserIds(String userId);
-
-    List<ActivityChat> findByPollVoterUserIds(String userId);
-
-    default List<ActivityChat> findByMessageAttachmentTypeAndEntityId(String type, String entityId) {
-        return findByMessageAttachmentKeys(ActivityChat.messageAttachmentKey(type, entityId));
-    }
-
-    default List<ActivityChat> findByMessageSenderUserId(String userId) {
-        return findByMessageSenderUserIds(normalize(userId));
-    }
-
-    default List<ActivityChat> findByMessageReadByUserId(String userId) {
-        return findByMessageReadByUserIds(normalize(userId));
-    }
-
-    default List<ActivityChat> findByMessageReactionUserId(String userId) {
-        return findByMessageReactionUserIds(normalize(userId));
-    }
-
-    default List<ActivityChat> findByPollVoterUserId(String userId) {
-        return findByPollVoterUserIds(normalize(userId));
-    }
-
-    private static String normalize(String value) {
-        return value == null ? "" : value.trim();
-    }
 }

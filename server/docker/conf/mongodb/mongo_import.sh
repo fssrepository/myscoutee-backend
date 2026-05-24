@@ -133,11 +133,25 @@ db.getCollection('chats').createIndex({ id: 1 }, { name: 'chat_public_id_lookup'
 db.getCollection('chats').createIndex({ ownerUserId: 1, dateIso: -1 }, { name: 'chat_owner_date' });
 db.getCollection('chats').createIndex({ memberIds: 1, dateIso: -1 }, { name: 'chat_member_date' });
 db.getCollection('chats').createIndex({ channelType: 1, dateIso: -1 }, { name: 'chat_channel_date' });
-db.getCollection('chats').createIndex({ messageSenderUserIds: 1, dateIso: -1 }, { name: 'chat_message_sender_date' });
-db.getCollection('chats').createIndex({ messageReadByUserIds: 1, dateIso: -1 }, { name: 'chat_message_reader_date' });
-db.getCollection('chats').createIndex({ messageReactionUserIds: 1, dateIso: -1 }, { name: 'chat_message_reaction_date' });
-db.getCollection('chats').createIndex({ messageAttachmentKeys: 1, dateIso: -1 }, { name: 'chat_message_attachment_date' });
-db.getCollection('chats').createIndex({ pollVoterUserIds: 1, dateIso: -1 }, { name: 'chat_poll_voter_date' });
+" >/dev/null
+      ;;
+    chatMessages)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('chatMessages').createIndex({ chatId: 1, id: 1 }, { name: 'chat_message_lookup', unique: true });
+db.getCollection('chatMessages').createIndex({ chatId: 1, sentAtIso: -1, id: -1 }, { name: 'chat_message_page_desc' });
+db.getCollection('chatMessages').createIndex({ messageSenderUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_sender_date' });
+db.getCollection('chatMessages').createIndex({ messageReadByUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_reader_date' });
+db.getCollection('chatMessages').createIndex({ messageReactionUserIds: 1, sentAtIso: -1 }, { name: 'chat_message_reaction_date' });
+db.getCollection('chatMessages').createIndex({ messageAttachmentKeys: 1, sentAtIso: -1 }, { name: 'chat_message_attachment_date' });
+db.getCollection('chatMessages').createIndex({ pollVoterUserIds: 1, sentAtIso: -1 }, { name: 'chat_poll_voter_date' });
 " >/dev/null
       ;;
     events)
