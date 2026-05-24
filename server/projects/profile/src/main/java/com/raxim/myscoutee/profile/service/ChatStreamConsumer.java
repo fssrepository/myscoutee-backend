@@ -2,7 +2,12 @@ package com.raxim.myscoutee.profile.service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +16,6 @@ import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.StreamOffset;
 import org.springframework.data.redis.connection.stream.StreamReadOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import tools.jackson.databind.ObjectMapper;
@@ -19,14 +23,22 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class ChatStreamConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatStreamConsumer.class);
+    private static final long IDLE_PAUSE_MS = 10L;
 
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final ChatWebSocketSessionRegistry sessionRegistry;
     private final long blockMs;
+    private final ExecutorService consumerExecutor = Executors.newSingleThreadExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "chat-stream-consumer");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     private String lastSeenId = "0-0";
     private boolean streamUnavailableLogged;
+    private volatile boolean running;
+    private volatile Future<?> consumerTask;
 
     public ChatStreamConsumer(
             StringRedisTemplate stringRedisTemplate,
@@ -39,8 +51,32 @@ public class ChatStreamConsumer {
         this.blockMs = Math.max(0L, blockMs);
     }
 
-    @Scheduled(fixedDelayString = "${chat.stream.poll-delay-ms:25}")
-    public void poll() {
+    @PostConstruct
+    void startConsumer() {
+        running = true;
+        consumerTask = consumerExecutor.submit(this::consumeLoop);
+    }
+
+    @PreDestroy
+    void stopConsumer() {
+        running = false;
+        Future<?> task = consumerTask;
+        if (task != null) {
+            task.cancel(true);
+        }
+        consumerExecutor.shutdownNow();
+    }
+
+    private void consumeLoop() {
+        while (running && !Thread.currentThread().isInterrupted()) {
+            boolean processedRecords = poll();
+            if (!processedRecords) {
+                pauseWhenIdle();
+            }
+        }
+    }
+
+    public boolean poll() {
         try {
             List<MapRecord<String, Object, Object>> records = readRecords();
             if (streamUnavailableLogged) {
@@ -48,7 +84,7 @@ public class ChatStreamConsumer {
                 streamUnavailableLogged = false;
             }
             if (records == null || records.isEmpty()) {
-                return;
+                return false;
             }
             for (MapRecord<String, Object, Object> record : records) {
                 lastSeenId = record.getId().getValue();
@@ -63,11 +99,21 @@ public class ChatStreamConsumer {
                     // Ignore malformed records and keep draining the stream.
                 }
             }
+            return true;
         } catch (Exception exception) {
             if (!streamUnavailableLogged) {
                 LOGGER.warn("Chat Redis stream consumer paused because Redis is unavailable.", exception);
                 streamUnavailableLogged = true;
             }
+            return false;
+        }
+    }
+
+    private void pauseWhenIdle() {
+        try {
+            Thread.sleep(IDLE_PAUSE_MS);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
         }
     }
 
