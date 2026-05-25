@@ -1,5 +1,5 @@
 {
-  "name": "activities attending list",
+  "name": "activities attending slim page",
   "group": "events",
   "order": 506,
   "method": "GET",
@@ -9,7 +9,9 @@
     "X-App-Session-Kind": "demo"
   },
   "params": {
-    "userId": "{{userId}}"
+    "userId": "{{userId}}",
+    "limit": "12",
+    "slim": "true"
   },
   "expectedStatus": 200,
   "script": "assert.mjs",

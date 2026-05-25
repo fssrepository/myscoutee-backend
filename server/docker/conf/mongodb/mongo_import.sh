@@ -118,6 +118,107 @@ ensure_collection_indexes() {
   local collection_name="$2"
 
   case "${collection_name}" in
+    users)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('users').createIndex({ syncKey: 1 }, { name: 'users_sync_key', unique: true, sparse: true });
+db.getCollection('users').createIndex({ userId: 1 }, { name: 'users_user_id', unique: true });
+db.getCollection('users').createIndex({ email: 1 }, { name: 'users_email', sparse: true });
+db.getCollection('users').createIndex({ partitionKey: 1 }, { name: 'users_partition_key', sparse: true });
+db.getCollection('users').createIndex({ profileStatus: 1 }, { name: 'users_profile_status' });
+db.getCollection('users').createIndex({ profileStatus: 1, deletedAtIso: 1 }, { name: 'users_profile_status_deleted' });
+db.getCollection('users').createIndex({ hostTier: 1 }, { name: 'users_host_tier' });
+" >/dev/null
+      ;;
+    userRates)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('userRates').createIndex({ syncKey: 1 }, { name: 'user_rate_sync_key', unique: true, sparse: true });
+db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, updatedDate: -1 }, { name: 'user_rate_owner_mode_updated_v2' });
+db.getCollection('userRates').createIndex({ relatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_primary_lookup_v2' });
+db.getCollection('userRates').createIndex({ secondaryRelatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_secondary_lookup_v2', sparse: true });
+db.getCollection('userRates').createIndex({ ownerUserId: 1, relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_owner_primary_mode_v2' });
+db.getCollection('userRates').createIndex({ relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_pair_lookup_v2' });
+" >/dev/null
+      ;;
+    userFilterPreferences)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('userFilterPreferences').createIndex({ syncKey: 1 }, { name: 'user_filter_preferences_sync_key', unique: true, sparse: true });
+db.getCollection('userFilterPreferences').createIndex({ userId: 1 }, { name: 'user_filter_preferences_user', unique: true });
+" >/dev/null
+      ;;
+    assets)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('assets').createIndex({ syncKey: 1 }, { name: 'asset_sync_key', unique: true, sparse: true });
+db.getCollection('assets').createIndex({ assetId: 1 }, { name: 'asset_logical_id' });
+db.getCollection('assets').createIndex({ ownerUserId: 1, assetId: 1 }, { name: 'asset_owner_asset_id', unique: true });
+db.getCollection('assets').createIndex({ ownerUserId: 1, updatedDate: -1 }, { name: 'asset_owner_updated' });
+" >/dev/null
+      ;;
+    activityMembers)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('activityMembers').createIndex({ syncKey: 1 }, { name: 'activity_member_sync_key', unique: true, sparse: true });
+db.getCollection('activityMembers').createIndex({ ownerType: 1, ownerId: 1, userId: 1 }, { name: 'activity_member_owner_user', unique: true });
+db.getCollection('activityMembers').createIndex({ ownerType: 1, ownerId: 1, actionAtIso: -1 }, { name: 'activity_member_owner_action' });
+db.getCollection('activityMembers').createIndex({ ownerType: 1, ownerId: 1, status: 1, actionAtIso: -1 }, { name: 'activity_member_owner_status' });
+db.getCollection('activityMembers').createIndex({ ownerType: 1, userId: 1, actionAtIso: -1 }, { name: 'activity_member_user_action' });
+db.getCollection('activityMembers').createIndex({ ownerType: 1, status: 1, requestKind: 1 }, { name: 'activity_member_status_request' });
+" >/dev/null
+      ;;
+    activityResources)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('activityResources').createIndex({ syncKey: 1 }, { name: 'activity_resource_sync_key', unique: true, sparse: true });
+db.getCollection('activityResources').createIndex({ recordId: 1 }, { name: 'activity_resource_record_id', unique: true });
+db.getCollection('activityResources').createIndex({ ownerId: 1, subEventId: 1, assetOwnerUserId: 1 }, { name: 'activity_resource_owner_subevent_asset_owner' });
+db.getCollection('activityResources').createIndex({ assetOwnerUserId: 1, ownerId: 1 }, { name: 'activity_resource_owner_key' });
+" >/dev/null
+      ;;
     chats)
       mongosh \
         --host "${mongo_host}" \
@@ -168,8 +269,10 @@ db.getCollection('events').createIndex({ syncKey: 1 }, { name: 'event_sync_key',
 db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, sourceId: 1 }, { name: 'event_owner_type_source', unique: true });
 db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, startAtIso: 1 }, { name: 'event_owner_type' });
 db.getCollection('events').createIndex({ ownerUserId: 1, type: 1, status: 1, startAtIso: 1 }, { name: 'event_owner_type_status_start' });
+db.getCollection('events').createIndex({ ownerUserId: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_owner_start_source' });
 db.getCollection('events').createIndex({ ownerUserId: 1, sourceId: 1 }, { name: 'event_owner_source' });
 db.getCollection('events').createIndex({ sourceId: 1, type: 1 }, { name: 'event_source_lookup' });
+db.getCollection('events').createIndex({ sourceId: 1, startAtIso: 1, type: 1 }, { name: 'event_source_start_lookup' });
 db.getCollection('events').createIndex({ status: 1, creatorUserId: 1, visibility: 1 }, { name: 'event_explore_visibility' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 }, { name: 'event_explore_candidates_status' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_explore_feed_status' });
@@ -187,6 +290,53 @@ db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'eve
         "${target_db}" \
         --eval "
 db.getCollection('userExperienceProfiles').createIndex({ userId: 1 }, { name: 'user_experience_profiles_user_id', unique: true });
+" >/dev/null
+      ;;
+    eventFeedbackStates)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('eventFeedbackStates').createIndex({ syncKey: 1 }, { name: 'event_feedback_state_sync_key', unique: true, sparse: true });
+db.getCollection('eventFeedbackStates').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_state_user_event', unique: true });
+db.getCollection('eventFeedbackStates').createIndex({ viewerUserId: 1, updatedDate: -1 }, { name: 'event_feedback_state_user_updated' });
+db.getCollection('eventFeedbackStates').createIndex({ eventId: 1, updatedDate: -1 }, { name: 'event_feedback_state_event_updated' });
+" >/dev/null
+      ;;
+    eventFeedbackAnswers)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('eventFeedbackAnswers').createIndex({ syncKey: 1 }, { name: 'event_feedback_answer_sync_key', unique: true, sparse: true });
+db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, cardId: 1 }, { name: 'event_feedback_answer_user_event_card', unique: true });
+db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_answer_user_event' });
+db.getCollection('eventFeedbackAnswers').createIndex({ targetUserId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_target_user_submitted' });
+" >/dev/null
+      ;;
+    privacyConsents)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('privacyConsents').createIndex({ userId: 1, revisionId: 1 }, { name: 'privacy_consent_user_revision', unique: true });
+db.getCollection('privacyConsents').createIndex({ userId: 1 }, { name: 'privacy_consent_user' });
+db.getCollection('privacyConsents').createIndex({ revisionId: 1 }, { name: 'privacy_consent_revision' });
 " >/dev/null
       ;;
     i18n_bundles)

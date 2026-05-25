@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -363,6 +365,7 @@ public class HomeUserProfileService {
         userFilterPreferencesRepository.save(document);
     }
 
+    @CacheEvict(value = "demo_users", allEntries = true)
     public UserDto saveUserProfile(UserDto user) {
         if (user == null || !StringUtils.hasText(user.id())) {
             return null;
@@ -383,6 +386,7 @@ public class HomeUserProfileService {
         return toUserDto(resolved);
     }
 
+    @CacheEvict(value = "demo_users", allEntries = true)
     public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
         String resolvedUserId = resolveSelectedUserId(requestedUserId);
         int normalizedSlotIndex = slotIndex == null ? -1 : slotIndex.intValue();
@@ -528,6 +532,7 @@ public class HomeUserProfileService {
         return new UserSubmitActionResponseDto(true, null);
     }
 
+    @CacheEvict(value = "demo_users", allEntries = true)
     public UserSubmitActionResponseDto deleteUser(UserDeleteRequestDto request) {
         String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
         if (!StringUtils.hasText(resolvedUserId)) {
@@ -807,10 +812,17 @@ public class HomeUserProfileService {
         return buildActivitySocialGraph();
     }
 
+    @Cacheable(value = "demo_users", key = "'all'")
     public List<DemoUserListItemDto> queryDemoUserListItems() {
+        return queryDemoUserListItems(null);
+    }
+
+    @Cacheable(value = "demo_users", key = "#limit == null ? 'all' : #limit")
+    public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit) {
         return usersRepository.findAll().stream()
                 .filter(this::isSelectableDemoUserDocument)
                 .sorted(userComparator())
+                .limit(resolveDemoUserListLimit(limit))
                 .map(this::toDemoUserListItemDto)
                 .filter(Objects::nonNull)
                 .toList();
@@ -2820,6 +2832,13 @@ public class HomeUserProfileService {
 
     private int normalizeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
+    }
+
+    private long resolveDemoUserListLimit(Integer value) {
+        if (value == null) {
+            return Long.MAX_VALUE;
+        }
+        return Math.min(500L, Math.max(1L, value.longValue()));
     }
 
     private String normalizeId(String value) {

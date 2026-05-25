@@ -24,7 +24,8 @@ public final class EventsDtos {
             String cursor,
             String anchorDate,
             String rangeStart,
-            String rangeEnd) {
+            String rangeEnd,
+            Boolean slim) {
     }
 
     public record EventsExploreQueryDto(
@@ -187,8 +188,53 @@ public final class EventsDtos {
             Double affinity) {
     }
 
+    public record EventListItemDto(
+            String id,
+            String userId,
+            String type,
+            String status,
+            String avatar,
+            String title,
+            String subtitle,
+            String timeframe,
+            Integer unread,
+            Integer activity,
+            Boolean isAdmin,
+            Boolean isInvitation,
+            Boolean isHosting,
+            Boolean isTrashed,
+            Boolean published,
+            String creatorUserId,
+            String creatorName,
+            String creatorInitials,
+            String creatorCity,
+            String visibility,
+            String startAtIso,
+            String endAtIso,
+            Double distanceKm,
+            String imageUrl,
+            String location,
+            Integer capacityMin,
+            Integer capacityMax,
+            Integer capacityTotal,
+            Boolean ticketing,
+            String eventType,
+            Integer acceptedMembers,
+            Integer pendingMembers,
+            List<String> topics,
+            Double rating,
+            Double boost,
+            Double affinity) {
+    }
+
     public record EventsExplorePageDto(
             List<EventRecordDto> records,
+            Integer total,
+            String nextCursor) {
+    }
+
+    public record EventListPageDto(
+            List<EventListItemDto> records,
             Integer total,
             String nextCursor) {
     }

@@ -14,7 +14,7 @@
   },
   "steps": [
     { "name": "event explore", "collectionCase": "events/event-explore" },
-    { "name": "event filter", "collectionCase": "events/event-filter" },
+    { "name": "event filter", "collectionCase": "events/event-filter-slim" },
     { "name": "event list", "collectionCase": "events/event-list" },
     { "name": "attending", "collectionCase": "events/attending" },
     { "name": "hosting", "collectionCase": "events/hosting" },

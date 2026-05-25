@@ -1,5 +1,7 @@
 import { assert } from '../../shared/assertions.mjs';
 
+const APP_BACKEND_UI_WINDOW_MS = 3500;
+
 export async function assertBrowserExpectations(page, expected = {}) {
   for (const selector of expected.selectors ?? []) {
     await page.waitForSelector(selector, { timeoutMs: expected.timeoutMs });
@@ -165,7 +167,12 @@ export async function assertActiveBackendCalls(page, patterns) {
 }
 
 export async function assertVisibleCount(page, selector, minCount, label = selector) {
-  const count = await page.visibleCount(selector);
+  let count = await page.visibleCount(selector);
+  if (count < minCount) {
+    await waitForVisibleCount(page, selector, minCount, label, APP_BACKEND_UI_WINDOW_MS + 2500)
+      .catch(() => undefined);
+    count = await page.visibleCount(selector);
+  }
   assert(count >= minCount, `${label} should have at least ${minCount} visible item(s)`, { count });
 }
 
@@ -178,23 +185,80 @@ export async function waitForVisibleCount(page, selector, minCount, label = sele
 
 export async function waitForSmartListSettled(page, rootSelector, timeoutMs = 45000) {
   await page.waitFor(`${rootSelector} smart-list settled`, async () => {
-    return page.evaluate(rootSelector => {
-      const root = document.querySelector(rootSelector) ?? document;
-      const visible = element => {
-        const rect = element.getBoundingClientRect();
-        const style = window.getComputedStyle(element);
-        return rect.width > 0
-          && rect.height > 0
-          && style.visibility !== 'hidden'
-          && style.display !== 'none';
-      };
-      const loadingBars = Array.from(root.querySelectorAll('.header-progress-bar.is-state-loading, .header-progress-bar.is-state-loading-overdue'))
-        .filter(visible);
-      const overlays = Array.from(root.querySelectorAll('.popup-loading-overlay, .smart-list__loading'))
-        .filter(visible);
-      return loadingBars.length === 0 && overlays.length === 0;
-    }, rootSelector);
+    const state = await backendUiState(page, rootSelector);
+    return !state.busy;
   }, timeoutMs);
+}
+
+export async function waitForBackendUiWindow(page, rootSelector = 'body', timeoutMs = APP_BACKEND_UI_WINDOW_MS + 2500) {
+  const started = Date.now();
+  let sawBusy = false;
+  await page.waitFor(`${rootSelector} backend UI window settled`, async () => {
+    const state = await backendUiState(page, rootSelector);
+    sawBusy = sawBusy || state.busy;
+    if (state.busy) {
+      return false;
+    }
+    return sawBusy || Date.now() - started >= APP_BACKEND_UI_WINDOW_MS;
+  }, timeoutMs, 150);
+}
+
+export async function waitForAppLazyLoadWindow(page, rootSelector = 'body', timeoutMs = APP_BACKEND_UI_WINDOW_MS + 2500) {
+  await waitForBackendUiWindow(page, rootSelector, timeoutMs);
+}
+
+async function backendUiState(page, rootSelector = 'body') {
+  return page.evaluate(rootSelector => {
+    const root = document.querySelector(rootSelector) ?? document;
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const selectors = [
+      '.header-progress-bar.is-state-loading',
+      '.header-progress-bar.is-state-loading-overdue',
+      '.popup-loading-overlay',
+      '.smart-list__loading',
+      '.lazy-bg-loading',
+      '.is-pane-loading',
+      '[aria-busy="true"]',
+      '.entry-consent-loading',
+      '.demo-user-progress',
+      '.explanation-popup__loading',
+      '.event-editor-save-btn-shell.is-loading',
+      '.event-editor-save-btn-ring-progress.is-loading',
+      '.confirmation-dialog-confirm-shell.is-loading',
+      '.confirmation-dialog-confirm-ring-progress.is-loading',
+      '.event-checkout-confirm-shell.is-loading',
+      '.event-checkout-confirm-ring-progress.is-loading',
+      '.profile-onboarding-save-shell.is-loading',
+      '.profile-onboarding-save-ring-progress.is-loading',
+      '.asset-popup-basket-save-btn-shell.is-loading',
+      '.asset-popup-basket-save-btn-ring-progress.is-loading',
+      '[class*="-save-btn-shell"].is-loading',
+      '[class*="-delete-btn-shell"].is-loading',
+      '[class*="-confirm-shell"].is-loading',
+      '[class*="-ring-progress"].is-loading',
+      '[class*="-upload-ring"].is-loading'
+    ];
+    const active = selectors.flatMap(selector => {
+      return Array.from(root.querySelectorAll(selector))
+        .filter(visible)
+        .map(element => ({
+          selector,
+          className: element.className,
+          text: (element.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 120)
+        }));
+    });
+    return {
+      busy: active.length > 0,
+      active
+    };
+  }, rootSelector);
 }
 
 export async function assertInfoCardMenuAnchored(page, options = {}) {
@@ -408,7 +472,24 @@ export async function assertNoVisibleCrashFallback(page) {
 
 export async function assertNoBrokenImages(page, options = {}) {
   const ignore = (options.ignore ?? []).map(item => `${item}`);
-  const brokenImages = await page.evaluate(ignore => {
+  let brokenImages = await collectBrokenImages(page, ignore);
+  if (brokenImages.length > 0) {
+    await waitForBackendUiWindow(page, 'body').catch(() => undefined);
+    brokenImages = await collectBrokenImages(page, ignore);
+  }
+  if (brokenImages.length > 0) {
+    await page.recordStep('visible-broken-images');
+    page.recordFinding?.({
+      severity: 'fatal',
+      title: 'Visible images failed to load',
+      details: { brokenImages }
+    });
+  }
+  assert(brokenImages.length === 0, 'Visible images should load successfully', { brokenImages });
+}
+
+async function collectBrokenImages(page, ignore) {
+  return page.evaluate(ignore => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
@@ -430,15 +511,6 @@ export async function assertNoBrokenImages(page, options = {}) {
         selector: image.className || image.closest('[class]')?.className || image.tagName.toLowerCase()
       }));
   }, ignore);
-  if (brokenImages.length > 0) {
-    await page.recordStep('visible-broken-images');
-    page.recordFinding?.({
-      severity: 'fatal',
-      title: 'Visible images failed to load',
-      details: { brokenImages }
-    });
-  }
-  assert(brokenImages.length === 0, 'Visible images should load successfully', { brokenImages });
 }
 
 export async function waitForVisibleText(page, selector, text, timeoutMs = 15000) {

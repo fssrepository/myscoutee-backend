@@ -28,11 +28,22 @@ services:
       MONGO_PLAYGROUND_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
 
   profilemanagement:
+    command:
+      - sh
+      - -lc
+      - BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; exec ./gradlew --project-cache-dir /workspace/.gradle/playground-project-cache $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
     environment:
+      GRADLE_USER_HOME: /workspace/.gradle/playground-user
+      PROFILEMANAGEMENT_HOT_RELOAD: "false"
       MONGODB_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
       MONGODB_DEMO_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
       E2E_PLAYGROUND_MODE: "true"
+      ADMIN_STATS_ENABLED: "false"
+      AFFINITY_RECOMPUTE_ENABLED: "false"
+      EVENTS_SCHEDULER_CHECK_DELAY_MS: "1800000"
+      EVENTS_WAITLIST_INVITER_ENABLED: "false"
       FIREBASE_ENABLED: "false"
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB_CORE_MONGOTEMPLATE: "WARN"
       MEDIA_ENABLED: "true"
       PAYMENT_ENABLE_PAY: "false"
 

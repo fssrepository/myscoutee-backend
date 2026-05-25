@@ -5,7 +5,8 @@ import {
   closeExplanationPopupEventually,
   openNavigatorMenu,
   scrollSmartList,
-  smartListSnapshot
+  smartListSnapshot,
+  waitForSmartListSettled
 } from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
@@ -169,7 +170,8 @@ async function assertCalendarHasStructure(page) {
 }
 
 async function assertVisibleRateCards(page, label) {
-  const count = await page.visibleCount('.popup-panel-activities .activities-rate-profile-card');
+  const loaded = await waitForVisibleRateCards(page, label);
+  const count = loaded.count;
   if (count > 0) {
     return;
   }
@@ -186,6 +188,11 @@ async function assertVisibleRateCards(page, label) {
     return {
       text: (root?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1000),
       allRateCards: document.querySelectorAll('.popup-panel-activities .activities-rate-profile-card').length,
+      loadingBars: Array.from(document.querySelectorAll('.popup-panel-activities .header-progress-bar'))
+        .map(element => ({
+          className: element.className,
+          text: (element.textContent ?? '').trim()
+        })),
       visibleItemShells: Array.from(document.querySelectorAll('.popup-panel-activities .smart-list__item-shell'))
         .filter(visible)
         .map(element => ({
@@ -199,10 +206,11 @@ async function assertVisibleRateCards(page, label) {
   await page.recordStep('rates-empty-card-render');
   page.recordFinding?.({
     severity: 'fatal',
-    title: 'Rates smart-list rendered no visible rate cards after selecting a positive filter',
+    title: 'Rates smart-list rendered no visible rate cards after waiting for the loading/progress phase',
     details: {
       label,
       count,
+      waitedMs: loaded.waitedMs,
       snapshot,
       details
     }
@@ -212,6 +220,33 @@ async function assertVisibleRateCards(page, label) {
     snapshot,
     details
   });
+}
+
+async function waitForVisibleRateCards(page, label, timeoutMs = 12000) {
+  const started = Date.now();
+  const ready = await page.waitFor(`${label} visible after rates loading`, async () => {
+    return page.evaluate(() => {
+      const visible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      return Array.from(document.querySelectorAll('.popup-panel-activities .activities-rate-profile-card'))
+        .some(visible);
+    });
+  }, timeoutMs, 250).then(() => true).catch(() => false);
+
+  if (ready) {
+    await waitForSmartListSettled(page, '.popup-panel-activities', 5000).catch(() => undefined);
+  }
+
+  return {
+    count: await page.visibleCount('.popup-panel-activities .activities-rate-profile-card'),
+    waitedMs: Date.now() - started
+  };
 }
 
 async function openRateDock(page) {

@@ -204,6 +204,90 @@ public final class AdminDtos {
             List<AdminStatsMetricDto> metrics,
             List<AdminStatsBreakdownItemDto> assetCategories,
             List<AdminStatsRevenueTimelinePointDto> timeline) {}
+    public record AdminAffinityGraphDto(
+            String generatedAtIso,
+            String source,
+            String layoutVersion,
+            List<AdminAffinityGraphNodeDto> nodes,
+            List<AdminAffinityGraphEdgeDto> edges) {}
+    public record AdminAffinityGraphMetaDto(
+            String generatedAtIso,
+            String source,
+            String layoutVersion,
+            Integer memberCount,
+            Integer linkCount,
+            Integer componentCount,
+            Integer isolatedCount,
+            Integer maxZoom,
+            Integer tileSize,
+            Integer nodeRenderBudget,
+            Integer edgeRenderBudget,
+            Boolean materialized) {}
+    public record AdminAffinityGraphNeighborhoodDto(
+            String generatedAtIso,
+            String source,
+            String layoutVersion,
+            String centerUserId,
+            Integer depth,
+            List<AdminAffinityGraphNodeDto> nodes,
+            List<AdminAffinityGraphEdgeDto> edges) {}
+    public record AdminAffinityGraphForestsDto(
+            String generatedAtIso,
+            String source,
+            String layoutVersion,
+            List<AdminAffinityGraphForestDto> forests) {}
+    public record AdminAffinityGraphForestDto(
+            String componentId,
+            String representativeUserId,
+            String representativeName,
+            String representativeInitials,
+            String gender,
+            Integer memberCount,
+            Integer edgeCount,
+            Double weightedDegree,
+            Double x,
+            Double y,
+            Double z,
+            Double radius) {}
+    public record AdminAffinityGraphTileDto(
+            String generatedAtIso,
+            String source,
+            String layoutVersion,
+            Integer z,
+            Integer x,
+            Integer y,
+            Integer nodeCount,
+            Integer edgeCount,
+            Boolean truncated,
+            List<AdminAffinityGraphNodeDto> nodes,
+            List<AdminAffinityGraphEdgeDto> edges) {}
+    public record AdminAffinityGraphNodeDto(
+            String id,
+            String name,
+            String initials,
+            String gender,
+            String city,
+            Integer age,
+            String headline,
+            String traitLabel,
+            String statusText,
+            String profileStatus,
+            String image,
+            List<String> images,
+            String componentId,
+            Double x,
+            Double y,
+            Double z,
+            Integer degree,
+            Double weightedDegree,
+            Double centrality) {}
+    public record AdminAffinityGraphEdgeDto(
+            String id,
+            String source,
+            String target,
+            Double weight,
+            Double affinityScore,
+            String updatedDate) {}
     public record AdminStatsRevenueTimelinePointDto(
             String dateKey,
             String label,

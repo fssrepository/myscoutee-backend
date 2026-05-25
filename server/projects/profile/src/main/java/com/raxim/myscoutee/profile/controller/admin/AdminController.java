@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphForestsDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphMetaDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphNeighborhoodDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphTileDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringStateDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminNotificationCenterStateDto;
@@ -28,6 +33,7 @@ import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateD
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
+import com.raxim.myscoutee.profile.service.AdminAffinityGraphService;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.AdminMonitoringService;
 import com.raxim.myscoutee.profile.service.AdminParamsService;
@@ -48,6 +54,7 @@ public class AdminController {
     private final AdminStatsService adminStatsService;
     private final AdminParamsService adminParamsService;
     private final AdminMonitoringService adminMonitoringService;
+    private final AdminAffinityGraphService adminAffinityGraphService;
 
     public AdminController(
             AdminModerationService adminModerationService,
@@ -56,7 +63,8 @@ public class AdminController {
             AdminNotificationService adminNotificationService,
             AdminStatsService adminStatsService,
             AdminParamsService adminParamsService,
-            AdminMonitoringService adminMonitoringService) {
+            AdminMonitoringService adminMonitoringService,
+            AdminAffinityGraphService adminAffinityGraphService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
@@ -64,6 +72,7 @@ public class AdminController {
         this.adminStatsService = adminStatsService;
         this.adminParamsService = adminParamsService;
         this.adminMonitoringService = adminMonitoringService;
+        this.adminAffinityGraphService = adminAffinityGraphService;
     }
 
     @GetMapping("/dashboard")
@@ -79,6 +88,59 @@ public class AdminController {
     @GetMapping("/monitoring")
     public AdminMonitoringStateDto monitoring(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
         return adminMonitoringService.state(adminUserId);
+    }
+
+    @GetMapping("/affinity-graph/full")
+    public AdminAffinityGraphDto affinityGraph(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "minWeight", required = false) Double minWeight,
+            @RequestParam(value = "maxWeight", required = false) Double maxWeight) {
+        return adminAffinityGraphService.full(adminUserId, minWeight, maxWeight);
+    }
+
+    @GetMapping("/affinity-graph/meta")
+    public AdminAffinityGraphMetaDto affinityGraphMeta(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "minWeight", required = false) Double minWeight,
+            @RequestParam(value = "maxWeight", required = false) Double maxWeight) {
+        return adminAffinityGraphService.meta(adminUserId, minWeight, maxWeight);
+    }
+
+    @GetMapping("/affinity-graph/forests")
+    public AdminAffinityGraphForestsDto affinityGraphForests(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "minWeight", required = false) Double minWeight,
+            @RequestParam(value = "maxWeight", required = false) Double maxWeight) {
+        return adminAffinityGraphService.forests(adminUserId, minWeight, maxWeight);
+    }
+
+    @GetMapping("/affinity-graph/tiles")
+    public AdminAffinityGraphTileDto affinityGraphTile(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "layoutVersion", required = false) String layoutVersion,
+            @RequestParam(value = "z", required = false) Integer z,
+            @RequestParam(value = "x", required = false) Integer x,
+            @RequestParam(value = "y", required = false) Integer y,
+            @RequestParam(value = "minWeight", required = false) Double minWeight,
+            @RequestParam(value = "maxWeight", required = false) Double maxWeight,
+            @RequestParam(value = "componentId", required = false) String componentId) {
+        return adminAffinityGraphService.tile(adminUserId, layoutVersion, z, x, y, minWeight, maxWeight, componentId);
+    }
+
+    @GetMapping("/affinity-graph/members/{userId}/neighborhood")
+    public AdminAffinityGraphNeighborhoodDto affinityGraphNeighborhood(
+            @PathVariable String userId,
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "depth", required = false) Integer depth,
+            @RequestParam(value = "minWeight", required = false) Double minWeight,
+            @RequestParam(value = "maxWeight", required = false) Double maxWeight) {
+        return adminAffinityGraphService.neighborhood(adminUserId, userId, depth, minWeight, maxWeight);
+    }
+
+    @PostMapping("/affinity-graph/layout/rebuild")
+    public AdminAffinityGraphMetaDto rebuildAffinityGraphLayout(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminAffinityGraphService.rebuildLayout(adminUserId);
     }
 
     @GetMapping("/params")

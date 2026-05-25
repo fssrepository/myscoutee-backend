@@ -9,6 +9,8 @@ const linkCountEl = document.querySelector('#link-count');
 const componentCountEl = document.querySelector('#component-count');
 const isolatedCountEl = document.querySelector('#isolated-count');
 const memberPanel = document.querySelector('#member-panel');
+const rangeField = document.querySelector('.range-field');
+const depthField = document.querySelector('.depth-field');
 const minWeightInput = document.querySelector('#min-weight');
 const maxWeightInput = document.querySelector('#max-weight');
 const weightRangeValue = document.querySelector('#weight-range-value');
@@ -314,6 +316,7 @@ function rebuildEdges() {
   const weightRange = currentWeightRange();
   updateWeightRangeUi(weightRange);
   updateLinkDepthUi();
+  updateControlVisibility();
   const thresholdEdges = edges.filter(edge => isEdgeInWeightRange(edge, weightRange));
   const visibleGraph = visibleGraphForCurrentView(thresholdEdges);
   visibleEdges = visibleGraph.edges;
@@ -911,6 +914,13 @@ function updateLinkDepthUi() {
   const depth = currentLinkDepth();
   linkDepthInput.value = String(depth);
   linkDepthValue.textContent = depth === 1 ? 'Direct' : `${depth} hops`;
+}
+
+function updateControlVisibility() {
+  const forestOverview = isForestOverview();
+  const hasSelectedNode = Boolean(selectedNode);
+  rangeField.hidden = forestOverview;
+  depthField.hidden = forestOverview || !hasSelectedNode;
 }
 
 function isForestOverview() {

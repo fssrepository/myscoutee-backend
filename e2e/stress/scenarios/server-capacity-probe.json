@@ -18,7 +18,7 @@
     { "collectionCase": "profile/auth-me" },
     { "collectionCase": "game/cards-query" },
     { "collectionCase": "events/event-explore" },
-    { "collectionCase": "events/event-filter" },
+    { "collectionCase": "events/event-filter-slim" },
     { "collectionCase": "assets/owned" },
     { "collectionCase": "chats/page" },
     { "collectionCase": "websocket/chat-connect" },

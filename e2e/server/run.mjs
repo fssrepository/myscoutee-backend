@@ -154,6 +154,7 @@ async function ensureDemoUser(options = {}) {
   }
   const existingUserId = ctx.vars.userId;
   const result = await ctx.http.get('/api/auth/demo-users', {
+    params: { limit: '64' },
     headers: demoHeaders(),
     timeoutMs: 15000
   });

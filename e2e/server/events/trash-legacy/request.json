@@ -1,0 +1,17 @@
+{
+  "name": "activities event trash legacy list",
+  "group": "events",
+  "order": 1508,
+  "method": "GET",
+  "path": "/api/activities/events/trash",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "script": "assert.mjs",
+  "maxMs": 8000
+}

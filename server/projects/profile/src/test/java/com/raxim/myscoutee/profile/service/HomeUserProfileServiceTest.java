@@ -210,6 +210,18 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void demoUserListItemsHonorsRequestedLimit() {
+        Users high = user("high", 30d);
+        Users medium = user("medium", 20d);
+        Users low = user("low", 10d);
+        when(usersRepository.findAll()).thenReturn(List.of(low, high, medium));
+
+        assertThat(service.queryDemoUserListItems(2))
+                .extracting(item -> item.id())
+                .containsExactly("high", "medium");
+    }
+
+    @Test
     void profileImageSaveEnqueuesUserRecompute() {
         Users active = user("active", 0d);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));

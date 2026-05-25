@@ -15,9 +15,10 @@ Example: CPU metrics, event telemetry, sensor data, request latency logs.
 
 Atlas Search
 MongoDB’s advanced full-text search product, mainly tied to MongoDB Atlas.
-
 Example: fuzzy search, autocomplete, relevance scoring.
 --------------------------------------------------------------------------------------
+
+clicking on forest node, the camera movement is wrong
 
 cloudflare - caching images (so won't need to use google cloud bandwith)
 

@@ -23,6 +23,7 @@ if (args.list) {
 }
 
 const scenario = await loadScenario(args.scenario);
+applyScenarioOverrides(scenario, args);
 const serverCases = new Map((await discoverCollection(serverRoot)).map(testCase => [testCase.id, testCase]));
 const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'http://localhost';
 const mode = process.env.E2E_STRESS_MODE ?? scenario.mode ?? 'contract';
@@ -174,7 +175,11 @@ function createContext({ baseUrl, mode, runId, vu }) {
 async function resolveRequirement(ctx, requirement) {
   if (requirement === 'demoUser') {
     if (!ctx.vars.userId) {
-      const result = await ctx.http.get('/api/auth/demo-users', { headers: demoHeaders() });
+      const demoUsersLimit = Number(process.env.E2E_STRESS_DEMO_USERS_LIMIT ?? 64);
+      const result = await ctx.http.get('/api/auth/demo-users', {
+        params: Number.isFinite(demoUsersLimit) && demoUsersLimit > 0 ? { limit: demoUsersLimit } : undefined,
+        headers: demoHeaders()
+      });
       assertDemoUsers(result.data, ctx);
     }
     return;
@@ -724,11 +729,55 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg.startsWith('--scenario=')) {
       args.scenario = arg.slice('--scenario='.length);
+    } else if (arg === '--users') {
+      args.users = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--users=')) {
+      args.users = arg.slice('--users='.length);
+    } else if (arg === '--duration-ms') {
+      args.durationMs = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--duration-ms=')) {
+      args.durationMs = arg.slice('--duration-ms='.length);
+    } else if (arg === '--ramp-up-ms') {
+      args.rampUpMs = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--ramp-up-ms=')) {
+      args.rampUpMs = arg.slice('--ramp-up-ms='.length);
+    } else if (arg === '--think-time-ms') {
+      args.thinkTimeMs = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--think-time-ms=')) {
+      args.thinkTimeMs = arg.slice('--think-time-ms='.length);
+    } else if (arg === '--think-time-jitter-ms') {
+      args.thinkTimeJitterMs = argv[index + 1] ?? '';
+      index += 1;
+    } else if (arg.startsWith('--think-time-jitter-ms=')) {
+      args.thinkTimeJitterMs = arg.slice('--think-time-jitter-ms='.length);
     } else if (!arg.startsWith('-') && !args.scenario) {
       args.scenario = arg;
     }
   }
   return args;
+}
+
+function applyScenarioOverrides(scenario, args) {
+  applyNumberOverride(scenario, 'users', args.users);
+  applyNumberOverride(scenario, 'durationMs', args.durationMs);
+  applyNumberOverride(scenario, 'rampUpMs', args.rampUpMs);
+  applyNumberOverride(scenario, 'thinkTimeMs', args.thinkTimeMs);
+  applyNumberOverride(scenario, 'thinkTimeJitterMs', args.thinkTimeJitterMs);
+}
+
+function applyNumberOverride(target, key, rawValue) {
+  if (rawValue === undefined || rawValue === '') {
+    return;
+  }
+  const value = Number(rawValue);
+  if (!Number.isFinite(value) || value < 0) {
+    throw new Error(`Invalid numeric override for ${key}: ${rawValue}`);
+  }
+  target[key] = value;
 }
 
 function interpolate(value, vars) {

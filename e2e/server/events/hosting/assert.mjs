@@ -1,5 +1,5 @@
-import { assertEventList } from '../../lib/contracts.mjs';
+import { assertEventPage } from '../../lib/contracts.mjs';
 
 export function assertResponse({ ctx, result }) {
-  assertEventList(result.data, ctx, 'hosting');
+  assertEventPage(result.data, ctx, 'hosting');
 }

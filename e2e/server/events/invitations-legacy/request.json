@@ -1,0 +1,17 @@
+{
+  "name": "activities invitations legacy list",
+  "group": "events",
+  "order": 1505,
+  "method": "GET",
+  "path": "/api/activities/events/invitations",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "script": "assert.mjs",
+  "maxMs": 8000
+}
