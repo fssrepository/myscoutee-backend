@@ -1,0 +1,26 @@
+{
+  "name": "Events read benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 8,
+  "rampUpMs": 8000,
+  "durationMs": 90000,
+  "thinkTimeMs": 100,
+  "thinkTimeJitterMs": 100,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 10000,
+    "p99Ms": 18000
+  },
+  "steps": [
+    { "name": "event explore", "collectionCase": "events/event-explore" },
+    { "name": "event filter", "collectionCase": "events/event-filter" },
+    { "name": "event list", "collectionCase": "events/event-list" },
+    { "name": "attending", "collectionCase": "events/attending" },
+    { "name": "hosting", "collectionCase": "events/hosting" },
+    { "name": "invitations", "collectionCase": "events/invitations" },
+    { "name": "event feedback", "collectionCase": "events/event-feedback" },
+    { "name": "feedback received", "collectionCase": "events/event-feedback-received" },
+    { "name": "trash", "collectionCase": "events/trash" }
+  ]
+}

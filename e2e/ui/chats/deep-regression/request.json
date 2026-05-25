@@ -1,0 +1,23 @@
+{
+  "name": "chat deep regression covers cross-user actions, media attachments, history pagination, and resume",
+  "group": "chats",
+  "order": 94,
+  "route": "/game",
+  "localStorage": {
+    "app-session": "{\"kind\":\"demo\",\"userId\":\"bf057de7c586eede7e84bdc7\"}",
+    "demo-active-user": "bf057de7c586eede7e84bdc7"
+  },
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "mutation": true,
+  "tags": [
+    "chat",
+    "websocket",
+    "two-user",
+    "attachments",
+    "pagination",
+    "read-receipts",
+    "resume"
+  ],
+  "maxMs": 240000
+}

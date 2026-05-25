@@ -1,4 +1,5 @@
 MongoDB features:
+-----------------
 
 Change Streams
 A MongoDB feature where the app listens to DB changes in real time.
@@ -7,6 +8,16 @@ Example: “when a chat message document is inserted, push it to websocket”.
 Vector Search
 Used for semantic / AI-style search.
 Example: store embeddings for users/events/assets, then ask “find similar profiles/events”.
+
+Time Series
+MongoDB collection type optimized for timestamped measurements.
+Example: CPU metrics, event telemetry, sensor data, request latency logs.
+
+Atlas Search
+MongoDB’s advanced full-text search product, mainly tied to MongoDB Atlas.
+
+Example: fuzzy search, autocomplete, relevance scoring.
+--------------------------------------------------------------------------------------
 
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
@@ -64,6 +75,7 @@ Best handoff starting point:
 3. Fix asset/resource request visibility and `EventResourcePopupComponent NG0100`.
 4. Then rerun UI desktop/mobile suites and update `.e2e-artifacts/*`.
 
+----change stream introduction----
 **Short Answer**
 Yes, change streams can improve speed in a few places, but not everywhere. They are best where you currently poll Mongo just to notice “something changed.” They will not fix request-time `findAll()` + in-memory filtering, and they do not replace timers for future due dates.
 

@@ -196,6 +196,17 @@ async function assertVisibleRateCards(page, label) {
     };
   });
   const snapshot = await smartListSnapshot(page, '.popup-panel-activities');
+  await page.recordStep('rates-empty-card-render');
+  page.recordFinding?.({
+    severity: 'fatal',
+    title: 'Rates smart-list rendered no visible rate cards after selecting a positive filter',
+    details: {
+      label,
+      count,
+      snapshot,
+      details
+    }
+  });
   assert(count >= 1, `${label} should have at least 1 visible item(s)`, {
     count,
     snapshot,

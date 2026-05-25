@@ -225,6 +225,7 @@ export async function recordInfoCardMenuAnchorFinding(page, options = {}) {
     && geometry.horizontalDrift <= maxHorizontalDrift
     && geometry.verticalGap <= maxVerticalGap;
   if (!ok && typeof page.recordFinding === 'function') {
+    await page.recordStep(options.stepName ?? 'info-card-menu-anchor-finding');
     page.recordFinding({
       severity: options.severity ?? 'warning',
       title: options.title ?? 'Info-card action menu is not anchored cleanly to its trigger',
@@ -394,6 +395,14 @@ export async function assertNoVisibleCrashFallback(page) {
       'NG0'
     ].filter(text => bodyText.includes(text));
   });
+  if (crashTexts.length > 0) {
+    await page.recordStep('visible-crash-fallback-text');
+    page.recordFinding?.({
+      severity: 'fatal',
+      title: 'Page displayed crash/fallback text',
+      details: { crashTexts }
+    });
+  }
   assert(crashTexts.length === 0, 'Page should not show crash/fallback text', { crashTexts });
 }
 
@@ -421,6 +430,14 @@ export async function assertNoBrokenImages(page, options = {}) {
         selector: image.className || image.closest('[class]')?.className || image.tagName.toLowerCase()
       }));
   }, ignore);
+  if (brokenImages.length > 0) {
+    await page.recordStep('visible-broken-images');
+    page.recordFinding?.({
+      severity: 'fatal',
+      title: 'Visible images failed to load',
+      details: { brokenImages }
+    });
+  }
   assert(brokenImages.length === 0, 'Visible images should load successfully', { brokenImages });
 }
 

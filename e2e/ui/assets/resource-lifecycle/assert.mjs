@@ -99,6 +99,7 @@ export async function assertUi({ page }) {
   } else {
     const assetAfterAssignment = await findOwnedAssetByTitle(page, marker);
     const panelText = await page.textContent('.asset-supply-requests-panel', { timeoutMs: 5000 }).catch(() => '');
+    await page.recordStep('asset-assignment-request-panel-missing-assignment');
     page.recordFinding?.({
       severity: 'warning',
       title: 'Owned asset requests panel does not surface the sub-event assignment',
@@ -535,6 +536,7 @@ async function ensureAssetVisibleInAssetsPopup(page, marker, details) {
     .then(() => true)
     .catch(() => false);
   if (!quickVisible) {
+    await page.recordStep('asset-smart-list-missing-new-asset-before-reopen');
     page.recordFinding?.({
       severity: 'warning',
       title: 'Owned assets smart list did not show the newly saved asset without reopening',
@@ -583,6 +585,16 @@ async function scrollSmartListUntilText(page, rootSelector, text, timeoutMs = 30
       break;
     }
   }
+  await page.recordStep('smart-list-text-missing-after-scroll');
+  page.recordFinding?.({
+    severity: 'fatal',
+    title: 'Smart-list did not expose the expected text after scrolling',
+    details: {
+      rootSelector,
+      expectedText: text,
+      lastState: lastState ?? {}
+    }
+  });
   assert(false, `${rootSelector} should show ${text} after scrolling the smart list`, lastState ?? {});
 }
 
@@ -689,6 +701,7 @@ async function waitForActivityTitleVisible(page, title, timeoutMs = 30000) {
   const listState = await page.evaluate(() => ({
     text: (document.querySelector('.popup-panel-activities')?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1200)
   }));
+  await page.recordStep('resource-event-card-missing-from-activities');
   page.recordFinding?.({
     severity: 'fatal',
     title: 'Seeded resource event card did not appear in activities list',
@@ -956,6 +969,7 @@ async function selectAssetFormCategory(page, label) {
   if (!panelOpened) {
     const applied = await setAssetCategoryDirectly(page, label);
     if (applied) {
+      await page.recordStep('asset-category-picker-fallback');
       page.recordFinding?.({
         severity: 'warning',
         title: 'Asset category picker did not open from the visible trigger',

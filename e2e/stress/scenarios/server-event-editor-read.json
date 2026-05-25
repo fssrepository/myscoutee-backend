@@ -1,0 +1,22 @@
+{
+  "name": "Event editor read benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 4,
+  "rampUpMs": 5000,
+  "durationMs": 60000,
+  "thinkTimeMs": 100,
+  "thinkTimeJitterMs": 100,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 8000,
+    "p99Ms": 14000
+  },
+  "steps": [
+    { "name": "members", "collectionCase": "event-editor/members" },
+    { "name": "member summaries", "collectionCase": "event-editor/member-summaries" },
+    { "name": "invite candidates", "collectionCase": "event-editor/invite-candidates" },
+    { "name": "subevent resources", "collectionCase": "event-editor/subevent-resources" },
+    { "name": "leaderboard", "collectionCase": "event-editor/leaderboard" }
+  ]
+}

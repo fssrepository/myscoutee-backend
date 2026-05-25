@@ -91,21 +91,33 @@ async function runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, v
       let ok = true;
       let status = 0;
       let error = '';
+      let resultMetric = {};
       try {
         const result = await runStep(step, ctx, serverCases);
         status = result?.status ?? 0;
+        resultMetric = metricFromResult(result, step);
       } catch (err) {
         ok = false;
         status = err.result?.status ?? 0;
         error = err.message;
+        resultMetric = metricFromResult(err.result, step);
       }
-      const duration = performance.now() - started;
+      const ended = performance.now();
+      const duration = ended - started;
       metrics.push({
         step: step.name ?? step.collectionCase ?? `${step.method ?? 'GET'} ${step.path}`,
         vu,
         iteration,
         ok,
         status,
+        transport: resultMetric.transport,
+        method: resultMetric.method,
+        url: resultMetric.url,
+        responseBytes: resultMetric.responseBytes,
+        messageCount: resultMetric.messageCount,
+        openMs: resultMetric.openMs,
+        startedAtMs: started - startedAt,
+        endedAtMs: ended - startedAt,
         durationMs: duration,
         error
       });
@@ -253,11 +265,18 @@ function summarize(metrics) {
   const durations = metrics.map(item => item.durationMs).sort((a, b) => a - b);
   const failed = metrics.filter(item => !item.ok).length;
   const total = metrics.length;
+  const elapsedMs = elapsedFor(metrics);
+  const responseBytes = metrics.reduce((sum, item) => sum + Number(item.responseBytes ?? 0), 0);
   return {
     total,
     failed,
     passed: total - failed,
     errorRate: total === 0 ? 0 : failed / total,
+    elapsedMs,
+    requestsPerSec: perSecond(total, elapsedMs),
+    passedPerSec: perSecond(total - failed, elapsedMs),
+    responseBytes,
+    statusCounts: countBy(metrics.map(item => String(item.status ?? 0))),
     minMs: durations[0] ?? 0,
     maxMs: durations[durations.length - 1] ?? 0,
     avgMs: durations.reduce((sum, value) => sum + value, 0) / Math.max(1, durations.length),
@@ -278,19 +297,31 @@ function summarizeByStep(metrics) {
   }
   return [...groups.entries()].map(([step, items]) => ({
     step,
+    transport: dominant(items.map(item => item.transport).filter(Boolean)) ?? '',
     total: items.length,
     failed: items.filter(item => !item.ok).length,
+    passed: items.filter(item => item.ok).length,
+    errorRate: items.length === 0 ? 0 : items.filter(item => !item.ok).length / items.length,
+    requestsPerSec: perSecond(items.length, elapsedFor(items)),
+    responseBytes: items.reduce((sum, item) => sum + Number(item.responseBytes ?? 0), 0),
+    statusCounts: countBy(items.map(item => String(item.status ?? 0))),
+    avgMs: average(items.map(item => item.durationMs)),
+    p50Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.50),
+    p90Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.90),
     p95Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.95),
+    p99Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.99),
     maxMs: Math.max(...items.map(item => item.durationMs))
-  }));
+  })).sort((left, right) => right.p95Ms - left.p95Ms);
 }
 
 function printSummary(scenario, summary, options = {}) {
   console.log(`\nstress scenario: ${scenario.name ?? scenario.id}`);
   console.log(`requests: ${summary.total}, passed: ${summary.passed}, failed: ${summary.failed}, errorRate: ${(summary.errorRate * 100).toFixed(2)}%`);
+  console.log(`throughput: ${summary.requestsPerSec.toFixed(2)} req/s over ${(summary.elapsedMs / 1000).toFixed(1)}s, response=${formatBytes(summary.responseBytes)}`);
+  console.log(`status: ${formatCounts(summary.statusCounts)}`);
   console.log(`latency ms: avg=${Math.round(summary.avgMs)} p50=${Math.round(summary.p50Ms)} p90=${Math.round(summary.p90Ms)} p95=${Math.round(summary.p95Ms)} p99=${Math.round(summary.p99Ms)} max=${Math.round(summary.maxMs)}`);
   for (const item of summary.byStep) {
-    console.log(`- ${item.step}: total=${item.total} failed=${item.failed} p95=${Math.round(item.p95Ms)}ms max=${Math.round(item.maxMs)}ms`);
+    console.log(`- ${item.step}: total=${item.total} failed=${item.failed} errorRate=${(item.errorRate * 100).toFixed(2)}% rps=${item.requestsPerSec.toFixed(2)} p50=${Math.round(item.p50Ms)}ms p95=${Math.round(item.p95Ms)}ms p99=${Math.round(item.p99Ms)}ms max=${Math.round(item.maxMs)}ms`);
   }
   if (options.artifactDir) {
     console.log(`artifacts: ${options.artifactDir}`);
@@ -408,15 +439,18 @@ function renderArtifactIndex(payload) {
     `- Ended: ${payload.endedAtIso}`,
     `- Requests: ${payload.summary.total} total, ${payload.summary.passed} passed, ${payload.summary.failed} failed`,
     `- Error rate: ${(payload.summary.errorRate * 100).toFixed(2)}%`,
+    `- Throughput: ${payload.summary.requestsPerSec.toFixed(2)} req/s over ${(payload.summary.elapsedMs / 1000).toFixed(1)}s`,
+    `- Response bytes: ${formatBytes(payload.summary.responseBytes)}`,
+    `- Status counts: ${formatCounts(payload.summary.statusCounts)}`,
     `- Latency: avg ${Math.round(payload.summary.avgMs)}ms, p95 ${Math.round(payload.summary.p95Ms)}ms, p99 ${Math.round(payload.summary.p99Ms)}ms, max ${Math.round(payload.summary.maxMs)}ms`,
     `- Host memory peak: ${formatBytes(resourceSummary.host.maxUsedMemBytes)} used, min free ${formatBytes(resourceSummary.host.minFreeMemBytes)}`,
     `- Host load peak: ${resourceSummary.host.maxLoadAvg1.toFixed(2)} over ${resourceSummary.host.cpuCount} CPUs`,
     '',
     '## Step Latency',
     '',
-    '| Step | Total | Failed | p95 | Max |',
-    '| --- | ---: | ---: | ---: | ---: |',
-    ...payload.summary.byStep.map(item => `| ${escapeTable(item.step)} | ${item.total} | ${item.failed} | ${Math.round(item.p95Ms)}ms | ${Math.round(item.maxMs)}ms |`),
+    '| Step | Total | Failed | Error Rate | Req/s | Avg | p50 | p95 | p99 | Max | Status |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
+    ...payload.summary.byStep.map(item => `| ${escapeTable(item.step)} | ${item.total} | ${item.failed} | ${(item.errorRate * 100).toFixed(2)}% | ${item.requestsPerSec.toFixed(2)} | ${Math.round(item.avgMs)}ms | ${Math.round(item.p50Ms)}ms | ${Math.round(item.p95Ms)}ms | ${Math.round(item.p99Ms)}ms | ${Math.round(item.maxMs)}ms | ${escapeTable(formatCounts(item.statusCounts))} |`),
     '',
     '## Container Peaks',
     '',
@@ -523,13 +557,17 @@ function safeName(value) {
 
 function evaluateThresholds(summary, thresholds) {
   let failed = false;
-  const checks = [
+  const maxChecks = [
     ['errorRate', summary.errorRate, thresholds.errorRate],
     ['p95Ms', summary.p95Ms, thresholds.p95Ms],
     ['p99Ms', summary.p99Ms, thresholds.p99Ms],
     ['maxMs', summary.maxMs, thresholds.maxMs]
   ];
-  for (const [name, actual, expected] of checks) {
+  const minChecks = [
+    ['requestsPerSec', summary.requestsPerSec, thresholds.requestsPerSecMin],
+    ['passedPerSec', summary.passedPerSec, thresholds.passedPerSecMin]
+  ];
+  for (const [name, actual, expected] of maxChecks) {
     if (expected === undefined) {
       continue;
     }
@@ -538,7 +576,109 @@ function evaluateThresholds(summary, thresholds) {
       console.error(`threshold failed: ${name} actual=${actual} expected<=${expected}`);
     }
   }
+  for (const [name, actual, expected] of minChecks) {
+    if (expected === undefined) {
+      continue;
+    }
+    if (actual < Number(expected)) {
+      failed = true;
+      console.error(`threshold failed: ${name} actual=${actual} expected>=${expected}`);
+    }
+  }
+  for (const [stepName, stepThresholds] of Object.entries(thresholds.byStep ?? thresholds.steps ?? {})) {
+    const step = summary.byStep.find(item => item.step === stepName);
+    if (!step) {
+      failed = true;
+      console.error(`threshold failed: missing step ${stepName}`);
+      continue;
+    }
+    failed = evaluateStepThresholds(step, stepThresholds) || failed;
+  }
   return failed;
+}
+
+function evaluateStepThresholds(step, thresholds) {
+  let failed = false;
+  const maxChecks = [
+    ['errorRate', step.errorRate, thresholds.errorRate],
+    ['p95Ms', step.p95Ms, thresholds.p95Ms],
+    ['p99Ms', step.p99Ms, thresholds.p99Ms],
+    ['maxMs', step.maxMs, thresholds.maxMs]
+  ];
+  const minChecks = [
+    ['requestsPerSec', step.requestsPerSec, thresholds.requestsPerSecMin]
+  ];
+  for (const [name, actual, expected] of maxChecks) {
+    if (expected !== undefined && actual > Number(expected)) {
+      failed = true;
+      console.error(`threshold failed: ${step.step}.${name} actual=${actual} expected<=${expected}`);
+    }
+  }
+  for (const [name, actual, expected] of minChecks) {
+    if (expected !== undefined && actual < Number(expected)) {
+      failed = true;
+      console.error(`threshold failed: ${step.step}.${name} actual=${actual} expected>=${expected}`);
+    }
+  }
+  return failed;
+}
+
+function metricFromResult(result, step) {
+  if (!result) {
+    return {
+      transport: step.transport ?? '',
+      method: step.method ?? '',
+      url: step.path ?? '',
+      responseBytes: 0,
+      messageCount: 0,
+      openMs: 0
+    };
+  }
+  const messages = Array.isArray(result.messages) ? result.messages : null;
+  const responseText = result.text ?? (messages ? messages.join('\n') : '');
+  return {
+    transport: messages ? 'websocket' : 'http',
+    method: result.method ?? step.method ?? (messages ? 'WS' : 'GET'),
+    url: result.url ?? step.path ?? '',
+    responseBytes: Buffer.byteLength(`${responseText ?? ''}`, 'utf8'),
+    messageCount: messages?.length ?? 0,
+    openMs: Number(result.openMs ?? 0)
+  };
+}
+
+function elapsedFor(metrics) {
+  if (metrics.length === 0) {
+    return 0;
+  }
+  const minStarted = Math.min(...metrics.map(item => Number(item.startedAtMs ?? 0)));
+  const maxEnded = Math.max(...metrics.map(item => Number(item.endedAtMs ?? (item.startedAtMs ?? 0) + item.durationMs)));
+  return Math.max(0, maxEnded - minStarted);
+}
+
+function perSecond(count, elapsedMs) {
+  return elapsedMs > 0 ? count / (elapsedMs / 1000) : 0;
+}
+
+function average(values) {
+  return values.reduce((sum, value) => sum + value, 0) / Math.max(1, values.length);
+}
+
+function countBy(values) {
+  const counts = {};
+  for (const value of values) {
+    counts[value] = (counts[value] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function dominant(values) {
+  const counts = countBy(values);
+  return Object.entries(counts).sort((left, right) => right[1] - left[1])[0]?.[0] ?? '';
+}
+
+function formatCounts(counts) {
+  const entries = Object.entries(counts ?? {}).sort((left, right) => left[0].localeCompare(right[0]));
+  return entries.length ? entries.map(([key, value]) => `${key}:${value}`).join(', ') : '-';
 }
 
 function percentile(values, ratio) {

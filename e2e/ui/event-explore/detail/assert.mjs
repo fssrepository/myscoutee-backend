@@ -157,6 +157,7 @@ async function waitForToolbarTextOrFinding(page, label, title) {
       }
     };
   });
+  await page.recordStep(`event-explore-toolbar-label-missing-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`);
   page.recordFinding?.({
     severity: 'warning',
     title,

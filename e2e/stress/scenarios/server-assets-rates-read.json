@@ -1,0 +1,22 @@
+{
+  "name": "Assets and rates read benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 6,
+  "rampUpMs": 5000,
+  "durationMs": 60000,
+  "thinkTimeMs": 75,
+  "thinkTimeJitterMs": 75,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 7000,
+    "p99Ms": 12000
+  },
+  "steps": [
+    { "name": "owned assets", "collectionCase": "assets/owned" },
+    { "name": "asset explore", "collectionCase": "assets/explore" },
+    { "name": "asset tickets", "collectionCase": "assets/tickets" },
+    { "name": "rates list", "collectionCase": "rates/rates-list" },
+    { "name": "rates page", "collectionCase": "rates/rates-page" }
+  ]
+}
