@@ -24,13 +24,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:0.2.0-prod}
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.0-prod}
     pull_policy: build
     build:
       context: docker
       dockerfile: images/nginx/prod/Dockerfile
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:0.2.0-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -108,10 +108,11 @@ services:
     networks:
       - myscoutee
   profilemanagement:
-    image: ${MYSCOUTEE_IMAGE}
+    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee:1.0.0-prod}
     pull_policy: build
     build:
-       context: projects/profile
+       context: .
+       dockerfile: docker/images/profilemanagement/prod/Dockerfile
        args:
          TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
@@ -137,7 +138,7 @@ services:
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
-      JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
+      JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     volumes:
       - ./projects/profile/secrets/firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
       - /etc/timezone:/etc/timezone:ro

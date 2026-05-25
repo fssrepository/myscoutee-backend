@@ -22,10 +22,12 @@ Boot Up:
 
 Dependencies
 ------------
-* `export MYSCOUTEE_VERSION=0.2.0`
+* `export MYSCOUTEE_VERSION=1.0.0`
 * Base nginx image: `docker build -f ./server/docker/images/nginx/base/Dockerfile -t myscoutee-nginx:${MYSCOUTEE_VERSION}-base ./server/docker`
 * Dev nginx image: `docker build -f ./server/docker/images/nginx/dev/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-dev ./server/docker`
 * Production nginx image: `docker build -f ./server/docker/images/nginx/prod/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-prod ./server/docker`
+* Dev backend image: `docker build -f ./server/docker/images/profilemanagement/dev/Dockerfile -t myscoutee:${MYSCOUTEE_VERSION}-dev ./server`
+* Production backend image: `docker build -f ./server/docker/images/profilemanagement/prod/Dockerfile -t myscoutee:${MYSCOUTEE_VERSION}-prod ./server`
 
 Frontend Runtime Sync (optional)
 --------------------------------

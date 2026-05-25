@@ -20,13 +20,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE:-myscoutee-nginx:0.2.0-dev}
+    image: ${NGINX_IMAGE:-myscoutee-nginx:1.0.0-dev}
     pull_policy: build
     build:
       context: docker
       dockerfile: images/nginx/dev/Dockerfile
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:0.2.0-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -83,7 +83,7 @@ services:
     pull_policy: build
     build:
       context: .
-      dockerfile: docker/images/mongodb-sync/Dockerfile
+      dockerfile: docker/images/mongodb-sync/dev/Dockerfile
       args:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: mongodb-sync
@@ -162,11 +162,11 @@ services:
     networks:
       - myscoutee
   profilemanagement:
-    image: ${MYSCOUTEE_IMAGE}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee:1.0.0-dev}
     pull_policy: build
     build:
       context: .
-      dockerfile: docker/images/profilemanagement-hot/Dockerfile
+      dockerfile: docker/images/profilemanagement/dev/Dockerfile
       args:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
@@ -217,11 +217,11 @@ services:
       - redis
       - minio
   frontend-sync:
-    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:0.1.0}
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
     pull_policy: build
     build:
       context: .
-      dockerfile: docker/images/frontend-sync/Dockerfile
+      dockerfile: docker/images/frontend-sync/dev/Dockerfile
       args:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: frontend-sync
