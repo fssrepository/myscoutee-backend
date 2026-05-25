@@ -35,3 +35,7 @@ services:
       FIREBASE_ENABLED: "false"
       MEDIA_ENABLED: "true"
       PAYMENT_ENABLE_PAY: "false"
+
+  frontend-sync:
+    environment:
+      FRONTEND_BUILD_CONFIGURATION: playground
