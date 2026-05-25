@@ -22,7 +22,10 @@ Boot Up:
 
 Dependencies
 ------------
-* docker build --no-cache -t myscoutee-nginx:0.1.0 ./server/docker/images/nginx
+* `export MYSCOUTEE_VERSION=0.2.0`
+* Base nginx image: `docker build -f ./server/docker/images/nginx/base/Dockerfile -t myscoutee-nginx:${MYSCOUTEE_VERSION}-base ./server/docker`
+* Dev nginx image: `docker build -f ./server/docker/images/nginx/dev/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-dev ./server/docker`
+* Production nginx image: `docker build -f ./server/docker/images/nginx/prod/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-prod ./server/docker`
 
 Frontend Runtime Sync (optional)
 --------------------------------
@@ -35,14 +38,14 @@ Frontend Runtime Sync (optional)
 * Prod one-time sync (from frontend docs build):
 * `./server/docker/scripts/sync_frontend_assets.sh prod`
 
-Prod Image Mode (keeps dev compose untouched)
----------------------------------------------
+Production Compose
+------------------
 * Build frontend production assets in the frontend submodule:
-* `cd frontend && npm run build:prod`
+* `cd frontend && npm run build:prod:http`
 * Sync assets into backend nginx app folder:
 * `cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod`
-* Run dockerized stack with baked nginx image:
-* `cd server && docker compose -f docker-compose.prod-image.yml up --build`
+* Run dockerized production stack:
+* `cd server && docker compose -f docker-compose-prod.yml up --build`
 
 Full Integration E2E Collections
 --------------------------------

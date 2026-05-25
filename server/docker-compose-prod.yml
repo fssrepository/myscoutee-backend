@@ -1,5 +1,6 @@
-#the purpose it that no external folder, everything is inside the image (angular js files, nginx configs etc.)
-# that verion of image needs to be built -> it's handy as on production server i don't need to copy hunderds of files
+# Production stack.
+# Build the frontend with the production configuration, sync it into
+# docker/conf/nginx/app/myscoutee, then run this compose file.
 
 networks:
   myscoutee:
@@ -23,11 +24,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE}
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:0.2.0-prod}
     pull_policy: build
     build:
-      context: docker/images/nginx
+      context: docker
+      dockerfile: images/nginx/prod/Dockerfile
       args:
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:0.2.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -39,10 +42,6 @@ services:
       - 443:443
       - 127.0.0.1:27017-27019:27017-27019
     volumes:
-      - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
-      - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
-      - ./docker/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/conf/nginx/app/myscoutee:/usr/share/nginx/html
       - ./docker/conf/nginx/keys:/etc/nginx/keys
       #- ./docker/scripts:/scripts
       - ./data/certbot/conf:/etc/letsencrypt

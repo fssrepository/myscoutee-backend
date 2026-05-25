@@ -20,11 +20,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE}
+    image: ${NGINX_IMAGE:-myscoutee-nginx:0.2.0-dev}
     pull_policy: build
     build:
-      context: docker/images/nginx
+      context: docker
+      dockerfile: images/nginx/dev/Dockerfile
       args:
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:0.2.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
