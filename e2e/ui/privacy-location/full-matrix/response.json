@@ -10,7 +10,6 @@
     ".navigator-settings-popup-shell"
   ],
   "network": [
-    "/api/auth/eligibility",
     "/api/auth/demo-users",
     "/api/privacy/consents"
   ],

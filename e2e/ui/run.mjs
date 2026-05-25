@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -74,7 +74,7 @@ async function runUiCollection(options) {
       const setupPage = await browser.newPage({ viewport: options.ctx.viewport });
       try {
         if (options.record) {
-          attachStepRecorder(setupPage, options.artifactsDir, setupTestCase);
+          await attachStepRecorder(setupPage, options.artifactsDir, setupTestCase);
         }
         const setupStarted = performance.now();
         options.ctx.suiteDemoStorage = await performDemoLogin(setupPage, {
@@ -120,7 +120,7 @@ async function runUiCollection(options) {
         }
         page = await browser.newPage({ viewport: testCase.request.viewport ?? options.ctx.viewport });
         if (options.record) {
-          attachStepRecorder(page, options.artifactsDir, testCase);
+          await attachStepRecorder(page, options.artifactsDir, testCase);
         }
         const result = await runUiCase({
           browser,
@@ -227,7 +227,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
           });
           auxiliaryPages.push(childPage);
           if (record) {
-            attachStepRecorder(childPage, artifactsDir, {
+            await attachStepRecorder(childPage, artifactsDir, {
               ...testCase,
               id: `${testCase.id}/${slugifyStepName(name)}`
             });
@@ -245,7 +245,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
           });
           auxiliaryPages.push(childPage);
           if (record) {
-            attachStepRecorder(childPage, artifactsDir, {
+            await attachStepRecorder(childPage, artifactsDir, {
               ...testCase,
               id: `${testCase.id}/${slugifyStepName(name)}`
             });
@@ -436,17 +436,19 @@ async function recordUiCase(artifactsDir, testCase, page, result) {
   }, null, 2));
 }
 
-function attachStepRecorder(page, artifactsDir, testCase) {
+async function attachStepRecorder(page, artifactsDir, testCase) {
   let index = 0;
+  const caseDir = path.join(artifactsDir, testCase.id);
+  await rm(caseDir, { recursive: true, force: true });
   page.recordedSteps = [];
   page.stepRecorder = async (name, currentPage) => {
     index += 1;
     const normalizedName = slugifyStepName(name || `step-${index}`);
     const filename = `${String(index).padStart(2, '0')}-${normalizedName}.png`;
-    const caseDir = path.join(artifactsDir, testCase.id, 'steps');
-    await mkdir(caseDir, { recursive: true });
+    const stepsDir = path.join(caseDir, 'steps');
+    await mkdir(stepsDir, { recursive: true });
     const screenshot = await currentPage.screenshot();
-    await writeFile(path.join(caseDir, filename), screenshot);
+    await writeFile(path.join(stepsDir, filename), screenshot);
     const relativePath = `./${testCase.id}/steps/${filename}`;
     page.recordedSteps.push({
       name,

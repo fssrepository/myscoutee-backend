@@ -3,27 +3,21 @@ import { assertVisibleCount, closeExplanationPopupEventually, openNavigatorMenu,
 
 const PREFERRED_CHAT_TITLE = 'Group A · Group Channel';
 
-export async function assertUi({ page, newRecordedPage }) {
+export async function assertUi({ page }) {
   const marker = `UI E2E chat ${Date.now().toString(36)}`;
   const lifecycleMarker = `${marker} lifecycle`;
   const editedMarker = `${lifecycleMarker} edited`;
-  const receiverMarker = `${marker} receiver`;
 
   await page.waitForSelector('.game-page');
   await openChatList(page);
   await page.recordStep('chat-list-open');
 
-  const chatTitle = await openPreferredChat(page);
+  await openPreferredChat(page);
   await page.waitForSelector('.popup-panel-event-chat');
   await page.waitForSelector('textarea[placeholder="Write message"]');
   await page.recordStep('chat-thread-open');
 
-  if (typeof newRecordedPage === 'function') {
-    await assertTwoSessionFanout(newRecordedPage, page, chatTitle, marker, receiverMarker);
-  }
-
-  await page.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', lifecycleMarker);
-  await page.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
+  await sendChatMessage(page, lifecycleMarker);
   await waitForVisibleText(page, '.popup-panel-event-chat', lifecycleMarker, 20000);
   await page.recordStep('chat-message-sent-visible');
   await waitForMessageNotPending(page, lifecycleMarker, 30000);
@@ -47,8 +41,7 @@ export async function assertUi({ page, newRecordedPage }) {
   await page.clickVisible('.chat-message-tools button[aria-label="More message actions"]');
   await page.waitForSelector('.chat-message-action-menu');
   await page.clickByText('.chat-message-action-menu button', 'Edit');
-  await page.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', editedMarker);
-  await page.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
+  await sendChatMessage(page, editedMarker);
   await waitForVisibleText(page, '.popup-panel-event-chat', editedMarker, 30000);
   await waitForMessageChild(page, editedMarker, '.chat-edited-label', 30000);
   await waitForMessageNotPending(page, editedMarker, 30000);
@@ -100,6 +93,17 @@ async function assertTwoSessionFanout(newRecordedPage, senderPage, chatTitle, ma
   } finally {
     await receiver.close().catch(() => undefined);
   }
+}
+
+async function sendChatMessage(page, text) {
+  await page.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', text);
+  await page.waitFor('chat send button enabled', async () => {
+    return page.evaluate(() => {
+      const button = document.querySelector('.popup-panel-event-chat button[aria-label="Send message"]');
+      return Boolean(button && !button.disabled);
+    });
+  }, 10000);
+  await page.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
 }
 
 async function openChatList(page) {

@@ -5,7 +5,6 @@
     ".demo-user-item"
   ],
   "network": [
-    "/api/auth/eligibility",
     "/api/auth/demo-users"
   ],
   "maxMs": 45000

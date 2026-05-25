@@ -628,7 +628,7 @@ async function clickDemoUser(page, userId, timeoutMs) {
   }, timeoutMs);
 }
 
-async function waitForLoginDialogOrDemoSelector(page, timeoutMs) {
+export async function waitForLoginDialogOrDemoSelector(page, timeoutMs) {
   await page.waitFor('location dialog or demo selector', async () => {
     return (await page.isSelectorVisible('.confirmation-dialog'))
       || (await page.isSelectorVisible('.demo-login-overlay'));

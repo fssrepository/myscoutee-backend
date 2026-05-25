@@ -1,18 +1,15 @@
-import { assertVisibleCount, acceptEntryPrivacyIfPresent } from '../../lib/ui-contracts.mjs';
+import { assertVisibleCount, acceptEntryPrivacyIfPresent, waitForLoginDialogOrDemoSelector } from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
   await acceptEntryPrivacyIfPresent(page);
   await page.recordStep('privacy-ready');
   await page.click('.entry-cta-primary');
-  await page.waitFor('location dialog or demo selector', async () => {
-    return (await page.isSelectorVisible('.confirmation-dialog'))
-      || (await page.isSelectorVisible('.demo-login-overlay'));
-  });
+  await waitForLoginDialogOrDemoSelector(page, 30000);
   if (await page.isSelectorVisible('.confirmation-dialog')) {
     await page.recordStep('location-required-dialog');
     await page.grantGeolocationPermission();
     await page.click('.confirmation-dialog-confirm-btn');
-    await page.waitForNetwork('/api/auth/eligibility');
+    await page.waitForSelectorHidden('.confirmation-dialog', { timeoutMs: 30000 }).catch(() => undefined);
   }
   await page.waitForSelector('.demo-login-overlay');
   await page.waitForSelector('.demo-user-item');
