@@ -8,12 +8,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaUploadResponseDto;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
@@ -39,6 +41,16 @@ public class MediaController {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Image upload unavailable.");
         }
         return new MediaImageUploadResponseDto(true, imageUrl, imageUrl);
+    }
+
+    @PostMapping(path = "/images/import", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public MediaImageUploadResponseDto importImage(@RequestBody MediaImageImportRequestDto request) {
+        String imageUrl = mediaStorageService.importImage(
+                request == null ? null : request.scope(),
+                request == null ? null : request.ownerId(),
+                request == null ? null : request.entityId(),
+                request == null ? null : request.imageUrl());
+        return new MediaImageUploadResponseDto(imageUrl != null, imageUrl, imageUrl);
     }
 
     @PostMapping(path = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
