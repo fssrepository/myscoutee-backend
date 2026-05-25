@@ -25,3 +25,11 @@ Ctrl+Shift+P → Java: Clean Java Language Server Workspace
 
 ng build --source-map --optimization=false --named-chunks
 source-map-explorer ./dev/*.js
+
+install VPS
+-----------
+sudo dpkg -i myscoutee_1.0.0_amd64.deb
+sudo nano /etc/myscoutee/myscoutee.env
+sudo nano /etc/myscoutee/myscoutee.secrets.env
+sudo systemctl start myscoutee
+sudo systemctl status myscoutee

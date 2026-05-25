@@ -162,7 +162,7 @@ services:
     networks:
       - myscoutee
   profilemanagement:
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee:1.0.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
     pull_policy: build
     build:
       context: .

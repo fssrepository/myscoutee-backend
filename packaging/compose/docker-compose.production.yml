@@ -1,0 +1,151 @@
+networks:
+  myscoutee:
+    driver: bridge
+
+services:
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.0}
+    restart: unless-stopped
+    environment:
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      LETSENCRYPT_ENABLED: ${LETSENCRYPT_ENABLED:-false}
+      DOMAIN: ${DOMAIN:-myscoutee.com}
+    ports:
+      - 80:80
+      - 443:443
+      - 127.0.0.1:27017:27017
+    volumes:
+      - ./docker/conf/nginx/keys:/etc/nginx/keys
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+      - redis
+      - profilemanagement
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  mongodb:
+    image: ${MONGO_IMAGE:-mongo:8.2.5}
+    container_name: mongodb
+    hostname: mongodb
+    restart: unless-stopped
+    env_file:
+      - .env.secrets
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_REAL_DATABASE:-myscoutee_db}
+      MONGO_APP_DATABASE: ${MONGO_REAL_DATABASE:-myscoutee_db}
+      MONGO_SEED_DIRECTORY: myscoutee_db
+      MONGO_IMPORT_ALL_SEED_DATABASES: "true"
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB}
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
+      - ./data/mongodb/data-v8:/data/db
+      - ./docker/scripts:/scripts
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --username \"$${MONGO_APP_USERNAME:-guest}\" --password \"$${MONGO_APP_PASSWORD:-guest}\" --authenticationDatabase \"$${MONGO_APP_DATABASE:-myscoutee_db}\" \"$${MONGO_APP_DATABASE:-myscoutee_db}\" --eval 'db.runCommand({ ping: 1 }).ok' | grep -q 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:8.6.1-alpine}
+    container_name: redis
+    hostname: redis
+    restart: unless-stopped
+    environment:
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio:
+    image: ${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}
+    container_name: minio
+    hostname: minio
+    restart: unless-stopped
+    env_file:
+      - .env.secrets
+    command: server /data --console-address ":9001"
+    environment:
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./data/minio:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  profilemanagement:
+    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0}
+    container_name: myscoutee
+    hostname: myscoutee
+    restart: unless-stopped
+    env_file:
+      - .env.secrets
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"
+      MONGODB_HOST: "mongodb"
+      MONGODB_DATABASE: "${MONGO_REAL_DATABASE:-myscoutee_db}"
+      MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE:-demo_db}"
+      SPRING_DATA_REDIS_HOST: "redis"
+      SPRING_DATA_REDIS_PORT: "6379"
+      FIREBASE_ENABLED: "${FIREBASE_ENABLED:-true}"
+      DEV_USER: "dev@myscoutee.local"
+      ADMIN_USER: "myscoutee@gmail.com"
+      WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com}"
+      MEDIA_ENABLED: "true"
+      MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
+      MEDIA_OBJECT_STORE_REGION: "eu-central-1"
+      MEDIA_BUCKET: "${MEDIA_BUCKET:-myscoutee-media}"
+      MEDIA_OBJECT_STORE_PATH_STYLE: "true"
+      ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED:-false}"
+      ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS:-}"
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
+    volumes:
+      - ./projects/profile/secrets/firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+      - redis
+      - minio
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health | grep -q UP"]
+      interval: 30s
+      timeout: 5s
+      retries: 8
+      start_period: 60s

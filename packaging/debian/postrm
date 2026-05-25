@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl daemon-reload >/dev/null 2>&1 || true
+fi
+
+if [[ "${1:-}" = "purge" ]]; then
+  echo "Leaving /etc/myscoutee and /var/lib/myscoutee in place. Remove them manually if you really want to delete config and data." >&2
+fi

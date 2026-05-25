@@ -1,0 +1,13 @@
+Package: myscoutee
+Version: 1.0.0
+Section: web
+Priority: optional
+Architecture: amd64
+Maintainer: MyScoutee <admin@myscoutee.local>
+Depends: bash, coreutils
+Recommends: docker.io, docker-compose-plugin, curl, jq, gnupg, openssl, ufw, ncdu, iotop, redis-tools
+Description: MyScoutee production bundle
+ Production packaging metadata for the MyScoutee Docker-based VPS deploy.
+ The package is expected to install the application bundle, systemd unit,
+ and operational helper scripts. Heavy dependency installation remains
+ explicit in installer scripts instead of being hidden in application images.
