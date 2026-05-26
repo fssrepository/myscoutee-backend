@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -45,6 +46,7 @@ public class AdminAffinityGraphService {
     private static final int TILE_SIZE = 256;
     private static final int NODE_RENDER_BUDGET = 1000;
     private static final int EDGE_RENDER_BUDGET = 5000;
+    private static final int FOREST_OVERVIEW_BASE_BUDGET = 16;
     private static final double WORLD_RADIUS = 620d;
 
     private final AdminModerationService adminModerationService;
@@ -146,14 +148,28 @@ public class AdminAffinityGraphService {
                 edges);
     }
 
-    public AdminAffinityGraphForestsDto forests(String adminUserId, Double minWeight, Double maxWeight) {
+    public AdminAffinityGraphForestsDto forests(
+            String adminUserId,
+            Double minWeight,
+            Double maxWeight,
+            Integer forestLevel,
+            Integer limit,
+            Integer offset) {
         adminModerationService.resolveAdminActor(adminUserId);
         if (isDefaultWeightRange(minWeight, maxWeight)) {
             Optional<AdminAffinityGraphLayout> materializedLayout = latestMaterializedLayout();
             if (materializedLayout.isPresent()) {
                 AdminAffinityGraphLayout layout = materializedLayout.get();
+                int forestCount = Math.toIntExact(Math.min(
+                        Integer.MAX_VALUE,
+                        graphForestsRepository.countByLayoutVersion(layout.getLayoutVersion())));
+                ForestPageSpec forestPage = forestPageSpec(forestCount, forestLevel, limit, offset);
                 List<AdminAffinityGraphForestDto> forests = graphForestsRepository
-                        .findByLayoutVersionOrderByMemberCountDesc(layout.getLayoutVersion())
+                        .findByLayoutVersionOrderByMemberCountDesc(
+                                layout.getLayoutVersion(),
+                                PageRequest.of(
+                                        forestPage.limit() <= 0 ? 0 : forestPage.offset() / forestPage.limit(),
+                                        Math.max(1, forestPage.limit())))
                         .stream()
                         .map(this::toForestDto)
                         .toList();
@@ -161,6 +177,11 @@ public class AdminAffinityGraphService {
                         firstNonBlank(layout.getGeneratedAtIso(), Instant.now().toString()),
                         firstNonBlank(layout.getSource(), "materialized"),
                         layout.getLayoutVersion(),
+                        forestCount,
+                        forestPage.forestLevel(),
+                        forestPage.maxForestLevel(),
+                        forestPage.limit(),
+                        forestPage.offset(),
                         forests);
             }
         }
@@ -171,11 +192,17 @@ public class AdminAffinityGraphService {
         List<AdminAffinityGraphForestDto> forests = components.stream()
                 .map(component -> toForestDto(component, centers.get(component.id())))
                 .toList();
+        ForestPage forestPage = forestPage(forests, forestLevel, limit, offset);
         return new AdminAffinityGraphForestsDto(
                 snapshot.generatedAtIso(),
                 "http",
                 snapshot.layoutVersion(),
-                forests);
+                forests.size(),
+                forestPage.forestLevel(),
+                forestPage.maxForestLevel(),
+                forestPage.limit(),
+                forestPage.offset(),
+                forestPage.forests());
     }
 
     public AdminAffinityGraphTileDto tile(
@@ -899,6 +926,37 @@ public class AdminAffinityGraphService {
         return range.min() <= 0d && range.max() >= 1d;
     }
 
+    private ForestPage forestPage(
+            List<AdminAffinityGraphForestDto> forests,
+            Integer requestedForestLevel,
+            Integer requestedLimit,
+            Integer requestedOffset) {
+        ForestPageSpec spec = forestPageSpec(forests.size(), requestedForestLevel, requestedLimit, requestedOffset);
+        List<AdminAffinityGraphForestDto> page = forests.stream()
+                .skip(spec.offset())
+                .limit(spec.limit())
+                .toList();
+        return new ForestPage(page, spec.forestLevel(), spec.maxForestLevel(), spec.limit(), spec.offset());
+    }
+
+    private ForestPageSpec forestPageSpec(
+            int total,
+            Integer requestedForestLevel,
+            Integer requestedLimit,
+            Integer requestedOffset) {
+        int maxForestLevel = maxForestLevel(total);
+        int forestLevel = Math.max(0, Math.min(maxForestLevel, requestedForestLevel == null ? 0 : requestedForestLevel));
+        int levelLimit = Math.min(total, Math.max(1, FOREST_OVERVIEW_BASE_BUDGET * (1 << forestLevel)));
+        int limit = Math.max(1, Math.min(Math.max(1, total), requestedLimit == null ? levelLimit : requestedLimit));
+        int offset = Math.max(0, Math.min(total, requestedOffset == null ? 0 : requestedOffset));
+        return new ForestPageSpec(forestLevel, maxForestLevel, limit, offset);
+    }
+
+    private int maxForestLevel(int totalCount) {
+        int total = Math.max(1, totalCount);
+        return Math.max(0, (int) Math.ceil(Math.log(total / (double) FOREST_OVERVIEW_BASE_BUDGET) / Math.log(2d)));
+    }
+
     private Comparator<AdminAffinityGraphEdgeDto> edgeComparator() {
         return Comparator.comparing(AdminAffinityGraphEdgeDto::source)
                 .thenComparing(AdminAffinityGraphEdgeDto::target);
@@ -1036,6 +1094,19 @@ public class AdminAffinityGraphService {
             List<AdminAffinityGraphNodeDto> nodes,
             List<GraphEdge> edges,
             AdminAffinityGraphNodeDto representative) {}
+
+    private record ForestPage(
+            List<AdminAffinityGraphForestDto> forests,
+            int forestLevel,
+            int maxForestLevel,
+            int limit,
+            int offset) {}
+
+    private record ForestPageSpec(
+            int forestLevel,
+            int maxForestLevel,
+            int limit,
+            int offset) {}
 
     private record LayoutRecord(
             Map<String, Position> nodePositions,

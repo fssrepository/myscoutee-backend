@@ -235,6 +235,11 @@ public final class AdminDtos {
             String generatedAtIso,
             String source,
             String layoutVersion,
+            Integer forestCount,
+            Integer forestLevel,
+            Integer maxForestLevel,
+            Integer limit,
+            Integer offset,
             List<AdminAffinityGraphForestDto> forests) {}
     public record AdminAffinityGraphForestDto(
             String componentId,

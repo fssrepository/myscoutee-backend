@@ -110,8 +110,11 @@ public class AdminController {
     public AdminAffinityGraphForestsDto affinityGraphForests(
             @RequestParam(value = "adminUserId", required = false) String adminUserId,
             @RequestParam(value = "minWeight", required = false) Double minWeight,
-            @RequestParam(value = "maxWeight", required = false) Double maxWeight) {
-        return adminAffinityGraphService.forests(adminUserId, minWeight, maxWeight);
+            @RequestParam(value = "maxWeight", required = false) Double maxWeight,
+            @RequestParam(value = "forestLevel", required = false) Integer forestLevel,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "offset", required = false) Integer offset) {
+        return adminAffinityGraphService.forests(adminUserId, minWeight, maxWeight, forestLevel, limit, offset);
     }
 
     @GetMapping("/affinity-graph/tiles")
