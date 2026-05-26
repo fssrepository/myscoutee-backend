@@ -2255,29 +2255,6 @@ public class ActivitiesEventsService {
         return normalizeCount(next.getActivity()) >= normalizeCount(current.getActivity());
     }
 
-    private EventProjection toProjection(ActivityEvent record, ViewerContext viewer) {
-        EventRecordDto item = toEventRecordDto(record, viewer);
-        if (item == null) {
-            return null;
-        }
-        long startAtMs = toSortableDate(item.startAtIso());
-        long endAtMs = resolveProjectionEndAtMs(item, startAtMs);
-        Integer distanceMetersExact = resolveDistanceMetersExact(viewer.locationCoordinates(), record);
-        int affinityGap = Math.abs(Math.max(0, normalizeCount(record.getAffinity())) - viewer.affinity());
-        return new EventProjection(
-                record,
-                item,
-                distanceMetersExact == null ? Integer.MAX_VALUE : distanceMetersExact,
-                Math.max(0d, safeDouble(item.boost())),
-                startAtMs,
-                endAtMs,
-                dateOnly(startAtMs),
-                boostAffinityRank(record, viewer, affinityGap),
-                affinityGap,
-                -Math.max(0, (int) Math.round(safeDouble(item.rating()) * 100d)),
-                endAtMs < System.currentTimeMillis());
-    }
-
     private EventProjection toSortProjection(ActivityEvent record, ViewerContext viewer) {
         if (record == null) {
             return null;
@@ -2366,17 +2343,6 @@ public class ActivitiesEventsService {
             return parsed;
         }
         return endOfDay ? parsed + ChronoUnit.DAYS.getDuration().toMillis() - 1L : parsed;
-    }
-
-    private long resolveProjectionEndAtMs(EventRecordDto item, long fallbackStartAtMs) {
-        if (item == null) {
-            return fallbackStartAtMs;
-        }
-        long endAtMs = toSortableDate(item.endAtIso());
-        if (endAtMs > 0L) {
-            return endAtMs;
-        }
-        return fallbackStartAtMs;
     }
 
     private EventRecordDto toEventRecordDto(ActivityEvent record, ViewerContext viewer) {

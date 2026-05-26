@@ -226,7 +226,7 @@ public class HelpCenterService {
                 lastDuplicate = duplicateKeyException;
             }
         }
-        throw lastDuplicate;
+        throw new DuplicateKeyException("Could not allocate a help center revision version after retries.", lastDuplicate);
     }
 
     public HelpCenterStateDto activateRevision(String revisionId, HelpCenterAdminActionRequestDto request) {

@@ -2,8 +2,9 @@ landing site,
 1) version nuber + Preview Version badge at top (so everybody should see that it non-production)
 2) article should get better explanations (longer)
 
-affinity recompute (mongo chnage stream???) / affinity graph view stress test
-slim environment parameter on frontend - (stress test changed it)
+affinity graph view e2e test
+
+affinity recompute (mongo chnage stream???)
 
 vmware install - dpkg check
 

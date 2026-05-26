@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,10 +65,11 @@ class HelpCenterServiceTest {
     void saveRevisionRetriesVersionWhenConcurrentInsertWins() {
         HelpCenterRevision versionOne = revision("one", 1);
         HelpCenterRevision concurrentVersionTwo = revision("two", 2);
-        when(revisionsRepository.findAllByOrderByVersionDesc()).thenReturn(
-                List.of(versionOne),
-                List.of(concurrentVersionTwo, versionOne),
-                List.of(concurrentVersionTwo, versionOne));
+        AtomicInteger revisionReads = new AtomicInteger();
+        when(revisionsRepository.findAllByOrderByVersionDesc())
+                .thenAnswer(invocation -> revisionReads.getAndIncrement() == 0
+                        ? List.of(versionOne)
+                        : List.of(concurrentVersionTwo, versionOne));
         when(revisionsRepository.save(any(HelpCenterRevision.class)))
                 .thenThrow(new DuplicateKeyException("duplicate version"))
                 .thenAnswer(invocation -> {

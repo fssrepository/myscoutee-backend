@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.BeforeEach;
@@ -462,9 +462,11 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
-        doReturn(List.<ActivityEvent>of())
-                .doReturn(List.of(first, second, third))
-                .when(mongoTemplate).find(any(Query.class), eq(ActivityEvent.class));
+        AtomicInteger findCalls = new AtomicInteger();
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenAnswer(invocation -> findCalls.getAndIncrement() == 0
+                        ? List.<ActivityEvent>of()
+                        : List.of(first, second, third));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "all", "all", "recent", "date", "day", 2, null, null, null, null, true));

@@ -173,9 +173,10 @@ public class ChatWebSocketSessionRegistry {
         if (event == null) {
             return "";
         }
-        String type = normalize(event.type());
+        ChatStreamEvent current = Objects.requireNonNull(event);
+        String type = normalize(current.type());
         if ("message".equals(type)) {
-            return Objects.equals(normalize(event.senderId()), normalize(userId)) ? "message:mine" : "message:other";
+            return Objects.equals(normalize(current.senderId()), normalize(userId)) ? "message:mine" : "message:other";
         }
         return type;
     }

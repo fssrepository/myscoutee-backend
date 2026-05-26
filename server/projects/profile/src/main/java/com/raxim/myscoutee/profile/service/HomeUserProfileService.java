@@ -1110,19 +1110,6 @@ public class HomeUserProfileService {
         return resolved;
     }
 
-    private HomeRankingContext buildHomeRankingContext(String activeUserId, List<Users> visibleGameUsers) {
-        String normalizedUserId = normalizeId(activeUserId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return new HomeRankingContext(null, Map.of(), Instant.now().toEpochMilli());
-        }
-
-        Map<String, Users> usersById = indexUsersById(visibleGameUsers);
-        Users activeUser = usersById.get(normalizedUserId);
-        long nowMs = Instant.now().toEpochMilli();
-        Map<String, Long> latestActivityMsByUserId = queryLatestHomeActivityMsByUserId();
-        return new HomeRankingContext(activeUser, latestActivityMsByUserId, nowMs);
-    }
-
     private Map<String, Long> queryLatestHomeActivityMsByUserId() {
         Map<String, Long> latestByUserId = new LinkedHashMap<>();
         for (UserRate record : userRatesRepository.findAll()) {

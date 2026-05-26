@@ -880,6 +880,9 @@ public class AdminAffinityGraphService {
     }
 
     private boolean isExcludedUser(String id, Users user) {
+        if (user == null) {
+            return true;
+        }
         if ("u-onboarding".equals(id) || id.startsWith("admin-demo-")) {
             return true;
         }
