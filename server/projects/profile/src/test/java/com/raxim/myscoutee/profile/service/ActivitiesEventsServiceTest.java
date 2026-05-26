@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -461,8 +462,9 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
-        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
-                .thenReturn(List.of(), List.of(first, second, third));
+        doReturn(List.<ActivityEvent>of())
+                .doReturn(List.of(first, second, third))
+                .when(mongoTemplate).find(any(Query.class), eq(ActivityEvent.class));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "all", "all", "recent", "date", "day", 2, null, null, null, null, true));
@@ -512,17 +514,6 @@ class ActivitiesEventsServiceTest {
             statuses.put(sourceId, "accepted");
         }
         return statuses;
-    }
-
-    private ActivitiesMembersService.OwnerMembersSnapshot acceptedSnapshot(String sourceId, String userId) {
-        return new ActivitiesMembersService.OwnerMembersSnapshot(
-                "event",
-                sourceId,
-                List.of(),
-                List.of(userId),
-                List.of(),
-                Set.of(),
-                10);
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, double affinity) {

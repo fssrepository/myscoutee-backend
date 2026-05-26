@@ -47,8 +47,6 @@ public class HelpCenterService {
     private static final String DOCUMENT_EXPLANATION = "explanation";
     private static final String DEFAULT_LANG = "en";
     private static final String LEGACY_VERSION_INDEX = "help_revision_version";
-    private static final String DEFAULT_EXPLANATION_CONTEXT = "home.game";
-    private static final String EXPLANATION_ACTIVITY_RATES_CONTEXT = "activities.rates";
     private static final String EXPLANATION_CHATS_CONTEXT = "chats";
     private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
     private static final String EXPLANATION_ASSETS_CONTEXT = "assets";
@@ -320,10 +318,6 @@ public class HelpCenterService {
         consent.setUpdatedAtIso(nowIso);
         consent.setSource(privacyConsentSource(request == null ? null : request.source()));
         return toPrivacyConsentDto(privacyConsentsRepository.save(consent));
-    }
-
-    private HelpCenterStateDto fullState(String kind, String lang) {
-        return fullState(kind, lang, null);
     }
 
     private HelpCenterStateDto fullState(String kind, String lang, String contextKey) {
@@ -646,10 +640,6 @@ public class HelpCenterService {
         } catch (RuntimeException ignored) {
             // Content reads should continue if index metadata is temporarily unavailable.
         }
-    }
-
-    private List<HelpCenterRevision> revisionsForKind(List<HelpCenterRevision> revisions, String kind, String lang) {
-        return revisionsForKind(revisions, kind, lang, null);
     }
 
     private List<HelpCenterRevision> revisionsForKind(List<HelpCenterRevision> revisions, String kind, String lang, String contextKey) {

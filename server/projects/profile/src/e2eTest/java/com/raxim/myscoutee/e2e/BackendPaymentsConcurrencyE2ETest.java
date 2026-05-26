@@ -495,14 +495,6 @@ class BackendPaymentsConcurrencyE2ETest {
                 ActivityChatMessage.class));
     }
 
-    private ActivityChat eventChat(String eventId) {
-        ActivityChat chat = fromReal(() -> mongoTemplate.findOne(
-                Query.query(Criteria.where("chatId").is(eventId).and("ownerUserId").is(HOST_ID)),
-                ActivityChat.class));
-        assertThat(chat).isNotNull();
-        return chat;
-    }
-
     private List<ActivityMember> members(String eventId) {
         return fromReal(() -> mongoTemplate.find(
                 Query.query(Criteria.where("ownerType").is("event").and("ownerId").is(eventId)),

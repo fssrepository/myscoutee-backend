@@ -665,7 +665,10 @@ public class AdminAffinityGraphService {
     }
 
     private AdminAffinityGraphNodeDto toNode(Users user) {
-        String id = normalizeId(user == null ? null : user.getUserId());
+        if (user == null) {
+            return null;
+        }
+        String id = normalizeId(user.getUserId());
         if (!StringUtils.hasText(id) || isExcludedUser(id, user)) {
             return null;
         }
