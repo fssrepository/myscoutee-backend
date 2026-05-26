@@ -37,7 +37,13 @@ BUILD_IMAGES=false bash packaging/scripts/build-production.sh
 BUILD_ARTIFACTS=false PACKAGE_IMAGES=false bash packaging/scripts/package-production.sh
 ```
 
-`package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images. Set `PACKAGE_OFFICIAL_IMAGES=true` to also include MongoDB, Redis, and MinIO image archives for a larger, more offline-friendly bundle.
+`package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images plus MongoDB, Redis, and MinIO image archives for a more self-contained VPS install. Set `PACKAGE_OFFICIAL_IMAGES=false` to leave the official service images out of the bundle.
+
+Install the local deb with `apt`, not `dpkg`, so Docker Engine and Docker Compose dependencies are installed before MyScoutee is configured:
+
+```bash
+sudo apt install ./packaging/dist/myscoutee_1.0.0_amd64.deb
+```
 
 ## Optional Mongo Change Streams
 
@@ -83,7 +89,7 @@ myscoutee-nginx:1.0.0-base
 
 ## Future Debian Package
 
-The Debian package installs a prepared bundle under `/opt/myscoutee`, with configuration under `/etc/myscoutee` and persistent data linked through `/var/lib/myscoutee`.
+The Debian package installs a prepared bundle under `/opt/myscoutee`, with configuration under `/etc/myscoutee` and persistent data linked through `/var/lib/myscoutee`. The package declares Docker Engine and Docker Compose v2 as dependencies.
 
 On first install, `postinst` creates `/etc/myscoutee/myscoutee.secrets.env` with generated values for `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_APP_PASSWORD`, and `MINIO_ROOT_PASSWORD`. Existing secrets files are never overwritten, so package upgrades do not rotate live database or object-store credentials by surprise.
 

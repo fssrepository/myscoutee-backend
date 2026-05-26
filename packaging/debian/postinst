@@ -92,7 +92,16 @@ if [[ ! -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt || ! -f /opt/m
   fi
 fi
 
+if command -v docker >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
+  systemctl enable --now docker
+fi
+
 if command -v docker >/dev/null 2>&1 && compgen -G "/opt/myscoutee/images/*.tar" >/dev/null; then
+  if ! docker info >/dev/null 2>&1; then
+    echo "Docker is installed, but the Docker daemon is not reachable. Start docker.service and rerun package configuration." >&2
+    exit 1
+  fi
+
   for image_archive in /opt/myscoutee/images/*.tar; do
     docker load -i "${image_archive}" >/dev/null
   done

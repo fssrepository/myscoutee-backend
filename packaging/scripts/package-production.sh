@@ -60,11 +60,20 @@ find "${STAGING_DIR}/opt/myscoutee/server/docker" -type f -name "*.sh" -exec chm
 save_image() {
   local image_name="$1"
   local archive_name="$2"
+  local pull_if_missing="${3:-false}"
+
+  if ! docker image inspect "${image_name}" >/dev/null 2>&1; then
+    if [[ "${pull_if_missing}" == "true" ]]; then
+      docker pull "${image_name}"
+    fi
+  fi
+
   if ! docker image inspect "${image_name}" >/dev/null 2>&1; then
     echo "Missing Docker image: ${image_name}" >&2
     echo "Run with BUILD_ARTIFACTS=true or build the image before packaging." >&2
     exit 1
   fi
+
   docker save -o "${STAGING_DIR}/opt/myscoutee/images/${archive_name}.tar" "${image_name}"
 }
 
@@ -74,10 +83,10 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}"
 fi
 
-if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then
-  save_image "${MONGO_IMAGE:-mongo:8.2.5}" "mongo"
-  save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis"
-  save_image "${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}" "minio"
+if [[ "${PACKAGE_OFFICIAL_IMAGES:-true}" == "true" ]]; then
+  save_image "${MONGO_IMAGE:-mongo:8.2.5}" "mongo" true
+  save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis" true
+  save_image "${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}" "minio" true
 fi
 
 if ! command -v dpkg-deb >/dev/null 2>&1; then

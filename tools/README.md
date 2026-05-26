@@ -28,7 +28,8 @@ source-map-explorer ./dev/*.js
 
 install VPS
 -----------
-sudo dpkg -i myscoutee_1.0.0_amd64.deb
+# Use apt for the local deb so Docker and Compose dependencies are installed.
+sudo apt install ./myscoutee_1.0.0_amd64.deb
 sudo nano /etc/myscoutee/myscoutee.env
 # Mongo root/app passwords and the MinIO root password are generated on first install; add external API keys if needed.
 sudo nano /etc/myscoutee/myscoutee.secrets.env
