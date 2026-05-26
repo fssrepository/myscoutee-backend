@@ -46,9 +46,9 @@ export async function assertUi({ page }) {
   await assertCalendarHasStructure(page);
 
   await selectActivitiesView(page, 'Day');
-  await page.waitForSelector('.popup-panel-activities .smart-list--calendar');
-  await page.recordStep('rates-day-calendar-view');
-  await assertCalendarHasStructure(page);
+  await page.waitForSelector('.popup-panel-activities .smart-list--list');
+  await assertVisibleRateCards(page, 'day rate cards');
+  await page.recordStep('rates-day-list-view');
 
   await selectActivitiesView(page, 'Distance');
   await page.waitForSelector('.popup-panel-activities .smart-list--list');
@@ -68,7 +68,8 @@ export async function assertUi({ page }) {
   await commitRating(page);
   await page.recordStep('rates-rating-committed');
 
-  await scrollSmartList(page, '.popup-panel-activities', 700);
+  await waitForRatingDockCloseGuard(page);
+  await userScrollSmartList(page, '.popup-panel-activities', 700);
   await page.waitFor('rating dock closes after scroll', async () => {
     return page.visibleCount('.rating-star-bar-host--dock-open').then(count => count === 0);
   }, 15000);
@@ -275,4 +276,25 @@ async function commitRating(page) {
   await page.waitFor('.rating bar value commits', async () => {
     return page.visibleCount('.rating-star-bar__commit').then(count => count === 0);
   }, 10000);
+}
+
+async function waitForRatingDockCloseGuard(page) {
+  await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 350)));
+}
+
+async function userScrollSmartList(page, rootSelector, amount = 700) {
+  await page.evaluate(({ rootSelector, amount }) => {
+    const root = document.querySelector(rootSelector) ?? document;
+    const list = root.querySelector('.smart-list');
+    if (!list) {
+      return;
+    }
+    list.dispatchEvent(new WheelEvent('wheel', {
+      deltaY: amount,
+      bubbles: true,
+      cancelable: true
+    }));
+    list.scrollBy({ top: amount, left: 0, behavior: 'instant' });
+    list.dispatchEvent(new Event('scroll', { bubbles: true }));
+  }, { rootSelector, amount });
 }

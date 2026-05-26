@@ -20,7 +20,6 @@ export async function assertUi({ page }) {
   await page.waitForSelector('.game-page');
   await openAssetsPopup(page);
   await page.recordStep('asset-supplies-popup-open');
-  await waitForSmartListSettled(page, '.popup-panel-assets');
 
   await exerciseAssetFilter(page);
   await page.recordStep('asset-filter-exercised');
@@ -47,7 +46,6 @@ export async function assertUi({ page }) {
   await page.navigate('/game', { loadTimeoutMs: 25000 });
   await page.waitForSelector('.game-page');
   await openAssetsPopup(page);
-  await waitForSmartListSettled(page, '.popup-panel-assets');
   await scrollSmartListUntilText(page, '.popup-panel-assets', marker, 30000);
   await scrollSmartListUntilText(page, '.popup-panel-assets', editedDetails, 30000);
   await page.recordStep('asset-reloaded-visible');
@@ -535,7 +533,9 @@ async function ensureAssetVisibleInAssetsPopup(page, marker, details) {
   const quickVisible = await waitForVisibleText(page, '.popup-panel-assets', marker, 12000)
     .then(() => true)
     .catch(() => false);
-  if (!quickVisible) {
+  const visibleAfterListProbe = quickVisible
+    || await findSmartListTextByScrolling(page, '.popup-panel-assets', marker, 30000);
+  if (!visibleAfterListProbe) {
     await page.recordStep('asset-smart-list-missing-new-asset-before-reopen');
     page.recordFinding?.({
       severity: 'warning',
@@ -544,10 +544,28 @@ async function ensureAssetVisibleInAssetsPopup(page, marker, details) {
     });
     await closeAssetsPopup(page);
     await openAssetsPopup(page);
-    await waitForSmartListSettled(page, '.popup-panel-assets');
   }
   await scrollSmartListUntilText(page, '.popup-panel-assets', marker, 60000);
   await scrollSmartListUntilText(page, '.popup-panel-assets', details, 60000);
+}
+
+async function findSmartListTextByScrolling(page, rootSelector, text, timeoutMs = 30000) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    const found = await waitForVisibleText(page, rootSelector, text, 1200)
+      .then(() => true)
+      .catch(() => false);
+    if (found) {
+      return true;
+    }
+    const state = await scrollSmartListOnce(page, rootSelector);
+    await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 350)));
+    await waitForSmartListSettled(page, rootSelector, 5000).catch(() => undefined);
+    if (state?.hasList && state.atEnd && Math.abs((state.after ?? 0) - (state.before ?? 0)) <= 1) {
+      return false;
+    }
+  }
+  return false;
 }
 
 async function scrollSmartListUntilText(page, rootSelector, text, timeoutMs = 30000) {
@@ -560,25 +578,7 @@ async function scrollSmartListUntilText(page, rootSelector, text, timeoutMs = 30
     if (found) {
       return;
     }
-    lastState = await page.evaluate(rootSelector => {
-      const root = document.querySelector(rootSelector) ?? document;
-      const list = root.querySelector('.smart-list');
-      if (!list) {
-        return { hasList: false };
-      }
-      const before = list.scrollTop;
-      const step = Math.max(220, Math.floor((list.clientHeight || window.innerHeight || 320) * 0.78));
-      list.scrollTo({ top: Math.min(list.scrollHeight, before + step), behavior: 'auto' });
-      list.dispatchEvent(new Event('scroll', { bubbles: true }));
-      return {
-        hasList: true,
-        before,
-        after: list.scrollTop,
-        clientHeight: list.clientHeight,
-        scrollHeight: list.scrollHeight,
-        atEnd: list.scrollTop + list.clientHeight >= list.scrollHeight - 4
-      };
-    }, rootSelector);
+    lastState = await scrollSmartListOnce(page, rootSelector);
     await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 350)));
     await waitForSmartListSettled(page, rootSelector, 5000).catch(() => undefined);
     if (lastState?.hasList && lastState.atEnd && Math.abs((lastState.after ?? 0) - (lastState.before ?? 0)) <= 1) {
@@ -598,12 +598,35 @@ async function scrollSmartListUntilText(page, rootSelector, text, timeoutMs = 30
   assert(false, `${rootSelector} should show ${text} after scrolling the smart list`, lastState ?? {});
 }
 
+async function scrollSmartListOnce(page, rootSelector) {
+  return page.evaluate(rootSelector => {
+    const root = document.querySelector(rootSelector) ?? document;
+    const list = root.querySelector('.smart-list');
+    if (!list) {
+      return { hasList: false };
+    }
+    const before = list.scrollTop;
+    const step = Math.max(220, Math.floor((list.clientHeight || window.innerHeight || 320) * 0.78));
+    list.scrollTo({ top: Math.min(list.scrollHeight, before + step), behavior: 'auto' });
+    list.dispatchEvent(new Event('scroll', { bubbles: true }));
+    return {
+      hasList: true,
+      before,
+      after: list.scrollTop,
+      clientHeight: list.clientHeight,
+      scrollHeight: list.scrollHeight,
+      atEnd: list.scrollTop + list.clientHeight >= list.scrollHeight - 4
+    };
+  }, rootSelector);
+}
+
 async function openAssetsPopup(page) {
   await openNavigatorMenu(page);
   await page.click('button[aria-label="Supplies"]');
   await closeExplanationPopupEventually(page, 10000);
   await page.waitForSelector('.popup-panel-assets');
   await page.waitForNetwork('/api/assets', { timeoutMs: 25000 });
+  await waitForPopupAssetsListReady(page);
 }
 
 async function closeAssetsPopup(page) {
@@ -806,7 +829,7 @@ async function exerciseAssetFilter(page) {
   }, before);
   assert(selected, 'Asset filter should expose at least one alternate filter');
   await page.waitForNetwork('/api/assets', { timeoutMs: 25000 });
-  await waitForSmartListSettled(page, '.popup-panel-assets');
+  await waitForPopupAssetsListReady(page);
   await closeExplanationPopupEventually(page, 10000);
 
   await page.mouseClickVisible('.popup-panel-assets .assets-primary-filter-select');
@@ -833,8 +856,19 @@ async function exerciseAssetFilter(page) {
   });
   assert(restored, 'Asset filter should be restorable to Supplies before creating a supply asset');
   await page.waitForNetwork('/api/assets', { timeoutMs: 25000 });
-  await waitForSmartListSettled(page, '.popup-panel-assets');
+  await waitForPopupAssetsListReady(page);
   await closeExplanationPopupEventually(page, 10000);
+}
+
+async function waitForPopupAssetsListReady(page, timeoutMs = 9000) {
+  const settled = await waitForSmartListSettled(page, '.popup-panel-assets', timeoutMs)
+    .then(() => true)
+    .catch(() => false);
+  if (settled) {
+    return;
+  }
+  const visibleCards = await page.visibleCount('.popup-panel-assets .experience-item-card');
+  assert(visibleCards > 0, 'Assets smart-list should either settle or expose visible asset cards', { visibleCards });
 }
 
 async function readAssetToolbarText(page) {

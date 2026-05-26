@@ -17,13 +17,16 @@ services:
       MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_PLAYGROUND_DATABASE:-playground_db}:*
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
-      - ./data/mongodb/playground-data:/data/db
+      - ./data/mongodb/playground-data-v8-0:/data/db
       - ./docker/scripts:/scripts
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
   mongodb-sync:
     environment:
+      MONGO_APP_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_DEMO_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
+      MONGO_REAL_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
       MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_PLAYGROUND_DATABASE:-playground_db}:*
       MONGO_PLAYGROUND_DATABASE: ${MONGO_PLAYGROUND_DATABASE:-playground_db}
 

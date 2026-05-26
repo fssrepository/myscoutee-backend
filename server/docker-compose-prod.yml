@@ -81,7 +81,7 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
-      - ./data/mongodb/data-v8:/data/db
+      - ./data/mongodb/data-v8-0:/data/db
       - ./docker/scripts:/scripts
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

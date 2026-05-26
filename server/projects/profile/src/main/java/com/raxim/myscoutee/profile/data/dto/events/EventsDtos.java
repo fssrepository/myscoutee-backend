@@ -6,6 +6,7 @@ import java.util.Map;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
@@ -170,6 +171,7 @@ public final class EventsDtos {
             String frequency,
             Boolean ticketing,
             PricingConfigDto pricing,
+            List<PolicyItemDto> policies,
             Boolean slotsEnabled,
             List<EventSlotTemplateDto> slotTemplates,
             String parentEventId,
@@ -262,6 +264,7 @@ public final class EventsDtos {
             String frequency,
             Boolean ticketing,
             PricingConfigDto pricing,
+            List<PolicyItemDto> policies,
             Boolean slotsEnabled,
             List<EventSlotTemplateDto> slotTemplates,
             String parentEventId,

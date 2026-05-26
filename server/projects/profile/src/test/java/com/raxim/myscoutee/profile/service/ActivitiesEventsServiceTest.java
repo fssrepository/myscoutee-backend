@@ -218,6 +218,7 @@ class ActivitiesEventsServiceTest {
                 "One-time",
                 false,
                 null,
+                List.of(),
                 false,
                 List.of(),
                 null,

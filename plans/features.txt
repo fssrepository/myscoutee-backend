@@ -1,4 +1,4 @@
-affinity graph view e2e test
+wss dynamic resolve
 
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
@@ -10,48 +10,3 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
-
-Event full lifecycle publish/join/slots/policy edit/remove: partially done, blocked by policy persistence
-Rates smart-list: still failing. Data/count badges exist, but rate cards render empty.
-Event policy persistence: still failing. Event saves/reopens with title/description/sub-event, but policy panel/policy disappears.
-Event card menu anchoring: not fixed, only captured as a visual finding.
-Mobile event explore toolbar clipping: not fixed, captured as visual finding.
-
-I verified the recorded artifacts, not a fresh rerun. Handoff list:
-
-**Chat**
-- UI chat tests currently recorded green:
-  - `.e2e-artifacts/ui/chats/message-lifecycle/result.json`
-  - `.e2e-artifacts/ui/chats/two-session-websocket/result.json`
-- The older note saying “true two-different-user chat deferred” is stale. Later `two-session-websocket` uses two different demo users and passes.
-- Still not deeply covered:
-  - cross-user edit/pin/delete/reply flows
-  - attachments/audio/media in chat
-  - reconnect/offline/resume behavior
-  - reverse pagination/history edge cases
-  - unread/list badge behavior after read receipts
-- WebSocket stress latest run was good: 500 clients, 20 messages, 10,000/10,000 deliveries, 0 duplicate frames, p95 fanout about 75ms. Watch item: high memory during stress, host peaked around 13 GiB used and app container around 5.4 GiB.
-
-**Real Failures / Blockers**
-- `event-editor/create-save-reopen`: saved event reopens without policy panel / persisted policies.
-  Artifact: `.e2e-artifacts/ui/event-editor/create-save-reopen/result.json`
-- `activities/rates-smart-list`: backend/rate state exists, but smart-list renders zero visible rate cards.
-  Artifact: `.e2e-artifacts/ui/activities/rates-smart-list/result.json`
-- Same two failures also exist in mobile artifacts.
-
-**Weird UI / Warnings**
-- Asset/resource lifecycle:
-  - newly saved owned asset does not appear in smart list until reopening
-  - asset requests panel does not surface sub-event assignment
-  - Angular `NG0100` in `EventResourcePopupComponent`
-  Artifacts: `.e2e-artifacts/ui/assets/resource-lifecycle/result.json`, `.e2e-artifacts/ui-mobile/assets/resource-lifecycle/result.json`
-- Three-dot action menus can be visually detached, especially mobile asset/resource/event cards.
-- Mobile event explore detail: order/view labels did not visibly update to `Nearby` / `Distance`.
-- Profile media editor logs Angular `NG0955` duplicate-key warnings for empty image slots.
-- Entry demo selector and privacy/location mobile flows logged `NG0100`; some of this may be affected by the later entry/bootstrap changes, so rerun before fixing.
-
-Best handoff starting point:
-1. Fix event policy persistence.
-2. Fix rates smart-list empty render.
-3. Fix asset/resource request visibility and `EventResourcePopupComponent NG0100`.
-4. Then rerun UI desktop/mobile suites and update `.e2e-artifacts/*`.

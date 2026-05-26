@@ -59,6 +59,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -2402,6 +2403,7 @@ public class ActivitiesEventsService {
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
                 clonePricing(record.getPricing()),
+                clonePolicies(record.getPolicies()),
                 Boolean.TRUE.equals(record.getSlotsEnabled()),
                 cloneSlotTemplates(record.getSlotTemplates()),
                 safeText(record.getParentEventId()),
@@ -2886,6 +2888,9 @@ public class ActivitiesEventsService {
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
+        document.setPolicies(publishedManageMode
+                ? clonePolicies(existing == null ? null : existing.getPolicies())
+                : clonePolicies(request.policies()));
         boolean slotsEnabled = publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
                 : !slotEvent && !"One-time".equals(normalizedFrequency);
@@ -3464,6 +3469,7 @@ public class ActivitiesEventsService {
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
         clone.setPricing(clonePricing(source.getPricing()));
+        clone.setPolicies(clonePolicies(source.getPolicies()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
         clone.setLocationGeo(cloneGeoPoint(source.getLocationGeo()));
         return clone;
@@ -3828,6 +3834,34 @@ public class ActivitiesEventsService {
 
     private PricingConfigDto clonePricing(PricingConfigDto pricing) {
         return pricing;
+    }
+
+    private List<PolicyItemDto> clonePolicies(List<PolicyItemDto> policies) {
+        if (policies == null) {
+            return new ArrayList<>();
+        }
+        List<PolicyItemDto> normalized = new ArrayList<>();
+        for (int index = 0; index < policies.size(); index += 1) {
+            PolicyItemDto policy = policies.get(index);
+            if (policy == null) {
+                continue;
+            }
+            String title = safeText(policy.title());
+            String description = safeText(policy.description());
+            if (!StringUtils.hasText(title) && !StringUtils.hasText(description)) {
+                continue;
+            }
+            String id = safeText(policy.id());
+            if (!StringUtils.hasText(id)) {
+                id = "policy-" + (index + 1);
+            }
+            normalized.add(new PolicyItemDto(
+                    id,
+                    StringUtils.hasText(title) ? title : "Policy " + (index + 1),
+                    description,
+                    !Boolean.FALSE.equals(policy.required())));
+        }
+        return normalized;
     }
 
     private boolean isGeneratedSlotRecord(ActivityEvent record) {
