@@ -4,8 +4,6 @@ landing site,
 
 affinity graph view e2e test
 
-affinity recompute (mongo change stream???)
-
 vmware install - dpkg check
 
 MongoDB features:
