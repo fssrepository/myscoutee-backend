@@ -1,6 +1,5 @@
 package com.raxim.myscoutee.profile.service;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -15,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriUtils;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
@@ -63,7 +61,6 @@ public class IdeaPostsService {
     }
 
     public List<IdeaPostDto> publicPosts(String lang, String acceptLanguage) {
-        ensureSeeded();
         String language = requestContentLang(lang, acceptLanguage);
         List<IdeaPost> posts = ideaPostsRepository.findByPublishedTrueAndLangOrderBySubmittedAtIsoDesc(language);
         if (posts.isEmpty() && !DEFAULT_LANG.equals(language)) {
@@ -81,7 +78,6 @@ public class IdeaPostsService {
 
     public List<IdeaPostDto> adminPosts(String adminUserId, String lang) {
         ensureAdmin(adminUserId);
-        ensureSeeded();
         return ideaPostsRepository.findAllByLangOrderBySubmittedAtIsoDesc(contentLang(lang)).stream()
                 .map(this::toDto)
                 .toList();
@@ -89,7 +85,6 @@ public class IdeaPostsService {
 
     public IdeaPostDto savePost(IdeaPostSaveRequestDto request) {
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
-        ensureSeeded();
         String normalizedId = normalize(request == null ? null : request.id());
         String language = contentLang(request == null ? null : request.lang());
         String requestedContentKey = normalize(request == null ? null : request.contentKey());
@@ -177,298 +172,6 @@ public class IdeaPostsService {
         IdeaPost saved = ideaPostsRepository.save(post);
         adminTelemetryService.record("article.restored", "content", saved.getId(), actorUserId);
         return toDto(saved);
-    }
-
-    private void ensureSeeded() {
-        List<IdeaPost> current = ideaPostsRepository.findAll();
-        List<IdeaPost> defaults = defaultPosts();
-        java.util.Map<String, IdeaPost> defaultById = defaults.stream()
-                .collect(java.util.stream.Collectors.toMap(IdeaPost::getId, post -> post));
-        boolean changed = false;
-        for (IdeaPost post : current) {
-            String language = contentLang(post.getLang());
-            String contentKey = contentKeyFromId(post.getId());
-            IdeaPost seedPost = defaultById.get(post.getId());
-            if (!StringUtils.hasText(post.getLang())) {
-                post.setLang(language);
-                changed = true;
-            }
-            if (!languageLabel(language).equals(post.getLanguageLabel())) {
-                post.setLanguageLabel(languageLabel(language));
-                changed = true;
-            }
-            if (!StringUtils.hasText(post.getContentKey()) && StringUtils.hasText(contentKey)) {
-                post.setContentKey(contentKey);
-                changed = true;
-            }
-            if (seedPost != null && shouldRefreshSeedImage(post, seedPost)) {
-                String previousImageUrl = normalize(post.getImageUrl());
-                post.setImageUrl(seedPost.getImageUrl());
-                post.setImageUrls(seedPost.getImageUrls());
-                if (StringUtils.hasText(previousImageUrl)) {
-                    post.setContentHtml(normalize(post.getContentHtml()).replace(previousImageUrl, seedPost.getImageUrl()));
-                }
-                changed = true;
-            }
-        }
-        if (changed) {
-            ideaPostsRepository.saveAll(current);
-        }
-        Set<String> currentIds = current.stream()
-                .map(IdeaPost::getId)
-                .collect(java.util.stream.Collectors.toSet());
-        List<IdeaPost> missing = defaults.stream()
-                .filter(post -> !currentIds.contains(post.getId()))
-                .toList();
-        if (!missing.isEmpty()) {
-            ideaPostsRepository.saveAll(missing);
-        }
-    }
-
-    private List<IdeaPost> defaultPosts() {
-        return List.of(
-                defaultPost(
-                        "idea-why-priority-matching",
-                        "en",
-                        "Why priority matching feels calmer than swiping",
-                        "MyScoutee starts with intent, context, and real plans instead of an endless yes/no loop.",
-                        """
-                        <p><strong>Most dating apps optimize for quick reactions. MyScoutee is built for decisions that can become real plans.</strong></p>
-                        <p>Members can express priority instead of only swiping yes or no, so interest has more texture and the next step can be clearer.</p>
-                        <p>That makes the product feel less like a slot machine and more like a social planning tool.</p>
-                        <ul>
-                          <li>Priority scores communicate stronger intent.</li>
-                          <li>Context helps people understand why a match makes sense.</li>
-                          <li>Events give the connection a natural next step.</li>
-                        </ul>
-                        """,
-                        true,
-                        "2026-04-29T10:00:00.000Z"),
-                defaultPost(
-                        "idea-social-first-dating",
-                        "en",
-                        "From lonely browsing to social-first meeting",
-                        "Groups, hosts, and event context make introductions feel more natural and lower-pressure.",
-                        """
-                        <p>MyScoutee is useful when someone wants to meet people without making every conversation feel like an interview.</p>
-                        <p>A hosted activity creates shared context before the first message, which makes the first interaction easier to start and easier to trust.</p>
-                        <figure>
-                          <img src="@image_url" alt="People joining a social event">
-                          <figcaption>Shared plans give people something real to react to.</figcaption>
-                        </figure>
-                        """,
-                        true,
-                        "2026-04-24T12:30:00.000Z"),
-                defaultPost(
-                        "idea-host-use-case",
-                        "en",
-                        "Use case: host a small event and let the right people join",
-                        "Hosts can describe the plan, capacity, resources, and tone before inviting or approving members.",
-                        """
-                        <p>A host can create a small plan, split it into optional parts, and keep logistics visible from the start.</p>
-                        <p>Instead of managing scattered messages, the event can carry details like time, capacity, resources, members, and chat context.</p>
-                        <ul>
-                          <li>Great for brunches, walks, games, sport sessions, or low-pressure meetups.</li>
-                          <li>Useful when the host wants a specific vibe and group size.</li>
-                          <li>Clearer than posting a vague invitation into a generic feed.</li>
-                        </ul>
-                        """,
-                        true,
-                        "2026-04-20T09:15:00.000Z"),
-                defaultPost(
-                        "idea-trust-context",
-                        "en",
-                        "Trust grows faster when context stays attached",
-                        "Profiles, event history, feedback, and scoped chats help people understand who they are meeting.",
-                        """
-                        <p>Trust is easier when the product keeps context visible. A person is not only a photo; they are also how they join, host, communicate, and follow through.</p>
-                        <p>MyScoutee can connect profile signals, event participation, feedback, and scoped chats so users do not have to guess from one empty message thread.</p>
-                        """,
-                        true,
-                        "2026-04-16T16:45:00.000Z"),
-                defaultPost(
-                        "idea-register-value",
-                        "en",
-                        "What viewers unlock when they register",
-                        "Registration turns a static landing page into matching, event discovery, hosting, chat, and feedback.",
-                        """
-                        <p>Visitors can understand the idea from the landing page, but the value starts once they register and build a profile.</p>
-                        <p>From there, MyScoutee can show relevant people, support event invitations, coordinate in chats, and learn from feedback after real social activity.</p>
-                        <ul>
-                          <li>Discover people through priorities and activities.</li>
-                          <li>Join or host plans with clearer expectations.</li>
-                          <li>Use feedback to make the next match or event better.</li>
-                        </ul>
-                        """,
-                        false,
-                        "2026-04-11T13:20:00.000Z"),
-                defaultPost(
-                        "idea-why-priority-matching-hu",
-                        "hu",
-                        "Miért nyugodtabb a preferenciaalapú párosítás, mint a swipe-olás",
-                        "A MyScoutee szándékkal, kontextussal és valódi tervekkel indul a végtelen igen/nem kör helyett.",
-                        "<p><strong>A legtöbb társkereső gyors reakciókra optimalizál. A MyScoutee olyan döntésekre épül, amelyekből valódi tervek lehetnek.</strong></p><p>A tagok nem csak igent vagy nemet jeleznek, hanem prioritást is, így az érdeklődés árnyaltabb és a következő lépés tisztább.</p><ul><li>A prioritási pontszám erősebb szándékot mutat.</li><li>A kontextus segít megérteni, miért van értelme egy találatnak.</li><li>Az események természetes következő lépést adnak.</li></ul>",
-                        true,
-                        "2026-04-29T10:00:00.000Z"),
-                defaultPost(
-                        "idea-social-first-dating-hu",
-                        "hu",
-                        "Magányos böngészésből közösségi találkozás",
-                        "A csoportok, szervezők és eseménykontextus természetesebbé és kevésbé nyomasztóvá teszik a bemutatkozást.",
-                        "<p>A MyScoutee akkor hasznos, amikor valaki úgy szeretne emberekkel találkozni, hogy ne minden beszélgetés interjúnak érződjön.</p><p>Egy szervezett program már az első üzenet előtt közös kontextust ad.</p>",
-                        true,
-                        "2026-04-24T12:30:00.000Z"),
-                defaultPost(
-                        "idea-host-use-case-hu",
-                        "hu",
-                        "Példa: szervezz kis eseményt, és engedd csatlakozni a megfelelő embereket",
-                        "A szervezők még meghívás vagy jóváhagyás előtt leírhatják a tervet, létszámot, erőforrásokat és hangulatot.",
-                        "<p>A szervező létrehozhat egy kisebb tervet, opcionális részekre bonthatja, és a logisztikát már az elejétől láthatóvá teheti.</p><p>Szétszórt üzenetek helyett az esemény hordozza az időpontot, a létszámot, az erőforrásokat, a tagokat és a csevegési kontextust.</p>",
-                        true,
-                        "2026-04-20T09:15:00.000Z"),
-                defaultPost(
-                        "idea-trust-context-hu",
-                        "hu",
-                        "A bizalom gyorsabban nő, ha a kontextus megmarad",
-                        "A profilok, eseményelőzmények, visszajelzések és célzott csevegések segítenek megérteni, kivel találkozol.",
-                        "<p>A bizalom könnyebb, ha a termék láthatóan tartja a kontextust. Egy ember nem csak egy fotó: az is számít, hogyan csatlakozik, szervez, kommunikál és viszi végig a terveket.</p><p>A MyScoutee összekötheti a profiljelzéseket, az eseményrészvételt, a visszajelzést és a célzott csevegéseket.</p>",
-                        true,
-                        "2026-04-16T16:45:00.000Z"),
-                defaultPost(
-                        "idea-register-value-hu",
-                        "hu",
-                        "Mit nyit meg a regisztráció",
-                        "A regisztráció a statikus nyitólapból párosítást, eseményfelfedezést, szervezést, csevegést és visszajelzést csinál.",
-                        "<p>A látogatók a nyitólapon megérthetik az ötletet, de az érték akkor indul, amikor regisztrálnak és felépítik a profiljukat.</p><p>Innentől a MyScoutee releváns embereket mutathat, eseménymeghívásokat támogathat, csevegésekben koordinálhat, és tanulhat a valódi közösségi aktivitás utáni visszajelzésekből.</p>",
-                        false,
-                        "2026-04-11T13:20:00.000Z"));
-    }
-
-    private IdeaPost defaultPost(
-            String id,
-            String lang,
-            String title,
-            String excerpt,
-            String contentHtml,
-            boolean featured,
-            String submittedAtIso) {
-        IdeaPost post = new IdeaPost();
-        String nowIso = Instant.now().toString();
-        String imageUrl = seedImageUrl(id);
-        post.setId(id);
-        post.setContentKey(contentKeyFromId(id));
-        post.setLang(contentLang(lang));
-        post.setLanguageLabel(languageLabel(lang));
-        post.setTitle(title);
-        post.setExcerpt(excerpt);
-        post.setContentHtml(sanitizeHtml(contentHtml.replace("@image_url", imageUrl)));
-        post.setImageUrl(imageUrl);
-        post.setImageUrls(List.of(imageUrl));
-        post.setFeatured(featured);
-        post.setPublished(true);
-        post.setTrashed(false);
-        post.setTrashedAtIso(null);
-        post.setTrashedByUserId(null);
-        post.setSubmittedAtIso(submittedAtIso);
-        post.setCreatedDate(nowIso);
-        post.setCreatedUser("system");
-        post.setUpdatedDate(nowIso);
-        post.setUpdatedUser("system");
-        return post;
-    }
-
-    private String seedImageUrl(String postId) {
-        String svg = seedImageSvg(postId);
-        return "data:image/svg+xml;charset=UTF-8," + UriUtils.encode(svg, StandardCharsets.UTF_8);
-    }
-
-    private boolean shouldRefreshSeedImage(IdeaPost post, IdeaPost seedPost) {
-        String seedImageUrl = normalize(seedPost.getImageUrl());
-        if (!StringUtils.hasText(seedImageUrl)) {
-            return false;
-        }
-        String currentImageUrl = normalize(post.getImageUrl());
-        if (!StringUtils.hasText(currentImageUrl)) {
-            return true;
-        }
-        if (seedImageUrl.equals(currentImageUrl)) {
-            return post.getImageUrls() == null || !post.getImageUrls().contains(seedImageUrl);
-        }
-        return isManagedSeedImageUrl(post.getId(), currentImageUrl);
-    }
-
-    private boolean isManagedSeedImageUrl(String postId, String imageUrl) {
-        String normalized = normalize(imageUrl);
-        if (normalized.startsWith("data:image/svg+xml")) {
-            return true;
-        }
-        String decoded = decodeUrl(normalized);
-        return decoded.contains("/media/public")
-                && decoded.contains("key=idea/system/" + normalize(postId) + "/");
-    }
-
-    private String decodeUrl(String value) {
-        try {
-            return UriUtils.decode(normalize(value), StandardCharsets.UTF_8);
-        } catch (RuntimeException ex) {
-            return normalize(value);
-        }
-    }
-
-    private String seedImageSvg(String postId) {
-        int tone = Math.abs(postId.hashCode()) % 5;
-        String[][] palettes = {
-                { "#eff6ff", "#6e8fc1", "#f1b66d", "#173456" },
-                { "#f4fbf5", "#6aa98a", "#d9a652", "#1f3d34" },
-                { "#fff7f0", "#c98256", "#7aa4c7", "#263b56" },
-                { "#f7f2ff", "#8d78b8", "#e7b36d", "#21314c" },
-                { "#f3f7f8", "#658aa3", "#d3a871", "#1d3442" }
-        };
-        String[] palette = palettes[tone];
-        return """
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img">
-                  <defs>
-                    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stop-color="%s"/>
-                      <stop offset="0.56" stop-color="#ffffff"/>
-                      <stop offset="1" stop-color="%s"/>
-                    </linearGradient>
-                    <filter id="soft" x="-20%%" y="-20%%" width="140%%" height="140%%">
-                      <feGaussianBlur stdDeviation="24"/>
-                    </filter>
-                  </defs>
-                  <rect width="1200" height="700" fill="url(#sky)"/>
-                  <g filter="url(#soft)" opacity="0.78">
-                    <circle cx="240" cy="170" r="132" fill="%s"/>
-                    <circle cx="930" cy="190" r="150" fill="%s"/>
-                    <rect x="615" y="310" width="380" height="210" rx="34" fill="%s" opacity="0.45"/>
-                  </g>
-                  <rect x="0" y="475" width="1200" height="225" fill="#ffffff" opacity="0.62"/>
-                  <rect x="105" y="150" width="390" height="285" rx="28" fill="#ffffff" opacity="0.74"/>
-                  <rect x="145" y="192" width="310" height="22" rx="11" fill="%s" opacity="0.22"/>
-                  <rect x="145" y="238" width="260" height="18" rx="9" fill="%s" opacity="0.18"/>
-                  <rect x="145" y="284" width="185" height="18" rx="9" fill="%s" opacity="0.16"/>
-                  <circle cx="792" cy="285" r="54" fill="%s" opacity="0.7"/>
-                  <circle cx="910" cy="312" r="48" fill="%s" opacity="0.52"/>
-                  <circle cx="690" cy="322" r="42" fill="%s" opacity="0.48"/>
-                  <path d="M640 520c46-85 230-94 320 0" fill="%s" opacity="0.22"/>
-                  <path d="M112 550c145-42 295-44 454-2 162 43 332 42 520-6" fill="none" stroke="%s" stroke-width="18" opacity="0.18"/>
-                  <rect x="0" y="0" width="1200" height="700" fill="#0a1726" opacity="0.02"/>
-                </svg>
-                """.formatted(
-                palette[0],
-                palette[1],
-                palette[2],
-                palette[1],
-                palette[2],
-                palette[3],
-                palette[3],
-                palette[3],
-                palette[1],
-                palette[2],
-                palette[3],
-                palette[3],
-                palette[3]);
     }
 
     private IdeaPostDto toDto(IdeaPost post) {

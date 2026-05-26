@@ -1,30 +1,6 @@
-landing site, 
-1) version number + Preview Version badge at top (so everybody should see that it non-production)
-2) article should get better explanations (longer)
-
 affinity graph view e2e test
 
 vmware install - dpkg check
-
-MongoDB features:
------------------
-
-Change Streams
-A MongoDB feature where the app listens to DB changes in real time.
-Example: “when a chat message document is inserted, push it to websocket”.
-
-Vector Search
-Used for semantic / AI-style search.
-Example: store embeddings for users/events/assets, then ask “find similar profiles/events”.
-
-Time Series
-MongoDB collection type optimized for timestamped measurements.
-Example: CPU metrics, event telemetry, sensor data, request latency logs.
-
-Atlas Search
-MongoDB’s advanced full-text search product, mainly tied to MongoDB Atlas.
-Example: fuzzy search, autocomplete, relevance scoring.
---------------------------------------------------------------------------------------
 
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
@@ -81,53 +57,3 @@ Best handoff starting point:
 2. Fix rates smart-list empty render.
 3. Fix asset/resource request visibility and `EventResourcePopupComponent NG0100`.
 4. Then rerun UI desktop/mobile suites and update `.e2e-artifacts/*`.
-
-----change stream introduction----
-**Short Answer**
-Yes, change streams can improve speed in a few places, but not everywhere. They are best where you currently poll Mongo just to notice “something changed.” They will not fix request-time `findAll()` + in-memory filtering, and they do not replace timers for future due dates.
-
-Also: your current prod Mongo compose is not change-stream-ready because replica set startup is commented out in [docker-compose-prod.yml](/home/raxim/workspace/myscoutee-backend/server/docker-compose-prod.yml:66). Mongo change streams require a replica set or sharded cluster.
-
-**Best Candidates**
-
-| Area | Current Pattern | Change Streams Help? | Better First Move |
-|---|---|---:|---|
-| Affinity recompute | queued Mongo tasks, worker polling/gated | High | Hybrid change-stream wakeup + fallback timer |
-| Notification outbox | Mongo outbox + Redis wakeup polling | Medium/low | Make Redis wakeup blocking before Mongo change streams |
-| Scheduled messages | local scheduler + 30 min recovery poll | Low/medium | Keep timer; optional change stream for multi-node wakeup |
-| Event stage scheduler | time-based scan / `findAll()` style logic | Low | Indexed due tasks, not change streams |
-| Event explore / smart lists | request-time materialization/filter/sort | Indirect only | Push query/sort to Mongo or maintain read-models |
-| Chat live delivery | Redis stream consumer already | Low | Keep Redis, tune block/batch/consumer logic |
-| Admin telemetry | Redis-stream window aggregation | Low | Windowing is intentional batching |
-
-**Where I’d Actually Use It**
-The strongest place is affinity recompute.
-
-Right now [AffinityRecomputeWorkerService.java](/home/raxim/workspace/myscoutee-backend/server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/AffinityRecomputeWorkerService.java:52) runs scheduled worker passes, and [AffinityRecomputeTaskService.java](/home/raxim/workspace/myscoutee-backend/server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/AffinityRecomputeTaskService.java:142) reads due tasks. That is exactly the kind of “poll because maybe work exists” path where a change stream can reduce latency and empty reads.
-
-But it should be hybrid:
-
-1. Change stream watches `affinityRecomputeTasks` insert/update.
-2. If a task is already due, wake the existing worker immediately.
-3. If the task is future/debounced, keep a timer.
-4. Keep the scheduled poll as recovery.
-
-So change streams wake the system, but the existing leasing/idempotent worker still owns the real processing. That keeps behavior stable.
-
-**Where It Won’t Help Much**
-For chat, I would not move to Mongo change streams. [ChatStreamConsumer.java](/home/raxim/workspace/myscoutee-backend/server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/ChatStreamConsumer.java:121) already uses Redis stream blocking reads. That is closer to the right tool for live websocket fanout.
-
-For event scheduler jobs like [EventScheduler.java](/home/raxim/workspace/myscoutee-backend/server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/EventScheduler.java:192), change streams do not solve the main problem because “time passed” does not create a Mongo change. If a stage ends at 18:00, Mongo does not emit an event at 18:00 unless some document is written. That wants indexed due-task documents or a scheduler queue.
-
-For event explore, [ActivitiesEventsService.java](/home/raxim/workspace/myscoutee-backend/server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/ActivitiesEventsService.java:395) is more about request-time computation. Change streams only help if we use them to maintain a separate read model/cache. Otherwise the real speed improvement is query pushdown, indexes, pagination in Mongo, and avoiding big in-memory windows.
-
-**Important Warning**
-Change streams are not a job queue by themselves. You need:
-
-- replica set enabled
-- resume token persistence
-- idempotent handlers
-- fallback polling/rebuild path
-- timers for delayed work
-
-So I would not replace all polling blindly. I’d start with one controlled stream: affinity recompute task wakeup. Then measure before/after latency and Mongo read pressure.

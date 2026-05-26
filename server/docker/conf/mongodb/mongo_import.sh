@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -322,6 +322,24 @@ db.getCollection('eventFeedbackAnswers').createIndex({ syncKey: 1 }, { name: 'ev
 db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, cardId: 1 }, { name: 'event_feedback_answer_user_event_card', unique: true });
 db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_answer_user_event' });
 db.getCollection('eventFeedbackAnswers').createIndex({ targetUserId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_target_user_submitted' });
+" >/dev/null
+      ;;
+    ideaPosts)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('ideaPosts').createIndex({ contentKey: 1, lang: 1 }, { name: 'idea_post_content_lang', unique: true });
+db.getCollection('ideaPosts').createIndex({ lang: 1, submittedAtIso: -1 }, { name: 'idea_post_lang_submitted' });
+db.getCollection('ideaPosts').createIndex({ lang: 1, published: 1, submittedAtIso: -1 }, { name: 'idea_post_lang_published_submitted' });
+db.getCollection('ideaPosts').createIndex({ published: 1, submittedAtIso: -1 }, { name: 'idea_post_published_submitted' });
+db.getCollection('ideaPosts').createIndex({ featured: 1, published: 1, submittedAtIso: -1 }, { name: 'idea_post_featured_submitted' });
+db.getCollection('ideaPosts').createIndex({ trashed: 1, submittedAtIso: -1 }, { name: 'idea_post_trashed_submitted' });
 " >/dev/null
       ;;
     privacyConsents)

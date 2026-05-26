@@ -10,6 +10,7 @@ const requiredCollections = [
   'events',
   'eventFeedbackStates',
   'eventFeedbackAnswers',
+  'ideaPosts',
   'helpCenterRevisions',
   'helpCenterAudit',
   'privacyConsents',
@@ -309,6 +310,31 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.eventFeedbackAnswers.createIndex(
     { targetUserId: 1, submittedAtIso: -1 },
     { name: 'event_feedback_answer_target_user_submitted' }
+  );
+
+  portalDb.ideaPosts.createIndex(
+    { contentKey: 1, lang: 1 },
+    { name: 'idea_post_content_lang', unique: true }
+  );
+  portalDb.ideaPosts.createIndex(
+    { lang: 1, submittedAtIso: -1 },
+    { name: 'idea_post_lang_submitted' }
+  );
+  portalDb.ideaPosts.createIndex(
+    { lang: 1, published: 1, submittedAtIso: -1 },
+    { name: 'idea_post_lang_published_submitted' }
+  );
+  portalDb.ideaPosts.createIndex(
+    { published: 1, submittedAtIso: -1 },
+    { name: 'idea_post_published_submitted' }
+  );
+  portalDb.ideaPosts.createIndex(
+    { featured: 1, published: 1, submittedAtIso: -1 },
+    { name: 'idea_post_featured_submitted' }
+  );
+  portalDb.ideaPosts.createIndex(
+    { trashed: 1, submittedAtIso: -1 },
+    { name: 'idea_post_trashed_submitted' }
   );
 
   portalDb.privacyConsents.createIndex(
