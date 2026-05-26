@@ -340,6 +340,14 @@ export async function inspectInfoCardMenuAnchor(page, options = {}) {
     const triggerRect = trigger.rect;
     const cardRect = card.getBoundingClientRect();
     const menuRect = menu.getBoundingClientRect();
+    const rectToJson = rect => ({
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    });
     const triggerCenterX = triggerRect.left + triggerRect.width / 2;
     const menuCenterX = menuRect.left + menuRect.width / 2;
     const horizontalDrift = Math.abs(menuRect.right - triggerRect.right);
@@ -352,9 +360,9 @@ export async function inspectInfoCardMenuAnchor(page, options = {}) {
         : 0;
     return {
       found: true,
-      triggerRect,
-      cardRect,
-      menuRect,
+      triggerRect: rectToJson(triggerRect),
+      cardRect: rectToJson(cardRect),
+      menuRect: rectToJson(menuRect),
       horizontalDrift,
       verticalGap,
       opensUp,
