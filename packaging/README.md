@@ -85,6 +85,8 @@ myscoutee-nginx:1.0.0-base
 
 The Debian package installs a prepared bundle under `/opt/myscoutee`, with configuration under `/etc/myscoutee` and persistent data linked through `/var/lib/myscoutee`.
 
+On first install, `postinst` creates `/etc/myscoutee/myscoutee.secrets.env` with generated values for `MONGO_INITDB_ROOT_PASSWORD`, `MONGO_APP_PASSWORD`, and `MINIO_ROOT_PASSWORD`. Existing secrets files are never overwritten, so package upgrades do not rotate live database or object-store credentials by surprise.
+
 The package should avoid aggressive system upgrades. Server convenience tools should be installed only when missing, and only in the smallest useful set.
 
 Target helper tools:

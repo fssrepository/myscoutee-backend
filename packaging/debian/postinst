@@ -9,6 +9,45 @@ install -d -m 0755 /var/lib/myscoutee/data
 install -d -m 0755 /var/log/myscoutee
 install -d -m 0755 /var/backups/myscoutee
 
+generate_secret() {
+  if command -v openssl >/dev/null 2>&1; then
+    openssl rand -hex 32
+    return 0
+  fi
+
+  if [[ -r /dev/urandom ]]; then
+    LC_ALL=C od -An -N32 -tx1 /dev/urandom | tr -d ' \n'
+    return 0
+  fi
+
+  echo "Unable to generate production secrets: openssl is missing and /dev/urandom is unavailable." >&2
+  exit 1
+}
+
+install_generated_secrets_file() {
+  local target template tmp
+  local mongo_root_password mongo_app_password minio_root_password
+
+  target="/etc/myscoutee/myscoutee.secrets.env"
+  template="/opt/myscoutee/packaging/templates/myscoutee.secrets.env"
+
+  mongo_root_password="$(generate_secret)"
+  mongo_app_password="$(generate_secret)"
+  minio_root_password="$(generate_secret)"
+
+  tmp="$(mktemp "${target}.XXXXXX")"
+  chmod 0600 "${tmp}"
+
+  sed \
+    -e "s/^MONGO_INITDB_ROOT_PASSWORD=.*/MONGO_INITDB_ROOT_PASSWORD=${mongo_root_password}/" \
+    -e "s/^MONGO_APP_PASSWORD=.*/MONGO_APP_PASSWORD=${mongo_app_password}/" \
+    -e "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${minio_root_password}/" \
+    "${template}" > "${tmp}"
+
+  install -m 0600 "${tmp}" "${target}"
+  rm -f "${tmp}"
+}
+
 if [[ ! -f /etc/myscoutee/myscoutee.env ]]; then
   install -m 0644 /opt/myscoutee/packaging/templates/myscoutee.env /etc/myscoutee/myscoutee.env
 fi
@@ -30,7 +69,7 @@ EOF
 fi
 
 if [[ ! -f /etc/myscoutee/myscoutee.secrets.env ]]; then
-  install -m 0600 /opt/myscoutee/packaging/templates/myscoutee.secrets.env /etc/myscoutee/myscoutee.secrets.env
+  install_generated_secrets_file
 fi
 
 ln -sfn /etc/myscoutee/myscoutee.env /opt/myscoutee/server/.env
@@ -69,7 +108,7 @@ MyScoutee is installed.
 
 Before first start:
   1. Edit /etc/myscoutee/myscoutee.env
-  2. Edit /etc/myscoutee/myscoutee.secrets.env
+  2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)
   3. Add /opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json if Firebase is enabled
   4. Run: systemctl start myscoutee
 MESSAGE
