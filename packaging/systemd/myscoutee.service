@@ -9,8 +9,8 @@ Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/opt/myscoutee/server
 EnvironmentFile=-/etc/myscoutee/myscoutee.env
-ExecStart=/usr/bin/docker compose -f docker-compose-prod.yml up -d
-ExecStop=/usr/bin/docker compose -f docker-compose-prod.yml down
+ExecStart=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh up -d
+ExecStop=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh down
 TimeoutStartSec=0
 
 [Install]

@@ -39,6 +39,18 @@ BUILD_ARTIFACTS=false PACKAGE_IMAGES=false bash packaging/scripts/package-produc
 
 `package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images. Set `PACKAGE_OFFICIAL_IMAGES=true` to also include MongoDB, Redis, and MinIO image archives for a larger, more offline-friendly bundle.
 
+## Optional Mongo Change Streams
+
+Affinity recompute change-stream wakeups are disabled by default. The normal polling worker still runs if you do nothing.
+
+To enable them on a VPS package install, edit `/etc/myscoutee/myscoutee.env` before `systemctl start myscoutee`:
+
+```bash
+MONGO_REPLICA_SET_ENABLED=true
+```
+
+When that flag is true, systemd uses `/opt/myscoutee/server/docker-compose.replicaset.yml`, starts Mongo as a single-node replica set, initializes it as `rs0`, and passes `MONGODB_REPLICA_SET=rs0` to the backend. You can override the set name with `MONGO_REPLICA_SET_NAME`, but `rs0` is the expected default.
+
 `restore-production.sh` is intentionally guarded:
 
 ```bash

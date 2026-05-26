@@ -38,6 +38,7 @@ import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.AdminMonitoringService;
 import com.raxim.myscoutee.profile.service.AdminParamsService;
 import com.raxim.myscoutee.profile.service.AdminStatsService;
+import com.raxim.myscoutee.profile.service.AffinityRecomputeMetricsService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 import com.raxim.myscoutee.profile.service.IdeaPostsService;
 import com.raxim.myscoutee.profile.service.notifications.AdminNotificationService;
@@ -55,6 +56,7 @@ public class AdminController {
     private final AdminParamsService adminParamsService;
     private final AdminMonitoringService adminMonitoringService;
     private final AdminAffinityGraphService adminAffinityGraphService;
+    private final AffinityRecomputeMetricsService affinityRecomputeMetricsService;
 
     public AdminController(
             AdminModerationService adminModerationService,
@@ -64,7 +66,8 @@ public class AdminController {
             AdminStatsService adminStatsService,
             AdminParamsService adminParamsService,
             AdminMonitoringService adminMonitoringService,
-            AdminAffinityGraphService adminAffinityGraphService) {
+            AdminAffinityGraphService adminAffinityGraphService,
+            AffinityRecomputeMetricsService affinityRecomputeMetricsService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
@@ -73,6 +76,7 @@ public class AdminController {
         this.adminParamsService = adminParamsService;
         this.adminMonitoringService = adminMonitoringService;
         this.adminAffinityGraphService = adminAffinityGraphService;
+        this.affinityRecomputeMetricsService = affinityRecomputeMetricsService;
     }
 
     @GetMapping("/dashboard")
@@ -88,6 +92,11 @@ public class AdminController {
     @GetMapping("/monitoring")
     public AdminMonitoringStateDto monitoring(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
         return adminMonitoringService.state(adminUserId);
+    }
+
+    @GetMapping("/affinity-recompute/metrics")
+    public AffinityRecomputeMetricsService.Snapshot affinityRecomputeMetrics() {
+        return affinityRecomputeMetricsService.snapshot();
     }
 
     @GetMapping("/affinity-graph/full")

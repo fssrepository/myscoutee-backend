@@ -1,0 +1,15 @@
+# Optional Mongo replica-set override for production features that need change streams.
+
+services:
+  mongodb:
+    command: ["--bind_ip_all", "--replSet", "${MONGO_REPLICA_SET_NAME:-rs0}"]
+    environment:
+      MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME:-rs0}
+      MONGO_REPLICA_SET_HOST: ${MONGO_REPLICA_SET_HOST:-mongodb:27017}
+
+  profilemanagement:
+    environment:
+      MONGODB_REPLICA_SET: ${MONGO_REPLICA_SET_NAME:-rs0}
+      AFFINITY_RECOMPUTE_ENABLED: ${AFFINITY_RECOMPUTE_ENABLED:-true}
+      AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:-true}
+      AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:-true}

@@ -1,10 +1,10 @@
 landing site, 
-1) version nuber + Preview Version badge at top (so everybody should see that it non-production)
+1) version number + Preview Version badge at top (so everybody should see that it non-production)
 2) article should get better explanations (longer)
 
 affinity graph view e2e test
 
-affinity recompute (mongo chnage stream???)
+affinity recompute (mongo change stream???)
 
 vmware install - dpkg check
 

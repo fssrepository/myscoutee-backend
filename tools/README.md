@@ -33,3 +33,8 @@ sudo nano /etc/myscoutee/myscoutee.env
 sudo nano /etc/myscoutee/myscoutee.secrets.env
 sudo systemctl start myscoutee
 sudo systemctl status myscoutee
+
+optional affinity change-stream wakeups
+---------------------------------------
+Set this in /etc/myscoutee/myscoutee.env before start:
+MONGO_REPLICA_SET_ENABLED=true

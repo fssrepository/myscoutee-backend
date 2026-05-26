@@ -27,6 +27,7 @@ import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.AdminMonitoringService;
 import com.raxim.myscoutee.profile.service.AdminParamsService;
 import com.raxim.myscoutee.profile.service.AdminStatsService;
+import com.raxim.myscoutee.profile.service.AffinityRecomputeMetricsService;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 import com.raxim.myscoutee.profile.service.IdeaPostsService;
 import com.raxim.myscoutee.profile.service.notifications.AdminNotificationService;
@@ -49,6 +50,8 @@ class AdminAffinityGraphControllerTest {
     private AdminMonitoringService adminMonitoringService;
     @Mock
     private AdminAffinityGraphService adminAffinityGraphService;
+    @Mock
+    private AffinityRecomputeMetricsService affinityRecomputeMetricsService;
 
     private MockMvc mockMvc;
 
@@ -63,7 +66,8 @@ class AdminAffinityGraphControllerTest {
                         adminStatsService,
                         adminParamsService,
                         adminMonitoringService,
-                        adminAffinityGraphService))
+                        adminAffinityGraphService,
+                        affinityRecomputeMetricsService))
                 .build();
     }
 

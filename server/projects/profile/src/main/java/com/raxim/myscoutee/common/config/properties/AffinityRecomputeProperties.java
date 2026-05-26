@@ -17,6 +17,10 @@ public class AffinityRecomputeProperties {
     private Duration assetRequestsChangedDebounce = Duration.ofMinutes(3);
     private Duration adminStatusChangedDebounce = Duration.ofMinutes(1);
     private Duration configChangedDebounce = Duration.ofMinutes(15);
+    private boolean changeStreamEnabled = false;
+    private boolean changeStreamFallbackPollEnabled = true;
+    private Duration changeStreamWakeupCoalesce = Duration.ofMillis(250);
+    private Duration changeStreamReconnectDelay = Duration.ofSeconds(5);
 
     public boolean isEnabled() {
         return enabled;
@@ -104,5 +108,41 @@ public class AffinityRecomputeProperties {
 
     public void setConfigChangedDebounce(Duration configChangedDebounce) {
         this.configChangedDebounce = configChangedDebounce == null ? Duration.ofMinutes(15) : configChangedDebounce;
+    }
+
+    public boolean isChangeStreamEnabled() {
+        return changeStreamEnabled;
+    }
+
+    public void setChangeStreamEnabled(boolean changeStreamEnabled) {
+        this.changeStreamEnabled = changeStreamEnabled;
+    }
+
+    public boolean isChangeStreamFallbackPollEnabled() {
+        return changeStreamFallbackPollEnabled;
+    }
+
+    public void setChangeStreamFallbackPollEnabled(boolean changeStreamFallbackPollEnabled) {
+        this.changeStreamFallbackPollEnabled = changeStreamFallbackPollEnabled;
+    }
+
+    public Duration getChangeStreamWakeupCoalesce() {
+        return changeStreamWakeupCoalesce;
+    }
+
+    public void setChangeStreamWakeupCoalesce(Duration changeStreamWakeupCoalesce) {
+        this.changeStreamWakeupCoalesce = changeStreamWakeupCoalesce == null
+                ? Duration.ofMillis(250)
+                : changeStreamWakeupCoalesce;
+    }
+
+    public Duration getChangeStreamReconnectDelay() {
+        return changeStreamReconnectDelay;
+    }
+
+    public void setChangeStreamReconnectDelay(Duration changeStreamReconnectDelay) {
+        this.changeStreamReconnectDelay = changeStreamReconnectDelay == null
+                ? Duration.ofSeconds(5)
+                : changeStreamReconnectDelay;
     }
 }

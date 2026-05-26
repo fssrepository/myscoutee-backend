@@ -13,6 +13,22 @@ if [[ ! -f /etc/myscoutee/myscoutee.env ]]; then
   install -m 0644 /opt/myscoutee/packaging/templates/myscoutee.env /etc/myscoutee/myscoutee.env
 fi
 
+if ! grep -q '^[[:space:]]*MONGO_REPLICA_SET_ENABLED=' /etc/myscoutee/myscoutee.env; then
+  cat >> /etc/myscoutee/myscoutee.env <<'EOF'
+
+# Optional: enable this for Mongo change streams. When true, systemd adds
+# docker-compose.replicaset.yml and the affinity recompute worker uses
+# change-stream wakeups with polling still kept as recovery.
+MONGO_REPLICA_SET_ENABLED=false
+MONGO_REPLICA_SET_NAME=rs0
+MONGO_REPLICA_SET_HOST=mongodb:27017
+MONGO_REPLICA_SET_INIT_RETRIES=60
+MONGO_REPLICA_SET_INIT_DELAY_SECONDS=2
+AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED=
+AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED=true
+EOF
+fi
+
 if [[ ! -f /etc/myscoutee/myscoutee.secrets.env ]]; then
   install -m 0600 /opt/myscoutee/packaging/templates/myscoutee.secrets.env /etc/myscoutee/myscoutee.secrets.env
 fi

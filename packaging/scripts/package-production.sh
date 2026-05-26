@@ -44,6 +44,7 @@ install -m 0755 "${REPO_ROOT}/packaging/debian/prerm" "${STAGING_DIR}/DEBIAN/pre
 install -m 0755 "${REPO_ROOT}/packaging/debian/postrm" "${STAGING_DIR}/DEBIAN/postrm"
 
 install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
+install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose.replicaset.yml"
 cp -a "${SERVER_DIR}/docker/conf/mongodb" "${STAGING_DIR}/opt/myscoutee/server/docker/conf/"
 cp -a "${SERVER_DIR}/docker/scripts/." "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"

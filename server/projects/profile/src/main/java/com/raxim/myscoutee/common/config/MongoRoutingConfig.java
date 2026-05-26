@@ -26,10 +26,11 @@ public class MongoRoutingConfig {
             @Value("${spring.mongodb.port:${MONGODB_PORT:27017}}") Integer port,
             @Value("${spring.mongodb.username:${MONGODB_USERNAME:${MONGO_APP_USERNAME:guest}}}") String username,
             @Value("${spring.mongodb.password:${MONGODB_PASSWORD:${MONGO_APP_PASSWORD:guest}}}") String password,
-            @Value("${spring.mongodb.database:${MONGODB_DATABASE:demo_db}}") String database) {
+            @Value("${spring.mongodb.database:${MONGODB_DATABASE:demo_db}}") String database,
+            @Value("${MONGODB_REPLICA_SET:}") String replicaSet) {
         String realMongoUri = StringUtils.hasText(springMongoUri)
                 ? springMongoUri.trim()
-                : buildMongoUri(host, port, username, password, database);
+                : buildMongoUri(host, port, username, password, database, replicaSet);
         return MongoClients.create(realMongoUri);
     }
 
@@ -40,10 +41,11 @@ public class MongoRoutingConfig {
             @Value("${spring.mongodb.port:${MONGODB_PORT:27017}}") Integer port,
             @Value("${spring.mongodb.username:${MONGODB_USERNAME:${MONGO_APP_USERNAME:guest}}}") String username,
             @Value("${spring.mongodb.password:${MONGODB_PASSWORD:${MONGO_APP_PASSWORD:guest}}}") String password,
-            @Value("${MONGODB_DEMO_DATABASE:${spring.mongodb.database:${MONGODB_DATABASE:demo_db}}}") String demoDatabase) {
+            @Value("${MONGODB_DEMO_DATABASE:${spring.mongodb.database:${MONGODB_DATABASE:demo_db}}}") String demoDatabase,
+            @Value("${MONGODB_REPLICA_SET:}") String replicaSet) {
         String resolvedDemoMongoUri = StringUtils.hasText(demoMongoUri)
                 ? demoMongoUri.trim()
-                : buildMongoUri(host, port, username, password, demoDatabase);
+                : buildMongoUri(host, port, username, password, demoDatabase, replicaSet);
         return MongoClients.create(resolvedDemoMongoUri);
     }
 
@@ -74,11 +76,12 @@ public class MongoRoutingConfig {
             Integer port,
             String username,
             String password,
-            String database) {
+            String database,
+            String replicaSet) {
         String normalizedHost = StringUtils.hasText(host) ? host.trim() : "localhost";
         int normalizedPort = port == null || port.intValue() <= 0 ? 27017 : port.intValue();
         String normalizedDatabase = StringUtils.hasText(database) ? database.trim() : "demo_db";
-        return "mongodb://"
+        String uri = "mongodb://"
                 + encodeUriComponent(defaultIfBlank(username, "guest"))
                 + ":"
                 + encodeUriComponent(defaultIfBlank(password, "guest"))
@@ -90,6 +93,10 @@ public class MongoRoutingConfig {
                 + encodeUriComponent(normalizedDatabase)
                 + "?authSource="
                 + encodeUriComponent(normalizedDatabase);
+        if (StringUtils.hasText(replicaSet)) {
+            uri += "&replicaSet=" + encodeUriComponent(replicaSet.trim());
+        }
+        return uri;
     }
 
     private String defaultIfBlank(String value, String fallback) {
