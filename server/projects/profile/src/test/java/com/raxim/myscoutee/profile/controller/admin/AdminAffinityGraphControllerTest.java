@@ -73,8 +73,8 @@ class AdminAffinityGraphControllerTest {
                 .thenReturn(new AdminAffinityGraphDto("now", "http", "layout-1", List.of(), List.of()));
         when(adminAffinityGraphService.meta("admin-1", 0.2d, 1d))
                 .thenReturn(new AdminAffinityGraphMetaDto("now", "http", "layout-1", 3, 2, 1, 0, 6, 256, 1000, 5000, false));
-        when(adminAffinityGraphService.forests("admin-1", 0.2d, 1d))
-                .thenReturn(new AdminAffinityGraphForestsDto("now", "http", "layout-1", List.of()));
+        when(adminAffinityGraphService.forests("admin-1", 0.2d, 1d, 1, 20, 20))
+                .thenReturn(new AdminAffinityGraphForestsDto("now", "http", "layout-1", 40, 1, 2, 20, 20, List.of()));
         when(adminAffinityGraphService.tile("admin-1", "layout-1", 2, 1, 0, 0.2d, 1d, "c0"))
                 .thenReturn(new AdminAffinityGraphTileDto("now", "http", "layout-1", 2, 1, 0, 0, 0, false, List.of(), List.of()));
         when(adminAffinityGraphService.neighborhood("admin-1", "u1", 2, 0.2d, 1d))
@@ -97,7 +97,10 @@ class AdminAffinityGraphControllerTest {
         mockMvc.perform(get("/admin/affinity-graph/forests")
                         .param("adminUserId", "admin-1")
                         .param("minWeight", "0.2")
-                        .param("maxWeight", "1"))
+                        .param("maxWeight", "1")
+                        .param("forestLevel", "1")
+                        .param("limit", "20")
+                        .param("offset", "20"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.layoutVersion").value("layout-1"));
         mockMvc.perform(get("/admin/affinity-graph/tiles")
@@ -125,7 +128,7 @@ class AdminAffinityGraphControllerTest {
 
         verify(adminAffinityGraphService).full("admin-1", 0.2d, 1d);
         verify(adminAffinityGraphService).meta("admin-1", 0.2d, 1d);
-        verify(adminAffinityGraphService).forests("admin-1", 0.2d, 1d);
+        verify(adminAffinityGraphService).forests("admin-1", 0.2d, 1d, 1, 20, 20);
         verify(adminAffinityGraphService).tile("admin-1", "layout-1", 2, 1, 0, 0.2d, 1d, "c0");
         verify(adminAffinityGraphService).neighborhood("admin-1", "u1", 2, 0.2d, 1d);
         verify(adminAffinityGraphService).rebuildLayout("admin-1");

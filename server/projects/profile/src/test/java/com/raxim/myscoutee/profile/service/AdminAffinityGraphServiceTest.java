@@ -13,12 +13,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
+import com.raxim.myscoutee.profile.data.document.AdminAffinityGraphEdge;
+import com.raxim.myscoutee.profile.data.document.AdminAffinityGraphForest;
+import com.raxim.myscoutee.profile.data.document.AdminAffinityGraphLayout;
+import com.raxim.myscoutee.profile.data.document.AdminAffinityGraphNode;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphForestsDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphMetaDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphNeighborhoodDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminAffinityGraphTileDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.AdminAffinityGraphEdgesRepository;
 import com.raxim.myscoutee.profile.repository.AdminAffinityGraphForestsRepository;
@@ -130,6 +137,85 @@ class AdminAffinityGraphServiceTest {
         assertThat(tile.edges()).hasSize(2);
     }
 
+    @Test
+    void forestsPageLiveComponentsWithoutDroppingIsolatedMembers() {
+        when(usersRepository.findAll()).thenReturn(List.of(
+                user("u1", "Ava", "woman", "public"),
+                user("u2", "Ben", "man", "public"),
+                user("u3", "Chloe", "woman", "public"),
+                user("u4", "Drew", "man", "public"),
+                user("u5", "Eli", "man", "public"),
+                user("u6", "Finn", "man", "public")));
+        when(userAffinityEdgesRepository.findAll()).thenReturn(List.of(
+                edge("u1", "u2", 0.9d),
+                edge("u1", "u3", 0.8d),
+                edge("u4", "u5", 0.7d)));
+
+        AdminAffinityGraphForestsDto forests = service.forests("admin-1", 0.2d, 1d, 0, 2, 0);
+
+        assertThat(forests.forestCount()).isEqualTo(3);
+        assertThat(forests.limit()).isEqualTo(2);
+        assertThat(forests.offset()).isZero();
+        assertThat(forests.forests()).hasSize(2);
+        assertThat(forests.forests().get(0).representativeUserId()).isEqualTo("u1");
+        assertThat(forests.forests().get(0).memberCount()).isEqualTo(3);
+        assertThat(forests.forests().get(0).edgeCount()).isEqualTo(2);
+        assertThat(forests.forests().get(1).memberCount()).isEqualTo(2);
+    }
+
+    @Test
+    void forestsUseMaterializedPagedRepositoryForDefaultWeightRange() {
+        AdminAffinityGraphLayout layout = layout("layout-1", 40, 39, 20, 3);
+        when(layoutsRepository.findFirstByOrderByGeneratedAtIsoDesc()).thenReturn(Optional.of(layout));
+        when(graphForestsRepository.countByLayoutVersion("layout-1")).thenReturn(40L);
+        when(graphForestsRepository.findByLayoutVersionOrderByMemberCountDesc("layout-1", PageRequest.of(1, 20)))
+                .thenReturn(List.of(forest("c20", "u20", "Uma", "woman", 7, 8, 30d)));
+
+        AdminAffinityGraphForestsDto forests = service.forests("admin-1", 0d, 1d, 1, 20, 20);
+
+        assertThat(forests.source()).isEqualTo("materialized");
+        assertThat(forests.layoutVersion()).isEqualTo("layout-1");
+        assertThat(forests.forestCount()).isEqualTo(40);
+        assertThat(forests.forestLevel()).isEqualTo(1);
+        assertThat(forests.maxForestLevel()).isEqualTo(2);
+        assertThat(forests.limit()).isEqualTo(20);
+        assertThat(forests.offset()).isEqualTo(20);
+        assertThat(forests.forests()).extracting("componentId").containsExactly("c20");
+    }
+
+    @Test
+    void materializedTileFiltersViewportByComponentAndWeightRange() {
+        AdminAffinityGraphLayout layout = layout("layout-1", 2, 1, 1, 0);
+        layout.setNodeRenderBudget(100);
+        layout.setEdgeRenderBudget(100);
+        when(layoutsRepository.findByLayoutVersion("layout-1")).thenReturn(Optional.of(layout));
+        when(graphNodesRepository.findByLayoutVersionAndComponentIdAndViewport(
+                "layout-1",
+                "c0",
+                -620d,
+                620d,
+                -620d,
+                620d))
+                        .thenReturn(List.of(
+                                graphNode("u2", "Ben", "man", "c0", 4d, 0d, 0.4d),
+                                graphNode("u1", "Ava", "woman", "c0", 0d, 0d, 0.9d)));
+        when(graphEdgesRepository.findRelevantByLayoutVersionAndUserIds("layout-1", List.of("u1", "u2")))
+                .thenReturn(List.of(
+                        graphEdge("u1", "u2", "c0", 0.75d),
+                        graphEdge("u1", "u3", "c0", 0.78d),
+                        graphEdge("u1", "u2", "c1", 0.76d),
+                        graphEdge("u1", "u2", "c0", 0.4d)));
+
+        AdminAffinityGraphTileDto tile = service.tile("admin-1", "layout-1", 0, 0, 0, 0.7d, 0.8d, "c0");
+
+        assertThat(tile.source()).isEqualTo("materialized");
+        assertThat(tile.nodes()).extracting("id").containsExactly("u1", "u2");
+        assertThat(tile.edges()).hasSize(1);
+        assertThat(tile.edges().get(0).source()).isEqualTo("u1");
+        assertThat(tile.edges().get(0).target()).isEqualTo("u2");
+        assertThat(tile.edges().get(0).weight()).isEqualTo(0.75d);
+    }
+
     private Users user(String id, String name, String gender, String profileStatus) {
         Users user = new Users();
         user.setId(id);
@@ -146,6 +232,79 @@ class AdminAffinityGraphServiceTest {
         edge.setRightUserId(right);
         edge.setPairKey(left.compareTo(right) <= 0 ? left + ":" + right : right + ":" + left);
         edge.setEdgeWeight(weight);
+        edge.setAffinityScore(weight);
+        return edge;
+    }
+
+    private AdminAffinityGraphLayout layout(String version, int memberCount, int linkCount, int componentCount, int isolatedCount) {
+        AdminAffinityGraphLayout layout = new AdminAffinityGraphLayout();
+        layout.setLayoutVersion(version);
+        layout.setGeneratedAtIso("2026-05-26T00:00:00Z");
+        layout.setSource("materialized");
+        layout.setMemberCount(memberCount);
+        layout.setLinkCount(linkCount);
+        layout.setComponentCount(componentCount);
+        layout.setIsolatedCount(isolatedCount);
+        layout.setMaxZoom(6);
+        layout.setTileSize(256);
+        layout.setNodeRenderBudget(1000);
+        layout.setEdgeRenderBudget(5000);
+        return layout;
+    }
+
+    private AdminAffinityGraphForest forest(
+            String componentId,
+            String representativeUserId,
+            String representativeName,
+            String gender,
+            int memberCount,
+            int edgeCount,
+            double weightedDegree) {
+        AdminAffinityGraphForest forest = new AdminAffinityGraphForest();
+        forest.setComponentId(componentId);
+        forest.setRepresentativeUserId(representativeUserId);
+        forest.setRepresentativeName(representativeName);
+        forest.setRepresentativeInitials(representativeName.substring(0, 1));
+        forest.setGender(gender);
+        forest.setMemberCount(memberCount);
+        forest.setEdgeCount(edgeCount);
+        forest.setWeightedDegree(weightedDegree);
+        forest.setX(10d);
+        forest.setY(0d);
+        forest.setZ(20d);
+        forest.setRadius(12d);
+        return forest;
+    }
+
+    private AdminAffinityGraphNode graphNode(
+            String userId,
+            String name,
+            String gender,
+            String componentId,
+            double x,
+            double z,
+            double centrality) {
+        AdminAffinityGraphNode node = new AdminAffinityGraphNode();
+        node.setUserId(userId);
+        node.setName(name);
+        node.setInitials(name.substring(0, 1));
+        node.setGender(gender);
+        node.setComponentId(componentId);
+        node.setX(x);
+        node.setY(0d);
+        node.setZ(z);
+        node.setDegree(1);
+        node.setWeightedDegree(centrality);
+        node.setCentrality(centrality);
+        return node;
+    }
+
+    private AdminAffinityGraphEdge graphEdge(String source, String target, String componentId, double weight) {
+        AdminAffinityGraphEdge edge = new AdminAffinityGraphEdge();
+        edge.setSourceUserId(source);
+        edge.setTargetUserId(target);
+        edge.setComponentId(componentId);
+        edge.setWeight(weight);
         edge.setAffinityScore(weight);
         return edge;
     }
