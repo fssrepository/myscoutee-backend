@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -575,7 +575,9 @@ fi
 
 if [ "${MONGO_IMPORT_ALL_SEED_DATABASES:-false}" = "true" ]; then
   import_seed_directory "demo_db" "demo_db"
-  import_seed_directory "myscoutee_db" "myscoutee_db"
+  if [ "${db_name}" != "demo_db" ]; then
+    import_seed_directory "${db_name}" "${seed_dir_name}"
+  fi
   exit 0
 fi
 

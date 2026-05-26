@@ -16,7 +16,7 @@ config:
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:/run/secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}
   dev-user: ${DEV_USER:}
-  websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:https://myscoutee.com,https://www.myscoutee.com}
+  websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}
 
 assets:
   source-refresh:
@@ -86,7 +86,7 @@ spring:
     port: ${MONGODB_PORT:27017}
     username: ${MONGODB_USERNAME:${MONGO_APP_USERNAME:}}
     password: ${MONGODB_PASSWORD:${MONGO_APP_PASSWORD:}}
-    database: ${MONGODB_DATABASE:myscoutee_db}
+    database: ${MONGODB_DATABASE:production_db}
   data:
     redis:
       host: ${SPRING_DATA_REDIS_HOST:redis}

@@ -144,10 +144,43 @@ mongo_eval_app() {
     mongosh --quiet \
       --username "$MONGO_APP_USERNAME" \
       --password "$MONGO_APP_PASSWORD" \
-      --authenticationDatabase "${MONGO_APP_DATABASE:-myscoutee_db}" \
-      "${MONGO_APP_DATABASE:-myscoutee_db}" \
+      --authenticationDatabase "${MONGO_APP_DATABASE:-production_db}" \
+      "${MONGO_APP_DATABASE:-production_db}" \
       --eval "$MONGO_SMOKE_JS"
   '
+}
+
+mongo_count_root() {
+  local database="$1"
+  local collection="$2"
+  local filter="${3:-}"
+  if [[ -z "${filter}" ]]; then
+    filter="{}"
+  fi
+
+  [[ "${database}" =~ ^[A-Za-z0-9_-]+$ ]] || fail "unsafe Mongo database name: ${database}"
+  [[ "${collection}" =~ ^[A-Za-z0-9_-]+$ ]] || fail "unsafe Mongo collection name: ${collection}"
+
+  mongo_eval_root "print(db.getSiblingDB('${database}').getCollection('${collection}').countDocuments(${filter}));" \
+    | tail -n 1 \
+    | tr -d '\r'
+}
+
+require_count() {
+  local label="$1"
+  local database="$2"
+  local collection="$3"
+  local filter="${4:-}"
+  if [[ -z "${filter}" ]]; then
+    filter="{}"
+  fi
+  local count
+
+  count="$(mongo_count_root "${database}" "${collection}" "${filter}")"
+  if ! [[ "${count}" =~ ^[0-9]+$ ]] || (( count < 1 )); then
+    fail "${label} is missing from ${database}.${collection}"
+  fi
+  status_line ok "${label}: ${count}"
 }
 
 http_get() {
@@ -216,6 +249,19 @@ main() {
   fi
   status_line ok "Mongo featureCompatibilityVersion: ${fcv}"
 
+  local real_database demo_database
+  real_database="$(read_env_file_value MONGO_REAL_DATABASE "${ENV_FILE}" || true)"
+  real_database="${real_database:-production_db}"
+  demo_database="$(read_env_file_value MONGO_DEMO_DATABASE "${ENV_FILE}" || true)"
+  demo_database="${demo_database:-demo_db}"
+
+  require_count "production idea posts seed" "${real_database}" "ideaPosts"
+  require_count "production i18n seed" "${real_database}" "i18n_messages"
+  require_count "production privacy seed" "${real_database}" "helpCenterRevisions" '{"documentType":"privacy","active":true}'
+  require_count "demo users seed" "${demo_database}" "users"
+  require_count "demo events seed" "${demo_database}" "events"
+  require_count "demo privacy seed" "${demo_database}" "helpCenterRevisions" '{"documentType":"privacy","active":true}'
+
   mongo_eval_app '
     const collection = db.getCollection("_myscoutee_mongo_compat_smoke");
     collection.deleteMany({});
@@ -235,6 +281,8 @@ main() {
 
   check_http_or_internal "backend health" "/api/health" '"status":"UP"'
   check_http_or_internal "landing content query" "/api/landing/content?lang=en" '"ideas"'
+  check_http_or_internal "active privacy content" "/api/privacy/active?lang=en" '"documentKind":"privacy"'
+  check_http_or_internal "active privacy sections" "/api/privacy/active?lang=en" '"sections":[{'
 
   status_line ok "Mongo ${EXPECTED_MONGO_MINOR} compatibility smoke passed"
 }
