@@ -51,6 +51,13 @@ cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
 
+sed \
+  -e "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
+  -e "s/^NGINX_BASE_IMAGE=.*/NGINX_BASE_IMAGE=myscoutee-nginx:${VERSION}-base/" \
+  -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}/" \
+  -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}/" \
+  -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+
 find "${STAGING_DIR}" -type d -exec chmod 0755 {} +
 find "${STAGING_DIR}" -type f -exec chmod 0644 {} +
 chmod 0755 "${STAGING_DIR}/DEBIAN/postinst" "${STAGING_DIR}/DEBIAN/prerm" "${STAGING_DIR}/DEBIAN/postrm"
@@ -83,8 +90,8 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}"
 fi
 
-if [[ "${PACKAGE_OFFICIAL_IMAGES:-true}" == "true" ]]; then
-  save_image "${MONGO_IMAGE:-mongo:8.2.5}" "mongo" true
+if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then
+  save_image "${MONGO_IMAGE:-mongo:8.0.4}" "mongo" true
   save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis" true
   save_image "${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}" "minio" true
 fi

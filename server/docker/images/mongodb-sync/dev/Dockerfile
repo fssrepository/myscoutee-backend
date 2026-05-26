@@ -1,4 +1,4 @@
-FROM mongo:8.2.5
+FROM mongo:8.0.4
 
 ARG TZ=Europe/Brussels
 

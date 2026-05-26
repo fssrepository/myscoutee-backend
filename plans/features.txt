@@ -1,7 +1,5 @@
 affinity graph view e2e test
 
-vmware install - dpkg check
-
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
 Bugs

@@ -25,6 +25,7 @@ bash packaging/scripts/status-production.sh
 bash packaging/scripts/stop-production.sh
 bash packaging/scripts/backup-production.sh
 bash packaging/scripts/package-production.sh
+bash packaging/scripts/smoke-mongo-compatibility.sh
 ```
 
 Useful overrides:
@@ -37,7 +38,9 @@ BUILD_IMAGES=false bash packaging/scripts/build-production.sh
 BUILD_ARTIFACTS=false PACKAGE_IMAGES=false bash packaging/scripts/package-production.sh
 ```
 
-`package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images plus MongoDB, Redis, and MinIO image archives for a more self-contained VPS install. Set `PACKAGE_OFFICIAL_IMAGES=false` to leave the official service images out of the bundle.
+`package-production.sh` creates `packaging/dist/myscoutee_<version>_amd64.deb`. By default it builds production artifacts and packages the MyScoutee nginx/API images. During install, `postinst` checks Docker and prepares MongoDB, Redis, and MinIO images by pulling them if they are missing. Set `PACKAGE_OFFICIAL_IMAGES=true` only when you want a larger offline-style bundle that also includes those official service image archives.
+
+MongoDB is pinned to `mongo:8.0.4` for the packaged and dev stacks. Run `smoke-mongo-compatibility.sh` against a running stack to confirm the configured image, running Mongo version, feature compatibility version, backend health, landing content query, and a temporary app-user CRUD round trip all work on Mongo 8.0.
 
 Install the local deb with `apt`, not `dpkg`, so Docker Engine and Docker Compose dependencies are installed before MyScoutee is configured:
 

@@ -6,5 +6,9 @@ if command -v systemctl >/dev/null 2>&1; then
 fi
 
 if [[ "${1:-}" = "purge" ]]; then
-  echo "Leaving /etc/myscoutee and /var/lib/myscoutee in place. Remove them manually if you really want to delete config and data." >&2
+  rm -rf /etc/myscoutee
+  rm -rf /opt/myscoutee
+  rm -rf /var/lib/myscoutee
+  rm -rf /var/log/myscoutee
+  rm -rf /var/backups/myscoutee
 fi

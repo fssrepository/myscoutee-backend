@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+cleanup_generated_opt_files() {
+  rm -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt
+  rm -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key
+
+  if [[ -L /opt/myscoutee/server/data ]]; then
+    rm -f /opt/myscoutee/server/data
+  fi
+
+  rmdir /opt/myscoutee/server/docker/conf/nginx/keys >/dev/null 2>&1 || true
+  rmdir /opt/myscoutee/server/docker/conf/nginx >/dev/null 2>&1 || true
+}
+
 if [[ "${1:-}" = "remove" || "${1:-}" = "deconfigure" ]]; then
   if command -v systemctl >/dev/null 2>&1; then
     systemctl stop myscoutee.service >/dev/null 2>&1 || true
     systemctl disable myscoutee.service >/dev/null 2>&1 || true
   fi
+
+  cleanup_generated_opt_files
 fi
