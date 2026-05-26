@@ -110,6 +110,24 @@ async function ensureEvent(requireSubEvent = false) {
       ctx.vars.userId = userId;
       return;
     }
+    if (requireSubEvent) {
+      delete ctx.vars.eventId;
+      delete ctx.vars.ownerId;
+      delete ctx.vars.subEventId;
+      const fullList = await ctx.http.get('/api/activities/events', {
+        params: { userId, limit: 12 },
+        headers: demoHeaders()
+      });
+      if (Array.isArray(fullList.data)) {
+        assertEventList(fullList.data, ctx, 'event requirement full list');
+      } else {
+        assertEventPage(fullList.data, ctx, 'event requirement full list');
+      }
+      if (ctx.vars.eventId && ctx.vars.subEventId) {
+        ctx.vars.userId = userId;
+        return;
+      }
+    }
   }
   throw new Error(requireSubEvent
     ? 'No demo event with subEvents was found for subEvent requirement'

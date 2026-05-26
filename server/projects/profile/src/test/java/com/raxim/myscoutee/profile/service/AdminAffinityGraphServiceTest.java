@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -214,6 +215,7 @@ class AdminAffinityGraphServiceTest {
         assertThat(tile.edges().get(0).source()).isEqualTo("u1");
         assertThat(tile.edges().get(0).target()).isEqualTo("u2");
         assertThat(tile.edges().get(0).weight()).isEqualTo(0.75d);
+        verify(graphEdgesRepository, times(1)).findRelevantByLayoutVersionAndUserIds("layout-1", List.of("u1", "u2"));
     }
 
     private Users user(String id, String name, String gender, String profileStatus) {

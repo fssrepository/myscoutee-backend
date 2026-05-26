@@ -326,7 +326,22 @@ public class ActivitiesEventsService {
     }
 
     private EventQueryContext buildExploreQueryContext(ViewerContext viewer) {
-        List<ActivityEvent> allEvents = queryCanonicalExploreRecords();
+        return buildExploreQueryContext(viewer, true);
+    }
+
+    private EventQueryContext buildExploreQueryContext(ViewerContext viewer, boolean includeEdgeWeights) {
+        return buildExploreQueryContext(viewer, includeEdgeWeights, queryCanonicalExploreRecords());
+    }
+
+    private EventQueryContext buildExplorePageQueryContext(ViewerContext viewer, boolean includeEdgeWeights) {
+        return buildExploreQueryContext(viewer, includeEdgeWeights, queryCanonicalExplorePageRecords());
+    }
+
+    private EventQueryContext buildExploreQueryContext(
+            ViewerContext viewer,
+            boolean includeEdgeWeights,
+            List<ActivityEvent> allEvents) {
+        List<ActivityEvent> scopedEvents = allEvents == null ? List.of() : allEvents;
         LinkedHashSet<String> trackedSourceIds = new LinkedHashSet<>();
         Map<String, String> trackedStatusesBySourceId = Map.of();
         if (viewer != null && StringUtils.hasText(viewer.userId())) {
@@ -339,12 +354,12 @@ public class ActivitiesEventsService {
                     .forEach(trackedSourceIds::add);
         }
         return new EventQueryContext(
-                allEvents,
-                allEvents,
+                scopedEvents,
+                scopedEvents,
                 new LinkedHashMap<>(),
                 trackedSourceIds,
                 trackedStatusesBySourceId,
-                queryEventOwnerEdgeWeights(viewer, allEvents));
+                includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of());
     }
 
     private Map<String, String> trackedEventMembershipStatuses(String userId) {
@@ -792,31 +807,26 @@ public class ActivitiesEventsService {
     }
 
     public EventsExplorePageDto queryEventExplorePage(EventsExploreQueryDto request) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         if (viewer == null) {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
-        try {
-            ACTIVE_CONTEXT.set(buildExploreQueryContext(viewer));
+        String order = normalizeExploreOrder(request == null ? null : request.order());
+        String view = normalizeExploreView(request == null ? null : request.view());
+        String topic = normalizeTopic(request == null ? null : request.topic());
+        Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
+        Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
+        Integer requestedLimit = request == null ? null : request.limit();
+        boolean friendsOnly = Boolean.TRUE.equals(requestedFriendsOnly);
+        boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
+        int limit = normalizeLimit(requestedLimit, 10);
+        String cursor = request == null ? null : request.cursor();
+        Set<String> excludedSourceIds = new LinkedHashSet<>(normalizeIds(request == null ? null : request.excludedSourceIds()));
 
-            String order = normalizeExploreOrder(request == null ? null : request.order());
-            String view = normalizeExploreView(request == null ? null : request.view());
-            String topic = normalizeTopic(request == null ? null : request.topic());
-            Boolean requestedFriendsOnly = request == null ? null : request.friendsOnly();
-            Boolean requestedOpenSpotsOnly = request == null ? null : request.openSpotsOnly();
-            Integer requestedLimit = request == null ? null : request.limit();
-            boolean friendsOnly = Boolean.TRUE.equals(requestedFriendsOnly);
-            boolean openSpotsOnly = Boolean.TRUE.equals(requestedOpenSpotsOnly);
-            int limit = normalizeLimit(requestedLimit, 10);
-            String cursor = request == null ? null : request.cursor();
-            Set<String> excludedSourceIds = new LinkedHashSet<>(normalizeIds(request == null ? null : request.excludedSourceIds()));
-
-            List<ActivityEvent> exploreRecords = computeExploreRecords(viewer);
-
-            List<EventProjection> sorted = exploreRecords.stream()
+        return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
+            List<EventProjection> sorted = computeExploreRecords(viewer).stream()
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
-                    .map(record -> toProjection(record, viewer))
+                    .map(record -> toSortProjection(record, viewer))
                     .filter(Objects::nonNull)
                     .filter(projection -> !hasTrackedUserParticipation(projection.record(), viewer.userId()))
                     .filter(projection -> !friendsOnly || exploreHasFriendGoing(projection.record(), viewer.userId()))
@@ -827,16 +837,16 @@ public class ActivitiesEventsService {
 
             int startIndex = resolveCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
-            List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
-                    .map(EventProjection::item)
+            List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
+            List<EventRecordDto> records = pageProjections.stream()
+                    .map(projection -> toEventRecordDto(projection.record(), viewer))
+                    .filter(Objects::nonNull)
                     .toList();
-            String nextCursor = endIndex < sorted.size() && !records.isEmpty()
-                    ? serializeCursor(records.get(records.size() - 1))
+            String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
+                    ? serializeCursorId(projectionId(pageProjections.get(pageProjections.size() - 1)))
                     : null;
             return new EventsExplorePageDto(records, sorted.size(), nextCursor);
-        } finally {
-            ACTIVE_CONTEXT.remove();
-        }
+        });
     }
 
     public void trash(EventActionRequestDto request) {
@@ -2015,6 +2025,36 @@ public class ActivitiesEventsService {
                 .peek(ActivityEvent::normalizeLifecycleState)
                 .filter(this::isCanonicalExploreRecord)
                 .toList();
+    }
+
+    private List<ActivityEvent> queryCanonicalExplorePageRecords() {
+        Query query = new Query(Criteria.where("type").is(TYPE_EVENTS)
+                .and("status").in(STATUS_ACTIVE, "active")
+                .and("generated").ne(true)
+                .and("published").ne(false)
+                .and("sourceId").exists(true).ne(""));
+        query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
+        includeEventExplorePageFields(query);
+        return mongoTemplate.find(query, ActivityEvent.class).stream()
+                .filter(Objects::nonNull)
+                .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .filter(this::isCanonicalExploreRecord)
+                .toList();
+    }
+
+    private void includeEventExplorePageFields(Query query) {
+        includeEventListCardFields(query);
+        query.fields()
+                .include("creatorGender")
+                .include("blindMode")
+                .include("sourceLink")
+                .include("autoInviter")
+                .include("frequency")
+                .include("pricing")
+                .include("slotsEnabled")
+                .include("subEventsDisplayMode");
     }
 
     private List<ActivityEvent> queryInvitationScopeRecords(List<ActivityEvent> directOwnerRecords) {

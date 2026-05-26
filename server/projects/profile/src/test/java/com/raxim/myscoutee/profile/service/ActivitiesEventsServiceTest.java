@@ -112,8 +112,7 @@ class ActivitiesEventsServiceTest {
         ActivityEvent coldStartEvent = event("cold-event", "cold-host", 100d);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
-        when(activityEventsRepository.findAll()).thenReturn(List.of());
-        when(activityEventsRepository.findCanonicalExploreCandidates("events"))
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(coldStartEvent, knownHostEvent));
         when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("viewer")).thenReturn(List.of());
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer")).thenReturn(Map.of());
@@ -133,6 +132,7 @@ class ActivitiesEventsServiceTest {
 
         assertThat(page.records()).extracting(record -> record.id())
                 .containsExactly("known-event", "cold-event");
+        verify(activityEventsRepository, never()).findAll();
         verify(userAffinityEdgesRepository).findRelevantByUserIds(anyList());
     }
 

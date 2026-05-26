@@ -5,6 +5,7 @@
   "users": 4,
   "rampUpMs": 5000,
   "durationMs": 60000,
+  "reuseContext": true,
   "thinkTimeMs": 100,
   "thinkTimeJitterMs": 100,
   "thresholds": {

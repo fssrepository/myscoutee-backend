@@ -398,7 +398,8 @@ public class AdminAffinityGraphService {
                 .toList();
         Set<String> nodeIdSet = new HashSet<>(nodeIds);
         WeightRange range = weightRange(minWeight, maxWeight);
-        List<AdminAffinityGraphEdgeDto> edges = graphEdgesRepository
+        int edgeRenderBudget = intValue(layout.getEdgeRenderBudget(), EDGE_RENDER_BUDGET);
+        List<AdminAffinityGraphEdge> filteredEdges = graphEdgesRepository
                 .findRelevantByLayoutVersionAndUserIds(layout.getLayoutVersion(), nodeIds)
                 .stream()
                 .filter(edge -> nodeIdSet.contains(edge.getSourceUserId()) && nodeIdSet.contains(edge.getTargetUserId()))
@@ -409,18 +410,12 @@ public class AdminAffinityGraphService {
                         .reversed()
                         .thenComparing(AdminAffinityGraphEdge::getSourceUserId, Comparator.nullsLast(String::compareTo))
                         .thenComparing(AdminAffinityGraphEdge::getTargetUserId, Comparator.nullsLast(String::compareTo)))
-                .limit(intValue(layout.getEdgeRenderBudget(), EDGE_RENDER_BUDGET))
+                .toList();
+        List<AdminAffinityGraphEdgeDto> edges = filteredEdges.stream()
+                .limit(edgeRenderBudget)
                 .map(this::toEdgeDto)
                 .toList();
-        boolean edgeTruncated = graphEdgesRepository
-                .findRelevantByLayoutVersionAndUserIds(layout.getLayoutVersion(), nodeIds)
-                .stream()
-                .filter(edge -> nodeIdSet.contains(edge.getSourceUserId()) && nodeIdSet.contains(edge.getTargetUserId()))
-                .filter(edge -> doubleValue(edge.getWeight()) >= range.min() && doubleValue(edge.getWeight()) <= range.max())
-                .filter(edge -> !StringUtils.hasText(requestedComponentId) || requestedComponentId.equals(edge.getComponentId()))
-                .skip(intValue(layout.getEdgeRenderBudget(), EDGE_RENDER_BUDGET))
-                .findAny()
-                .isPresent();
+        boolean edgeTruncated = filteredEdges.size() > edgeRenderBudget;
         return new AdminAffinityGraphTileDto(
                 firstNonBlank(layout.getGeneratedAtIso(), Instant.now().toString()),
                 firstNonBlank(layout.getSource(), "materialized"),

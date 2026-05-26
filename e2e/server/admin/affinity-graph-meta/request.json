@@ -1,0 +1,15 @@
+{
+  "name": "admin affinity graph meta",
+  "group": "admin",
+  "order": 1100,
+  "method": "GET",
+  "path": "/api/admin/affinity-graph/meta",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

@@ -76,6 +76,9 @@ process.exitCode = failed ? 1 : 0;
 async function runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, vu, startedAt }) {
   const durationMs = Number(scenario.durationMs ?? 0);
   const iterations = Number(scenario.iterations ?? 1);
+  const reusableCtx = scenario.reuseContext
+    ? createContext({ baseUrl, mode, runId: `${scenario.id ?? 'scenario'}-vu${vu}-${Date.now()}`, vu })
+    : null;
   let iteration = 0;
   while (true) {
     iteration += 1;
@@ -87,47 +90,69 @@ async function runVirtualUser({ scenario, serverCases, metrics, baseUrl, mode, v
     }
     for (const [stepIndex, step] of scenario.steps.entries()) {
       const runId = `${scenario.id ?? 'scenario'}-vu${vu}-i${iteration}-s${stepIndex + 1}-${Date.now()}`;
-      const ctx = createContext({ baseUrl, mode, runId, vu });
-      const started = performance.now();
-      let ok = true;
-      let status = 0;
-      let error = '';
-      let resultMetric = {};
-      try {
-        const result = await runStep(step, ctx, serverCases);
-        status = result?.status ?? 0;
-        resultMetric = metricFromResult(result, step);
-      } catch (err) {
-        ok = false;
-        status = err.result?.status ?? 0;
-        error = err.message;
-        resultMetric = metricFromResult(err.result, step);
-      }
-      const ended = performance.now();
-      const duration = ended - started;
-      metrics.push({
-        step: step.name ?? step.collectionCase ?? `${step.method ?? 'GET'} ${step.path}`,
-        vu,
-        iteration,
-        ok,
-        status,
-        transport: resultMetric.transport,
-        method: resultMetric.method,
-        url: resultMetric.url,
-        responseBytes: resultMetric.responseBytes,
-        messageCount: resultMetric.messageCount,
-        openMs: resultMetric.openMs,
-        startedAtMs: started - startedAt,
-        endedAtMs: ended - startedAt,
-        durationMs: duration,
-        error
-      });
-      if (!ok && scenario.failFast) {
-        return;
+      const ctx = reusableCtx ?? createContext({ baseUrl, mode, runId, vu });
+      if (Array.isArray(step.parallel) && step.parallel.length > 0) {
+        const parallelMetrics = await Promise.all(step.parallel.map((parallelStep, parallelIndex) =>
+          measureStep({
+            step: parallelStep,
+            ctx,
+            serverCases,
+            vu,
+            iteration,
+            stepIndex: `${stepIndex + 1}.${parallelIndex + 1}`,
+            startedAt
+          })));
+        metrics.push(...parallelMetrics);
+        if (parallelMetrics.some(item => !item.ok) && scenario.failFast) {
+          return;
+        }
+      } else {
+        const metric = await measureStep({ step, ctx, serverCases, vu, iteration, stepIndex: stepIndex + 1, startedAt });
+        metrics.push(metric);
+        if (!metric.ok && scenario.failFast) {
+          return;
+        }
       }
       await sleep(jitter(scenario.thinkTimeMs ?? 0, scenario.thinkTimeJitterMs ?? 0));
     }
   }
+}
+
+async function measureStep({ step, ctx, serverCases, vu, iteration, stepIndex, startedAt }) {
+  const started = performance.now();
+  let ok = true;
+  let status = 0;
+  let error = '';
+  let resultMetric = {};
+  try {
+    const result = await runStep(step, ctx, serverCases);
+    status = result?.status ?? 0;
+    resultMetric = metricFromResult(result, step);
+  } catch (err) {
+    ok = false;
+    status = err.result?.status ?? 0;
+    error = err.message;
+    resultMetric = metricFromResult(err.result, step);
+  }
+  const ended = performance.now();
+  const duration = ended - started;
+  return {
+    step: step.name ?? step.collectionCase ?? `${step.method ?? 'GET'} ${step.path}` ?? `step ${stepIndex}`,
+    vu,
+    iteration,
+    ok,
+    status,
+    transport: resultMetric.transport,
+    method: resultMetric.method,
+    url: resultMetric.url,
+    responseBytes: resultMetric.responseBytes,
+    messageCount: resultMetric.messageCount,
+    openMs: resultMetric.openMs,
+    startedAtMs: started - startedAt,
+    endedAtMs: ended - startedAt,
+    durationMs: duration,
+    error
+  };
 }
 
 async function runStep(step, ctx, serverCases) {
@@ -194,22 +219,57 @@ async function resolveRequirement(ctx, requirement) {
     return;
   }
   if (requirement === 'event' || requirement === 'subEvent') {
+    if (requirement === 'event' && ctx.vars.eventId) {
+      return;
+    }
+    if (requirement === 'subEvent' && ctx.vars.eventId && ctx.vars.subEventId) {
+      return;
+    }
     await resolveRequirement(ctx, 'demoUser');
-    const result = await ctx.http.post('/api/activities/events/explore', {
-      headers: demoHeaders(),
-      json: { userId: ctx.vars.userId, limit: 25 }
-    });
-    if (Array.isArray(result.data)) {
-      assertEventList(result.data, ctx, 'stress event requirement');
-    } else {
-      assertEventPage(result.data, ctx, 'stress event requirement');
+    for (const userId of candidateDemoUserIds(ctx)) {
+      delete ctx.vars.eventId;
+      delete ctx.vars.ownerId;
+      delete ctx.vars.subEventId;
+      const result = await ctx.http.post('/api/activities/events/explore', {
+        headers: demoHeaders(),
+        json: { userId, limit: 25 }
+      });
+      if (Array.isArray(result.data)) {
+        assertEventList(result.data, ctx, 'stress event requirement');
+      } else {
+        assertEventPage(result.data, ctx, 'stress event requirement');
+      }
+      if (ctx.vars.eventId && (requirement !== 'subEvent' || ctx.vars.subEventId)) {
+        ctx.vars.userId = userId;
+        return;
+      }
+      if (requirement === 'subEvent') {
+        delete ctx.vars.eventId;
+        delete ctx.vars.ownerId;
+        delete ctx.vars.subEventId;
+        const fullList = await ctx.http.get('/api/activities/events', {
+          params: { userId, limit: 12 },
+          headers: demoHeaders()
+        });
+        if (Array.isArray(fullList.data)) {
+          assertEventList(fullList.data, ctx, 'stress event requirement full list');
+        } else {
+          assertEventPage(fullList.data, ctx, 'stress event requirement full list');
+        }
+        if (ctx.vars.eventId && ctx.vars.subEventId) {
+          ctx.vars.userId = userId;
+          return;
+        }
+      }
     }
-    if (requirement === 'subEvent' && !ctx.vars.subEventId) {
-      throw new Error('No subEvent available for stress requirement');
-    }
-    return;
+    throw new Error(requirement === 'subEvent'
+      ? 'No subEvent available for stress requirement'
+      : 'No event available for stress requirement');
   }
   if (requirement === 'asset') {
+    if (ctx.vars.assetId) {
+      return;
+    }
     await resolveRequirement(ctx, 'demoUser');
     const result = await ctx.http.get('/api/assets', {
       params: { userId: ctx.vars.userId },
@@ -219,6 +279,9 @@ async function resolveRequirement(ctx, requirement) {
     return;
   }
   if (requirement === 'chat') {
+    if (ctx.vars.chatId) {
+      return;
+    }
     await resolveRequirement(ctx, 'demoUser');
     for (const userId of candidateDemoUserIds(ctx)) {
       delete ctx.vars.chatId;

@@ -1,0 +1,20 @@
+{
+  "name": "admin affinity graph tile root",
+  "group": "admin",
+  "order": 1120,
+  "method": "GET",
+  "path": "/api/admin/affinity-graph/tiles",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}",
+    "z": 0,
+    "x": 0,
+    "y": 0,
+    "minWeight": 0,
+    "maxWeight": 1
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

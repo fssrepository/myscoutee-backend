@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -103,6 +104,7 @@ public class HomeUserProfileService {
     private static final double HOME_DISTANCE_MAX_BUCKETS = 12d;
     private static final double HOME_FRESHNESS_HALF_LIFE_DAYS = 14d;
     private static final long MILLIS_PER_DAY = 24L * 60L * 60L * 1000L;
+    private static final long USER_READ_SNAPSHOT_CACHE_TTL_MS = 5_000L;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -195,6 +197,12 @@ public class HomeUserProfileService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
+    private final Map<String, CacheEntry<Users.UserActivitiesRecord>> userActivitiesCacheByUserId = new ConcurrentHashMap<>();
+    private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
+    private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
+    private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
+    private final Object gameStackSnapshotCacheLock = new Object();
+    private volatile CacheEntry<GameStackSnapshot> gameStackSnapshotCache;
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -371,7 +379,9 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users existing = usersRepository.findByUserId(normalizeId(user.id())).orElse(null);
+        String normalizedUserId = normalizeId(user.id());
+        evictUserReadCaches(normalizedUserId);
+        Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved)));
         affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
@@ -400,6 +410,7 @@ public class HomeUserProfileService {
             return;
         }
 
+        evictUserReadCaches(resolvedUserId);
         List<String> slots = new ArrayList<>(normalizeStrings(user.getImages()));
         while (slots.size() <= normalizedSlotIndex) {
             slots.add("");
@@ -545,6 +556,7 @@ public class HomeUserProfileService {
         }
 
         String previousProfileStatus = resolveProfileStatus(user);
+        evictUserReadCaches(resolvedUserId);
         user.setStatus("D");
         user.setProfileStatus("deleted");
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
@@ -561,20 +573,24 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        if (!isPublicGameUser(usersRepository.findByUserId(normalizedUserId).orElse(null))) {
+        GameStackSnapshot snapshot = resolveGameStackSnapshot();
+        Users activeUser = snapshot.usersById().get(normalizedUserId);
+        if (!isPublicGameUser(activeUser)) {
             return List.of();
         }
 
         Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
-        List<Users> visibleGameUsers = usersRepository.findByProfileStatusIn(HOME_GAME_PROFILE_STATUSES);
         Set<String> friendsInCommonCandidateIds = queryFriendsInCommonCandidateIds(
                 normalizedUserId,
-                visibleGameUsers,
-                buildActivitySocialGraph(),
+                snapshot.visibleGameUsers(),
+                snapshot.socialGraph(),
                 ratedUserIds);
         Map<String, Double> edgeWeightsByPairKey = queryAffinityEdgeWeights(List.of(normalizedUserId));
-        HomeRankingContext rankingContext = buildHomeRankingContext(normalizedUserId, visibleGameUsers);
-        return visibleGameUsers.stream()
+        HomeRankingContext rankingContext = new HomeRankingContext(
+                activeUser,
+                snapshot.latestActivityMsByUserId(),
+                Instant.now().toEpochMilli());
+        return snapshot.visibleGameUsers().stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
@@ -1062,6 +1078,16 @@ public class HomeUserProfileService {
             return Map.of();
         }
 
+        String cacheKey = String.join("\n", normalizedUserIds);
+        long nowMs = System.currentTimeMillis();
+        CacheEntry<Map<String, Double>> cached = affinityWeightsCacheByUserIdsKey.get(cacheKey);
+        if (cached != null) {
+            if (cached.expiresAtMs() > nowMs) {
+                return cached.value();
+            }
+            affinityWeightsCacheByUserIdsKey.remove(cacheKey, cached);
+        }
+
         Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
         for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
             String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
@@ -1079,7 +1105,9 @@ public class HomeUserProfileService {
                 weightsByPairKey.put(key, edgeWeight);
             }
         }
-        return weightsByPairKey;
+        Map<String, Double> resolved = Map.copyOf(weightsByPairKey);
+        affinityWeightsCacheByUserIdsKey.put(cacheKey, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS));
+        return resolved;
     }
 
     private HomeRankingContext buildHomeRankingContext(String activeUserId, List<Users> visibleGameUsers) {
@@ -1258,19 +1286,19 @@ public class HomeUserProfileService {
     }
 
     private Set<String> queryRatedUserIds(String raterUserId) {
-        Set<String> ratedUserIds = new LinkedHashSet<>();
-        if (!StringUtils.hasText(raterUserId)) {
-            return ratedUserIds;
+        String normalizedRaterUserId = normalizeId(raterUserId);
+        if (!StringUtils.hasText(normalizedRaterUserId)) {
+            return Set.of();
         }
-
-        for (UserRate record : userRatesRepository.findByOwnerUserId(raterUserId)) {
-            if (!hasOwnRecordedActivityRate(record, raterUserId)) {
+        Set<String> ratedUserIds = new LinkedHashSet<>();
+        for (UserRate record : userRatesRepository.findByOwnerUserId(normalizedRaterUserId)) {
+            if (!hasOwnRecordedActivityRate(record, normalizedRaterUserId)) {
                 continue;
             }
-            addRatedUserId(ratedUserIds, raterUserId, record.getRelatedUserId());
-            addRatedUserId(ratedUserIds, raterUserId, record.getSecondaryRelatedUserId());
+            addRatedUserId(ratedUserIds, normalizedRaterUserId, record.getRelatedUserId());
+            addRatedUserId(ratedUserIds, normalizedRaterUserId, record.getSecondaryRelatedUserId());
         }
-        return ratedUserIds;
+        return Set.copyOf(ratedUserIds);
     }
 
     private Set<String> queryRatedPairKeys(String raterUserId) {
@@ -1334,6 +1362,33 @@ public class HomeUserProfileService {
         }
 
         return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
+    }
+
+    private GameStackSnapshot resolveGameStackSnapshot() {
+        long nowMs = System.currentTimeMillis();
+        CacheEntry<GameStackSnapshot> cached = gameStackSnapshotCache;
+        if (cached != null && cached.expiresAtMs() > nowMs) {
+            return cached.value();
+        }
+
+        synchronized (gameStackSnapshotCacheLock) {
+            cached = gameStackSnapshotCache;
+            if (cached != null && cached.expiresAtMs() > nowMs) {
+                return cached.value();
+            }
+
+            List<Users> visibleGameUsers = usersRepository.findByProfileStatusIn(HOME_GAME_PROFILE_STATUSES).stream()
+                    .filter(Objects::nonNull)
+                    .filter(this::isUsableUserDocument)
+                    .toList();
+            GameStackSnapshot snapshot = new GameStackSnapshot(
+                    List.copyOf(visibleGameUsers),
+                    indexUsersById(visibleGameUsers),
+                    buildActivitySocialGraph(),
+                    Map.copyOf(queryLatestHomeActivityMsByUserId()));
+            gameStackSnapshotCache = new CacheEntry<>(snapshot, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS);
+            return snapshot;
+        }
     }
 
     private void registerSocialEdge(
@@ -1616,13 +1671,56 @@ public class HomeUserProfileService {
             return adminMenuCounterService.syncAdminUserCounters(user);
         }
 
-        Users.UserActivitiesRecord computed = buildComputedUserActivities(normalizeId(user.getId()), user.getActivities());
-        if (activitiesEqual(user.getActivities(), computed)) {
+        CachedUserActivities computed = resolveComputedUserActivities(normalizeId(user.getId()), user.getActivities());
+        if (activitiesEqual(user.getActivities(), computed.activities())) {
             return user;
         }
 
-        user.setActivities(computed);
-        return usersRepository.save(user);
+        user.setActivities(computed.activities());
+        return computed.fromCache() ? user : usersRepository.save(user);
+    }
+
+    private CachedUserActivities resolveComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
+        String normalizedUserId = normalizeId(userId);
+        long nowMs = System.currentTimeMillis();
+        Users.UserActivitiesRecord cached = cachedUserActivities(normalizedUserId, nowMs);
+        if (cached != null) {
+            return new CachedUserActivities(cached, true);
+        }
+
+        Object lock = userReadCacheLocksByUserId.computeIfAbsent(normalizedUserId, key -> new Object());
+        synchronized (lock) {
+            cached = cachedUserActivities(normalizedUserId, nowMs);
+            if (cached != null) {
+                return new CachedUserActivities(cached, true);
+            }
+            Users.UserActivitiesRecord computed = buildComputedUserActivities(normalizedUserId, existing);
+            userActivitiesCacheByUserId.put(normalizedUserId, new CacheEntry<>(computed, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS));
+            return new CachedUserActivities(computed, false);
+        }
+    }
+
+    private Users.UserActivitiesRecord cachedUserActivities(String userId, long nowMs) {
+        CacheEntry<Users.UserActivitiesRecord> entry = userActivitiesCacheByUserId.get(userId);
+        if (entry == null) {
+            return null;
+        }
+        if (entry.expiresAtMs() <= nowMs) {
+            userActivitiesCacheByUserId.remove(userId, entry);
+            return null;
+        }
+        return entry.value();
+    }
+
+    private void evictUserReadCaches(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        userActivitiesCacheByUserId.remove(normalizedUserId);
+        userImpressionsCacheByUserId.remove(normalizedUserId);
+        affinityWeightsCacheByUserIdsKey.clear();
+        gameStackSnapshotCache = null;
     }
 
     private Users syncComputedUserPartition(Users user) {
@@ -2368,9 +2466,35 @@ public class HomeUserProfileService {
     }
 
     private UserImpressionsDto resolveMergedUserImpressions(Users user) {
-        if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
+        String userId = normalizeId(user == null ? null : user.getId());
+        if (user == null || !StringUtils.hasText(userId)) {
             return null;
         }
+        long nowMs = System.currentTimeMillis();
+        CacheEntry<UserImpressionsDto> cached = userImpressionsCacheByUserId.get(userId);
+        if (cached != null) {
+            if (cached.expiresAtMs() > nowMs) {
+                return cached.value();
+            }
+            userImpressionsCacheByUserId.remove(userId, cached);
+        }
+
+        Object lock = userReadCacheLocksByUserId.computeIfAbsent(userId, key -> new Object());
+        synchronized (lock) {
+            cached = userImpressionsCacheByUserId.get(userId);
+            if (cached != null) {
+                if (cached.expiresAtMs() > nowMs) {
+                    return cached.value();
+                }
+                userImpressionsCacheByUserId.remove(userId, cached);
+            }
+            UserImpressionsDto resolved = resolveMergedUserImpressionsUncached(user);
+            userImpressionsCacheByUserId.put(userId, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS));
+            return resolved;
+        }
+    }
+
+    private UserImpressionsDto resolveMergedUserImpressionsUncached(Users user) {
         List<EventFeedbackAnswer> feedbackAnswers = eventFeedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc(normalizeId(user.getId()));
         UserImpressionsSectionDto host = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().host(), "event", feedbackAnswers);
@@ -2379,6 +2503,12 @@ public class HomeUserProfileService {
             return null;
         }
         return new UserImpressionsDto(host, member);
+    }
+
+    private record CacheEntry<T>(T value, long expiresAtMs) {
+    }
+
+    private record CachedUserActivities(Users.UserActivitiesRecord activities, boolean fromCache) {
     }
 
     private UserImpressionsSectionDto resolveMergedImpressionsSection(
@@ -2893,6 +3023,13 @@ public class HomeUserProfileService {
             Users activeUser,
             Map<String, Long> latestActivityMsByUserId,
             long nowMs) {
+    }
+
+    private record GameStackSnapshot(
+            List<Users> visibleGameUsers,
+            Map<String, Users> usersById,
+            ActivitySocialGraph socialGraph,
+            Map<String, Long> latestActivityMsByUserId) {
     }
 
     private record PersonalityTraitDefinition(

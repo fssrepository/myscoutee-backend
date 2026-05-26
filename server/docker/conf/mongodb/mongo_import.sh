@@ -381,6 +381,71 @@ db.getCollection('userAffinityEdges').createIndex({ leftUserId: 1, edgeWeight: -
 db.getCollection('userAffinityEdges').createIndex({ rightUserId: 1, edgeWeight: -1 }, { name: 'user_affinity_edge_right_weight' });
 " >/dev/null
       ;;
+    adminAffinityGraphLayouts)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('adminAffinityGraphLayouts').createIndex({ layoutVersion: 1 }, { name: 'admin_affinity_graph_layout_version', unique: true });
+db.getCollection('adminAffinityGraphLayouts').createIndex({ generatedAtIso: 1 }, { name: 'admin_affinity_graph_layout_generated_at' });
+" >/dev/null
+      ;;
+    adminAffinityGraphNodes)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('adminAffinityGraphNodes').createIndex({ layoutVersion: 1 }, { name: 'admin_affinity_graph_node_layout' });
+db.getCollection('adminAffinityGraphNodes').createIndex({ layoutVersion: 1, userId: 1 }, { name: 'admin_affinity_graph_node_layout_user', unique: true });
+db.getCollection('adminAffinityGraphNodes').createIndex({ layoutVersion: 1, tileZ: 1, tileX: 1, tileY: 1 }, { name: 'admin_affinity_graph_node_layout_tile' });
+db.getCollection('adminAffinityGraphNodes').createIndex({ layoutVersion: 1, x: 1, z: 1 }, { name: 'admin_affinity_graph_node_layout_position' });
+db.getCollection('adminAffinityGraphNodes').createIndex({ layoutVersion: 1, componentId: 1 }, { name: 'admin_affinity_graph_node_layout_component' });
+db.getCollection('adminAffinityGraphNodes').createIndex({ layoutVersion: 1, centrality: -1 }, { name: 'admin_affinity_graph_node_layout_centrality' });
+" >/dev/null
+      ;;
+    adminAffinityGraphEdges)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('adminAffinityGraphEdges').createIndex({ layoutVersion: 1 }, { name: 'admin_affinity_graph_edge_layout' });
+db.getCollection('adminAffinityGraphEdges').createIndex({ layoutVersion: 1, sourceUserId: 1, targetUserId: 1 }, { name: 'admin_affinity_graph_edge_layout_pair', unique: true });
+db.getCollection('adminAffinityGraphEdges').createIndex({ layoutVersion: 1, sourceUserId: 1 }, { name: 'admin_affinity_graph_edge_layout_source' });
+db.getCollection('adminAffinityGraphEdges').createIndex({ layoutVersion: 1, targetUserId: 1 }, { name: 'admin_affinity_graph_edge_layout_target' });
+db.getCollection('adminAffinityGraphEdges').createIndex({ layoutVersion: 1, componentId: 1, lodLevel: 1 }, { name: 'admin_affinity_graph_edge_layout_component_lod' });
+db.getCollection('adminAffinityGraphEdges').createIndex({ layoutVersion: 1, weight: -1 }, { name: 'admin_affinity_graph_edge_layout_weight' });
+" >/dev/null
+      ;;
+    adminAffinityGraphForests)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('adminAffinityGraphForests').createIndex({ layoutVersion: 1 }, { name: 'admin_affinity_graph_forest_layout' });
+db.getCollection('adminAffinityGraphForests').createIndex({ layoutVersion: 1, componentId: 1 }, { name: 'admin_affinity_graph_forest_layout_component', unique: true });
+db.getCollection('adminAffinityGraphForests').createIndex({ layoutVersion: 1, memberCount: -1 }, { name: 'admin_affinity_graph_forest_layout_size' });
+" >/dev/null
+      ;;
     helpCenterRevisions)
       mongosh \
         --host "${mongo_host}" \
@@ -400,6 +465,15 @@ db.getCollection('helpCenterRevisions').createIndex({ active: 1 }, { name: 'help
 " >/dev/null
       ;;
   esac
+}
+
+ensure_runtime_indexes() {
+  local target_db="$1"
+
+  ensure_collection_indexes "${target_db}" "adminAffinityGraphLayouts"
+  ensure_collection_indexes "${target_db}" "adminAffinityGraphNodes"
+  ensure_collection_indexes "${target_db}" "adminAffinityGraphEdges"
+  ensure_collection_indexes "${target_db}" "adminAffinityGraphForests"
 }
 
 import_json_file() {
@@ -454,12 +528,14 @@ import_seed_directory() {
 
   if [ ! -d "${seed_dir}" ]; then
     echo "Seed directory ${seed_dir} does not exist, skipping mongoimport."
+    ensure_runtime_indexes "${target_db}"
     return 0
   fi
 
   find "${seed_dir}" -maxdepth 1 \( -type f -o -type l \) -name '*.json' | sort | while read -r jsonfile; do
     import_json_file "${target_db}" "${jsonfile}"
   done
+  ensure_runtime_indexes "${target_db}"
 }
 
 import_single_file() {
