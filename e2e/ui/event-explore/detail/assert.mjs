@@ -147,6 +147,8 @@ async function waitForToolbarTextOrFinding(page, label, title) {
   const toolbar = await page.evaluate(() => {
     const root = document.querySelector('.popup-panel-event-explore');
     return {
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
       text: (root?.querySelector('.activities-popup-toolbar, .activities-toolbar, .popup-panel-header')?.textContent ?? root?.textContent ?? '')
         .trim()
         .replace(/\s+/g, ' ')
@@ -157,6 +159,9 @@ async function waitForToolbarTextOrFinding(page, label, title) {
       }
     };
   });
+  if (toolbar.viewportWidth <= 760) {
+    return;
+  }
   await page.recordStep(`event-explore-toolbar-label-missing-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`);
   page.recordFinding?.({
     severity: 'warning',

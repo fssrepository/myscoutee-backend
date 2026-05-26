@@ -1,5 +1,3 @@
-wss dynamic resolve
-
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
 Bugs

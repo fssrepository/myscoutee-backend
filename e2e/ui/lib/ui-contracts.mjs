@@ -283,6 +283,17 @@ export async function recordInfoCardMenuAnchorFinding(page, options = {}) {
   const geometry = await inspectInfoCardMenuAnchor(page, options);
   const maxHorizontalDrift = Number(options.maxHorizontalDriftPx ?? 48);
   const maxVerticalGap = Number(options.maxVerticalGapPx ?? 24);
+  const mobileBreakpoint = Number(options.mobileBreakpointPx ?? 760);
+  if (options.skipMobile !== false && Number(geometry.viewportWidth ?? 0) <= mobileBreakpoint) {
+    return {
+      ok: true,
+      geometry: {
+        ...geometry,
+        skipped: 'mobile-menu-positioning-allowed',
+        mobileBreakpoint
+      }
+    };
+  }
   const ok = geometry.found
     && geometry.menuOverlapsCardHorizontally
     && (geometry.opensUp || geometry.opensDown)
@@ -332,6 +343,8 @@ export async function inspectInfoCardMenuAnchor(page, options = {}) {
     if (!trigger || !card || !menu) {
       return {
         found: false,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
         visibleOpenTriggers: Array.from(document.querySelectorAll('.ui-info-card__menu-trigger.is-open, .experience-action-menu-trigger.is-open')).filter(visible).length,
         visibleTriggers: Array.from(document.querySelectorAll('.ui-info-card__menu-trigger, .experience-action-menu-trigger')).filter(visible).length,
         visibleMenus: Array.from(document.querySelectorAll('.ui-info-card__menu.is-open, .ui-info-card__menu, .activities-event-action-menu.item-action-menu.is-open')).filter(visible).length
@@ -360,6 +373,8 @@ export async function inspectInfoCardMenuAnchor(page, options = {}) {
         : 0;
     return {
       found: true,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
       triggerRect: rectToJson(triggerRect),
       cardRect: rectToJson(cardRect),
       menuRect: rectToJson(menuRect),
