@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +36,7 @@ import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 
 @ExtendWith(MockitoExtension.class)
 class HomeUserProfileServiceTest {
@@ -173,7 +175,6 @@ class HomeUserProfileServiceTest {
         Users socialCandidate = user("social-candidate", 900_000d);
         Users outsideCandidate = user("outside-candidate", 1d);
 
-        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
                 .thenReturn(List.of(active, bridge, socialCandidate, outsideCandidate));
         when(userRatesRepository.findAll()).thenReturn(List.of(
@@ -196,7 +197,6 @@ class HomeUserProfileServiceTest {
         Users farStale = user("far-stale", 20d);
         farStale.setLocationCoordinates(new Users.LocationCoordinatesRecord(48.8566, 2.3522));
 
-        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
                 .thenReturn(List.of(active, nearFresh, farStale));
         when(userRatesRepository.findAll()).thenReturn(List.of(
@@ -210,6 +210,39 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void gameStackQueryReusesHotGlobalSnapshotButRefreshesUserRatings() {
+        Users active = user("active", 0d);
+        Users candidate = user("candidate", 10d);
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
+                .thenReturn(List.of(active, candidate));
+        when(userRatesRepository.findAll()).thenReturn(List.of());
+        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
+
+        List<Users> firstCards = service.queryGameStackUserRecords("active");
+        List<Users> secondCards = service.queryGameStackUserRecords("active");
+
+        assertThat(firstCards).extracting(Users::getId).containsExactly("candidate");
+        assertThat(secondCards).extracting(Users::getId).containsExactly("candidate");
+        verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
+        verify(userRatesRepository, times(2)).findAll();
+        verify(activityMembersRepository, times(1)).findAll();
+        verify(userRatesRepository, times(2)).findByOwnerUserId("active");
+        verify(userAffinityEdgesRepository, times(1)).findRelevantByUserIds(List.of("active"));
+    }
+
+    @Test
+    void demoUserListItemsHonorsRequestedLimit() {
+        Users high = user("high", 30d);
+        Users medium = user("medium", 20d);
+        Users low = user("low", 10d);
+        when(usersRepository.findAll()).thenReturn(List.of(low, high, medium));
+
+        assertThat(service.queryDemoUserListItems(2))
+                .extracting(item -> item.id())
+                .containsExactly("high", "medium");
+    }
+
+    @Test
     void profileImageSaveEnqueuesUserRecompute() {
         Users active = user("active", 0d);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
@@ -218,6 +251,28 @@ class HomeUserProfileServiceTest {
         service.saveUserProfileImage("active", 0, "https://cdn.example.com/avatar.jpg");
 
         verify(affinityRecomputeTaskService).enqueueUserChanged("active");
+    }
+
+    @Test
+    void realtimeSnapshotReusesHotReadSnapshotWork() {
+        Users active = user("active", 0d);
+        active.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only"))).thenReturn(List.of(active));
+        when(activityEventsRepository.findByOwnerUserId("active")).thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "active")).thenReturn(List.of());
+        when(activityChatsRepository.findByOwnerUserId("active")).thenReturn(List.of());
+        when(eventParticipationTicketService.queryTicketRecordsForUser("active")).thenReturn(List.of());
+        when(eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc("active")).thenReturn(List.of());
+        when(eventFeedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("active")).thenReturn(List.of());
+        when(userRatesRepository.findAll()).thenReturn(List.of());
+        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
+
+        service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
+        service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
+
+        verify(activityEventsRepository, times(1)).findByOwnerUserId("active");
+        verify(eventFeedbackAnswersRepository, times(1)).findByTargetUserIdOrderBySubmittedAtIsoDesc("active");
     }
 
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {

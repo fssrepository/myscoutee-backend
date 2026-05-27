@@ -18,7 +18,7 @@
     { "collectionCase": "profile/auth-me" },
     { "collectionCase": "content/help-active" },
     { "collectionCase": "content/explanation-home" },
-    { "collectionCase": "events/event-filter" },
+    { "collectionCase": "events/event-filter-slim" },
     { "collectionCase": "assets/owned" },
     { "collectionCase": "chats/page" },
     { "collectionCase": "admin/dashboard" }

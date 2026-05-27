@@ -166,6 +166,7 @@ async function waitForActivityTitleVisible(page, title, timeoutMs = 30000) {
       clientHeight: list?.clientHeight ?? 0
     };
   });
+  await page.recordStep('event-editor-saved-card-missing');
   page.recordFinding?.({
     severity: 'fatal',
     title: 'Saved event card did not appear in the activities list after save/reload',
@@ -190,6 +191,7 @@ async function assertReopenedPolicyPanel(page, policyTitle) {
     };
   });
   if (!panel.hasPanelButton) {
+    await page.recordStep('event-editor-policy-panel-missing');
     page.recordFinding?.({
       severity: 'fatal',
       title: 'Saved event reopened without its policy panel/persisted policies',

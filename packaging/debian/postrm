@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl daemon-reload >/dev/null 2>&1 || true
+fi
+
+if [[ "${1:-}" = "purge" ]]; then
+  rm -rf /etc/myscoutee
+  rm -rf /opt/myscoutee
+  rm -rf /var/lib/myscoutee
+  rm -rf /var/log/myscoutee
+  rm -rf /var/backups/myscoutee
+fi

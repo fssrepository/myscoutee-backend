@@ -3,9 +3,10 @@ set -euo pipefail
 
 SOURCE_FRONTEND_ROOT="${FRONTEND_ROOT:-/workspace/frontend}"
 SYNC_SCRIPT="${SYNC_SCRIPT:-/scripts/sync_frontend_assets.sh}"
-BUILD_MODE="${FRONTEND_BUILD_MODE:-dev}"
+BUILD_MODE="${FRONTEND_BUILD_MODE:-}"
+BUILD_CONFIGURATION="${FRONTEND_BUILD_CONFIGURATION:-}"
 BUILD_LOG_FILE="${BUILD_LOG_FILE:-}"
-FRONTEND_ACTIVITIES_DATA_SOURCE="${FRONTEND_ACTIVITIES_DATA_SOURCE:-}"
+LEGACY_FRONTEND_ACTIVITIES_DATA_SOURCE="${FRONTEND_ACTIVITIES_DATA_SOURCE:-}"
 BUILD_FRONTEND_ROOT="${BUILD_FRONTEND_ROOT:-}"
 SOURCE_SYNC_DEBOUNCE_SECONDS="${SOURCE_SYNC_DEBOUNCE_SECONDS:-1}"
 SOURCE_SYNC_EXCLUDE_REGEX='(^|/)(node_modules|dev|docs|out-tsc|\.angular|\.git|\.agent)(/|$)'
@@ -22,6 +23,69 @@ if [[ ! -d "${SOURCE_FRONTEND_ROOT}/node_modules" ]]; then
   exit 1
 fi
 
+resolve_build_configuration() {
+  if [[ -n "${BUILD_CONFIGURATION}" ]]; then
+    printf '%s\n' "${BUILD_CONFIGURATION}"
+    return 0
+  fi
+
+  case "${LEGACY_FRONTEND_ACTIVITIES_DATA_SOURCE}" in
+    demo)
+      printf '%s\n' "demo-npm"
+      ;;
+    http)
+      printf '%s\n' "demo-http"
+      ;;
+    "")
+      if [[ "${BUILD_MODE}" == "prod" ]]; then
+        printf '%s\n' "production"
+      else
+        printf '%s\n' "demo-npm"
+      fi
+      ;;
+    *)
+      echo "Error: FRONTEND_ACTIVITIES_DATA_SOURCE must be 'demo' or 'http'." >&2
+      exit 1
+      ;;
+  esac
+}
+
+resolve_build_mode() {
+  if [[ -n "${BUILD_MODE}" ]]; then
+    printf '%s\n' "${BUILD_MODE}"
+    return 0
+  fi
+
+  case "${BUILD_CONFIGURATION}" in
+    demo-github|production|production-demo)
+      printf '%s\n' "prod"
+      ;;
+    *)
+      printf '%s\n' "dev"
+      ;;
+  esac
+}
+
+validate_build_configuration() {
+  case "${BUILD_CONFIGURATION}" in
+    development|demo-npm|demo-http|playground|demo-github|production|production-demo)
+      ;;
+    *)
+      echo "Error: unsupported FRONTEND_BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}" >&2
+      exit 1
+      ;;
+  esac
+
+  case "${BUILD_MODE}" in
+    dev|prod)
+      ;;
+    *)
+      echo "Error: FRONTEND_BUILD_MODE must be 'dev' or 'prod'." >&2
+      exit 1
+      ;;
+  esac
+}
+
 resolve_build_output_dir() {
   case "${BUILD_MODE}" in
     dev)
@@ -34,24 +98,6 @@ resolve_build_output_dir() {
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/dev"
       ;;
   esac
-}
-
-resolve_environment_file() {
-  case "${BUILD_MODE}" in
-    dev)
-      printf '%s\n' "${BUILD_FRONTEND_ROOT}/src/environments/environment.development.ts"
-      ;;
-    prod)
-      printf '%s\n' "${BUILD_FRONTEND_ROOT}/src/environments/environment.production.ts"
-      ;;
-    *)
-      printf '%s\n' "${BUILD_FRONTEND_ROOT}/src/environments/environment.ts"
-      ;;
-  esac
-}
-
-resolve_route_mode_file() {
-  printf '%s\n' "${BUILD_FRONTEND_ROOT}/src/app/shared/core/base/services/base-route-mode.service.ts"
 }
 
 initialize_build_workspace() {
@@ -84,92 +130,8 @@ sync_source_frontend_into_build_workspace() {
   ln -s "${SOURCE_FRONTEND_ROOT}/node_modules" "${BUILD_FRONTEND_ROOT}/node_modules"
 }
 
-apply_environment_override() {
-  if [[ -z "${FRONTEND_ACTIVITIES_DATA_SOURCE}" ]]; then
-    return 0
-  fi
-
-  if [[ "${FRONTEND_ACTIVITIES_DATA_SOURCE}" != "demo" && "${FRONTEND_ACTIVITIES_DATA_SOURCE}" != "http" ]]; then
-    echo "Error: FRONTEND_ACTIVITIES_DATA_SOURCE must be 'demo' or 'http'." >&2
-    exit 1
-  fi
-
-  local environment_file
-  local target_line
-
-  environment_file="$(resolve_environment_file)"
-  if [[ ! -f "${environment_file}" ]]; then
-    echo "Error: environment file not found: ${environment_file}" >&2
-    exit 1
-  fi
-
-  target_line="activitiesDataSource: '${FRONTEND_ACTIVITIES_DATA_SOURCE}' as 'demo' | 'http',"
-  sed -i \
-    -e "s/activitiesDataSource: 'demo' as 'demo' | 'http',/${target_line}/" \
-    -e "s/activitiesDataSource: 'http' as 'demo' | 'http',/${target_line}/" \
-    "${environment_file}"
-
-  if ! grep -Fq "${target_line}" "${environment_file}"; then
-    echo "Error: unable to override activitiesDataSource in ${environment_file}." >&2
-    exit 1
-  fi
-
-  echo "Applied temp frontend environment override: activitiesDataSource=${FRONTEND_ACTIVITIES_DATA_SOURCE}"
-}
-
-apply_route_mode_override() {
-  if [[ "${FRONTEND_ACTIVITIES_DATA_SOURCE}" != "http" ]]; then
-    return 0
-  fi
-
-  local route_mode_file
-  local target_fragment
-
-  route_mode_file="$(resolve_route_mode_file)"
-  if [[ ! -f "${route_mode_file}" ]]; then
-    echo "Error: route mode file not found: ${route_mode_file}" >&2
-    exit 1
-  fi
-
-  target_fragment="environment.activitiesDataSource !== 'http'"
-  ROUTE_MODE_FILE="${route_mode_file}" node <<'NODE'
-const fs = require('fs');
-
-const routeModeFile = process.env.ROUTE_MODE_FILE;
-const targetFragment = "environment.activitiesDataSource !== 'http'";
-const originalPattern = /return\s+!routeConfig\.http\s+&&\s+\(this\.sessionService\.currentSession\(\)\?\.kind === 'demo' \|\| !environment\.loginEnabled\);/;
-const replacement = [
-  "return environment.activitiesDataSource !== 'http'",
-  "      && !routeConfig.http",
-  "      && (this.sessionService.currentSession()?.kind === 'demo' || !environment.loginEnabled);"
-].join('\n');
-
-if (!routeModeFile) {
-  process.exit(2);
-}
-
-const source = fs.readFileSync(routeModeFile, 'utf8');
-if (source.includes(targetFragment)) {
-  process.exit(0);
-}
-if (!originalPattern.test(source)) {
-  process.exit(3);
-}
-
-fs.writeFileSync(routeModeFile, source.replace(originalPattern, replacement));
-NODE
-
-  if ! grep -Fq "${target_fragment}" "${route_mode_file}"; then
-    echo "Error: unable to force backend route mode in ${route_mode_file}." >&2
-    exit 1
-  fi
-
-  echo "Applied temp route-mode override for backend HTTP services"
-}
-
 apply_build_workspace_overrides() {
-  apply_environment_override
-  apply_route_mode_override
+  :
 }
 
 wait_for_host_port() {
@@ -274,6 +236,10 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
+BUILD_CONFIGURATION="$(resolve_build_configuration)"
+BUILD_MODE="$(resolve_build_mode)"
+validate_build_configuration
+
 initialize_build_workspace
 sync_source_frontend_into_build_workspace
 apply_build_workspace_overrides
@@ -286,8 +252,10 @@ fi
 
 cd "${BUILD_FRONTEND_ROOT}"
 
-echo "Starting Angular watch build in temp workspace ${BUILD_FRONTEND_ROOT}..."
-NG_BUILD_MAX_WORKERS="${NG_BUILD_MAX_WORKERS:-12}" npm run watch > >(tee -a "${BUILD_LOG_FILE}") 2>&1 &
+echo "Starting Angular watch build in temp workspace ${BUILD_FRONTEND_ROOT} using ${BUILD_CONFIGURATION}..."
+NG_BUILD_MAX_WORKERS="${NG_BUILD_MAX_WORKERS:-12}" \
+  ./node_modules/.bin/ng build --watch --configuration "${BUILD_CONFIGURATION}" \
+  > >(tee -a "${BUILD_LOG_FILE}") 2>&1 &
 build_pid=$!
 
 watch_frontend_source_changes &

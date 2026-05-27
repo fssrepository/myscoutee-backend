@@ -20,11 +20,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE}
+    image: ${NGINX_IMAGE:-myscoutee-nginx:1.0.0-dev}
     pull_policy: build
     build:
-      context: docker/images/nginx
+      context: docker
+      dockerfile: images/nginx/dev/Dockerfile
       args:
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -68,7 +70,7 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
-      - ./data/mongodb/demo-data-v8:/data/db
+      - ./data/mongodb/demo-data-v8-0:/data/db
       - ./docker/scripts:/scripts
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -81,7 +83,7 @@ services:
     pull_policy: build
     build:
       context: .
-      dockerfile: docker/images/mongodb-sync/Dockerfile
+      dockerfile: docker/images/mongodb-sync/dev/Dockerfile
       args:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: mongodb-sync
@@ -90,10 +92,17 @@ services:
       - .env.secrets
     command: >
       bash -lc '
-      watch_roots="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db";
+      watch_candidates="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db /docker-entrypoint-initdb.d/playground_db";
+      watch_roots="";
+      for candidate in $$watch_candidates; do
+        if [ -d "$$candidate" ]; then
+          watch_roots="$${watch_roots} $$candidate";
+        fi;
+      done;
+      auth_db="$${MONGO_APP_DATABASE:-$${MONGO_DEMO_DATABASE:-demo_db}}";
       debounce_seconds="$${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}";
       wait_for_mongo() {
-        until mongosh --host mongodb --port 27017 --username "$${MONGO_APP_USERNAME:-guest}" --password "$${MONGO_APP_PASSWORD:-guest}" --authenticationDatabase demo_db --quiet demo_db --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; do
+        until mongosh --host mongodb --port 27017 --username "$${MONGO_APP_USERNAME:-guest}" --password "$${MONGO_APP_PASSWORD:-guest}" --authenticationDatabase "$$auth_db" --quiet "$$auth_db" --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; do
           sleep 2;
         done;
       };
@@ -103,14 +112,19 @@ services:
       import_file() {
         changed_file="$$1";
         case "$$changed_file" in
-          */demo_db/*.json) target_db="demo_db" ;;
-          */myscoutee_db/*.json) target_db="myscoutee_db" ;;
+          */demo_db/*.json) target_db="$${MONGO_DEMO_DATABASE:-demo_db}" ;;
+          */myscoutee_db/*.json) target_db="$${MONGO_REAL_DATABASE:-myscoutee_db}" ;;
+          */playground_db/*.json) target_db="$${MONGO_PLAYGROUND_DATABASE:-playground_db}" ;;
           *) return 0 ;;
         esac;
         MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME="$${MONGO_APP_USERNAME:-guest}" MONGO_IMPORT_PASSWORD="$${MONGO_APP_PASSWORD:-guest}" MONGO_APP_DATABASE="$$target_db" MONGO_IMPORT_SINGLE_FILE="$$changed_file" MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
       };
       wait_for_mongo;
       import_all;
+      if [ -z "$$watch_roots" ]; then
+        echo "No Mongo seed directories found to watch.";
+        tail -f /dev/null;
+      fi;
       while changed_file=$$(inotifywait -q -r -e close_write,create,move --format "%w%f" $$watch_roots); do
         changed_files="$$changed_file";
         while next_file=$$(inotifywait -q -r -t "$$debounce_seconds" -e close_write,create,move --format "%w%f" $$watch_roots 2>/dev/null); do
@@ -122,6 +136,9 @@ services:
         done;
       done'
     environment:
+      MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_DEMO_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_REAL_DATABASE: ${MONGO_REAL_DATABASE}
       MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB}
       MONGODB_SEED_SYNC_DEBOUNCE_SECONDS: "${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
@@ -160,11 +177,11 @@ services:
     networks:
       - myscoutee
   profilemanagement:
-    image: ${MYSCOUTEE_IMAGE}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
     pull_policy: build
     build:
       context: .
-      dockerfile: docker/images/profilemanagement-hot/Dockerfile
+      dockerfile: docker/images/profilemanagement/dev/Dockerfile
       args:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
@@ -215,11 +232,11 @@ services:
       - redis
       - minio
   frontend-sync:
-    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:0.1.0}
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
     pull_policy: build
     build:
       context: .
-      dockerfile: docker/images/frontend-sync/Dockerfile
+      dockerfile: docker/images/frontend-sync/dev/Dockerfile
       args:
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: frontend-sync
@@ -234,7 +251,7 @@ services:
     environment:
       FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
-      FRONTEND_ACTIVITIES_DATA_SOURCE: http
+      FRONTEND_BUILD_CONFIGURATION: demo-http
       NGINX_HTML_DIR: /workspace/nginx-html
       NG_BUILD_MAX_WORKERS: "12"
       WAIT_FOR_HOSTS: "profilemanagement:8080"

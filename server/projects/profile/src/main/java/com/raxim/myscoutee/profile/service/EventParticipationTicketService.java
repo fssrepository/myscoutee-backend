@@ -294,9 +294,54 @@ public class EventParticipationTicketService {
     }
 
     private void flushChanges(List<ActivityEvent> toSave) {
-        if (!toSave.isEmpty()) {
-            activityEventsRepository.saveAll(toSave);
+        if (toSave.isEmpty()) {
+            return;
         }
+
+        Map<String, ActivityEvent> uniqueByOwnerTypeSource = new LinkedHashMap<>();
+        for (ActivityEvent record : toSave) {
+            if (record == null) {
+                continue;
+            }
+            String key = ownerTypeSourceKey(record);
+            ActivityEvent prepared = reuseExistingIdentity(record);
+            uniqueByOwnerTypeSource.put(StringUtils.hasText(key) ? key : UUID.randomUUID().toString(), prepared);
+        }
+        if (!uniqueByOwnerTypeSource.isEmpty()) {
+            activityEventsRepository.saveAll(uniqueByOwnerTypeSource.values());
+        }
+    }
+
+    private ActivityEvent reuseExistingIdentity(ActivityEvent record) {
+        String ownerUserId = normalizeId(record.getOwnerUserId());
+        String type = normalizeType(record.getType());
+        String sourceId = normalizeId(record.getSourceId());
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type) || !StringUtils.hasText(sourceId)) {
+            return record;
+        }
+        ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, type, sourceId)
+                .orElse(null);
+        if (existing == null || Objects.equals(existing.getId(), record.getId())) {
+            return record;
+        }
+        record.setId(existing.getId());
+        if (StringUtils.hasText(existing.getSyncKey())) {
+            record.setSyncKey(existing.getSyncKey());
+        }
+        record.setCreatedDate(normalizeDateTime(existing.getCreatedDate(), record.getCreatedDate()));
+        record.setCreatedUser(StringUtils.hasText(existing.getCreatedUser()) ? existing.getCreatedUser() : record.getCreatedUser());
+        record.setUnread(normalizeCount(existing.getUnread()));
+        return record;
+    }
+
+    private String ownerTypeSourceKey(ActivityEvent record) {
+        String ownerUserId = normalizeId(record.getOwnerUserId());
+        String type = normalizeType(record.getType());
+        String sourceId = normalizeId(record.getSourceId());
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type) || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        return ownerUserId + "|" + type + "|" + sourceId;
     }
 
     private ActivityEvent resolvePreferredSourceRecord(List<ActivityEvent> sourceDocuments) {

@@ -1,0 +1,204 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+install -d -m 0755 /etc/myscoutee
+install -d -m 0755 /opt/myscoutee/server
+install -d -m 0755 /opt/myscoutee/server/docker/conf/nginx/keys
+install -d -m 0755 /opt/myscoutee/server/projects/profile/secrets
+install -d -m 0755 /var/lib/myscoutee/data
+install -d -m 0755 /var/log/myscoutee
+install -d -m 0755 /var/backups/myscoutee
+
+generate_secret() {
+  if command -v openssl >/dev/null 2>&1; then
+    openssl rand -hex 32
+    return 0
+  fi
+
+  if [[ -r /dev/urandom ]]; then
+    LC_ALL=C od -An -N32 -tx1 /dev/urandom | tr -d ' \n'
+    return 0
+  fi
+
+  echo "Unable to generate production secrets: openssl is missing and /dev/urandom is unavailable." >&2
+  exit 1
+}
+
+install_generated_secrets_file() {
+  local target template tmp
+  local mongo_root_password mongo_app_password minio_root_password
+
+  target="/etc/myscoutee/myscoutee.secrets.env"
+  template="/opt/myscoutee/packaging/templates/myscoutee.secrets.env"
+
+  mongo_root_password="$(generate_secret)"
+  mongo_app_password="$(generate_secret)"
+  minio_root_password="$(generate_secret)"
+
+  tmp="$(mktemp "${target}.XXXXXX")"
+  chmod 0600 "${tmp}"
+
+  sed \
+    -e "s/^MONGO_INITDB_ROOT_PASSWORD=.*/MONGO_INITDB_ROOT_PASSWORD=${mongo_root_password}/" \
+    -e "s/^MONGO_APP_PASSWORD=.*/MONGO_APP_PASSWORD=${mongo_app_password}/" \
+    -e "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${minio_root_password}/" \
+    "${template}" > "${tmp}"
+
+  install -m 0600 "${tmp}" "${target}"
+  rm -f "${tmp}"
+}
+
+read_env_file_value() {
+  local key="$1"
+  local file="$2"
+  local line value
+
+  [[ -f "${file}" ]] || return 1
+  line="$(sed -n "s/^[[:space:]]*${key}[[:space:]]*=[[:space:]]*//p" "${file}" | tail -n 1)"
+  [[ -n "${line}" ]] || return 1
+
+  value="${line%$'\r'}"
+  if [[ "${value}" == \"*\" && "${value}" == *\" ]]; then
+    value="${value:1:${#value}-2}"
+  elif [[ "${value}" == \'*\' && "${value}" == *\' ]]; then
+    value="${value:1:${#value}-2}"
+  fi
+
+  printf '%s' "${value}"
+}
+
+config_value() {
+  local key="$1"
+  local fallback="$2"
+  local value
+
+  value="$(read_env_file_value "${key}" /etc/myscoutee/myscoutee.env || true)"
+  if [[ -n "${value}" ]]; then
+    printf '%s' "${value}"
+    return 0
+  fi
+
+  printf '%s' "${fallback}"
+}
+
+normalize_packaged_image_values() {
+  local env_file version
+
+  env_file="/etc/myscoutee/myscoutee.env"
+  version="$(read_env_file_value MYSCOUTEE_VERSION "${env_file}" || true)"
+  version="${version:-1.0.0}"
+
+  sed \
+    -e "s|^NGINX_BASE_IMAGE=myscoutee-nginx:.*MYSCOUTEE_VERSION.*$|NGINX_BASE_IMAGE=myscoutee-nginx:${version}-base|" \
+    -e "s|^NGINX_PRODUCTION_IMAGE=myscoutee-nginx:.*MYSCOUTEE_VERSION.*$|NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${version}|" \
+    -e "s|^MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:.*MYSCOUTEE_VERSION.*$|MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${version}|" \
+    -i "${env_file}"
+}
+
+ensure_docker_image() {
+  local image="$1"
+  local label="$2"
+
+  if docker image inspect "${image}" >/dev/null 2>&1; then
+    echo "${label} image is available: ${image}"
+    return 0
+  fi
+
+  echo "Pulling ${label} image: ${image}"
+  docker pull "${image}"
+}
+
+ensure_service_images() {
+  ensure_docker_image "$(config_value MONGO_IMAGE mongo:8.0.4)" "MongoDB"
+  ensure_docker_image "$(config_value REDIS_IMAGE redis:8.6.1-alpine)" "Redis"
+  ensure_docker_image "$(config_value MINIO_IMAGE minio/minio:RELEASE.2025-09-07T16-13-09Z)" "MinIO"
+}
+
+if [[ ! -f /etc/myscoutee/myscoutee.env ]]; then
+  install -m 0644 /opt/myscoutee/packaging/templates/myscoutee.env /etc/myscoutee/myscoutee.env
+fi
+
+normalize_packaged_image_values
+
+if ! grep -q '^[[:space:]]*MONGO_REPLICA_SET_ENABLED=' /etc/myscoutee/myscoutee.env; then
+  cat >> /etc/myscoutee/myscoutee.env <<'EOF'
+
+# Optional: enable this for Mongo change streams. When true, systemd adds
+# docker-compose.replicaset.yml and the affinity recompute worker uses
+# change-stream wakeups with polling still kept as recovery.
+MONGO_REPLICA_SET_ENABLED=false
+MONGO_REPLICA_SET_NAME=rs0
+MONGO_REPLICA_SET_HOST=mongodb:27017
+MONGO_REPLICA_SET_INIT_RETRIES=60
+MONGO_REPLICA_SET_INIT_DELAY_SECONDS=2
+AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED=
+AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED=true
+EOF
+fi
+
+if [[ ! -f /etc/myscoutee/myscoutee.secrets.env ]]; then
+  install_generated_secrets_file
+fi
+
+ln -sfn /etc/myscoutee/myscoutee.env /opt/myscoutee/server/.env
+ln -sfn /etc/myscoutee/myscoutee.secrets.env /opt/myscoutee/server/.env.secrets
+
+if [[ ! -e /opt/myscoutee/server/data ]]; then
+  ln -sfn /var/lib/myscoutee/data /opt/myscoutee/server/data
+fi
+
+if [[ ! -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt || ! -f /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key ]]; then
+  if command -v openssl >/dev/null 2>&1; then
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+      -keyout /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key \
+      -out /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt \
+      -subj "/CN=localhost" >/dev/null 2>&1
+    chmod 0600 /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key
+    chmod 0644 /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt
+  else
+    echo "openssl is missing; create nginx.crt and nginx-nopass.key before starting MyScoutee." >&2
+  fi
+fi
+
+if command -v docker >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
+  systemctl enable --now docker
+fi
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "Docker is required. Install the local deb with apt so dependencies are installed: apt install ./myscoutee_1.0.0_amd64.deb" >&2
+  exit 1
+fi
+
+if ! docker compose version >/dev/null 2>&1; then
+  echo "Docker Compose v2 is required. Install the local deb with apt so dependencies are installed: apt install ./myscoutee_1.0.0_amd64.deb" >&2
+  exit 1
+fi
+
+if ! docker info >/dev/null 2>&1; then
+  echo "Docker is installed, but the Docker daemon is not reachable. Start docker.service and rerun package configuration." >&2
+  exit 1
+fi
+
+if compgen -G "/opt/myscoutee/images/*.tar" >/dev/null; then
+  for image_archive in /opt/myscoutee/images/*.tar; do
+    echo "Loading bundled Docker image: ${image_archive}"
+    docker load -i "${image_archive}" >/dev/null
+  done
+fi
+
+ensure_service_images
+
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl daemon-reload || true
+  systemctl enable myscoutee.service >/dev/null 2>&1 || true
+fi
+
+cat <<'MESSAGE'
+MyScoutee is installed.
+
+Before first start:
+  1. Edit /etc/myscoutee/myscoutee.env
+  2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)
+  3. Add /opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json if Firebase is enabled
+  4. Run: systemctl start myscoutee
+MESSAGE

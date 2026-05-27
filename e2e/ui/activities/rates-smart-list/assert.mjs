@@ -5,7 +5,8 @@ import {
   closeExplanationPopupEventually,
   openNavigatorMenu,
   scrollSmartList,
-  smartListSnapshot
+  smartListSnapshot,
+  waitForSmartListSettled
 } from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
@@ -45,9 +46,9 @@ export async function assertUi({ page }) {
   await assertCalendarHasStructure(page);
 
   await selectActivitiesView(page, 'Day');
-  await page.waitForSelector('.popup-panel-activities .smart-list--calendar');
-  await page.recordStep('rates-day-calendar-view');
-  await assertCalendarHasStructure(page);
+  await page.waitForSelector('.popup-panel-activities .smart-list--list');
+  await assertVisibleRateCards(page, 'day rate cards');
+  await page.recordStep('rates-day-list-view');
 
   await selectActivitiesView(page, 'Distance');
   await page.waitForSelector('.popup-panel-activities .smart-list--list');
@@ -67,7 +68,8 @@ export async function assertUi({ page }) {
   await commitRating(page);
   await page.recordStep('rates-rating-committed');
 
-  await scrollSmartList(page, '.popup-panel-activities', 700);
+  await waitForRatingDockCloseGuard(page);
+  await userScrollSmartList(page, '.popup-panel-activities', 700);
   await page.waitFor('rating dock closes after scroll', async () => {
     return page.visibleCount('.rating-star-bar-host--dock-open').then(count => count === 0);
   }, 15000);
@@ -169,7 +171,8 @@ async function assertCalendarHasStructure(page) {
 }
 
 async function assertVisibleRateCards(page, label) {
-  const count = await page.visibleCount('.popup-panel-activities .activities-rate-profile-card');
+  const loaded = await waitForVisibleRateCards(page, label);
+  const count = loaded.count;
   if (count > 0) {
     return;
   }
@@ -186,6 +189,11 @@ async function assertVisibleRateCards(page, label) {
     return {
       text: (root?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1000),
       allRateCards: document.querySelectorAll('.popup-panel-activities .activities-rate-profile-card').length,
+      loadingBars: Array.from(document.querySelectorAll('.popup-panel-activities .header-progress-bar'))
+        .map(element => ({
+          className: element.className,
+          text: (element.textContent ?? '').trim()
+        })),
       visibleItemShells: Array.from(document.querySelectorAll('.popup-panel-activities .smart-list__item-shell'))
         .filter(visible)
         .map(element => ({
@@ -196,11 +204,50 @@ async function assertVisibleRateCards(page, label) {
     };
   });
   const snapshot = await smartListSnapshot(page, '.popup-panel-activities');
+  await page.recordStep('rates-empty-card-render');
+  page.recordFinding?.({
+    severity: 'fatal',
+    title: 'Rates smart-list rendered no visible rate cards after waiting for the loading/progress phase',
+    details: {
+      label,
+      count,
+      waitedMs: loaded.waitedMs,
+      snapshot,
+      details
+    }
+  });
   assert(count >= 1, `${label} should have at least 1 visible item(s)`, {
     count,
     snapshot,
     details
   });
+}
+
+async function waitForVisibleRateCards(page, label, timeoutMs = 12000) {
+  const started = Date.now();
+  const ready = await page.waitFor(`${label} visible after rates loading`, async () => {
+    return page.evaluate(() => {
+      const visible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      return Array.from(document.querySelectorAll('.popup-panel-activities .activities-rate-profile-card'))
+        .some(visible);
+    });
+  }, timeoutMs, 250).then(() => true).catch(() => false);
+
+  if (ready) {
+    await waitForSmartListSettled(page, '.popup-panel-activities', 5000).catch(() => undefined);
+  }
+
+  return {
+    count: await page.visibleCount('.popup-panel-activities .activities-rate-profile-card'),
+    waitedMs: Date.now() - started
+  };
 }
 
 async function openRateDock(page) {
@@ -229,4 +276,25 @@ async function commitRating(page) {
   await page.waitFor('.rating bar value commits', async () => {
     return page.visibleCount('.rating-star-bar__commit').then(count => count === 0);
   }, 10000);
+}
+
+async function waitForRatingDockCloseGuard(page) {
+  await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 350)));
+}
+
+async function userScrollSmartList(page, rootSelector, amount = 700) {
+  await page.evaluate(({ rootSelector, amount }) => {
+    const root = document.querySelector(rootSelector) ?? document;
+    const list = root.querySelector('.smart-list');
+    if (!list) {
+      return;
+    }
+    list.dispatchEvent(new WheelEvent('wheel', {
+      deltaY: amount,
+      bubbles: true,
+      cancelable: true
+    }));
+    list.scrollBy({ top: amount, left: 0, behavior: 'instant' });
+    list.dispatchEvent(new Event('scroll', { bubbles: true }));
+  }, { rootSelector, amount });
 }

@@ -1,0 +1,27 @@
+{
+  "name": "Admin and content read benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 4,
+  "rampUpMs": 5000,
+  "durationMs": 60000,
+  "thinkTimeMs": 100,
+  "thinkTimeJitterMs": 100,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 8000,
+    "p99Ms": 14000
+  },
+  "steps": [
+    { "name": "landing content", "collectionCase": "content/landing" },
+    { "name": "help active", "collectionCase": "content/help-active" },
+    { "name": "explanation home", "collectionCase": "content/explanation-home" },
+    { "name": "privacy active", "collectionCase": "content/privacy-active" },
+    { "name": "i18n bundle", "collectionCase": "content/i18n-bundle" },
+    { "name": "admin dashboard", "collectionCase": "admin/dashboard" },
+    { "name": "admin stats", "collectionCase": "admin/stats" },
+    { "name": "admin monitoring", "collectionCase": "admin/monitoring" },
+    { "name": "admin notifications", "collectionCase": "admin/notifications" },
+    { "name": "notification runtime", "collectionCase": "admin/notification-runtime" }
+  ]
+}

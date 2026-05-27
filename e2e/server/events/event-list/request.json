@@ -9,7 +9,9 @@
     "X-App-Session-Kind": "demo"
   },
   "params": {
-    "userId": "{{userId}}"
+    "userId": "{{userId}}",
+    "limit": "12",
+    "slim": "true"
   },
   "expectedStatus": 200,
   "maxMs": 8000

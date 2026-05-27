@@ -10,6 +10,13 @@ public final class MediaDtos {
             String url) {
     }
 
+    public record MediaImageImportRequestDto(
+            String scope,
+            String ownerId,
+            String entityId,
+            String imageUrl) {
+    }
+
     public record MediaUploadResponseDto(
             Boolean uploaded,
             String url) {

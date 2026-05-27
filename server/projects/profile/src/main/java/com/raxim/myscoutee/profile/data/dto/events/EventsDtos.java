@@ -6,6 +6,7 @@ import java.util.Map;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
@@ -24,7 +25,8 @@ public final class EventsDtos {
             String cursor,
             String anchorDate,
             String rangeStart,
-            String rangeEnd) {
+            String rangeEnd,
+            Boolean slim) {
     }
 
     public record EventsExploreQueryDto(
@@ -169,6 +171,7 @@ public final class EventsDtos {
             String frequency,
             Boolean ticketing,
             PricingConfigDto pricing,
+            List<PolicyItemDto> policies,
             Boolean slotsEnabled,
             List<EventSlotTemplateDto> slotTemplates,
             String parentEventId,
@@ -187,8 +190,53 @@ public final class EventsDtos {
             Double affinity) {
     }
 
+    public record EventListItemDto(
+            String id,
+            String userId,
+            String type,
+            String status,
+            String avatar,
+            String title,
+            String subtitle,
+            String timeframe,
+            Integer unread,
+            Integer activity,
+            Boolean isAdmin,
+            Boolean isInvitation,
+            Boolean isHosting,
+            Boolean isTrashed,
+            Boolean published,
+            String creatorUserId,
+            String creatorName,
+            String creatorInitials,
+            String creatorCity,
+            String visibility,
+            String startAtIso,
+            String endAtIso,
+            Double distanceKm,
+            String imageUrl,
+            String location,
+            Integer capacityMin,
+            Integer capacityMax,
+            Integer capacityTotal,
+            Boolean ticketing,
+            String eventType,
+            Integer acceptedMembers,
+            Integer pendingMembers,
+            List<String> topics,
+            Double rating,
+            Double boost,
+            Double affinity) {
+    }
+
     public record EventsExplorePageDto(
             List<EventRecordDto> records,
+            Integer total,
+            String nextCursor) {
+    }
+
+    public record EventListPageDto(
+            List<EventListItemDto> records,
             Integer total,
             String nextCursor) {
     }
@@ -216,6 +264,7 @@ public final class EventsDtos {
             String frequency,
             Boolean ticketing,
             PricingConfigDto pricing,
+            List<PolicyItemDto> policies,
             Boolean slotsEnabled,
             List<EventSlotTemplateDto> slotTemplates,
             String parentEventId,

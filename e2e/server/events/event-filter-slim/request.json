@@ -1,0 +1,24 @@
+{
+  "name": "activities event filtered slim page",
+  "group": "events",
+  "order": 511,
+  "method": "POST",
+  "path": "/api/activities/events/filter",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "userId": "{{userId}}",
+    "filter": "all",
+    "hostingPublicationFilter": "all",
+    "secondaryFilter": "recent",
+    "sort": "date",
+    "view": "day",
+    "limit": 12,
+    "cursor": null,
+    "slim": true
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

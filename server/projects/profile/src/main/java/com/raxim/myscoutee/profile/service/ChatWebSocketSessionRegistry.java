@@ -170,9 +170,13 @@ public class ChatWebSocketSessionRegistry {
     }
 
     private String payloadCacheKey(ChatStreamEvent event, String userId) {
-        String type = event == null ? "" : normalize(event.type());
+        if (event == null) {
+            return "";
+        }
+        ChatStreamEvent current = Objects.requireNonNull(event);
+        String type = normalize(current.type());
         if ("message".equals(type)) {
-            return Objects.equals(normalize(event.senderId()), normalize(userId)) ? "message:mine" : "message:other";
+            return Objects.equals(normalize(current.senderId()), normalize(userId)) ? "message:mine" : "message:other";
         }
         return type;
     }

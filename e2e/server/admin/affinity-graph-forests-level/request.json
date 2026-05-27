@@ -1,0 +1,19 @@
+{
+  "name": "admin affinity graph forests level",
+  "group": "admin",
+  "order": 1130,
+  "method": "GET",
+  "path": "/api/admin/affinity-graph/forests",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}",
+    "layoutVersion": "{{affinityGraphLayoutVersion}}",
+    "forestLevel": 1,
+    "limit": 32,
+    "offset": 0
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

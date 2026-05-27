@@ -265,6 +265,31 @@ async function openFirstJoinableEventAction(page, preferredTitle) {
     }
     await scrollExploreList(page);
   }
+  const snapshot = await page.evaluate(() => {
+    const root = document.querySelector('.popup-panel-event-explore');
+    return {
+      text: (root?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1200),
+      visibleCards: Array.from(document.querySelectorAll('.popup-panel-event-explore .experience-item-card'))
+        .filter(element => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          return rect.width > 0
+            && rect.height > 0
+            && style.visibility !== 'hidden'
+            && style.display !== 'none';
+        })
+        .map(card => (card.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 240))
+    };
+  });
+  await page.recordStep('event-explore-join-action-missing');
+  page.recordFinding?.({
+    severity: 'fatal',
+    title: 'Event explore did not expose a join/book/waitlist action',
+    details: {
+      preferredTitle,
+      ...snapshot
+    }
+  });
   return { clicked: false };
 }
 

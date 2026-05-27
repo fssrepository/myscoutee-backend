@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -74,7 +74,7 @@ async function runUiCollection(options) {
       const setupPage = await browser.newPage({ viewport: options.ctx.viewport });
       try {
         if (options.record) {
-          attachStepRecorder(setupPage, options.artifactsDir, setupTestCase);
+          await attachStepRecorder(setupPage, options.artifactsDir, setupTestCase);
         }
         const setupStarted = performance.now();
         options.ctx.suiteDemoStorage = await performDemoLogin(setupPage, {
@@ -120,7 +120,7 @@ async function runUiCollection(options) {
         }
         page = await browser.newPage({ viewport: testCase.request.viewport ?? options.ctx.viewport });
         if (options.record) {
-          attachStepRecorder(page, options.artifactsDir, testCase);
+          await attachStepRecorder(page, options.artifactsDir, testCase);
         }
         const result = await runUiCase({
           browser,
@@ -149,6 +149,9 @@ async function runUiCollection(options) {
         console.error(`  ${error.message}`);
         if (error.details) {
           console.error(`  details: ${JSON.stringify(error.details).slice(0, 1200)}`);
+        }
+        if (page) {
+          await recordRuntimeFindings(page).catch(() => undefined);
         }
         if (page && options.record) {
           await recordUiCase(options.artifactsDir, testCase, page, { error: error.message });
@@ -224,7 +227,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
           });
           auxiliaryPages.push(childPage);
           if (record) {
-            attachStepRecorder(childPage, artifactsDir, {
+            await attachStepRecorder(childPage, artifactsDir, {
               ...testCase,
               id: `${testCase.id}/${slugifyStepName(name)}`
             });
@@ -242,7 +245,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
           });
           auxiliaryPages.push(childPage);
           if (record) {
-            attachStepRecorder(childPage, artifactsDir, {
+            await attachStepRecorder(childPage, artifactsDir, {
               ...testCase,
               id: `${testCase.id}/${slugifyStepName(name)}`
             });
@@ -251,6 +254,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
         }
       });
     }
+    await recordRuntimeFindings(page);
     await assertBrowserExpectations(page, expected ?? {});
     const durationMs = performance.now() - started;
     const result = {
@@ -276,6 +280,68 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
     for (const childBrowser of auxiliaryBrowsers) {
       await childBrowser.close().catch(() => undefined);
     }
+  }
+}
+
+async function recordRuntimeFindings(page) {
+  if (!page || page.runtimeFindingsRecorded) {
+    return;
+  }
+  page.runtimeFindingsRecorded = true;
+
+  const consoleErrors = (page.consoleMessages ?? []).filter(entry => entry.type === 'error');
+  if (consoleErrors.length > 0) {
+    await page.recordStep('runtime-console-errors');
+    page.recordFinding?.({
+      severity: 'warning',
+      title: 'Browser console logged errors',
+      details: {
+        count: consoleErrors.length,
+        errors: consoleErrors.slice(0, 10)
+      }
+    });
+  }
+
+  const pageErrors = page.pageErrors ?? [];
+  if (pageErrors.length > 0) {
+    await page.recordStep('runtime-page-errors');
+    page.recordFinding?.({
+      severity: 'fatal',
+      title: 'Browser runtime exceptions were thrown',
+      details: {
+        count: pageErrors.length,
+        errors: pageErrors.slice(0, 10)
+      }
+    });
+  }
+
+  const failedApiResponses = (page.network ?? []).filter(entry => entry.url.includes('/api/') && entry.status >= 400);
+  if (failedApiResponses.length > 0) {
+    await page.recordStep('runtime-failed-api-responses');
+    page.recordFinding?.({
+      severity: 'fatal',
+      title: 'Backend API returned failed responses during UI flow',
+      details: {
+        count: failedApiResponses.length,
+        responses: failedApiResponses.slice(0, 20)
+      }
+    });
+  }
+
+  const failedNetwork = (page.failedNetwork ?? []).filter(entry => {
+    const url = `${entry.url ?? ''}`;
+    return /^https?:\/\//i.test(url) && entry.errorText !== 'net::ERR_ABORTED';
+  });
+  if (failedNetwork.length > 0) {
+    await page.recordStep('runtime-failed-network-loads');
+    page.recordFinding?.({
+      severity: 'warning',
+      title: 'Browser reported failed network loads',
+      details: {
+        count: failedNetwork.length,
+        requests: failedNetwork.slice(0, 20)
+      }
+    });
   }
 }
 
@@ -370,17 +436,19 @@ async function recordUiCase(artifactsDir, testCase, page, result) {
   }, null, 2));
 }
 
-function attachStepRecorder(page, artifactsDir, testCase) {
+async function attachStepRecorder(page, artifactsDir, testCase) {
   let index = 0;
+  const caseDir = path.join(artifactsDir, testCase.id);
+  await rm(caseDir, { recursive: true, force: true });
   page.recordedSteps = [];
   page.stepRecorder = async (name, currentPage) => {
     index += 1;
     const normalizedName = slugifyStepName(name || `step-${index}`);
     const filename = `${String(index).padStart(2, '0')}-${normalizedName}.png`;
-    const caseDir = path.join(artifactsDir, testCase.id, 'steps');
-    await mkdir(caseDir, { recursive: true });
+    const stepsDir = path.join(caseDir, 'steps');
+    await mkdir(stepsDir, { recursive: true });
     const screenshot = await currentPage.screenshot();
-    await writeFile(path.join(caseDir, filename), screenshot);
+    await writeFile(path.join(stepsDir, filename), screenshot);
     const relativePath = `./${testCase.id}/steps/${filename}`;
     page.recordedSteps.push({
       name,
@@ -393,6 +461,8 @@ function attachStepRecorder(page, artifactsDir, testCase) {
 function resultSummaryFor(testCase, result = {}) {
   const artifactPath = `./${testCase.id}`;
   const response = testCase.response ?? {};
+  const steps = result.steps ?? [];
+  const lastStep = steps.length > 0 ? steps[steps.length - 1] : null;
   return {
     id: testCase.id,
     name: testCase.request.name ?? testCase.id,
@@ -407,7 +477,8 @@ function resultSummaryFor(testCase, result = {}) {
     script: testCase.request.script ?? 'assert.mjs',
     screenshot: result.record ? `${artifactPath}/screenshot.png` : null,
     resultJson: result.record ? `${artifactPath}/result.json` : null,
-    steps: result.steps ?? [],
+    lastStepScreenshot: lastStep?.path ?? null,
+    steps,
     uiFindings: result.uiFindings ?? [],
     expected: collectBrowserExpectations(response)
   };
@@ -522,6 +593,10 @@ function renderUiArtifactIndex(report) {
       lines.push('UI findings:');
       for (const finding of result.uiFindings) {
         lines.push(`- ${finding.severity ?? 'info'}: ${finding.title ?? 'UI finding'}`);
+        const relevantScreenshot = finding.screenshot ?? result.lastStepScreenshot;
+        if (relevantScreenshot) {
+          lines.push(`  Relevant screenshot: [open](${relativeArtifactLink(relevantScreenshot)})`);
+        }
       }
     }
     appendExpectationLines(lines, result.expected);
@@ -551,7 +626,10 @@ function renderUiFindings(report) {
     for (const result of failed) {
       lines.push(`- ${result.id}: ${result.error ?? 'failed'}`);
       if (result.screenshot) {
-        lines.push(`  Screenshot: ${relativeArtifactLink(result.screenshot)}`);
+        lines.push(`  Final screenshot: ${relativeArtifactLink(result.screenshot)}`);
+      }
+      if (result.lastStepScreenshot) {
+        lines.push(`  Relevant step screenshot: ${relativeArtifactLink(result.lastStepScreenshot)}`);
       }
     }
     lines.push('');
@@ -561,8 +639,12 @@ function renderUiFindings(report) {
     lines.push('');
     for (const { result, finding } of weird) {
       lines.push(`- ${result.id}: ${finding.severity ?? 'info'} - ${finding.title ?? 'UI finding'}`);
-      if (result.screenshot) {
-        lines.push(`  Screenshot: ${relativeArtifactLink(result.screenshot)}`);
+      const relevantScreenshot = finding.screenshot ?? result.lastStepScreenshot;
+      if (relevantScreenshot) {
+        lines.push(`  Relevant screenshot: ${relativeArtifactLink(relevantScreenshot)}`);
+      }
+      if (result.screenshot && result.screenshot !== relevantScreenshot) {
+        lines.push(`  Final screenshot: ${relativeArtifactLink(result.screenshot)}`);
       }
       if (finding.details) {
         lines.push(`  Details: \`${JSON.stringify(finding.details).slice(0, 1200)}\``);

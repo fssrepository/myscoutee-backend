@@ -1,0 +1,17 @@
+{
+  "name": "activities hosting legacy list",
+  "group": "events",
+  "order": 1507,
+  "method": "GET",
+  "path": "/api/activities/events/hosting",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "script": "assert.mjs",
+  "maxMs": 8000
+}

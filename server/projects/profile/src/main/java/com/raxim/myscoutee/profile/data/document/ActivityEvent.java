@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
@@ -22,8 +23,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
         @CompoundIndex(name = "event_owner_type_source", def = "{'ownerUserId': 1, 'type': 1, 'sourceId': 1}", unique = true),
         @CompoundIndex(name = "event_owner_type", def = "{'ownerUserId': 1, 'type': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_owner_type_status_start", def = "{'ownerUserId': 1, 'type': 1, 'status': 1, 'startAtIso': 1}"),
+        @CompoundIndex(name = "event_owner_start_source", def = "{'ownerUserId': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_owner_source", def = "{'ownerUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1, 'type': 1}"),
+        @CompoundIndex(name = "event_source_start_lookup", def = "{'sourceId': 1, 'startAtIso': 1, 'type': 1}"),
         @CompoundIndex(name = "event_creator_start", def = "{'creatorUserId': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_admins_lookup", def = "{'admins': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_auto_inviter_start", def = "{'autoInviter': 1, 'startAtIso': 1}"),
@@ -91,6 +94,7 @@ public class ActivityEvent {
     private String frequency;
     private Boolean ticketing;
     private PricingConfigDto pricing;
+    private List<PolicyItemDto> policies = new ArrayList<>();
     private Boolean slotsEnabled;
     private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
     private String parentEventId;
@@ -241,6 +245,10 @@ public class ActivityEvent {
     public void setTicketing(Boolean ticketing) { this.ticketing = ticketing; }
     public PricingConfigDto getPricing() { return pricing; }
     public void setPricing(PricingConfigDto pricing) { this.pricing = pricing; }
+    public List<PolicyItemDto> getPolicies() { return policies; }
+    public void setPolicies(List<PolicyItemDto> policies) {
+        this.policies = policies == null ? new ArrayList<>() : new ArrayList<>(policies);
+    }
     public Boolean getSlotsEnabled() { return slotsEnabled; }
     public void setSlotsEnabled(Boolean slotsEnabled) { this.slotsEnabled = slotsEnabled; }
     public List<EventSlotTemplateDto> getSlotTemplates() { return slotTemplates; }

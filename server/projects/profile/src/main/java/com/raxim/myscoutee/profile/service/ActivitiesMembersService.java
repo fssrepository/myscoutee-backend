@@ -161,20 +161,29 @@ public class ActivitiesMembersService {
     }
 
     public Set<String> findTrackedEventSourceIdsForUser(String userId) {
+        return new LinkedHashSet<>(findTrackedEventMembershipStatusesForUser(userId).keySet());
+    }
+
+    public Map<String, String> findTrackedEventMembershipStatusesForUser(String userId) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
-            return Set.of();
+            return Map.of();
         }
-        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
-                .filter(Objects::nonNull)
-                .filter(member -> {
-                    String status = normalizeStatus(member.getStatus());
-                    return STATUS_ACCEPTED.equals(status) || STATUS_PENDING.equals(status);
-                })
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, String> statusesByOwnerId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId)) {
+            if (member == null) {
+                continue;
+            }
+            String status = normalizeStatus(member.getStatus());
+            if (!STATUS_ACCEPTED.equals(status) && !STATUS_PENDING.equals(status)) {
+                continue;
+            }
+            String ownerId = normalizeId(member.getOwnerId());
+            if (StringUtils.hasText(ownerId)) {
+                statusesByOwnerId.put(ownerId, status);
+            }
+        }
+        return statusesByOwnerId;
     }
 
     /**

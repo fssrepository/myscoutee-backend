@@ -122,6 +122,28 @@ Run a longer read sweep:
 node e2e/stress/run.mjs --scenario server-read-sweep
 ```
 
+Focused benchmarks are available for profile, events, event editor, chats,
+assets/rates, and admin/content areas. The detailed plan and metric definitions
+live in:
+
+```text
+e2e/stress/STRESS_TEST_PLAN.md
+```
+
+Record a baseline run:
+
+```bash
+node e2e/stress/run.mjs --scenario server-events-read --record
+```
+
+Compare a later candidate run to the baseline:
+
+```bash
+node e2e/stress/compare.mjs \
+  .e2e-artifacts/stress/server-events-read-baseline \
+  .e2e-artifacts/stress/server-events-read-candidate
+```
+
 Run a stateful WebSocket room simulation against the disposable playground
 database. This opens many chat sockets into one seeded room, sends messages
 round-robin from the sockets, verifies room fanout, and records host/container

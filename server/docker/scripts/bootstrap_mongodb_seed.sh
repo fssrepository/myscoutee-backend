@@ -4,11 +4,18 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 BOOTSTRAP_DB_NAME="${MONGO_BOOTSTRAP_DATABASE:-demo_db}"
-DATA_DIR="${MONGO_BOOTSTRAP_DATA_DIR:-${SERVER_ROOT}/data/mongodb/demo-data-v8}"
+DATA_DIR="${MONGO_BOOTSTRAP_DATA_DIR:-${SERVER_ROOT}/data/mongodb/demo-data-v8-0}"
 SEED_DIR="${MONGO_BOOTSTRAP_SEED_DIR:-${SERVER_ROOT}/docker/conf/mongodb/${BOOTSTRAP_DB_NAME}}"
 SEED_HASH_FILE="${SERVER_ROOT}/data/mongodb/.${BOOTSTRAP_DB_NAME}_seed_hash"
 MONGO_INIT_ROOT="${SERVER_ROOT}/docker/conf/mongodb"
+ENV_FILE="${SERVER_ROOT}/.env"
+CONFIGURED_MONGO_IMAGE="${MONGO_IMAGE:-}"
 SEED_FILES=()
+
+if [ -z "${CONFIGURED_MONGO_IMAGE}" ] && [ -f "${ENV_FILE}" ]; then
+  CONFIGURED_MONGO_IMAGE="$(sed -n 's/^MONGO_IMAGE=//p' "${ENV_FILE}" | tail -n 1)"
+fi
+CONFIGURED_MONGO_IMAGE="${CONFIGURED_MONGO_IMAGE:-mongo:8.0.4}"
 
 while IFS= read -r init_file; do
   SEED_FILES+=("${init_file}")
@@ -41,7 +48,7 @@ if ! find "${SEED_DIR}" -maxdepth 1 -type f -name '*.json' -print -quit | grep -
   exit 1
 fi
 
-seed_hash="$(sha256sum "${SEED_FILES[@]}" | sha256sum | awk '{print $1}')"
+seed_hash="$( { printf 'mongo_image=%s\n' "${CONFIGURED_MONGO_IMAGE}"; sha256sum "${SEED_FILES[@]}"; } | sha256sum | awk '{print $1}')"
 existing_hash=""
 if [ -f "${SEED_HASH_FILE}" ]; then
   existing_hash="$(tr -d '[:space:]' < "${SEED_HASH_FILE}")"
@@ -54,7 +61,7 @@ else
 fi
 
 if [ "${existing_hash}" = "${seed_hash}" ] && [ "${data_present}" -eq 1 ]; then
-  echo "Mongo ${BOOTSTRAP_DB_NAME} seed unchanged (${seed_hash}). Keeping existing data in ${DATA_DIR}."
+  echo "Mongo ${BOOTSTRAP_DB_NAME} seed unchanged for ${CONFIGURED_MONGO_IMAGE} (${seed_hash}). Keeping existing data in ${DATA_DIR}."
   exit 0
 fi
 
@@ -68,10 +75,10 @@ clear_data_dir() {
 }
 
 if [ "${data_present}" -eq 1 ]; then
-  echo "Refreshing Mongo data in ${DATA_DIR} for ${BOOTSTRAP_DB_NAME} seed ${seed_hash}."
+  echo "Refreshing Mongo data in ${DATA_DIR} for ${BOOTSTRAP_DB_NAME} seed ${seed_hash} and ${CONFIGURED_MONGO_IMAGE}."
   clear_data_dir
 else
-  echo "Mongo data directory is already empty. Recording ${BOOTSTRAP_DB_NAME} seed ${seed_hash}."
+  echo "Mongo data directory is already empty. Recording ${BOOTSTRAP_DB_NAME} seed ${seed_hash} and ${CONFIGURED_MONGO_IMAGE}."
 fi
 
 printf '%s\n' "${seed_hash}" > "${SEED_HASH_FILE}"

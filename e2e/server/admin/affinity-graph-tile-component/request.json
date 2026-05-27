@@ -1,0 +1,22 @@
+{
+  "name": "admin affinity graph tile component",
+  "group": "admin",
+  "order": 1140,
+  "method": "GET",
+  "path": "/api/admin/affinity-graph/tiles",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}",
+    "layoutVersion": "{{affinityGraphLayoutVersion}}",
+    "componentId": "{{affinityGraphComponentId}}",
+    "z": 0,
+    "x": 0,
+    "y": 0,
+    "minWeight": 0,
+    "maxWeight": 1
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

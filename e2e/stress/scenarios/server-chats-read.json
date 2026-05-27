@@ -1,0 +1,22 @@
+{
+  "name": "Chats read/connect benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 6,
+  "rampUpMs": 5000,
+  "durationMs": 60000,
+  "thinkTimeMs": 75,
+  "thinkTimeJitterMs": 75,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 7000,
+    "p99Ms": 12000
+  },
+  "steps": [
+    { "name": "chat list", "collectionCase": "chats/list" },
+    { "name": "chat page", "collectionCase": "chats/page" },
+    { "name": "chat messages", "collectionCase": "chats/messages" },
+    { "name": "chat websocket connect", "collectionCase": "websocket/chat-connect" },
+    { "name": "admin websocket connect", "collectionCase": "websocket/admin-notifications-connect" }
+  ]
+}

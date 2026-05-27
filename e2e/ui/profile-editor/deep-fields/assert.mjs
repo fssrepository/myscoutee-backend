@@ -74,6 +74,7 @@ async function choosePhysiqueOption(page) {
     rejectActive: true
   });
   assert(selected, 'Physique selector should expose another option');
+  await waitForProfileOptionPanelsClosed(page);
   return selected;
 }
 
@@ -86,6 +87,7 @@ async function chooseFirstDetailOption(page) {
       rejectActive: true
     });
     assert(selected, 'Profile detail dropdown should expose a selectable option');
+    await waitForProfileOptionPanelsClosed(page);
     return selected;
   }
 
@@ -115,6 +117,7 @@ async function chooseFirstDetailOption(page) {
     rejectActive: true
   });
   assert(selected, 'Profile detail dropdown should expose a selectable option');
+  await waitForProfileOptionPanelsClosed(page);
   return selected;
 }
 
@@ -287,6 +290,7 @@ async function chooseFirstPrivacy(page, label) {
     return true;
   }, label);
   assert(clicked, `Profile privacy selector should expose ${label}`);
+  await waitForProfileOptionPanelsClosed(page);
 }
 
 async function closeAndPersistProfile(page) {
@@ -317,6 +321,51 @@ async function chooseVisibleOption(page, options) {
     option.click();
     return label;
   }, options);
+}
+
+async function waitForProfileOptionPanelsClosed(page) {
+  const selector = '.physique-options-panel, .profile-bottom-sheet-panel, .mobile-profile-selector-sheet';
+  const panelsClosed = await waitForNoVisibleProfileOptionPanels(page, selector, 5000)
+    .then(() => true)
+    .catch(() => false);
+  if (panelsClosed) {
+    return;
+  }
+  await page.evaluate(selector => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    };
+    const backdrop = Array.from(document.querySelectorAll('.cdk-overlay-backdrop, .mobile-profile-selector-backdrop'))
+      .reverse()
+      .find(visible);
+    if (backdrop) {
+      backdrop.click();
+      return;
+    }
+    document.querySelector('.popup-panel-profile-editor')?.click();
+  }, selector);
+  await waitForNoVisibleProfileOptionPanels(page, selector, 10000);
+}
+
+async function waitForNoVisibleProfileOptionPanels(page, selector, timeoutMs) {
+  await page.waitFor('profile option panels closed', async () => {
+    return page.evaluate(selector => {
+      const visible = element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0
+          && rect.height > 0
+          && style.visibility !== 'hidden'
+          && style.display !== 'none';
+      };
+      return !Array.from(document.querySelectorAll(selector)).some(visible);
+    }, selector);
+  }, timeoutMs);
 }
 
 async function readProfileDeepSnapshot(page) {

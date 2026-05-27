@@ -1,5 +1,5 @@
 {
-  "name": "activities hosting list",
+  "name": "activities hosting slim page",
   "group": "events",
   "order": 507,
   "method": "GET",
@@ -9,7 +9,9 @@
     "X-App-Session-Kind": "demo"
   },
   "params": {
-    "userId": "{{userId}}"
+    "userId": "{{userId}}",
+    "limit": "12",
+    "slim": "true"
   },
   "expectedStatus": 200,
   "script": "assert.mjs",

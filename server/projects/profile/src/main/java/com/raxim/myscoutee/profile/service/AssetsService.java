@@ -903,6 +903,7 @@ public class AssetsService {
                 safeText(event.getFrequency()),
                 Boolean.TRUE.equals(event.getTicketing()),
                 clonePricing(event.getPricing()),
+                event.getPolicies() == null ? List.of() : new ArrayList<>(event.getPolicies()),
                 Boolean.TRUE.equals(event.getSlotsEnabled()),
                 event.getSlotTemplates() == null ? List.of() : new ArrayList<>(event.getSlotTemplates()),
                 safeNullableText(event.getParentEventId()),

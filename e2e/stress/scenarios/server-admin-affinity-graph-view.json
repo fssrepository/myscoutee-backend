@@ -1,0 +1,29 @@
+{
+  "name": "Admin affinity graph view benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 4,
+  "rampUpMs": 5000,
+  "durationMs": 60000,
+  "reuseContext": true,
+  "thinkTimeMs": 120,
+  "thinkTimeJitterMs": 120,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 8000,
+    "p99Ms": 14000
+  },
+  "steps": [
+    {
+      "name": "graph initial fanout",
+      "parallel": [
+        { "name": "graph meta", "collectionCase": "admin/affinity-graph-meta" },
+        { "name": "graph forests base", "collectionCase": "admin/affinity-graph-forests" },
+        { "name": "graph tile root", "collectionCase": "admin/affinity-graph-tile-root" }
+      ]
+    },
+    { "name": "graph forests level", "collectionCase": "admin/affinity-graph-forests-level" },
+    { "name": "graph component tile", "collectionCase": "admin/affinity-graph-tile-component" },
+    { "name": "graph neighborhood", "collectionCase": "admin/affinity-graph-neighborhood" }
+  ]
+}

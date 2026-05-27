@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class AffinityRecomputeWorkerService {
     private final ModelStatusPropagationService modelStatusPropagationService;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
+    private final AffinityRecomputeMetricsService metricsService;
+    private final AtomicBoolean processing = new AtomicBoolean(false);
     private volatile long lastScheduledRunMs = 0L;
     private volatile long cachedWorkerPollDelayMs = DEFAULT_WORKER_POLL_DELAY_MS;
 
@@ -41,52 +44,98 @@ public class AffinityRecomputeWorkerService {
             AffinityMaintenanceService affinityMaintenanceService,
             ModelStatusPropagationService modelStatusPropagationService,
             AffinityRecomputeProperties properties,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            AffinityRecomputeMetricsService metricsService) {
         this.taskService = taskService;
         this.affinityMaintenanceService = affinityMaintenanceService;
         this.modelStatusPropagationService = modelStatusPropagationService;
         this.properties = properties;
         this.mongoTemplate = mongoTemplate;
+        this.metricsService = metricsService;
     }
 
     @Scheduled(fixedDelayString = "${affinity.recompute.worker-tick-ms:1000}")
     public void runDueTasks() {
-        if (!properties.isEnabled()) {
+        if (!properties.isEnabled()
+                || (properties.isChangeStreamEnabled() && !properties.isChangeStreamFallbackPollEnabled())) {
             return;
         }
         try {
             if (!shouldRunScheduledPass()) {
                 return;
             }
-            processDueTasks(Instant.now());
+            processDueTasks(Instant.now(), "scheduled");
         } catch (RuntimeException exception) {
             LOGGER.debug("Affinity recompute worker tick skipped after a transient failure.", exception);
         }
     }
 
-    public int processDueTasks(Instant now) {
-        Instant effectiveNow = now == null ? Instant.now() : now;
-        List<AffinityRecomputeTask> dueTasks = taskService.findPendingDueTasks(effectiveNow, effectiveDueTaskLimit());
-        List<AffinityRecomputeTask> leasedTasks = new ArrayList<>();
-        for (AffinityRecomputeTask task : dueTasks) {
-            AffinityRecomputeTask leased = lease(task, effectiveNow);
-            if (leased == null) {
-                continue;
-            }
-            leasedTasks.add(leased);
-        }
-        if (leasedTasks.isEmpty()) {
+    public int wakeDueTasks(String trigger) {
+        if (!properties.isEnabled()) {
             return 0;
         }
+        try {
+            return processDueTasks(Instant.now(), StringUtils.hasText(trigger) ? trigger : "wakeup");
+        } catch (RuntimeException exception) {
+            LOGGER.debug("Affinity recompute worker wakeup skipped after a transient failure.", exception);
+            return 0;
+        }
+    }
 
-        Map<String, List<AffinityRecomputeTask>> tasksByTargetType = new LinkedHashMap<>();
-        for (AffinityRecomputeTask task : leasedTasks) {
-            tasksByTargetType.computeIfAbsent(safeText(task.getTargetType()), ignored -> new ArrayList<>()).add(task);
+    public int processDueTasks(Instant now) {
+        return processDueTasks(now, "direct");
+    }
+
+    public AffinityRecomputeMetricsService.Snapshot metricsSnapshot() {
+        return metricsService.snapshot();
+    }
+
+    private int processDueTasks(Instant now, String trigger) {
+        if (!processing.compareAndSet(false, true)) {
+            metricsService.recordWorkerBusySkip();
+            return 0;
         }
-        for (Map.Entry<String, List<AffinityRecomputeTask>> entry : tasksByTargetType.entrySet()) {
-            processLeasedTaskBatch(entry.getKey(), entry.getValue());
+        long readStartMs = System.nanoTime();
+        long runtimeStartMs = readStartMs;
+        int dueCount = 0;
+        int leasedCount = 0;
+        try {
+            Instant effectiveNow = now == null ? Instant.now() : now;
+            List<AffinityRecomputeTask> dueTasks = taskService.findPendingDueTasks(effectiveNow, effectiveDueTaskLimit());
+            dueTasks = dueTasks == null ? List.of() : dueTasks;
+            dueCount = dueTasks.size();
+            long readMs = elapsedMs(readStartMs);
+            List<AffinityRecomputeTask> leasedTasks = new ArrayList<>();
+            for (AffinityRecomputeTask task : dueTasks) {
+                AffinityRecomputeTask leased = lease(task, effectiveNow);
+                if (leased == null) {
+                    continue;
+                }
+                metricsService.recordTaskLeased(leased, effectiveNow);
+                leasedTasks.add(leased);
+            }
+            leasedCount = leasedTasks.size();
+            if (leasedTasks.isEmpty()) {
+                metricsService.recordWorkerPass(trigger, dueCount, 0, readMs, elapsedMs(runtimeStartMs));
+                return 0;
+            }
+
+            Map<String, List<AffinityRecomputeTask>> tasksByTargetType = new LinkedHashMap<>();
+            for (AffinityRecomputeTask task : leasedTasks) {
+                tasksByTargetType.computeIfAbsent(safeText(task.getTargetType()), ignored -> new ArrayList<>()).add(task);
+            }
+            for (Map.Entry<String, List<AffinityRecomputeTask>> entry : tasksByTargetType.entrySet()) {
+                processLeasedTaskBatch(entry.getKey(), entry.getValue());
+            }
+            metricsService.recordWorkerPass(trigger, dueCount, leasedCount, readMs, elapsedMs(runtimeStartMs));
+            return leasedCount;
+        } finally {
+            processing.set(false);
         }
-        return leasedTasks.size();
+    }
+
+    private long elapsedMs(long startNs) {
+        return Math.max(0L, (System.nanoTime() - startNs) / 1_000_000L);
     }
 
     private AffinityRecomputeTask lease(AffinityRecomputeTask task, Instant now) {

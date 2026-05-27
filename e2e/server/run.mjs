@@ -110,6 +110,24 @@ async function ensureEvent(requireSubEvent = false) {
       ctx.vars.userId = userId;
       return;
     }
+    if (requireSubEvent) {
+      delete ctx.vars.eventId;
+      delete ctx.vars.ownerId;
+      delete ctx.vars.subEventId;
+      const fullList = await ctx.http.get('/api/activities/events', {
+        params: { userId, limit: 12 },
+        headers: demoHeaders()
+      });
+      if (Array.isArray(fullList.data)) {
+        assertEventList(fullList.data, ctx, 'event requirement full list');
+      } else {
+        assertEventPage(fullList.data, ctx, 'event requirement full list');
+      }
+      if (ctx.vars.eventId && ctx.vars.subEventId) {
+        ctx.vars.userId = userId;
+        return;
+      }
+    }
   }
   throw new Error(requireSubEvent
     ? 'No demo event with subEvents was found for subEvent requirement'
@@ -129,12 +147,13 @@ async function ensureAsset() {
 }
 
 async function ensureChat() {
-  if (ctx.vars.chatId) {
+  if (ctx.vars.chatId && ctx.vars.chatUserId && ctx.vars.chatUserId === ctx.vars.userId) {
     return;
   }
   await ensureDemoUser({ preserveSelectedUser: true });
   for (const userId of candidateDemoUserIds()) {
     delete ctx.vars.chatId;
+    delete ctx.vars.chatUserId;
     const result = await ctx.http.get('/api/activities/chats', {
       params: { userId },
       headers: demoHeaders()
@@ -142,6 +161,7 @@ async function ensureChat() {
     assertChats(result.data, ctx, 'chat requirement');
     if (ctx.vars.chatId) {
       ctx.vars.userId = userId;
+      ctx.vars.chatUserId = userId;
       return;
     }
   }
@@ -154,6 +174,7 @@ async function ensureDemoUser(options = {}) {
   }
   const existingUserId = ctx.vars.userId;
   const result = await ctx.http.get('/api/auth/demo-users', {
+    params: { limit: '64' },
     headers: demoHeaders(),
     timeoutMs: 15000
   });

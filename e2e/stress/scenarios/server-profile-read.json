@@ -1,0 +1,23 @@
+{
+  "name": "Profile read benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 6,
+  "rampUpMs": 5000,
+  "durationMs": 60000,
+  "thinkTimeMs": 75,
+  "thinkTimeJitterMs": 75,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 6000,
+    "p99Ms": 10000
+  },
+  "steps": [
+    { "name": "demo users", "collectionCase": "profile/demo-users" },
+    { "name": "auth me", "collectionCase": "profile/auth-me" },
+    { "name": "experiences", "collectionCase": "profile/experiences" },
+    { "name": "eligibility", "collectionCase": "profile/eligibility" },
+    { "name": "realtime counters", "collectionCase": "profile/realtime" },
+    { "name": "privacy consents", "collectionCase": "content/privacy-consents" }
+  ]
+}

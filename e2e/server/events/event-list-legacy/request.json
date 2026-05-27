@@ -1,0 +1,16 @@
+{
+  "name": "activities event list legacy array",
+  "group": "events",
+  "order": 499,
+  "method": "GET",
+  "path": "/api/activities/events",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

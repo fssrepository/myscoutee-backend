@@ -1,5 +1,5 @@
 {
-  "name": "activities event trash list",
+  "name": "activities event trash slim page",
   "group": "events",
   "order": 508,
   "method": "GET",
@@ -9,7 +9,9 @@
     "X-App-Session-Kind": "demo"
   },
   "params": {
-    "userId": "{{userId}}"
+    "userId": "{{userId}}",
+    "limit": "12",
+    "slim": "true"
   },
   "expectedStatus": 200,
   "script": "assert.mjs",

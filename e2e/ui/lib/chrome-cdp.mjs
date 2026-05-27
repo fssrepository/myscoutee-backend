@@ -699,10 +699,14 @@ export class ChromePage {
   }
 
   recordFinding(finding) {
+    const lastStep = Array.isArray(this.recordedSteps) && this.recordedSteps.length > 0
+      ? this.recordedSteps[this.recordedSteps.length - 1]
+      : null;
     this.uiFindings.push({
       severity: finding?.severity ?? 'info',
       title: finding?.title ?? 'UI finding',
-      details: finding?.details ?? null
+      details: finding?.details ?? null,
+      screenshot: finding?.screenshot ?? lastStep?.path ?? null
     });
   }
 

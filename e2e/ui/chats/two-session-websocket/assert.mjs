@@ -192,6 +192,30 @@ async function openChatById(page, chatId) {
         && component.chatItems.some(chat => `${chat.id ?? ''}`.trim() === chatId);
     }, chatId);
   }, 30000);
+  const directOpen = await page.evaluate(chatId => {
+    const host = document.querySelector('app-activities-popup');
+    const component = window.ng?.getComponent?.(host);
+    const chat = Array.isArray(component?.chatItems)
+      ? component.chatItems.find(item => `${item.id ?? ''}`.trim() === chatId)
+      : null;
+    if (!chat) {
+      return {
+        opened: false,
+        method: 'direct-component-open',
+        chatItemIds: (component?.chatItems ?? []).map(item => item?.id).filter(Boolean).slice(0, 20)
+      };
+    }
+    component.openActivityChat?.(chat);
+    component.cdr?.markForCheck?.();
+    return {
+      opened: true,
+      method: 'direct-component-open',
+      title: chat.title ?? ''
+    };
+  }, chatId);
+  if (directOpen.opened) {
+    return directOpen;
+  }
   const result = await page.evaluate(chatId => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();

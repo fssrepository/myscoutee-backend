@@ -11,6 +11,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,8 +48,7 @@ public class HelpCenterService {
     private static final String DOCUMENT_EXPLANATION = "explanation";
     private static final String DEFAULT_LANG = "en";
     private static final String LEGACY_VERSION_INDEX = "help_revision_version";
-    private static final String DEFAULT_EXPLANATION_CONTEXT = "home.game";
-    private static final String EXPLANATION_ACTIVITY_RATES_CONTEXT = "activities.rates";
+    private static final int REVISION_SAVE_MAX_ATTEMPTS = 5;
     private static final String EXPLANATION_CHATS_CONTEXT = "chats";
     private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
     private static final String EXPLANATION_ASSETS_CONTEXT = "assets";
@@ -175,37 +175,58 @@ public class HelpCenterService {
         String context = contextKey(kind, request == null ? null : request.contextKey(), true);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
         List<HelpCenterSection> sections = normalizeSections(request == null ? null : request.sections(), kind);
-        List<HelpCenterRevision> currentRevisions = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context);
-        Integer nextVersion = currentRevisions.stream()
-                .map(HelpCenterRevision::getVersion)
-                .filter(value -> value != null && value > 0)
-                .max(Integer::compareTo)
-                .orElse(0) + 1;
-        String nowIso = Instant.now().toString();
-        HelpCenterRevision revision = new HelpCenterRevision();
-        revision.setDocumentType(kind);
-        revision.setLang(language);
-        revision.setContextKey(context);
-        revision.setLanguageLabel(languageLabel(language));
-        revision.setVersion(nextVersion);
-        revision.setActive(false);
-        revision.setTitle(text(request == null ? null : request.title(), defaultTitle(kind, nextVersion, language)));
-        revision.setSummary(normalize(request == null ? null : request.summary()));
-        revision.setDescription(normalize(request == null ? null : request.description()));
-        revision.setHeaderColor(headerColor(request == null ? null : request.headerColor()));
-        revision.setSections(sections);
-        revision.setCreatedDate(nowIso);
-        revision.setCreatedUser(actorUserId);
-        revision.setUpdatedDate(nowIso);
-        revision.setUpdatedUser(actorUserId);
-
-        HelpCenterRevision saved = revisionsRepository.save(revision);
+        HelpCenterRevision saved = saveNewRevisionWithNextVersion(request, kind, language, context, actorUserId, sections);
         String baseRevisionId = normalize(request == null ? null : request.baseRevisionId());
         audit("create", actorUserId, saved, StringUtils.hasText(baseRevisionId)
                 ? "Created v" + saved.getVersion() + " from " + baseRevisionId + "."
                 : "Created v" + saved.getVersion() + ".");
         adminTelemetryService.record("content.revision.saved", "content", saved.getId(), actorUserId);
         return fullState(kind, language, context);
+    }
+
+    private HelpCenterRevision saveNewRevisionWithNextVersion(
+            HelpCenterRevisionSaveRequestDto request,
+            String kind,
+            String language,
+            String context,
+            String actorUserId,
+            List<HelpCenterSection> sections) {
+        DuplicateKeyException lastDuplicate = null;
+        for (int attempt = 0; attempt < REVISION_SAVE_MAX_ATTEMPTS; attempt++) {
+            List<HelpCenterRevision> currentRevisions = revisionsForKind(
+                    revisionsRepository.findAllByOrderByVersionDesc(),
+                    kind,
+                    language,
+                    context);
+            Integer nextVersion = currentRevisions.stream()
+                    .map(HelpCenterRevision::getVersion)
+                    .filter(value -> value != null && value > 0)
+                    .max(Integer::compareTo)
+                    .orElse(0) + 1;
+            String nowIso = Instant.now().toString();
+            HelpCenterRevision revision = new HelpCenterRevision();
+            revision.setDocumentType(kind);
+            revision.setLang(language);
+            revision.setContextKey(context);
+            revision.setLanguageLabel(languageLabel(language));
+            revision.setVersion(nextVersion);
+            revision.setActive(false);
+            revision.setTitle(text(request == null ? null : request.title(), defaultTitle(kind, nextVersion, language)));
+            revision.setSummary(normalize(request == null ? null : request.summary()));
+            revision.setDescription(normalize(request == null ? null : request.description()));
+            revision.setHeaderColor(headerColor(request == null ? null : request.headerColor()));
+            revision.setSections(sections);
+            revision.setCreatedDate(nowIso);
+            revision.setCreatedUser(actorUserId);
+            revision.setUpdatedDate(nowIso);
+            revision.setUpdatedUser(actorUserId);
+            try {
+                return revisionsRepository.save(revision);
+            } catch (DuplicateKeyException duplicateKeyException) {
+                lastDuplicate = duplicateKeyException;
+            }
+        }
+        throw new DuplicateKeyException("Could not allocate a help center revision version after retries.", lastDuplicate);
     }
 
     public HelpCenterStateDto activateRevision(String revisionId, HelpCenterAdminActionRequestDto request) {
@@ -320,10 +341,6 @@ public class HelpCenterService {
         consent.setUpdatedAtIso(nowIso);
         consent.setSource(privacyConsentSource(request == null ? null : request.source()));
         return toPrivacyConsentDto(privacyConsentsRepository.save(consent));
-    }
-
-    private HelpCenterStateDto fullState(String kind, String lang) {
-        return fullState(kind, lang, null);
     }
 
     private HelpCenterStateDto fullState(String kind, String lang, String contextKey) {
@@ -646,10 +663,6 @@ public class HelpCenterService {
         } catch (RuntimeException ignored) {
             // Content reads should continue if index metadata is temporarily unavailable.
         }
-    }
-
-    private List<HelpCenterRevision> revisionsForKind(List<HelpCenterRevision> revisions, String kind, String lang) {
-        return revisionsForKind(revisions, kind, lang, null);
     }
 
     private List<HelpCenterRevision> revisionsForKind(List<HelpCenterRevision> revisions, String kind, String lang, String contextKey) {

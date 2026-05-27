@@ -359,6 +359,147 @@ export function assertAdminState(value, ctx, path = 'admin state') {
   rememberImages(ctx, value);
 }
 
+export function assertAffinityGraphMeta(value, ctx, path = 'admin affinity graph meta') {
+  const meta = expectObject(value, path);
+  expectString(meta.generatedAtIso, `${path}.generatedAtIso`);
+  expectString(meta.source, `${path}.source`);
+  rememberAffinityGraphLayout(ctx, meta);
+  expectNumber(meta.memberCount, `${path}.memberCount`);
+  expectNumber(meta.linkCount, `${path}.linkCount`);
+  expectNumber(meta.componentCount, `${path}.componentCount`);
+  expectNumber(meta.isolatedCount, `${path}.isolatedCount`);
+  expectNumber(meta.maxZoom, `${path}.maxZoom`);
+  expectNumber(meta.tileSize, `${path}.tileSize`);
+  expectNumber(meta.nodeRenderBudget, `${path}.nodeRenderBudget`);
+  expectNumber(meta.edgeRenderBudget, `${path}.edgeRenderBudget`);
+  expectBoolean(meta.materialized, `${path}.materialized`);
+  return meta;
+}
+
+export function assertAffinityGraphForests(value, ctx, path = 'admin affinity graph forests') {
+  const response = expectObject(value, path);
+  expectString(response.generatedAtIso, `${path}.generatedAtIso`);
+  expectString(response.source, `${path}.source`);
+  rememberAffinityGraphLayout(ctx, response);
+  expectOptionalNumber(response.forestCount, `${path}.forestCount`);
+  expectOptionalNumber(response.forestLevel, `${path}.forestLevel`);
+  expectOptionalNumber(response.maxForestLevel, `${path}.maxForestLevel`);
+  expectOptionalNumber(response.limit, `${path}.limit`);
+  expectOptionalNumber(response.offset, `${path}.offset`);
+  expectArray(response.forests, `${path}.forests`).forEach((forest, index) => {
+    assertAffinityGraphForest(forest, ctx, `${path}.forests[${index}]`);
+  });
+  return response;
+}
+
+export function assertAffinityGraphTile(value, ctx, path = 'admin affinity graph tile') {
+  const tile = expectObject(value, path);
+  expectString(tile.generatedAtIso, `${path}.generatedAtIso`);
+  expectString(tile.source, `${path}.source`);
+  rememberAffinityGraphLayout(ctx, tile);
+  expectNumber(tile.z, `${path}.z`);
+  expectNumber(tile.x, `${path}.x`);
+  expectNumber(tile.y, `${path}.y`);
+  expectNumber(tile.nodeCount, `${path}.nodeCount`);
+  expectNumber(tile.edgeCount, `${path}.edgeCount`);
+  expectBoolean(tile.truncated, `${path}.truncated`);
+  expectArray(tile.nodes, `${path}.nodes`).forEach((node, index) => {
+    assertAffinityGraphNode(node, ctx, `${path}.nodes[${index}]`);
+  });
+  expectArray(tile.edges, `${path}.edges`).forEach((edge, index) => {
+    assertAffinityGraphEdge(edge, `${path}.edges[${index}]`);
+  });
+  rememberImages(ctx, tile);
+  return tile;
+}
+
+export function assertAffinityGraphNeighborhood(value, ctx, path = 'admin affinity graph neighborhood') {
+  const graph = assertAffinityGraphTile(
+    {
+      ...value,
+      z: value?.z ?? 0,
+      x: value?.x ?? 0,
+      y: value?.y ?? 0,
+      nodeCount: Array.isArray(value?.nodes) ? value.nodes.length : 0,
+      edgeCount: Array.isArray(value?.edges) ? value.edges.length : 0,
+      truncated: false
+    },
+    ctx,
+    path
+  );
+  expectString(value.centerUserId, `${path}.centerUserId`);
+  expectNumber(value.depth, `${path}.depth`);
+  ctx.vars.affinityGraphUserId = value.centerUserId;
+  return graph;
+}
+
+function assertAffinityGraphForest(value, ctx, path) {
+  const forest = expectObject(value, path);
+  expectString(forest.componentId, `${path}.componentId`);
+  expectString(forest.representativeUserId, `${path}.representativeUserId`);
+  expectString(forest.representativeName, `${path}.representativeName`, { allowEmpty: true });
+  expectString(forest.representativeInitials, `${path}.representativeInitials`, { allowEmpty: true });
+  expectOptionalString(forest.gender, `${path}.gender`);
+  expectNumber(forest.memberCount, `${path}.memberCount`);
+  expectNumber(forest.edgeCount, `${path}.edgeCount`);
+  expectNumber(forest.weightedDegree, `${path}.weightedDegree`);
+  expectNumber(forest.x, `${path}.x`);
+  expectNumber(forest.y, `${path}.y`);
+  expectNumber(forest.z, `${path}.z`);
+  expectNumber(forest.radius, `${path}.radius`);
+  ctx.vars.affinityGraphComponentId ??= forest.componentId;
+  ctx.vars.affinityGraphUserId ??= forest.representativeUserId;
+  return forest;
+}
+
+function assertAffinityGraphNode(value, ctx, path) {
+  const node = expectObject(value, path);
+  expectString(node.id, `${path}.id`);
+  expectString(node.name, `${path}.name`, { allowEmpty: true });
+  expectString(node.initials, `${path}.initials`, { allowEmpty: true });
+  expectOptionalString(node.gender, `${path}.gender`);
+  expectOptionalString(node.city, `${path}.city`);
+  expectOptionalNumber(node.age, `${path}.age`);
+  expectOptionalString(node.headline, `${path}.headline`);
+  expectOptionalString(node.traitLabel, `${path}.traitLabel`);
+  expectOptionalString(node.statusText, `${path}.statusText`);
+  expectOptionalString(node.profileStatus, `${path}.profileStatus`);
+  expectOptionalString(node.image, `${path}.image`);
+  if (node.images !== null && node.images !== undefined) {
+    expectArray(node.images, `${path}.images`);
+  }
+  expectOptionalString(node.componentId, `${path}.componentId`);
+  expectOptionalNumber(node.x, `${path}.x`);
+  expectOptionalNumber(node.y, `${path}.y`);
+  expectOptionalNumber(node.z, `${path}.z`);
+  expectOptionalNumber(node.degree, `${path}.degree`);
+  expectOptionalNumber(node.weightedDegree, `${path}.weightedDegree`);
+  expectOptionalNumber(node.centrality, `${path}.centrality`);
+  ctx.vars.affinityGraphUserId ??= node.id;
+  if (`${node.componentId ?? ''}`.trim()) {
+    ctx.vars.affinityGraphComponentId ??= node.componentId;
+  }
+  return node;
+}
+
+function assertAffinityGraphEdge(value, path) {
+  const edge = expectObject(value, path);
+  expectString(edge.id, `${path}.id`);
+  expectString(edge.source, `${path}.source`);
+  expectString(edge.target, `${path}.target`);
+  expectNumber(edge.weight, `${path}.weight`);
+  expectOptionalNumber(edge.affinityScore, `${path}.affinityScore`);
+  expectOptionalString(edge.updatedDate, `${path}.updatedDate`);
+  return edge;
+}
+
+function rememberAffinityGraphLayout(ctx, value) {
+  const layoutVersion = `${value?.layoutVersion ?? ''}`.trim();
+  if (layoutVersion) {
+    ctx.vars.affinityGraphLayoutVersion = layoutVersion;
+  }
+}
+
 export async function assertReachableLocalImages(ctx, urls) {
   const localUrls = unique(urls)
     .map(url => resolveResourceUrl(ctx.http.baseUrl, url))

@@ -1,4 +1,7 @@
 {
   "status": 200,
-  "body": { "type": "array" }
+  "body": {
+    "type": "object",
+    "required": ["records", "total"]
+  }
 }

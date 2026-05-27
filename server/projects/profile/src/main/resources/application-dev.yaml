@@ -29,6 +29,18 @@ auth:
   region-security:
     enabled: ${AUTH_REGION_SECURITY_ENABLED:false}
 
+admin:
+  stats:
+    enabled: ${ADMIN_STATS_ENABLED:true}
+
+affinity:
+  recompute:
+    enabled: ${AFFINITY_RECOMPUTE_ENABLED:true}
+    change-stream-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:false}
+    change-stream-fallback-poll-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:true}
+    change-stream-wakeup-coalesce: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_WAKEUP_COALESCE:250ms}
+    change-stream-reconnect-delay: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_RECONNECT_DELAY:5s}
+
 media:
   enabled: ${MEDIA_ENABLED:true}
   endpoint: ${MEDIA_OBJECT_STORE_ENDPOINT:http://localhost:9000}
@@ -61,7 +73,11 @@ email:
 
 events:
   scheduler:
+    check-delay-ms: ${EVENTS_SCHEDULER_CHECK_DELAY_MS:60000}
     poll-delay-ms: ${EVENTS_SCHEDULER_POLL_DELAY_MS:1800000}
+  waitlist:
+    inviter-enabled: ${EVENTS_WAITLIST_INVITER_ENABLED:true}
+    inviter-check-delay-ms: ${EVENTS_WAITLIST_INVITER_CHECK_DELAY_MS:60000}
 
 scheduled-messages:
   task-poll-delay-ms: ${SCHEDULED_MESSAGES_TASK_POLL_DELAY_MS:1800000}

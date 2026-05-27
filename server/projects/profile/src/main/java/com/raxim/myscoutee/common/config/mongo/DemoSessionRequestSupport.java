@@ -8,7 +8,6 @@ public final class DemoSessionRequestSupport {
     public static final String SESSION_KIND_HEADER = "X-App-Session-Kind";
     private static final String DEMO_SESSION_KIND = "demo";
     private static final String SESSION_KIND_PARAM = "sessionKind";
-    private static final String ACTIVITIES_CHATS_ROUTE = "/activities/chats";
 
     private DemoSessionRequestSupport() {
     }
@@ -18,7 +17,14 @@ public final class DemoSessionRequestSupport {
             return false;
         }
         String requestUri = request.getRequestURI();
-        return StringUtils.hasText(requestUri) && requestUri.startsWith(ACTIVITIES_CHATS_ROUTE);
+        if (!StringUtils.hasText(requestUri)) {
+            return false;
+        }
+        String normalizedUri = requestUri.trim();
+        return !normalizedUri.startsWith("/admin")
+                && !normalizedUri.startsWith("/api/admin")
+                && !normalizedUri.startsWith("/metrics")
+                && !normalizedUri.startsWith("/shutdown");
     }
 
     public static boolean isDemoSessionRequest(HttpServletRequest request) {

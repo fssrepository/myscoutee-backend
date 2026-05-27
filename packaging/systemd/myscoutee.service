@@ -1,0 +1,17 @@
+[Unit]
+Description=MyScoutee production stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/myscoutee/server
+EnvironmentFile=-/etc/myscoutee/myscoutee.env
+ExecStart=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh up -d
+ExecStop=/opt/myscoutee/packaging/scripts/myscoutee-compose.sh down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

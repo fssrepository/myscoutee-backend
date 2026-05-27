@@ -38,7 +38,8 @@ class AffinityRecomputeWorkerServiceTest {
                 affinityMaintenanceService,
                 modelStatusPropagationService,
                 properties,
-                mongoTemplate);
+                mongoTemplate,
+                new AffinityRecomputeMetricsService());
 
         worker.runDueTasks();
         worker.runDueTasks();
@@ -74,7 +75,8 @@ class AffinityRecomputeWorkerServiceTest {
                 affinityMaintenanceService,
                 modelStatusPropagationService,
                 properties,
-                mongoTemplate);
+                mongoTemplate,
+                new AffinityRecomputeMetricsService());
 
         int processed = worker.processDueTasks(now);
 
@@ -123,7 +125,8 @@ class AffinityRecomputeWorkerServiceTest {
                 affinityMaintenanceService,
                 modelStatusPropagationService,
                 properties,
-                mongoTemplate);
+                mongoTemplate,
+                new AffinityRecomputeMetricsService());
 
         int processed = worker.processDueTasks(now);
 
@@ -158,7 +161,8 @@ class AffinityRecomputeWorkerServiceTest {
                 affinityMaintenanceService,
                 modelStatusPropagationService,
                 properties,
-                mongoTemplate);
+                mongoTemplate,
+                new AffinityRecomputeMetricsService());
 
         int processed = worker.processDueTasks(now);
 

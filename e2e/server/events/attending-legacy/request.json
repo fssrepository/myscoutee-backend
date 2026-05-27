@@ -1,0 +1,17 @@
+{
+  "name": "activities attending legacy array",
+  "group": "events",
+  "order": 505,
+  "method": "GET",
+  "path": "/api/activities/events/attending",
+  "requires": ["demoUser"],
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "expectedStatus": 200,
+  "script": "assert.mjs",
+  "maxMs": 8000
+}

@@ -15,7 +15,7 @@ public class CachingConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("i18n_messages");
+        return new ConcurrentMapCacheManager("i18n_messages", "demo_users");
     }
 
     @Bean("messageKeyGenerator")

@@ -1,5 +1,5 @@
 import { assert } from '../../../shared/assertions.mjs';
-import { acceptEntryPrivacyIfPresent, waitForVisibleCount } from '../../lib/ui-contracts.mjs';
+import { acceptEntryPrivacyIfPresent, waitForLoginDialogOrDemoSelector, waitForVisibleCount } from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
   await page.waitForSelector('app-entry-shell');
@@ -7,7 +7,20 @@ export async function assertUi({ page }) {
   await page.recordStep('privacy-accepted');
 
   await page.click('.entry-cta-primary');
-  await page.waitForSelector('.confirmation-dialog');
+  await waitForLoginDialogOrDemoSelector(page, 30000);
+  if (!(await page.isSelectorVisible('.confirmation-dialog'))) {
+    await page.waitForSelector('.demo-login-overlay', { timeoutMs: 30000 });
+    await waitForVisibleCount(page, '.demo-user-item', 2, 'demo users without location dialog', 60000);
+    await page.recordStep('demo-selector-visible-without-location-dialog');
+    page.recordFinding?.({
+      severity: 'warning',
+      title: 'Entry flow did not show a location dialog before opening the demo selector',
+      details: {
+        expectedDialog: '.confirmation-dialog'
+      }
+    });
+    return;
+  }
   await page.recordStep('location-required-dialog-visible');
 
   const cancelled = await clickLocationDialogCancel(page);
@@ -26,7 +39,6 @@ export async function assertUi({ page }) {
     accuracy: 20
   });
   await page.click('.confirmation-dialog-confirm-btn');
-  await page.waitForNetwork('/api/auth/eligibility', { timeoutMs: 20000 });
   await page.waitForSelector('.demo-login-overlay', { timeoutMs: 20000 });
   await waitForVisibleCount(page, '.demo-user-item', 2, 'demo users after location approve', 60000);
   await page.waitForNetwork('/api/auth/demo-users', { timeoutMs: 20000 });

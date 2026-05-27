@@ -88,6 +88,9 @@ public class EventScheduler {
     @Value("${events.scheduler.enabled:false}")
     private boolean schedulerEnabled;
 
+    @Value("${events.waitlist.inviter-enabled:true}")
+    private boolean waitlistInviterEnabled;
+
     public EventScheduler(
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
@@ -143,6 +146,9 @@ public class EventScheduler {
 
     @Scheduled(fixedDelayString = "${events.waitlist.inviter-check-delay-ms:60000}")
     public void runWaitlistInviter() {
+        if (!waitlistInviterEnabled) {
+            return;
+        }
         if (!claimAutoInviterRun(Instant.now())) {
             return;
         }
