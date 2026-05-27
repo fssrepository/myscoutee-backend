@@ -1,5 +1,7 @@
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
+index.html - az oldalt meg lehet osztani, es ilyenkor og tagok vannak, tehat lehet scrapelni
+
 Bugs
 ----
 1) http - backend test
