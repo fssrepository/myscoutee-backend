@@ -1,11 +1,34 @@
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
-index.html - az oldalt meg lehet osztani, es ilyenkor og tagok vannak, tehat lehet scrapelni
+both
+----
+index.html - og tags, the page can be shared into facebook chat (menubar share link) -- pls. plan
+landing site - Preview button, popup with description for your own responsibility and how to report
+we need to check x buttons and other syles should be unified
+activating firebase on prod - registre to firebase - buy the domain of myscoutee.com
+create facebook campaign
+consent data update - real email etc.
+
+activity rating
+---------------
+on scroll the bar should disappear and on mentes also in list view
+on scroll the eye button is above the sticky header
+
+ui speed/stability (rendering - paint)/chucnk size reduction improvements - (chrome - lighthouse)
+------------------
+opening any popup should be lazy load (even the editor once, as it's hitting server)
+bootstrap is slow should be speed up
+ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big task
+
+finish the ui testing e2e-handoff
+
+I noticed Docker still emits the ARG ${NGINX_BASE_IMAGE} warning from the nginx Dockerfile
+
+1) pls. cleanup the handoff file, if something turned to green 2) translation is wrong in seeds (demo/http - each db) - on activity ratings screen: preferenciak -> szimpátiák,
+javaslatok -> ajánlások
 
 Bugs
 ----
-1) http - backend test
-
 b) eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.
 720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,

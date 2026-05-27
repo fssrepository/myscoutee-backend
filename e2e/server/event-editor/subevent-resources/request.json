@@ -4,14 +4,13 @@
   "order": 830,
   "method": "GET",
   "path": "/api/activities/events/subevent-resources",
-  "requires": ["subEvent"],
   "headers": {
     "X-App-Session-Kind": "demo"
   },
   "params": {
-    "ownerId": "{{eventId}}",
-    "subEventId": "{{subEventId}}",
-    "assetOwnerUserId": "{{userId}}"
+    "ownerId": "a11a802ee0714a21db94ed4e",
+    "subEventId": "2326c7da2af260d869cddfa9",
+    "assetOwnerUserId": "bf057de7c586eede7e84bdc7"
   },
   "expectedStatus": 200,
   "maxMs": 5000

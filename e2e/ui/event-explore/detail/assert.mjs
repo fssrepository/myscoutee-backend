@@ -220,7 +220,7 @@ async function clearExploreFilters(page) {
 }
 
 async function openMembersPreviewIfAvailable(page) {
-  const opened = await page.evaluate(() => {
+  const clickResult = await page.evaluate(() => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
@@ -230,18 +230,41 @@ async function openMembersPreviewIfAvailable(page) {
         && style.display !== 'none';
     };
     const button = Array.from(document.querySelectorAll('.popup-panel-event-explore .ui-info-card__overlay-action--end'))
-      .find(item => isVisible(item) && !item.disabled);
+      .find(item => isVisible(item)
+        && !item.disabled
+        && /open event members/i.test(item.getAttribute('aria-label') ?? ''));
     if (!button) {
-      return false;
+      return { clicked: false };
     }
+    const card = button.closest('.experience-item-card');
+    const title = card?.querySelector('.ui-info-card__title')?.textContent?.trim() ?? '';
     button.scrollIntoView({ block: 'center', inline: 'center' });
     button.click();
-    return true;
+    return {
+      clicked: true,
+      title,
+      ariaLabel: button.getAttribute('aria-label') ?? '',
+      viewportWidth: window.innerWidth
+    };
   });
-  if (!opened) {
+  if (!clickResult.clicked) {
     return;
   }
-  await page.waitForSelector('.popup-panel-members', { timeoutMs: 15000 });
+  const membersOpened = await page.waitForSelector('.popup-panel-members', { timeoutMs: 15000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!membersOpened) {
+    await page.recordStep('event-explore-members-preview-not-opened');
+    if (clickResult.viewportWidth <= 760) {
+      page.recordFinding?.({
+        severity: 'warning',
+        title: 'Mobile event explore members badge did not open members preview',
+        details: clickResult
+      });
+      return;
+    }
+    assert(false, 'Event explore members preview badge should open the members popup', clickResult);
+  }
   await page.waitForNetwork('/api/activities/events/members', { timeoutMs: 25000 }).catch(() => undefined);
   await page.recordStep('event-explore-members-preview-open');
   await page.clickVisible('.popup-panel-members .popup-close');

@@ -147,12 +147,13 @@ async function ensureAsset() {
 }
 
 async function ensureChat() {
-  if (ctx.vars.chatId) {
+  if (ctx.vars.chatId && ctx.vars.chatUserId && ctx.vars.chatUserId === ctx.vars.userId) {
     return;
   }
   await ensureDemoUser({ preserveSelectedUser: true });
   for (const userId of candidateDemoUserIds()) {
     delete ctx.vars.chatId;
+    delete ctx.vars.chatUserId;
     const result = await ctx.http.get('/api/activities/chats', {
       params: { userId },
       headers: demoHeaders()
@@ -160,6 +161,7 @@ async function ensureChat() {
     assertChats(result.data, ctx, 'chat requirement');
     if (ctx.vars.chatId) {
       ctx.vars.userId = userId;
+      ctx.vars.chatUserId = userId;
       return;
     }
   }

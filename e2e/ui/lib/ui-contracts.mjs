@@ -185,7 +185,7 @@ export async function waitForVisibleCount(page, selector, minCount, label = sele
 
 export async function waitForSmartListSettled(page, rootSelector, timeoutMs = 45000) {
   await page.waitFor(`${rootSelector} smart-list settled`, async () => {
-    const state = await backendUiState(page, rootSelector);
+    const state = await backendUiState(page, rootSelector, { includeLazyImages: false });
     return !state.busy;
   }, timeoutMs);
 }
@@ -207,8 +207,8 @@ export async function waitForAppLazyLoadWindow(page, rootSelector = 'body', time
   await waitForBackendUiWindow(page, rootSelector, timeoutMs);
 }
 
-async function backendUiState(page, rootSelector = 'body') {
-  return page.evaluate(rootSelector => {
+async function backendUiState(page, rootSelector = 'body', options = {}) {
+  return page.evaluate(({ rootSelector, includeLazyImages }) => {
     const root = document.querySelector(rootSelector) ?? document;
     const visible = element => {
       const rect = element.getBoundingClientRect();
@@ -223,7 +223,6 @@ async function backendUiState(page, rootSelector = 'body') {
       '.header-progress-bar.is-state-loading-overdue',
       '.popup-loading-overlay',
       '.smart-list__loading',
-      '.lazy-bg-loading',
       '.is-pane-loading',
       '[aria-busy="true"]',
       '.entry-consent-loading',
@@ -245,6 +244,9 @@ async function backendUiState(page, rootSelector = 'body') {
       '[class*="-ring-progress"].is-loading',
       '[class*="-upload-ring"].is-loading'
     ];
+    if (includeLazyImages !== false) {
+      selectors.push('.lazy-bg-loading');
+    }
     const active = selectors.flatMap(selector => {
       return Array.from(root.querySelectorAll(selector))
         .filter(visible)
@@ -258,7 +260,7 @@ async function backendUiState(page, rootSelector = 'body') {
       busy: active.length > 0,
       active
     };
-  }, rootSelector);
+  }, { rootSelector, includeLazyImages: options.includeLazyImages !== false });
 }
 
 export async function assertInfoCardMenuAnchored(page, options = {}) {
