@@ -6,6 +6,10 @@ networks:
   myscoutee:
     driver: bridge
 
+secrets:
+  firebase-service-account:
+    file: ./projects/profile/secrets/firebase-service-account.json
+
 services:
   # certbot:
   #   image: ${CERT_BOT}
@@ -169,13 +173,10 @@ services:
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
+    secrets:
+      - source: firebase-service-account
+        target: firebase-service-account.json
     volumes:
-      - type: bind
-        source: ./projects/profile/secrets/firebase-service-account.json
-        target: /run/secrets/firebase-service-account.json
-        read_only: true
-        bind:
-          create_host_path: false
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:

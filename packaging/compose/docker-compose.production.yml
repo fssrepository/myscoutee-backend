@@ -2,6 +2,10 @@ networks:
   myscoutee:
     driver: bridge
 
+secrets:
+  firebase-service-account:
+    file: ./projects/profile/secrets/firebase-service-account.json
+
 services:
   nginx:
     container_name: nginx
@@ -136,13 +140,10 @@ services:
       AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: "${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:-true}"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
+    secrets:
+      - source: firebase-service-account
+        target: firebase-service-account.json
     volumes:
-      - type: bind
-        source: ./projects/profile/secrets/firebase-service-account.json
-        target: /run/secrets/firebase-service-account.json
-        read_only: true
-        bind:
-          create_host_path: false
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
