@@ -60,7 +60,6 @@ public class AdminModerationService {
     private final ActivityChatMessagesRepository chatMessagesRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
-    private final AdminMenuCounterService adminMenuCounterService;
     private final AppSettingsService appSettingsService;
 
     public AdminModerationService(
@@ -72,7 +71,6 @@ public class AdminModerationService {
             ActivityChatMessagesRepository chatMessagesRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService,
             AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
@@ -82,7 +80,6 @@ public class AdminModerationService {
         this.chatMessagesRepository = chatMessagesRepository;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
-        this.adminMenuCounterService = adminMenuCounterService;
         this.appSettingsService = appSettingsService;
     }
 
@@ -283,8 +280,7 @@ public class AdminModerationService {
             user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
             changed = true;
         }
-        Users saved = changed ? usersRepository.save(user) : user;
-        return adminMenuCounterService.syncAdminUserCounters(saved);
+        return changed ? usersRepository.save(user) : user;
     }
 
     private void ensureReportedUser(String targetUserId) {
