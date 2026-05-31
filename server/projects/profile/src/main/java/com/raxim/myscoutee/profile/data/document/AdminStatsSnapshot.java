@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -38,6 +40,9 @@ public class AdminStatsSnapshot {
     private Map<String, String> activeEvents = new LinkedHashMap<>();
     private Map<String, String> knownAssets = new LinkedHashMap<>();
     private Map<String, String> activeAssets = new LinkedHashMap<>();
+    private Map<String, Long> profileStatusCounts = new LinkedHashMap<>();
+    private Map<String, Long> profileVisibilityCounts = new LinkedHashMap<>();
+    private Map<String, String> activeProfileUsers = new LinkedHashMap<>();
     private Integer graphHealthScore;
     private String graphHealthLabelKey;
     private String graphInsightKey;
@@ -49,6 +54,19 @@ public class AdminStatsSnapshot {
     private Map<String, Long> revenueMetrics = new LinkedHashMap<>();
     private Map<String, Long> revenueAssetCategories = new LinkedHashMap<>();
     private Map<String, Map<String, Long>> dailyRevenueActivity = new LinkedHashMap<>();
+
+    public static AdminStatsSnapshot createDefault(String statsKey) {
+        AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
+        snapshot.setId(new ObjectId().toHexString());
+        snapshot.setStatsKey(statsKey);
+        snapshot.setGeneratedAtIso(Instant.now().toString());
+        snapshot.setSource("http");
+        snapshot.setHealthScore(100);
+        snapshot.setHealthLabelKey("stats.health.good");
+        snapshot.setHealthSummaryKey("stats.health.summary");
+        snapshot.setLastTelemetryStreamId("0-0");
+        return snapshot;
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -112,6 +130,12 @@ public class AdminStatsSnapshot {
     public void setKnownAssets(Map<String, String> knownAssets) { this.knownAssets = knownAssets == null ? new LinkedHashMap<>() : new LinkedHashMap<>(knownAssets); }
     public Map<String, String> getActiveAssets() { return activeAssets; }
     public void setActiveAssets(Map<String, String> activeAssets) { this.activeAssets = activeAssets == null ? new LinkedHashMap<>() : new LinkedHashMap<>(activeAssets); }
+    public Map<String, Long> getProfileStatusCounts() { return profileStatusCounts; }
+    public void setProfileStatusCounts(Map<String, Long> profileStatusCounts) { this.profileStatusCounts = profileStatusCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileStatusCounts); }
+    public Map<String, Long> getProfileVisibilityCounts() { return profileVisibilityCounts; }
+    public void setProfileVisibilityCounts(Map<String, Long> profileVisibilityCounts) { this.profileVisibilityCounts = profileVisibilityCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileVisibilityCounts); }
+    public Map<String, String> getActiveProfileUsers() { return activeProfileUsers; }
+    public void setActiveProfileUsers(Map<String, String> activeProfileUsers) { this.activeProfileUsers = activeProfileUsers == null ? new LinkedHashMap<>() : new LinkedHashMap<>(activeProfileUsers); }
     public Integer getGraphHealthScore() { return graphHealthScore; }
     public void setGraphHealthScore(Integer graphHealthScore) { this.graphHealthScore = graphHealthScore; }
     public String getGraphHealthLabelKey() { return graphHealthLabelKey; }

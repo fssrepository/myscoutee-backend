@@ -11,6 +11,14 @@ import com.raxim.myscoutee.profile.data.document.Users;
 public interface UsersRepository extends MongoRepository<Users, String> {
     Optional<Users> findByUserId(String userId);
 
+    Optional<Users> findFirstByEmail(String email);
+
+    Optional<Users> findFirstByFirebaseUid(String firebaseUid);
+
+    Optional<Users> findFirstByGoogleId(String googleId);
+
+    Optional<Users> findFirstByFacebookId(String facebookId);
+
     List<Users> findByUserIdIn(Collection<String> userIds);
 
     List<Users> findByEmailIn(Collection<String> emails);

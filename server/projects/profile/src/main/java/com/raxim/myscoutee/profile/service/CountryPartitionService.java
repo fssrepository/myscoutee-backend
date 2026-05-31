@@ -11,12 +11,9 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -55,10 +52,6 @@ public class CountryPartitionService {
     private static final String COUNTRY_PARTITION_KEY_INDEX = "country_partition_key";
     private static final String COUNTRY_PARTITION_CODE_INDEX = "country_partition_code";
     private static final String COUNTRY_PARTITION_GEOMETRY_INDEX = "country_partition_geometry";
-    private static final String HUNGARY_COUNTRY_NAME = "Hungary";
-    private static final String HUNGARY_COUNTRY_CODE = "HU";
-    private static final String HUNGARY_PARTITION_KEY = "country:hu";
-
     private final CountryPartitionsRepository countryPartitionsRepository;
     private final MongoTemplate mongoTemplate;
     private final ObjectMapper objectMapper;
@@ -81,13 +74,11 @@ public class CountryPartitionService {
     }
 
     @PostConstruct
-    public void bootstrapDefaultCountryPartitions() {
+    public void initializeCountryPartitionIndexes() {
         try {
-            normalizeCountryPartitionsCollection();
             ensureCountryPartitionIndexes();
-            ensureCountryImported(HUNGARY_COUNTRY_NAME, HUNGARY_COUNTRY_CODE, HUNGARY_PARTITION_KEY);
         } catch (RuntimeException exception) {
-            LOGGER.warn("Unable to bootstrap default country partition for {}.", HUNGARY_COUNTRY_NAME, exception);
+            LOGGER.warn("Unable to initialize country partition indexes.", exception);
         }
     }
 
@@ -127,48 +118,6 @@ public class CountryPartitionService {
         document.setGeometry(toMultiPolygon(match.path("geojson")));
         normalizeCountryPartitionDocument(document);
         return countryPartitionsRepository.save(document);
-    }
-
-    private void normalizeCountryPartitionsCollection() {
-        for (CountryPartition partition : countryPartitionsRepository.findAll()) {
-            if (normalizeCountryPartitionDocument(partition)) {
-                countryPartitionsRepository.save(partition);
-            }
-        }
-
-        deduplicateCountryPartitions(
-                countryPartitionsRepository.findAll(),
-                CountryPartition::getPartitionKey,
-                value -> value,
-                "partitionKey");
-        deduplicateCountryPartitions(
-                countryPartitionsRepository.findAll(),
-                CountryPartition::getCountryCode,
-                this::normalizeCountryCode,
-                "countryCode");
-    }
-
-    private void deduplicateCountryPartitions(
-            List<CountryPartition> partitions,
-            Function<CountryPartition, String> fieldExtractor,
-            Function<String, String> fieldNormalizer,
-            String fieldName) {
-        Map<String, List<CountryPartition>> partitionsByField = new LinkedHashMap<>();
-        for (CountryPartition partition : partitions) {
-            String normalizedFieldValue = fieldNormalizer.apply(fieldExtractor.apply(partition));
-            if ("countryCode".equals(fieldName) && !StringUtils.hasText(normalizedFieldValue)) {
-                continue;
-            }
-            partitionsByField.computeIfAbsent(normalizedFieldValue, ignored -> new ArrayList<>()).add(partition);
-        }
-
-        for (Map.Entry<String, List<CountryPartition>> entry : partitionsByField.entrySet()) {
-            List<CountryPartition> duplicatePartitions = entry.getValue();
-            if (duplicatePartitions.size() < 2) {
-                continue;
-            }
-            consolidateCountryPartitionGroup(fieldName, entry.getKey(), duplicatePartitions);
-        }
     }
 
     private CountryPartition findCanonicalPartitionByPartitionKey(String partitionKey) {

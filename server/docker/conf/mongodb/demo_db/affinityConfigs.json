@@ -6,6 +6,10 @@
     "key": "default",
     "active": true,
     "version": 1,
+    "changedDate": "2026-05-01T09:00:00.000Z",
+    "changedUser": "system",
+    "changedSection": "seed",
+    "changeSummary": "Initial platform parameter defaults.",
     "rating": {
       "singleMutual": {
         "multiplier": 10

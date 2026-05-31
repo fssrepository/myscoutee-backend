@@ -25,7 +25,6 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
@@ -106,7 +105,7 @@ public class ActivitiesMembersService {
         }
 
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
-        return mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)).stream()
+        return loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .map(member -> toEntryDto(member, viewerUserId))
                 .filter(Objects::nonNull)
@@ -143,7 +142,7 @@ public class ActivitiesMembersService {
         return toOwnerSnapshot(
                 normalizedOwnerType,
                 normalizedOwnerId,
-                mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)));
+                loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId));
     }
 
     public boolean hasAcceptedAdminRole(String ownerType, String ownerId, String userId) {
@@ -233,18 +232,8 @@ public class ActivitiesMembersService {
             List<ActivityMember> rawMembers = membersByOwnerId.getOrDefault(sourceId, List.of())
                     .stream().filter(Objects::nonNull).toList();
 
-            // Bootstrap if empty (matches loadOwnerDocuments behavior)
-            if (rawMembers.isEmpty() && eventRecord != null) {
-                List<ActivityMember> bootstrapped = bootstrapEventMembers(eventRecord);
-                if (!bootstrapped.isEmpty()) {
-                    activityMembersRepository.saveAll(bootstrapped);
-                    rawMembers = bootstrapped;
-                }
-            }
-
             List<ActivitySubEventResource> resources = resourcesByOwnerId.getOrDefault(sourceId, List.of());
-            List<ActivityMember> merged = mergeDerivedEventMembersBatch(sourceId, rawMembers, eventRecord, resources);
-            result.put(sourceId, toOwnerSnapshotBatch(OWNER_TYPE_EVENT, sourceId, merged, eventRecord, resources));
+            result.put(sourceId, toOwnerSnapshotBatch(OWNER_TYPE_EVENT, sourceId, rawMembers, eventRecord, resources));
         }
         return result;
     }
@@ -282,51 +271,6 @@ public class ActivitiesMembersService {
             result.put(ownerId, toOwnerSnapshot(normalizedOwnerType, ownerId, members));
         }
         return result;
-    }
-
-    private List<ActivityMember> mergeDerivedEventMembersBatch(
-            String eventId,
-            List<ActivityMember> members,
-            ActivityEvent eventRecord,
-            List<ActivitySubEventResource> resources) {
-        String defaultActionAtIso = normalizeDateTime(
-                eventRecord == null ? null : eventRecord.getStartAtIso(),
-                Instant.now().toString());
-        String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
-        String createdByUserId = eventRecord == null ? null : normalizeId(eventRecord.getCreatorUserId());
-        Map<String, ActivityMember> visibleByUserId = new LinkedHashMap<>();
-        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
-            if (member == null || STATUS_DELETED.equals(normalizeStatus(member.getStatus()))) {
-                continue;
-            }
-            String memberUserId = normalizeId(member.getUserId());
-            if (!StringUtils.hasText(memberUserId)) {
-                continue;
-            }
-            visibleByUserId.put(memberUserId, cloneMember(member));
-        }
-
-        Set<String> adminUserIds = resolveEventAdminUserIds(eventRecord);
-        for (String adminUserId : adminUserIds) {
-            upsertDerivedEventMember(visibleByUserId, eventId, adminUserId, "Admin", defaultActionAtIso, metWhere, createdByUserId);
-        }
-
-        Map<String, String> managerActionAtByUserId = resolveEventManagerActionAtFromResources(resources);
-        for (Map.Entry<String, String> managerEntry : managerActionAtByUserId.entrySet()) {
-            if (adminUserIds.contains(managerEntry.getKey())) {
-                continue;
-            }
-            upsertDerivedEventMember(
-                    visibleByUserId,
-                    eventId,
-                    managerEntry.getKey(),
-                    "Manager",
-                    normalizeDateTime(managerEntry.getValue(), defaultActionAtIso),
-                    metWhere,
-                    createdByUserId);
-        }
-
-        return new ArrayList<>(visibleByUserId.values());
     }
 
     private Map<String, String> resolveEventManagerActionAtFromResources(List<ActivitySubEventResource> resources) {
@@ -413,7 +357,7 @@ public class ActivitiesMembersService {
         String actorUserId = resolveActorUserId(null);
         String nowIso = Instant.now().toString();
         List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
-        List<ActivityMember> existingVisibleMembers = mergeDerivedOwnerMembers(ownerType, ownerId, existing);
+        List<ActivityMember> existingVisibleMembers = existing;
         Map<String, ActivityMember> existingBySyncKey = new LinkedHashMap<>();
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
         for (ActivityMember member : existing) {
@@ -530,7 +474,7 @@ public class ActivitiesMembersService {
             return queryMembers(ownerType, ownerId);
         }
 
-        List<ActivityMember> existing = loadStoredOwnerDocuments(ownerType, ownerId);
+        List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
         ActivityMember current = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> targetUserId.equals(normalizeId(member.getUserId())))
@@ -613,10 +557,7 @@ public class ActivitiesMembersService {
         }
 
         synchronized (eventJoinLock(normalizedEventId)) {
-        List<ActivityMember> existing = mergeDerivedOwnerMembers(
-                OWNER_TYPE_EVENT,
-                normalizedEventId,
-                loadStoredOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId));
+        List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
         for (ActivityMember member : existing) {
             if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
@@ -631,9 +572,6 @@ public class ActivitiesMembersService {
         if (accepted && isCapacityFullForJoin(eventRecord, existing, viewerUserId)) {
             accepted = false;
             waitingList = true;
-        }
-        if (isDerivedMember(current)) {
-            current = null;
         }
         boolean newMember = current == null;
         if (current == null) {
@@ -712,7 +650,7 @@ public class ActivitiesMembersService {
         String nowIso = Instant.now().toString();
         String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
 
-        List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId, eventRecord);
+        List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
         Map<String, ActivityMember> existingByUserId = new LinkedHashMap<>();
         for (ActivityMember member : existing) {
             if (member != null && StringUtils.hasText(normalizeId(member.getUserId()))) {
@@ -851,161 +789,9 @@ public class ActivitiesMembersService {
     }
 
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId) {
-        return loadOwnerDocuments(ownerType, ownerId, null);
-    }
-
-    private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId, ActivityEvent fallbackEventRecord) {
-        List<ActivityMember> stored = loadStoredOwnerDocuments(ownerType, ownerId);
-        if (!stored.isEmpty()) {
-            return stored;
-        }
-
-        if (OWNER_TYPE_ASSET.equals(ownerType)) {
-            List<ActivityMember> bootstrapped = bootstrapAssetMembers(ownerId);
-            if (!bootstrapped.isEmpty()) {
-                activityMembersRepository.saveAll(bootstrapped);
-                return bootstrapped;
-            }
-            return List.of();
-        }
-
-        if (!OWNER_TYPE_EVENT.equals(ownerType)) {
-            return stored;
-        }
-
-        ActivityEvent bootstrapSource = fallbackEventRecord != null
-                ? fallbackEventRecord
-                : findPreferredEventRecord(ownerId);
-        if (bootstrapSource == null) {
-            return List.of();
-        }
-        List<ActivityMember> bootstrapped = bootstrapEventMembers(bootstrapSource);
-        if (!bootstrapped.isEmpty()) {
-            activityMembersRepository.saveAll(bootstrapped);
-            return bootstrapped;
-        }
-        return List.of();
-    }
-
-    private List<ActivityMember> loadStoredOwnerDocuments(String ownerType, String ownerId) {
         return activityMembersRepository.findByOwnerTypeAndOwnerId(ownerType, ownerId).stream()
                 .filter(Objects::nonNull)
                 .toList();
-    }
-
-    private List<ActivityMember> mergeDerivedOwnerMembers(String ownerType, String ownerId, List<ActivityMember> members) {
-        if (!OWNER_TYPE_EVENT.equals(ownerType)) {
-            return members == null ? List.of() : members;
-        }
-        return mergeDerivedEventMembers(ownerId, members);
-    }
-
-    private List<ActivityMember> mergeDerivedEventMembers(String eventId, List<ActivityMember> members) {
-        ActivityEvent eventRecord = findPreferredEventRecord(eventId);
-        String defaultActionAtIso = normalizeDateTime(
-                eventRecord == null ? null : eventRecord.getStartAtIso(),
-                Instant.now().toString());
-        String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
-        String createdByUserId = eventRecord == null ? null : normalizeId(eventRecord.getCreatorUserId());
-        Map<String, ActivityMember> visibleByUserId = new LinkedHashMap<>();
-        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
-            if (member == null || STATUS_DELETED.equals(normalizeStatus(member.getStatus()))) {
-                continue;
-            }
-            String memberUserId = normalizeId(member.getUserId());
-            if (!StringUtils.hasText(memberUserId)) {
-                continue;
-            }
-            visibleByUserId.put(memberUserId, cloneMember(member));
-        }
-
-        Set<String> adminUserIds = resolveEventAdminUserIds(eventRecord);
-        for (String adminUserId : adminUserIds) {
-            upsertDerivedEventMember(visibleByUserId, eventId, adminUserId, "Admin", defaultActionAtIso, metWhere, createdByUserId);
-        }
-
-        for (Map.Entry<String, String> managerEntry : resolveEventManagerActionAtByUserId(eventId).entrySet()) {
-            if (adminUserIds.contains(managerEntry.getKey())) {
-                continue;
-            }
-            upsertDerivedEventMember(
-                    visibleByUserId,
-                    eventId,
-                    managerEntry.getKey(),
-                    "Manager",
-                    normalizeDateTime(managerEntry.getValue(), defaultActionAtIso),
-                    metWhere,
-                    createdByUserId);
-        }
-
-        return new ArrayList<>(visibleByUserId.values());
-    }
-
-    private void upsertDerivedEventMember(
-            Map<String, ActivityMember> membersByUserId,
-            String eventId,
-            String userId,
-            String role,
-            String actionAtIso,
-            String metWhere,
-            String createdByUserId) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return;
-        }
-
-        ActivityMember existing = membersByUserId.get(normalizedUserId);
-        if (existing != null) {
-            String existingStatus = normalizeStatus(existing.getStatus());
-            if (STATUS_PENDING.equals(existingStatus)) {
-                existing.setActionAtIso(normalizeDateTime(existing.getActionAtIso(), actionAtIso));
-                existing.setMetAtIso(normalizeDateTime(existing.getMetAtIso(), existing.getActionAtIso()));
-                if (!StringUtils.hasText(safeText(existing.getMetWhere()))) {
-                    existing.setMetWhere(metWhere);
-                }
-                return;
-            }
-            existing.setRole(role);
-            existing.setStatus(STATUS_ACCEPTED);
-            existing.setPendingSource(null);
-            existing.setRequestKind(null);
-            existing.setInvitedByUserId(null);
-            existing.setActionAtIso(normalizeDateTime(existing.getActionAtIso(), actionAtIso));
-            existing.setMetAtIso(normalizeDateTime(existing.getMetAtIso(), existing.getActionAtIso()));
-            if (!StringUtils.hasText(safeText(existing.getMetWhere()))) {
-                existing.setMetWhere(metWhere);
-            }
-            return;
-        }
-
-        ActivityMember derived = new ActivityMember();
-        String derivedId = "derived:" + eventId + ":" + normalizedUserId;
-        derived.setId(derivedId);
-        derived.setSyncKey(derivedId);
-        derived.setOwnerType(OWNER_TYPE_EVENT);
-        derived.setOwnerId(eventId);
-        derived.setUserId(normalizedUserId);
-        derived.setRole(role);
-        derived.setStatus(STATUS_ACCEPTED);
-        derived.setPendingSource(null);
-        derived.setRequestKind(null);
-        derived.setInvitedByUserId(null);
-        derived.setActionAtIso(actionAtIso);
-        derived.setMetAtIso(actionAtIso);
-        derived.setMetWhere(metWhere);
-        derived.setCreatedDate(actionAtIso);
-        derived.setCreatedUser(StringUtils.hasText(createdByUserId) ? createdByUserId : normalizedUserId);
-        derived.setUpdatedDate(actionAtIso);
-        derived.setUpdatedUser(StringUtils.hasText(createdByUserId) ? createdByUserId : normalizedUserId);
-        membersByUserId.put(normalizedUserId, derived);
-    }
-
-    private boolean isDerivedMember(ActivityMember member) {
-        if (member == null) {
-            return false;
-        }
-        return safeText(member.getId()).startsWith("derived:")
-                || safeText(member.getSyncKey()).startsWith("derived:");
     }
 
     private Set<String> resolveEventAdminUserIds(ActivityEvent eventRecord) {
@@ -1228,137 +1014,6 @@ public class ActivitiesMembersService {
         return merged;
     }
 
-    private List<ActivityMember> bootstrapAssetMembers(String assetId) {
-        Asset asset = assetsService.findAssetByAssetId(assetId).orElse(null);
-        if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
-            return List.of();
-        }
-
-        String ownerId = normalizeId(asset.getAssetId());
-        String ownerUserId = normalizeId(asset.getOwnerUserId());
-        if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(ownerUserId)) {
-            return List.of();
-        }
-
-        String createdDate = normalizeDateTime(asset.getCreatedDate(), Instant.now().toString());
-        String updatedDate = normalizeDateTime(asset.getUpdatedDate(), createdDate);
-        String actionAtIso = normalizeDateTime(updatedDate, createdDate);
-        String metWhere = firstNonBlank(asset.getCity(), asset.getTitle());
-
-        List<ActivityMember> nextDocuments = new ArrayList<>();
-
-        ActivityMember ownerMembership = new ActivityMember();
-        ownerMembership.setId(new ObjectId().toHexString());
-        ownerMembership.setSyncKey(UUID.randomUUID().toString());
-        ownerMembership.setOwnerType(OWNER_TYPE_ASSET);
-        ownerMembership.setOwnerId(ownerId);
-        ownerMembership.setUserId(ownerUserId);
-        ownerMembership.setRole("Manager");
-        ownerMembership.setStatus("accepted");
-        ownerMembership.setPendingSource(null);
-        ownerMembership.setRequestKind(null);
-        ownerMembership.setInvitedByUserId(null);
-        ownerMembership.setActionAtIso(actionAtIso);
-        ownerMembership.setMetAtIso(actionAtIso);
-        ownerMembership.setMetWhere(metWhere);
-        ownerMembership.setCreatedDate(createdDate);
-        ownerMembership.setCreatedUser(ownerUserId);
-        ownerMembership.setUpdatedDate(updatedDate);
-        ownerMembership.setUpdatedUser(ownerUserId);
-        nextDocuments.add(ownerMembership);
-
-        for (AssetRequestRecord request : safeAssetRequests(asset.getRequests())) {
-            String memberUserId = normalizeId(request.userId());
-            if (!StringUtils.hasText(memberUserId) || ownerUserId.equals(memberUserId)) {
-                continue;
-            }
-
-            boolean accepted = "accepted".equals(safeText(request.status()));
-            ActivityMember member = new ActivityMember();
-            member.setId(new ObjectId().toHexString());
-            member.setSyncKey(UUID.randomUUID().toString());
-            member.setOwnerType(OWNER_TYPE_ASSET);
-            member.setOwnerId(ownerId);
-            member.setUserId(memberUserId);
-            member.setRole("Member");
-            member.setStatus(accepted ? "accepted" : "pending");
-            member.setPendingSource(accepted ? null : "member");
-            member.setRequestKind(accepted ? null : "join");
-            member.setInvitedByUserId(null);
-            member.setActionAtIso(actionAtIso);
-            member.setMetAtIso(actionAtIso);
-            member.setMetWhere(metWhere);
-            member.setCreatedDate(createdDate);
-            member.setCreatedUser(memberUserId);
-            member.setUpdatedDate(updatedDate);
-            member.setUpdatedUser(accepted ? ownerUserId : memberUserId);
-            nextDocuments.add(member);
-        }
-        return nextDocuments;
-    }
-
-    private List<ActivityMember> bootstrapEventMembers(ActivityEvent record) {
-        if (record == null || !StringUtils.hasText(normalizeId(record.getSourceId()))) {
-            return List.of();
-        }
-        String ownerId = normalizeId(record.getSourceId());
-        String creatorUserId = normalizeId(record.getCreatorUserId());
-        String createdDate = normalizeDateTime(record.getCreatedDate(), normalizeDateTime(record.getStartAtIso(), Instant.now().toString()));
-        String updatedDate = normalizeDateTime(record.getUpdatedDate(), createdDate);
-        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
-        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
-        if (StringUtils.hasText(creatorUserId)) {
-            acceptedUserIds.add(creatorUserId);
-            pendingUserIds.remove(creatorUserId);
-        }
-        pendingUserIds.removeAll(acceptedUserIds);
-
-        List<ActivityMember> nextDocuments = new ArrayList<>();
-        for (String userId : acceptedUserIds) {
-            ActivityMember member = new ActivityMember();
-            member.setId(new ObjectId().toHexString());
-            member.setSyncKey(UUID.randomUUID().toString());
-            member.setOwnerType(OWNER_TYPE_EVENT);
-            member.setOwnerId(ownerId);
-            member.setUserId(userId);
-            member.setRole(userId.equals(creatorUserId) ? "Admin" : "Member");
-            member.setStatus("accepted");
-            member.setPendingSource(null);
-            member.setRequestKind(null);
-            member.setInvitedByUserId(null);
-            member.setActionAtIso(normalizeDateTime(record.getStartAtIso(), createdDate));
-            member.setMetAtIso(normalizeDateTime(record.getStartAtIso(), member.getActionAtIso()));
-            member.setMetWhere(safeText(record.getLocation()));
-            member.setCreatedDate(createdDate);
-            member.setCreatedUser(StringUtils.hasText(creatorUserId) ? creatorUserId : userId);
-            member.setUpdatedDate(updatedDate);
-            member.setUpdatedUser(StringUtils.hasText(safeText(record.getUpdatedUser())) ? safeText(record.getUpdatedUser()) : member.getCreatedUser());
-            nextDocuments.add(member);
-        }
-        for (String userId : pendingUserIds) {
-            ActivityMember member = new ActivityMember();
-            member.setId(new ObjectId().toHexString());
-            member.setSyncKey(UUID.randomUUID().toString());
-            member.setOwnerType(OWNER_TYPE_EVENT);
-            member.setOwnerId(ownerId);
-            member.setUserId(userId);
-            member.setRole("Member");
-            member.setStatus("pending");
-            member.setPendingSource("admin");
-            member.setRequestKind("invite");
-            member.setInvitedByUserId(creatorUserId);
-            member.setActionAtIso(normalizeDateTime(record.getStartAtIso(), createdDate));
-            member.setMetAtIso(normalizeDateTime(record.getStartAtIso(), member.getActionAtIso()));
-            member.setMetWhere(safeText(record.getLocation()));
-            member.setCreatedDate(createdDate);
-            member.setCreatedUser(StringUtils.hasText(creatorUserId) ? creatorUserId : userId);
-            member.setUpdatedDate(updatedDate);
-            member.setUpdatedUser(StringUtils.hasText(safeText(record.getUpdatedUser())) ? safeText(record.getUpdatedUser()) : member.getCreatedUser());
-            nextDocuments.add(member);
-        }
-        return nextDocuments;
-    }
-
     private void cascadeRemovedEventMembersFromAssignedAssets(
             String eventId,
             List<ActivityMember> removedEventMembers,
@@ -1548,10 +1203,7 @@ public class ActivitiesMembersService {
             return 0;
         }
 
-        List<ActivityMember> storedMembers = loadStoredOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
-        if (storedMembers.isEmpty()) {
-            storedMembers = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId, preferredEventRecord);
-        }
+        List<ActivityMember> storedMembers = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
         int acceptedMembers = snapshot == null ? 0 : Math.max(0, snapshot.acceptedMembers());
         if (acceptedMembers >= capacityTotal) {
             demoteWaitlistInvitations(normalizedEventId, storedMembers);
@@ -1854,10 +1506,6 @@ public class ActivitiesMembersService {
         return null;
     }
 
-    private List<AssetRequestRecord> safeAssetRequests(List<AssetRequestRecord> requests) {
-        return requests == null ? List.of() : requests;
-    }
-
     private String firstNonBlank(String first, String second) {
         String firstValue = safeText(first);
         if (StringUtils.hasText(firstValue)) {
@@ -1917,7 +1565,7 @@ public class ActivitiesMembersService {
                 return true;
             }
         }
-        return mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)).stream()
+        return loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
                 .filter(Objects::nonNull)
                 .filter(member -> normalizedActorUserId.equals(normalizeId(member.getUserId())))
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
@@ -1944,7 +1592,7 @@ public class ActivitiesMembersService {
                 return true;
             }
         }
-        return mergeDerivedOwnerMembers(normalizedOwnerType, normalizedOwnerId, loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId)).stream()
+        return loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
                 .filter(Objects::nonNull)
                 .filter(member -> normalizedTargetUserId.equals(normalizeId(member.getUserId())))
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))

@@ -15,8 +15,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,7 +45,6 @@ public class HelpCenterService {
     private static final String DOCUMENT_PRIVACY = "privacy";
     private static final String DOCUMENT_EXPLANATION = "explanation";
     private static final String DEFAULT_LANG = "en";
-    private static final String LEGACY_VERSION_INDEX = "help_revision_version";
     private static final int REVISION_SAVE_MAX_ATTEMPTS = 5;
     private static final String EXPLANATION_CHATS_CONTEXT = "chats";
     private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
@@ -86,22 +83,22 @@ public class HelpCenterService {
     private final HelpCenterRevisionsRepository revisionsRepository;
     private final HelpCenterAuditRepository auditRepository;
     private final PrivacyConsentsRepository privacyConsentsRepository;
-    private final MongoTemplate mongoTemplate;
     private final AdminTelemetryService adminTelemetryService;
+    private final AppSettingsService appSettingsService;
 
     public HelpCenterService(
             ConfigProperties configProperties,
             HelpCenterRevisionsRepository revisionsRepository,
             HelpCenterAuditRepository auditRepository,
             PrivacyConsentsRepository privacyConsentsRepository,
-            MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
         this.privacyConsentsRepository = privacyConsentsRepository;
-        this.mongoTemplate = mongoTemplate;
         this.adminTelemetryService = adminTelemetryService;
+        this.appSettingsService = appSettingsService;
     }
 
     public HelpCenterStateDto activeState() {
@@ -127,7 +124,6 @@ public class HelpCenterService {
         if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
             return new HelpCenterStateDto(null, List.of(), List.of(), List.of());
         }
-        prepareRevisionCollection(kind, language, context);
         HelpCenterRevision active = revisionsForKind(
                     revisionsRepository.findAllByOrderByVersionDesc(),
                     kind,
@@ -161,7 +157,6 @@ public class HelpCenterService {
         String language = contentLang(lang);
         String context = contextKey(kind, contextKey, false);
         ensureAdmin(adminUserId);
-        prepareRevisionCollection(kind, language, context);
         return fullState(kind, language, context);
     }
 
@@ -314,7 +309,6 @@ public class HelpCenterService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
         }
 
-        prepareRevisionCollection(DOCUMENT_PRIVACY);
         HelpCenterRevision revision = revisionsRepository.findById(revisionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Privacy revision not found."));
         if (!DOCUMENT_PRIVACY.equals(revisionKind(revision))) {
@@ -360,20 +354,6 @@ public class HelpCenterService {
                 revisions.stream().map(this::toRevisionDto).toList(),
                 auditTrail.stream().map(this::toAuditDto).toList(),
                 List.of());
-    }
-
-    private void prepareRevisionCollection(String kind) {
-        prepareRevisionCollection(kind, DEFAULT_LANG);
-    }
-
-    private void prepareRevisionCollection(String kind, String lang) {
-        prepareRevisionCollection(kind, lang, null);
-    }
-
-    private void prepareRevisionCollection(String kind, String lang, String contextKey) {
-        contextKey(kind, contextKey, false);
-        dropLegacyVersionIndex();
-        backfillDocumentTypes();
     }
 
     private List<HelpCenterSection> normalizeSections(List<HelpCenterSectionDto> sections, String kind) {
@@ -594,77 +574,6 @@ public class HelpCenterService {
         auditRepository.save(entry);
     }
 
-    private void backfillDocumentTypes() {
-        List<HelpCenterRevision> revisions = revisionsRepository.findAllByOrderByVersionDesc();
-        boolean revisionsChanged = false;
-        for (HelpCenterRevision revision : revisions) {
-            String kind = revisionKind(revision);
-            String language = revisionLang(revision);
-            String color = headerColor(revision.getHeaderColor());
-            if (!StringUtils.hasText(revision.getDocumentType())) {
-                revision.setDocumentType(kind);
-                revisionsChanged = true;
-            }
-            if (!StringUtils.hasText(revision.getLang())) {
-                revision.setLang(language);
-                revisionsChanged = true;
-            }
-            if (!languageLabel(language).equals(revision.getLanguageLabel())) {
-                revision.setLanguageLabel(languageLabel(language));
-                revisionsChanged = true;
-            }
-            if (!color.equals(revision.getHeaderColor())) {
-                revision.setHeaderColor(color);
-                revisionsChanged = true;
-            }
-        }
-        if (revisionsChanged) {
-            revisionsRepository.saveAll(revisions);
-        }
-
-        List<HelpCenterAuditEntry> auditEntries = auditRepository.findAllByOrderByCreatedDateDesc();
-        boolean auditChanged = false;
-        for (HelpCenterAuditEntry entry : auditEntries) {
-            String kind = auditKind(entry);
-            String language = auditLang(entry);
-            if (!StringUtils.hasText(entry.getDocumentType())) {
-                entry.setDocumentType(kind);
-                auditChanged = true;
-            }
-            if (!StringUtils.hasText(entry.getLang())) {
-                entry.setLang(language);
-                auditChanged = true;
-            }
-            if (!languageLabel(language).equals(entry.getLanguageLabel())) {
-                entry.setLanguageLabel(languageLabel(language));
-                auditChanged = true;
-            }
-        }
-        if (auditChanged) {
-            auditRepository.saveAll(auditEntries);
-        }
-    }
-
-    private void dropLegacyVersionIndex() {
-        try {
-            List<String> indexNames = mongoTemplate.indexOps(HelpCenterRevision.class).getIndexInfo().stream()
-                    .map(IndexInfo::getName)
-                    .toList();
-            for (String indexName : List.of(
-                    LEGACY_VERSION_INDEX,
-                    "help_revision_document_version",
-                    "help_revision_document_active",
-                    "help_revision_document_lang_version",
-                    "help_revision_document_lang_active")) {
-                if (indexNames.contains(indexName)) {
-                    mongoTemplate.indexOps(HelpCenterRevision.class).dropIndex(indexName);
-                }
-            }
-        } catch (RuntimeException ignored) {
-            // Content reads should continue if index metadata is temporarily unavailable.
-        }
-    }
-
     private List<HelpCenterRevision> revisionsForKind(List<HelpCenterRevision> revisions, String kind, String lang, String contextKey) {
         String language = contentLang(lang);
         String context = contextKey(kind, contextKey, false);
@@ -805,8 +714,7 @@ public class HelpCenterService {
         String normalized = normalize(adminUserId);
         if (configProperties.isFirebaseEnabled()) {
             String email = resolveFirebaseEmail();
-            String configured = normalize(configProperties.getAdminUser());
-            if (!StringUtils.hasText(email) || !StringUtils.hasText(configured) || !configured.equalsIgnoreCase(email)) {
+            if (!appSettingsService.isAdminEmail(email)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
             }
             return StringUtils.hasText(normalized) ? normalized : email;

@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -60,7 +59,7 @@ public class AdminModerationService {
     private final ActivityChatMessagesRepository chatMessagesRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
-    private final AdminMenuCounterService adminMenuCounterService;
+    private final AppSettingsService appSettingsService;
 
     public AdminModerationService(
             ConfigProperties configProperties,
@@ -71,7 +70,7 @@ public class AdminModerationService {
             ActivityChatMessagesRepository chatMessagesRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService) {
+            AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
@@ -80,7 +79,7 @@ public class AdminModerationService {
         this.chatMessagesRepository = chatMessagesRepository;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
-        this.adminMenuCounterService = adminMenuCounterService;
+        this.appSettingsService = appSettingsService;
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
@@ -181,7 +180,7 @@ public class AdminModerationService {
         String email = principal instanceof FirebasePrincipal firebasePrincipal
                 ? normalize(firebasePrincipal.getEmail())
                 : normalize(authentication == null ? null : authentication.getName());
-        if (!configProperties.isAdminUser(email)) {
+        if (!appSettingsService.isAdminEmail(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
         }
         return withStoredAdminProfile(new AdminUserDto(
@@ -195,7 +194,10 @@ public class AdminModerationService {
     }
 
     private AdminUserDto withStoredAdminProfile(AdminUserDto admin) {
-        Users user = ensureStoredAdminUser(admin);
+        Users user = usersRepository.findByUserId(admin.id()).orElse(null);
+        if (user == null) {
+            return admin;
+        }
         String name = text(user.getName(), admin.name());
         String initials = text(user.getInitials(), admin.initials());
         String headline = text(user.getHeadline(), admin.headline());
@@ -207,81 +209,6 @@ public class AdminModerationService {
                         .filter(StringUtils::hasText)
                         .toList();
         return new AdminUserDto(admin.id(), name, initials, admin.email(), headline, about, images);
-    }
-
-    private Users ensureStoredAdminUser(AdminUserDto admin) {
-        Users user = usersRepository.findByUserId(admin.id()).orElseGet(Users::new);
-        boolean changed = false;
-        if (!StringUtils.hasText(user.getMongoId())) {
-            user.setMongoId(new ObjectId().toHexString());
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getSyncKey())) {
-            user.setSyncKey(UUID.randomUUID().toString());
-            changed = true;
-        }
-        if (!admin.id().equals(user.getUserId())) {
-            user.setUserId(admin.id());
-            changed = true;
-        }
-        if (!admin.email().equals(normalize(user.getEmail()))) {
-            user.setEmail(admin.email());
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getName())) {
-            user.setName(admin.name());
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getInitials())) {
-            user.setInitials(admin.initials());
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getGender())) {
-            user.setGender("woman");
-            changed = true;
-        }
-        if (!"Admin workspace".equals(user.getStatusText())) {
-            user.setStatusText("Admin workspace");
-            changed = true;
-        }
-        if (!"Admin".equals(user.getHostTier())) {
-            user.setHostTier("Admin");
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getTraitLabel())) {
-            user.setTraitLabel("Safety");
-            changed = true;
-        }
-        if (user.getCompletion() == null || user.getCompletion() < 100) {
-            user.setCompletion(100);
-            changed = true;
-        }
-        if (user.getProfileFormVersion() == null || user.getProfileFormVersion() < 1) {
-            user.setProfileFormVersion(1);
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getHeadline())) {
-            user.setHeadline(admin.headline());
-            changed = true;
-        }
-        if (!StringUtils.hasText(user.getAbout())) {
-            user.setAbout(admin.about());
-            changed = true;
-        }
-        if (!"A".equals(user.getStatus())) {
-            user.setStatus("A");
-            changed = true;
-        }
-        if (!"public".equals(user.getProfileStatus())) {
-            user.setProfileStatus("public");
-            changed = true;
-        }
-        if (user.getActivities() == null) {
-            user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
-            changed = true;
-        }
-        Users saved = changed ? usersRepository.save(user) : user;
-        return adminMenuCounterService.syncAdminUserCounters(saved);
     }
 
     private void ensureReportedUser(String targetUserId) {

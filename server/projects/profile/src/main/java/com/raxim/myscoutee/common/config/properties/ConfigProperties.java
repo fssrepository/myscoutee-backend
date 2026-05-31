@@ -13,6 +13,7 @@ public class ConfigProperties {
     private boolean firebaseEnabled = false;
     private boolean chatOnlyMode = false;
     private String devUser = "dev@myscoutee.local";
+    private String facebookAppSecret = "";
     private String websocketAllowedOriginPatterns = "http://localhost,http://localhost:4200,https://localhost,https://localhost:4200";
 
     public String getAdminUser() {
@@ -67,6 +68,14 @@ public class ConfigProperties {
 
     public void setDevUser(String devUser) {
         this.devUser = devUser;
+    }
+
+    public String getFacebookAppSecret() {
+        return facebookAppSecret;
+    }
+
+    public void setFacebookAppSecret(String facebookAppSecret) {
+        this.facebookAppSecret = facebookAppSecret;
     }
 
     public String getWebsocketAllowedOriginPatterns() {

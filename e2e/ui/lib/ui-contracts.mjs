@@ -686,8 +686,9 @@ export async function dismissInstallPromptIfPresent(page, timeoutMs = 15000) {
     };
     const buttons = Array.from(document.querySelectorAll('.app-install-prompt button'))
       .filter(button => visible(button) && !button.disabled);
-    const later = buttons.find(button => (button.textContent ?? '').trim().toLowerCase().includes('later'))
-      ?? buttons[0];
+    const later = buttons.find(button => button.classList.contains('app-install-prompt__secondary'))
+      ?? buttons.find(button => (button.getAttribute('aria-label') ?? '').trim().toLowerCase().includes('later'))
+      ?? buttons.find(button => (button.textContent ?? '').trim().toLowerCase().includes('later'));
     if (!later) {
       return false;
     }

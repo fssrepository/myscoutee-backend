@@ -13,12 +13,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.AdminStatsSnapshot;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsBreakdownItemDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsGraphDto;
@@ -29,24 +30,28 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsRevenueTim
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsSegmentDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsTimelinePointDto;
 import com.raxim.myscoutee.profile.repository.AdminStatsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AdminStatsService {
-    private static final String GLOBAL_STATS_KEY = "global";
     private static final int TIMELINE_DAYS = 14;
     private static final int STORED_DAILY_DAYS = 45;
+    private static final Set<String> ACTIVE_PROFILE_STATUSES = Set.of("public", "friends only", "host only");
 
     private final AdminStatsRepository adminStatsRepository;
+    private final UsersRepository usersRepository;
     private final AdminModerationService adminModerationService;
     private final AdminGraphScienceService adminGraphScienceService;
     private final AdminRevenueStatsService adminRevenueStatsService;
 
     public AdminStatsService(
             AdminStatsRepository adminStatsRepository,
+            UsersRepository usersRepository,
             AdminModerationService adminModerationService,
             AdminGraphScienceService adminGraphScienceService,
             AdminRevenueStatsService adminRevenueStatsService) {
         this.adminStatsRepository = adminStatsRepository;
+        this.usersRepository = usersRepository;
         this.adminModerationService = adminModerationService;
         this.adminGraphScienceService = adminGraphScienceService;
         this.adminRevenueStatsService = adminRevenueStatsService;
@@ -54,11 +59,11 @@ public class AdminStatsService {
 
     public AdminStatsDashboardDto dashboard(String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
-        return toDto(resolveSnapshot());
+        return toDto(adminStatsRepository.globalSnapshotOrDefault());
     }
 
     public Optional<String> lastTelemetryStreamId() {
-        return adminStatsRepository.findByStatsKey(GLOBAL_STATS_KEY)
+        return adminStatsRepository.findGlobalSnapshot()
                 .map(AdminStatsSnapshot::getLastTelemetryStreamId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText);
@@ -68,7 +73,7 @@ public class AdminStatsService {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
             return;
         }
-        AdminStatsSnapshot snapshot = resolveSnapshot();
+        AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
         Map<String, Long> counters = new LinkedHashMap<>(safeMap(snapshot.getCounters()));
         Map<String, Long> attention = new LinkedHashMap<>(safeMap(snapshot.getAttention()));
         Map<String, Long> topCities = new LinkedHashMap<>(safeMap(snapshot.getTopCities()));
@@ -173,30 +178,17 @@ public class AdminStatsService {
         }
         adminGraphScienceService.refresh(snapshot);
         adminRevenueStatsService.refresh(snapshot);
+        refreshProfileCounts(snapshot);
         adminStatsRepository.save(snapshot);
     }
 
     public void refreshGraphScienceSnapshot() {
-        AdminStatsSnapshot snapshot = resolveSnapshot();
+        AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
         adminGraphScienceService.refresh(snapshot);
         adminRevenueStatsService.refresh(snapshot);
+        refreshProfileCounts(snapshot);
         snapshot.setGeneratedAtIso(Instant.now().toString());
         adminStatsRepository.save(snapshot);
-    }
-
-    private AdminStatsSnapshot resolveSnapshot() {
-        return adminStatsRepository.findByStatsKey(GLOBAL_STATS_KEY).orElseGet(() -> {
-            AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
-            snapshot.setId(new ObjectId().toHexString());
-            snapshot.setStatsKey(GLOBAL_STATS_KEY);
-            snapshot.setGeneratedAtIso(Instant.now().toString());
-            snapshot.setSource("http");
-            snapshot.setHealthScore(100);
-            snapshot.setHealthLabelKey("stats.health.good");
-            snapshot.setHealthSummaryKey("stats.health.summary");
-            snapshot.setLastTelemetryStreamId("0-0");
-            return adminStatsRepository.save(snapshot);
-        });
     }
 
     private AdminStatsDashboardDto toDto(AdminStatsSnapshot snapshot) {
@@ -212,10 +204,22 @@ public class AdminStatsService {
         Map<String, String> activeEvents = safeStringMap(snapshot.getActiveEvents());
         Map<String, String> knownAssets = safeStringMap(snapshot.getKnownAssets());
         Map<String, String> activeAssets = safeStringMap(snapshot.getActiveAssets());
+        Map<String, Long> profileStatusCounts = safeMap(snapshot.getProfileStatusCounts());
+        Map<String, Long> profileVisibilityCounts = safeMap(snapshot.getProfileVisibilityCounts());
+        Set<String> activeProfileUserIds = safeStringMap(snapshot.getActiveProfileUsers()).keySet();
         long triedUsers = activeUsers.size();
-        long activeUsers7d = countSeenSince(activeUsers, 7);
-        long activeUsers30d = countSeenSince(activeUsers, 30);
-        long returningUsers = userActivityCounts.values().stream()
+        long activeProfileCount = activeProfileCount(profileVisibilityCounts);
+        long onboardingProfiles = profileStatusCounts.getOrDefault("onboarding", 0L);
+        long inactiveProfiles = profileStatusCounts.getOrDefault("inactive", 0L);
+        long knownProfiles = Math.max(1L, profileStatusCounts.values().stream()
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .sum());
+        long activeUsers7d = countSeenSince(activeUsers, 7, activeProfileUserIds);
+        long activeUsers30d = countSeenSince(activeUsers, 30, activeProfileUserIds);
+        long returningUsers = userActivityCounts.entrySet().stream()
+                .filter(entry -> activeProfileUserIds.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
                 .filter(value -> value != null && value.longValue() > 1L)
                 .count();
         long newRegistrations = counters.getOrDefault("profile.registered", 0L);
@@ -237,6 +241,17 @@ public class AdminStatsService {
         long moderationOps = sum(counters, "feedback.submitted", "report.submitted", "admin.user.blocked", "admin.user.unblocked");
 
         List<AdminStatsMetricDto> kpis = List.of(
+                metric(
+                        "active-profiles",
+                        "stats.kpi.active.profiles",
+                        activeProfileCount,
+                        "groups",
+                        "green",
+                        pct(activeProfileCount, knownProfiles),
+                        null,
+                        profileVisibilityCaption(profileVisibilityCounts)),
+                metric("onboarding-users", "stats.kpi.onboarding.users", onboardingProfiles, "how_to_reg", "gold", pct(onboardingProfiles, knownProfiles)),
+                metric("inactive-profiles", "stats.kpi.inactive.profiles", inactiveProfiles, "visibility_off", "slate", pct(inactiveProfiles, knownProfiles)),
                 metric("active-users", "stats.kpi.active.users", activeUsers7d, "person", "blue", pct(activeUsers7d, Math.max(1L, triedUsers))),
                 metric("returning-users", "stats.kpi.returning.users", returningUsers, "repeat", "purple", pct(returningUsers, Math.max(1L, triedUsers))),
                 metric("departed-users", "stats.kpi.departed.users", departedUsers, "person_remove", "slate", pct(departedUsers, Math.max(1L, triedUsers + departedUsers))),
@@ -248,6 +263,9 @@ public class AdminStatsService {
         List<AdminStatsSegmentDto> segments = List.of(
                 segment("community", "stats.segment.community", "person", triedUsers, List.of(
                         item("profile.registered", "stats.event.profile.registered", newRegistrations, Math.max(1L, triedUsers), "person_add", "green"),
+                        item("profile.active", "stats.event.profile.active", activeProfileCount, knownProfiles, "groups", "green"),
+                        item("profile.onboarding", "stats.event.profile.onboarding", onboardingProfiles, knownProfiles, "how_to_reg", "gold"),
+                        item("profile.inactive", "stats.event.profile.inactive", inactiveProfiles, knownProfiles, "visibility_off", "slate"),
                         item("active-users-7d", "stats.event.active.users.7d", activeUsers7d, triedUsers, "person", "blue"),
                         item("active-users-30d", "stats.event.active.users.30d", activeUsers30d, triedUsers, "calendar_month", "green"),
                         item("returning-users", "stats.event.returning.users", returningUsers, triedUsers, "repeat", "purple"),
@@ -530,7 +548,19 @@ public class AdminStatsService {
     }
 
     private AdminStatsMetricDto metric(String key, String labelKey, long value, String icon, String tone, int percent) {
-        return new AdminStatsMetricDto(key, labelKey, value, formatCount(value), null, null, icon, tone, percent);
+        return metric(key, labelKey, value, icon, tone, percent, null, null);
+    }
+
+    private AdminStatsMetricDto metric(
+            String key,
+            String labelKey,
+            long value,
+            String icon,
+            String tone,
+            int percent,
+            String captionKey,
+            String caption) {
+        return new AdminStatsMetricDto(key, labelKey, value, formatCount(value), captionKey, caption, icon, tone, percent);
     }
 
     private AdminStatsSegmentDto segment(String key, String labelKey, String icon, long total, List<AdminStatsBreakdownItemDto> items) {
@@ -601,15 +631,88 @@ public class AdminStatsService {
     }
 
     private long countSeenSince(Map<String, String> lastSeenById, int days) {
+        return countSeenSince(lastSeenById, days, null);
+    }
+
+    private long countSeenSince(Map<String, String> lastSeenById, int days, Set<String> allowedUserIds) {
         if (lastSeenById == null || lastSeenById.isEmpty()) {
             return 0L;
         }
         Instant threshold = Instant.now().minusSeconds(Math.max(1, days) * 24L * 60L * 60L);
-        return lastSeenById.values().stream()
+        return lastSeenById.entrySet().stream()
+                .filter(entry -> allowedUserIds == null || allowedUserIds.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
                 .map(this::parseInstant)
                 .filter(Objects::nonNull)
                 .filter(value -> !value.isBefore(threshold))
                 .count();
+    }
+
+    private void refreshProfileCounts(AdminStatsSnapshot snapshot) {
+        Map<String, Long> statusCounts = new LinkedHashMap<>();
+        Map<String, Long> visibilityCounts = new LinkedHashMap<>();
+        Map<String, String> activeProfileUsers = new LinkedHashMap<>();
+        for (Users user : usersRepository.findAll()) {
+            if (user == null || isAdminSeedUser(user)) {
+                continue;
+            }
+            String profileStatus = normalizeProfileStatus(user);
+            if (!StringUtils.hasText(profileStatus)) {
+                continue;
+            }
+            increment(statusCounts, profileStatus, 1L);
+            if (ACTIVE_PROFILE_STATUSES.contains(profileStatus)) {
+                increment(visibilityCounts, profileStatus, 1L);
+                String userId = firstNonBlank(user.getUserId(), user.getId());
+                if (StringUtils.hasText(userId)) {
+                    activeProfileUsers.put(userId, profileStatus);
+                }
+            }
+        }
+        snapshot.setProfileStatusCounts(statusCounts);
+        snapshot.setProfileVisibilityCounts(visibilityCounts);
+        snapshot.setActiveProfileUsers(activeProfileUsers);
+    }
+
+    private boolean isAdminSeedUser(Users user) {
+        String id = firstNonBlank(user.getId(), user.getUserId());
+        return safeText(id).startsWith("admin-demo-");
+    }
+
+    private String normalizeProfileStatus(Users user) {
+        String profileStatus = safeText(user == null ? null : user.getProfileStatus()).toLowerCase(Locale.ROOT);
+        if (StringUtils.hasText(profileStatus)) {
+            return profileStatus;
+        }
+        String status = safeText(user == null ? null : user.getStatus()).toUpperCase(Locale.ROOT);
+        return switch (status) {
+            case "D" -> "deleted";
+            case "B" -> "blocked";
+            case "I" -> "inactive";
+            case "F" -> "friends only";
+            case "H" -> "host only";
+            case "A" -> "public";
+            default -> "public";
+        };
+    }
+
+    private long activeProfileCount(Map<String, Long> profileVisibilityCounts) {
+        if (profileVisibilityCounts == null || profileVisibilityCounts.isEmpty()) {
+            return 0L;
+        }
+        return ACTIVE_PROFILE_STATUSES.stream()
+                .mapToLong(status -> profileVisibilityCounts.getOrDefault(status, 0L))
+                .sum();
+    }
+
+    private String profileVisibilityCaption(Map<String, Long> profileVisibilityCounts) {
+        Map<String, Long> counts = profileVisibilityCounts == null ? Map.of() : profileVisibilityCounts;
+        return String.format(
+                Locale.US,
+                "Public %d · Friends %d · Host %d",
+                counts.getOrDefault("public", 0L),
+                counts.getOrDefault("friends only", 0L),
+                counts.getOrDefault("host only", 0L));
     }
 
     private void trimDailyMaps(

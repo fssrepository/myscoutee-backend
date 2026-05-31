@@ -41,10 +41,9 @@ public class ActivitiesEventsController {
     public Object queryItems(
             @RequestParam("userId") String userId,
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "slim", required = false) Boolean slim) {
-        if (limit != null || StringUtils.hasText(cursor) || Boolean.TRUE.equals(slim)) {
-            return activitiesEventsService.queryItemsByUserPage(userId, limit, cursor, Boolean.TRUE.equals(slim));
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        if (limit != null || StringUtils.hasText(cursor)) {
+            return activitiesEventsService.queryItemsByUserPage(userId, limit, cursor);
         }
         return activitiesEventsService.queryItemsByUser(userId);
     }
@@ -53,10 +52,9 @@ public class ActivitiesEventsController {
     public Object queryInvitations(
             @RequestParam("userId") String userId,
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "slim", required = false) Boolean slim) {
-        if (limit != null || StringUtils.hasText(cursor) || Boolean.TRUE.equals(slim)) {
-            return activitiesEventsService.queryInvitationsPage(userId, limit, cursor, Boolean.TRUE.equals(slim));
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        if (limit != null || StringUtils.hasText(cursor)) {
+            return activitiesEventsService.queryInvitationsPage(userId, limit, cursor);
         }
         return activitiesEventsService.queryInvitations(userId);
     }
@@ -65,10 +63,9 @@ public class ActivitiesEventsController {
     public Object queryAttending(
             @RequestParam("userId") String userId,
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "slim", required = false) Boolean slim) {
-        if (limit != null || StringUtils.hasText(cursor) || Boolean.TRUE.equals(slim)) {
-            return activitiesEventsService.queryAttendingPage(userId, limit, cursor, Boolean.TRUE.equals(slim));
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        if (limit != null || StringUtils.hasText(cursor)) {
+            return activitiesEventsService.queryAttendingPage(userId, limit, cursor);
         }
         return activitiesEventsService.queryAttending(userId);
     }
@@ -77,10 +74,9 @@ public class ActivitiesEventsController {
     public Object queryHosting(
             @RequestParam("userId") String userId,
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "slim", required = false) Boolean slim) {
-        if (limit != null || StringUtils.hasText(cursor) || Boolean.TRUE.equals(slim)) {
-            return activitiesEventsService.queryHostingPage(userId, limit, cursor, Boolean.TRUE.equals(slim));
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        if (limit != null || StringUtils.hasText(cursor)) {
+            return activitiesEventsService.queryHostingPage(userId, limit, cursor);
         }
         return activitiesEventsService.queryHosting(userId);
     }
@@ -89,23 +85,16 @@ public class ActivitiesEventsController {
     public Object queryTrash(
             @RequestParam("userId") String userId,
             @RequestParam(value = "limit", required = false) Integer limit,
-            @RequestParam(value = "cursor", required = false) String cursor,
-            @RequestParam(value = "slim", required = false) Boolean slim) {
-        if (limit != null || StringUtils.hasText(cursor) || Boolean.TRUE.equals(slim)) {
-            return activitiesEventsService.queryTrashPage(userId, limit, cursor, Boolean.TRUE.equals(slim));
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        if (limit != null || StringUtils.hasText(cursor)) {
+            return activitiesEventsService.queryTrashPage(userId, limit, cursor);
         }
         return activitiesEventsService.queryTrash(userId);
     }
 
     @PostMapping("/filter")
     public Object filter(@RequestBody EventsFilterRequestDto request) {
-        if (request != null && Boolean.TRUE.equals(request.slim())) {
-            return activitiesEventsService.queryActivitiesEventListPage(request);
-        }
-        if (activitiesEventsService.isPagedFilterRequest(request)) {
-            return activitiesEventsService.queryActivitiesEventPage(request);
-        }
-        return activitiesEventsService.queryItemsByFilter(request);
+        return activitiesEventsService.queryActivitiesEventListPage(request);
     }
 
     @PostMapping("/explore")

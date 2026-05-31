@@ -90,8 +90,8 @@ normalize_packaged_image_values() {
 
   sed \
     -e "s|^NGINX_BASE_IMAGE=myscoutee-nginx:.*MYSCOUTEE_VERSION.*$|NGINX_BASE_IMAGE=myscoutee-nginx:${version}-base|" \
-    -e "s|^NGINX_PRODUCTION_IMAGE=myscoutee-nginx:.*MYSCOUTEE_VERSION.*$|NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${version}|" \
-    -e "s|^MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:.*MYSCOUTEE_VERSION.*$|MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${version}|" \
+    -e "s|^NGINX_PRODUCTION_IMAGE=myscoutee-nginx:.*MYSCOUTEE_VERSION.*$|NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${version}-prod|" \
+    -e "s|^MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:.*MYSCOUTEE_VERSION.*$|MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${version}-prod|" \
     -i "${env_file}"
 }
 

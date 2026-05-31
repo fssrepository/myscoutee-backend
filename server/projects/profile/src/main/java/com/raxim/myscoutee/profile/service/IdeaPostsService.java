@@ -42,14 +42,17 @@ public class IdeaPostsService {
     private final ConfigProperties configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final AdminTelemetryService adminTelemetryService;
+    private final AppSettingsService appSettingsService;
 
     public IdeaPostsService(
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
         this.adminTelemetryService = adminTelemetryService;
+        this.appSettingsService = appSettingsService;
     }
 
     public List<IdeaPostDto> publicPosts() {
@@ -271,8 +274,7 @@ public class IdeaPostsService {
         String normalized = normalize(adminUserId);
         if (configProperties.isFirebaseEnabled()) {
             String email = resolveFirebaseEmail();
-            String configured = normalize(configProperties.getAdminUser());
-            if (!StringUtils.hasText(email) || !StringUtils.hasText(configured) || !configured.equalsIgnoreCase(email)) {
+            if (!appSettingsService.isAdminEmail(email)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
             }
             return StringUtils.hasText(normalized) ? normalized : email;

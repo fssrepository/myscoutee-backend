@@ -149,6 +149,51 @@ class DeletedAccountPurgeServiceTest {
         assertNotNull(latest.getNextRetryAtIso());
     }
 
+    @Test
+    void purgesExpiredOnboardingUserWithExistingPurgeProcess() {
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityChatsRepository activityChatsRepository = mock(ActivityChatsRepository.class);
+        ActivityChatMessagesRepository activityChatMessagesRepository = mock(ActivityChatMessagesRepository.class);
+        ActivityEventsRepository activityEventsRepository = mock(ActivityEventsRepository.class);
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AccountPurgeJobsRepository accountPurgeJobsRepository = mock(AccountPurgeJobsRepository.class);
+        MediaStorageService mediaStorageService = mock(MediaStorageService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        Users onboardingUser = new Users();
+        onboardingUser.setId("firebase-onboarding-user");
+        onboardingUser.setProfileStatus("onboarding");
+        onboardingUser.setDeletedAtIso("2026-04-01T00:00:00Z");
+
+        when(usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(eq("deleted"), anyString()))
+                .thenReturn(List.of());
+        when(usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(eq("onboarding"), anyString()))
+                .thenReturn(List.of(onboardingUser));
+        when(activityEventsRepository.findByOwnerUserId("firebase-onboarding-user")).thenReturn(List.of());
+        when(activityEventsRepository.findByCreatorUserId("firebase-onboarding-user")).thenReturn(List.of());
+        when(assetsRepository.findByOwnerUserId("firebase-onboarding-user")).thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "firebase-onboarding-user")).thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndUserId("asset", "firebase-onboarding-user")).thenReturn(List.of());
+        when(activityEventsRepository.findByAdminsContaining("firebase-onboarding-user")).thenReturn(List.of());
+
+        DeletedAccountPurgeService service = new DeletedAccountPurgeService(
+                usersRepository,
+                activityChatsRepository,
+                activityChatMessagesRepository,
+                activityEventsRepository,
+                assetsRepository,
+                activityMembersRepository,
+                accountPurgeJobsRepository,
+                mediaStorageService,
+                mongoTemplate,
+                null);
+
+        service.purgeExpiredDeletedAccounts();
+
+        verify(usersRepository).delete(onboardingUser);
+    }
+
     private ActivityMember member(String ownerType, String ownerId, String userId) {
         ActivityMember member = new ActivityMember();
         member.setOwnerType(ownerType);

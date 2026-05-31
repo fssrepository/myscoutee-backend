@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,6 +25,17 @@ public class AdminMonitoringSnapshot {
     private Map<String, Long> categoryCounters = new LinkedHashMap<>();
     private Map<String, Long> nodeCounters = new LinkedHashMap<>();
     private Map<String, Long> alertCounters = new LinkedHashMap<>();
+
+    public static AdminMonitoringSnapshot createDefault(String monitoringKey) {
+        AdminMonitoringSnapshot snapshot = new AdminMonitoringSnapshot();
+        snapshot.setId(new ObjectId().toHexString());
+        snapshot.setMonitoringKey(monitoringKey);
+        snapshot.setGeneratedAtIso(Instant.now().toString());
+        snapshot.setSource("http");
+        snapshot.setHealth("ok");
+        snapshot.setLastTelemetryStreamId("0-0");
+        return snapshot;
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

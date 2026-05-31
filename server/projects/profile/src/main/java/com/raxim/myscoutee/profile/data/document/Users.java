@@ -28,6 +28,15 @@ public class Users {
     @Indexed(name = "users_email", sparse = true)
     private String email;
 
+    @Indexed(name = "users_firebase_uid", sparse = true)
+    private String firebaseUid;
+
+    @Indexed(name = "users_google_id", sparse = true)
+    private String googleId;
+
+    @Indexed(name = "users_facebook_id", sparse = true)
+    private String facebookId;
+
     private String name;
     private Integer age;
     private String birthday;
@@ -97,6 +106,30 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirebaseUid() {
+        return firebaseUid;
+    }
+
+    public void setFirebaseUid(String firebaseUid) {
+        this.firebaseUid = firebaseUid;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 
     public String getName() {

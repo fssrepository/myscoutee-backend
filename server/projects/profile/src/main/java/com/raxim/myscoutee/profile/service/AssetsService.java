@@ -72,7 +72,6 @@ public class AssetsService {
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
 
-    private static final String LEGACY_ASSETS_WRAPPER_ID = "assets";
     private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
 
     private final AssetsRepository assetsRepository;
@@ -139,7 +138,6 @@ public class AssetsService {
             return List.of();
         }
 
-        ensureExploreAssetsBootstrapped();
         double viewerAffinity = resolveStoredUserAffinity(normalizedUserId);
         return assetsRepository.findAll().stream()
                 .filter(Objects::nonNull)
@@ -534,13 +532,7 @@ public class AssetsService {
             return Optional.empty();
         }
 
-        Optional<Asset> stored = assetsRepository.findByAssetId(normalizedAssetId);
-        if (stored.isPresent()) {
-            return stored;
-        }
-
-        Asset bootstrapped = bootstrapAssetFromLegacy(normalizedAssetId);
-        return Optional.ofNullable(bootstrapped);
+        return assetsRepository.findByAssetId(normalizedAssetId);
     }
 
     public void syncRequestsFromMembers(String assetId, List<ActivityMember> members) {
@@ -663,120 +655,6 @@ public class AssetsService {
                     assetRequestBookingStartAtIso(previousRequest),
                     previousCancellationPolicy);
         }
-    }
-
-    private void ensureExploreAssetsBootstrapped() {
-        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
-        if (wrapper == null) {
-            return;
-        }
-
-        List<Asset> missingAssets = readLegacyAssets(wrapper).stream()
-                .filter(Objects::nonNull)
-                .filter(asset -> assetsRepository.findByOwnerUserIdAndAssetId(asset.getOwnerUserId(), asset.getAssetId()).isEmpty())
-                .toList();
-        if (!missingAssets.isEmpty()) {
-            assetsRepository.saveAll(missingAssets);
-        }
-    }
-
-    private Asset bootstrapAssetFromLegacy(String assetId) {
-        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
-        if (wrapper == null) {
-            return null;
-        }
-        Asset legacy = readLegacyAssets(wrapper).stream()
-                .filter(asset -> assetId.equals(normalizeId(asset.getAssetId())))
-                .findFirst()
-                .orElse(null);
-        if (legacy == null) {
-            return null;
-        }
-        return assetsRepository.findByOwnerUserIdAndAssetId(legacy.getOwnerUserId(), legacy.getAssetId())
-                .orElseGet(() -> assetsRepository.save(legacy));
-    }
-
-    private List<Asset> readLegacyAssets(Document wrapper) {
-        Object rawById = wrapper.get("byId");
-        if (!(rawById instanceof Map<?, ?> byId)) {
-            return List.of();
-        }
-
-        List<Asset> assets = new ArrayList<>();
-        for (Object rawValue : byId.values()) {
-            Document value = toDocument(rawValue);
-            Asset asset = fromLegacyDocument(value);
-            if (asset != null) {
-                assets.add(asset);
-            }
-        }
-        return assets;
-    }
-
-    private Asset fromLegacyDocument(Document legacy) {
-        String assetId = normalizeId(legacy.getString("id"));
-        String ownerUserId = normalizeId(legacy.getString("ownerUserId"));
-        String type = normalizeAssetType(legacy.getString("type"));
-        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
-            return null;
-        }
-
-        Asset asset = new Asset();
-        asset.setId(new ObjectId().toHexString());
-        asset.setSyncKey(UUID.randomUUID().toString());
-        asset.setAssetId(assetId);
-        asset.setOwnerUserId(ownerUserId);
-        asset.setType(type);
-        asset.setTitle(safeText(legacy.getString("title")));
-        asset.setSubtitle(safeText(legacy.getString("subtitle")));
-        asset.setCategory(safeText(legacy.getString("category")));
-        asset.setCity(safeText(legacy.getString("city")));
-        asset.setCapacityTotal(Math.max(1, normalizeCount(legacy.get("capacityTotal"))));
-        asset.setQuantity(normalizeAssetQuantity(type, legacy.get("quantity"), legacy.get("capacityTotal")));
-        asset.setDetails(safeText(legacy.getString("details")));
-        asset.setImageUrl(safeText(legacy.getString("imageUrl")));
-        asset.setSourceLink(safeText(legacy.getString("sourceLink")));
-        asset.setRoutes(normalizeStrings(legacy.get("routes")));
-        asset.setPricing(null);
-        asset.setRequests(readLegacyRequests(legacy.get("requests")));
-        asset.setVisibility(safeText(legacy.getString("visibility")));
-        asset.setStatus("active");
-        asset.setAffinity(resolveAssetAffinity(asset, ownerUserId));
-        asset.setBoost(resolveAssetBoost(asset, ownerUserId));
-        String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
-        String updatedDate = normalizeDateTime(legacy.getString("updatedAtIso"), createdDate);
-        asset.setCreatedDate(createdDate);
-        asset.setCreatedUser(ownerUserId);
-        asset.setUpdatedDate(updatedDate);
-        asset.setUpdatedUser(ownerUserId);
-        return asset;
-    }
-
-    private List<AssetRequestRecord> readLegacyRequests(Object rawRequests) {
-        if (!(rawRequests instanceof Collection<?> requests)) {
-            return List.of();
-        }
-
-        List<AssetRequestRecord> next = new ArrayList<>();
-        for (Object rawRequest : requests) {
-            Document request = toDocument(rawRequest);
-            String requestId = normalizeId(request.getString("id"));
-            if (!StringUtils.hasText(requestId)) {
-                continue;
-            }
-            next.add(new AssetRequestRecord(
-                    requestId,
-                    normalizeId(request.getString("userId")),
-                    safeText(request.getString("name")),
-                    safeText(request.getString("initials")),
-                    normalizeGender(request.getString("gender")),
-                    normalizeRequestStatus(request.getString("status")),
-                    safeText(request.getString("note")),
-                    normalizeAssetRequestKind(request.getString("requestKind")),
-                    safeNullableText(request.getString("requestedAtIso")),
-                    readLegacyRequestBooking(request.get("booking"))));
-        }
-        return next;
     }
 
     private Asset toDocument(AssetCardDto dto, String ownerUserId, Asset current) {
@@ -1130,13 +1008,7 @@ public class AssetsService {
             return null;
         }
         AssetRequestBookingDto booking = toRequestBookingDto(request.booking());
-        if (booking == null) {
-            booking = fallbackSeededRequestBooking(asset, index);
-        }
         String requestedAtIso = safeNullableText(request.requestedAtIso());
-        if (!StringUtils.hasText(requestedAtIso) && booking != null && StringUtils.hasText(booking.startAtIso())) {
-            requestedAtIso = fallbackSeededRequestedAtIso(booking.startAtIso(), index);
-        }
         return new AssetMemberRequestDto(
                 normalizeId(request.id()),
                 normalizeId(request.userId()),
@@ -1786,29 +1658,6 @@ public class AssetsService {
                 Boolean.TRUE.equals(booking.inventoryApplied()) ? Boolean.TRUE : null);
     }
 
-    private AssetRequestBookingRecord readLegacyRequestBooking(Object rawBooking) {
-        Document booking = toDocument(rawBooking);
-        if (booking.isEmpty()) {
-            return null;
-        }
-        return normalizeRequestBooking(new AssetRequestBookingDto(
-                normalizeId(booking.getString("eventId")),
-                safeNullableText(booking.getString("eventTitle")),
-                normalizeId(booking.getString("subEventId")),
-                safeNullableText(booking.getString("subEventTitle")),
-                safeNullableText(booking.getString("slotKey")),
-                safeNullableText(booking.getString("slotLabel")),
-                safeNullableText(booking.getString("timeframe")),
-                safeNullableText(booking.getString("startAtIso")),
-                safeNullableText(booking.getString("endAtIso")),
-                nullableCount(booking.get("quantity") instanceof Number number ? number : null),
-                safeNullableDouble(booking.get("totalAmount")),
-                safeNullableText(booking.getString("currency")),
-                normalizeStrings(booking.get("acceptedPolicyIds")),
-                normalizeId(booking.getString("paymentSessionId")),
-                booking.get("inventoryApplied") instanceof Boolean flag && flag ? Boolean.TRUE : null));
-    }
-
     private AssetRequestBookingRecord normalizeRequestBooking(AssetRequestBookingDto booking) {
         if (booking == null) {
             return null;
@@ -1854,75 +1703,6 @@ public class AssetsService {
                 Boolean.TRUE.equals(booking.inventoryApplied()) ? Boolean.TRUE : null);
     }
 
-    private AssetRequestBookingDto fallbackSeededRequestBooking(Asset asset, int index) {
-        if (asset == null) {
-            return null;
-        }
-        SeededAssetRequestSlot slot = seededAssetRequestSlot(safeText(asset.getTitle()), index);
-        if (slot == null) {
-            return null;
-        }
-        return new AssetRequestBookingDto(
-                slugifySeededRequestValue(slot.eventTitle()) + "-event",
-                slot.eventTitle(),
-                slugifySeededRequestValue(slot.subEventTitle()) + "-subevent",
-                slot.subEventTitle(),
-                slugifySeededRequestValue(asset.getTitle()) + ":" + (index + 1),
-                slot.subEventTitle(),
-                slot.timeframe(),
-                slot.startAtIso(),
-                slot.endAtIso(),
-                1,
-                null,
-                null,
-                List.of(),
-                null,
-                null);
-    }
-
-    private SeededAssetRequestSlot seededAssetRequestSlot(String assetTitle, int index) {
-        int slotIndex = Math.max(0, index);
-        return switch (safeText(assetTitle)) {
-            case "Camping Gear Kit" -> slotIndex % 2 == 0
-                    ? new SeededAssetRequestSlot("Forest Basecamp Weekend", "Camp Setup", "Apr 18 5:00 PM - Apr 20 12:00 PM", "2026-04-18T15:00:00.000Z", "2026-04-20T10:00:00.000Z")
-                    : new SeededAssetRequestSlot("Forest Basecamp Weekend", "Night Watch", "Apr 19 8:00 PM - Apr 20 10:00 AM", "2026-04-19T18:00:00.000Z", "2026-04-20T08:00:00.000Z");
-            case "Game Night Box" -> slotIndex % 2 == 0
-                    ? new SeededAssetRequestSlot("Indoor Strategy Social", "Board Game Lounge", "May 2 7:30 PM - 12:00 AM", "2026-05-02T17:30:00.000Z", "2026-05-02T22:00:00.000Z")
-                    : new SeededAssetRequestSlot("Indoor Strategy Social", "Late Table Finals", "May 2 10:00 PM - May 3 2:30 AM", "2026-05-02T20:00:00.000Z", "2026-05-03T00:30:00.000Z");
-            case "South Congress Loft" -> slotIndex % 2 == 0
-                    ? new SeededAssetRequestSlot("Austin Host Meetup", "Weekend Stay", "Jun 12 4:00 PM - Jun 14 1:00 PM", "2026-06-12T14:00:00.000Z", "2026-06-14T11:00:00.000Z")
-                    : new SeededAssetRequestSlot("Austin Host Meetup", "Overflow Rooms", "Jun 13 7:00 PM - Jun 14 12:00 PM", "2026-06-13T17:00:00.000Z", "2026-06-14T10:00:00.000Z");
-            case "Eastside Guest Room" -> slotIndex % 2 == 0
-                    ? new SeededAssetRequestSlot("Sunrise Photo Walk", "Overnight Stay", "Jul 3 8:00 PM - Jul 4 11:00 AM", "2026-07-03T18:00:00.000Z", "2026-07-04T09:00:00.000Z")
-                    : new SeededAssetRequestSlot("Sunrise Photo Walk", "Second Night", "Jul 4 8:00 PM - Jul 5 11:00 AM", "2026-07-04T18:00:00.000Z", "2026-07-05T09:00:00.000Z");
-            case "City-to-Lake SUV" -> switch (slotIndex % 3) {
-                case 0 -> new SeededAssetRequestSlot("Lake Cleanup Trip", "Departure Ride", "May 9 9:30 AM - 12:30 PM", "2026-05-09T07:30:00.000Z", "2026-05-09T10:30:00.000Z");
-                case 1 -> new SeededAssetRequestSlot("Lake Cleanup Trip", "Return Ride", "May 9 6:00 PM - 9:00 PM", "2026-05-09T16:00:00.000Z", "2026-05-09T19:00:00.000Z");
-                default -> new SeededAssetRequestSlot("Trail Weekend", "Gear Shuttle", "May 16 11:00 AM - 2:30 PM", "2026-05-16T09:00:00.000Z", "2026-05-16T12:30:00.000Z");
-            };
-            case "Airport Shuttle Hatchback" -> switch (slotIndex % 3) {
-                case 0 -> new SeededAssetRequestSlot("Late Arrival Crew", "Airport Pickup", "Aug 21 11:30 PM - Aug 22 1:45 AM", "2026-08-21T21:30:00.000Z", "2026-08-21T23:45:00.000Z");
-                case 1 -> new SeededAssetRequestSlot("Late Arrival Crew", "Hotel Dropoff", "Aug 22 2:00 AM - 3:15 AM", "2026-08-22T00:00:00.000Z", "2026-08-22T01:15:00.000Z");
-                default -> new SeededAssetRequestSlot("Night Market Run", "Pickup Loop", "Aug 28 8:30 PM - 11:00 PM", "2026-08-28T18:30:00.000Z", "2026-08-28T21:00:00.000Z");
-            };
-            default -> null;
-        };
-    }
-
-    private String fallbackSeededRequestedAtIso(String startAtIso, int index) {
-        try {
-            Instant start = Instant.parse(startAtIso);
-            return start.minusSeconds((long) (index + 2) * 24 * 60 * 60).toString();
-        } catch (Exception ignored) {
-            return null;
-        }
-    }
-
-    private String slugifySeededRequestValue(String value) {
-        String normalized = safeText(value).toLowerCase().replaceAll("[^a-z0-9]+", "-");
-        return normalized.replaceAll("(^-|-$)", "");
-    }
-
     private boolean hasRequestBookingContent(AssetRequestBookingRecord booking) {
         return booking != null
                 && (StringUtils.hasText(booking.eventId())
@@ -1959,14 +1739,6 @@ public class AssetsService {
             return slotKey;
         }
         return normalizeId(request.booking().subEventId());
-    }
-
-    private record SeededAssetRequestSlot(
-            String eventTitle,
-            String subEventTitle,
-            String timeframe,
-            String startAtIso,
-            String endAtIso) {
     }
 
     private List<AssetPolicyRecord> safePolicies(List<AssetPolicyRecord> policies) {

@@ -39,6 +39,7 @@ export async function assertUi({ page }) {
   await page.waitForSelectorHidden('.entry-consent-overlay', { timeoutMs: 10000 });
   await assertEntryConsentAccepted(page);
   await page.recordStep('entry-privacy-accepted');
+  assert(!(await page.isSelectorVisible('.entry-auth-btn-location')), 'Demo selector mode should not show the location gate in the header');
 
   await page.setGeolocationPermission('denied');
   await page.clickVisible('.entry-cta-primary');
@@ -70,14 +71,6 @@ export async function assertUi({ page }) {
     await page.waitForSelectorHidden('.confirmation-dialog', { timeoutMs: 20000 }).catch(() => undefined);
   } else {
     await page.recordStep('demo-selector-visible-without-location-dialog');
-    page.recordFinding?.({
-      severity: 'warning',
-      title: 'Location dialog was not part of the current entry flow',
-      details: {
-        expectedDialog: '.confirmation-dialog',
-        observedSelector: '.demo-login-overlay'
-      }
-    });
   }
   await page.waitForSelector('.demo-login-overlay', { timeoutMs: 30000 });
   await waitForVisibleCount(page, '.demo-user-item', 2, 'demo users after privacy and location approval', 60000);

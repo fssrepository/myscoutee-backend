@@ -25,8 +25,7 @@ public final class EventsDtos {
             String cursor,
             String anchorDate,
             String rangeStart,
-            String rangeEnd,
-            Boolean slim) {
+            String rangeEnd) {
     }
 
     public record EventsExploreQueryDto(

@@ -115,6 +115,20 @@
       "u11": 63,
       "u12": 62
     },
+    "profileStatusCounts": {
+      "public": 58,
+      "friends only": 38,
+      "host only": 16,
+      "onboarding": 9,
+      "inactive": 7,
+      "blocked": 2,
+      "deleted": 7
+    },
+    "profileVisibilityCounts": {
+      "public": 58,
+      "friends only": 38,
+      "host only": 16
+    },
     "knownEvents": {
       "ev1": "2026-05-11T09:00:00.000Z",
       "ev2": "2026-05-11T09:05:00.000Z",

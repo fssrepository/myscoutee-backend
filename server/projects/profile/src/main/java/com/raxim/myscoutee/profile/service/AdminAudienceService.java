@@ -12,7 +12,6 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -21,12 +20,12 @@ public class AdminAudienceService {
     private static final List<String> DEMO_ADMIN_USER_IDS = List.of("admin-demo-ava", "admin-demo-noel");
     private static final List<String> SUPPRESSED_PROFILE_STATUSES = List.of("blocked", "deleted", "inactive");
 
-    private final ConfigProperties configProperties;
     private final UsersRepository usersRepository;
+    private final AppSettingsService appSettingsService;
 
-    public AdminAudienceService(ConfigProperties configProperties, UsersRepository usersRepository) {
-        this.configProperties = configProperties;
+    public AdminAudienceService(UsersRepository usersRepository, AppSettingsService appSettingsService) {
         this.usersRepository = usersRepository;
+        this.appSettingsService = appSettingsService;
     }
 
     public List<String> adminNotificationRecipientUserIds(String actorUserId) {
@@ -37,7 +36,7 @@ public class AdminAudienceService {
             return List.copyOf(recipients);
         }
 
-        List<String> configuredAdmins = compact(configProperties.getAdminUsers());
+        List<String> configuredAdmins = compact(appSettingsService.adminEmails());
         Map<String, Users> usersById = usersById(configuredAdmins);
         Map<String, Users> usersByEmail = usersByEmail(configuredAdmins);
         for (String configuredAdmin : configuredAdmins) {

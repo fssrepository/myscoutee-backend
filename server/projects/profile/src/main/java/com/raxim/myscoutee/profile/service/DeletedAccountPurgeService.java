@@ -53,6 +53,8 @@ public class DeletedAccountPurgeService {
     private static final Duration PURGE_JOB_LEASE = Duration.ofMinutes(30);
     private static final Duration PURGE_RETRY_BASE = Duration.ofMinutes(15);
     private static final Duration PURGE_RETRY_MAX = Duration.ofHours(24);
+    private static final String PROFILE_STATUS_DELETED = "deleted";
+    private static final String PROFILE_STATUS_ONBOARDING = "onboarding";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
 
@@ -94,11 +96,16 @@ public class DeletedAccountPurgeService {
     public void purgeExpiredDeletedAccounts() {
         Instant now = Instant.now();
         String purgeBeforeIso = now.minus(deleteGraceDays(), ChronoUnit.DAYS).toString();
-        List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual("deleted", purgeBeforeIso);
+        purgeExpiredUsers(PROFILE_STATUS_DELETED, purgeBeforeIso, now);
+        purgeExpiredUsers(PROFILE_STATUS_ONBOARDING, purgeBeforeIso, now);
+        resumeDuePurgeJobs(now);
+    }
+
+    private void purgeExpiredUsers(String profileStatus, String purgeBeforeIso, Instant now) {
+        List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(profileStatus, purgeBeforeIso);
         for (Users user : users == null ? List.<Users>of() : users) {
             purgeUser(user, null, now);
         }
-        resumeDuePurgeJobs(now);
     }
 
     private int deleteGraceDays() {

@@ -9,6 +9,7 @@ public class FirebaseCredential {
     private static final String FIREBASE = "firebase";
     private static final String IDENTITES = "identities";
     private static final String GOOGLE_COM = "google.com";
+    private static final String FACEBOOK_COM = "facebook.com";
 
     private final FirebaseToken token;
 
@@ -36,6 +37,12 @@ public class FirebaseCredential {
         Map<?, ?> firebaseClaim = asMap(token.getClaims().get(FIREBASE));
         Map<?, ?> identitiesMap = asMap(firebaseClaim.get(IDENTITES));
         return firstString(asList(identitiesMap.get(GOOGLE_COM)));
+    }
+
+    public String getFacebookId() {
+        Map<?, ?> firebaseClaim = asMap(token.getClaims().get(FIREBASE));
+        Map<?, ?> identitiesMap = asMap(firebaseClaim.get(IDENTITES));
+        return firstString(asList(identitiesMap.get(FACEBOOK_COM)));
     }
 
     private Map<?, ?> asMap(Object value) {

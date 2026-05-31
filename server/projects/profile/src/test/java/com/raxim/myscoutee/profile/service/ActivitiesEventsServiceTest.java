@@ -271,23 +271,20 @@ class ActivitiesEventsServiceTest {
         staleEventsOverlay.setPublished(true);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host")).thenReturn(List.of(hostingDraft, staleEventsOverlay));
-        when(activitiesMembersService.findTrackedEventSourceIdsForUser("host")).thenReturn(Set.of());
-        when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
-        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(hostingDraft, staleEventsOverlay));
 
-        List<EventRecordDto> myEvents = service.queryItemsByFilter(new EventsFilterRequestDto(
-                "host", "my-events", "all", null, null, null, null, null, null, null, null, null));
-        List<EventRecordDto> allEvents = service.queryItemsByFilter(new EventsFilterRequestDto(
-                "host", "all", "all", null, null, null, null, null, null, null, null, null));
+        EventListPageDto myEvents = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "host", "my-events", "all", null, null, null, null, null, null, null, null));
+        EventListPageDto allEvents = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "host", "all", "all", null, null, null, null, null, null, null, null));
 
-        assertThat(myEvents).singleElement().satisfies(record -> {
+        assertThat(myEvents.records()).singleElement().satisfies(record -> {
             assertThat(record.id()).isEqualTo("draft-1");
             assertThat(record.type()).isEqualTo("hosting");
             assertThat(record.status()).isEqualTo("DR");
             assertThat(record.published()).isFalse();
         });
-        assertThat(allEvents).extracting(EventRecordDto::id).containsExactly("draft-1");
+        assertThat(allEvents.records()).extracting(record -> record.id()).containsExactly("draft-1");
     }
 
     @Test
@@ -338,12 +335,11 @@ class ActivitiesEventsServiceTest {
         List<EventRecordDto> records = service.queryAttending("viewer");
 
         assertThat(records).extracting(EventRecordDto::id).containsExactly("event-1");
-        verify(activityEventsRepository, never()).findByOwnerUserIdOrderByStartAtIsoAsc(anyString());
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
     }
 
     @Test
-    void slimAttendingPageReturnsLimitedCardsWithoutChangingLegacyList() {
+    void attendingPageReturnsLimitedFullRecordsWithoutChangingLegacyList() {
         Users viewer = new Users();
         viewer.setId("viewer");
         viewer.setName("Viewer User");
@@ -355,24 +351,21 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
-        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+        when(activityEventsRepository.findBySourceIdIn(anyList()))
                 .thenReturn(List.of(first, second, third));
 
-        Object response = service.queryAttendingPage("viewer", 2, null, true);
+        EventsExplorePageDto page = service.queryAttendingPage("viewer", 2, null);
 
-        assertThat(response).isInstanceOf(EventListPageDto.class);
-        EventListPageDto page = (EventListPageDto) response;
         assertThat(page.total()).isEqualTo(3);
-        assertThat(page.records()).extracting(record -> record.id())
+        assertThat(page.records()).extracting(EventRecordDto::id)
                 .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findByOwnerUserIdOrderByStartAtIsoAsc(anyString());
-        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
     }
 
     @Test
-    void slimDirectBucketPagesReturnCardsWithoutSnapshotFanout() {
+    void directBucketPagesReturnLimitedFullRecords() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -394,30 +387,24 @@ class ActivitiesEventsServiceTest {
         trashed.setIsTrashed(true);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host"))
                 .thenReturn(List.of(hosting, invitation, trashed));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
-        Object hostingResponse = service.queryHostingPage("host", 2, null, true);
-        Object invitationResponse = service.queryInvitationsPage("host", 2, null, true);
-        Object trashResponse = service.queryTrashPage("host", 2, null, true);
+        EventsExplorePageDto hostingResponse = service.queryHostingPage("host", 2, null);
+        EventsExplorePageDto invitationResponse = service.queryInvitationsPage("host", 2, null);
+        EventsExplorePageDto trashResponse = service.queryTrashPage("host", 2, null);
 
-        assertThat(hostingResponse).isInstanceOf(EventListPageDto.class);
-        assertThat(((EventListPageDto) hostingResponse).records()).extracting(record -> record.id())
+        assertThat(hostingResponse.records()).extracting(EventRecordDto::id)
                 .containsExactly("hosting-1");
-        assertThat(invitationResponse).isInstanceOf(EventListPageDto.class);
-        assertThat(((EventListPageDto) invitationResponse).records()).extracting(record -> record.id())
+        assertThat(invitationResponse.records()).extracting(EventRecordDto::id)
                 .containsExactly("invite-1");
-        assertThat(trashResponse).isInstanceOf(EventListPageDto.class);
-        assertThat(((EventListPageDto) trashResponse).records()).extracting(record -> record.id())
+        assertThat(trashResponse.records()).extracting(EventRecordDto::id)
                 .containsExactly("trash-1");
-        verify(activityEventsRepository, never()).findByOwnerUserIdOrderByStartAtIsoAsc(anyString());
-        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
-        verify(activitiesMembersService, never()).queryOwnerSnapshot(anyString(), anyString());
     }
 
     @Test
-    void pagedDirectOwnerFilterKeepsFullEventPageContract() {
+    void pagedDirectOwnerFilterReturnsEventListCardsByDefault() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -433,25 +420,20 @@ class ActivitiesEventsServiceTest {
         third.setIsHosting(true);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host"))
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
-        when(activitiesMembersService.findTrackedEventSourceIdsForUser("host")).thenReturn(Set.of());
-        when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
 
-        EventsExplorePageDto page = service.queryActivitiesEventPage(new EventsFilterRequestDto(
-                "host", "my-events", "all", "recent", "date", "day", 2, null, null, null, null, null));
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "host", "my-events", "all", "recent", "date", "day", 2, null, null, null, null));
 
         assertThat(page.total()).isEqualTo(3);
-        assertThat(page.records()).extracting(EventRecordDto::id).containsExactly("event-1", "event-2");
-        assertThat(page.records()).allSatisfy(record -> {
-            assertThat(record.type()).isEqualTo("hosting");
-            assertThat(record.subEvents()).isNotNull();
-        });
+        assertThat(page.records()).extracting(record -> record.id()).containsExactly("event-1", "event-2");
+        assertThat(page.records()).allSatisfy(record -> assertThat(record.type()).isEqualTo("hosting"));
         assertThat(page.nextCursor()).contains("event-2");
     }
 
     @Test
-    void slimActivitiesFilterPageReturnsCardsAndSkipsSlotMaterialization() {
+    void activitiesFilterPageReturnsCardsAndSkipsSlotMaterialization() {
         Users viewer = new Users();
         viewer.setId("viewer");
         viewer.setName("Viewer User");
@@ -470,7 +452,7 @@ class ActivitiesEventsServiceTest {
                         : List.of(first, second, third));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
-                "viewer", "all", "all", "recent", "date", "day", 2, null, null, null, null, true));
+                "viewer", "all", "all", "recent", "date", "day", 2, null, null, null, null));
 
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(record -> record.id())
@@ -483,7 +465,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void slimUserEventPageReturnsLimitedCardsAndCursor() {
+    void userEventPageReturnsLimitedFullRecordsAndCursor() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
@@ -493,22 +475,16 @@ class ActivitiesEventsServiceTest {
         ActivityEvent third = event("event-3", "host", 0d);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host"))
                 .thenReturn(List.of(first, second, third));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
-        Object response = service.queryItemsByUserPage("host", 2, null, true);
+        EventsExplorePageDto page = service.queryItemsByUserPage("host", 2, null);
 
-        assertThat(response).isInstanceOf(EventListPageDto.class);
-        EventListPageDto page = (EventListPageDto) response;
         assertThat(page.total()).isEqualTo(3);
-        assertThat(page.records()).extracting(record -> record.id())
+        assertThat(page.records()).extracting(EventRecordDto::id)
                 .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
-        verify(activityEventsRepository, never()).findByOwnerUserIdOrderByStartAtIsoAsc(anyString());
-        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
-        verify(activitiesMembersService, never()).queryOwnerSnapshot(anyString(), anyString());
-        verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
     }
 
     private Map<String, String> acceptedStatuses(String... sourceIds) {

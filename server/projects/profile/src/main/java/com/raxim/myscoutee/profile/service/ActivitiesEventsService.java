@@ -463,16 +463,6 @@ public class ActivitiesEventsService {
         return new LinkedHashMap<>(activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId));
     }
 
-    public boolean isPagedFilterRequest(EventsFilterRequestDto request) {
-        return request != null
-                && (request.limit() != null
-                        || StringUtils.hasText(request.cursor())
-                        || StringUtils.hasText(request.secondaryFilter())
-                        || StringUtils.hasText(request.sort())
-                        || StringUtils.hasText(request.view())
-                        || Boolean.TRUE.equals(request.slim()));
-    }
-
     public boolean isPagedExploreRequest(EventsExploreQueryDto request) {
         return request != null
                 && (request.limit() != null
@@ -486,7 +476,6 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -503,19 +492,12 @@ public class ActivitiesEventsService {
         }
     }
 
-    public Object queryItemsByUserPage(String requestedUserId, Integer requestedLimit, String cursor, boolean slim) {
+    public EventsExplorePageDto queryItemsByUserPage(String requestedUserId, Integer requestedLimit, String cursor) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
-            return slim
-                    ? new EventListPageDto(List.of(), 0, null)
-                    : new EventsExplorePageDto(List.of(), 0, null);
+            return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        if (slim) {
-            return queryUserListCardPage(viewer, requestedLimit, cursor);
-        }
-
-        materializeSlotOccurrences();
         return withEventQueryContext(buildUserQueryContext(viewer), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = queryUserRecords(viewer).stream()
@@ -536,26 +518,6 @@ public class ActivitiesEventsService {
         });
     }
 
-    private EventListPageDto queryUserListCardPage(ViewerContext viewer, Integer requestedLimit, String cursor) {
-        int limit = normalizePageLimit(requestedLimit, 12);
-        return withEventQueryContext(buildUserListCardQueryContext(viewer, false), () -> {
-            List<ActivityEvent> sorted = queryUserRecords(viewer).stream()
-                    .filter(Objects::nonNull)
-                    .sorted(eventRecordComparator())
-                    .toList();
-            int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
-            int endIndex = Math.min(sorted.size(), startIndex + limit);
-            List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
-            String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
-                    ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
-                    : null;
-            return new EventListPageDto(pageRecords.stream()
-                    .map(record -> toEventListItemDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), nextCursor);
-        });
-    }
-
     public List<EventRecordDto> queryInvitations(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
@@ -569,8 +531,8 @@ public class ActivitiesEventsService {
                         .toList());
     }
 
-    public Object queryInvitationsPage(String requestedUserId, Integer requestedLimit, String cursor, boolean slim) {
-        return queryDirectScopePage(requestedUserId, "invitations", "all", requestedLimit, cursor, slim);
+    public EventsExplorePageDto queryInvitationsPage(String requestedUserId, Integer requestedLimit, String cursor) {
+        return queryDirectScopePage(requestedUserId, "invitations", "all", requestedLimit, cursor);
     }
 
     public List<EventRecordDto> queryAttending(String requestedUserId) {
@@ -587,15 +549,13 @@ public class ActivitiesEventsService {
                         .toList());
     }
 
-    public Object queryAttendingPage(String requestedUserId, Integer requestedLimit, String cursor, boolean slim) {
+    public EventsExplorePageDto queryAttendingPage(String requestedUserId, Integer requestedLimit, String cursor) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
-            return slim
-                    ? new EventListPageDto(List.of(), 0, null)
-                    : new EventsExplorePageDto(List.of(), 0, null);
+            return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        return withEventQueryContext(slim ? buildAttendingListCardQueryContext(viewer) : buildAttendingQueryContext(viewer), () -> {
+        return withEventQueryContext(buildAttendingQueryContext(viewer), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = allEventDocuments(viewer).stream()
                     .filter(Objects::nonNull)
@@ -608,12 +568,6 @@ public class ActivitiesEventsService {
             String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
-            if (slim) {
-                return new EventListPageDto(pageRecords.stream()
-                        .map(record -> toEventListItemDto(record, viewer))
-                        .filter(Objects::nonNull)
-                        .toList(), sorted.size(), nextCursor);
-            }
             return new EventsExplorePageDto(pageRecords.stream()
                     .map(record -> toEventRecordDto(record, viewer))
                     .filter(Objects::nonNull)
@@ -634,8 +588,8 @@ public class ActivitiesEventsService {
                         .toList());
     }
 
-    public Object queryHostingPage(String requestedUserId, Integer requestedLimit, String cursor, boolean slim) {
-        return queryDirectScopePage(requestedUserId, "my-events", "all", requestedLimit, cursor, slim);
+    public EventsExplorePageDto queryHostingPage(String requestedUserId, Integer requestedLimit, String cursor) {
+        return queryDirectScopePage(requestedUserId, "my-events", "all", requestedLimit, cursor);
     }
 
     public List<EventRecordDto> queryTrash(String requestedUserId) {
@@ -651,22 +605,19 @@ public class ActivitiesEventsService {
                         .toList());
     }
 
-    public Object queryTrashPage(String requestedUserId, Integer requestedLimit, String cursor, boolean slim) {
-        return queryDirectScopePage(requestedUserId, "trash", "all", requestedLimit, cursor, slim);
+    public EventsExplorePageDto queryTrashPage(String requestedUserId, Integer requestedLimit, String cursor) {
+        return queryDirectScopePage(requestedUserId, "trash", "all", requestedLimit, cursor);
     }
 
-    private Object queryDirectScopePage(
+    private EventsExplorePageDto queryDirectScopePage(
             String requestedUserId,
             String filter,
             String hostingPublicationFilter,
             Integer requestedLimit,
-            String cursor,
-            boolean slim) {
+            String cursor) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
-            return slim
-                    ? new EventListPageDto(List.of(), 0, null)
-                    : new EventsExplorePageDto(List.of(), 0, null);
+            return new EventsExplorePageDto(List.of(), 0, null);
         }
         EventsFilterRequestDto request = new EventsFilterRequestDto(
                 viewer.userId(),
@@ -679,94 +630,9 @@ public class ActivitiesEventsService {
                 cursor,
                 null,
                 null,
-                null,
-                slim);
-        return withEventQueryContext(slim ? buildDirectOwnerListCardQueryContext(viewer) : buildDirectOwnerQueryContext(viewer), () -> {
-            if (slim) {
-                return pageEventListRecords(viewer, queryDirectScopedRecords(viewer, filter, hostingPublicationFilter), request);
-            }
-            return pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request);
-        });
-    }
-
-    public List<EventRecordDto> queryItemsByFilter(EventsFilterRequestDto request) {
-        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
-        if (viewer == null) {
-            return List.of();
-        }
-        String filter = normalizeEventScopeFilter(request == null ? null : request.filter());
-        String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
-        if (usesDirectOwnerScope(filter)) {
-            return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
-                    queryDirectScopedRecords(viewer, filter, hostingPublicationFilter).stream()
-                            .map(record -> toEventRecordDto(record, viewer))
-                            .filter(Objects::nonNull)
-                            .sorted(listItemComparator())
-                            .toList());
-        }
-        materializeSlotOccurrences();
-        try {
-            ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
-            return queryFilteredRecords(viewer, request).stream()
-                    .map(record -> toEventRecordDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .sorted(listItemComparator())
-                    .toList();
-        } finally {
-            ACTIVE_CONTEXT.remove();
-        }
-    }
-
-    public EventsExplorePageDto queryActivitiesEventPage(EventsFilterRequestDto request) {
-        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
-        if (viewer == null) {
-            return new EventsExplorePageDto(List.of(), 0, null);
-        }
-        String filter = normalizeEventScopeFilter(request == null ? null : request.filter());
-        String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
-        if (usesDirectOwnerScope(filter)) {
-            return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
-                    pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request));
-        }
-        materializeSlotOccurrences();
-        try {
-            ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
-
-            String secondaryFilter = normalizeActivitiesSecondaryFilter(request == null ? null : request.secondaryFilter());
-            String view = normalizeActivitiesView(request == null ? null : request.view());
-            String sort = normalizeActivitiesSort(request == null ? null : request.sort(), view, secondaryFilter);
-            Integer requestedLimit = request == null ? null : request.limit();
-            int limit = normalizeLimit(requestedLimit, 10);
-
-            List<EventProjection> sorted = queryFilteredRecords(viewer, request).stream()
-                    .map(record -> toSortProjection(record, viewer))
-                    .filter(Objects::nonNull)
-                    .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
-                    .filter(projection -> matchesActivitiesCalendarRange(projection, request, view))
-                    .sorted((left, right) -> compareActivitiesProjection(left, right, sort, view, secondaryFilter))
-                    .toList();
-
-            if ("week".equals(view) || "month".equals(view)) {
-                return new EventsExplorePageDto(sorted.stream()
-                        .map(projection -> toEventRecordDto(projection.record(), viewer))
-                        .filter(Objects::nonNull)
-                        .toList(), sorted.size(), null);
-            }
-
-            String cursor = request == null ? null : request.cursor();
-            int startIndex = resolveCursorStartIndex(sorted, cursor);
-            int endIndex = Math.min(sorted.size(), startIndex + limit);
-            List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
-                    .map(projection -> toEventRecordDto(projection.record(), viewer))
-                    .filter(Objects::nonNull)
-                    .toList();
-            String nextCursor = endIndex < sorted.size() && !records.isEmpty()
-                    ? serializeCursor(records.get(records.size() - 1))
-                    : null;
-            return new EventsExplorePageDto(records, sorted.size(), nextCursor);
-        } finally {
-            ACTIVE_CONTEXT.remove();
-        }
+                null);
+        return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
+                pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request));
     }
 
     public EventListPageDto queryActivitiesEventListPage(EventsFilterRequestDto request) {
@@ -787,7 +653,6 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryExploreItems(String requestedUserId) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -1045,7 +910,6 @@ public class ActivitiesEventsService {
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());

@@ -1,0 +1,57 @@
+[
+  {
+    "_id": "admin-monitoring-global",
+    "monitoringKey": "global",
+    "generatedAtIso": "2026-05-11T00:00:00.000Z",
+    "source": "http",
+    "health": "ok",
+    "lastTelemetryStreamId": "0-0",
+    "counters": {
+      "profile.registered": 29,
+      "profile.updated": 105,
+      "rates.synced": 342,
+      "event.created": 28,
+      "event.updated": 31,
+      "event.members.changed": 37,
+      "event.feedback.submitted": 11,
+      "asset.saved": 12,
+      "asset.requests.changed": 14,
+      "chat.message.sent": 417,
+      "feedback.submitted": 4,
+      "report.submitted": 8,
+      "admin.user.warned": 9,
+      "admin.user.blocked": 2
+    },
+    "categoryCounters": {
+      "users": 134,
+      "events": 107,
+      "assets": 26,
+      "matching": 342,
+      "chat": 417,
+      "admin": 23
+    },
+    "nodeCounters": {
+      "users.writes": 134,
+      "events.lifecycle": 59,
+      "events.members": 37,
+      "events.feedback": 11,
+      "assets.inventory": 12,
+      "assets.requests": 14,
+      "matching.rates": 342,
+      "chat.messages": 417,
+      "admin.moderation": 23,
+      "queues.rules.failed": 0,
+      "queues.recompute.pending": 0,
+      "queues.recompute.running": 0,
+      "queues.recompute.failed": 0,
+      "queues.outbox.pending": 0,
+      "queues.outbox.running": 0,
+      "queues.outbox.failed": 0,
+      "queues.outbox.sent": 0
+    },
+    "alertCounters": {
+      "admin": 10,
+      "users": 2
+    }
+  }
+]

@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +23,6 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AdminMenuCounterService {
-    private static final String MONITORING_KEY_GLOBAL = "global";
     private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
 
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
@@ -31,7 +31,16 @@ public class AdminMenuCounterService {
     private final AdminMonitoringRepository monitoringRepository;
     private final UsersRepository usersRepository;
 
-    private record AdminAlertCounters(int jobs, int metrics) {}
+    private record AdminAlertCounters(int jobs, int metrics, AdminQueueCounters queues) {}
+    private record AdminQueueCounters(
+            long failedRules,
+            long recomputePending,
+            long recomputeRunning,
+            long recomputeFailed,
+            long outboxPending,
+            long outboxRunning,
+            long outboxFailed,
+            long outboxSent) {}
 
     public AdminMenuCounterService(
             NotificationRuleConfigsRepository notificationRuleConfigsRepository,
@@ -48,6 +57,7 @@ public class AdminMenuCounterService {
 
     public void refreshAdminMenuCounters() {
         AdminAlertCounters counters = currentCounters();
+        refreshMonitoringQueueSnapshot(counters.queues());
         for (Users admin : adminUsers()) {
             Users.UserActivitiesRecord before = admin.getActivities();
             Users updated = applyCounters(admin, counters);
@@ -120,7 +130,27 @@ public class AdminMenuCounterService {
     }
 
     private AdminAlertCounters currentCounters() {
-        return new AdminAlertCounters(toInt(failedJobs()), toInt(failedMetrics()));
+        long failedRules = failedJobs();
+        long recomputePending = countAffinityTasks(AffinityRecomputeTaskService.STATUS_PENDING);
+        long recomputeRunning = countAffinityTasks(AffinityRecomputeTaskService.STATUS_RUNNING);
+        long recomputeFailed = countAffinityTasks(AffinityRecomputeTaskService.STATUS_FAILED);
+        long outboxPending = countOutbox(NotificationOutboxItem.STATUS_PENDING);
+        long outboxRunning = countOutbox(NotificationOutboxItem.STATUS_RUNNING);
+        long outboxFailed = countOutbox(NotificationOutboxItem.STATUS_FAILED);
+        long outboxSent = countOutbox(NotificationOutboxItem.STATUS_SENT);
+        long failedMetrics = recomputeFailed + outboxFailed + telemetryFailureEvents();
+        return new AdminAlertCounters(
+                toInt(failedRules),
+                toInt(failedMetrics),
+                new AdminQueueCounters(
+                        failedRules,
+                        recomputePending,
+                        recomputeRunning,
+                        recomputeFailed,
+                        outboxPending,
+                        outboxRunning,
+                        outboxFailed,
+                        outboxSent));
     }
 
     private long failedJobs() {
@@ -141,15 +171,31 @@ public class AdminMenuCounterService {
                 || isFailedStatus(rule.getRunState().getLastRunStatus());
     }
 
-    private long failedMetrics() {
-        return countAffinityTasks(AffinityRecomputeTaskService.STATUS_FAILED)
-                + countOutbox(NotificationOutboxItem.STATUS_FAILED)
-                + telemetryFailureEvents();
+    private void refreshMonitoringQueueSnapshot(AdminQueueCounters queues) {
+        if (queues == null) {
+            return;
+        }
+        try {
+            AdminMonitoringSnapshot snapshot = monitoringRepository.ensureGlobalSnapshot();
+            Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
+            nodeCounters.put("queues.rules.failed", queues.failedRules());
+            nodeCounters.put("queues.recompute.pending", queues.recomputePending());
+            nodeCounters.put("queues.recompute.running", queues.recomputeRunning());
+            nodeCounters.put("queues.recompute.failed", queues.recomputeFailed());
+            nodeCounters.put("queues.outbox.pending", queues.outboxPending());
+            nodeCounters.put("queues.outbox.running", queues.outboxRunning());
+            nodeCounters.put("queues.outbox.failed", queues.outboxFailed());
+            nodeCounters.put("queues.outbox.sent", queues.outboxSent());
+            snapshot.setNodeCounters(nodeCounters);
+            snapshot.setGeneratedAtIso(Instant.now().toString());
+            monitoringRepository.save(snapshot);
+        } catch (Exception ignored) {
+        }
     }
 
     private long telemetryFailureEvents() {
         try {
-            return monitoringRepository.findByMonitoringKey(MONITORING_KEY_GLOBAL)
+            return monitoringRepository.findGlobalSnapshot()
                     .map(AdminMonitoringSnapshot::getCounters)
                     .map(this::safeMap)
                     .map(counters -> counters.entrySet().stream()

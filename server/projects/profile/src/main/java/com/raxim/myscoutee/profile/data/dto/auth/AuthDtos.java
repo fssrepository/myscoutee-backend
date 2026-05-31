@@ -148,6 +148,7 @@ public final class AuthDtos {
             String profileStatus,
             String previousProfileStatus,
             String deletedAtIso,
+            Boolean admin,
             UserActivitiesDto activities) {
     }
 
@@ -179,6 +180,7 @@ public final class AuthDtos {
             String profileStatus,
             String previousProfileStatus,
             String deletedAtIso,
+            Boolean admin,
             UserActivitiesDto activities,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,
@@ -256,6 +258,11 @@ public final class AuthDtos {
 
     public record UserDeleteRequestDto(
             String userId) {
+    }
+
+    public record FacebookDataDeletionResponseDto(
+            String url,
+            String confirmation_code) {
     }
 
     public record UserSubmitActionResponseDto(

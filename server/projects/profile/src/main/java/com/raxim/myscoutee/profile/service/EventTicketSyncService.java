@@ -67,7 +67,6 @@ public class EventTicketSyncService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        syncTicketOverlaysForUser(normalizedUserId);
         return activityEventsRepository.findByOwnerUserId(normalizedUserId).stream()
                 .filter(Objects::nonNull)
                 .filter(this::isVisibleTicketRecord)
