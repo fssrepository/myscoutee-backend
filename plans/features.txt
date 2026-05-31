@@ -9,6 +9,8 @@ ui speed/stability (rendering - paint)/chucnk size reduction improvements - (chr
 bootstrap is slow should be speed up
 ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big task
 
+event feedback - backend stress test - first load is a little bit slow
+
 Bugs
 ----
 b) eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.

@@ -70380,5 +70380,206 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-05-01T18:30:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7"
+  },
+  {
+    "_id": "demo-tournament-start-review",
+    "syncKey": "demo-tournament-start-review",
+    "sourceId": "demo-tournament-start-review",
+    "ownerUserId": "admin-demo-ava",
+    "creatorUserId": "admin-demo-ava",
+    "creatorName": "Ava",
+    "creatorInitials": "AV",
+    "type": "hosting",
+    "status": "H",
+    "published": true,
+    "autoInviter": true,
+    "title": "Demo Tournament Start Gate",
+    "subtitle": "",
+    "location": "Demo Hall",
+    "startAtIso": "2026-06-05T16:00:00.000Z",
+    "endAtIso": "2026-06-05T22:00:00.000Z",
+    "capacityMin": 8,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "acceptedMembers": 10,
+    "pendingMembers": 6,
+    "admins": [
+      "admin-demo-ava",
+      "admin-demo-noel"
+    ],
+    "subEventsDisplayMode": "Tournament",
+    "subEvents": [
+      {
+        "id": "demo-review-stage-1",
+        "name": "Qualifiers",
+        "description": "Qualifiers stage",
+        "startAt": "2026-06-05T16:00:00",
+        "endAt": "2026-06-05T18:00:00",
+        "location": "Demo Hall",
+        "createdByUserId": "admin-demo-ava",
+        "groups": [
+          {
+            "id": "demo-review-stage-1-group-1",
+            "name": "Group A",
+            "capacityMin": 4,
+            "capacityMax": 8,
+            "source": "generated"
+          },
+          {
+            "id": "demo-review-stage-1-group-2",
+            "name": "Group B",
+            "capacityMin": 4,
+            "capacityMax": 8,
+            "source": "generated"
+          }
+        ],
+        "groupCount": 2,
+        "capacityMin": 4,
+        "capacityMax": 8,
+        "leaderboardType": "Score",
+        "advancePerGroup": 2,
+        "optional": false,
+        "membersAccepted": 8,
+        "membersPending": 0,
+        "status": "RS",
+        "statusReason": "awaiting-tournament-start",
+        "reviewDueAtIso": "2026-06-05T18:00:00.000Z"
+      },
+      {
+        "id": "demo-review-stage-2",
+        "name": "Finals",
+        "description": "Finals stage",
+        "startAt": "2026-06-05T16:00:00",
+        "endAt": "2026-06-05T18:00:00",
+        "location": "Demo Hall",
+        "createdByUserId": "admin-demo-ava",
+        "groups": [
+          {
+            "id": "demo-review-stage-2-group-1",
+            "name": "Group A",
+            "capacityMin": 4,
+            "capacityMax": 8,
+            "source": "generated"
+          }
+        ],
+        "groupCount": 1,
+        "capacityMin": 4,
+        "capacityMax": 8,
+        "leaderboardType": "Score",
+        "advancePerGroup": 0,
+        "optional": false,
+        "membersAccepted": 8,
+        "membersPending": 0,
+        "status": "A",
+        "reviewDueAtIso": "2026-06-05T18:00:00.000Z"
+      }
+    ],
+    "createdDate": "2026-05-12T10:00:00.000Z",
+    "createdUser": "demo-seed",
+    "updatedDate": "2026-05-12T10:00:00.000Z",
+    "updatedUser": "demo-seed"
+  },
+  {
+    "_id": "demo-tournament-results",
+    "syncKey": "demo-tournament-results",
+    "sourceId": "demo-tournament-results",
+    "ownerUserId": "admin-demo-ava",
+    "creatorUserId": "admin-demo-ava",
+    "creatorName": "Ava",
+    "creatorInitials": "AV",
+    "type": "hosting",
+    "status": "H",
+    "published": true,
+    "autoInviter": false,
+    "title": "Demo Tournament Results",
+    "subtitle": "",
+    "location": "Demo Hall",
+    "startAtIso": "2026-06-05T16:00:00.000Z",
+    "endAtIso": "2026-06-05T22:00:00.000Z",
+    "capacityMin": 8,
+    "capacityMax": 16,
+    "capacityTotal": 16,
+    "acceptedMembers": 16,
+    "pendingMembers": 0,
+    "admins": [
+      "admin-demo-ava",
+      "admin-demo-noel"
+    ],
+    "subEventsDisplayMode": "Tournament",
+    "subEvents": [
+      {
+        "id": "demo-results-stage-1",
+        "name": "Qualifiers",
+        "description": "Qualifiers stage",
+        "startAt": "2026-06-05T16:00:00",
+        "endAt": "2026-06-05T18:00:00",
+        "location": "Demo Hall",
+        "createdByUserId": "admin-demo-ava",
+        "groups": [
+          {
+            "id": "demo-results-stage-1-group-1",
+            "name": "Group A",
+            "capacityMin": 4,
+            "capacityMax": 8,
+            "source": "generated"
+          },
+          {
+            "id": "demo-results-stage-1-group-2",
+            "name": "Group B",
+            "capacityMin": 4,
+            "capacityMax": 8,
+            "source": "generated"
+          }
+        ],
+        "groupCount": 2,
+        "capacityMin": 4,
+        "capacityMax": 8,
+        "leaderboardType": "Fifa",
+        "advancePerGroup": 2,
+        "optional": false,
+        "membersAccepted": 8,
+        "membersPending": 0,
+        "status": "F",
+        "statusReason": "stage-finalized",
+        "reviewDueAtIso": "2026-06-05T18:00:00.000Z",
+        "finalizedAtIso": "2026-06-05T18:00:00.000Z",
+        "finalizedByUserId": "admin-demo-ava"
+      },
+      {
+        "id": "demo-results-stage-2",
+        "name": "Finals",
+        "description": "Finals stage",
+        "startAt": "2026-06-05T16:00:00",
+        "endAt": "2026-06-05T18:00:00",
+        "location": "Demo Hall",
+        "createdByUserId": "admin-demo-ava",
+        "groups": [
+          {
+            "id": "demo-results-stage-2-group-1",
+            "name": "Group A",
+            "capacityMin": 4,
+            "capacityMax": 8,
+            "source": "generated"
+          }
+        ],
+        "groupCount": 1,
+        "capacityMin": 4,
+        "capacityMax": 8,
+        "leaderboardType": "Fifa",
+        "advancePerGroup": 0,
+        "optional": false,
+        "membersAccepted": 8,
+        "membersPending": 0,
+        "status": "F",
+        "statusReason": "stage-finalized",
+        "reviewDueAtIso": "2026-06-05T18:00:00.000Z",
+        "finalizedAtIso": "2026-06-05T21:30:00.000Z",
+        "finalizedByUserId": "admin-demo-ava"
+      }
+    ],
+    "createdDate": "2026-05-12T10:00:00.000Z",
+    "createdUser": "demo-seed",
+    "updatedDate": "2026-05-12T10:00:00.000Z",
+    "updatedUser": "demo-seed"
   }
 ]

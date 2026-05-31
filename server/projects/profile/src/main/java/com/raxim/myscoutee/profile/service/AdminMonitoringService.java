@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.AdminMonitoringSnapshot;
-import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringCategoryDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringEdgeDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringMetricDetailRowDto;
@@ -19,39 +17,30 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringMetri
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringNodeDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminMonitoringStateDto;
 import com.raxim.myscoutee.profile.repository.AdminMonitoringRepository;
-import com.raxim.myscoutee.profile.repository.AffinityRecomputeTasksRepository;
-import com.raxim.myscoutee.profile.repository.NotificationOutboxRepository;
 
 @Service
 public class AdminMonitoringService {
-    private static final String GLOBAL_MONITORING_KEY = "global";
     private static final String HEALTH_OK = "ok";
     private static final String HEALTH_WATCH = "watch";
     private static final String HEALTH_ALERT = "alert";
 
     private final AdminMonitoringRepository monitoringRepository;
     private final AdminModerationService adminModerationService;
-    private final NotificationOutboxRepository notificationOutboxRepository;
-    private final AffinityRecomputeTasksRepository affinityRecomputeTasksRepository;
 
     public AdminMonitoringService(
             AdminMonitoringRepository monitoringRepository,
-            AdminModerationService adminModerationService,
-            NotificationOutboxRepository notificationOutboxRepository,
-            AffinityRecomputeTasksRepository affinityRecomputeTasksRepository) {
+            AdminModerationService adminModerationService) {
         this.monitoringRepository = monitoringRepository;
         this.adminModerationService = adminModerationService;
-        this.notificationOutboxRepository = notificationOutboxRepository;
-        this.affinityRecomputeTasksRepository = affinityRecomputeTasksRepository;
     }
 
     public AdminMonitoringStateDto state(String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
-        return toDto(resolveSnapshot());
+        return toDto(monitoringRepository.globalSnapshotOrDefault());
     }
 
     public Optional<String> lastTelemetryStreamId() {
-        return monitoringRepository.findByMonitoringKey(GLOBAL_MONITORING_KEY)
+        return monitoringRepository.findGlobalSnapshot()
                 .map(AdminMonitoringSnapshot::getLastTelemetryStreamId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText);
@@ -61,7 +50,7 @@ public class AdminMonitoringService {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
             return;
         }
-        AdminMonitoringSnapshot snapshot = resolveSnapshot();
+        AdminMonitoringSnapshot snapshot = monitoringRepository.ensureGlobalSnapshot();
         Map<String, Long> counters = safeMap(snapshot.getCounters());
         Map<String, Long> categoryCounters = safeMap(snapshot.getCategoryCounters());
         Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
@@ -99,31 +88,18 @@ public class AdminMonitoringService {
         monitoringRepository.save(snapshot);
     }
 
-    private AdminMonitoringSnapshot resolveSnapshot() {
-        return monitoringRepository.findByMonitoringKey(GLOBAL_MONITORING_KEY).orElseGet(() -> {
-            AdminMonitoringSnapshot snapshot = new AdminMonitoringSnapshot();
-            snapshot.setId(new ObjectId().toHexString());
-            snapshot.setMonitoringKey(GLOBAL_MONITORING_KEY);
-            snapshot.setGeneratedAtIso(Instant.now().toString());
-            snapshot.setSource("http");
-            snapshot.setHealth(HEALTH_OK);
-            snapshot.setLastTelemetryStreamId("0-0");
-            return monitoringRepository.save(snapshot);
-        });
-    }
-
     private AdminMonitoringStateDto toDto(AdminMonitoringSnapshot snapshot) {
         Map<String, Long> counters = safeMap(snapshot.getCounters());
         Map<String, Long> categoryCounters = safeMap(snapshot.getCategoryCounters());
         Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
         Map<String, Long> alertCounters = safeMap(snapshot.getAlertCounters());
-        long recomputePending = countAffinityTasks(AffinityRecomputeTaskService.STATUS_PENDING);
-        long recomputeRunning = countAffinityTasks(AffinityRecomputeTaskService.STATUS_RUNNING);
-        long recomputeFailed = countAffinityTasks(AffinityRecomputeTaskService.STATUS_FAILED);
-        long outboxPending = countOutbox(NotificationOutboxItem.STATUS_PENDING);
-        long outboxRunning = countOutbox(NotificationOutboxItem.STATUS_RUNNING);
-        long outboxFailed = countOutbox(NotificationOutboxItem.STATUS_FAILED);
-        long outboxSent = countOutbox(NotificationOutboxItem.STATUS_SENT);
+        long recomputePending = nodeCounters.getOrDefault("queues.recompute.pending", 0L);
+        long recomputeRunning = nodeCounters.getOrDefault("queues.recompute.running", 0L);
+        long recomputeFailed = nodeCounters.getOrDefault("queues.recompute.failed", 0L);
+        long outboxPending = nodeCounters.getOrDefault("queues.outbox.pending", 0L);
+        long outboxRunning = nodeCounters.getOrDefault("queues.outbox.running", 0L);
+        long outboxFailed = nodeCounters.getOrDefault("queues.outbox.failed", 0L);
+        long outboxSent = nodeCounters.getOrDefault("queues.outbox.sent", 0L);
 
         List<AdminMonitoringCategoryDto> categories = List.of(
                 usersCategory(counters, categoryCounters, nodeCounters, alertCounters),
@@ -547,22 +523,6 @@ public class AdminMonitoringService {
                 || eventKey.contains("deleted")
                 || eventKey.contains("purge")
                 || eventKey.contains("reported");
-    }
-
-    private long countOutbox(String status) {
-        try {
-            return notificationOutboxRepository.countByStatus(status);
-        } catch (Exception ignored) {
-            return 0L;
-        }
-    }
-
-    private long countAffinityTasks(String status) {
-        try {
-            return affinityRecomputeTasksRepository.countByStatus(status);
-        } catch (Exception ignored) {
-            return 0L;
-        }
     }
 
     private Map<String, Long> safeMap(Map<String, Long> source) {

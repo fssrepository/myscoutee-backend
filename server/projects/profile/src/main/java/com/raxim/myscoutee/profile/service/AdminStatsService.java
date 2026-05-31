@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -35,7 +34,6 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AdminStatsService {
-    private static final String GLOBAL_STATS_KEY = "global";
     private static final int TIMELINE_DAYS = 14;
     private static final int STORED_DAILY_DAYS = 45;
     private static final Set<String> ACTIVE_PROFILE_STATUSES = Set.of("public", "friends only", "host only");
@@ -61,11 +59,11 @@ public class AdminStatsService {
 
     public AdminStatsDashboardDto dashboard(String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
-        return toDto(resolveSnapshot());
+        return toDto(adminStatsRepository.globalSnapshotOrDefault());
     }
 
     public Optional<String> lastTelemetryStreamId() {
-        return adminStatsRepository.findByStatsKey(GLOBAL_STATS_KEY)
+        return adminStatsRepository.findGlobalSnapshot()
                 .map(AdminStatsSnapshot::getLastTelemetryStreamId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText);
@@ -75,7 +73,7 @@ public class AdminStatsService {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
             return;
         }
-        AdminStatsSnapshot snapshot = resolveSnapshot();
+        AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
         Map<String, Long> counters = new LinkedHashMap<>(safeMap(snapshot.getCounters()));
         Map<String, Long> attention = new LinkedHashMap<>(safeMap(snapshot.getAttention()));
         Map<String, Long> topCities = new LinkedHashMap<>(safeMap(snapshot.getTopCities()));
@@ -185,27 +183,12 @@ public class AdminStatsService {
     }
 
     public void refreshGraphScienceSnapshot() {
-        AdminStatsSnapshot snapshot = resolveSnapshot();
+        AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
         adminGraphScienceService.refresh(snapshot);
         adminRevenueStatsService.refresh(snapshot);
         refreshProfileCounts(snapshot);
         snapshot.setGeneratedAtIso(Instant.now().toString());
         adminStatsRepository.save(snapshot);
-    }
-
-    private AdminStatsSnapshot resolveSnapshot() {
-        return adminStatsRepository.findByStatsKey(GLOBAL_STATS_KEY).orElseGet(() -> {
-            AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
-            snapshot.setId(new ObjectId().toHexString());
-            snapshot.setStatsKey(GLOBAL_STATS_KEY);
-            snapshot.setGeneratedAtIso(Instant.now().toString());
-            snapshot.setSource("http");
-            snapshot.setHealthScore(100);
-            snapshot.setHealthLabelKey("stats.health.good");
-            snapshot.setHealthSummaryKey("stats.health.summary");
-            snapshot.setLastTelemetryStreamId("0-0");
-            return adminStatsRepository.save(snapshot);
-        });
     }
 
     private AdminStatsDashboardDto toDto(AdminStatsSnapshot snapshot) {

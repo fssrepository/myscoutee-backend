@@ -72,7 +72,6 @@ public class AssetsService {
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
 
-    private static final String LEGACY_ASSETS_WRAPPER_ID = "assets";
     private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
 
     private final AssetsRepository assetsRepository;
@@ -139,7 +138,6 @@ public class AssetsService {
             return List.of();
         }
 
-        ensureExploreAssetsBootstrapped();
         double viewerAffinity = resolveStoredUserAffinity(normalizedUserId);
         return assetsRepository.findAll().stream()
                 .filter(Objects::nonNull)
@@ -534,13 +532,7 @@ public class AssetsService {
             return Optional.empty();
         }
 
-        Optional<Asset> stored = assetsRepository.findByAssetId(normalizedAssetId);
-        if (stored.isPresent()) {
-            return stored;
-        }
-
-        Asset bootstrapped = bootstrapAssetFromLegacy(normalizedAssetId);
-        return Optional.ofNullable(bootstrapped);
+        return assetsRepository.findByAssetId(normalizedAssetId);
     }
 
     public void syncRequestsFromMembers(String assetId, List<ActivityMember> members) {
@@ -663,120 +655,6 @@ public class AssetsService {
                     assetRequestBookingStartAtIso(previousRequest),
                     previousCancellationPolicy);
         }
-    }
-
-    private void ensureExploreAssetsBootstrapped() {
-        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
-        if (wrapper == null) {
-            return;
-        }
-
-        List<Asset> missingAssets = readLegacyAssets(wrapper).stream()
-                .filter(Objects::nonNull)
-                .filter(asset -> assetsRepository.findByOwnerUserIdAndAssetId(asset.getOwnerUserId(), asset.getAssetId()).isEmpty())
-                .toList();
-        if (!missingAssets.isEmpty()) {
-            assetsRepository.saveAll(missingAssets);
-        }
-    }
-
-    private Asset bootstrapAssetFromLegacy(String assetId) {
-        Document wrapper = mongoTemplate.findById(LEGACY_ASSETS_WRAPPER_ID, Document.class, "assets");
-        if (wrapper == null) {
-            return null;
-        }
-        Asset legacy = readLegacyAssets(wrapper).stream()
-                .filter(asset -> assetId.equals(normalizeId(asset.getAssetId())))
-                .findFirst()
-                .orElse(null);
-        if (legacy == null) {
-            return null;
-        }
-        return assetsRepository.findByOwnerUserIdAndAssetId(legacy.getOwnerUserId(), legacy.getAssetId())
-                .orElseGet(() -> assetsRepository.save(legacy));
-    }
-
-    private List<Asset> readLegacyAssets(Document wrapper) {
-        Object rawById = wrapper.get("byId");
-        if (!(rawById instanceof Map<?, ?> byId)) {
-            return List.of();
-        }
-
-        List<Asset> assets = new ArrayList<>();
-        for (Object rawValue : byId.values()) {
-            Document value = toDocument(rawValue);
-            Asset asset = fromLegacyDocument(value);
-            if (asset != null) {
-                assets.add(asset);
-            }
-        }
-        return assets;
-    }
-
-    private Asset fromLegacyDocument(Document legacy) {
-        String assetId = normalizeId(legacy.getString("id"));
-        String ownerUserId = normalizeId(legacy.getString("ownerUserId"));
-        String type = normalizeAssetType(legacy.getString("type"));
-        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
-            return null;
-        }
-
-        Asset asset = new Asset();
-        asset.setId(new ObjectId().toHexString());
-        asset.setSyncKey(UUID.randomUUID().toString());
-        asset.setAssetId(assetId);
-        asset.setOwnerUserId(ownerUserId);
-        asset.setType(type);
-        asset.setTitle(safeText(legacy.getString("title")));
-        asset.setSubtitle(safeText(legacy.getString("subtitle")));
-        asset.setCategory(safeText(legacy.getString("category")));
-        asset.setCity(safeText(legacy.getString("city")));
-        asset.setCapacityTotal(Math.max(1, normalizeCount(legacy.get("capacityTotal"))));
-        asset.setQuantity(normalizeAssetQuantity(type, legacy.get("quantity"), legacy.get("capacityTotal")));
-        asset.setDetails(safeText(legacy.getString("details")));
-        asset.setImageUrl(safeText(legacy.getString("imageUrl")));
-        asset.setSourceLink(safeText(legacy.getString("sourceLink")));
-        asset.setRoutes(normalizeStrings(legacy.get("routes")));
-        asset.setPricing(null);
-        asset.setRequests(readLegacyRequests(legacy.get("requests")));
-        asset.setVisibility(safeText(legacy.getString("visibility")));
-        asset.setStatus("active");
-        asset.setAffinity(resolveAssetAffinity(asset, ownerUserId));
-        asset.setBoost(resolveAssetBoost(asset, ownerUserId));
-        String createdDate = normalizeDateTime(legacy.getString("createdAtIso"), Instant.now().toString());
-        String updatedDate = normalizeDateTime(legacy.getString("updatedAtIso"), createdDate);
-        asset.setCreatedDate(createdDate);
-        asset.setCreatedUser(ownerUserId);
-        asset.setUpdatedDate(updatedDate);
-        asset.setUpdatedUser(ownerUserId);
-        return asset;
-    }
-
-    private List<AssetRequestRecord> readLegacyRequests(Object rawRequests) {
-        if (!(rawRequests instanceof Collection<?> requests)) {
-            return List.of();
-        }
-
-        List<AssetRequestRecord> next = new ArrayList<>();
-        for (Object rawRequest : requests) {
-            Document request = toDocument(rawRequest);
-            String requestId = normalizeId(request.getString("id"));
-            if (!StringUtils.hasText(requestId)) {
-                continue;
-            }
-            next.add(new AssetRequestRecord(
-                    requestId,
-                    normalizeId(request.getString("userId")),
-                    safeText(request.getString("name")),
-                    safeText(request.getString("initials")),
-                    normalizeGender(request.getString("gender")),
-                    normalizeRequestStatus(request.getString("status")),
-                    safeText(request.getString("note")),
-                    normalizeAssetRequestKind(request.getString("requestKind")),
-                    safeNullableText(request.getString("requestedAtIso")),
-                    readLegacyRequestBooking(request.get("booking"))));
-        }
-        return next;
     }
 
     private Asset toDocument(AssetCardDto dto, String ownerUserId, Asset current) {
@@ -1784,29 +1662,6 @@ public class AssetsService {
                 normalizeStrings(booking.acceptedPolicyIds()),
                 normalizeId(booking.paymentSessionId()),
                 Boolean.TRUE.equals(booking.inventoryApplied()) ? Boolean.TRUE : null);
-    }
-
-    private AssetRequestBookingRecord readLegacyRequestBooking(Object rawBooking) {
-        Document booking = toDocument(rawBooking);
-        if (booking.isEmpty()) {
-            return null;
-        }
-        return normalizeRequestBooking(new AssetRequestBookingDto(
-                normalizeId(booking.getString("eventId")),
-                safeNullableText(booking.getString("eventTitle")),
-                normalizeId(booking.getString("subEventId")),
-                safeNullableText(booking.getString("subEventTitle")),
-                safeNullableText(booking.getString("slotKey")),
-                safeNullableText(booking.getString("slotLabel")),
-                safeNullableText(booking.getString("timeframe")),
-                safeNullableText(booking.getString("startAtIso")),
-                safeNullableText(booking.getString("endAtIso")),
-                nullableCount(booking.get("quantity") instanceof Number number ? number : null),
-                safeNullableDouble(booking.get("totalAmount")),
-                safeNullableText(booking.getString("currency")),
-                normalizeStrings(booking.get("acceptedPolicyIds")),
-                normalizeId(booking.getString("paymentSessionId")),
-                booking.get("inventoryApplied") instanceof Boolean flag && flag ? Boolean.TRUE : null));
     }
 
     private AssetRequestBookingRecord normalizeRequestBooking(AssetRequestBookingDto booking) {

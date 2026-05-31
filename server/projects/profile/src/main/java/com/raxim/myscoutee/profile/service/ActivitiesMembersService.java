@@ -25,7 +25,6 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
@@ -232,15 +231,6 @@ public class ActivitiesMembersService {
             ActivityEvent eventRecord = preferredEventBySourceId.get(sourceId);
             List<ActivityMember> rawMembers = membersByOwnerId.getOrDefault(sourceId, List.of())
                     .stream().filter(Objects::nonNull).toList();
-
-            // Bootstrap if empty (matches loadOwnerDocuments behavior)
-            if (rawMembers.isEmpty() && eventRecord != null) {
-                List<ActivityMember> bootstrapped = bootstrapEventMembers(eventRecord);
-                if (!bootstrapped.isEmpty()) {
-                    activityMembersRepository.saveAll(bootstrapped);
-                    rawMembers = bootstrapped;
-                }
-            }
 
             List<ActivitySubEventResource> resources = resourcesByOwnerId.getOrDefault(sourceId, List.of());
             List<ActivityMember> merged = mergeDerivedEventMembersBatch(sourceId, rawMembers, eventRecord, resources);
@@ -855,36 +845,7 @@ public class ActivitiesMembersService {
     }
 
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId, ActivityEvent fallbackEventRecord) {
-        List<ActivityMember> stored = loadStoredOwnerDocuments(ownerType, ownerId);
-        if (!stored.isEmpty()) {
-            return stored;
-        }
-
-        if (OWNER_TYPE_ASSET.equals(ownerType)) {
-            List<ActivityMember> bootstrapped = bootstrapAssetMembers(ownerId);
-            if (!bootstrapped.isEmpty()) {
-                activityMembersRepository.saveAll(bootstrapped);
-                return bootstrapped;
-            }
-            return List.of();
-        }
-
-        if (!OWNER_TYPE_EVENT.equals(ownerType)) {
-            return stored;
-        }
-
-        ActivityEvent bootstrapSource = fallbackEventRecord != null
-                ? fallbackEventRecord
-                : findPreferredEventRecord(ownerId);
-        if (bootstrapSource == null) {
-            return List.of();
-        }
-        List<ActivityMember> bootstrapped = bootstrapEventMembers(bootstrapSource);
-        if (!bootstrapped.isEmpty()) {
-            activityMembersRepository.saveAll(bootstrapped);
-            return bootstrapped;
-        }
-        return List.of();
+        return loadStoredOwnerDocuments(ownerType, ownerId);
     }
 
     private List<ActivityMember> loadStoredOwnerDocuments(String ownerType, String ownerId) {
@@ -1226,137 +1187,6 @@ public class ActivitiesMembersService {
         List<ActivityMember> merged = new ArrayList<>(nextDocuments);
         merged.add(creatorMembership);
         return merged;
-    }
-
-    private List<ActivityMember> bootstrapAssetMembers(String assetId) {
-        Asset asset = assetsService.findAssetByAssetId(assetId).orElse(null);
-        if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
-            return List.of();
-        }
-
-        String ownerId = normalizeId(asset.getAssetId());
-        String ownerUserId = normalizeId(asset.getOwnerUserId());
-        if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(ownerUserId)) {
-            return List.of();
-        }
-
-        String createdDate = normalizeDateTime(asset.getCreatedDate(), Instant.now().toString());
-        String updatedDate = normalizeDateTime(asset.getUpdatedDate(), createdDate);
-        String actionAtIso = normalizeDateTime(updatedDate, createdDate);
-        String metWhere = firstNonBlank(asset.getCity(), asset.getTitle());
-
-        List<ActivityMember> nextDocuments = new ArrayList<>();
-
-        ActivityMember ownerMembership = new ActivityMember();
-        ownerMembership.setId(new ObjectId().toHexString());
-        ownerMembership.setSyncKey(UUID.randomUUID().toString());
-        ownerMembership.setOwnerType(OWNER_TYPE_ASSET);
-        ownerMembership.setOwnerId(ownerId);
-        ownerMembership.setUserId(ownerUserId);
-        ownerMembership.setRole("Manager");
-        ownerMembership.setStatus("accepted");
-        ownerMembership.setPendingSource(null);
-        ownerMembership.setRequestKind(null);
-        ownerMembership.setInvitedByUserId(null);
-        ownerMembership.setActionAtIso(actionAtIso);
-        ownerMembership.setMetAtIso(actionAtIso);
-        ownerMembership.setMetWhere(metWhere);
-        ownerMembership.setCreatedDate(createdDate);
-        ownerMembership.setCreatedUser(ownerUserId);
-        ownerMembership.setUpdatedDate(updatedDate);
-        ownerMembership.setUpdatedUser(ownerUserId);
-        nextDocuments.add(ownerMembership);
-
-        for (AssetRequestRecord request : safeAssetRequests(asset.getRequests())) {
-            String memberUserId = normalizeId(request.userId());
-            if (!StringUtils.hasText(memberUserId) || ownerUserId.equals(memberUserId)) {
-                continue;
-            }
-
-            boolean accepted = "accepted".equals(safeText(request.status()));
-            ActivityMember member = new ActivityMember();
-            member.setId(new ObjectId().toHexString());
-            member.setSyncKey(UUID.randomUUID().toString());
-            member.setOwnerType(OWNER_TYPE_ASSET);
-            member.setOwnerId(ownerId);
-            member.setUserId(memberUserId);
-            member.setRole("Member");
-            member.setStatus(accepted ? "accepted" : "pending");
-            member.setPendingSource(accepted ? null : "member");
-            member.setRequestKind(accepted ? null : "join");
-            member.setInvitedByUserId(null);
-            member.setActionAtIso(actionAtIso);
-            member.setMetAtIso(actionAtIso);
-            member.setMetWhere(metWhere);
-            member.setCreatedDate(createdDate);
-            member.setCreatedUser(memberUserId);
-            member.setUpdatedDate(updatedDate);
-            member.setUpdatedUser(accepted ? ownerUserId : memberUserId);
-            nextDocuments.add(member);
-        }
-        return nextDocuments;
-    }
-
-    private List<ActivityMember> bootstrapEventMembers(ActivityEvent record) {
-        if (record == null || !StringUtils.hasText(normalizeId(record.getSourceId()))) {
-            return List.of();
-        }
-        String ownerId = normalizeId(record.getSourceId());
-        String creatorUserId = normalizeId(record.getCreatorUserId());
-        String createdDate = normalizeDateTime(record.getCreatedDate(), normalizeDateTime(record.getStartAtIso(), Instant.now().toString()));
-        String updatedDate = normalizeDateTime(record.getUpdatedDate(), createdDate);
-        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
-        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
-        if (StringUtils.hasText(creatorUserId)) {
-            acceptedUserIds.add(creatorUserId);
-            pendingUserIds.remove(creatorUserId);
-        }
-        pendingUserIds.removeAll(acceptedUserIds);
-
-        List<ActivityMember> nextDocuments = new ArrayList<>();
-        for (String userId : acceptedUserIds) {
-            ActivityMember member = new ActivityMember();
-            member.setId(new ObjectId().toHexString());
-            member.setSyncKey(UUID.randomUUID().toString());
-            member.setOwnerType(OWNER_TYPE_EVENT);
-            member.setOwnerId(ownerId);
-            member.setUserId(userId);
-            member.setRole(userId.equals(creatorUserId) ? "Admin" : "Member");
-            member.setStatus("accepted");
-            member.setPendingSource(null);
-            member.setRequestKind(null);
-            member.setInvitedByUserId(null);
-            member.setActionAtIso(normalizeDateTime(record.getStartAtIso(), createdDate));
-            member.setMetAtIso(normalizeDateTime(record.getStartAtIso(), member.getActionAtIso()));
-            member.setMetWhere(safeText(record.getLocation()));
-            member.setCreatedDate(createdDate);
-            member.setCreatedUser(StringUtils.hasText(creatorUserId) ? creatorUserId : userId);
-            member.setUpdatedDate(updatedDate);
-            member.setUpdatedUser(StringUtils.hasText(safeText(record.getUpdatedUser())) ? safeText(record.getUpdatedUser()) : member.getCreatedUser());
-            nextDocuments.add(member);
-        }
-        for (String userId : pendingUserIds) {
-            ActivityMember member = new ActivityMember();
-            member.setId(new ObjectId().toHexString());
-            member.setSyncKey(UUID.randomUUID().toString());
-            member.setOwnerType(OWNER_TYPE_EVENT);
-            member.setOwnerId(ownerId);
-            member.setUserId(userId);
-            member.setRole("Member");
-            member.setStatus("pending");
-            member.setPendingSource("admin");
-            member.setRequestKind("invite");
-            member.setInvitedByUserId(creatorUserId);
-            member.setActionAtIso(normalizeDateTime(record.getStartAtIso(), createdDate));
-            member.setMetAtIso(normalizeDateTime(record.getStartAtIso(), member.getActionAtIso()));
-            member.setMetWhere(safeText(record.getLocation()));
-            member.setCreatedDate(createdDate);
-            member.setCreatedUser(StringUtils.hasText(creatorUserId) ? creatorUserId : userId);
-            member.setUpdatedDate(updatedDate);
-            member.setUpdatedUser(StringUtils.hasText(safeText(record.getUpdatedUser())) ? safeText(record.getUpdatedUser()) : member.getCreatedUser());
-            nextDocuments.add(member);
-        }
-        return nextDocuments;
     }
 
     private void cascadeRemovedEventMembersFromAssignedAssets(
@@ -1852,10 +1682,6 @@ public class ActivitiesMembersService {
                     .orElse(null);
         }
         return null;
-    }
-
-    private List<AssetRequestRecord> safeAssetRequests(List<AssetRequestRecord> requests) {
-        return requests == null ? List.of() : requests;
     }
 
     private String firstNonBlank(String first, String second) {

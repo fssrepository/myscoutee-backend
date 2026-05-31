@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "admin-monitoring-global",
+    "monitoringKey": "global",
+    "generatedAtIso": "2026-05-31T00:00:00.000Z",
+    "source": "http",
+    "health": "ok",
+    "lastTelemetryStreamId": "0-0",
+    "counters": {},
+    "categoryCounters": {},
+    "nodeCounters": {
+      "queues.rules.failed": 0,
+      "queues.recompute.pending": 0,
+      "queues.recompute.running": 0,
+      "queues.recompute.failed": 0,
+      "queues.outbox.pending": 0,
+      "queues.outbox.running": 0,
+      "queues.outbox.failed": 0,
+      "queues.outbox.sent": 0
+    },
+    "alertCounters": {}
+  }
+]

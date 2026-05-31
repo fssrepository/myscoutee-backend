@@ -14,9 +14,6 @@ import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -33,17 +30,14 @@ import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepositor
 public class ActivitiesResourcesService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final AssetsService assetsService;
-    private final MongoTemplate mongoTemplate;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             AssetsService assetsService,
-            MongoTemplate mongoTemplate,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.assetsService = assetsService;
-        this.mongoTemplate = mongoTemplate;
         this.activitiesMembersServiceProvider = activitiesMembersServiceProvider;
     }
 
@@ -149,38 +143,7 @@ public class ActivitiesResourcesService {
         }
 
         return activitySubEventResourcesRepository.findByRecordId(recordId(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId))
-                .orElseGet(() -> bootstrapFromLegacy(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId));
-    }
-
-    private ActivitySubEventResource bootstrapFromLegacy(String ownerId, String subEventId, String assetOwnerUserId) {
-        Query query = Query.query(new Criteria().andOperator(
-                Criteria.where("ownerId").is(ownerId),
-                Criteria.where("subEventId").is(subEventId),
-                Criteria.where("assetOwnerUserId").is(assetOwnerUserId)));
-        Document legacy = mongoTemplate.findOne(query, Document.class, "activityResources");
-        if (legacy == null) {
-            return null;
-        }
-
-        ActivitySubEventResource record = new ActivitySubEventResource();
-        String nowIso = Instant.now().toString();
-        record.setId(new ObjectId().toHexString());
-        record.setSyncKey(UUID.randomUUID().toString());
-        record.setRecordId(recordId(ownerId, subEventId, assetOwnerUserId));
-        record.setOwnerKey(ownerKey(ownerId, assetOwnerUserId));
-        record.setOwnerId(ownerId);
-        record.setSubEventId(subEventId);
-        record.setAssetOwnerUserId(assetOwnerUserId);
-        record.setAssetAssignmentIds(filterAssetAssignmentIds(rawAssetAssignmentIds(legacy.get("assetAssignmentIds")), assetOwnerUserId));
-        record.setAssetSettingsByType(filterSettings(rawAssetSettings(legacy.get("assetSettingsByType")), ownedAssetIds(assetOwnerUserId)));
-        record.setSupplyContributionEntriesByAssetId(filterSupplyEntries(rawSupplyContributionEntries(legacy.get("supplyContributionEntriesByAssetId")), ownedAssetIds(assetOwnerUserId)));
-        record.setCreatedDate(normalizeDateTime(legacy.getString("createdAtIso"), nowIso));
-        record.setCreatedUser(assetOwnerUserId);
-        record.setUpdatedDate(normalizeDateTime(legacy.getString("updatedAtIso"), record.getCreatedDate()));
-        record.setUpdatedUser(assetOwnerUserId);
-        ActivitySubEventResource saved = activitySubEventResourcesRepository.save(record);
-        refreshEventParticipationProjection(ownerId);
-        return saved;
+                .orElse(null);
     }
 
     private ActivitySubEventResource filterToOwnedAssets(ActivitySubEventResource source) {
@@ -390,77 +353,6 @@ public class ActivitiesResourcesService {
                             normalizeDateTime(item.addedAtIso(), Instant.now().toString())))
                     .filter(item -> StringUtils.hasText(item.userId()) && item.quantity() > 0)
                     .toList();
-            if (!records.isEmpty()) {
-                next.put(assetId, records);
-            }
-        }
-        return next;
-    }
-
-    private Map<String, List<String>> rawAssetAssignmentIds(Object rawValue) {
-        Map<String, List<String>> next = new LinkedHashMap<>();
-        if (!(rawValue instanceof Map<?, ?> source)) {
-            return next;
-        }
-        for (Map.Entry<?, ?> entry : source.entrySet()) {
-            next.put(safeText(String.valueOf(entry.getKey())), normalizeStrings(entry.getValue()));
-        }
-        return next;
-    }
-
-    private Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> rawAssetSettings(Object rawValue) {
-        Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> next = new LinkedHashMap<>();
-        if (!(rawValue instanceof Map<?, ?> source)) {
-            return next;
-        }
-        for (Map.Entry<?, ?> typeEntry : source.entrySet()) {
-            if (!(typeEntry.getValue() instanceof Map<?, ?> rawSettings)) {
-                continue;
-            }
-            Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId = new LinkedHashMap<>();
-            for (Map.Entry<?, ?> assetEntry : rawSettings.entrySet()) {
-                Document setting = toDocument(assetEntry.getValue());
-                String assetId = normalizeId(String.valueOf(assetEntry.getKey()));
-                if (!StringUtils.hasText(assetId)) {
-                    continue;
-                }
-                settingsByAssetId.put(assetId, new SubEventAssignedAssetSettingsRecord(
-                        Math.max(0, normalizeCount(setting.get("capacityMin"))),
-                        Math.max(0, normalizeCount(setting.get("capacityMax"))),
-                        normalizeId(setting.getString("addedByUserId")),
-                        normalizeStrings(setting.get("routes"))));
-            }
-            if (!settingsByAssetId.isEmpty()) {
-                next.put(safeText(String.valueOf(typeEntry.getKey())), settingsByAssetId);
-            }
-        }
-        return next;
-    }
-
-    private Map<String, List<SubEventSupplyContributionEntryRecord>> rawSupplyContributionEntries(Object rawValue) {
-        Map<String, List<SubEventSupplyContributionEntryRecord>> next = new LinkedHashMap<>();
-        if (!(rawValue instanceof Map<?, ?> source)) {
-            return next;
-        }
-        for (Map.Entry<?, ?> entry : source.entrySet()) {
-            String assetId = normalizeId(String.valueOf(entry.getKey()));
-            if (!StringUtils.hasText(assetId) || !(entry.getValue() instanceof Collection<?> rawEntries)) {
-                continue;
-            }
-            List<SubEventSupplyContributionEntryRecord> records = new ArrayList<>();
-            for (Object rawEntry : rawEntries) {
-                Document contribution = toDocument(rawEntry);
-                String contributionUserId = normalizeId(contribution.getString("userId"));
-                int quantity = Math.max(0, normalizeCount(contribution.get("quantity")));
-                if (!StringUtils.hasText(contributionUserId) || quantity <= 0) {
-                    continue;
-                }
-                records.add(new SubEventSupplyContributionEntryRecord(
-                        StringUtils.hasText(normalizeId(contribution.getString("id"))) ? normalizeId(contribution.getString("id")) : UUID.randomUUID().toString(),
-                        contributionUserId,
-                        quantity,
-                        normalizeDateTime(contribution.getString("addedAtIso"), Instant.now().toString())));
-            }
             if (!records.isEmpty()) {
                 next.put(assetId, records);
             }
