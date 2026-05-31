@@ -1,4 +1,4 @@
-ARG NGINX_BASE_IMAGE
+ARG NGINX_BASE_IMAGE=myscoutee-nginx:1.0.0-base
 FROM ${NGINX_BASE_IMAGE}
 
 ARG TZ=Europe/Brussels

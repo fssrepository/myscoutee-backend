@@ -1,12 +1,10 @@
 cloudflare - caching images (so won't need to use google cloud bandwith)
+create facebook campaign
 
 both
 ----
-index.html - og tags, the page can be shared into facebook chat (menubar share link) -- pls. plan
-landing site - Preview button, popup with description for your own responsibility and how to report
 we need to check x buttons and other syles should be unified
 activating firebase on prod - registre to firebase - buy the domain of myscoutee.com
-create facebook campaign
 consent data update - real email etc.
 
 activity rating
@@ -22,10 +20,18 @@ ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big 
 
 finish the ui testing e2e-handoff
 
-I noticed Docker still emits the ARG ${NGINX_BASE_IMAGE} warning from the nginx Dockerfile
+e-kozig textbox fooldalon ott kellene hogy legyen, az AI levette
 
-1) pls. cleanup the handoff file, if something turned to green 2) translation is wrong in seeds (demo/http - each db) - on activity ratings screen: preferenciak -> szimpátiák,
-javaslatok -> ajánlások
+sometimes android webview stuck on load
+
+install the home screen popup
+
+data export - gdpr
+
+kattinthato gonb verzio bagel es leiras - oldal teteje
+
+1) pls. cleanup the handoff file, if something turned to green 2) translation is wrong in seeds (demo/http - each db)
+on activity ratings screen: preferenciak -> szimpátiák, javaslatok -> ajánlások
 
 Bugs
 ----
