@@ -43,9 +43,6 @@ public class NotificationRuleRegistryService {
             RULE_EVENT_RANDOM_GROUPS,
             RULE_EVENT_AUTO_INVITER,
             RULE_EVENT_TOURNAMENT_REVIEW);
-    private static final Set<String> OBSOLETE_PARAMETER_KEYS = Set.of(
-            "jobs.process.randomGroups.historyPenalty");
-
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
     private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
 
@@ -59,12 +56,10 @@ public class NotificationRuleRegistryService {
     }
 
     public List<NotificationRuleConfig> rules() {
-        ensureDefaultRules();
         return sorted(notificationRuleConfigsRepository.findAll());
     }
 
     public Optional<NotificationRuleConfig> findRule(String ruleKey) {
-        ensureDefaultRules();
         return notificationRuleConfigsRepository.findByRuleKey(safeText(ruleKey));
     }
 
@@ -108,7 +103,6 @@ public class NotificationRuleRegistryService {
     }
 
     public boolean hasEnabledScheduledEventRule() {
-        ensureDefaultRules();
         for (NotificationRuleConfig rule : notificationRuleConfigsRepository.findAll()) {
             if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
                 continue;
@@ -233,7 +227,6 @@ public class NotificationRuleRegistryService {
     }
 
     public List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
-        ensureDefaultRules();
         if (incomingRules == null || incomingRules.isEmpty()) {
             return rules();
         }
@@ -267,340 +260,6 @@ public class NotificationRuleRegistryService {
             notificationRuleConfigsRepository.saveAll(nextRules);
         }
         return rules();
-    }
-
-    public List<NotificationRuleConfig> defaultRules() {
-        String nowIso = Instant.now().toString();
-        return List.of(
-                scheduledRule(
-                        RULE_EVENT_RANDOM_GROUPS,
-                        "admin.jobs.rule.event.random.groups",
-                        "admin.jobs.category.scheduled",
-                        "event.scheduler.random-groups",
-                        "admin.jobs.rule.event.random.groups.description",
-                        200,
-                        false,
-                        true,
-                        false,
-                        1440,
-                        nowIso,
-                        randomGroupParameters()),
-                scheduledRule(
-                        RULE_EVENT_AUTO_INVITER,
-                        "admin.jobs.rule.event.auto.inviter",
-                        "admin.jobs.category.scheduled",
-                        "event.scheduler.auto-inviter",
-                        "admin.jobs.rule.event.auto.inviter.description",
-                        210,
-                        true,
-                        false,
-                        false,
-                        120,
-                        nowIso,
-                        autoInviterParameters()),
-                scheduledRule(
-                        RULE_EVENT_TOURNAMENT_REVIEW,
-                        "admin.jobs.rule.event.tournament.review",
-                        "admin.jobs.category.scheduled",
-                        "event.scheduler.tournament-review",
-                        "admin.jobs.rule.event.tournament.review.description",
-                        220,
-                        true,
-                        false,
-                        false,
-                        30,
-                        nowIso,
-                        tournamentReviewParameters()),
-                scheduledRule(
-                        "notification-outbox",
-                        "admin.jobs.rule.notification.outbox",
-                        "admin.jobs.category.scheduled",
-                        "notifications.outbox.worker",
-                        "admin.jobs.rule.notification.outbox.description",
-                        230,
-                        true,
-                        false,
-                        false,
-                        1,
-                        nowIso,
-                        List.of()),
-                scheduledRule(
-                        "affinity-recompute",
-                        "admin.jobs.rule.affinity.recompute",
-                        "admin.jobs.category.scheduled",
-                        "affinity.recompute.worker",
-                        "admin.jobs.rule.affinity.recompute.description",
-                        240,
-                        true,
-                        false,
-                        false,
-                        1,
-                        nowIso,
-                        List.of()),
-                scheduledRule(
-                        "scheduled-messages",
-                        "admin.jobs.rule.scheduled.messages",
-                        "admin.jobs.category.scheduled",
-                        "scheduled.messages.worker",
-                        "admin.jobs.rule.scheduled.messages.description",
-                        250,
-                        true,
-                        false,
-                        false,
-                        30,
-                        nowIso,
-                        List.of()),
-                scheduledRule(
-                        "account-purge",
-                        "admin.jobs.rule.account.purge",
-                        "admin.jobs.category.scheduled",
-                        "users.deleted-account-purge",
-                        "admin.jobs.rule.account.purge.description",
-                        260,
-                        true,
-                        false,
-                        false,
-                        1440,
-                        nowIso,
-                        List.of()));
-    }
-
-    private void ensureDefaultRules() {
-        Map<String, NotificationRuleConfig> existingByKey = new LinkedHashMap<>();
-        for (NotificationRuleConfig existing : notificationRuleConfigsRepository.findAll()) {
-            if (existing != null && StringUtils.hasText(safeText(existing.getRuleKey()))) {
-                existingByKey.put(safeText(existing.getRuleKey()), existing);
-            }
-        }
-        List<NotificationRuleConfig> missing = new ArrayList<>();
-        List<NotificationRuleConfig> updated = new ArrayList<>();
-        for (NotificationRuleConfig defaultRule : defaultRules()) {
-            NotificationRuleConfig existing = existingByKey.get(safeText(defaultRule.getRuleKey()));
-            if (existing == null) {
-                missing.add(defaultRule);
-            } else {
-                boolean changed = mergeDefaultParameters(existing, defaultRule);
-                changed = mergeDefaultScheduleSlots(existing, defaultRule) || changed;
-                if (changed) {
-                    updated.add(existing);
-                }
-            }
-        }
-        if (!missing.isEmpty()) {
-            notificationRuleConfigsRepository.saveAll(missing);
-        }
-        if (!updated.isEmpty()) {
-            notificationRuleConfigsRepository.saveAll(updated);
-        }
-    }
-
-    private boolean mergeDefaultScheduleSlots(NotificationRuleConfig existing, NotificationRuleConfig defaultRule) {
-        if (existing == null || defaultRule == null) {
-            return false;
-        }
-        List<NotificationRuleConfig.ScheduleSlot> defaultSlots = defaultRule.getScheduleSlots() == null
-                ? List.of()
-                : defaultRule.getScheduleSlots();
-        List<NotificationRuleConfig.ScheduleSlot> existingSlots = existing.getScheduleSlots() == null
-                ? List.of()
-                : existing.getScheduleSlots();
-        if (!defaultSlots.isEmpty() && existingSlots.isEmpty()) {
-            existing.setScheduleSlots(defaultSlots);
-            return true;
-        }
-        if (!defaultSlots.isEmpty()
-                && !existingSlots.isEmpty()
-                && existingSlots.stream().allMatch(this::isGeneratedDefaultRunWindow)) {
-            existing.setScheduleSlots(defaultSlots);
-            return true;
-        }
-        if (!defaultSlots.isEmpty()) {
-            return false;
-        }
-        if (existingSlots.isEmpty()) {
-            return false;
-        }
-        existing.setScheduleSlots(List.of());
-        return true;
-    }
-
-    private boolean isGeneratedDefaultRunWindow(NotificationRuleConfig.ScheduleSlot slot) {
-        return slot != null
-                && "run-window-default".equals(safeText(slot.getId()))
-                && "daily".equals(safeText(slot.getFrequency()))
-                && "09:00".equals(safeText(slot.getTime()))
-                && !StringUtils.hasText(safeText(slot.getDate()))
-                && valueOrDefault(slot.getDayOfWeek(), 1) == 1;
-    }
-
-    private boolean mergeDefaultParameters(NotificationRuleConfig existing, NotificationRuleConfig defaultRule) {
-        if (defaultRule == null || defaultRule.getParameters() == null || defaultRule.getParameters().isEmpty()) {
-            if (existing != null && existing.getParameters() != null && !existing.getParameters().isEmpty()) {
-                existing.setParameters(List.of());
-                return true;
-            }
-            return false;
-        }
-        Map<String, NotificationRuleConfig.ParameterField> existingByKey = new LinkedHashMap<>();
-        List<NotificationRuleConfig.ParameterField> existingParameters = existing.getParameters() == null
-                ? List.of()
-                : existing.getParameters();
-        boolean changed = false;
-        for (NotificationRuleConfig.ParameterField field : existingParameters) {
-            String key = safeText(field == null ? null : field.getKey());
-            if (StringUtils.hasText(key)) {
-                if (OBSOLETE_PARAMETER_KEYS.contains(key)) {
-                    changed = true;
-                    continue;
-                }
-                existingByKey.put(key, field);
-            }
-        }
-        changed = changed || existingByKey.size() != existingParameters.size();
-        List<NotificationRuleConfig.ParameterField> merged = new ArrayList<>();
-        for (NotificationRuleConfig.ParameterField defaultField : defaultRule.getParameters()) {
-            String key = safeText(defaultField == null ? null : defaultField.getKey());
-            if (!StringUtils.hasText(key)) {
-                continue;
-            }
-            NotificationRuleConfig.ParameterField existingField = existingByKey.remove(key);
-            if (existingField == null) {
-                merged.add(defaultField);
-                changed = true;
-                continue;
-            }
-            NotificationRuleConfig.ParameterField next = copyParameterDefinition(defaultField, existingField);
-            merged.add(next);
-            changed = changed || !safeText(existingField.getLabelKey()).equals(safeText(next.getLabelKey()));
-        }
-        merged.addAll(existingByKey.values());
-        if (changed) {
-            existing.setParameters(merged);
-        }
-        return changed;
-    }
-
-    private NotificationRuleConfig.ParameterField copyParameterDefinition(
-            NotificationRuleConfig.ParameterField defaultField,
-            NotificationRuleConfig.ParameterField valueField) {
-        NotificationRuleConfig.ParameterField next = new NotificationRuleConfig.ParameterField();
-        next.setKey(defaultField.getKey());
-        next.setLabel(defaultField.getLabel());
-        next.setLabelKey(defaultField.getLabelKey());
-        next.setGroup(defaultField.getGroup());
-        next.setGroupKey(defaultField.getGroupKey());
-        next.setValueType(defaultField.getValueType());
-        next.setNumberValue("number".equals(safeText(defaultField.getValueType()))
-                ? valueOrDefault(valueField.getNumberValue(), valueOrDefault(defaultField.getNumberValue(), 0.0d))
-                : null);
-        next.setTextValue("text".equals(safeText(defaultField.getValueType()))
-                ? firstNonBlank(valueField.getTextValue(), defaultField.getTextValue())
-                : null);
-        next.setUnit(defaultField.getUnit());
-        next.setOptions(defaultField.getOptions());
-        next.setStrategy(defaultField.getStrategy());
-        next.setStrategyKey(defaultField.getStrategyKey());
-        next.setReadOnly(Boolean.TRUE.equals(defaultField.getReadOnly()));
-        return next;
-    }
-
-    private NotificationRuleConfig scheduledRule(
-            String ruleKey,
-            String label,
-            String category,
-            String actionKey,
-            String description,
-            int priority,
-            boolean enabled,
-            boolean manualRunEnabled,
-            boolean emailEnabled,
-            int intervalMinutes,
-            String nowIso,
-            List<NotificationRuleConfig.ParameterField> parameters) {
-        NotificationRuleConfig rule = baseRule(ruleKey, nowIso);
-        rule.setLabel(label);
-        rule.setCategory(category);
-        rule.setDescription(description);
-        rule.setActionKey(actionKey);
-        rule.setTriggerKind("scheduled_process");
-        rule.setEnabled(enabled);
-        rule.setManualRunEnabled(manualRunEnabled);
-        rule.setAdminManageable(Boolean.TRUE);
-        rule.setPriority(priority);
-        NotificationRuleConfig.DeliveryChannels channels = new NotificationRuleConfig.DeliveryChannels();
-        channels.setPushEnabled(false);
-        channels.setEmailEnabled(emailEnabled);
-        channels.setInAppEnabled(false);
-        channels.setSupportChatEnabled(false);
-        rule.setChannels(channels);
-        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
-        IntervalSpec interval = intervalSpec(null, null, null, intervalMinutes);
-        timing.setMode("interval");
-        timing.setIntervalMinutes(interval.minutes());
-        timing.setIntervalSeconds(interval.seconds());
-        timing.setIntervalAmount(interval.amount());
-        timing.setIntervalUnit(interval.unit());
-        timing.setCronExpression(toIntervalExpression(interval, defaultStartTime(ruleKey)));
-        timing.setTime(defaultStartTime(ruleKey));
-        timing.setTimezone("UTC");
-        rule.setTiming(timing);
-        NotificationRuleConfig.RunState runState = new NotificationRuleConfig.RunState();
-        runState.setCurrentStatus(enabled ? "idle" : "suspended");
-        runState.setProgressPercent(0);
-        runState.setProgressDetail(enabled ? "Ready for the next scheduled slot." : "Suspended by default.");
-        rule.setRunState(runState);
-        rule.setParameters(parameters);
-        return rule;
-    }
-
-    private String defaultStartTime(String ruleKey) {
-        return switch (safeText(ruleKey)) {
-            case RULE_EVENT_RANDOM_GROUPS -> "09:00";
-            case "account-purge" -> "02:00";
-            default -> "00:00";
-        };
-    }
-
-    private List<NotificationRuleConfig.ParameterField> randomGroupParameters() {
-        return List.of(
-                numberParameter("jobs.process.randomGroups.minRoomSize", "Min room size", "Matched rooms", 2, ""),
-                numberParameter("jobs.process.randomGroups.maxRoomSize", "Max room size", "Matched rooms", 4, ""));
-    }
-
-    private List<NotificationRuleConfig.ParameterField> autoInviterParameters() {
-        return List.of(
-                numberParameter("jobs.process.autoInviter.batchSize", "Invite batch size", "Auto inviter", 4, ""),
-                numberParameter("jobs.process.autoInviter.responseWindowHours", "Response window", "Auto inviter", 2, "h"),
-                numberParameter("jobs.process.autoInviter.candidateLookahead", "Candidate lookahead", "Auto inviter", 24, "h"));
-    }
-
-    private List<NotificationRuleConfig.ParameterField> tournamentReviewParameters() {
-        return List.of(
-                numberParameter("jobs.process.tournament.adminReminderHours", "Admin reminder", "Tournament", 2, "h"),
-                numberParameter("jobs.process.tournament.scoreReviewHours", "Score review window", "Tournament", 2, "h"));
-    }
-
-    private NotificationRuleConfig.ParameterField numberParameter(
-            String key,
-            String label,
-            String group,
-            double numberValue,
-            String unit) {
-        NotificationRuleConfig.ParameterField field = new NotificationRuleConfig.ParameterField();
-        field.setKey(key);
-        field.setLabel(label);
-        field.setLabelKey("admin.params.field." + safeText(key));
-        field.setGroup(group);
-        field.setGroupKey("admin.params.group." + i18nSegment(group));
-        field.setValueType("number");
-        field.setNumberValue(numberValue);
-        field.setTextValue(null);
-        field.setUnit(unit);
-        field.setOptions(List.of());
-        field.setStrategy("");
-        field.setStrategyKey("");
-        field.setReadOnly(false);
-        return field;
     }
 
     private String i18nSegment(String value) {

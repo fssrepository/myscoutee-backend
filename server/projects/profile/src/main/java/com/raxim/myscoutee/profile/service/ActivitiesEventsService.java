@@ -476,7 +476,6 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -499,7 +498,6 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        materializeSlotOccurrences();
         return withEventQueryContext(buildUserQueryContext(viewer), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = queryUserRecords(viewer).stream()
@@ -655,7 +653,6 @@ public class ActivitiesEventsService {
     }
 
     public List<EventRecordDto> queryExploreItems(String requestedUserId) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -913,7 +910,6 @@ public class ActivitiesEventsService {
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
-        materializeSlotOccurrences();
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());

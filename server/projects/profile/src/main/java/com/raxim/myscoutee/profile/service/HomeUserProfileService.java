@@ -257,7 +257,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncCurrentUserEmail(syncComputedUserPartition(findUser(resolvedUserId)));
+        Users user = findUser(resolvedUserId);
         if (user == null) {
             return null;
         }
@@ -311,7 +311,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncCurrentUserEmail(syncComputedUserPartition(findUser(resolvedUserId)));
+        Users user = findUser(resolvedUserId);
         if (user == null) {
             return null;
         }

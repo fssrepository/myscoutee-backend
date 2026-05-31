@@ -15,7 +15,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -67,7 +66,6 @@ public class ActivitiesChatService {
     private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
     private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
     private static final String SUPPORT_CASE_FILTER_ALL = "all";
-    private static final long OWNER_COPY_REPAIR_TTL_MS = 5 * 60 * 1000L;
 
     private final ActivityChatsRepository activityChatsRepository;
     private final ActivityChatMessagesRepository activityChatMessagesRepository;
@@ -79,7 +77,6 @@ public class ActivitiesChatService {
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
-    private final Map<String, Long> ownerCopyRepairCheckedAtByUserId = new ConcurrentHashMap<>();
 
     public ActivitiesChatService(
             ActivityChatsRepository activityChatsRepository,
@@ -112,7 +109,6 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(userId)) {
             return List.of();
         }
-        ensureOwnerCopiesForUser(userId);
         return uniqueOwnerChats(activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryDto)
@@ -156,7 +152,6 @@ public class ActivitiesChatService {
                     supportCaseFilterValue);
         }
 
-        ensureOwnerCopiesForUser(userId);
         List<ChatSummaryProjection> projections = uniqueOwnerChats(activityChatsRepository.findByOwnerUserId(userId)).stream()
                 .filter(Objects::nonNull)
                 .map(this::toSummaryProjection)
@@ -257,10 +252,6 @@ public class ActivitiesChatService {
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(message -> sortableDate(message.getSentAtIso())))
                 .toList();
-        ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, null, messages);
-        if (!readUpdate.readMessageIds().isEmpty()) {
-            publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
-        }
         Map<String, Users> userCache = new LinkedHashMap<>();
         return messages.stream()
                 .map(message -> toMessageDto(message, userId, userCache))
@@ -520,16 +511,22 @@ public class ActivitiesChatService {
     }
 
     private ChatDocumentsSnapshot requireChat(String chatId, String userId) {
+        return requireChat(chatId, userId, false);
+    }
+
+    private ChatDocumentsSnapshot requireChat(String chatId, String userId, boolean prepareOwnerCopies) {
         String normalizedChatId = normalizeId(chatId);
         if (!StringUtils.hasText(normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
         }
-        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        List<ActivityChat> chatDocuments = prepareOwnerCopies
+                ? ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId))
+                : activityChatsRepository.findByChatId(normalizedChatId);
         if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(chat -> hasChatAccess(chat, userId))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
         }
         ActivityChat viewerChat = findOwnerChat(chatDocuments, userId);
-        if (viewerChat == null) {
+        if (prepareOwnerCopies && viewerChat == null) {
             ActivityChat baseChat = chatDocuments.get(0);
             ActivityChat createdViewerChat = createOwnerCopy(baseChat, userId);
             activityChatsRepository.save(createdViewerChat);
@@ -541,80 +538,14 @@ public class ActivitiesChatService {
     }
 
     private ChatDocumentsSnapshot requireChatAccessForSend(String chatId, String userId) {
-        return requireChat(chatId, userId);
+        return requireChat(chatId, userId, true);
     }
 
     private List<ActivityChat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
         if (snapshot != null && snapshot.chatDocuments() != null && !snapshot.chatDocuments().isEmpty()) {
             return snapshot.chatDocuments();
         }
-        return requireChat(snapshot == null ? "" : snapshot.chatId(), userId).chatDocuments();
-    }
-
-    private void ensureOwnerCopiesForUser(String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId) || ownerCopyRepairRecentlyChecked(normalizedUserId)) {
-            return;
-        }
-        ensureOwnerCopiesFromLoadedDocuments(activityChatsRepository.findByMemberIdsContaining(normalizedUserId));
-    }
-
-    private boolean ownerCopyRepairRecentlyChecked(String userId) {
-        long now = System.currentTimeMillis();
-        Long checkedAt = ownerCopyRepairCheckedAtByUserId.get(userId);
-        if (checkedAt != null && now - checkedAt < OWNER_COPY_REPAIR_TTL_MS) {
-            return true;
-        }
-        synchronized (ownerCopyRepairCheckedAtByUserId) {
-            checkedAt = ownerCopyRepairCheckedAtByUserId.get(userId);
-            if (checkedAt != null && now - checkedAt < OWNER_COPY_REPAIR_TTL_MS) {
-                return true;
-            }
-            ownerCopyRepairCheckedAtByUserId.put(userId, now);
-            return false;
-        }
-    }
-
-    private List<ActivityChat> ensureOwnerCopiesFromLoadedDocuments(List<ActivityChat> chatDocuments) {
-        if (chatDocuments == null || chatDocuments.isEmpty()) {
-            return List.of();
-        }
-        Map<String, List<ActivityChat>> chatsByChatId = groupChatsByChatId(chatDocuments);
-        List<ActivityChat> created = new ArrayList<>();
-        for (List<ActivityChat> chatsWithSameId : chatsByChatId.values()) {
-            if (chatsWithSameId.isEmpty()) {
-                continue;
-            }
-            ActivityChat baseChat = chatsWithSameId.get(0);
-            String chatId = normalizeId(baseChat.getChatId());
-            if (!StringUtils.hasText(chatId)) {
-                continue;
-            }
-            Set<String> ownerUserIds = new LinkedHashSet<>();
-            Set<String> participantUserIds = new LinkedHashSet<>();
-            collectChatOwnersAndParticipants(chatsWithSameId, ownerUserIds, participantUserIds);
-            for (String participantUserId : participantUserIds) {
-                if (ownerUserIds.contains(participantUserId)) {
-                    continue;
-                }
-                ActivityChat existingOwnerCopy = activityChatsRepository
-                        .findByOwnerUserIdAndChatId(participantUserId, chatId)
-                        .orElse(null);
-                if (existingOwnerCopy != null) {
-                    ownerUserIds.add(participantUserId);
-                    chatsWithSameId.add(existingOwnerCopy);
-                    continue;
-                }
-                ActivityChat createdChat = createOwnerCopy(baseChat, participantUserId);
-                created.add(createdChat);
-                chatsWithSameId.add(createdChat);
-                ownerUserIds.add(participantUserId);
-            }
-        }
-        if (!created.isEmpty()) {
-            activityChatsRepository.saveAll(created);
-        }
-        return flattenChatGroups(chatsByChatId);
+        return requireChatAccessForSend(snapshot == null ? "" : snapshot.chatId(), userId).chatDocuments();
     }
 
     private List<ActivityChat> uniqueOwnerChats(List<ActivityChat> chatDocuments) {

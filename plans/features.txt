@@ -10,6 +10,7 @@ bootstrap is slow should be speed up
 ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big task
 
 event feedback - backend stress test - first load is a little bit slow
+syncing all three db on backend
 
 Bugs
 ----

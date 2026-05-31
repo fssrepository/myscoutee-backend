@@ -16,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -37,9 +36,6 @@ class HelpCenterServiceTest {
     private HelpCenterAuditRepository auditRepository;
     @Mock
     private PrivacyConsentsRepository privacyConsentsRepository;
-    @Mock
-    private MongoTemplate mongoTemplate;
-    @Mock
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AppSettingsService appSettingsService;
@@ -54,7 +50,6 @@ class HelpCenterServiceTest {
                 revisionsRepository,
                 auditRepository,
                 privacyConsentsRepository,
-                mongoTemplate,
                 adminTelemetryService,
                 appSettingsService);
     }
