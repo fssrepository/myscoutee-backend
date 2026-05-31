@@ -118,6 +118,27 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void scheduleUserDeletionByUserIdMarksUserForThirtyDayPurge() {
+        Users user = new Users();
+        user.setUserId("active");
+        user.setName("Active User");
+        user.setStatus("A");
+        user.setProfileStatus("public");
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user));
+        when(usersRepository.save(user)).thenReturn(user);
+
+        var result = service.scheduleUserDeletionByUserId("active", "facebook-data-deletion");
+
+        assertThat(result.submitted()).isTrue();
+        assertThat(user.getStatus()).isEqualTo("D");
+        assertThat(user.getProfileStatus()).isEqualTo("deleted");
+        assertThat(user.getPreviousProfileStatus()).isEqualTo("public");
+        assertThat(user.getDeletedAtIso()).isNotBlank();
+        verify(affinityRecomputeTaskService).enqueueAdminStatusChanged("active");
+        verify(adminTelemetryService).record("profile.deleted", "profiles", "active", "active");
+    }
+
+    @Test
     void friendsInCommonUsesKnownEdgeWeightBeforeColdStartAffinityWhenBridgeCountTies() {
         List<Users> users = List.of(
                 user("active", 0d),

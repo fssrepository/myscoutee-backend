@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -153,6 +153,19 @@ db.getCollection('userRates').createIndex({ relatedUserId: 1, updatedDate: -1 },
 db.getCollection('userRates').createIndex({ secondaryRelatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_secondary_lookup_v2', sparse: true });
 db.getCollection('userRates').createIndex({ ownerUserId: 1, relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_owner_primary_mode_v2' });
 db.getCollection('userRates').createIndex({ relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_pair_lookup_v2' });
+" >/dev/null
+      ;;
+    appSettings)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('appSettings').createIndex({ settingsKey: 1 }, { name: 'app_settings_key', unique: true });
 " >/dev/null
       ;;
     userFilterPreferences)

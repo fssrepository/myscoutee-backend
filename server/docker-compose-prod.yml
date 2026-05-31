@@ -156,6 +156,7 @@ services:
       SPRING_DATA_REDIS_HOST: "redis"
       SPRING_DATA_REDIS_PORT: "6379"
       FIREBASE_ENABLED: "${FIREBASE_ENABLED:-true}"
+      FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
       DEV_USER: "dev@myscoutee.local"
       ADMIN_USER: "myscoutee@gmail.com"
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"

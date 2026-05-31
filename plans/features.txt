@@ -17,3 +17,5 @@ b) eliminate the need of multiple media queries in the whole application, it sho
 720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
 naturally when you merge, anything which is in a lager width should be moved to the smaller one,
 but if the smaller one has an override rule that should be applied
+
+https://developers.facebook.com/ -> business verfication is needed

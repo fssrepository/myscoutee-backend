@@ -11,6 +11,7 @@ const requiredCollections = [
   'eventFeedbackStates',
   'eventFeedbackAnswers',
   'ideaPosts',
+  'appSettings',
   'helpCenterRevisions',
   'helpCenterAudit',
   'privacyConsents',
@@ -85,6 +86,11 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.users.createIndex(
     { hostTier: 1 },
     { name: 'users_host_tier' }
+  );
+
+  portalDb.appSettings.createIndex(
+    { settingsKey: 1 },
+    { name: 'app_settings_key', unique: true }
   );
 
   portalDb.userRates.createIndex(

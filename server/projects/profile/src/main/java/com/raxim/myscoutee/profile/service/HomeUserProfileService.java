@@ -79,7 +79,8 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 public class HomeUserProfileService {
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
-    private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted");
+    private static final String PROFILE_STATUS_ONBOARDING = "onboarding";
+    private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted", PROFILE_STATUS_ONBOARDING);
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
     private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
@@ -549,8 +550,19 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(resolvedUserId)) {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
         }
+        return scheduleUserDeletionByUserId(resolvedUserId, "status:D");
+    }
 
-        Users user = usersRepository.findByUserId(resolvedUserId).orElse(null);
+    @CacheEvict(value = "demo_users", allEntries = true)
+    public UserSubmitActionResponseDto scheduleUserDeletionByUserId(String userId, String source) {
+        String resolvedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
+        }
+
+        Users user = usersRepository.findByUserId(resolvedUserId)
+                .or(() -> usersRepository.findById(resolvedUserId))
+                .orElse(null);
         if (user == null) {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
         }
@@ -563,7 +575,7 @@ public class HomeUserProfileService {
         user.setDeletedAtIso(Instant.now().toString());
         usersRepository.save(user);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
-        recordSessionAction(resolvedUserId, "delete", "status:D");
+        recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
         adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
         return new UserSubmitActionResponseDto(true, null);
     }
@@ -1233,7 +1245,8 @@ public class HomeUserProfileService {
         if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
             return false;
         }
-        return StringUtils.hasText(user.getName())
+        return PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))
+                || StringUtils.hasText(user.getName())
                 || user.getAge() != null
                 || user.getLocationCoordinates() != null
                 || !normalizeStrings(user.getImages()).isEmpty();
@@ -1241,7 +1254,7 @@ public class HomeUserProfileService {
 
     private boolean isSelectableDemoUserDocument(Users user) {
         return isUsableUserDocument(user)
-                && !"deleted".equals(resolveProfileStatus(user));
+                && !HARD_HIDDEN_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
     boolean isPublicGameUser(Users user) {
@@ -2240,6 +2253,9 @@ public class HomeUserProfileService {
         if ("blocked".equals(normalizedProfileStatus)) {
             return "blocked";
         }
+        if (PROFILE_STATUS_ONBOARDING.equals(normalizedProfileStatus)) {
+            return PROFILE_STATUS_ONBOARDING;
+        }
         return switch (safeText(status)) {
             case "D" -> "deleted";
             case "B" -> "blocked";
@@ -2257,6 +2273,7 @@ public class HomeUserProfileService {
         return switch (safeText(profileStatus)) {
             case "deleted" -> "D";
             case "blocked" -> "B";
+            case PROFILE_STATUS_ONBOARDING -> "A";
             case "inactive" -> "I";
             case "friends only" -> "F";
             case "host only" -> "H";

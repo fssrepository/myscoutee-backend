@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -26,7 +25,7 @@ class AdminAudienceServiceTest {
     @Test
     void demoAudienceIncludesBothDemoAdmins() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
-        AdminAudienceService service = new AdminAudienceService(new ConfigProperties(), mock(UsersRepository.class));
+        AdminAudienceService service = new AdminAudienceService(mock(UsersRepository.class), mock(AppSettingsService.class));
 
         List<String> recipients = service.adminNotificationRecipientUserIds("admin-demo-ava");
 
@@ -36,15 +35,15 @@ class AdminAudienceServiceTest {
     @Test
     void realAudienceResolvesConfiguredEmailsAndSkipsSuppressedUsers() {
         MongoSessionModeContext.set(MongoSessionMode.REAL);
-        ConfigProperties properties = new ConfigProperties();
-        properties.setAdminUser("lead@example.com;inactive-admin");
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        when(appSettingsService.adminEmails()).thenReturn(List.of("lead@example.com", "inactive-admin"));
         UsersRepository usersRepository = mock(UsersRepository.class);
         Users lead = user("lead-user", "lead@example.com", "public");
         Users inactive = user("inactive-admin", "inactive@example.com", "inactive");
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(inactive));
         when(usersRepository.findByEmailIn(anyCollection())).thenReturn(List.of(lead));
         when(usersRepository.findByUserId("actor-admin")).thenReturn(Optional.empty());
-        AdminAudienceService service = new AdminAudienceService(properties, usersRepository);
+        AdminAudienceService service = new AdminAudienceService(usersRepository, appSettingsService);
 
         List<String> recipients = service.adminNotificationRecipientUserIds("actor-admin");
 

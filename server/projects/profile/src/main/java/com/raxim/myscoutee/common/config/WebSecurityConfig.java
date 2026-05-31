@@ -55,6 +55,7 @@ public class WebSecurityConfig {
                             "/health",
                             "/error",
                             "/auth/eligibility",
+                            "/auth/facebook/data-deletion",
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",

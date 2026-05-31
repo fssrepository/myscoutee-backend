@@ -88,6 +88,7 @@ public class HelpCenterService {
     private final PrivacyConsentsRepository privacyConsentsRepository;
     private final MongoTemplate mongoTemplate;
     private final AdminTelemetryService adminTelemetryService;
+    private final AppSettingsService appSettingsService;
 
     public HelpCenterService(
             ConfigProperties configProperties,
@@ -95,13 +96,15 @@ public class HelpCenterService {
             HelpCenterAuditRepository auditRepository,
             PrivacyConsentsRepository privacyConsentsRepository,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
         this.privacyConsentsRepository = privacyConsentsRepository;
         this.mongoTemplate = mongoTemplate;
         this.adminTelemetryService = adminTelemetryService;
+        this.appSettingsService = appSettingsService;
     }
 
     public HelpCenterStateDto activeState() {
@@ -805,8 +808,7 @@ public class HelpCenterService {
         String normalized = normalize(adminUserId);
         if (configProperties.isFirebaseEnabled()) {
             String email = resolveFirebaseEmail();
-            String configured = normalize(configProperties.getAdminUser());
-            if (!StringUtils.hasText(email) || !StringUtils.hasText(configured) || !configured.equalsIgnoreCase(email)) {
+            if (!appSettingsService.isAdminEmail(email)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
             }
             return StringUtils.hasText(normalized) ? normalized : email;

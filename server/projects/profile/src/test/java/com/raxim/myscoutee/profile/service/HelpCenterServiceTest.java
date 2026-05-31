@@ -41,6 +41,8 @@ class HelpCenterServiceTest {
     private MongoTemplate mongoTemplate;
     @Mock
     private AdminTelemetryService adminTelemetryService;
+    @Mock
+    private AppSettingsService appSettingsService;
 
     private HelpCenterService service;
 
@@ -53,7 +55,8 @@ class HelpCenterServiceTest {
                 auditRepository,
                 privacyConsentsRepository,
                 mongoTemplate,
-                adminTelemetryService);
+                adminTelemetryService,
+                appSettingsService);
     }
 
     @AfterEach

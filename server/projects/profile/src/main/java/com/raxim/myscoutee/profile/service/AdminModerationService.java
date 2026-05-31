@@ -61,6 +61,7 @@ public class AdminModerationService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
+    private final AppSettingsService appSettingsService;
 
     public AdminModerationService(
             ConfigProperties configProperties,
@@ -71,7 +72,8 @@ public class AdminModerationService {
             ActivityChatMessagesRepository chatMessagesRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService) {
+            AdminMenuCounterService adminMenuCounterService,
+            AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
@@ -81,6 +83,7 @@ public class AdminModerationService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
+        this.appSettingsService = appSettingsService;
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
@@ -181,7 +184,7 @@ public class AdminModerationService {
         String email = principal instanceof FirebasePrincipal firebasePrincipal
                 ? normalize(firebasePrincipal.getEmail())
                 : normalize(authentication == null ? null : authentication.getName());
-        if (!configProperties.isAdminUser(email)) {
+        if (!appSettingsService.isAdminEmail(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
         }
         return withStoredAdminProfile(new AdminUserDto(

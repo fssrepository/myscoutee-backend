@@ -258,6 +258,11 @@ public final class AuthDtos {
             String userId) {
     }
 
+    public record FacebookDataDeletionResponseDto(
+            String url,
+            String confirmation_code) {
+    }
+
     public record UserSubmitActionResponseDto(
             boolean submitted,
             String message) {
