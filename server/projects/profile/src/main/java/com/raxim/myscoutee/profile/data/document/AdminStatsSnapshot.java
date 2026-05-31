@@ -40,6 +40,7 @@ public class AdminStatsSnapshot {
     private Map<String, String> activeAssets = new LinkedHashMap<>();
     private Map<String, Long> profileStatusCounts = new LinkedHashMap<>();
     private Map<String, Long> profileVisibilityCounts = new LinkedHashMap<>();
+    private Map<String, String> activeProfileUsers = new LinkedHashMap<>();
     private Integer graphHealthScore;
     private String graphHealthLabelKey;
     private String graphInsightKey;
@@ -118,6 +119,8 @@ public class AdminStatsSnapshot {
     public void setProfileStatusCounts(Map<String, Long> profileStatusCounts) { this.profileStatusCounts = profileStatusCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileStatusCounts); }
     public Map<String, Long> getProfileVisibilityCounts() { return profileVisibilityCounts; }
     public void setProfileVisibilityCounts(Map<String, Long> profileVisibilityCounts) { this.profileVisibilityCounts = profileVisibilityCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileVisibilityCounts); }
+    public Map<String, String> getActiveProfileUsers() { return activeProfileUsers; }
+    public void setActiveProfileUsers(Map<String, String> activeProfileUsers) { this.activeProfileUsers = activeProfileUsers == null ? new LinkedHashMap<>() : new LinkedHashMap<>(activeProfileUsers); }
     public Integer getGraphHealthScore() { return graphHealthScore; }
     public void setGraphHealthScore(Integer graphHealthScore) { this.graphHealthScore = graphHealthScore; }
     public String getGraphHealthLabelKey() { return graphHealthLabelKey; }

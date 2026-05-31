@@ -223,6 +223,7 @@ public class AdminStatsService {
         Map<String, String> activeAssets = safeStringMap(snapshot.getActiveAssets());
         Map<String, Long> profileStatusCounts = safeMap(snapshot.getProfileStatusCounts());
         Map<String, Long> profileVisibilityCounts = safeMap(snapshot.getProfileVisibilityCounts());
+        Set<String> activeProfileUserIds = safeStringMap(snapshot.getActiveProfileUsers()).keySet();
         long triedUsers = activeUsers.size();
         long activeProfileCount = activeProfileCount(profileVisibilityCounts);
         long onboardingProfiles = profileStatusCounts.getOrDefault("onboarding", 0L);
@@ -231,9 +232,11 @@ public class AdminStatsService {
                 .filter(Objects::nonNull)
                 .mapToLong(Long::longValue)
                 .sum());
-        long activeUsers7d = countSeenSince(activeUsers, 7);
-        long activeUsers30d = countSeenSince(activeUsers, 30);
-        long returningUsers = userActivityCounts.values().stream()
+        long activeUsers7d = countSeenSince(activeUsers, 7, activeProfileUserIds);
+        long activeUsers30d = countSeenSince(activeUsers, 30, activeProfileUserIds);
+        long returningUsers = userActivityCounts.entrySet().stream()
+                .filter(entry -> activeProfileUserIds.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
                 .filter(value -> value != null && value.longValue() > 1L)
                 .count();
         long newRegistrations = counters.getOrDefault("profile.registered", 0L);
@@ -645,11 +648,17 @@ public class AdminStatsService {
     }
 
     private long countSeenSince(Map<String, String> lastSeenById, int days) {
+        return countSeenSince(lastSeenById, days, null);
+    }
+
+    private long countSeenSince(Map<String, String> lastSeenById, int days, Set<String> allowedUserIds) {
         if (lastSeenById == null || lastSeenById.isEmpty()) {
             return 0L;
         }
         Instant threshold = Instant.now().minusSeconds(Math.max(1, days) * 24L * 60L * 60L);
-        return lastSeenById.values().stream()
+        return lastSeenById.entrySet().stream()
+                .filter(entry -> allowedUserIds == null || allowedUserIds.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
                 .map(this::parseInstant)
                 .filter(Objects::nonNull)
                 .filter(value -> !value.isBefore(threshold))
@@ -659,6 +668,7 @@ public class AdminStatsService {
     private void refreshProfileCounts(AdminStatsSnapshot snapshot) {
         Map<String, Long> statusCounts = new LinkedHashMap<>();
         Map<String, Long> visibilityCounts = new LinkedHashMap<>();
+        Map<String, String> activeProfileUsers = new LinkedHashMap<>();
         for (Users user : usersRepository.findAll()) {
             if (user == null || isAdminSeedUser(user)) {
                 continue;
@@ -670,10 +680,15 @@ public class AdminStatsService {
             increment(statusCounts, profileStatus, 1L);
             if (ACTIVE_PROFILE_STATUSES.contains(profileStatus)) {
                 increment(visibilityCounts, profileStatus, 1L);
+                String userId = firstNonBlank(user.getUserId(), user.getId());
+                if (StringUtils.hasText(userId)) {
+                    activeProfileUsers.put(userId, profileStatus);
+                }
             }
         }
         snapshot.setProfileStatusCounts(statusCounts);
         snapshot.setProfileVisibilityCounts(visibilityCounts);
+        snapshot.setActiveProfileUsers(activeProfileUsers);
     }
 
     private boolean isAdminSeedUser(Users user) {
