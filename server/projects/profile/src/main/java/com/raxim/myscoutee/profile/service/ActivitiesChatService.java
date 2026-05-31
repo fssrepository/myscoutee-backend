@@ -541,17 +541,7 @@ public class ActivitiesChatService {
     }
 
     private ChatDocumentsSnapshot requireChatAccessForSend(String chatId, String userId) {
-        String normalizedChatId = normalizeId(chatId);
-        if (!StringUtils.hasText(normalizedChatId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
-        }
-        ActivityChat viewerChat = activityChatsRepository
-                .findByOwnerUserIdAndChatId(userId, normalizedChatId)
-                .orElse(null);
-        if (viewerChat != null && hasChatAccess(viewerChat, userId)) {
-            return new ChatDocumentsSnapshot(normalizedChatId, viewerChat, List.of());
-        }
-        return requireChat(normalizedChatId, userId);
+        return requireChat(chatId, userId);
     }
 
     private List<ActivityChat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
@@ -812,6 +802,7 @@ public class ActivitiesChatService {
                 ActivityChat nextViewerChat = copyChat(viewerChat);
                 nextViewerChat.setUnread(unread);
                 viewerChat = activityChatsRepository.save(nextViewerChat);
+                homeUserProfileService.evictUserReadCaches(viewerUserId);
             }
         }
         return new ChatReadUpdate(
@@ -902,8 +893,19 @@ public class ActivitiesChatService {
         }
         if (hasBulkUpdates) {
             bulk.execute();
+            evictChatOwnerReadCaches(updatedDocuments);
         }
         return updatedDocuments;
+    }
+
+    private void evictChatOwnerReadCaches(List<ActivityChat> chatDocuments) {
+        Set<String> ownerUserIds = new LinkedHashSet<>();
+        for (ActivityChat chat : chatDocuments == null ? List.<ActivityChat>of() : chatDocuments) {
+            if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
+                ownerUserIds.add(normalizeId(chat.getOwnerUserId()));
+            }
+        }
+        homeUserProfileService.evictUserReadCaches(ownerUserIds);
     }
 
     private void refreshChatSummaries(String chatId, List<ActivityChat> chatDocuments) {

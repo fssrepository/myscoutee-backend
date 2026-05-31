@@ -1699,7 +1699,13 @@ public class HomeUserProfileService {
         return entry.value();
     }
 
-    private void evictUserReadCaches(String userId) {
+    void evictUserReadCaches(Collection<String> userIds) {
+        for (String userId : userIds == null ? List.<String>of() : userIds) {
+            evictUserReadCaches(userId);
+        }
+    }
+
+    void evictUserReadCaches(String userId) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return;

@@ -343,6 +343,55 @@ async function recordRuntimeFindings(page) {
       }
     });
   }
+
+  const popupOverflow = await page.evaluate(() => {
+    const selectors = [
+      '.confirmation-dialog',
+      '.explanation-popup',
+      '.navigator-settings-popup-shell',
+      '.app-install-prompt',
+      '[class*="popup-panel-"]',
+      '.cdk-overlay-pane'
+    ];
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none'
+        && style.opacity !== '0';
+    };
+    const tolerance = 4;
+    return Array.from(document.querySelectorAll(selectors.join(',')))
+      .filter(visible)
+      .map(element => {
+        const rect = element.getBoundingClientRect();
+        return {
+          selector: selectors.find(selector => element.matches(selector)) ?? element.tagName.toLowerCase(),
+          className: `${element.className ?? ''}`.trim(),
+          left: rect.left,
+          right: rect.right,
+          width: rect.width,
+          viewportWidth: window.innerWidth,
+          overflowsLeft: rect.left < -tolerance,
+          overflowsRight: rect.right > window.innerWidth + tolerance
+        };
+      })
+      .filter(item => item.overflowsLeft || item.overflowsRight)
+      .slice(0, 20);
+  });
+  if (popupOverflow.length > 0) {
+    await page.recordStep('runtime-popup-horizontal-overflow');
+    page.recordFinding?.({
+      severity: 'warning',
+      title: 'Visible popup extends past the viewport horizontally',
+      details: {
+        count: popupOverflow.length,
+        popups: popupOverflow
+      }
+    });
+  }
 }
 
 function materializeRequest(request, ctx) {
@@ -541,10 +590,15 @@ async function writeUiArtifactIndex(artifactsDir, summary, ctx) {
   };
   await writeFile(path.join(artifactsDir, 'index.json'), JSON.stringify(json, null, 2));
   await writeFile(path.join(artifactsDir, 'index.md'), renderUiArtifactIndex(json));
-  await writeFile(path.join(artifactsDir, 'findings.md'), renderUiFindings(json));
+  if (hasUiReportFindings(json)) {
+    await writeFile(path.join(artifactsDir, 'findings.md'), renderUiFindings(json));
+  } else {
+    await rm(path.join(artifactsDir, 'findings.md'), { force: true });
+  }
 }
 
 function renderUiArtifactIndex(report) {
+  const reportableResults = report.results.filter(hasReportableUiIssue);
   const lines = [
     '# UI E2E Artifact Index',
     '',
@@ -552,10 +606,19 @@ function renderUiArtifactIndex(report) {
     `Base URL: ${report.baseUrl}`,
     `Viewport: ${report.viewport.width}x${report.viewport.height}`,
     `Summary: ${report.summary.passed} passed, ${report.summary.failed} failed, ${report.summary.skipped} skipped, ${report.summary.total} selected`,
+    `Full machine-readable report: [index.json](./index.json)`,
     ''
   ];
 
-  for (const result of report.results) {
+  if (reportableResults.length === 0) {
+    lines.push('No failures or UI findings recorded.');
+    return `${lines.join('\n')}\n`;
+  }
+
+  lines.push('Only failures and UI findings are listed below.');
+  lines.push('');
+
+  for (const result of reportableResults) {
     lines.push(`## ${statusLabel(result.status)} ${result.id}`);
     lines.push('');
     lines.push(`Name: ${result.name}`);
@@ -603,6 +666,14 @@ function renderUiArtifactIndex(report) {
     lines.push('');
   }
   return `${lines.join('\n')}\n`;
+}
+
+function hasUiReportFindings(report) {
+  return report.results.some(hasReportableUiIssue);
+}
+
+function hasReportableUiIssue(result) {
+  return result.status === 'failed' || (result.uiFindings ?? []).length > 0;
 }
 
 function renderUiFindings(report) {
