@@ -155,6 +155,34 @@ if [[ "$#" -eq 0 ]]; then
   set -- up -d
 fi
 
+ensure_firebase_service_account() {
+  local enabled service_account_path
+
+  enabled="$(config_value FIREBASE_ENABLED || true)"
+  enabled="${enabled:-true}"
+  if ! is_truthy "${enabled}"; then
+    return 0
+  fi
+
+  service_account_path="${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json"
+  if [[ -d "${service_account_path}" ]]; then
+    echo "Firebase is enabled, but ${service_account_path} is a directory." >&2
+    echo "Replace it with the Firebase Admin SDK service account JSON file." >&2
+    exit 1
+  fi
+  if [[ ! -s "${service_account_path}" ]]; then
+    echo "Firebase is enabled, but ${service_account_path} is missing or empty." >&2
+    echo "Add the Firebase Admin SDK service account JSON, or set FIREBASE_ENABLED=false." >&2
+    exit 1
+  fi
+}
+
+case "${1:-}" in
+  up|start|restart)
+    ensure_firebase_service_account
+    ;;
+esac
+
 run_compose "$@"
 
 case "${1:-}" in

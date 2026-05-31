@@ -24,7 +24,7 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.0}
+    image: ${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:1.0.0-prod}
     pull_policy: build
     restart: unless-stopped
     build:
@@ -136,7 +136,7 @@ services:
       retries: 5
       start_period: 20s
   profilemanagement:
-    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0}
+    image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0-prod}
     pull_policy: build
     restart: unless-stopped
     build:
@@ -170,7 +170,12 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
       JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError"
     volumes:
-      - ./projects/profile/secrets/firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
+      - type: bind
+        source: ./projects/profile/secrets/firebase-service-account.json
+        target: /run/secrets/firebase-service-account.json
+        read_only: true
+        bind:
+          create_host_path: false
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:

@@ -19,8 +19,8 @@ DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
 
 export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
-export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}}"
-export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}}"
+export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
+export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
 
 if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
@@ -54,8 +54,8 @@ install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DI
 sed \
   -e "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
   -e "s/^NGINX_BASE_IMAGE=.*/NGINX_BASE_IMAGE=myscoutee-nginx:${VERSION}-base/" \
-  -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}/" \
-  -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}/" \
+  -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}-prod/" \
+  -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}-prod/" \
   -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
 
 find "${STAGING_DIR}" -type d -exec chmod 0755 {} +
@@ -86,8 +86,8 @@ save_image() {
 
 if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${NGINX_BASE_IMAGE}" "myscoutee-nginx-${VERSION}-base"
-  save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}"
-  save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}"
+  save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}-prod"
+  save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}-prod"
 fi
 
 if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then

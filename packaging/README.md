@@ -73,8 +73,8 @@ Set `RESTORE_MINIO=true` to restore MinIO files and `RESTORE_CONFIG=true` to res
 Production:
 
 ```text
-myscoutee-nginx:1.0.0
-myscoutee-api:1.0.0
+myscoutee-nginx:1.0.0-prod
+myscoutee-api:1.0.0-prod
 ```
 
 Development:
