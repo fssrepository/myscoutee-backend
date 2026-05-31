@@ -40,7 +40,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AdminAffinityGraphService {
-    private static final Set<String> EXCLUDED_PROFILE_STATUSES = Set.of("deleted");
+    private static final Set<String> ACTIVE_GRAPH_PROFILE_STATUSES = Set.of("public", "friends only", "host only");
     private static final int MAX_DEPTH = 3;
     private static final int MAX_ZOOM = 6;
     private static final int TILE_SIZE = 256;
@@ -887,7 +887,7 @@ public class AdminAffinityGraphService {
             return true;
         }
         String profileStatus = normalizeText(user.getProfileStatus()).toLowerCase();
-        return EXCLUDED_PROFILE_STATUSES.contains(profileStatus);
+        return !ACTIVE_GRAPH_PROFILE_STATUSES.contains(profileStatus);
     }
 
     private void union(Map<String, String> parent, String left, String right) {

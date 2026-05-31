@@ -38,6 +38,8 @@ public class AdminStatsSnapshot {
     private Map<String, String> activeEvents = new LinkedHashMap<>();
     private Map<String, String> knownAssets = new LinkedHashMap<>();
     private Map<String, String> activeAssets = new LinkedHashMap<>();
+    private Map<String, Long> profileStatusCounts = new LinkedHashMap<>();
+    private Map<String, Long> profileVisibilityCounts = new LinkedHashMap<>();
     private Integer graphHealthScore;
     private String graphHealthLabelKey;
     private String graphInsightKey;
@@ -112,6 +114,10 @@ public class AdminStatsSnapshot {
     public void setKnownAssets(Map<String, String> knownAssets) { this.knownAssets = knownAssets == null ? new LinkedHashMap<>() : new LinkedHashMap<>(knownAssets); }
     public Map<String, String> getActiveAssets() { return activeAssets; }
     public void setActiveAssets(Map<String, String> activeAssets) { this.activeAssets = activeAssets == null ? new LinkedHashMap<>() : new LinkedHashMap<>(activeAssets); }
+    public Map<String, Long> getProfileStatusCounts() { return profileStatusCounts; }
+    public void setProfileStatusCounts(Map<String, Long> profileStatusCounts) { this.profileStatusCounts = profileStatusCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileStatusCounts); }
+    public Map<String, Long> getProfileVisibilityCounts() { return profileVisibilityCounts; }
+    public void setProfileVisibilityCounts(Map<String, Long> profileVisibilityCounts) { this.profileVisibilityCounts = profileVisibilityCounts == null ? new LinkedHashMap<>() : new LinkedHashMap<>(profileVisibilityCounts); }
     public Integer getGraphHealthScore() { return graphHealthScore; }
     public void setGraphHealthScore(Integer graphHealthScore) { this.graphHealthScore = graphHealthScore; }
     public String getGraphHealthLabelKey() { return graphHealthLabelKey; }
