@@ -120,9 +120,9 @@ public class EventScheduler {
 
         Instant now = Instant.now();
         if (schedulerEnabled && claimStageSchedulerRun(now)) {
-            int startReviewBackfillCount = backfillTournamentStartReviewStages(now);
-            if (startReviewBackfillCount > 0) {
-                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewBackfillCount);
+            int startReviewCount = moveTournamentFirstStagesToStartReview(now);
+            if (startReviewCount > 0) {
+                LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
             }
             int reviewCount = closeEndedTournamentStagesForReview(now);
             if (reviewCount > 0) {
@@ -233,7 +233,7 @@ public class EventScheduler {
         return changedStageKeys.size();
     }
 
-    int backfillTournamentStartReviewStages(Instant now) {
+    int moveTournamentFirstStagesToStartReview(Instant now) {
         Instant effectiveNow = now == null ? Instant.now() : now;
         String nowIso = effectiveNow.toString();
         List<ActivityEvent> changedRecords = new ArrayList<>();

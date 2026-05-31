@@ -1799,44 +1799,7 @@ public class HomeUserProfileService {
                     ? storedMember
                     : null;
         }
-
-        if (!isDerivedAcceptedEventAdmin(eventRecord, normalizedUserId)) {
-            return null;
-        }
-
-        ActivityMember derivedMember = new ActivityMember();
-        String derivedId = "derived:" + normalizedEventId + ":" + normalizedUserId;
-        String actionAtIso = firstNonBlank(
-                eventRecord == null ? null : eventRecord.getUpdatedDate(),
-                eventRecord == null ? null : eventRecord.getCreatedDate(),
-                eventRecord == null ? null : eventRecord.getStartAtIso(),
-                Instant.EPOCH.toString());
-        derivedMember.setId(derivedId);
-        derivedMember.setSyncKey(derivedId);
-        derivedMember.setOwnerType(OWNER_TYPE_EVENT);
-        derivedMember.setOwnerId(normalizedEventId);
-        derivedMember.setUserId(normalizedUserId);
-        derivedMember.setRole(normalizedUserId.equals(normalizeId(eventRecord == null ? null : eventRecord.getCreatorUserId()))
-                ? "Admin"
-                : "Manager");
-        derivedMember.setStatus(STATUS_ACCEPTED);
-        derivedMember.setActionAtIso(actionAtIso);
-        derivedMember.setMetAtIso(actionAtIso);
-        return derivedMember;
-    }
-
-    private boolean isDerivedAcceptedEventAdmin(ActivityEvent eventRecord, String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (eventRecord == null || !StringUtils.hasText(normalizedUserId)) {
-            return false;
-        }
-        if (normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
-            return true;
-        }
-        return eventRecord.getAdmins().stream()
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .anyMatch(normalizedUserId::equals);
+        return null;
     }
 
     private ActivityChat resolveReportableChat(
