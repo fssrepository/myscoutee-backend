@@ -137,7 +137,7 @@
         "icon": "contact_mail",
         "title": "Contact details",
         "blurb": "Who to contact about privacy and data protection.",
-        "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee demo platform</li><li><strong>Support Email:</strong> privacy@myscoutee.app</li><li><strong>DPO Contact:</strong> dpo@myscoutee.app</li></ul>",
+        "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee</li><li><strong>Support Email:</strong> myscoutee1@gmail.com</li><li><strong>DPO Contact:</strong> myscoutee1@gmail.com</li></ul>",
         "imageUrls": [],
         "optional": false
       },
@@ -236,7 +236,7 @@
         "icon": "contact_mail",
         "title": "Kapcsolati adatok",
         "blurb": "Kihez fordulhatsz adatvédelemmel és adatkezeléssel kapcsolatban.",
-        "contentHtml": "<ul><li><strong>Adatkezelő:</strong> MyScoutee demo platform</li><li><strong>Támogatási email:</strong> privacy@myscoutee.app</li><li><strong>DPO kapcsolat:</strong> dpo@myscoutee.app</li></ul>",
+        "contentHtml": "<ul><li><strong>Adatkezelő:</strong> MyScoutee</li><li><strong>Támogatási email:</strong> myscoutee1@gmail.com</li><li><strong>DPO kapcsolat:</strong> myscoutee1@gmail.com</li></ul>",
         "imageUrls": [],
         "optional": false
       },
@@ -389,7 +389,7 @@
         "icon": "north_east",
         "title": "Mit nézel?",
         "blurb": "Itt választod ki, milyen értékeléskártyák látszanak.",
-        "contentHtml": "<p>Nyisd le az első menüt, és válassz: akiket te értékeltél, akik téged értékeltek, kölcsönös értékelések, akikkel találkoztál, vagy javaslatok.</p><p>A piros szám azt mutatja, hány kártya van abban a választásban. A Social kapcsoló csak azt dönti el, hogy bekerüljenek-e a közös emberek vagy események alapján ajánlott kártyák.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Factivities-rates%2Factivity-rate-filter\" alt=\"Mit nézel?\"></figure>",
+        "contentHtml": "<p>Nyisd le az első menüt, és válassz: akiket te értékeltél, akik téged értékeltek, kölcsönös értékelések, akikkel találkoztál, vagy ajánlások.</p><p>A piros szám azt mutatja, hány kártya van abban a választásban. A Social kapcsoló csak azt dönti el, hogy bekerüljenek-e a közös emberek vagy események alapján ajánlott kártyák.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Factivities-rates%2Factivity-rate-filter\" alt=\"Mit nézel?\"></figure>",
         "imageUrls": [
           "help-seeded-image:hu/activities-rates/activity-rate-filter"
         ],

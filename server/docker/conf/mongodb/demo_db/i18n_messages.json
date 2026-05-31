@@ -78,6 +78,18 @@
     "value": "Activities"
   },
   {
+    "_id": "i18n-message-en-activity-rates-group-preferences",
+    "key": "activity.rates.group.preferences",
+    "lang": "en",
+    "value": "Preferences"
+  },
+  {
+    "_id": "i18n-message-en-activity-rates-group-suggestions",
+    "key": "activity.rates.group.suggestions",
+    "lang": "en",
+    "value": "Suggestions"
+  },
+  {
     "_id": "i18n-message-en-activities-support-case-action-block",
     "key": "activities.support.case.action.block",
     "lang": "en",
@@ -4449,7 +4461,7 @@
     "_id": "i18n-message-en-myscoutee-demo-platform",
     "key": "myscoutee.demo.platform",
     "lang": "en",
-    "value": "MyScoutee demo platform"
+    "value": "MyScoutee"
   },
   {
     "_id": "i18n-message-en-support-email",
@@ -6388,6 +6400,12 @@
     "key": "footer.tagline",
     "lang": "en",
     "value": "Where fast matches turn into real connections."
+  },
+  {
+    "_id": "i18n-message-en-install-prompt-description",
+    "key": "install.prompt.description",
+    "lang": "en",
+    "value": "Install MyScoutee for quick access from your home screen."
   },
   {
     "_id": "i18n-message-en-keep-tickets-cached-profile-details-and-chat-notifications-available-wit",
@@ -9046,6 +9064,18 @@
     "key": "activities",
     "lang": "hu",
     "value": "Tevékenységek"
+  },
+  {
+    "_id": "i18n-message-hu-activity-rates-group-preferences",
+    "key": "activity.rates.group.preferences",
+    "lang": "hu",
+    "value": "Szimpátiák"
+  },
+  {
+    "_id": "i18n-message-hu-activity-rates-group-suggestions",
+    "key": "activity.rates.group.suggestions",
+    "lang": "hu",
+    "value": "Ajánlások"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-action-block",
@@ -13419,7 +13449,7 @@
     "_id": "i18n-message-hu-myscoutee-demo-platform",
     "key": "myscoutee.demo.platform",
     "lang": "hu",
-    "value": "MyScoutee demóplatform"
+    "value": "MyScoutee"
   },
   {
     "_id": "i18n-message-hu-support-email",
@@ -15358,6 +15388,12 @@
     "key": "footer.tagline",
     "lang": "hu",
     "value": "Ahol a gyors találatok valódi kapcsolódásokká válnak."
+  },
+  {
+    "_id": "i18n-message-hu-install-prompt-description",
+    "key": "install.prompt.description",
+    "lang": "hu",
+    "value": "Telepítsd a MyScoutee-t, hogy gyorsan elérd a kezdőképernyőről."
   },
   {
     "_id": "i18n-message-hu-keep-tickets-cached-profile-details-and-chat-notifications-available-wit",

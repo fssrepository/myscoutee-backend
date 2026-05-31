@@ -3,14 +3,7 @@ create facebook campaign
 
 both
 ----
-we need to check x buttons and other syles should be unified
 activating firebase on prod - registre to firebase - buy the domain of myscoutee.com
-consent data update - real email etc.
-
-activity rating
----------------
-on scroll the bar should disappear and on mentes also in list view
-on scroll the eye button is above the sticky header
 
 ui speed/stability (rendering - paint)/chucnk size reduction improvements - (chrome - lighthouse)
 ------------------
@@ -19,19 +12,6 @@ bootstrap is slow should be speed up
 ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big task
 
 finish the ui testing e2e-handoff
-
-e-kozig textbox fooldalon ott kellene hogy legyen, az AI levette
-
-sometimes android webview stuck on load
-
-install the home screen popup
-
-data export - gdpr
-
-kattinthato gonb verzio bagel es leiras - oldal teteje
-
-1) pls. cleanup the handoff file, if something turned to green 2) translation is wrong in seeds (demo/http - each db)
-on activity ratings screen: preferenciak -> szimpátiák, javaslatok -> ajánlások
 
 Bugs
 ----
