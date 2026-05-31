@@ -11,6 +11,9 @@ ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big 
 
 event feedback - backend stress test - first load is a little bit slow
 syncing all three db on backend
+close button, press etc. on touch animation, unify
+image lazy load progress bar - spinner-ring?
+some card badge is not circle
 
 Bugs
 ----
