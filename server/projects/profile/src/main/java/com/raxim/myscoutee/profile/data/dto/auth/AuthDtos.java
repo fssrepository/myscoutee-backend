@@ -148,6 +148,7 @@ public final class AuthDtos {
             String profileStatus,
             String previousProfileStatus,
             String deletedAtIso,
+            Boolean admin,
             UserActivitiesDto activities) {
     }
 
@@ -179,6 +180,7 @@ public final class AuthDtos {
             String profileStatus,
             String previousProfileStatus,
             String deletedAtIso,
+            Boolean admin,
             UserActivitiesDto activities,
             Integer filterCount,
             UserGameFilterPreferencesDto filterPreferences,

@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -141,7 +142,15 @@ public class FirebaseService {
         user.setProfileFormVersion(0);
         user.setDeletedAtIso(nowIso);
         user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
-        return usersRepository.save(user);
+        try {
+            return usersRepository.save(user);
+        } catch (DataIntegrityViolationException exception) {
+            Users racedUser = findUser(userId);
+            if (racedUser != null) {
+                return syncFirebaseIdentity(racedUser, credential);
+            }
+            throw exception;
+        }
     }
 
     private Users syncFirebaseIdentity(Users user, FirebaseCredential credential) {

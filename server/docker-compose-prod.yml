@@ -162,7 +162,7 @@ services:
       FIREBASE_ENABLED: "${FIREBASE_ENABLED:-true}"
       FACEBOOK_APP_SECRET: "${FACEBOOK_APP_SECRET:-}"
       DEV_USER: "dev@myscoutee.local"
-      ADMIN_USER: "myscoutee@gmail.com"
+      ADMIN_USER: "myscoutee@gmail.com,raxim.uk@gmail.com,myscoutee1@gmail.com"
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: "${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:-https://myscoutee.com,https://www.myscoutee.com,http://localhost:8080,http://127.0.0.1:8080}"
       MEDIA_ENABLED: "true"
       MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"

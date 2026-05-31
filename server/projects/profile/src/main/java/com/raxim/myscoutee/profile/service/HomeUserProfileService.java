@@ -198,7 +198,6 @@ public class HomeUserProfileService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
-    private final Map<String, CacheEntry<Users.UserActivitiesRecord>> userActivitiesCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -258,7 +257,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
+        Users user = syncCurrentUserEmail(syncComputedUserPartition(findUser(resolvedUserId)));
         if (user == null) {
             return null;
         }
@@ -299,6 +298,7 @@ public class HomeUserProfileService {
                 userDto.profileStatus(),
                 userDto.previousProfileStatus(),
                 userDto.deletedAtIso(),
+                isCurrentRequestAdmin(),
                 userDto.activities(),
                 filterCount,
                 filterPreferences,
@@ -311,7 +311,7 @@ public class HomeUserProfileService {
             return null;
         }
 
-        Users user = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(findUser(resolvedUserId))));
+        Users user = syncCurrentUserEmail(syncComputedUserPartition(findUser(resolvedUserId)));
         if (user == null) {
             return null;
         }
@@ -384,7 +384,7 @@ public class HomeUserProfileService {
         evictUserReadCaches(normalizedUserId);
         Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
-        Users resolved = syncCurrentUserEmail(syncComputedUserPartition(syncComputedUserActivities(saved)));
+        Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
         affinityRecomputeTaskService.enqueueUserChanged(normalizeId(resolved == null ? null : resolved.getId()));
         String resolvedUserId = normalizeId(resolved == null ? null : resolved.getId());
         adminTelemetryService.record(
@@ -825,7 +825,6 @@ public class HomeUserProfileService {
 
     public List<UserDto> queryDemoUsers() {
         return orderedUsers().stream()
-                .map(this::syncComputedUserActivities)
                 .filter(Objects::nonNull)
                 .map(this::toUserDto)
                 .filter(Objects::nonNull)
@@ -922,7 +921,17 @@ public class HomeUserProfileService {
                 resolveProfileStatus(user),
                 nullToEmpty(user.getPreviousProfileStatus()),
                 nullToEmpty(user.getDeletedAtIso()),
+                false,
                 toUserActivitiesDto(user.getActivities()));
+    }
+
+    private boolean isCurrentRequestAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> "A".equals(authority.getAuthority()));
     }
 
     private DemoUserListItemDto toDemoUserListItemDto(Users user) {
@@ -1642,11 +1651,22 @@ public class HomeUserProfileService {
                 ? current.getStatus()
                 : resolveStatusCode(user.profileStatus(), current == null ? null : current.getStatus());
         document.setStatus(status);
-        document.setProfileStatus(resolveProfileStatus(status, user.profileStatus()));
+        String resolvedProfileStatus = resolveProfileStatus(status, user.profileStatus());
+        document.setProfileStatus(resolvedProfileStatus);
         document.setPreviousProfileStatus(previousProfileStatus);
-        document.setDeletedAtIso("D".equalsIgnoreCase(safeText(status))
-                ? (StringUtils.hasText(user.deletedAtIso()) ? user.deletedAtIso() : (current == null ? Instant.now().toString() : current.getDeletedAtIso()))
-                : null);
+        if ("D".equalsIgnoreCase(safeText(status))) {
+            document.setDeletedAtIso(StringUtils.hasText(user.deletedAtIso())
+                    ? user.deletedAtIso()
+                    : (current == null ? Instant.now().toString() : current.getDeletedAtIso()));
+        } else if (PROFILE_STATUS_ONBOARDING.equals(resolvedProfileStatus)) {
+            document.setDeletedAtIso(StringUtils.hasText(user.deletedAtIso())
+                    ? user.deletedAtIso()
+                    : (current != null && StringUtils.hasText(current.getDeletedAtIso())
+                            ? current.getDeletedAtIso()
+                            : Instant.now().toString()));
+        } else {
+            document.setDeletedAtIso(null);
+        }
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
     }
@@ -1663,55 +1683,6 @@ public class HomeUserProfileService {
         return usersRepository.save(user);
     }
 
-    private Users syncComputedUserActivities(Users user) {
-        if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
-            return user;
-        }
-        if (adminMenuCounterService.isAdminUser(user)) {
-            return adminMenuCounterService.syncAdminUserCounters(user);
-        }
-
-        CachedUserActivities computed = resolveComputedUserActivities(normalizeId(user.getId()), user.getActivities());
-        if (activitiesEqual(user.getActivities(), computed.activities())) {
-            return user;
-        }
-
-        user.setActivities(computed.activities());
-        return computed.fromCache() ? user : usersRepository.save(user);
-    }
-
-    private CachedUserActivities resolveComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
-        String normalizedUserId = normalizeId(userId);
-        long nowMs = System.currentTimeMillis();
-        Users.UserActivitiesRecord cached = cachedUserActivities(normalizedUserId, nowMs);
-        if (cached != null) {
-            return new CachedUserActivities(cached, true);
-        }
-
-        Object lock = userReadCacheLocksByUserId.computeIfAbsent(normalizedUserId, key -> new Object());
-        synchronized (lock) {
-            cached = cachedUserActivities(normalizedUserId, nowMs);
-            if (cached != null) {
-                return new CachedUserActivities(cached, true);
-            }
-            Users.UserActivitiesRecord computed = buildComputedUserActivities(normalizedUserId, existing);
-            userActivitiesCacheByUserId.put(normalizedUserId, new CacheEntry<>(computed, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS));
-            return new CachedUserActivities(computed, false);
-        }
-    }
-
-    private Users.UserActivitiesRecord cachedUserActivities(String userId, long nowMs) {
-        CacheEntry<Users.UserActivitiesRecord> entry = userActivitiesCacheByUserId.get(userId);
-        if (entry == null) {
-            return null;
-        }
-        if (entry.expiresAtMs() <= nowMs) {
-            userActivitiesCacheByUserId.remove(userId, entry);
-            return null;
-        }
-        return entry.value();
-    }
-
     void evictUserReadCaches(Collection<String> userIds) {
         for (String userId : userIds == null ? List.<String>of() : userIds) {
             evictUserReadCaches(userId);
@@ -1723,7 +1694,6 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
-        userActivitiesCacheByUserId.remove(normalizedUserId);
         userImpressionsCacheByUserId.remove(normalizedUserId);
         affinityWeightsCacheByUserIdsKey.clear();
         gameStackSnapshotCache = null;
@@ -1804,140 +1774,6 @@ public class HomeUserProfileService {
 
     private boolean isSeedImageUrl(String value) {
         return safeText(value).contains(SEED_USER_IMAGE_HOST);
-    }
-
-    private Users.UserActivitiesRecord buildComputedUserActivities(String userId, Users.UserActivitiesRecord existing) {
-        List<ActivityEvent> eventRecords = queryEventRecords(userId);
-        EventMenuCounts eventMenuCounts = resolveEventMenuCounts(userId, eventRecords);
-        AssetMenuCounts assetMenuCounts = resolveAssetMenuCounts(userId);
-        return new Users.UserActivitiesRecord(
-                queryGameStackUserRecords(userId).size(),
-                countUnreadChats(userId),
-                eventMenuCounts.invitations(),
-                eventMenuCounts.activeEvents(),
-                eventMenuCounts.hosting(),
-                assetMenuCounts.cars(),
-                assetMenuCounts.accommodation(),
-                assetMenuCounts.supplies(),
-                countTicketRecords(userId),
-                existing == null ? 0 : normalizeCount(existing.contacts()),
-                countPendingEventFeedback(userId, eventRecords),
-                existing == null ? 0 : normalizeCount(existing.adminJobs()),
-                existing == null ? 0 : normalizeCount(existing.adminMetrics()));
-    }
-
-    private List<ActivityEvent> queryEventRecords(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return List.of();
-        }
-        return activityEventsRepository.findByOwnerUserId(userId).stream()
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    private int countUnreadChats(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return 0;
-        }
-        return activityChatsRepository.findByOwnerUserId(userId).stream()
-                .filter(Objects::nonNull)
-                .mapToInt(chat -> normalizeCount(chat.getUnread()))
-                .sum();
-    }
-
-    private EventMenuCounts resolveEventMenuCounts(String userId, List<ActivityEvent> directOwnerRecords) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return new EventMenuCounts(0, 0, 0);
-        }
-
-        Map<String, ActivityEvent> preferredDirectRecordsBySourceId = preferredEventRecordsBySourceId(directOwnerRecords);
-        int invitations = Math.toIntExact(preferredDirectRecordsBySourceId.values().stream()
-                .filter(Objects::nonNull)
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> Boolean.TRUE.equals(record.getIsInvitation()) || TYPE_INVITATIONS.equals(safeText(record.getType())))
-                .count());
-        int hosting = Math.toIntExact(preferredDirectRecordsBySourceId.values().stream()
-                .filter(Objects::nonNull)
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> isHostingRecordForUser(record, normalizedUserId))
-                .count());
-        int activeEvents = countAcceptedMembershipEvents(normalizedUserId);
-        return new EventMenuCounts(invitations, activeEvents, hosting);
-    }
-
-    private int countAcceptedMembershipEvents(String userId) {
-        List<ActivityMember> acceptedMemberRecords = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
-                .filter(Objects::nonNull)
-                .filter(member -> !STATUS_DELETED.equals(safeText(member.getStatus())))
-                .filter(member -> STATUS_ACCEPTED.equals(safeText(member.getStatus())))
-                .toList();
-        if (acceptedMemberRecords.isEmpty()) {
-            return 0;
-        }
-
-        Set<String> sourceIds = acceptedMemberRecords.stream()
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        if (sourceIds.isEmpty()) {
-            return 0;
-        }
-
-        Map<String, ActivityEvent> preferredRecordsBySourceId = preferredEventRecordsBySourceId(
-                activityEventsRepository.findBySourceIdIn(sourceIds));
-        long nowMs = Instant.now().toEpochMilli();
-        return Math.toIntExact(acceptedMemberRecords.stream()
-                .map(ActivityMember::getOwnerId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .map(preferredRecordsBySourceId::get)
-                .filter(Objects::nonNull)
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsInvitation()))
-                .filter(record -> !isHostingRecordForUser(record, userId))
-                .filter(record -> isUpcomingEventRecord(record, nowMs))
-                .count());
-    }
-
-    private AssetMenuCounts resolveAssetMenuCounts(String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return new AssetMenuCounts(0, 0, 0);
-        }
-        int cars = 0;
-        int accommodation = 0;
-        int supplies = 0;
-        for (Asset asset : assetsRepository.findByOwnerUserId(normalizedUserId)) {
-            if (asset == null || isHiddenAsset(asset)) {
-                continue;
-            }
-            String type = safeText(asset.getType());
-            if (ASSET_TYPE_CAR.equals(type)) {
-                cars += 1;
-            } else if (ASSET_TYPE_ACCOMMODATION.equals(type)) {
-                accommodation += 1;
-            } else if (ASSET_TYPE_SUPPLIES.equals(type)) {
-                supplies += 1;
-            }
-        }
-        return new AssetMenuCounts(cars, accommodation, supplies);
-    }
-
-    private boolean isHiddenAsset(Asset asset) {
-        String status = safeText(asset == null ? null : asset.getStatus());
-        return ASSET_STATUS_DELETED.equals(status) || STATUS_TRASHED.equals(status);
-    }
-
-    private boolean isUpcomingEventRecord(ActivityEvent record, long nowMs) {
-        long endAtMs = toSortableDate(record == null ? null : record.getEndAtIso());
-        if (endAtMs > 0L) {
-            return endAtMs > nowMs;
-        }
-        long startAtMs = toSortableDate(record == null ? null : record.getStartAtIso());
-        return startAtMs <= 0L || startAtMs > nowMs;
     }
 
     private ActivityEvent resolvePreferredEventRecord(String eventId) {
@@ -2125,33 +1961,6 @@ public class HomeUserProfileService {
                 .anyMatch(userId::equals);
     }
 
-    private int countTicketRecords(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return 0;
-        }
-        return eventParticipationTicketService.queryTicketRecordsForUser(userId).size();
-    }
-
-    private int countPendingEventFeedback(String userId, List<ActivityEvent> eventRecords) {
-        long nowMs = Instant.now().toEpochMilli();
-        Set<String> hiddenEventIds = eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc(userId).stream()
-                .filter(Objects::nonNull)
-                .filter(state -> Boolean.TRUE.equals(state.getRemoved()) || StringUtils.hasText(safeText(state.getSubmittedAtIso())))
-                .map(EventFeedbackState::getEventId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        return Math.toIntExact(eventRecords.stream()
-                .filter(record -> "events".equals(safeText(record.getType())))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> !Boolean.TRUE.equals(record.getIsAdmin()))
-                .filter(record -> !hiddenEventIds.contains(normalizeId(record.getSourceId())))
-                .map(ActivityEvent::getStartAtIso)
-                .map(this::toSortableDate)
-                .filter(startAtMs -> startAtMs > 0L && nowMs >= startAtMs + EVENT_FEEDBACK_UNLOCK_DELAY_MS)
-                .count());
-    }
-
     private UserRealtimeCountersDto buildRealtimeCounters(
             Users user,
             String requestCursor,
@@ -2201,28 +2010,6 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.adminMetrics())),
                 impressionsFingerprint(impressions == null ? null : impressions.host()),
                 impressionsFingerprint(impressions == null ? null : impressions.member()));
-    }
-
-    private boolean activitiesEqual(Users.UserActivitiesRecord left, Users.UserActivitiesRecord right) {
-        if (left == right) {
-            return true;
-        }
-        if (left == null || right == null) {
-            return false;
-        }
-        return normalizeCount(left.game()) == normalizeCount(right.game())
-                && normalizeCount(left.chat()) == normalizeCount(right.chat())
-                && normalizeCount(left.invitations()) == normalizeCount(right.invitations())
-                && normalizeCount(left.events()) == normalizeCount(right.events())
-                && normalizeCount(left.hosting()) == normalizeCount(right.hosting())
-                && normalizeCount(left.cars()) == normalizeCount(right.cars())
-                && normalizeCount(left.accommodation()) == normalizeCount(right.accommodation())
-                && normalizeCount(left.supplies()) == normalizeCount(right.supplies())
-                && normalizeCount(left.tickets()) == normalizeCount(right.tickets())
-                && normalizeCount(left.contacts()) == normalizeCount(right.contacts())
-                && normalizeCount(left.feedback()) == normalizeCount(right.feedback())
-                && normalizeCount(left.adminJobs()) == normalizeCount(right.adminJobs())
-                && normalizeCount(left.adminMetrics()) == normalizeCount(right.adminMetrics());
     }
 
     private void recordSessionAction(String userId, String action, String metadata) {
@@ -2516,9 +2303,6 @@ public class HomeUserProfileService {
     }
 
     private record CacheEntry<T>(T value, long expiresAtMs) {
-    }
-
-    private record CachedUserActivities(Users.UserActivitiesRecord activities, boolean fromCache) {
     }
 
     private UserImpressionsSectionDto resolveMergedImpressionsSection(
@@ -3055,15 +2839,4 @@ public class HomeUserProfileService {
             Integer percent) {
     }
 
-    private record EventMenuCounts(
-            int invitations,
-            int activeEvents,
-            int hosting) {
-    }
-
-    private record AssetMenuCounts(
-            int cars,
-            int accommodation,
-            int supplies) {
-    }
 }

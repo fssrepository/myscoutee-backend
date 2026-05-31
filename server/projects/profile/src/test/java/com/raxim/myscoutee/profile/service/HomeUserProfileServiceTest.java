@@ -1,9 +1,11 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
@@ -36,6 +38,7 @@ import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -275,25 +278,44 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
-    void realtimeSnapshotReusesHotReadSnapshotWork() {
+    void onboardingAutosaveKeepsThirtyDayPurgeTimestamp() {
         Users active = user("active", 0d);
-        active.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        active.setStatus("A");
+        active.setProfileStatus("onboarding");
+        active.setDeletedAtIso("2026-05-01T00:00:00Z");
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
-        when(usersRepository.findByProfileStatusIn(List.of("public", "friends only"))).thenReturn(List.of(active));
-        when(activityEventsRepository.findByOwnerUserId("active")).thenReturn(List.of());
-        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "active")).thenReturn(List.of());
-        when(activityChatsRepository.findByOwnerUserId("active")).thenReturn(List.of());
-        when(eventParticipationTicketService.queryTicketRecordsForUser("active")).thenReturn(List.of());
-        when(eventFeedbackStatesRepository.findByViewerUserIdOrderByUpdatedDateDesc("active")).thenReturn(List.of());
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto saved = service.saveUserProfile(onboardingDraftUser("active"));
+
+        assertThat(saved.profileStatus()).isEqualTo("onboarding");
+        assertThat(saved.deletedAtIso()).isEqualTo("2026-05-01T00:00:00Z");
+    }
+
+    @Test
+    void realtimeSnapshotUsesStoredActivityCountersWithoutRecomputing() {
+        Users active = user("active", 0d);
+        active.setActivities(new Users.UserActivitiesRecord(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(eventFeedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("active")).thenReturn(List.of());
-        when(userRatesRepository.findAll()).thenReturn(List.of());
-        when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
 
-        service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
-        service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
+        var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
 
-        verify(activityEventsRepository, times(1)).findByOwnerUserId("active");
-        verify(eventFeedbackAnswersRepository, times(1)).findByTargetUserIdOrderBySubmittedAtIsoDesc("active");
+        assertThat(snapshot.counters().game()).isEqualTo(3);
+        assertThat(snapshot.counters().chat()).isEqualTo(4);
+        assertThat(snapshot.counters().invitations()).isEqualTo(5);
+        assertThat(snapshot.counters().events()).isEqualTo(6);
+        assertThat(snapshot.counters().hosting()).isEqualTo(7);
+        assertThat(snapshot.counters().cars()).isEqualTo(8);
+        assertThat(snapshot.counters().accommodation()).isEqualTo(9);
+        assertThat(snapshot.counters().supplies()).isEqualTo(10);
+        assertThat(snapshot.counters().tickets()).isEqualTo(11);
+        assertThat(snapshot.counters().contacts()).isEqualTo(12);
+        assertThat(snapshot.counters().feedback()).isEqualTo(13);
+        assertThat(snapshot.counters().adminJobs()).isEqualTo(14);
+        assertThat(snapshot.counters().adminMetrics()).isEqualTo(15);
+        verifyNoInteractions(activityChatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
+                eventParticipationTicketService, assetsRepository);
     }
 
     private HomeUserProfileService.ActivitySocialGraph graph(Map<String, Set<String>> neighborsByUserId) {
@@ -326,5 +348,38 @@ class HomeUserProfileServiceTest {
         record.setRelatedUserId(relatedUserId);
         record.setUpdatedDate(updatedDate);
         return record;
+    }
+
+    private UserDto onboardingDraftUser(String userId) {
+        return new UserDto(
+                userId,
+                "Draft User",
+                30,
+                "1996-01-01",
+                "Budapest",
+                "180 cm",
+                "Average",
+                List.of("English"),
+                "Capricorn",
+                "DU",
+                "",
+                "",
+                "",
+                "",
+                55,
+                0,
+                "Draft headline",
+                "Draft about",
+                0d,
+                null,
+                "",
+                List.of(),
+                List.of(),
+                null,
+                "onboarding",
+                "",
+                null,
+                false,
+                null);
     }
 }
