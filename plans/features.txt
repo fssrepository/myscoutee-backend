@@ -11,8 +11,6 @@ opening any popup should be lazy load (even the editor once, as it's hitting ser
 bootstrap is slow should be speed up
 ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big task
 
-finish the ui testing e2e-handoff
-
 Bugs
 ----
 b) eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.

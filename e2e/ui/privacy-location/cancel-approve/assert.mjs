@@ -5,6 +5,7 @@ export async function assertUi({ page }) {
   await page.waitForSelector('app-entry-shell');
   await acceptEntryPrivacyIfPresent(page);
   await page.recordStep('privacy-accepted');
+  assert(!(await page.isSelectorVisible('.entry-auth-btn-location')), 'Demo selector mode should not show the location gate in the header');
 
   await page.click('.entry-cta-primary');
   await waitForLoginDialogOrDemoSelector(page, 30000);
@@ -12,13 +13,6 @@ export async function assertUi({ page }) {
     await page.waitForSelector('.demo-login-overlay', { timeoutMs: 30000 });
     await waitForVisibleCount(page, '.demo-user-item', 2, 'demo users without location dialog', 60000);
     await page.recordStep('demo-selector-visible-without-location-dialog');
-    page.recordFinding?.({
-      severity: 'warning',
-      title: 'Entry flow did not show a location dialog before opening the demo selector',
-      details: {
-        expectedDialog: '.confirmation-dialog'
-      }
-    });
     return;
   }
   await page.recordStep('location-required-dialog-visible');
