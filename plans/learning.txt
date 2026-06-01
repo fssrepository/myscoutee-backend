@@ -70,3 +70,57 @@ Then centralize checks into something like `AccessControlService` / `PolicyServi
 ```
 
 One important thing: we should not trust `userId` from request bodies for authorization. Actor should come from `SecurityContext` / Firebase auth, then request `userId` can be validated against that where needed.
+
+Yes, I agree with the direction. What you are describing is the right class of fix: central authorization instead of scattered `if user is owner/manager/member` checks inside many service methods.
+
+One nuance: `userId + somethingId + edit/delete` is more an **ACL** model than pure RBAC. For this app I’d use a hybrid:
+
+- **RBAC**: roles like `Admin`, `Manager`, `Member`, scoped to `event`, `asset`, maybe `subEvent`.
+- **Permissions**: actions like `event.edit`, `event.delete`, `asset.manage`, `asset.borrow.approve`, `resource.assign`, `member.remove`.
+- **Relationship rules**: derived checks like “accepted member of this event” or “manager of this asset”.
+- **Optional ACL/grants**: explicit overrides only where needed.
+
+So instead of hardcoding:
+
+```java
+if (!isOwner && !isManager) return null;
+```
+
+we move toward:
+
+```java
+authorization.require(userId, "resource.assign", ResourceRef.event(eventId), context);
+```
+
+or controller/AOP style:
+
+```java
+@RequiresPermission(action = "resource.assign", resourceType = "event", resourceId = "#request.ownerId")
+```
+
+But I would still keep **business invariants inside services**. Example: “to assign or borrow a car for an event, the user must already be an accepted event member” is not just UI/controller authorization; it is a domain rule. AOP can block API misuse, but service logic should still enforce invariants because services may be called from tests, schedulers, admin flows, or future endpoints.
+
+The clean architecture I’d aim for:
+
+1. `AuthorizationService`
+   - central `can(...)`, `require(...)`
+   - deny by default
+   - logs/audits denials
+
+2. `Policy` classes
+   - `EventPolicy`
+   - `AssetPolicy`
+   - `ResourceAssignmentPolicy`
+   - these encode rules in one place instead of random services
+
+3. Existing `ActivityMember`
+   - remains the scoped role source:
+   - `ownerType=event`, `ownerId=eventId`, role `Member`
+   - `ownerType=asset`, `ownerId=assetId`, role `Manager`
+
+4. Optional new collection later
+   - maybe `access_grants`
+   - fields: `subjectUserId`, `resourceType`, `resourceId`, `permission`, `effect`, `expiresAt`, `createdBy`
+   - used for explicit exceptions, not every normal role
+
+For the current manager/resource work, your instinct is exactly right: don’t spread “manager means X” everywhere. This change should probably become the first small step: keep the event/asset roles separate, and next introduce one central authorization/policy layer so edit/delete/assign/borrow checks stop being custom one-offs.
