@@ -167,11 +167,36 @@ async function openAndInspectAssetExplore(page) {
   await page.clickVisible('.popup-panel-asset-members .subevent-assets-quick-actions-trigger');
   await page.clickVisible('.subevent-assets-quick-action-option-explore');
   await page.waitForSelector('.asset-explore-shell');
-  await page.waitForNetwork('/api/assets/explore', { timeoutMs: 30000 });
+  await page.waitForNetwork('/api/assets/explore', { timeoutMs: 30000 }).catch(() => undefined);
+  await waitForAssetExploreContentReady(page, 45000);
   await waitForSmartListSettled(page, '.asset-explore-shell').catch(() => undefined);
   await assertVisibleExploreControls(page);
   await page.clickVisible('.asset-explore-shell .popup-close[aria-label="Close asset explore"]');
   await page.waitForSelectorHidden('.asset-explore-shell', { timeoutMs: 20000 });
+}
+
+async function waitForAssetExploreContentReady(page, timeoutMs = 30000) {
+  await page.waitFor('asset explore cards or empty state', async () => {
+    return page.evaluate(() => {
+      const shell = document.querySelector('.asset-explore-shell');
+      if (!shell) {
+        return false;
+      }
+      const shellText = (shell.textContent ?? '').toLowerCase();
+      if (shellText.includes('no visible assets')) {
+        return true;
+      }
+      return Array.from(shell.querySelectorAll('.experience-item-card, .asset-explore-empty-state'))
+        .some(element => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          return rect.width > 0
+            && rect.height > 0
+            && style.visibility !== 'hidden'
+            && style.display !== 'none';
+        });
+    });
+  }, timeoutMs);
 }
 
 async function assignOwnedAssetToResource(page, marker) {
@@ -1097,11 +1122,14 @@ async function waitForVisibleInputValue(page, selector, value, timeoutMs = 15000
 
 async function assertVisibleExploreControls(page) {
   const controls = await page.evaluate(() => {
+    const shell = document.querySelector('.asset-explore-shell');
+    const shellText = (shell?.textContent ?? '').toLowerCase();
     return {
       hasOrder: Array.from(document.querySelectorAll('.asset-explore-order-trigger')).some(isVisible),
       hasCategory: Array.from(document.querySelectorAll('.asset-explore-category-field')).some(isVisible),
       hasDateRange: Array.from(document.querySelectorAll('.asset-explore-date-range-field')).some(isVisible),
-      hasCardsOrEmptyState: Array.from(document.querySelectorAll('.asset-explore-shell .experience-item-card, .asset-explore-empty-state')).some(isVisible)
+      hasCardsOrEmptyState: shellText.includes('no visible assets')
+        || Array.from(document.querySelectorAll('.asset-explore-shell .experience-item-card, .asset-explore-empty-state')).some(isVisible)
     };
 
     function isVisible(element) {

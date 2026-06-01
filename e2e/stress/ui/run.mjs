@@ -17,6 +17,27 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const functionalUiRoot = path.join(repoRoot, 'e2e', 'functional', 'ui');
 const DEFAULT_UI_USER_ID = 'bf057de7c586eede7e84bdc7';
+const NETWORK_PROFILES = {
+  none: {},
+  'normal-4g': {
+    latencyMs: 100,
+    downloadKbps: 4000,
+    uploadKbps: 1500,
+    connectionType: 'cellular4g'
+  },
+  'slow-4g': {
+    latencyMs: 250,
+    downloadKbps: 1600,
+    uploadKbps: 750,
+    connectionType: 'cellular4g'
+  },
+  'bad-mobile': {
+    latencyMs: 400,
+    downloadKbps: 750,
+    uploadKbps: 250,
+    connectionType: 'cellular3g'
+  }
+};
 const args = parseArgs(process.argv.slice(2));
 
 if (args.help) {
@@ -958,28 +979,6 @@ Options:
   --users 1 --iterations 3
   --latency-ms 250 --download-kbps 1600 --upload-kbps 750`);
 }
-
-const NETWORK_PROFILES = {
-  none: {},
-  'normal-4g': {
-    latencyMs: 100,
-    downloadKbps: 4000,
-    uploadKbps: 1500,
-    connectionType: 'cellular4g'
-  },
-  'slow-4g': {
-    latencyMs: 250,
-    downloadKbps: 1600,
-    uploadKbps: 750,
-    connectionType: 'cellular4g'
-  },
-  'bad-mobile': {
-    latencyMs: 400,
-    downloadKbps: 750,
-    uploadKbps: 250,
-    connectionType: 'cellular3g'
-  }
-};
 
 function rampDelay(index, total, rampUpMs) {
   const totalMs = Number(rampUpMs ?? 0);

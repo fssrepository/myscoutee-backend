@@ -9,9 +9,15 @@ export async function assertUi({ page }) {
   await page.click('button[aria-label="Open content editor"]');
   await page.waitForSelector('.popup-panel-help-editor');
   await page.recordStep('help-editor-open');
+  await page.waitFor('help editor document menu ready', async () => {
+    return page.evaluate(() => {
+      const button = document.querySelector('.help-editor-document-menu-btn');
+      return Boolean(button) && !button.disabled;
+    });
+  }, 30000);
   await page.click('.help-editor-document-menu-btn');
-  await page.click('.help-editor-document-menu-branch');
-  await page.click('.help-editor-document-menu-surface');
+  await page.clickVisible('.help-editor-document-menu-branch');
+  await page.clickVisible('.help-editor-document-menu-surface');
   await page.waitForNetwork('/api/admin/explanation');
   await page.waitForSelector('.popup-panel-help-editor');
   await page.recordStep('explanation-document-selected');
@@ -73,6 +79,20 @@ function extractCssBackgroundUrl(value) {
 }
 
 async function clickVisibleHelpEditorEditButton(page) {
+  await page.waitFor('visible help editor edit button', async () => {
+    return page.evaluate(() => {
+      return Array.from(document.querySelectorAll('button[aria-label="Edit revision"]'))
+        .some(button => {
+          const rect = button.getBoundingClientRect();
+          const style = window.getComputedStyle(button);
+          return rect.width > 0
+            && rect.height > 0
+            && style.display !== 'none'
+            && style.visibility !== 'hidden'
+            && !button.disabled;
+        });
+    });
+  }, 30000);
   const clicked = await page.evaluate(() => {
     const buttons = Array.from(document.querySelectorAll('button[aria-label="Edit revision"]'))
       .filter(button => {
