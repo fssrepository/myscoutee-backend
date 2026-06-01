@@ -355,8 +355,9 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
-        when(activityEventsRepository.findBySourceIdIn(anyList()))
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
+        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(first, second, third));
 
         EventsExplorePageDto page = service.queryAttendingPage("viewer", 2, null);
 
@@ -391,8 +392,9 @@ class ActivitiesEventsServiceTest {
         trashed.setIsTrashed(true);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host"))
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(hosting, invitation, trashed));
+        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(hosting, invitation, trashed));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
         EventsExplorePageDto hostingResponse = service.queryHostingPage("host", 2, null);
@@ -490,8 +492,9 @@ class ActivitiesEventsServiceTest {
         ActivityEvent third = event("event-3", "host", 0d);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host"))
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
+        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(first, second, third));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
         EventsExplorePageDto page = service.queryItemsByUserPage("host", 2, null);

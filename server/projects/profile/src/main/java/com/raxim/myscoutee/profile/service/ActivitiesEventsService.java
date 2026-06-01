@@ -321,11 +321,16 @@ public class ActivitiesEventsService {
     }
 
     private <T> T withEventQueryContext(EventQueryContext context, Supplier<T> action) {
+        EventQueryContext previous = ACTIVE_CONTEXT.get();
         try {
             ACTIVE_CONTEXT.set(context);
             return action.get();
         } finally {
-            ACTIVE_CONTEXT.remove();
+            if (previous == null) {
+                ACTIVE_CONTEXT.remove();
+            } else {
+                ACTIVE_CONTEXT.set(previous);
+            }
         }
     }
 
@@ -463,7 +468,9 @@ public class ActivitiesEventsService {
         if (preferredBySourceId.isEmpty()) {
             return new LinkedHashMap<>();
         }
-        return new LinkedHashMap<>(activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId));
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshots =
+                activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId);
+        return snapshots == null ? new LinkedHashMap<>() : new LinkedHashMap<>(snapshots);
     }
 
     public boolean isPagedExploreRequest(EventsExploreQueryDto request) {
@@ -501,7 +508,7 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        return withEventQueryContext(buildUserQueryContext(viewer), () -> {
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = queryUserRecords(viewer).stream()
                     .filter(Objects::nonNull)
@@ -514,10 +521,7 @@ public class ActivitiesEventsService {
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
 
-            return new EventsExplorePageDto(pageRecords.stream()
-                    .map(record -> toEventRecordDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
@@ -558,7 +562,7 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        return withEventQueryContext(buildAttendingQueryContext(viewer), () -> {
+        return withEventQueryContext(buildAttendingListCardQueryContext(viewer), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = allEventDocuments(viewer).stream()
                     .filter(Objects::nonNull)
@@ -571,10 +575,7 @@ public class ActivitiesEventsService {
             String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
-            return new EventsExplorePageDto(pageRecords.stream()
-                    .map(record -> toEventRecordDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
@@ -634,7 +635,7 @@ public class ActivitiesEventsService {
                 null,
                 null,
                 null);
-        return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
+        return withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
                 pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request));
     }
 
@@ -1764,23 +1765,104 @@ public class ActivitiesEventsService {
                 .toList();
 
         if ("week".equals(view) || "month".equals(view)) {
-            return new EventsExplorePageDto(sorted.stream()
-                    .map(projection -> toEventRecordDto(projection.record(), viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), null);
+            return new EventsExplorePageDto(
+                    toHydratedEventRecordDtos(viewer, sorted.stream().map(EventProjection::record).toList()),
+                    sorted.size(),
+                    null);
         }
 
         String cursor = request == null ? null : request.cursor();
         int startIndex = resolveCursorStartIndex(sorted, cursor);
         int endIndex = Math.min(sorted.size(), startIndex + limit);
-        List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
-                .map(projection -> toEventRecordDto(projection.record(), viewer))
-                .filter(Objects::nonNull)
-                .toList();
-        String nextCursor = endIndex < sorted.size() && !records.isEmpty()
-                ? serializeCursor(records.get(records.size() - 1))
+        List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
+        List<EventRecordDto> records = toHydratedEventRecordDtos(viewer, pageProjections.stream()
+                .map(EventProjection::record)
+                .toList());
+        String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
+                ? serializeCursorId(pageProjections.get(pageProjections.size() - 1).record().getSourceId())
                 : null;
         return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+    }
+
+    private List<EventRecordDto> toHydratedEventRecordDtos(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
+        List<ActivityEvent> hydratedRecords = hydratePageRecords(viewer, projectedRecords);
+        if (hydratedRecords.isEmpty()) {
+            return List.of();
+        }
+        EventQueryContext current = ACTIVE_CONTEXT.get();
+        EventQueryContext pageContext = new EventQueryContext(
+                hydratedRecords,
+                hydratedRecords,
+                buildMemberSnapshotMap(hydratedRecords),
+                current == null ? Set.of() : current.trackedEventSourceIds(),
+                current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
+                current == null ? Map.of() : current.edgeWeightsByPairKey());
+        return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
+                .map(record -> toEventRecordDto(record, viewer))
+                .filter(Objects::nonNull)
+                .toList());
+    }
+
+    private List<ActivityEvent> hydratePageRecords(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
+        if (projectedRecords == null || projectedRecords.isEmpty()) {
+            return List.of();
+        }
+        List<String> sourceIds = projectedRecords.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        List<ActivityEvent> fullDocuments = loadEventDocumentsBySourceIds(sourceIds);
+        Map<String, ActivityEvent> fullByDocumentId = new LinkedHashMap<>();
+        for (ActivityEvent document : fullDocuments) {
+            String documentId = normalizeId(document == null ? null : document.getId());
+            if (StringUtils.hasText(documentId)) {
+                fullByDocumentId.put(documentId, document);
+            }
+        }
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent document : computePreferredEventRecords(fullDocuments)) {
+            String sourceId = normalizeId(document == null ? null : document.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                preferredBySourceId.put(sourceId, document);
+            }
+        }
+
+        List<ActivityEvent> hydrated = new ArrayList<>();
+        for (ActivityEvent projected : projectedRecords) {
+            if (projected == null) {
+                continue;
+            }
+            String documentId = normalizeId(projected.getId());
+            String sourceId = normalizeId(projected.getSourceId());
+            ActivityEvent full = StringUtils.hasText(documentId) ? fullByDocumentId.get(documentId) : null;
+            if (full == null && StringUtils.hasText(sourceId)) {
+                full = preferredBySourceId.get(sourceId);
+            }
+            hydrated.add(applyPageProjection(viewer, projected, full == null ? projected : full));
+        }
+        return hydrated;
+    }
+
+    private ActivityEvent applyPageProjection(ViewerContext viewer, ActivityEvent projection, ActivityEvent fullRecord) {
+        ActivityEvent hydrated = cloneDocument(fullRecord == null ? projection : fullRecord);
+        String projectedType = normalizeType(projection == null ? null : projection.getType());
+        String projectedOwnerUserId = normalizeId(projection == null ? null : projection.getOwnerUserId());
+        if (TYPE_HOSTING.equals(projectedType) && Boolean.TRUE.equals(projection.getIsHosting())
+                && !Boolean.TRUE.equals(hydrated.getIsHosting())) {
+            return buildHostingProjection(
+                    StringUtils.hasText(projectedOwnerUserId) ? projectedOwnerUserId : viewer == null ? null : viewer.userId(),
+                    hydrated);
+        }
+        if (TYPE_EVENTS.equals(projectedType)
+                && !Boolean.TRUE.equals(projection.getIsHosting())
+                && !Boolean.TRUE.equals(projection.getIsInvitation())
+                && StringUtils.hasText(projectedOwnerUserId)
+                && !projectedOwnerUserId.equals(normalizeId(hydrated.getOwnerUserId()))) {
+            return buildMembershipProjection(projectedOwnerUserId, hydrated);
+        }
+        return hydrated;
     }
 
     private EventListPageDto pageEventListRecords(
