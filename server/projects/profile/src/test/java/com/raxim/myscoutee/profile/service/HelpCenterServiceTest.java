@@ -36,6 +36,7 @@ class HelpCenterServiceTest {
     private HelpCenterAuditRepository auditRepository;
     @Mock
     private PrivacyConsentsRepository privacyConsentsRepository;
+    @Mock
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AppSettingsService appSettingsService;
