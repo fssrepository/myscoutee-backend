@@ -67,7 +67,7 @@ import de.flapdoodle.reverse.TransitionWalker;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=e2e-scheduler@example.test",
+                "config.dev-user=",
                 "admin.stats.enabled=false",
                 "admin.stats.telemetry-window-ms=600000",
                 "assets.source-refresh.enabled=false",

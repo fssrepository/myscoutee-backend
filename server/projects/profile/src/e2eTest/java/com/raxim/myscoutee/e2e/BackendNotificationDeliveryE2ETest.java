@@ -72,7 +72,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=e2e-notify-sender@example.test",
+                "config.dev-user=",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
