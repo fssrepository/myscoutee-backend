@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -207,12 +208,24 @@ class BackendLifecycleE2ETest {
         postOk("/assets/upsert", Map.of(
                 "userId", RESOURCE_OWNER_ID,
                 "asset", resourceAssetCard()));
+        HttpResponse<String> nonMemberResourceAssignment = postRaw(
+                "/activities/events/subevent-resources/replace",
+                resourceAssignmentState());
+        assertThat(nonMemberResourceAssignment.statusCode()).isEqualTo(403);
+        assertThat(fromReal(() -> mongoTemplate.find(
+                Query.query(Criteria.where("ownerId").is(EVENT_ID)
+                        .and("subEventId").is(SUB_EVENT_ID)
+                        .and("assetOwnerUserId").is(RESOURCE_OWNER_ID)),
+                ActivitySubEventResource.class))).isEmpty();
+
+        seedAcceptedEventMember(EVENT_ID, RESOURCE_OWNER_ID);
         JsonNode resources = postJson("/activities/events/subevent-resources/replace", resourceAssignmentState());
         assertThat(ids(resources.path("assetAssignmentIds").path("Car")))
                 .containsExactly(RESOURCE_ASSET_ID);
         JsonNode eventMembersAfterResource = getJson("/activities/events/members?ownerType=event&ownerId=" + EVENT_ID);
         assertThat(memberStatus(eventMembersAfterResource, RESOURCE_OWNER_ID)).isEqualTo("accepted");
-        assertThat(memberRole(eventMembersAfterResource, RESOURCE_OWNER_ID)).isEqualTo("Manager");
+        assertThat(memberRole(eventMembersAfterResource, RESOURCE_OWNER_ID)).isEqualTo("Member");
+        assertThat(findMember("event", EVENT_ID, RESOURCE_OWNER_ID).getRole()).isEqualTo("Member");
 
         JsonNode afterDisqualify = postJson("/activities/events/members/action", memberAction(PAID_MEMBER_ID, "disqualify"));
         assertThat(memberStatus(afterDisqualify, PAID_MEMBER_ID)).isEqualTo("disqualified");
@@ -593,6 +606,30 @@ class BackendLifecycleE2ETest {
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
         user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
         return user;
+    }
+
+    private void seedAcceptedEventMember(String eventId, String userId) {
+        withReal(() -> {
+            String nowIso = Instant.now().toString();
+            ActivityMember member = new ActivityMember();
+            member.setId(new ObjectId().toHexString());
+            member.setSyncKey("e2e-life-member-" + eventId + "-" + userId + "-" + UUID.randomUUID());
+            member.setOwnerType("event");
+            member.setOwnerId(eventId);
+            member.setUserId(userId);
+            member.setRole("Member");
+            member.setStatus("accepted");
+            member.setPendingSource(null);
+            member.setRequestKind(null);
+            member.setActionAtIso(nowIso);
+            member.setMetAtIso(nowIso);
+            member.setMetWhere("Lifecycle Arena");
+            member.setCreatedDate(nowIso);
+            member.setCreatedUser(HOST_ID);
+            member.setUpdatedDate(nowIso);
+            member.setUpdatedUser(HOST_ID);
+            mongoTemplate.save(member);
+        });
     }
 
     private Map<String, Object> eventSyncPayload(boolean published) {
@@ -1033,14 +1070,18 @@ class BackendLifecycleE2ETest {
     }
 
     private HttpResponse<String> post(String path, Object body) {
+        HttpResponse<String> response = postRaw(path, body);
+        assertOk(path, response.statusCode(), response.body());
+        return response;
+    }
+
+    private HttpResponse<String> postRaw(String path, Object body) {
         String json = writeJson(body);
-        HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
+        return send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build());
-        assertOk(path, response.statusCode(), response.body());
-        return response;
     }
 
     private URI uri(String path) {
