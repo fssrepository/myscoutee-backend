@@ -35,7 +35,7 @@ const configuredDatabases = [
   process.env.MONGO_APP_DATABASE,
   process.env.MONGO_DEMO_DATABASE,
   process.env.MONGO_REAL_DATABASE,
-  process.env.MONGO_PLAYGROUND_DATABASE
+  process.env.MONGO_E2E_DATABASE
 ]
   .map(value => (value || '').trim())
   .filter(Boolean);

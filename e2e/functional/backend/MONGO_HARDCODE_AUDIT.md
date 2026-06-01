@@ -1,7 +1,7 @@
 # Mongo Hard-Code Audit
 
 This report lists Java code that names Mongo databases/collections directly or uses low-level Mongo APIs.
-It is meant to protect playground/stress mode from accidentally bypassing routed repositories.
+It is meant to protect e2e/stress mode from accidentally bypassing routed repositories.
 
 Generated candidates: 49
 
@@ -67,5 +67,5 @@ Generated candidates: 49
 
 - `@Document(collection = "...")` is expected for entity mapping; it is listed so seed/reset coverage can be checked.
 - `MongoTemplate` calls using entity classes usually still route through the active database factory.
-- Literal collection-string calls are the ones to review most carefully before trusting playground isolation.
+- Literal collection-string calls are the ones to review most carefully before trusting e2e isolation.
 

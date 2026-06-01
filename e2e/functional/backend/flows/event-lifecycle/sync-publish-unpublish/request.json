@@ -1,12 +1,12 @@
 {
-  "name": "playground event lifecycle: sync draft, publish, unpublish, trash, restore",
+  "name": "e2e event lifecycle: sync draft, publish, unpublish, trash, restore",
   "group": "flows",
   "order": 9000,
   "method": "POST",
   "path": "/api/activities/events/sync",
   "script": "event-lifecycle.mjs",
   "mutation": true,
-  "playgroundOnly": true,
+  "e2eOnly": true,
   "headers": {
     "X-App-Session-Kind": "demo"
   },
@@ -20,7 +20,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundUserId}}",
+        "id": "{{e2eUserId}}",
         "name": "E2E Host",
         "age": 31,
         "birthday": "1995-01-12",
@@ -30,7 +30,7 @@
         "languages": ["en"],
         "initials": "EH",
         "gender": "man",
-        "statusText": "Playground host",
+        "statusText": "E2E host",
         "profileStatus": "public",
         "locationCoordinates": {
           "latitude": 48.1486,
@@ -48,7 +48,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundSecondUserId}}",
+        "id": "{{e2eSecondUserId}}",
         "name": "E2E Member",
         "age": 29,
         "birthday": "1997-03-05",
@@ -58,7 +58,7 @@
         "languages": ["en"],
         "initials": "EM",
         "gender": "woman",
-        "statusText": "Playground member",
+        "statusText": "E2E member",
         "profileStatus": "public",
         "locationCoordinates": {
           "latitude": 48.149,
@@ -72,8 +72,8 @@
     "syncKey": "e2e-flow-event-{{runId}}",
     "id": "e2e-flow-event-{{runId}}",
     "target": "hosting",
-    "title": "E2E Playground Event",
-    "shortDescription": "Created by the Postman-like playground collection.",
+    "title": "E2E Event",
+    "shortDescription": "Created by the Postman-like e2e collection.",
     "timeframe": "Tomorrow evening",
     "activity": 5,
     "isAdmin": false,
@@ -94,7 +94,7 @@
     "visibility": "Public",
     "blindMode": "Open Event",
     "published": false,
-    "creatorUserId": "{{playgroundUserId}}",
+    "creatorUserId": "{{e2eUserId}}",
     "creatorName": "E2E Host",
     "creatorInitials": "EH",
     "creatorGender": "man",
@@ -104,7 +104,7 @@
       "latitude": 48.1486,
       "longitude": 17.1077
     },
-    "topics": ["e2e", "playground"],
+    "topics": ["e2e", "e2e"],
     "subEvents": [],
     "subEventsDisplayMode": "list"
   },

@@ -1,6 +1,6 @@
 # MyScoutee Packaging
 
-This folder is the root-level packaging workspace for production deploys. It is separate from the dev Docker setup so dev hot reload, workspace mounts, playground mode, and demo helpers can keep their current behavior.
+This folder is the root-level packaging workspace for production deploys. It is separate from the dev Docker setup so dev hot reload, workspace mounts, e2e mode, and demo helpers can keep their current behavior.
 
 ## Current Scope
 

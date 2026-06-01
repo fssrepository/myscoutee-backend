@@ -1,13 +1,13 @@
 {
-  "name": "Playground mutation flow smoke",
-  "mode": "stress",
+  "name": "E2E mutation flow smoke",
+  "mode": "e2e",
   "baseUrl": "http://localhost",
   "users": 2,
   "rampUpMs": 1000,
   "iterations": 1,
   "thinkTimeMs": 250,
   "thinkTimeJitterMs": 100,
-  "resetPlayground": true,
+  "resetE2E": true,
   "thresholds": {
     "errorRate": 0,
     "p95Ms": 20000,

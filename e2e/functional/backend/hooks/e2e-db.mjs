@@ -46,14 +46,14 @@ const DEFAULT_COLLECTIONS = [
   'i18n_messages'
 ];
 
-export async function resetPlaygroundDatabase(ctx) {
-  const dbName = process.env.E2E_PLAYGROUND_DATABASE
-    ?? process.env.MONGO_PLAYGROUND_DATABASE
-    ?? 'playground_db';
-  ctx.vars.playgroundDatabase = dbName;
+export async function resetE2eDatabase(ctx) {
+  const dbName = process.env.E2E_DATABASE
+    ?? process.env.MONGO_E2E_DATABASE
+    ?? 'e2e_db';
+  ctx.vars.e2eDatabase = dbName;
 
-  if (process.env.E2E_PLAYGROUND_RESET_COMMAND) {
-    await runShellCommand(process.env.E2E_PLAYGROUND_RESET_COMMAND);
+  if (process.env.E2E_RESET_COMMAND) {
+    await runShellCommand(process.env.E2E_RESET_COMMAND);
     return;
   }
 
@@ -61,7 +61,7 @@ export async function resetPlaygroundDatabase(ctx) {
     .map(collection => `db.getCollection(${JSON.stringify(collection)}).deleteMany({});`)
     .join('\n');
   await runMongoEval(dbName, evalScript);
-  await importPlaygroundSeed(dbName);
+  await importE2eSeed(dbName);
 }
 
 async function runMongoEval(dbName, evalScript) {
@@ -82,17 +82,17 @@ async function runMongoEval(dbName, evalScript) {
   ];
   try {
     await execFileAsync('docker', args, {
-      timeout: Number(process.env.E2E_PLAYGROUND_RESET_TIMEOUT_MS ?? 30000),
+      timeout: Number(process.env.E2E_RESET_TIMEOUT_MS ?? 30000),
       maxBuffer: 1024 * 1024
     });
   } catch (error) {
     throw new Error(
-      `Unable to reset playground database ${dbName}. Start playground compose first or set E2E_SKIP_PLAYGROUND_RESET=true. ${error.message}`
+      `Unable to reset e2e database ${dbName}. Start e2e compose first or set E2E_SKIP_E2E_RESET=true. ${error.message}`
     );
   }
 }
 
-async function importPlaygroundSeed(dbName) {
+async function importE2eSeed(dbName) {
   const args = [
     'exec',
     '-e',
@@ -100,7 +100,7 @@ async function importPlaygroundSeed(dbName) {
     '-e',
     `MONGO_INITDB_DATABASE=${dbName}`,
     '-e',
-    `MONGO_SEED_DIRECTORY=${process.env.E2E_PLAYGROUND_SEED_DIRECTORY ?? 'playground_db'}`,
+    `MONGO_SEED_DIRECTORY=${process.env.E2E_SEED_DIRECTORY ?? 'e2e_db'}`,
     '-e',
     `MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=${dbName}:*`,
     '-e',
@@ -110,18 +110,18 @@ async function importPlaygroundSeed(dbName) {
   ];
   try {
     await execFileAsync('docker', args, {
-      timeout: Number(process.env.E2E_PLAYGROUND_SEED_TIMEOUT_MS ?? 120000),
+      timeout: Number(process.env.E2E_SEED_TIMEOUT_MS ?? 120000),
       maxBuffer: 10 * 1024 * 1024
     });
   } catch (error) {
-    throw new Error(`Unable to import playground seed into ${dbName}. ${error.message}`);
+    throw new Error(`Unable to import e2e seed into ${dbName}. ${error.message}`);
   }
 }
 
 async function runShellCommand(command) {
   const shell = process.env.SHELL ?? '/bin/bash';
   await execFileAsync(shell, ['-lc', command], {
-    timeout: Number(process.env.E2E_PLAYGROUND_RESET_TIMEOUT_MS ?? 30000),
+    timeout: Number(process.env.E2E_RESET_TIMEOUT_MS ?? 30000),
     maxBuffer: 1024 * 1024
   });
 }

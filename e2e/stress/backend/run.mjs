@@ -7,7 +7,7 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { assertDemoUsers, assertAuthMe, assertAssets, assertChats, assertEventList, assertEventPage } from '../../functional/backend/lib/contracts.mjs';
-import { resetPlaygroundDatabase } from '../../functional/backend/hooks/playground-db.mjs';
+import { resetE2eDatabase } from '../../functional/backend/hooks/e2e-db.mjs';
 import { discoverCollection, runCase } from '../../shared/collection-runner.mjs';
 import { createHttpClient } from '../../shared/http.mjs';
 
@@ -28,8 +28,14 @@ const serverCases = new Map((await discoverCollection(serverRoot)).map(testCase 
 const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'http://localhost';
 const mode = process.env.E2E_STRESS_MODE ?? scenario.mode ?? 'contract';
 
-if ((mode === 'playground' || mode === 'stress') && scenario.resetPlayground !== false && process.env.E2E_SKIP_PLAYGROUND_RESET !== 'true') {
-  await resetPlaygroundDatabase(createContext({ baseUrl, mode, runId: 'stress-reset', vu: 0 }));
+if (shouldResetE2eDatabase(mode, scenario)) {
+  await resetE2eDatabase(createContext({ baseUrl, mode, runId: 'e2e-reset', vu: 0 }));
+}
+
+function shouldResetE2eDatabase(currentMode, currentScenario) {
+  return (currentMode === 'e2e' || currentMode === 'stress' || currentScenario.resetE2E === true)
+    && currentScenario.resetE2E !== false
+    && process.env.E2E_SKIP_E2E_RESET !== 'true';
 }
 
 const metrics = [];
@@ -161,8 +167,8 @@ async function runStep(step, ctx, serverCases) {
     if (!testCase) {
       throw new Error(`Unknown collection case ${step.collectionCase}`);
     }
-    if (testCase.request.playgroundOnly && ctx.mode !== 'playground' && ctx.mode !== 'stress') {
-      throw new Error(`${step.collectionCase} requires playground/stress mode`);
+    if (testCase.request.e2eOnly && ctx.mode !== 'e2e' && ctx.mode !== 'stress') {
+      throw new Error(`${step.collectionCase} requires e2e/stress mode`);
     }
     return runCase(testCase, ctx);
   }
@@ -187,8 +193,8 @@ function createContext({ baseUrl, mode, runId, vu }) {
     defaultMaxMs: Number(process.env.E2E_STRESS_DEFAULT_MAX_MS ?? process.env.E2E_DEFAULT_MAX_MS ?? 5000),
     vars: {
       adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
-      playgroundUserId: `${process.env.E2E_PLAYGROUND_USER_ID ?? 'e2e-host'}-${runId}`,
-      playgroundSecondUserId: `${process.env.E2E_PLAYGROUND_SECOND_USER_ID ?? 'e2e-member'}-${runId}`,
+      e2eUserId: `${process.env.E2E_USER_ID ?? 'e2e-host'}-${runId}`,
+      e2eSecondUserId: `${process.env.E2E_SECOND_USER_ID ?? 'e2e-member'}-${runId}`,
       runId,
       vu: String(vu)
     }

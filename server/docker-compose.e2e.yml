@@ -1,0 +1,55 @@
+# Disposable full-stack e2e mode for destructive functional/stress tests.
+# Usage:
+#   MONGO_E2E_DATABASE=e2e_db docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+#
+# This keeps the normal demo_db volume untouched and points both real/demo routing
+# at the e2e database so tests can mutate freely.
+
+services:
+  mongodb:
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_APP_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_DEMO_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_REAL_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_E2E_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_SEED_DIRECTORY: ${MONGO_E2E_SEED_DIRECTORY:-e2e_db}
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_E2E_DATABASE:-e2e_db}:*
+    volumes:
+      - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
+      - ./data/mongodb/e2e-data-v8-0:/data/db
+      - ./docker/scripts:/scripts
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  mongodb-sync:
+    environment:
+      MONGO_APP_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_DEMO_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_REAL_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_E2E_DATABASE:-e2e_db}:*
+      MONGO_E2E_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+
+  profilemanagement:
+    command:
+      - sh
+      - -lc
+      - BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; exec ./gradlew --project-cache-dir /workspace/.gradle/e2e-project-cache $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
+    environment:
+      GRADLE_USER_HOME: /workspace/.gradle/e2e-user
+      PROFILEMANAGEMENT_HOT_RELOAD: "false"
+      MONGODB_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      MONGODB_DEMO_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
+      E2E_MODE: "true"
+      ADMIN_STATS_ENABLED: "false"
+      AFFINITY_RECOMPUTE_ENABLED: "false"
+      EVENTS_SCHEDULER_CHECK_DELAY_MS: "1800000"
+      EVENTS_WAITLIST_INVITER_ENABLED: "false"
+      FIREBASE_ENABLED: "false"
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_MONGODB_CORE_MONGOTEMPLATE: "WARN"
+      MEDIA_ENABLED: "true"
+      PAYMENT_ENABLE_PAY: "false"
+
+  frontend-sync:
+    environment:
+      FRONTEND_BUILD_CONFIGURATION: e2e

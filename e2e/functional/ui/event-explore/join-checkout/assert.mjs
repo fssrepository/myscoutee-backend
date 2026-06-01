@@ -82,7 +82,7 @@ async function seedJoinableEvent(page) {
       languages: ['en'],
       initials: 'JH',
       gender: 'man',
-      statusText: 'Playground UI join host',
+      statusText: 'E2E UI join host',
       profileStatus: 'public',
       locationCoordinates: {
         latitude: 48.1486,

@@ -1,12 +1,12 @@
 {
-  "name": "playground event participation: publish, join, feedback note/remove/restore",
+  "name": "e2e event participation: publish, join, feedback note/remove/restore",
   "group": "flows",
   "order": 9060,
   "method": "POST",
   "path": "/api/activities/events/sync",
   "script": "event-participation.mjs",
   "mutation": true,
-  "playgroundOnly": true,
+  "e2eOnly": true,
   "headers": {
     "X-App-Session-Kind": "demo"
   },
@@ -20,7 +20,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundUserId}}",
+        "id": "{{e2eUserId}}",
         "name": "E2E Participation Host",
         "age": 31,
         "birthday": "1995-01-12",
@@ -30,7 +30,7 @@
         "languages": ["en"],
         "initials": "PH",
         "gender": "man",
-        "statusText": "Playground participation host",
+        "statusText": "E2E participation host",
         "profileStatus": "public",
         "locationCoordinates": {
           "latitude": 48.1486,
@@ -48,7 +48,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundSecondUserId}}",
+        "id": "{{e2eSecondUserId}}",
         "name": "E2E Participation Member",
         "age": 29,
         "birthday": "1997-03-05",
@@ -58,7 +58,7 @@
         "languages": ["en"],
         "initials": "PM",
         "gender": "woman",
-        "statusText": "Playground participation member",
+        "statusText": "E2E participation member",
         "profileStatus": "public",
         "locationCoordinates": {
           "latitude": 48.149,
@@ -73,7 +73,7 @@
     "id": "e2e-participation-event-{{runId}}",
     "target": "hosting",
     "title": "E2E Participation Event",
-    "shortDescription": "Created by the participation playground collection.",
+    "shortDescription": "Created by the participation e2e collection.",
     "timeframe": "Tomorrow evening",
     "activity": 5,
     "isAdmin": false,
@@ -94,7 +94,7 @@
     "visibility": "Public",
     "blindMode": "Open Event",
     "published": true,
-    "creatorUserId": "{{playgroundUserId}}",
+    "creatorUserId": "{{e2eUserId}}",
     "creatorName": "E2E Participation Host",
     "creatorInitials": "PH",
     "creatorGender": "man",

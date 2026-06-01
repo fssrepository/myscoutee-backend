@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// UI checks require the full stack through nginx, usually playground compose, before this script starts.
+// UI checks require the full stack through nginx, usually e2e compose, before this script starts.
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';

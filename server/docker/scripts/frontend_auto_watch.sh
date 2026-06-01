@@ -57,7 +57,7 @@ resolve_build_mode() {
   fi
 
   case "${BUILD_CONFIGURATION}" in
-    demo-github|production|production-demo)
+    e2e|demo-github|production|production-demo)
       printf '%s\n' "prod"
       ;;
     *)
@@ -68,7 +68,7 @@ resolve_build_mode() {
 
 validate_build_configuration() {
   case "${BUILD_CONFIGURATION}" in
-    development|demo-npm|demo-http|playground|demo-github|production|production-demo)
+    development|demo-npm|demo-http|e2e|demo-github|production|production-demo)
       ;;
     *)
       echo "Error: unsupported FRONTEND_BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}" >&2

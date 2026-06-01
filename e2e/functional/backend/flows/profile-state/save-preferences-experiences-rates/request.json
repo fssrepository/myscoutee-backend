@@ -1,12 +1,12 @@
 {
-  "name": "playground profile state: preferences, experiences, rates, feedback, logout, delete",
+  "name": "e2e profile state: preferences, experiences, rates, feedback, logout, delete",
   "group": "flows",
   "order": 9020,
   "method": "POST",
   "path": "/api/auth/me/filter-preferences",
   "script": "profile-state.mjs",
   "mutation": true,
-  "playgroundOnly": true,
+  "e2eOnly": true,
   "headers": {
     "X-App-Session-Kind": "demo"
   },
@@ -20,7 +20,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundUserId}}",
+        "id": "{{e2eUserId}}",
         "name": "E2E Profile State",
         "age": 32,
         "birthday": "1994-02-02",
@@ -30,7 +30,7 @@
         "languages": ["en", "sk"],
         "initials": "EP",
         "gender": "man",
-        "statusText": "Playground profile state",
+        "statusText": "E2E profile state",
         "profileStatus": "public",
         "images": []
       }
@@ -44,7 +44,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundSecondUserId}}",
+        "id": "{{e2eSecondUserId}}",
         "name": "E2E Rated Target",
         "age": 29,
         "birthday": "1997-03-05",
@@ -54,14 +54,14 @@
         "languages": ["en"],
         "initials": "RT",
         "gender": "woman",
-        "statusText": "Playground rated target",
+        "statusText": "E2E rated target",
         "profileStatus": "public",
         "images": []
       }
     }
   ],
   "body": {
-    "userId": "{{playgroundUserId}}",
+    "userId": "{{e2eUserId}}",
     "filterPreferences": {
       "ageMin": 25,
       "ageMax": 38,

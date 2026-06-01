@@ -1,5 +1,5 @@
 {
-  "name": "playground chat lifecycle: send, edit, pin, react, attachments, delete, device",
+  "name": "e2e chat lifecycle: send, edit, pin, react, attachments, delete, device",
   "group": "flows",
   "order": 9040,
   "method": "POST",
@@ -7,7 +7,7 @@
   "requires": ["chat"],
   "script": "chat-message-lifecycle.mjs",
   "mutation": true,
-  "playgroundOnly": true,
+  "e2eOnly": true,
   "headers": {
     "X-App-Session-Kind": "demo"
   },
@@ -15,7 +15,7 @@
     "userId": "{{userId}}"
   },
   "body": {
-    "text": "E2E playground chat message {{runId}}",
+    "text": "E2E chat message {{runId}}",
     "replyTo": null,
     "attachments": []
   },

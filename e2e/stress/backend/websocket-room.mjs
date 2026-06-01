@@ -130,7 +130,7 @@ db.users.insertMany(userIds.map((userId, index) => ({
   userId,
   name: 'WS Room User ' + String(index + 1),
   age: 24 + (index % 30),
-  city: 'E2E Playground',
+  city: 'E2E',
   initials: 'W' + String((index + 1) % 10),
   gender: index % 2 === 0 ? 'woman' : 'man',
   status: 'A',
@@ -189,7 +189,7 @@ async function verifyBackendUsesPreparedRoom(config) {
   if (auth.status !== 200 || auth.data?.id !== userId) {
     throw new Error(
       `Backend did not read prepared websocket room user ${userId}. ` +
-      `Start the stack in playground mode before this destructive simulation.`
+      `Start the stack in e2e mode before this destructive simulation.`
     );
   }
   const page = await httpJson(config, '/api/activities/chats/page', {
@@ -855,7 +855,7 @@ function resolveConfig(args) {
     sendRatePerSec: numberArg(args.sendRate, process.env.E2E_WS_ROOM_SEND_RATE, 2),
     connectConcurrency: numberArg(args.connectConcurrency, process.env.E2E_WS_ROOM_CONNECT_CONCURRENCY, 25),
     baseUrl: args.baseUrl || process.env.E2E_WS_ROOM_BASE_URL || process.env.E2E_STRESS_BASE_URL || 'http://localhost',
-    database: args.database || process.env.E2E_WS_ROOM_DATABASE || process.env.E2E_PLAYGROUND_DATABASE || process.env.MONGO_PLAYGROUND_DATABASE || 'playground_db',
+    database: args.database || process.env.E2E_WS_ROOM_DATABASE || process.env.MONGO_E2E_DATABASE || 'e2e_db',
     mongoContainer: args.mongoContainer || process.env.E2E_MONGO_CONTAINER || 'mongodb',
     redisContainer: args.redisContainer || process.env.E2E_REDIS_CONTAINER || 'redis',
     mongoUsername: process.env.E2E_MONGO_USERNAME ?? process.env.MONGO_APP_USERNAME ?? 'guest',
@@ -912,7 +912,7 @@ function printHelp() {
   node e2e/stress/backend/websocket-room.mjs --record
   node e2e/stress/backend/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record
 
-Requires the backend to run against playground_db. The script seeds a disposable
+Requires the backend to run against e2e_db. The script seeds a disposable
 room named e2e-ws-room and user ids named e2e-ws-room-user-0001...
 The default warmup waits 5000ms after all client sockets report open, because
 large handshake batches can still be finishing server-side registration.

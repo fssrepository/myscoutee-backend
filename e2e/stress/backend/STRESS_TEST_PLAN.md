@@ -69,13 +69,13 @@ node e2e/stress/backend/compare.mjs \
   .e2e-artifacts/stress/backend/server-events-read-candidate
 ```
 
-For playground mutation scenarios and destructive WebSocket room load, start the
-playground/stress stack instead:
+For e2e mutation scenarios and destructive WebSocket room load, start the
+e2e/stress stack instead:
 
 ```bash
 cd server
-MONGO_PLAYGROUND_DATABASE=playground_db \
-docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build
+MONGO_E2E_DATABASE=e2e_db \
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
 ```
 
 ## Scenario Matrix
@@ -92,7 +92,7 @@ docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build
 | `server-admin-affinity-graph-view` | Admin graph view open path and lazy graph navigation (`meta`, `forests`, `tile`, `neighborhood`). | `node e2e/stress/backend/run.mjs --scenario server-admin-affinity-graph-view --record` |
 | `server-read-sweep` | Broad read regression sweep across major safe endpoints. | `node e2e/stress/backend/run.mjs --scenario server-read-sweep --record` |
 | `server-capacity-probe` | Opt-in heavier capacity probe. | `node e2e/stress/backend/run.mjs --scenario server-capacity-probe --record` |
-| `playground-flow-smoke` | Destructive mutation workflow pressure in disposable DB. | `E2E_STRESS_MODE=stress node e2e/stress/backend/run.mjs --scenario playground-flow-smoke --record` |
+| `e2e-flow-smoke` | Destructive mutation workflow pressure in disposable DB. | `E2E_STRESS_MODE=stress node e2e/stress/backend/run.mjs --scenario e2e-flow-smoke --record` |
 | WebSocket room | Stateful chat fanout simulation with many clients in one seeded room. | `node e2e/stress/backend/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record` |
 
 ## Current Graph View Measurement
@@ -118,7 +118,7 @@ This pass keeps all graph API response contracts unchanged. The backend tile
 path now queries relevant materialized edges once and computes truncation from
 that list instead of repeating the same Mongo query. The Mongo import script now
 ensures the materialized graph indexes for runtime-generated graph collections,
-so `playground_db`, `demo_db`, and `myscoutee_db` do not depend on Spring
+so `e2e_db`, `demo_db`, and `myscoutee_db` do not depend on Spring
 auto-index creation.
 
 The result is a modest cleanup, not a 5x-class graph lever: scenario p95
@@ -155,11 +155,11 @@ Secondary signal:
 - Bottleneck moves from one service/container to another in a way that matches
   the intended optimization.
 
-## Latest Playground Measurement
+## Latest E2E Measurement
 
-These measurements were taken against `playground_db`. The durable Docker
+These measurements were taken against `e2e_db`. The durable Docker
 index changes are applied through Mongo init/import scripts so the same access
-paths are created for `playground_db`, `demo_db`, and `myscoutee_db`.
+paths are created for `e2e_db`, `demo_db`, and `myscoutee_db`.
 
 | Scenario | Baseline | After Mongo indexes | Change |
 | --- | --- | --- | --- |
@@ -230,7 +230,7 @@ Previous direct-scope batching ramp:
 Clean rerun after the 1-5 fixes:
 `.e2e-artifacts/stress-ramp/backend/server-events-read-2026-05-25T11-42-27-431Z`
 
-For this server-only measurement the playground ran with hot reload off,
+For this server-only measurement the e2e ran with hot reload off,
 MongoTemplate query logging at `WARN`, scheduler/admin/affinity background work
 disabled, and `frontend-sync` stopped so the API/Mongo path was not competing
 with frontend file watching.
@@ -270,7 +270,7 @@ After event-filter and attending slim page fast paths:
 `.e2e-artifacts/stress-ramp/backend/server-events-read-2026-05-25T13-46-56-486Z`
 
 This was a short directional 4/8-user rerun because the host still had Chrome
-and VS Code activity. The playground API ran with `frontend-sync` stopped and
+and VS Code activity. The e2e API ran with `frontend-sync` stopped and
 was shut down after the run. The production Angular Activities event smart-list
 now opts into `slim: true` for `/activities/events/filter`, while the old
 backend full-page/array contracts remain available.
@@ -303,7 +303,7 @@ After moving slim filter/attending/list reads to narrow list-card query
 contexts:
 `.e2e-artifacts/stress-ramp/backend/server-events-read-2026-05-25T14-29-48-364Z`
 
-This short 4/8-user rerun was taken after the API playground settled to about
+This short 4/8-user rerun was taken after the API e2e settled to about
 92% host CPU idle. The API still ran with `frontend-sync` stopped. The change
 keeps the old full contracts intact and only changes the optional `slim` paths:
 the backend now loads list-card fields and membership status directly instead
@@ -347,7 +347,7 @@ Interpretation:
   and 13 docs returned.
 - Post-run container snapshot before shutdown: `myscoutee` was at about 5% CPU
   and 1.75 GiB memory, `mongodb` at about 1% CPU and 153 MiB memory.
-  Playground was then stopped to avoid background load.
+  E2E was then stopped to avoid background load.
 
 After direct-bucket slim page fast paths for `hosting`, `trash`, and
 `invitations`:
@@ -551,7 +551,7 @@ Artifacts:
 | 32 | 212.94 | 0.00% | 71ms | 94ms | `asset tickets` p95 86ms |
 
 Interpretation: `server-assets-rates-read` is currently healthy on the seeded
-playground workload. No backend change was applied because a 5x-class
+e2e workload. No backend change was applied because a 5x-class
 optimization would not move a meaningful bottleneck here. The potential code
 shapes to keep watching as data grows are asset explore bootstrapping/query
 narrowing and rate-page slicing before full list materialization, but neither
@@ -634,7 +634,7 @@ Artifacts:
 | 32 | 233.24 | 0.00% | 49ms | 62ms | `landing content` p95 62ms |
 
 Interpretation: admin/content reads are currently healthy on the seeded
-playground workload. They scale nearly linearly through 32 virtual users with
+e2e workload. They scale nearly linearly through 32 virtual users with
 no errors and sub-100ms endpoint p95, so no 5x-class backend change was applied.
 The next more plausible broad-read candidate is `server-profile-read`,
 especially realtime counters and profile state if they still perform repeated
@@ -804,7 +804,7 @@ include intentional harness hold time.
 - Keep `event filter` and `attending` backed by contract tests while the
   frontend opts into the slim path. These are optional backend parameters, so
   default callers still receive the previous full payloads.
-- Keep load-test playgrounds close to production behavior: no dev DEBUG query
+- Keep load-test e2es close to production behavior: no dev DEBUG query
   logs, no hot reload, and no scheduler/admin/affinity background jobs on the
   same request node while measuring request capacity.
 - Done for current chat reads without frontend contract changes: chat
@@ -818,26 +818,26 @@ include intentional harness hold time.
 - Done for current game-card reads without frontend contract changes: the
   server reuses hot global game-stack inputs instead of redoing broad users,
   rates, activity-member, and affinity-edge reads on every card query.
-- Done for `playground-flow-smoke` correctness under concurrent writes: help
+- Done for `e2e-flow-smoke` correctness under concurrent writes: help
   revision creation now retries version allocation if another writer wins the
   same `{documentType, lang, contextKey, version}` slot.
 - Future chat 5x-class frontend candidate only if real production histories get
   much larger: add an optional `limit`/`cursor` chat-history contract so the UI
   can request recent messages first instead of always returning the full history.
 
-## Latest Playground Mutation Flow
+## Latest E2E Mutation Flow
 
 Command:
 
 ```bash
-node e2e/stress/backend/run.mjs --scenario playground-flow-smoke --record
+node e2e/stress/backend/run.mjs --scenario e2e-flow-smoke --record
 ```
 
 Initial artifact:
-`.e2e-artifacts/stress/backend/playground-flow-smoke-2026-05-26T09-46-45-457Z`
+`.e2e-artifacts/stress/backend/e2e-flow-smoke-2026-05-26T09-46-45-457Z`
 
 After help revision retry artifact:
-`.e2e-artifacts/stress/backend/playground-flow-smoke-2026-05-26T09-50-40-833Z`
+`.e2e-artifacts/stress/backend/e2e-flow-smoke-2026-05-26T09-50-40-833Z`
 
 | Run | Users | Requests | Error rate | p95 | p99 | Slowest step |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
@@ -874,7 +874,7 @@ Artifacts:
 | 200 | 10 | 200/200 | 2000/2000 | 106ms | 111ms | 0 | 0 | passed |
 | 500 | 20 | 500/500 | 10000/10000 | 55ms | 55ms | 0 | 0 | passed |
 
-Interpretation: room fanout is healthy in the current playground stack. The
+Interpretation: room fanout is healthy in the current e2e stack. The
 500-client run had 100% delivery, no duplicate frames, no missing messages, and
 no Redis write-stream backlog. This area did not expose a 5x-class backend
 bottleneck.

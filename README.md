@@ -53,5 +53,5 @@ Full Integration E2E Collections
 --------------------------------
 * Postman-like server/API and UI collections live under `./e2e`.
 * Safe contract checks against the normal dev stack: `node e2e/server/run.mjs`
-* Disposable mutation/stress checks use `playground_db`: `cd server && docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build`
+* Disposable mutation/stress checks use `e2e_db`: `cd server && docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build`
 * Details: `./e2e/README.md`

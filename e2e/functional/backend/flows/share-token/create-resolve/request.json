@@ -1,12 +1,12 @@
 {
-  "name": "playground share token: create and resolve asset token",
+  "name": "e2e share token: create and resolve asset token",
   "group": "flows",
   "order": 9030,
   "method": "POST",
   "path": "/api/share-tokens",
   "script": "share-token.mjs",
   "mutation": true,
-  "playgroundOnly": true,
+  "e2eOnly": true,
   "headers": {
     "X-App-Session-Kind": "demo"
   },
@@ -20,7 +20,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "id": "{{playgroundUserId}}",
+        "id": "{{e2eUserId}}",
         "name": "E2E Share Owner",
         "age": 31,
         "birthday": "1995-01-12",
@@ -30,7 +30,7 @@
         "languages": ["en"],
         "initials": "SO",
         "gender": "man",
-        "statusText": "Playground share token owner",
+        "statusText": "E2E share token owner",
         "profileStatus": "public",
         "images": []
       }
@@ -44,7 +44,7 @@
       },
       "expectedStatus": 200,
       "body": {
-        "userId": "{{playgroundUserId}}",
+        "userId": "{{e2eUserId}}",
         "asset": {
           "id": "e2e-share-asset-{{runId}}",
           "type": "Accommodation",
@@ -61,7 +61,7 @@
           "policies": [],
           "visibility": "Public",
           "status": "active",
-          "ownerUserId": "{{playgroundUserId}}",
+          "ownerUserId": "{{e2eUserId}}",
           "ownerName": "E2E Share Owner",
           "requests": [],
           "menuActions": []
@@ -73,7 +73,7 @@
     "kind": "asset",
     "entityId": "e2e-share-asset-{{runId}}",
     "assetType": "Accommodation",
-    "ownerUserId": "{{playgroundUserId}}"
+    "ownerUserId": "{{e2eUserId}}"
   },
   "expectedStatus": 200,
   "maxMs": 5000

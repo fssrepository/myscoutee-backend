@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Playground runs require docker-compose.playground.yml or bootRunPlayground to be running first.
+// E2E mutation runs require the matching compose stack to be running first.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,17 +28,22 @@ const ctx = {
   mode,
   vars: {
     adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
-    playgroundUserId: process.env.E2E_PLAYGROUND_USER_ID ?? 'e2e-host',
-    playgroundSecondUserId: process.env.E2E_PLAYGROUND_SECOND_USER_ID ?? 'e2e-member',
+    e2eUserId: process.env.E2E_USER_ID ?? 'e2e-host',
+    e2eSecondUserId: process.env.E2E_SECOND_USER_ID ?? 'e2e-member',
     runId: process.env.E2E_RUN_ID ?? `run-${Date.now()}`
   },
   defaultMaxMs: Number(process.env.E2E_DEFAULT_MAX_MS ?? 2500),
   resolveRequirement
 };
 
-if ((mode === 'playground' || mode === 'stress') && process.env.E2E_SKIP_PLAYGROUND_RESET !== 'true') {
-  const hooks = await import('./hooks/playground-db.mjs');
-  await hooks.resetPlaygroundDatabase(ctx);
+if (shouldResetE2eDatabase(mode)) {
+  const hooks = await import('./hooks/e2e-db.mjs');
+  await hooks.resetE2eDatabase(ctx);
+}
+
+function shouldResetE2eDatabase(currentMode) {
+  return (currentMode === 'e2e' || currentMode === 'stress')
+    && process.env.E2E_SKIP_E2E_RESET !== 'true';
 }
 
 async function resolveRequirement(requirement) {

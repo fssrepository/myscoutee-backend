@@ -3,7 +3,7 @@ import { assertAuthMe, assertExperiences } from '../../../lib/contracts.mjs';
 
 export async function assertResponse({ ctx, request }) {
   const userId = request.body.userId;
-  const targetUserId = ctx.vars.playgroundSecondUserId;
+  const targetUserId = ctx.vars.e2eSecondUserId;
 
   const profile = await ctx.http.get('/api/auth/me', {
     headers: request.headers,
@@ -26,7 +26,7 @@ export async function assertResponse({ ctx, request }) {
           city: 'Bratislava',
           dateFrom: '2024-01',
           dateTo: '2026-01',
-          description: 'Created by the playground e2e collection.'
+          description: 'Created by the e2e collection.'
         }
       ]
     },
@@ -63,7 +63,7 @@ export async function assertResponse({ ctx, request }) {
           bridgeCount: 0,
           scoreGiven: 8,
           scoreReceived: 0,
-          eventName: 'E2E Playground Rating',
+          eventName: 'E2E Rating',
           happenedAtIso: '2026-05-24T00:00:00Z',
           distanceMetersExact: 1200
         }
@@ -81,7 +81,7 @@ export async function assertResponse({ ctx, request }) {
       userId,
       category: 'e2e',
       subject: 'Server e2e feedback',
-      details: 'Created by the playground profile state flow.'
+      details: 'Created by the e2e profile state flow.'
     },
     expectedStatus: 200
   });
@@ -99,6 +99,6 @@ export async function assertResponse({ ctx, request }) {
     json: { userId },
     expectedStatus: 200
   });
-  assert(deleted.data?.submitted === true, 'delete action should succeed in playground', deleted.data);
+  assert(deleted.data?.submitted === true, 'delete action should succeed in e2e', deleted.data);
   expectString(deleted.data.message ?? '', 'delete action message', { allowEmpty: true });
 }

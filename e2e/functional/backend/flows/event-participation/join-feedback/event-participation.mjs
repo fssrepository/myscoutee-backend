@@ -9,7 +9,7 @@ export async function assertResponse({ ctx, result, request }) {
   const join = await ctx.http.post('/api/activities/events/join', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.playgroundSecondUserId,
+      userId: ctx.vars.e2eSecondUserId,
       type: 'events',
       sourceId: eventId,
       optionalSubEventIds: [],
@@ -24,7 +24,7 @@ export async function assertResponse({ ctx, result, request }) {
   const attending = await ctx.http.get('/api/activities/events/attending', {
     headers: request.headers,
     params: {
-      userId: ctx.vars.playgroundSecondUserId
+      userId: ctx.vars.e2eSecondUserId
     },
     expectedStatus: 200
   });
@@ -38,7 +38,7 @@ export async function assertResponse({ ctx, result, request }) {
   await ctx.http.post('/api/activities/events/feedback/submit', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.playgroundSecondUserId,
+      userId: ctx.vars.e2eSecondUserId,
       eventId,
       answers: []
     },
@@ -51,7 +51,7 @@ export async function assertResponse({ ctx, result, request }) {
   await ctx.http.post('/api/activities/events/feedback/note', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.playgroundSecondUserId,
+      userId: ctx.vars.e2eSecondUserId,
       eventId,
       text: 'E2E organizer note'
     },
@@ -65,7 +65,7 @@ export async function assertResponse({ ctx, result, request }) {
   await ctx.http.post('/api/activities/events/feedback/remove', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.playgroundSecondUserId,
+      userId: ctx.vars.e2eSecondUserId,
       eventId
     },
     expectedStatus: 200
@@ -78,7 +78,7 @@ export async function assertResponse({ ctx, result, request }) {
   await ctx.http.post('/api/activities/events/feedback/restore', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.playgroundSecondUserId,
+      userId: ctx.vars.e2eSecondUserId,
       eventId
     },
     expectedStatus: 200
@@ -94,7 +94,7 @@ async function assertFeedbackState(ctx, request, eventId, expected) {
   const feedback = await ctx.http.get('/api/activities/events/feedback', {
     headers: request.headers,
     params: {
-      userId: ctx.vars.playgroundSecondUserId
+      userId: ctx.vars.e2eSecondUserId
     },
     expectedStatus: 200
   });

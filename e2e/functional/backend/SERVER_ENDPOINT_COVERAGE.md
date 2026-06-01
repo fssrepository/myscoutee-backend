@@ -39,7 +39,7 @@ Latest local validation:
 server e2e: 49 passed, 0 failed, 0 skipped, 49 selected
 ```
 
-## Playground Mutation Flows
+## E2E Mutation Flows
 
 Default command:
 
@@ -49,7 +49,7 @@ E2E_SERVER_MODE=stress \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
 
-These reset and seed `playground_db`, not `demo_db`.
+These reset and seed `e2e_db`, not `demo_db`.
 
 Covered flows:
 
@@ -79,7 +79,7 @@ Validated scenarios:
 
 - `server-contract-smoke`: 20 requests, 0 failures.
 - `websocket-smoke`: 18 websocket connects, 0 failures.
-- `playground-flow-smoke`: 14 mutation flow steps, 0 failures.
+- `e2e-flow-smoke`: 14 mutation flow steps, 0 failures.
 - `server-read-sweep`: 765 requests over the short read sweep, 0 failures.
 - `server-event-feedback-list`: focused read pressure for event feedback first load.
 
@@ -93,4 +93,4 @@ two minutes and should be started only when a hard local load probe is wanted.
 - Multipart media/profile-image upload is not in the default server suite yet;
   media reachability is covered through collected image URLs.
 - Hard destructive admin moderation actions are not in the read-only contract
-  run. Playground admin/content mutations are covered by the help revision flow.
+  run. E2E admin/content mutations are covered by the help revision flow.

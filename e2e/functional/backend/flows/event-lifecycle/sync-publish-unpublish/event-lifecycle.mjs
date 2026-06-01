@@ -5,7 +5,7 @@ export async function assertResponse({ ctx, result, request }) {
   const draft = expectObject(result.data, 'event sync draft');
   assertEvent(draft, 'event sync draft');
   assert(draft.id === request.body.id, 'sync should return the created event id', { expected: request.body.id, actual: draft.id });
-  assert(draft.published === false, 'synced playground event should start as unpublished draft', draft);
+  assert(draft.published === false, 'synced e2e event should start as unpublished draft', draft);
 
   const actionBody = {
     userId: request.body.creatorUserId,
@@ -29,7 +29,7 @@ export async function assertResponse({ ctx, result, request }) {
   const explore = await ctx.http.post('/api/activities/events/explore', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.playgroundSecondUserId,
+      userId: ctx.vars.e2eSecondUserId,
       limit: 20
     }
   });

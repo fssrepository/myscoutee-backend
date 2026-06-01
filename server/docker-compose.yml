@@ -92,7 +92,7 @@ services:
       - .env.secrets
     command: >
       bash -lc '
-      watch_candidates="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db /docker-entrypoint-initdb.d/playground_db";
+      watch_candidates="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db /docker-entrypoint-initdb.d/e2e_db";
       watch_roots="";
       for candidate in $$watch_candidates; do
         if [ -d "$$candidate" ]; then
@@ -114,7 +114,7 @@ services:
         case "$$changed_file" in
           */demo_db/*.json) target_db="$${MONGO_DEMO_DATABASE:-demo_db}" ;;
           */myscoutee_db/*.json) target_db="$${MONGO_REAL_DATABASE:-myscoutee_db}" ;;
-          */playground_db/*.json) target_db="$${MONGO_PLAYGROUND_DATABASE:-playground_db}" ;;
+          */e2e_db/*.json) target_db="$${MONGO_E2E_DATABASE:-e2e_db}" ;;
           *) return 0 ;;
         esac;
         MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME="$${MONGO_APP_USERNAME:-guest}" MONGO_IMPORT_PASSWORD="$${MONGO_APP_PASSWORD:-guest}" MONGO_APP_DATABASE="$$target_db" MONGO_IMPORT_SINGLE_FILE="$$changed_file" MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;

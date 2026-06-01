@@ -20,7 +20,7 @@ assert.mjs         optional script for deeper assertions and follow-up calls
 ```
 
 The runner can execute one case, one group, all safe server contracts, UI route
-checks, or playground mutation/stress flows.
+checks, or e2e mutation/stress flows.
 
 Server endpoint coverage and the latest local validation summary are tracked in:
 
@@ -50,46 +50,46 @@ Default target:
 E2E_SERVER_BASE_URL=http://localhost
 ```
 
-## Playground Flow Mode
+## E2E Flow Mode
 
-Playground mode is for destructive or weird end-to-end flows. It uses
-`playground_db`, not `demo_db`.
+E2E mode is for destructive or weird end-to-end flows. It uses
+`e2e_db`, not `demo_db`.
 
 ```bash
 cd server
-MONGO_PLAYGROUND_DATABASE=playground_db \
-docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build
+MONGO_E2E_DATABASE=e2e_db \
+docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
 
 cd ..
-# Start the playground stack first; this runner expects localhost to route to it.
-E2E_SERVER_MODE=playground \
+# Start the e2e stack first; this runner expects localhost to route to it.
+E2E_SERVER_MODE=e2e \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
 
-The playground Mongo seed folder is:
+The e2e Mongo seed folder is:
 
 ```text
-server/docker/conf/mongodb/playground_db
+server/docker/conf/mongodb/e2e_db
 ```
 
-It symlinks to the default demo seed so playground starts from familiar static
-data while writes land in the disposable playground database/volume.
+It symlinks to the default demo seed so e2e starts from familiar static
+data while writes land in the disposable e2e database/volume.
 
-## Gradle Playground/Stress Backend
+## Gradle E2E/Stress Backend
 
 When Mongo/Redis/MinIO are already available, the backend can also be started
-directly in playground mode:
+directly in e2e mode:
 
 ```bash
 cd server
-MONGO_PLAYGROUND_DATABASE=playground_db ./gradlew :projects:profile:bootRunPlayground
+MONGO_E2E_DATABASE=e2e_db ./gradlew :projects:profile:bootRunE2E
 ```
 
 Stress backend mode:
 
 ```bash
 cd server
-MONGO_PLAYGROUND_DATABASE=playground_db ./gradlew :projects:profile:bootRunStress
+MONGO_E2E_DATABASE=e2e_db ./gradlew :projects:profile:bootRunStress
 ```
 
 Then run the stress collection driver:
@@ -154,7 +154,7 @@ node e2e/stress/backend/compare.mjs \
   .e2e-artifacts/stress/backend/server-events-read-candidate
 ```
 
-Run a stateful WebSocket room simulation against the disposable playground
+Run a stateful WebSocket room simulation against the disposable e2e
 database. This opens many chat sockets into one seeded room, sends messages
 round-robin from the sockets, verifies room fanout, and records host/container
 metrics:
@@ -164,19 +164,19 @@ node e2e/stress/backend/websocket-room.mjs --clients 500 --messages 20 --send-ra
 ```
 
 The WebSocket room simulation expects the backend to be running against
-`playground_db`; it aborts if the prepared room is not visible through the
+`e2e_db`; it aborts if the prepared room is not visible through the
 backend. Recorded artifacts include delivery latency, duplicate/replay latency,
 Redis event/write stream length samples, and host/container resource samples.
 
-Run destructive playground flows under load:
+Run destructive e2e flows under load:
 
 ```bash
 E2E_STRESS_MODE=stress \
-node e2e/stress/backend/run.mjs --scenario playground-flow-smoke
+node e2e/stress/backend/run.mjs --scenario e2e-flow-smoke
 ```
 
-The playground scenario expects the stack to be started with
-`docker-compose.playground.yml` or the backend to be running with
+The e2e scenario expects the stack to be started with
+`docker-compose.e2e.yml` or the backend to be running with
 `bootRunStress`.
 
 ## UI Checks
@@ -188,14 +188,14 @@ that session for internal screens such as game, profile editor, event explore,
 event editor create, and admin help editor image carousel checks.
 
 ```bash
-# Start the playground/full-stack compose environment before running UI checks.
+# Start the e2e/full-stack compose environment before running UI checks.
 E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs
 ```
 
 Record screenshots and per-step evidence:
 
 ```bash
-# Start the playground/full-stack compose environment before recording UI checks.
+# Start the e2e/full-stack compose environment before recording UI checks.
 E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs --record
 ```
 
@@ -253,7 +253,7 @@ Current UI stress matrix:
 
 ## Mongo Hard-Code Audit
 
-Playground isolation depends on code using the routed Mongo database factory.
+E2E isolation depends on code using the routed Mongo database factory.
 This audit lists Java code that directly names Mongo databases/collections:
 
 ```bash
@@ -267,7 +267,7 @@ e2e/functional/backend/MONGO_HARDCODE_AUDIT.md
 ```
 
 Review literal collection-string calls first. Entity `@Document(collection=...)`
-mappings are expected but are listed so playground seed/reset coverage can be
+mappings are expected but are listed so e2e seed/reset coverage can be
 checked.
 
 ## Capacity Probe

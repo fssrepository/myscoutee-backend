@@ -10,7 +10,7 @@ const reportPath = path.join(repoRoot, 'e2e/functional/backend/MONGO_HARDCODE_AU
 const patterns = [
   {
     name: 'explicit database name',
-    regex: /\b(?:demo_db|myscoutee_db|playground_db)\b/g
+    regex: /\b(?:demo_db|myscoutee_db|e2e_db)\b/g
   },
   {
     name: 'MongoTemplate literal collection',
@@ -64,7 +64,7 @@ async function writeReport(items) {
     '# Mongo Hard-Code Audit',
     '',
     'This report lists Java code that names Mongo databases/collections directly or uses low-level Mongo APIs.',
-    'It is meant to protect playground/stress mode from accidentally bypassing routed repositories.',
+    'It is meant to protect e2e/stress mode from accidentally bypassing routed repositories.',
     '',
     `Generated candidates: ${items.length}`,
     ''
@@ -81,7 +81,7 @@ async function writeReport(items) {
   lines.push('## Notes', '');
   lines.push('- `@Document(collection = "...")` is expected for entity mapping; it is listed so seed/reset coverage can be checked.');
   lines.push('- `MongoTemplate` calls using entity classes usually still route through the active database factory.');
-  lines.push('- Literal collection-string calls are the ones to review most carefully before trusting playground isolation.');
+  lines.push('- Literal collection-string calls are the ones to review most carefully before trusting e2e isolation.');
   lines.push('');
 
   await writeFile(reportPath, `${lines.join('\n')}\n`);
