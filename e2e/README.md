@@ -61,6 +61,7 @@ MONGO_PLAYGROUND_DATABASE=playground_db \
 docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build
 
 cd ..
+# Start the playground stack first; this runner expects localhost to route to it.
 E2E_SERVER_MODE=playground \
 node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
@@ -187,12 +188,14 @@ that session for internal screens such as game, profile editor, event explore,
 event editor create, and admin help editor image carousel checks.
 
 ```bash
+# Start the playground/full-stack compose environment before running UI checks.
 E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs
 ```
 
 Record screenshots and per-step evidence:
 
 ```bash
+# Start the playground/full-stack compose environment before recording UI checks.
 E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs --record
 ```
 

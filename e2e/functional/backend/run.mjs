@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Playground runs require docker-compose.playground.yml or bootRunPlayground to be running first.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
