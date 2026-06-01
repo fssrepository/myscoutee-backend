@@ -359,7 +359,7 @@ async function listScenarios() {
 }
 
 function summarize(metrics) {
-  const durations = metrics.map(item => item.durationMs).sort((a, b) => a - b);
+  const durations = metrics.map(latencyMs).sort((a, b) => a - b);
   const failed = metrics.filter(item => !item.ok).length;
   const total = metrics.length;
   const elapsedMs = elapsedFor(metrics);
@@ -392,23 +392,45 @@ function summarizeByStep(metrics) {
     list.push(item);
     groups.set(item.step, list);
   }
-  return [...groups.entries()].map(([step, items]) => ({
-    step,
-    transport: dominant(items.map(item => item.transport).filter(Boolean)) ?? '',
-    total: items.length,
-    failed: items.filter(item => !item.ok).length,
-    passed: items.filter(item => item.ok).length,
-    errorRate: items.length === 0 ? 0 : items.filter(item => !item.ok).length / items.length,
-    requestsPerSec: perSecond(items.length, elapsedFor(items)),
-    responseBytes: items.reduce((sum, item) => sum + Number(item.responseBytes ?? 0), 0),
-    statusCounts: countBy(items.map(item => String(item.status ?? 0))),
-    avgMs: average(items.map(item => item.durationMs)),
-    p50Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.50),
-    p90Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.90),
-    p95Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.95),
-    p99Ms: percentile(items.map(item => item.durationMs).sort((a, b) => a - b), 0.99),
-    maxMs: Math.max(...items.map(item => item.durationMs))
-  })).sort((left, right) => right.p95Ms - left.p95Ms);
+  return [...groups.entries()].map(([step, items]) => {
+    const transport = dominant(items.map(item => item.transport).filter(Boolean)) ?? '';
+    const latencies = items.map(latencyMs).sort((a, b) => a - b);
+    const wallDurations = items.map(item => Number(item.durationMs ?? 0)).sort((a, b) => a - b);
+    const openDurations = items
+            .map(item => Number(item.openMs ?? 0))
+            .filter(value => Number.isFinite(value) && value > 0)
+            .sort((a, b) => a - b);
+    return {
+      step,
+      transport,
+      total: items.length,
+      failed: items.filter(item => !item.ok).length,
+      passed: items.filter(item => item.ok).length,
+      errorRate: items.length === 0 ? 0 : items.filter(item => !item.ok).length / items.length,
+      requestsPerSec: perSecond(items.length, elapsedFor(items)),
+      responseBytes: items.reduce((sum, item) => sum + Number(item.responseBytes ?? 0), 0),
+      statusCounts: countBy(items.map(item => String(item.status ?? 0))),
+      avgMs: average(latencies),
+      p50Ms: percentile(latencies, 0.50),
+      p90Ms: percentile(latencies, 0.90),
+      p95Ms: percentile(latencies, 0.95),
+      p99Ms: percentile(latencies, 0.99),
+      maxMs: Math.max(...latencies),
+      wallP95Ms: percentile(wallDurations, 0.95),
+      wallMaxMs: Math.max(...wallDurations),
+      openP95Ms: openDurations.length > 0 ? percentile(openDurations, 0.95) : 0,
+      openMaxMs: openDurations.length > 0 ? Math.max(...openDurations) : 0
+    };
+  }).sort((left, right) => right.p95Ms - left.p95Ms);
+}
+
+function latencyMs(item) {
+  const openMs = Number(item?.openMs ?? 0);
+  if (item?.transport === 'websocket' && Number.isFinite(openMs) && openMs > 0) {
+    return openMs;
+  }
+  const durationMs = Number(item?.durationMs ?? 0);
+  return Number.isFinite(durationMs) ? durationMs : 0;
 }
 
 function printSummary(scenario, summary, options = {}) {
@@ -418,7 +440,10 @@ function printSummary(scenario, summary, options = {}) {
   console.log(`status: ${formatCounts(summary.statusCounts)}`);
   console.log(`latency ms: avg=${Math.round(summary.avgMs)} p50=${Math.round(summary.p50Ms)} p90=${Math.round(summary.p90Ms)} p95=${Math.round(summary.p95Ms)} p99=${Math.round(summary.p99Ms)} max=${Math.round(summary.maxMs)}`);
   for (const item of summary.byStep) {
-    console.log(`- ${item.step}: total=${item.total} failed=${item.failed} errorRate=${(item.errorRate * 100).toFixed(2)}% rps=${item.requestsPerSec.toFixed(2)} p50=${Math.round(item.p50Ms)}ms p95=${Math.round(item.p95Ms)}ms p99=${Math.round(item.p99Ms)}ms max=${Math.round(item.maxMs)}ms`);
+    const websocketDetail = item.transport === 'websocket'
+      ? ` openP95=${Math.round(item.openP95Ms)}ms wallP95=${Math.round(item.wallP95Ms)}ms`
+      : '';
+    console.log(`- ${item.step}: total=${item.total} failed=${item.failed} errorRate=${(item.errorRate * 100).toFixed(2)}% rps=${item.requestsPerSec.toFixed(2)} p50=${Math.round(item.p50Ms)}ms p95=${Math.round(item.p95Ms)}ms p99=${Math.round(item.p99Ms)}ms max=${Math.round(item.maxMs)}ms${websocketDetail}`);
   }
   if (options.artifactDir) {
     console.log(`artifacts: ${options.artifactDir}`);
@@ -545,9 +570,9 @@ function renderArtifactIndex(payload) {
     '',
     '## Step Latency',
     '',
-    '| Step | Total | Failed | Error Rate | Req/s | Avg | p50 | p95 | p99 | Max | Status |',
-    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
-    ...payload.summary.byStep.map(item => `| ${escapeTable(item.step)} | ${item.total} | ${item.failed} | ${(item.errorRate * 100).toFixed(2)}% | ${item.requestsPerSec.toFixed(2)} | ${Math.round(item.avgMs)}ms | ${Math.round(item.p50Ms)}ms | ${Math.round(item.p95Ms)}ms | ${Math.round(item.p99Ms)}ms | ${Math.round(item.maxMs)}ms | ${escapeTable(formatCounts(item.statusCounts))} |`),
+    '| Step | Total | Failed | Error Rate | Req/s | Avg | p50 | p95 | p99 | Max | WS wall p95 | Status |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
+    ...payload.summary.byStep.map(item => `| ${escapeTable(item.step)} | ${item.total} | ${item.failed} | ${(item.errorRate * 100).toFixed(2)}% | ${item.requestsPerSec.toFixed(2)} | ${Math.round(item.avgMs)}ms | ${Math.round(item.p50Ms)}ms | ${Math.round(item.p95Ms)}ms | ${Math.round(item.p99Ms)}ms | ${Math.round(item.maxMs)}ms | ${item.transport === 'websocket' ? `${Math.round(item.wallP95Ms)}ms` : '-'} | ${escapeTable(formatCounts(item.statusCounts))} |`),
     '',
     '## Container Peaks',
     '',
