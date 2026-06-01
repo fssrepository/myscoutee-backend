@@ -206,6 +206,7 @@ async function resolveRequirement(ctx, requirement) {
         headers: demoHeaders()
       });
       assertDemoUsers(result.data, ctx);
+      applyPreferredDemoUser(ctx);
     }
     return;
   }
@@ -300,9 +301,37 @@ async function resolveRequirement(ctx, requirement) {
   throw new Error(`Unknown stress requirement: ${requirement}`);
 }
 
+function preferredDemoUserId() {
+  return `${process.env.E2E_STRESS_DEMO_USER_ID ?? process.env.E2E_DEMO_USER_ID ?? ''}`.trim();
+}
+
+function activeDemoUser(user) {
+  return user && !user.deletedAtIso && user.profileStatus !== 'deleted';
+}
+
+function applyPreferredDemoUser(ctx) {
+  const preferred = preferredDemoUserId();
+  if (!preferred) {
+    return;
+  }
+  const users = Array.isArray(ctx.vars.demoUsers) ? ctx.vars.demoUsers : [];
+  const selected = users.find(user => `${user?.id ?? ''}`.trim() === preferred);
+  if (!selected) {
+    throw new Error(`Preferred demo user ${preferred} was not returned by /api/auth/demo-users; increase E2E_STRESS_DEMO_USERS_LIMIT or choose a seeded demo user`);
+  }
+  if (!activeDemoUser(selected)) {
+    throw new Error(`Preferred demo user ${preferred} is deleted or inactive`);
+  }
+  const second = users.find(user => activeDemoUser(user) && user.id !== selected.id)
+    ?? users.find(user => user.id !== selected.id);
+  ctx.vars.userId = selected.id;
+  ctx.vars.demoUserId = selected.id;
+  ctx.vars.secondUserId = second?.id ?? selected.id;
+}
+
 function candidateDemoUserIds(ctx) {
   const users = Array.isArray(ctx.vars.demoUsers) ? ctx.vars.demoUsers : [];
-  const envPreferred = `${process.env.E2E_DEMO_USER_ID ?? ''}`.trim();
+  const envPreferred = preferredDemoUserId();
   return [
     envPreferred,
     ctx.vars.userId,

@@ -47,6 +47,18 @@ Run a baseline and record artifacts:
 node e2e/stress/backend/run.mjs --scenario server-events-read --record
 ```
 
+For data-sensitive event runs, pin the same seeded demo user before comparing
+artifacts:
+
+```bash
+E2E_STRESS_DEMO_USER_ID=bf057de7c586eede7e84bdc7 \
+node e2e/stress/backend/run.mjs --scenario server-events-read --record
+```
+
+The runner fails if an explicitly pinned stress user is not returned by
+`/api/auth/demo-users`; increase `E2E_STRESS_DEMO_USERS_LIMIT` if the seed user
+is outside the default returned set.
+
 After a code or infrastructure change, rerun the same scenario with the same
 machine, database seed, users, duration, and think time. Then compare the two
 artifact directories or their `summary.json` files:
