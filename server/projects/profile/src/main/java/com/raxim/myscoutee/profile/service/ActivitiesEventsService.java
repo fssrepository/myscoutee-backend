@@ -230,7 +230,6 @@ public class ActivitiesEventsService {
                 .filter(record -> trackedSourceIds.contains(normalizeId(record.getSourceId())))
                 .map(record -> buildMembershipProjection(viewer.userId(), record))
                 .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .sorted(eventRecordComparator())
                 .toList());
         return new EventQueryContext(
                 attendingRecords,
@@ -305,7 +304,6 @@ public class ActivitiesEventsService {
                 .filter(record -> trackedStatusesBySourceId.containsKey(normalizeId(record.getSourceId())))
                 .map(record -> buildMembershipProjection(viewer.userId(), record))
                 .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .sorted(eventRecordComparator())
                 .toList());
         return new EventQueryContext(
                 attendingRecords,
@@ -510,10 +508,7 @@ public class ActivitiesEventsService {
 
         return withEventQueryContext(buildUserListCardQueryContext(viewer, false), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
-            List<ActivityEvent> sorted = queryUserRecords(viewer).stream()
-                    .filter(Objects::nonNull)
-                    .sorted(eventRecordComparator())
-                    .toList();
+            List<ActivityEvent> sorted = sortEventRecordsByStart(queryUserRecords(viewer));
             int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
@@ -564,11 +559,10 @@ public class ActivitiesEventsService {
 
         return withEventQueryContext(buildAttendingListCardQueryContext(viewer), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
-            List<ActivityEvent> sorted = allEventDocuments(viewer).stream()
+            List<ActivityEvent> sorted = sortEventRecordsByStart(allEventDocuments(viewer).stream()
                     .filter(Objects::nonNull)
                     .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                    .sorted(eventRecordComparator())
-                    .toList();
+                    .toList());
             int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
@@ -3428,9 +3422,20 @@ public class ActivitiesEventsService {
                 .thenComparing(item -> safeText(item.id()));
     }
 
-    private Comparator<ActivityEvent> eventRecordComparator() {
-        return Comparator.comparing((ActivityEvent record) -> toSortableDate(record == null ? null : record.getStartAtIso()))
-                .thenComparing(record -> safeText(normalizeId(record == null ? null : record.getSourceId())));
+    private List<ActivityEvent> sortEventRecordsByStart(List<ActivityEvent> records) {
+        if (records == null || records.isEmpty()) {
+            return List.of();
+        }
+        return records.stream()
+                .filter(Objects::nonNull)
+                .map(record -> new EventRecordSortKey(
+                        record,
+                        toSortableDate(record.getStartAtIso()),
+                        safeText(normalizeId(record.getSourceId()))))
+                .sorted(Comparator.comparingLong(EventRecordSortKey::startAtMs)
+                        .thenComparing(EventRecordSortKey::sourceId))
+                .map(EventRecordSortKey::record)
+                .toList();
     }
 
     private ActivityEvent cloneDocument(ActivityEvent source) {
@@ -4414,6 +4419,9 @@ public class ActivitiesEventsService {
             int affinityGap,
             int ratingValue,
             boolean past) {
+    }
+
+    private record EventRecordSortKey(ActivityEvent record, long startAtMs, String sourceId) {
     }
 
     private record EventQueryContext(
