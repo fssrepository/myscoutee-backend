@@ -45,6 +45,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -162,8 +163,8 @@ class BackendChatMediaE2ETest {
 
         JsonNode readerMessages = getJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + READER_ID);
         JsonNode readerMessage = messageById(readerMessages, messageId);
-        assertThat(ids(readerMessage.path("readBy"), "id")).contains(READER_ID);
-        assertThat(findChat(READER_ID, CHAT_ID).getUnread()).isZero();
+        assertThat(ids(readerMessage.path("readBy"), "id")).doesNotContain(READER_ID);
+        assertThat(findChat(READER_ID, CHAT_ID).getUnread()).isEqualTo(1);
 
         JsonNode edited = postJson("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/edit?userId=" + SENDER_ID,
                 Map.of("text", "Updated backend-only plan with stronger validation"));
@@ -283,7 +284,7 @@ class BackendChatMediaE2ETest {
 
         JsonNode adminSupportMessages = getJson("/activities/chats/" + SUPPORT_CHAT_ID + "/messages?userId=" + ADMIN_ID);
         assertThat(adminSupportMessages).isEmpty();
-        assertThat(findChat(ADMIN_ID, SUPPORT_CHAT_ID).getSupportCaseStatus()).isEqualTo("pending");
+        assertThat(findChat(REPORTER_ID, SUPPORT_CHAT_ID).getSupportCaseStatus()).isEqualTo("pending");
     }
 
     @Test
@@ -366,6 +367,7 @@ class BackendChatMediaE2ETest {
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
         mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), Asset.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);

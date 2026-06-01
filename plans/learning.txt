@@ -16,3 +16,57 @@ Example: CPU metrics, event telemetry, sensor data, request latency logs.
 Atlas Search
 MongoDB’s advanced full-text search product, mainly tied to MongoDB Atlas.
 Example: fuzzy search, autocomplete, relevance scoring.
+
+Spring Security already has the building blocks.
+------------------------------------------------
+
+In this repo we already have `spring-boot-starter-security` and a `SecurityFilterChain` in [WebSecurityConfig.java](/home/raxim/workspace/myscoutee-backend/server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/WebSecurityConfig.java:48). That currently protects mostly by URL/admin/authenticated rules.
+
+For the thing you mean, Spring has:
+
+1. **Method security**
+   Enable with `@EnableMethodSecurity`, then use `@PreAuthorize` on controllers or services. Spring docs say Boot starter security does not enable method security by default, and enabling it lets you authorize method calls using inputs/return values. Source: Spring Security method security docs.  
+   Example:
+   ```java
+   @PreAuthorize("@accessControl.can(authentication, 'asset.edit', #request.assetId())")
+   public AssetCardDto updateAsset(AssetUpdateRequestDto request) { ... }
+   ```
+
+2. **Custom authorization service**
+   This is probably best for us:
+   ```java
+   @Component("accessControl")
+   class AccessControlService {
+       boolean can(Authentication auth, String permission, String objectId) {
+           // lookup ActivityMember / grants / owner relationship / etc.
+       }
+   }
+   ```
+   Then every endpoint/service can ask the same place.
+
+3. **PermissionEvaluator / `hasPermission(...)`**
+   Spring Security has a `hasPermission` hook for object-level authorization through a `PermissionEvaluator`. Source: Spring docs mention `hasPermission` as the object-level hook.
+
+4. **AuthorizationManager**
+   Newer Spring Security authorization is centered on `AuthorizationManager`, used for request-level and method-level decisions. Source: Spring authorization architecture docs.
+
+5. **Spring Security ACL**
+   There is an official ACL module, but I would be careful. It is JDBC/table based, expects ACL schema, and many parts assume long-compatible object IDs. The docs explicitly mention ACL tables and long ID expectations. Since this project is Mongo/string-ID/domain-rich, I would likely **not** start with Spring ACL. I’d build a small app-specific policy layer using Spring method security.
+
+So the practical path here would be:
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class WebSecurityConfig {
+}
+```
+
+Then centralize checks into something like `AccessControlService` / `PolicyService`, and gradually replace scattered owner/member/manager checks with:
+
+```java
+@PreAuthorize("@accessControl.can(authentication, 'resource.assign', #request.ownerId())")
+```
+
+One important thing: we should not trust `userId` from request bodies for authorization. Actor should come from `SecurityContext` / Firebase auth, then request `userId` can be validated against that where needed.

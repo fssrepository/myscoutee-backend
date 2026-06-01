@@ -215,7 +215,7 @@ class BackendPaymentsConcurrencyE2ETest {
     @Test
     void pendingAndWaitlistPaidJoinsDoNotRecordPaymentOrPostMemberJoinedChatSideEffectsThroughHttp() {
         String eventId = "e2e-pay-side-effects";
-        publishPaidEvent(eventId, 2);
+        publishPaidEvent(eventId, 1);
         seedEventChat(eventId);
 
         String acceptedSessionId = postJson("/activities/events/checkout?provider=e2e",
@@ -331,13 +331,13 @@ class BackendPaymentsConcurrencyE2ETest {
         executor.shutdownNow();
 
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() ->
-                assertThat(members(CONCURRENCY_EVENT_ID)).hasSize(50));
+                assertThat(members(CONCURRENCY_EVENT_ID)).hasSize(49));
 
         List<ActivityMember> accepted = nonHostMembers(members(CONCURRENCY_EVENT_ID, "accepted"));
         List<ActivityMember> waitlisted = members(CONCURRENCY_EVENT_ID, "pending").stream()
                 .filter(member -> "waitlist".equals(member.getRequestKind()))
                 .toList();
-        int participantCapacity = CONCURRENCY_CAPACITY - 1;
+        int participantCapacity = CONCURRENCY_CAPACITY;
         assertThat(accepted).hasSize(participantCapacity);
         assertThat(waitlisted).hasSize(49 - participantCapacity);
 

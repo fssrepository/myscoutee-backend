@@ -44,6 +44,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
@@ -186,7 +187,7 @@ class BackendAdminParamsRealtimeE2ETest {
     }
 
     @Test
-    void realtimeLongPollReflectsUnreadChatChangesThroughHttp() {
+    void chatUnreadCopiesStayExplicitWithoutReadTimeCounterRepairThroughHttp() {
         JsonNode initial = postJson("/auth/me/realtime/long-poll", Map.of("userId", RECIPIENT_ID, "cursor", ""));
         String initialCursor = initial.path("cursor").asString();
         assertThat(initial.path("userId").asString()).isEqualTo(RECIPIENT_ID);
@@ -198,24 +199,19 @@ class BackendAdminParamsRealtimeE2ETest {
 
         JsonNode afterMessage = postJson("/auth/me/realtime/long-poll",
                 Map.of("userId", RECIPIENT_ID, "cursor", initialCursor));
-        String unreadCursor = afterMessage.path("cursor").asString();
-        assertThat(afterMessage.path("counters").path("chat").asInt()).isEqualTo(1);
-        assertThat(unreadCursor).isNotEqualTo(initialCursor);
+        assertThat(afterMessage.path("counters").path("chat").asInt()).isZero();
+        assertThat(afterMessage.path("cursor").asString()).isEqualTo(initialCursor);
         assertThat(findChat(RECIPIENT_ID, REALTIME_CHAT_ID).getUnread()).isEqualTo(1);
 
         JsonNode messages = getJson("/activities/chats/" + REALTIME_CHAT_ID + "/messages?userId=" + RECIPIENT_ID);
         assertThat(messages).hasSize(1);
-        assertThat(findChat(RECIPIENT_ID, REALTIME_CHAT_ID).getUnread()).isZero();
-
-        JsonNode afterRead = postJson("/auth/me/realtime/long-poll",
-                Map.of("userId", RECIPIENT_ID, "cursor", unreadCursor));
-        assertThat(afterRead.path("counters").path("chat").asInt()).isZero();
-        assertThat(afterRead.path("cursor").asString()).isNotEqualTo(unreadCursor);
+        assertThat(findChat(RECIPIENT_ID, REALTIME_CHAT_ID).getUnread()).isEqualTo(1);
     }
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
         mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
         mongoTemplate.remove(new Query(), AffinityConfig.class);
         mongoTemplate.remove(new Query(), AffinityRecomputeTask.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);

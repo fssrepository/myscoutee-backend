@@ -154,6 +154,7 @@ class BackendAlgorithmsE2ETest {
         withDemo(() -> {
             clearE2eCollections();
             seedUsers();
+            seedNotificationRules();
             seedAffinityGraph();
             seedRandomEvent();
             seedPriorityEvent();
@@ -530,6 +531,59 @@ class BackendAlgorithmsE2ETest {
         mongoTemplate.remove(new Query(), NotificationRuleConfig.class);
         mongoTemplate.remove(new Query(), SchedulerPlanMarker.class);
         mongoTemplate.remove(new Query(), AffinityRecomputeTask.class);
+    }
+
+    private void seedNotificationRules() {
+        NotificationRuleConfig randomGroups = notificationRule(
+                "e2e-random-groups-rule",
+                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                "Random groups",
+                "E2E random group generation.",
+                "event.random.groups",
+                true,
+                true,
+                10);
+        mongoTemplate.save(randomGroups);
+
+        NotificationRuleConfig autoInviter = notificationRule(
+                "e2e-auto-inviter-rule",
+                NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                "Auto inviter",
+                "E2E auto inviter rule.",
+                "event.scheduler.auto-inviter",
+                true,
+                false,
+                20);
+        mongoTemplate.save(autoInviter);
+    }
+
+    private NotificationRuleConfig notificationRule(
+            String id,
+            String ruleKey,
+            String label,
+            String description,
+            String actionKey,
+            boolean enabled,
+            boolean manualRunEnabled,
+            int priority) {
+        NotificationRuleConfig randomGroups = new NotificationRuleConfig();
+        randomGroups.setId(id);
+        randomGroups.setSyncKey(id);
+        randomGroups.setRuleKey(ruleKey);
+        randomGroups.setLabel(label);
+        randomGroups.setCategory("events");
+        randomGroups.setDescription(description);
+        randomGroups.setActionKey(actionKey);
+        randomGroups.setTriggerKind("scheduled_process");
+        randomGroups.setEnabled(enabled);
+        randomGroups.setManualRunEnabled(manualRunEnabled);
+        randomGroups.setAdminManageable(true);
+        randomGroups.setPriority(priority);
+        randomGroups.setCreatedDate(BASE_TIME.toString());
+        randomGroups.setCreatedUser("e2e");
+        randomGroups.setUpdatedDate(BASE_TIME.toString());
+        randomGroups.setUpdatedUser("e2e");
+        return randomGroups;
     }
 
     private void seedUsers() {
