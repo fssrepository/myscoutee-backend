@@ -210,6 +210,8 @@ async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir 
     mark(timings, 'documentLoadMs', started);
     await page.waitForSelector('app-entry-shell', { timeoutMs });
     mark(timings, 'entryShellMs', started);
+    const entryPerformanceSnapshot = await collectPerformanceSnapshot(page).catch(() => null);
+    recordWebVitalTimings(timings, 'entry', entryPerformanceSnapshot?.webVitals);
 
     await acceptEntryPrivacyIfPresent(page, timeoutMs);
     mark(timings, 'privacyReadyMs', started);
@@ -425,6 +427,7 @@ async function configurePageForStress(page, scenario) {
   await page.addInitScript(`
     window.__e2eLongTasks = [];
     window.__e2eLayoutShifts = [];
+    window.__e2eLargestContentfulPaint = null;
     try {
       new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
@@ -448,6 +451,21 @@ async function configurePageForStress(page, scenario) {
         }
       }).observe({ type: 'layout-shift', buffered: true });
     } catch (error) {}
+    try {
+      new PerformanceObserver(list => {
+        for (const entry of list.getEntries()) {
+          window.__e2eLargestContentfulPaint = {
+            name: entry.name,
+            startTime: entry.startTime,
+            renderTime: entry.renderTime || 0,
+            loadTime: entry.loadTime || 0,
+            size: entry.size || 0,
+            id: entry.id || '',
+            url: entry.url || ''
+          };
+        }
+      }).observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch (error) {}
   `);
 }
 
@@ -459,6 +477,7 @@ async function resetPageStressBuffers(page) {
     performance.clearResourceTimings();
     window.__e2eLongTasks = [];
     window.__e2eLayoutShifts = [];
+    window.__e2eLargestContentfulPaint = null;
   }).catch(() => undefined);
 }
 
@@ -475,11 +494,18 @@ async function collectPerformanceSnapshot(page) {
       decodedBodySize: entry.decodedBodySize ?? 0,
       responseEnd: entry.responseEnd ?? 0
     }));
+    const paints = performance.getEntriesByType('paint').map(entry => ({
+      name: entry.name,
+      startTime: entry.startTime,
+      duration: entry.duration ?? 0
+    }));
     return {
       navigation: navigation ? {
         name: navigation.name,
         startTime: navigation.startTime,
         duration: navigation.duration,
+        requestStart: navigation.requestStart,
+        responseStart: navigation.responseStart,
         domContentLoadedEventEnd: navigation.domContentLoadedEventEnd,
         loadEventEnd: navigation.loadEventEnd,
         responseEnd: navigation.responseEnd,
@@ -487,15 +513,87 @@ async function collectPerformanceSnapshot(page) {
         encodedBodySize: navigation.encodedBodySize ?? 0,
         decodedBodySize: navigation.decodedBodySize ?? 0
       } : null,
+      paints,
       resources,
       longTasks: window.__e2eLongTasks ?? [],
-      layoutShifts: window.__e2eLayoutShifts ?? []
+      layoutShifts: window.__e2eLayoutShifts ?? [],
+      largestContentfulPaint: window.__e2eLargestContentfulPaint
     };
   });
   return {
     ...browserSnapshot,
+    webVitals: webVitalsFromPerformance(browserSnapshot),
     cdpMetrics: await page.performanceMetrics()
   };
+}
+
+function webVitalsFromPerformance(performanceSnapshot) {
+  const navigation = performanceSnapshot.navigation ?? {};
+  const paintByName = new Map((performanceSnapshot.paints ?? []).map(entry => [entry.name, entry]));
+  const firstPaintMs = finiteOrNull(paintByName.get('first-paint')?.startTime);
+  const firstContentfulPaintMs = finiteOrNull(paintByName.get('first-contentful-paint')?.startTime);
+  const lcp = performanceSnapshot.largestContentfulPaint ?? {};
+  const largestContentfulPaintMs = maxFiniteOrNull([lcp.renderTime, lcp.loadTime, lcp.startTime]);
+  const timeToFirstByteMs = Number.isFinite(Number(navigation.responseStart))
+    ? Math.max(0, Number(navigation.responseStart) - Math.max(0, Number(navigation.requestStart ?? 0)))
+    : null;
+  const longTasks = performanceSnapshot.longTasks ?? [];
+  const totalBlockingTimeApproxMs = longTasks.reduce((sum, task) => {
+    const start = Number(task.startTime ?? 0);
+    const duration = Number(task.duration ?? 0);
+    const effectiveDuration = Number.isFinite(firstContentfulPaintMs) && firstContentfulPaintMs > 0 && start < firstContentfulPaintMs
+      ? Math.max(0, start + duration - firstContentfulPaintMs)
+      : duration;
+    return sum + Math.max(0, effectiveDuration - 50);
+  }, 0);
+  return {
+    timeToFirstByteMs,
+    firstPaintMs,
+    firstContentfulPaintMs,
+    largestContentfulPaintMs,
+    cumulativeLayoutShift: calculateCumulativeLayoutShift(performanceSnapshot.layoutShifts ?? []),
+    totalBlockingTimeApproxMs,
+    domContentLoadedMs: finiteOrNull(navigation.domContentLoadedEventEnd),
+    loadEventMs: finiteOrNull(navigation.loadEventEnd)
+  };
+}
+
+function finiteOrNull(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function maxFiniteOrNull(values) {
+  const finiteValues = values.map(Number).filter(Number.isFinite).filter(value => value > 0);
+  return finiteValues.length ? Math.max(...finiteValues) : null;
+}
+
+function calculateCumulativeLayoutShift(layoutShifts) {
+  const shifts = layoutShifts
+    .map(item => ({
+      startTime: Number(item.startTime ?? 0),
+      value: Number(item.value ?? 0)
+    }))
+    .filter(item => Number.isFinite(item.startTime) && Number.isFinite(item.value) && item.value > 0)
+    .sort((left, right) => left.startTime - right.startTime);
+  let maxSessionValue = 0;
+  let sessionValue = 0;
+  let sessionStart = 0;
+  let lastStart = 0;
+  for (const shift of shifts) {
+    const startsNewSession = sessionValue === 0
+      || shift.startTime - lastStart > 1000
+      || shift.startTime - sessionStart > 5000;
+    if (startsNewSession) {
+      sessionStart = shift.startTime;
+      sessionValue = shift.value;
+    } else {
+      sessionValue += shift.value;
+    }
+    lastStart = shift.startTime;
+    maxSessionValue = Math.max(maxSessionValue, sessionValue);
+  }
+  return maxSessionValue;
 }
 
 function summarize(metrics) {
@@ -521,11 +619,50 @@ function summarize(metrics) {
     maxLongTaskMs: Math.max(0, ...longTasks.map(item => Number(item.duration ?? 0))),
     longTaskCount: longTasks.length,
     longTaskTotalMs: longTasks.reduce((sum, item) => sum + Number(item.duration ?? 0), 0),
+    webVitals: summarizeWebVitals(metrics),
     byMilestone: summarizeTimings(metrics),
     resourceSummary: summarizeResourceSummaries(metrics.map(item => item.resourceSummary ?? {})),
     failedNetworkCount: metrics.reduce((sum, item) => sum + (item.failedNetwork?.length ?? 0), 0),
     consoleErrorCount: metrics.reduce((sum, item) => sum + (item.consoleErrors?.length ?? 0), 0),
     pageErrorCount: metrics.reduce((sum, item) => sum + (item.pageErrors?.length ?? 0), 0)
+  };
+}
+
+function summarizeWebVitals(metrics) {
+  const vitals = metrics.map(item => item.performance?.webVitals ?? {});
+  return {
+    timeToFirstByteMs: summarizeWebVitalMetric(vitals.map(item => item.timeToFirstByteMs)),
+    firstPaintMs: summarizeWebVitalMetric(vitals.map(item => item.firstPaintMs)),
+    firstContentfulPaintMs: summarizeWebVitalMetric(vitals.map(item => item.firstContentfulPaintMs)),
+    largestContentfulPaintMs: summarizeWebVitalMetric(vitals.map(item => item.largestContentfulPaintMs)),
+    cumulativeLayoutShift: summarizeWebVitalMetric(vitals.map(item => item.cumulativeLayoutShift)),
+    totalBlockingTimeApproxMs: summarizeWebVitalMetric(vitals.map(item => item.totalBlockingTimeApproxMs)),
+    domContentLoadedMs: summarizeWebVitalMetric(vitals.map(item => item.domContentLoadedMs)),
+    loadEventMs: summarizeWebVitalMetric(vitals.map(item => item.loadEventMs))
+  };
+}
+
+function summarizeWebVitalMetric(values) {
+  const sorted = values
+    .filter(value => value !== null && value !== undefined)
+    .map(Number)
+    .filter(Number.isFinite)
+    .sort((left, right) => left - right);
+  if (sorted.length === 0) {
+    return {
+      avg: null,
+      p50: null,
+      p95: null,
+      p99: null,
+      max: null
+    };
+  }
+  return {
+    avg: average(sorted),
+    p50: percentile(sorted, 0.50),
+    p95: percentile(sorted, 0.95),
+    p99: percentile(sorted, 0.99),
+    max: sorted[sorted.length - 1] ?? 0
   };
 }
 
@@ -642,9 +779,16 @@ function renderArtifactIndex(payload, metrics) {
     `- Runs: ${payload.summary.total} total, ${payload.summary.passed} passed, ${payload.summary.failed} failed`,
     `- Error rate: ${(payload.summary.errorRate * 100).toFixed(2)}%`,
     `- Duration: avg ${ms(payload.summary.avgMs)}, p95 ${ms(payload.summary.p95Ms)}, p99 ${ms(payload.summary.p99Ms)}, max ${ms(payload.summary.maxMs)}`,
+    `- Web vitals p95: TTFB ${webVitalMs(payload.summary.webVitals?.timeToFirstByteMs)}, FP ${webVitalMs(payload.summary.webVitals?.firstPaintMs)}, FCP ${webVitalMs(payload.summary.webVitals?.firstContentfulPaintMs)}, LCP ${webVitalMs(payload.summary.webVitals?.largestContentfulPaintMs)}, CLS ${webVitalNumber(payload.summary.webVitals?.cumulativeLayoutShift)}, TBT approx ${webVitalMs(payload.summary.webVitals?.totalBlockingTimeApproxMs)}`,
     `- Long tasks: ${payload.summary.longTaskCount}, max ${ms(payload.summary.maxLongTaskMs)}, total ${ms(payload.summary.longTaskTotalMs)}`,
     `- Transfer: total ${formatBytes(payload.summary.resourceSummary.totalTransferBytes)}, JS ${formatBytes(payload.summary.resourceSummary.scriptTransferBytes)}, CSS ${formatBytes(payload.summary.resourceSummary.styleTransferBytes)}, API ${formatBytes(payload.summary.resourceSummary.apiTransferBytes)}`,
     `- Runtime errors: failed network ${payload.summary.failedNetworkCount}, console errors ${payload.summary.consoleErrorCount}, page errors ${payload.summary.pageErrorCount}`,
+    '',
+    '## Web Vitals',
+    '',
+    '| Metric | Avg | p50 | p95 | p99 | Max |',
+    '| --- | ---: | ---: | ---: | ---: | ---: |',
+    ...renderWebVitalsRows(payload.summary.webVitals),
     '',
     '## Milestones',
     '',
@@ -666,10 +810,27 @@ function renderArtifactIndex(payload, metrics) {
   return `${lines.join('\n')}\n`;
 }
 
+function renderWebVitalsRows(webVitals = {}) {
+  return [
+    ['Time to first byte', webVitals.timeToFirstByteMs, 'ms'],
+    ['First paint', webVitals.firstPaintMs, 'ms'],
+    ['First contentful paint', webVitals.firstContentfulPaintMs, 'ms'],
+    ['Largest contentful paint', webVitals.largestContentfulPaintMs, 'ms'],
+    ['Cumulative layout shift', webVitals.cumulativeLayoutShift, 'number'],
+    ['Total blocking time approx', webVitals.totalBlockingTimeApproxMs, 'ms'],
+    ['DOM content loaded', webVitals.domContentLoadedMs, 'ms'],
+    ['Load event', webVitals.loadEventMs, 'ms']
+  ].map(([label, metric, unit]) => {
+    const value = key => unit === 'number' ? webVitalNumber(metric, key) : webVitalMs(metric, key);
+    return `| ${label} | ${value('avg')} | ${value('p50')} | ${value('p95')} | ${value('p99')} | ${value('max')} |`;
+  });
+}
+
 function printSummary(scenario, summary, options = {}) {
   console.log(`\nui stress scenario: ${scenario.name ?? scenario.id}`);
   console.log(`runs: ${summary.total}, passed: ${summary.passed}, failed: ${summary.failed}, errorRate: ${(summary.errorRate * 100).toFixed(2)}%`);
   console.log(`duration ms: avg=${Math.round(summary.avgMs)} p50=${Math.round(summary.p50Ms)} p95=${Math.round(summary.p95Ms)} p99=${Math.round(summary.p99Ms)} max=${Math.round(summary.maxMs)}`);
+  console.log(`web vitals p95: ttfb=${webVitalMs(summary.webVitals?.timeToFirstByteMs)} fp=${webVitalMs(summary.webVitals?.firstPaintMs)} fcp=${webVitalMs(summary.webVitals?.firstContentfulPaintMs)} lcp=${webVitalMs(summary.webVitals?.largestContentfulPaintMs)} cls=${webVitalNumber(summary.webVitals?.cumulativeLayoutShift)} tbtApprox=${webVitalMs(summary.webVitals?.totalBlockingTimeApproxMs)}`);
   console.log(`long tasks: count=${summary.longTaskCount} max=${Math.round(summary.maxLongTaskMs)}ms total=${Math.round(summary.longTaskTotalMs)}ms`);
   console.log(`transfer: total=${formatBytes(summary.resourceSummary.totalTransferBytes)} js=${formatBytes(summary.resourceSummary.scriptTransferBytes)} api=${formatBytes(summary.resourceSummary.apiTransferBytes)}`);
   for (const item of summary.byMilestone) {
@@ -724,6 +885,23 @@ function sanitizeNetwork(network) {
 
 function mark(timings, name, started, value = performance.now()) {
   timings[name] = value - started;
+}
+
+function recordWebVitalTimings(timings, prefix, webVitals = {}) {
+  setTimingIfFinite(timings, `${prefix}FirstPaintMs`, webVitals.firstPaintMs);
+  setTimingIfFinite(timings, `${prefix}FirstContentfulPaintMs`, webVitals.firstContentfulPaintMs);
+  setTimingIfFinite(timings, `${prefix}LargestContentfulPaintMs`, webVitals.largestContentfulPaintMs);
+  setTimingIfFinite(timings, `${prefix}TotalBlockingTimeApproxMs`, webVitals.totalBlockingTimeApproxMs);
+}
+
+function setTimingIfFinite(timings, name, value) {
+  if (value === null || value === undefined) {
+    return;
+  }
+  const number = Number(value);
+  if (Number.isFinite(number)) {
+    timings[name] = number;
+  }
 }
 
 function resolveNetwork(scenario) {
@@ -1053,6 +1231,20 @@ function numberOrUndefined(value) {
 
 function ms(value) {
   return Number.isFinite(Number(value)) ? `${Math.round(Number(value))}ms` : '-';
+}
+
+function webVitalMs(metric, key = 'p95') {
+  const value = metric?.[key];
+  return value === null || value === undefined ? '-' : ms(value);
+}
+
+function webVitalNumber(metric, key = 'p95') {
+  const raw = metric?.[key];
+  if (raw === null || raw === undefined) {
+    return '-';
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? value.toFixed(3) : '-';
 }
 
 function formatBytes(bytes) {
