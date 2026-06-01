@@ -3,11 +3,11 @@ import { openNavigatorMenu, waitForVisibleText } from '../../lib/ui-contracts.mj
 import { fileURLToPath } from 'node:url';
 
 const FIRST_IMAGE_FIXTURE = {
-  path: fileURLToPath(new URL('../../../../frontend/src/assets/logo/heart.png', import.meta.url)),
+  path: fileURLToPath(new URL('../../../../../frontend/src/assets/logo/heart.png', import.meta.url)),
   name: 'e2e-help-heart.png'
 };
 const SECOND_IMAGE_FIXTURE = {
-  path: fileURLToPath(new URL('../../../../frontend/src/assets/icon/android-chrome-192x192.png', import.meta.url)),
+  path: fileURLToPath(new URL('../../../../../frontend/src/assets/icon/android-chrome-192x192.png', import.meta.url)),
   name: 'e2e-help-icon.png'
 };
 
