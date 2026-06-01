@@ -1,0 +1,34 @@
+{
+  "name": "UI demo bootstrap slow-mobile benchmark",
+  "flow": "demoBootstrap",
+  "baseUrl": "http://localhost",
+  "route": "/",
+  "users": 1,
+  "iterations": 1,
+  "rampUpMs": 0,
+  "timeoutMs": 90000,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "geolocation": {
+    "latitude": 47.5004928,
+    "longitude": 19.0742528,
+    "accuracy": 20,
+    "grant": false
+  },
+  "cpuThrottleRate": 4,
+  "network": "slow-4g",
+  "cacheDisabled": true,
+  "clearCache": true,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 90000,
+    "milestones": {
+      "entryShellMs": 15000,
+      "demoSelectorMs": 45000,
+      "gameReadyMs": 90000
+    },
+    "maxLongTaskMs": 2500
+  }
+}

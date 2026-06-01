@@ -1,6 +1,15 @@
 # Full Integration E2E Collections
 
-This folder is a Postman-like test suite for the running MyScoutee stack.
+This folder contains functional end-to-end collections and stress/performance
+benchmarks for the running MyScoutee stack.
+
+```text
+e2e/functional/backend  API contract and mutation-flow checks
+e2e/functional/ui       Browser UI checks
+e2e/stress/backend      API/workflow/WebSocket load scenarios
+e2e/stress/ui           Browser performance/stability scenarios
+e2e/shared              Shared runner/assertion helpers
+```
 
 Each executable check lives in its own folder:
 
@@ -16,7 +25,7 @@ checks, or playground mutation/stress flows.
 Server endpoint coverage and the latest local validation summary are tracked in:
 
 ```text
-e2e/server/SERVER_ENDPOINT_COVERAGE.md
+e2e/functional/backend/SERVER_ENDPOINT_COVERAGE.md
 ```
 
 ## Server Contract Mode
@@ -29,10 +38,10 @@ cd server
 docker compose up --build
 
 cd ..
-node e2e/server/run.mjs --list
-node e2e/server/run.mjs
-node e2e/server/run.mjs --group events
-node e2e/server/run.mjs --case profile/auth-me --record
+node e2e/functional/backend/run.mjs --list
+node e2e/functional/backend/run.mjs
+node e2e/functional/backend/run.mjs --group events
+node e2e/functional/backend/run.mjs --case profile/auth-me --record
 ```
 
 Default target:
@@ -53,7 +62,7 @@ docker compose -f docker-compose.yml -f docker-compose.playground.yml up --build
 
 cd ..
 E2E_SERVER_MODE=playground \
-node e2e/server/run.mjs --group flows --include-mutations
+node e2e/functional/backend/run.mjs --group flows --include-mutations
 ```
 
 The playground Mongo seed folder is:
@@ -88,7 +97,7 @@ Then run the stress collection driver:
 E2E_SERVER_MODE=stress \
 E2E_STRESS_LOOPS=10 \
 E2E_STRESS_CONCURRENCY=2 \
-node e2e/server/stress.mjs
+node e2e/stress/backend/flows.mjs
 ```
 
 ## JMeter-Style Stress Scenarios
@@ -96,7 +105,7 @@ node e2e/server/stress.mjs
 Top-level stress scenarios live under:
 
 ```text
-e2e/stress/scenarios
+e2e/stress/backend/scenarios
 ```
 
 They define virtual users, ramp-up, duration or iterations, think time,
@@ -107,19 +116,19 @@ checks as the API suite.
 List scenarios:
 
 ```bash
-node e2e/stress/run.mjs --list
+node e2e/stress/backend/run.mjs --list
 ```
 
 Run a short safe read smoke:
 
 ```bash
-node e2e/stress/run.mjs --scenario server-contract-smoke
+node e2e/stress/backend/run.mjs --scenario server-contract-smoke
 ```
 
 Run a longer read sweep:
 
 ```bash
-node e2e/stress/run.mjs --scenario server-read-sweep
+node e2e/stress/backend/run.mjs --scenario server-read-sweep
 ```
 
 Focused benchmarks are available for profile, events, event editor, chats,
@@ -127,21 +136,21 @@ assets/rates, and admin/content areas. The detailed plan and metric definitions
 live in:
 
 ```text
-e2e/stress/STRESS_TEST_PLAN.md
+e2e/stress/backend/STRESS_TEST_PLAN.md
 ```
 
 Record a baseline run:
 
 ```bash
-node e2e/stress/run.mjs --scenario server-events-read --record
+node e2e/stress/backend/run.mjs --scenario server-events-read --record
 ```
 
 Compare a later candidate run to the baseline:
 
 ```bash
-node e2e/stress/compare.mjs \
-  .e2e-artifacts/stress/server-events-read-baseline \
-  .e2e-artifacts/stress/server-events-read-candidate
+node e2e/stress/backend/compare.mjs \
+  .e2e-artifacts/stress/backend/server-events-read-baseline \
+  .e2e-artifacts/stress/backend/server-events-read-candidate
 ```
 
 Run a stateful WebSocket room simulation against the disposable playground
@@ -150,7 +159,7 @@ round-robin from the sockets, verifies room fanout, and records host/container
 metrics:
 
 ```bash
-node e2e/stress/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record
+node e2e/stress/backend/websocket-room.mjs --clients 500 --messages 20 --send-rate 2 --record
 ```
 
 The WebSocket room simulation expects the backend to be running against
@@ -162,7 +171,7 @@ Run destructive playground flows under load:
 
 ```bash
 E2E_STRESS_MODE=stress \
-node e2e/stress/run.mjs --scenario playground-flow-smoke
+node e2e/stress/backend/run.mjs --scenario playground-flow-smoke
 ```
 
 The playground scenario expects the stack to be started with
@@ -178,16 +187,42 @@ that session for internal screens such as game, profile editor, event explore,
 event editor create, and admin help editor image carousel checks.
 
 ```bash
-E2E_UI_BASE_URL=http://localhost node e2e/ui/run.mjs
+E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs
 ```
 
 Record screenshots and per-step evidence:
 
 ```bash
-E2E_UI_BASE_URL=http://localhost node e2e/ui/run.mjs --record
+E2E_UI_BASE_URL=http://localhost node e2e/functional/ui/run.mjs --record
 ```
 
-Recorded output is written to `.e2e-artifacts/ui/index.md` and is gitignored.
+Recorded output is written under `.e2e-artifacts/functional/ui/` and is gitignored.
+
+## UI Stress Checks
+
+UI stress checks use Chrome DevTools Protocol to apply mobile viewport, touch,
+CPU throttling, network throttling, cold-cache loading, long-task collection,
+resource/chunk transfer measurement, and screenshots.
+
+The first scenario measures demo bootstrap on a slow mobile profile:
+
+```bash
+E2E_UI_STRESS_BASE_URL=http://localhost \
+node e2e/stress/ui/run.mjs --scenario demo-bootstrap --record
+```
+
+Useful overrides:
+
+```bash
+node e2e/stress/ui/run.mjs \
+  --scenario demo-bootstrap \
+  --cpu-throttle 4 \
+  --network slow-4g \
+  --viewport 390x844 \
+  --record
+```
+
+Recorded output is written under `.e2e-artifacts/stress/ui/`.
 
 ## Mongo Hard-Code Audit
 
@@ -195,13 +230,13 @@ Playground isolation depends on code using the routed Mongo database factory.
 This audit lists Java code that directly names Mongo databases/collections:
 
 ```bash
-node e2e/server/audit-mongo-hardcoding.mjs
+node e2e/functional/backend/audit-mongo-hardcoding.mjs
 ```
 
 Report:
 
 ```text
-e2e/server/MONGO_HARDCODE_AUDIT.md
+e2e/functional/backend/MONGO_HARDCODE_AUDIT.md
 ```
 
 Review literal collection-string calls first. Entity `@Document(collection=...)`
@@ -215,5 +250,5 @@ harder load probe and should only be run when you explicitly want to put real
 pressure on the local machine:
 
 ```bash
-node e2e/stress/run.mjs --scenario server-capacity-probe
+node e2e/stress/backend/run.mjs --scenario server-capacity-probe
 ```
