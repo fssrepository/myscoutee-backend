@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -166,6 +166,60 @@ db.getCollection('userRates').createIndex({ relatedUserId: 1, secondaryRelatedUs
         "${target_db}" \
         --eval "
 db.getCollection('appSettings').createIndex({ settingsKey: 1 }, { name: 'app_settings_key', unique: true });
+" >/dev/null
+      ;;
+    notificationRuleConfigs)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('notificationRuleConfigs').createIndex({ syncKey: 1 }, { name: 'notification_rule_config_sync_key', unique: true, sparse: true });
+db.getCollection('notificationRuleConfigs').createIndex({ ruleKey: 1 }, { name: 'notification_rule_config_rule_key', unique: true });
+" >/dev/null
+      ;;
+    affinityConfigs)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('affinityConfigs').createIndex({ active: 1, version: -1 }, { name: 'affinity_config_active_version' });
+db.getCollection('affinityConfigs').createIndex({ key: 1, version: -1 }, { name: 'affinity_config_key_version', unique: true });
+" >/dev/null
+      ;;
+    adminStats)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('adminStats').createIndex({ statsKey: 1 }, { name: 'admin_stats_key', unique: true });
+" >/dev/null
+      ;;
+    adminMonitoring)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('adminMonitoring').createIndex({ monitoringKey: 1 }, { name: 'admin_monitoring_key', unique: true });
 " >/dev/null
       ;;
     userFilterPreferences)

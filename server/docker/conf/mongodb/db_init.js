@@ -12,6 +12,10 @@ const requiredCollections = [
   'eventFeedbackAnswers',
   'ideaPosts',
   'appSettings',
+  'notificationRuleConfigs',
+  'affinityConfigs',
+  'adminStats',
+  'adminMonitoring',
   'helpCenterRevisions',
   'helpCenterAudit',
   'privacyConsents',
@@ -91,6 +95,30 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.appSettings.createIndex(
     { settingsKey: 1 },
     { name: 'app_settings_key', unique: true }
+  );
+  portalDb.notificationRuleConfigs.createIndex(
+    { syncKey: 1 },
+    { name: 'notification_rule_config_sync_key', unique: true, sparse: true }
+  );
+  portalDb.notificationRuleConfigs.createIndex(
+    { ruleKey: 1 },
+    { name: 'notification_rule_config_rule_key', unique: true }
+  );
+  portalDb.affinityConfigs.createIndex(
+    { active: 1, version: -1 },
+    { name: 'affinity_config_active_version' }
+  );
+  portalDb.affinityConfigs.createIndex(
+    { key: 1, version: -1 },
+    { name: 'affinity_config_key_version', unique: true }
+  );
+  portalDb.adminStats.createIndex(
+    { statsKey: 1 },
+    { name: 'admin_stats_key', unique: true }
+  );
+  portalDb.adminMonitoring.createIndex(
+    { monitoringKey: 1 },
+    { name: 'admin_monitoring_key', unique: true }
   );
 
   portalDb.userRates.createIndex(
