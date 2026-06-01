@@ -1,18 +1,22 @@
 #!/usr/bin/env node
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { launchChromeBrowser } from '../../functional/ui/lib/chrome-cdp.mjs';
 import {
   acceptEntryPrivacyIfPresent,
+  assertBrowserExpectations,
   clickDemoUser,
+  performDemoLogin,
   settleFirstRunOverlays,
   waitForLoginDialogOrDemoSelector
 } from '../../functional/ui/lib/ui-contracts.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
+const functionalUiRoot = path.join(repoRoot, 'e2e', 'functional', 'ui');
+const DEFAULT_UI_USER_ID = 'bf057de7c586eede7e84bdc7';
 const args = parseArgs(process.argv.slice(2));
 
 if (args.help) {
@@ -104,10 +108,8 @@ async function measureFlow({ scenario, baseUrl, vu, iteration, startedAt, artifa
   const started = performance.now();
   let result = {};
   try {
-    if ((scenario.flow ?? 'demoBootstrap') !== 'demoBootstrap') {
-      throw new Error(`Unknown UI stress flow: ${scenario.flow}`);
-    }
-    result = await runDemoBootstrap({
+    const runner = flowRunner(scenario.flow ?? 'demoBootstrap');
+    result = await runner({
       scenario,
       baseUrl,
       vu,
@@ -157,6 +159,16 @@ async function measureFlow({ scenario, baseUrl, vu, iteration, startedAt, artifa
       error: error.message
     };
   }
+}
+
+function flowRunner(flow) {
+  if (flow === 'demoBootstrap') {
+    return runDemoBootstrap;
+  }
+  if (flow === 'functionalCase') {
+    return runFunctionalCase;
+  }
+  throw new Error(`Unknown UI stress flow: ${flow}`);
 }
 
 async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir }) {
@@ -240,6 +252,142 @@ async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir 
   }
 }
 
+async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir }) {
+  const timeoutMs = Number(scenario.timeoutMs ?? 90000);
+  const testCase = await loadFunctionalUiCase(scenario.functionalCase ?? scenario.case);
+  const expected = await readJsonOptional(testCase.dir, 'response.json');
+  const rawRequest = testCase.request;
+  const request = materializeFunctionalRequest(rawRequest, scenario);
+  const browser = await launchChromeBrowser({
+    baseUrl,
+    viewport: scenario.viewport ?? request.viewport ?? { width: 390, height: 844 }
+  });
+  const page = await browser.newPage({ viewport: request.viewport ?? scenario.viewport });
+  const auxiliaryPages = [];
+  const auxiliaryBrowsers = [];
+  const timings = {};
+  let screenshot = '';
+  try {
+    let suiteDemoStorage = null;
+    if (rawRequest.suiteDemoLogin === true && scenario.preLogin !== false) {
+      const setupPage = await browser.newPage({ viewport: request.viewport ?? scenario.viewport });
+      auxiliaryPages.push(setupPage);
+      await configurePageForStress(setupPage, scenario);
+      suiteDemoStorage = await performDemoLogin(setupPage, {
+        geolocation: scenario.geolocation ?? defaultGeolocation(),
+        userId: scenario.userId ?? process.env.E2E_UI_USER_ID ?? DEFAULT_UI_USER_ID,
+        timeoutMs
+      });
+    }
+
+    await configurePageForStress(page, scenario);
+    if (request.geolocation) {
+      await page.setGeolocation(request.geolocation);
+    }
+    await page.primeOrigin({
+      localStorage: {
+        ...(rawRequest.suiteDemoLogin === true ? suiteDemoStorage?.localStorage ?? {} : {}),
+        ...(request.localStorage ?? request.storage ?? {})
+      },
+      sessionStorage: request.sessionStorage ?? {}
+    });
+    await resetPageStressBuffers(page);
+
+    const started = performance.now();
+    mark(timings, 'start', started, started);
+
+    await page.navigate(request.route ?? request.path ?? '/', {
+      loadTimeoutMs: request.loadTimeoutMs ?? timeoutMs
+    });
+    mark(timings, 'routeLoadedMs', started);
+    if (expected?.urlPath) {
+      await page.waitForUrlPath(expected.urlPath, request.waitTimeoutMs ?? timeoutMs);
+      mark(timings, 'urlReadyMs', started);
+    }
+    await assertBrowserExpectations(page, expected?.initial ?? {});
+    mark(timings, 'initialReadyMs', started);
+
+    const scriptName = request.script ?? 'assert.mjs';
+    const script = await import(pathToFileURL(path.join(testCase.dir, scriptName)).href);
+    if (script?.assertUi) {
+      await script.assertUi({
+        page,
+        browser,
+        ctx: {
+          mode: 'ui-stress',
+          baseUrl,
+          vars: {},
+          defaultMaxMs: timeoutMs,
+          viewport: scenario.viewport
+        },
+        request,
+        expected,
+        testCase,
+        newRecordedPage: async (_name, options = {}) => {
+          const childPage = await browser.newPage({
+            viewport: options.viewport ?? page.viewport ?? scenario.viewport
+          });
+          auxiliaryPages.push(childPage);
+          await configurePageForStress(childPage, scenario);
+          return childPage;
+        },
+        newIsolatedRecordedPage: async (_name, options = {}) => {
+          const childBrowser = await launchChromeBrowser({
+            baseUrl: options.baseUrl ?? baseUrl,
+            viewport: options.viewport ?? page.viewport ?? scenario.viewport
+          });
+          auxiliaryBrowsers.push(childBrowser);
+          const childPage = await childBrowser.newPage({
+            viewport: options.viewport ?? page.viewport ?? scenario.viewport
+          });
+          auxiliaryPages.push(childPage);
+          await configurePageForStress(childPage, scenario);
+          return childPage;
+        }
+      });
+    }
+    mark(timings, 'scriptReadyMs', started);
+    await assertBrowserExpectations(page, expected ?? {});
+    mark(timings, 'caseReadyMs', started);
+
+    const performanceSnapshot = await collectPerformanceSnapshot(page);
+    screenshot = await recordScreenshot(page, artifactDir, `vu-${vu}-i-${iteration}-${safeName(testCase.id)}.png`);
+    return {
+      timings,
+      performance: performanceSnapshot,
+      resourceSummary: summarizeResources(performanceSnapshot.resources ?? []),
+      network: sanitizeNetwork(page.network),
+      failedNetwork: page.failedNetwork ?? [],
+      consoleErrors: (page.consoleMessages ?? []).filter(entry => entry.type === 'error'),
+      pageErrors: page.pageErrors ?? [],
+      screenshot
+    };
+  } catch (error) {
+    const performanceSnapshot = await collectPerformanceSnapshot(page).catch(() => ({}));
+    screenshot = await recordScreenshot(page, artifactDir, `vu-${vu}-i-${iteration}-${safeName(testCase.id)}-error.png`).catch(() => '');
+    error.result = {
+      timings,
+      performance: performanceSnapshot,
+      resourceSummary: summarizeResources(performanceSnapshot.resources ?? []),
+      network: sanitizeNetwork(page.network ?? []),
+      failedNetwork: page.failedNetwork ?? [],
+      consoleErrors: (page.consoleMessages ?? []).filter(entry => entry.type === 'error'),
+      pageErrors: page.pageErrors ?? [],
+      screenshot
+    };
+    throw error;
+  } finally {
+    for (const childPage of auxiliaryPages) {
+      await childPage.close().catch(() => undefined);
+    }
+    for (const childBrowser of auxiliaryBrowsers) {
+      await childBrowser.close().catch(() => undefined);
+    }
+    await page.close().catch(() => undefined);
+    await browser.close();
+  }
+}
+
 async function configurePageForStress(page, scenario) {
   const network = resolveNetwork(scenario);
   await page.setCpuThrottlingRate(scenario.cpuThrottleRate ?? 1);
@@ -280,6 +428,17 @@ async function configurePageForStress(page, scenario) {
       }).observe({ type: 'layout-shift', buffered: true });
     } catch (error) {}
   `);
+}
+
+async function resetPageStressBuffers(page) {
+  page.clearNetworkLog();
+  await page.evaluate(() => {
+    performance.clearMarks();
+    performance.clearMeasures();
+    performance.clearResourceTimings();
+    window.__e2eLongTasks = [];
+    window.__e2eLayoutShifts = [];
+  }).catch(() => undefined);
 }
 
 async function collectPerformanceSnapshot(page) {
@@ -422,6 +581,7 @@ async function writeArtifacts({ artifactDir, scenario, baseUrl, startedAtIso, en
       id: scenario.id,
       name: scenario.name,
       flow: scenario.flow ?? 'demoBootstrap',
+      functionalCase: scenario.functionalCase ?? scenario.case ?? null,
       baseUrl,
       users: scenario.users ?? 1,
       iterations: scenario.iterations ?? null,
@@ -453,6 +613,7 @@ function renderArtifactIndex(payload, metrics) {
     '',
     `- Scenario: \`${payload.scenario.id}\``,
     `- Flow/base URL: \`${payload.scenario.flow}\` at \`${payload.scenario.baseUrl}\``,
+    payload.scenario.functionalCase ? `- Functional case: \`${payload.scenario.functionalCase}\`` : null,
     `- Viewport: ${payload.scenario.viewport?.width ?? '-'}x${payload.scenario.viewport?.height ?? '-'}`,
     `- CPU/network: ${payload.scenario.cpuThrottleRate}x, \`${payload.scenario.network.profile ?? 'custom'}\``,
     `- Started: ${payload.startedAtIso}`,
@@ -472,9 +633,9 @@ function renderArtifactIndex(payload, metrics) {
     '',
     '## Runs',
     '',
-    '| VU | Iteration | Status | Duration | Game Ready | JS Transfer | Long Tasks | Screenshot | Error |',
+    '| VU | Iteration | Status | Duration | Ready | JS Transfer | Long Tasks | Screenshot | Error |',
     '| ---: | ---: | --- | ---: | ---: | ---: | ---: | --- | --- |',
-    ...metrics.map(item => `| ${item.vu} | ${item.iteration} | ${item.ok ? 'pass' : 'fail'} | ${ms(item.durationMs)} | ${ms(item.timings?.gameReadyMs)} | ${formatBytes(item.resourceSummary?.scriptTransferBytes)} | ${item.performance?.longTasks?.length ?? 0} | ${item.screenshot ? `[open](${relativeArtifactLink(item.screenshot)})` : '-'} | ${escapeTable(item.error || '')} |`),
+    ...metrics.map(item => `| ${item.vu} | ${item.iteration} | ${item.ok ? 'pass' : 'fail'} | ${ms(item.durationMs)} | ${ms(item.timings?.caseReadyMs ?? item.timings?.gameReadyMs)} | ${formatBytes(item.resourceSummary?.scriptTransferBytes)} | ${item.performance?.longTasks?.length ?? 0} | ${item.screenshot ? `[open](${relativeArtifactLink(item.screenshot)})` : '-'} | ${escapeTable(item.error || '')} |`),
     ''
   ];
   if (payload.runError) {
@@ -563,6 +724,70 @@ async function loadScenario(name) {
   const scenario = JSON.parse(await readFile(scenarioPath, 'utf8'));
   scenario.id ??= scenarioName;
   return scenario;
+}
+
+async function loadFunctionalUiCase(caseId) {
+  const normalized = `${caseId ?? ''}`.replace(/^\/+|\/+$/g, '');
+  if (!normalized) {
+    throw new Error('functionalCase flow requires "functionalCase" in the scenario JSON');
+  }
+  const dir = path.join(functionalUiRoot, normalized);
+  const requestPath = path.join(dir, 'request.json');
+  const request = JSON.parse(await readFile(requestPath, 'utf8'));
+  return {
+    id: normalized,
+    dir,
+    requestPath,
+    request
+  };
+}
+
+async function readJsonOptional(dir, filename) {
+  try {
+    return JSON.parse(await readFile(path.join(dir, filename), 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+function materializeFunctionalRequest(request, scenario) {
+  const userId = scenario.userId ?? process.env.E2E_UI_USER_ID ?? DEFAULT_UI_USER_ID;
+  const adminUserId = scenario.adminUserId
+    ?? process.env.E2E_UI_ADMIN_USER_ID
+    ?? process.env.E2E_ADMIN_USER_ID
+    ?? 'admin-demo-ava';
+  return interpolate(request, {
+    userId,
+    adminUserId,
+    appSession: JSON.stringify({ kind: 'demo', userId }),
+    adminAppSession: JSON.stringify({ kind: 'demo', userId: adminUserId }),
+    adminSession: JSON.stringify({ adminUserId })
+  });
+}
+
+function interpolate(value, vars) {
+  if (typeof value === 'string') {
+    return value.replace(/\{\{([^}]+)}}/g, (_match, key) => `${vars[key.trim()] ?? ''}`);
+  }
+  if (Array.isArray(value)) {
+    return value.map(item => interpolate(item, vars));
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, interpolate(item, vars)]));
+  }
+  return value;
+}
+
+function defaultGeolocation() {
+  return {
+    latitude: Number(process.env.E2E_UI_GEO_LATITUDE ?? 47.5004928),
+    longitude: Number(process.env.E2E_UI_GEO_LONGITUDE ?? 19.0742528),
+    accuracy: Number(process.env.E2E_UI_GEO_ACCURACY ?? 20),
+    grant: false
+  };
 }
 
 async function listScenarios() {
@@ -724,6 +949,7 @@ function parseArgs(argv) {
 function printHelp() {
   console.log(`Usage:
   node e2e/stress/ui/run.mjs --scenario demo-bootstrap --record
+  node e2e/stress/ui/run.mjs --scenario app-profile-editor-open --record
 
 Options:
   --cpu-throttle 4

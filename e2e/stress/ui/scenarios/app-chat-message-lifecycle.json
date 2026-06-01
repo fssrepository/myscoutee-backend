@@ -1,0 +1,21 @@
+{
+  "name": "UI chat message lifecycle slow-mobile benchmark",
+  "flow": "functionalCase",
+  "functionalCase": "chats/message-lifecycle",
+  "baseUrl": "http://localhost",
+  "users": 1,
+  "iterations": 1,
+  "rampUpMs": 0,
+  "timeoutMs": 180000,
+  "viewport": { "width": 390, "height": 844 },
+  "cpuThrottleRate": 4,
+  "network": "slow-4g",
+  "cacheDisabled": true,
+  "clearCache": true,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 180000,
+    "milestones": { "caseReadyMs": 180000 },
+    "maxLongTaskMs": 2500
+  }
+}

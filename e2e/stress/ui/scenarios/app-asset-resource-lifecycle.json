@@ -1,0 +1,21 @@
+{
+  "name": "UI asset resource lifecycle slow-mobile benchmark",
+  "flow": "functionalCase",
+  "functionalCase": "assets/resource-lifecycle",
+  "baseUrl": "http://localhost",
+  "users": 1,
+  "iterations": 1,
+  "rampUpMs": 0,
+  "timeoutMs": 260000,
+  "viewport": { "width": 390, "height": 844 },
+  "cpuThrottleRate": 4,
+  "network": "slow-4g",
+  "cacheDisabled": true,
+  "clearCache": true,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 260000,
+    "milestones": { "caseReadyMs": 260000 },
+    "maxLongTaskMs": 2500
+  }
+}

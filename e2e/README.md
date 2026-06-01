@@ -204,6 +204,12 @@ UI stress checks use Chrome DevTools Protocol to apply mobile viewport, touch,
 CPU throttling, network throttling, cold-cache loading, long-task collection,
 resource/chunk transfer measurement, and screenshots.
 
+List available UI stress scenarios:
+
+```bash
+node e2e/stress/ui/run.mjs --list
+```
+
 The first scenario measures demo bootstrap on a slow mobile profile:
 
 ```bash
@@ -223,6 +229,24 @@ node e2e/stress/ui/run.mjs \
 ```
 
 Recorded output is written under `.e2e-artifacts/stress/ui/`.
+
+Current UI stress matrix:
+
+| Scenario | Purpose |
+| --- | --- |
+| `demo-bootstrap` | Cold entry, demo selector, demo login, and first game route. |
+| `app-game-route` | Logged-in game route load and first interactive surface. |
+| `app-profile-editor-open` | Navigator to profile editor popup open. |
+| `app-event-editor-open` | Activities menu to event editor shell open. |
+| `app-event-explore-open` | Navigator to event explore popup and list load. |
+| `app-event-explore-detail` | Event explore filter/detail open path. |
+| `app-activities-rates-smart-list` | Ratings smart-list filtering/views/pagination path. |
+| `app-admin-route` | Admin workspace load with admin session storage. |
+| `app-admin-help-editor-images` | Admin help editor seeded image load path. |
+| `app-help-session-route` | Shared help-session browser route. |
+| `app-privacy-location` | Entry privacy/location cancel-then-approve path. |
+| `app-chat-message-lifecycle` | Chat popup message lifecycle path. |
+| `app-asset-resource-lifecycle` | Owned asset and resource assignment lifecycle path. |
 
 ## Mongo Hard-Code Audit
 
