@@ -52,11 +52,11 @@ export async function assertUi({ page }) {
     assert(savedRevision?.id, 'Saved help editor revision should be visible in component state', { savedRevision });
     savedRevisionId = savedRevision.id;
     assert(
-      savedRevision.imageUrls.includes(secondUrl),
+      revisionHasImageUrl(savedRevision, secondUrl),
       'Saved help editor revision should keep the re-added media URL',
       { savedRevision, secondUrl }
     );
-    assert(!savedRevision.imageUrls.includes(firstUrl), 'Removed help editor media URL should not be saved', {
+    assert(!revisionHasImageUrl(savedRevision, firstUrl), 'Removed help editor media URL should not be saved', {
       savedRevision,
       firstUrl
     });
@@ -69,7 +69,7 @@ export async function assertUi({ page }) {
       savedRevisionId,
       reloadedRevision
     });
-    assert(reloadedRevision.imageUrls.includes(secondUrl), 'Reloaded help editor revision should keep saved media URL', {
+    assert(revisionHasImageUrl(reloadedRevision, secondUrl), 'Reloaded help editor revision should keep saved media URL', {
       reloadedRevision,
       secondUrl
     });
@@ -263,13 +263,29 @@ async function clickDraftCarouselSlot(page, slotIndex) {
 
 async function removeDraftCarouselSlot(page, slotIndex, expectedUrl) {
   const removed = await page.evaluate(({ slotIndex, expectedUrl }) => {
+    const comparableUrl = value => {
+      const text = `${value ?? ''}`.trim();
+      if (!text) {
+        return '';
+      }
+      try {
+        const url = new URL(text, window.location.origin);
+        return `${url.pathname}${url.search}${url.hash}`;
+      } catch {
+        return text;
+      }
+    };
     const slots = Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__slot'));
     const slot = slots[Math.max(0, Math.trunc(Number(slotIndex) || 0))];
     if (!slot) {
       return false;
     }
     const background = window.getComputedStyle(slot).backgroundImage || '';
-    if (expectedUrl && !decodeURIComponent(background).includes(expectedUrl)) {
+    if (
+      expectedUrl
+      && !decodeURIComponent(background).includes(expectedUrl)
+      && !decodeURIComponent(background).includes(comparableUrl(expectedUrl))
+    ) {
       return false;
     }
     const remove = slot.querySelector('.editable-image-carousel__slot-action--remove');
@@ -286,14 +302,16 @@ async function removeDraftCarouselSlot(page, slotIndex, expectedUrl) {
 async function assertDraftCarouselImagePresent(page, expectedUrl) {
   await page.waitFor(`help editor draft carousel contains ${expectedUrl}`, async () => {
     const snapshot = await readDraftCarouselSnapshot(page);
-    return snapshot.urls.includes(expectedUrl);
+    const expected = comparableMediaUrl(expectedUrl);
+    return snapshot.urls.some(url => comparableMediaUrl(url) === expected);
   }, 30000);
 }
 
 async function assertDraftCarouselImageAbsent(page, expectedUrl) {
   await page.waitFor(`help editor draft carousel removed ${expectedUrl}`, async () => {
     const snapshot = await readDraftCarouselSnapshot(page);
-    return !snapshot.urls.includes(expectedUrl);
+    const expected = comparableMediaUrl(expectedUrl);
+    return !snapshot.urls.some(url => comparableMediaUrl(url) === expected);
   }, 15000);
 }
 
@@ -306,9 +324,29 @@ async function readDraftCarouselSnapshot(page) {
     const urls = Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__slot'))
       .map(backgroundUrl)
       .filter(Boolean)
-      .map(url => url.startsWith(window.location.origin) ? url.slice(window.location.origin.length) : url);
+      .map(url => {
+        try {
+          const parsed = new URL(url, window.location.origin);
+          return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+        } catch {
+          return url;
+        }
+      });
     return { urls };
   });
+}
+
+function comparableMediaUrl(value) {
+  const text = `${value ?? ''}`.trim();
+  if (!text) {
+    return '';
+  }
+  try {
+    const parsed = new URL(text, 'http://localhost');
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return text;
+  }
 }
 
 async function draftCarouselImageUrlAtSlot(page, slotIndex) {
@@ -329,11 +367,48 @@ async function draftCarouselImageUrlAtSlot(page, slotIndex) {
 }
 
 async function readRevisionByMarker(page, marker) {
-  return page.evaluate(marker => {
-    const host = document.querySelector('app-admin-help-editor-popup');
-    const component = window.ng?.getComponent?.(host);
-    const revisions = typeof component?.revisions === 'function' ? component.revisions() : [];
-    const revision = revisions.find(item => JSON.stringify(item).includes(marker));
+  return page.evaluate(async marker => {
+    const explanationContextKeys = [
+      'home.game',
+      'activities.rates',
+      'chats',
+      'contacts',
+      'profile.editor',
+      'profile.view',
+      'assets',
+      'assets.car',
+      'assets.accommodation',
+      'assets.supplies',
+      'assets.tickets',
+      'events',
+      'event.editor',
+      'event.feedback'
+    ];
+    let adminUserId = '';
+    try {
+      adminUserId = JSON.parse(window.localStorage.getItem('myscoutee-admin-session') || '{}')?.adminUserId ?? '';
+    } catch {
+      adminUserId = '';
+    }
+    let revision = null;
+    for (const contextKey of explanationContextKeys) {
+      const params = new URLSearchParams({ lang: 'en', contextKey });
+      if (adminUserId) {
+        params.set('adminUserId', adminUserId);
+      }
+      const response = await fetch(`/api/admin/explanation?${params.toString()}`, {
+        headers: { 'X-App-Session-Kind': 'demo' }
+      });
+      if (!response.ok) {
+        continue;
+      }
+      const state = await response.json();
+      const revisions = Array.isArray(state?.revisions) ? state.revisions : [];
+      revision = revisions.find(item => JSON.stringify(item).includes(marker)) ?? null;
+      if (revision) {
+        break;
+      }
+    }
     if (!revision) {
       return null;
     }
@@ -383,10 +458,25 @@ async function openSavedRevisionPreview(page, marker) {
 async function assertSavedPreviewReferencesImage(page, marker, expectedUrl) {
   await page.waitFor('saved help editor preview references saved image', async () => {
     return page.evaluate(({ marker, expectedUrl }) => {
+      const comparableUrl = value => {
+        const text = `${value ?? ''}`.trim();
+        if (!text) {
+          return '';
+        }
+        try {
+          const url = new URL(text, window.location.origin);
+          return `${url.pathname}${url.search}${url.hash}`;
+        } catch {
+          return text;
+        }
+      };
       const card = Array.from(document.querySelectorAll('.help-editor-revision-card'))
         .find(item => item.textContent?.includes(marker) && !item.classList.contains('help-editor-draft-card'));
       const html = card?.innerHTML ?? '';
-      return html.includes(expectedUrl) || decodeURIComponent(html).includes(expectedUrl);
+      const decoded = decodeURIComponent(html);
+      return html.includes(expectedUrl)
+        || decoded.includes(expectedUrl)
+        || decoded.includes(comparableUrl(expectedUrl));
     }, { marker, expectedUrl });
   }, 30000);
 }
@@ -437,14 +527,55 @@ async function deleteRevisionThroughUi(page, marker) {
 
 async function waitForRevisionAbsent(page, marker, revisionId) {
   await page.waitFor('help editor revision deleted from UI state', async () => {
-    const present = await page.evaluate(({ marker, revisionId }) => {
-      const host = document.querySelector('app-admin-help-editor-popup');
-      const component = window.ng?.getComponent?.(host);
-      const revisions = typeof component?.revisions === 'function' ? component.revisions() : [];
-      return revisions.some(item => item.id === revisionId || JSON.stringify(item).includes(marker));
+    const present = await page.evaluate(async ({ marker, revisionId }) => {
+      const explanationContextKeys = [
+        'home.game',
+        'activities.rates',
+        'chats',
+        'contacts',
+        'profile.editor',
+        'profile.view',
+        'assets',
+        'assets.car',
+        'assets.accommodation',
+        'assets.supplies',
+        'assets.tickets',
+        'events',
+        'event.editor',
+        'event.feedback'
+      ];
+      let adminUserId = '';
+      try {
+        adminUserId = JSON.parse(window.localStorage.getItem('myscoutee-admin-session') || '{}')?.adminUserId ?? '';
+      } catch {
+        adminUserId = '';
+      }
+      for (const contextKey of explanationContextKeys) {
+        const params = new URLSearchParams({ lang: 'en', contextKey });
+        if (adminUserId) {
+          params.set('adminUserId', adminUserId);
+        }
+        const response = await fetch(`/api/admin/explanation?${params.toString()}`, {
+          headers: { 'X-App-Session-Kind': 'demo' }
+        });
+        if (!response.ok) {
+          return true;
+        }
+        const state = await response.json();
+        const revisions = Array.isArray(state?.revisions) ? state.revisions : [];
+        if (revisions.some(item => item.id === revisionId || JSON.stringify(item).includes(marker))) {
+          return true;
+        }
+      }
+      return false;
     }, { marker, revisionId });
     return !present;
   }, 45000);
+}
+
+function revisionHasImageUrl(revision, imageUrl) {
+  const expected = comparableMediaUrl(imageUrl);
+  return (revision?.imageUrls ?? []).some(url => comparableMediaUrl(url) === expected);
 }
 
 async function deleteRevisionViaApi(page, revisionId) {

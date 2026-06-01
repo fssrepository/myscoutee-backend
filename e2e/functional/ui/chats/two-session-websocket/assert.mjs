@@ -136,10 +136,27 @@ async function discoverSharedChat(page, senderUserId, receiverUserId) {
       const data = await response.json();
       return Array.isArray(data) ? data : [];
     };
+    const fetchChatPage = async userId => {
+      const params = new URLSearchParams({
+        userId,
+        limit: '12',
+        sort: 'date',
+        sortDirection: 'desc',
+        secondaryFilter: 'recent'
+      });
+      const response = await fetch(`/api/activities/chats/page?${params.toString()}`, {
+        headers: { 'X-App-Session-Kind': 'demo' }
+      });
+      if (!response.ok) {
+        return [];
+      }
+      const data = await response.json();
+      return Array.isArray(data?.items) ? data.items : [];
+    };
     const senderChats = await fetchChats(senderUserId);
     const receiverChats = await fetchChats(receiverUserId);
     const receiverChatIds = new Set(receiverChats.map(chat => `${chat.id ?? ''}`.trim()).filter(Boolean));
-    const candidates = senderChats.filter(chat => {
+    const candidateFrom = chats => chats.filter(chat => {
       const id = `${chat.id ?? ''}`.trim();
       const memberIds = Array.isArray(chat.memberIds) ? chat.memberIds.map(value => `${value ?? ''}`.trim()) : [];
       return id
@@ -147,8 +164,13 @@ async function discoverSharedChat(page, senderUserId, receiverUserId) {
         && memberIds.includes(senderUserId)
         && memberIds.includes(receiverUserId);
     });
-    const preferred = candidates.find(chat => chat.id === preferredChatId);
-    const picked = preferred ?? candidates[0] ?? null;
+    const senderPage = await fetchChatPage(senderUserId);
+    const receiverPageIds = new Set((await fetchChatPage(receiverUserId)).map(chat => `${chat.id ?? ''}`.trim()).filter(Boolean));
+    const visibleCandidates = candidateFrom(senderPage).filter(chat => receiverPageIds.has(`${chat.id ?? ''}`.trim()));
+    const candidates = candidateFrom(senderChats);
+    const preferred = visibleCandidates.find(chat => chat.id === preferredChatId)
+      ?? candidates.find(chat => chat.id === preferredChatId && receiverPageIds.has(chat.id));
+    const picked = preferred ?? visibleCandidates[0] ?? candidates[0] ?? null;
     return picked
       ? {
           id: picked.id,
@@ -156,7 +178,8 @@ async function discoverSharedChat(page, senderUserId, receiverUserId) {
           memberIds: picked.memberIds ?? [],
           senderChatCount: senderChats.length,
           receiverChatCount: receiverChats.length,
-          candidateCount: candidates.length
+          candidateCount: candidates.length,
+          visibleCandidateCount: visibleCandidates.length
         }
       : {
           id: '',
@@ -164,7 +187,8 @@ async function discoverSharedChat(page, senderUserId, receiverUserId) {
           memberIds: [],
           senderChatCount: senderChats.length,
           receiverChatCount: receiverChats.length,
-          candidateCount: candidates.length
+          candidateCount: candidates.length,
+          visibleCandidateCount: visibleCandidates.length
         };
   }, { senderUserId, receiverUserId, preferredChatId: PREFERRED_SHARED_CHAT_ID });
 }
@@ -184,38 +208,9 @@ async function openChatList(page) {
 }
 
 async function openChatById(page, chatId) {
-  await page.waitFor(`chat ${chatId} loaded into activities component`, async () => {
-    return page.evaluate(chatId => {
-      const host = document.querySelector('app-activities-popup');
-      const component = window.ng?.getComponent?.(host);
-      return Array.isArray(component?.chatItems)
-        && component.chatItems.some(chat => `${chat.id ?? ''}`.trim() === chatId);
-    }, chatId);
+  await page.waitFor(`chat ${chatId} visible in activities list`, async () => {
+    return page.evaluate(chatId => Boolean(document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`)), chatId);
   }, 30000);
-  const directOpen = await page.evaluate(chatId => {
-    const host = document.querySelector('app-activities-popup');
-    const component = window.ng?.getComponent?.(host);
-    const chat = Array.isArray(component?.chatItems)
-      ? component.chatItems.find(item => `${item.id ?? ''}`.trim() === chatId)
-      : null;
-    if (!chat) {
-      return {
-        opened: false,
-        method: 'direct-component-open',
-        chatItemIds: (component?.chatItems ?? []).map(item => item?.id).filter(Boolean).slice(0, 20)
-      };
-    }
-    component.openActivityChat?.(chat);
-    component.cdr?.markForCheck?.();
-    return {
-      opened: true,
-      method: 'direct-component-open',
-      title: chat.title ?? ''
-    };
-  }, chatId);
-  if (directOpen.opened) {
-    return directOpen;
-  }
   const result = await page.evaluate(chatId => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();
@@ -225,57 +220,24 @@ async function openChatById(page, chatId) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const host = document.querySelector('app-activities-popup');
-    const component = window.ng?.getComponent?.(host);
-    const chat = Array.isArray(component?.chatItems)
-      ? component.chatItems.find(item => `${item.id ?? ''}`.trim() === chatId)
-      : null;
-    const rowLabels = [
-      chat?.title,
-      chat?.subtitle,
-      chat?.name,
-      chatId
-    ]
-      .map(value => `${value ?? ''}`.trim())
-      .filter(Boolean);
-    const rows = Array.from(document.querySelectorAll('.popup-panel-activities .activities-card-chat')).filter(isVisible);
-    const matchingRow = rows.find(row => rowLabels.some(label => (row.textContent ?? '').includes(label)));
+    const matchingRow = document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`);
     if (matchingRow) {
       matchingRow.scrollIntoView({ block: 'center', inline: 'center' });
       matchingRow.click();
       return {
         opened: true,
         method: 'row-click',
-        rowIndex: rows.indexOf(matchingRow),
-        visibleRows: rows.length,
-        title: chat?.title ?? ''
-      };
-    }
-    const items = typeof component?.activitiesSmartList?.itemsSnapshot === 'function'
-      ? component.activitiesSmartList.itemsSnapshot()
-      : [];
-    const chatRows = items.filter(row => row?.type === 'chats');
-    const rowIndex = chatRows.findIndex(row => `${row.id ?? ''}`.trim() === chatId);
-    if (rowIndex >= 0 && rows[rowIndex]) {
-      rows[rowIndex].scrollIntoView({ block: 'center', inline: 'center' });
-      rows[rowIndex].click();
-      return {
-        opened: true,
-        method: 'row-click',
-        rowIndex,
-        visibleRows: rows.length,
-        title: chat?.title ?? ''
+        visible: isVisible(matchingRow),
+        text: (matchingRow.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 160)
       };
     }
     return {
       opened: false,
       method: 'none',
-      rowIndex,
-      visibleRows: rows.length,
-      rowLabels,
-      smartListIds: items.map(row => row?.id).filter(Boolean).slice(0, 20),
-      chatItemIds: (component?.chatItems ?? []).map(item => item?.id).filter(Boolean).slice(0, 20),
-      visibleRowTexts: rows.map(row => (row.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 160))
+      visibleRowIds: Array.from(document.querySelectorAll('.popup-panel-activities [data-chat-id]'))
+        .map(row => row.getAttribute('data-chat-id'))
+        .filter(Boolean)
+        .slice(0, 20)
     };
   }, chatId);
   assert(result.opened, `Should open chat ${chatId} from the activities UI`, result);
@@ -285,10 +247,8 @@ async function openChatById(page, chatId) {
 async function assertOpenChatId(page, expectedChatId) {
   await page.waitFor(`chat popup opened for ${expectedChatId}`, async () => {
     return page.evaluate(expectedChatId => {
-      const host = document.querySelector('app-event-chat-popup');
-      const component = window.ng?.getComponent?.(host);
-      const session = typeof component?.session === 'function' ? component.session() : null;
-      return `${session?.item?.id ?? ''}`.trim() === expectedChatId;
+      const panel = document.querySelector('.popup-panel-event-chat');
+      return `${panel?.getAttribute('data-chat-id') ?? ''}`.trim() === expectedChatId;
     }, expectedChatId);
   }, 15000);
 }
@@ -296,9 +256,8 @@ async function assertOpenChatId(page, expectedChatId) {
 async function settleChatThread(page) {
   await page.waitFor('chat initial load settled', async () => {
     return page.evaluate(() => {
-      const host = document.querySelector('app-event-chat-popup');
-      const component = window.ng?.getComponent?.(host);
-      return component && component.chatInitialLoadPending !== true;
+      const input = document.querySelector('.popup-panel-event-chat textarea[placeholder="Write message"]');
+      return Boolean(input && !input.disabled);
     });
   }, 30000);
 }
@@ -423,20 +382,6 @@ async function readMessageSnapshot(page, text) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const host = document.querySelector('app-event-chat-popup');
-    const component = window.ng?.getComponent?.(host);
-    const allMessages = Array.isArray(component?.allMessages) ? component.allMessages : [];
-    const componentMessages = allMessages
-      .filter(message => `${message.text ?? ''}`.includes(text))
-      .map(message => ({
-        id: message.id,
-        clientId: message.clientId ?? '',
-        text: message.text ?? '',
-        mine: message.mine === true,
-        pending: message.deliveryState === 'pending',
-        timedOut: message.deliveryState === 'timed-out',
-        reactions: (message.reactions ?? []).length
-      }));
     const visibleMessages = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
       .filter(element => isVisible(element) && (element.textContent ?? '').includes(text))
       .map(element => ({
@@ -447,9 +392,9 @@ async function readMessageSnapshot(page, text) {
         text: (element.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 240)
       }));
     return {
-      componentMessages,
+      componentMessages: visibleMessages,
       visibleMessages,
-      componentMessageCount: componentMessages.length,
+      componentMessageCount: visibleMessages.length,
       visibleMessageCount: visibleMessages.length
     };
   }, text);

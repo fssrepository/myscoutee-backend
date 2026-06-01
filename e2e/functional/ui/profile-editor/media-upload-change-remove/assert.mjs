@@ -1,12 +1,13 @@
 import { assert } from '../../../../shared/assertions.mjs';
 import { assertNoDocumentHorizontalOverflow, openNavigatorMenu } from '../../lib/ui-contracts.mjs';
+import { fileURLToPath } from 'node:url';
 
 const FIRST_IMAGE_FIXTURE = {
-  url: '/assets/logo/heart.png',
+  path: fileURLToPath(new URL('../../../../../frontend/src/assets/logo/heart.png', import.meta.url)),
   name: 'e2e-profile-heart.png'
 };
 const SECOND_IMAGE_FIXTURE = {
-  url: '/assets/icon/android-chrome-192x192.png',
+  path: fileURLToPath(new URL('../../../../../frontend/src/assets/icon/android-chrome-192x192.png', import.meta.url)),
   name: 'e2e-profile-icon.png'
 };
 
@@ -132,9 +133,8 @@ async function removeExistingUploadedMediaSlots(page) {
 async function uploadProfileImageToSlot(page, slotIndex, fixture) {
   await selectImageSlotForUpload(page, slotIndex);
   page.clearNetworkLog();
-  const uploaded = await uploadProfileImageViaBackend(page, slotIndex, fixture);
-  assert(uploaded.ok, 'Profile image should upload through the backend media endpoint', uploaded);
-  assert(uploaded.imageUrl.includes('/media/public?key='), 'Profile image upload should return a public media URL', uploaded);
+  await page.setFileInputFiles('.popup-panel-image-editor .image-file-input-hidden', fixture.path);
+  await page.waitForNetwork('/api/auth/me/profile-image', { timeoutMs: 45000 });
   await page.waitFor('profile image upload finished', async () => {
     return page.evaluate(slotIndex => {
       const visible = element => {
@@ -158,54 +158,12 @@ async function uploadProfileImageToSlot(page, slotIndex, fixture) {
   }, 45000);
   const url = await imageSlotUrl(page, slotIndex);
   assert(url, 'Profile image slot should expose a background URL after upload', { slotIndex });
+  assert(url.includes('/media/public?key='), 'Profile image upload should return a public media URL', {
+    fixture: fixture.name,
+    slotIndex,
+    url
+  });
   return url;
-}
-
-async function uploadProfileImageViaBackend(page, slotIndex, fixture) {
-  return page.evaluate(async ({ slotIndex, fixture }) => {
-    const host = document.querySelector('app-profile-editor');
-    const component = window.ng?.getComponent?.(host);
-    if (!component?.profileUser?.id || !Array.isArray(component.imageSlots)) {
-      return { ok: false, reason: 'component unavailable' };
-    }
-    const response = await fetch(fixture.url);
-    if (!response.ok) {
-      return { ok: false, reason: `fixture ${fixture.url} returned ${response.status}` };
-    }
-    const blob = await response.blob();
-    const file = new File([blob], fixture.name, { type: blob.type || 'image/png' });
-    const formData = new FormData();
-    formData.append('image', file, file.name);
-    formData.append('slotIndex', String(slotIndex));
-    formData.append('userId', component.profileUser.id);
-    const uploadResponse = await fetch('/api/auth/me/profile-image', {
-      method: 'POST',
-      body: formData
-    });
-    const text = await uploadResponse.text();
-    let data = null;
-    try {
-      data = text ? JSON.parse(text) : null;
-    } catch {
-      data = text;
-    }
-    if (!uploadResponse.ok) {
-      return { ok: false, status: uploadResponse.status, data };
-    }
-    const imageUrl = typeof data?.imageUrl === 'string' && data.imageUrl.trim()
-      ? data.imageUrl.trim()
-      : typeof data?.url === 'string' && data.url.trim()
-        ? data.url.trim()
-        : '';
-    if (!imageUrl) {
-      return { ok: false, status: uploadResponse.status, data, reason: 'missing imageUrl' };
-    }
-    component.imageSlots[slotIndex] = imageUrl;
-    component.selectedImageIndex = slotIndex;
-    component.syncActiveUserImageSlotsState?.(false);
-    component.cdr?.markForCheck?.();
-    return { ok: true, name: file.name, type: file.type, size: file.size, imageUrl };
-  }, { slotIndex, fixture });
 }
 
 async function selectImageSlotForUpload(page, slotIndex) {
@@ -239,19 +197,6 @@ async function selectImageSlotForUpload(page, slotIndex) {
     }, slotIndex);
     assert(secondClick, `Selected profile image slot ${slotIndex + 1} should reopen file picker`);
   }
-  await rememberSelectedImageSlotForHeadlessUpload(page, slotIndex);
-}
-
-async function rememberSelectedImageSlotForHeadlessUpload(page, slotIndex) {
-  await page.evaluate(slotIndex => {
-    const host = document.querySelector('app-profile-editor');
-    const component = window.ng?.getComponent?.(host);
-    if (!component || !('pendingSlotUploadIndex' in component)) {
-      return false;
-    }
-    component.pendingSlotUploadIndex = slotIndex;
-    return true;
-  }, slotIndex).catch(() => false);
 }
 
 async function removeProfileImageSlot(page, slotIndex) {

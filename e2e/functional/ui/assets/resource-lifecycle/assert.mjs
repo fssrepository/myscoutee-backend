@@ -478,7 +478,44 @@ async function seedResourceEvent(page, suffix) {
     endAt: end.toISOString()
   });
   assert(result.ok, 'Resource lifecycle event should be seeded through the backend', result);
+  await seedAcceptedResourceEventMember(page, { eventId, userId, actionAtIso: start.toISOString() });
   return { eventId, subEventId, title, subEventName, userId };
+}
+
+async function seedAcceptedResourceEventMember(page, { eventId, userId, actionAtIso }) {
+  const result = await page.evaluate(async ({ eventId, userId, actionAtIso }) => {
+    const response = await fetch('/api/activities/events/members/replace', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Session-Kind': 'demo'
+      },
+      body: JSON.stringify({
+        owner: {
+          ownerType: 'event',
+          ownerId: eventId
+        },
+        members: [{
+          id: `e2e-ui-resource-member-${eventId}-${userId}`,
+          userId,
+          role: 'Member',
+          status: 'accepted',
+          pendingSource: null,
+          requestKind: null,
+          actionAtIso,
+          metAtIso: actionAtIso,
+          metWhere: 'E2E Resource Yard'
+        }],
+        capacityTotal: 8
+      })
+    });
+    return {
+      ok: response.ok,
+      status: response.status,
+      text: await response.text()
+    };
+  }, { eventId, userId, actionAtIso });
+  assert(result.ok, 'Resource lifecycle event should have a real accepted membership row before assignment', result);
 }
 
 async function currentUserId(page) {
