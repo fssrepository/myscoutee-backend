@@ -6,6 +6,4 @@ https://developers.facebook.com/ -> business verfication is needed
 
 graph stats + graph view merge
 
-e-kozig onya form editor and display on view
-
-support page - like run for humanity or so on around buildings
+e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor) - mobil/desktop view switch like on base44

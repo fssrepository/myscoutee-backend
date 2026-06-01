@@ -343,6 +343,7 @@ db.getCollection('events').createIndex({ sourceId: 1, startAtIso: 1, type: 1 }, 
 db.getCollection('events').createIndex({ status: 1, creatorUserId: 1, visibility: 1 }, { name: 'event_explore_visibility' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 }, { name: 'event_explore_candidates_status' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_explore_feed_status' });
+db.getCollection('events').createIndex({ parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_slot_parent_start' });
 db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });
 " >/dev/null
       ;;

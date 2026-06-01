@@ -119,6 +119,7 @@ public class ActivitiesEventsService {
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
     private final ActivitiesChatService activitiesChatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
+    private final EventSlotReadModelService eventSlotReadModelService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -137,7 +138,8 @@ public class ActivitiesEventsService {
             NotificationOutboxService notificationOutboxService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
             ActivitiesChatService activitiesChatService,
-            ActivitiesEventLeaderboardService activitiesEventLeaderboardService) {
+            ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
+            EventSlotReadModelService eventSlotReadModelService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -155,6 +157,7 @@ public class ActivitiesEventsService {
         this.eventSchedulerProvider = eventSchedulerProvider;
         this.activitiesChatService = activitiesChatService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
+        this.eventSlotReadModelService = eventSlotReadModelService;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -1603,7 +1606,7 @@ public class ActivitiesEventsService {
             eventsOverlay.normalizeLifecycleState();
             documentsToSave.add(eventsOverlay);
         }
-        activityEventsRepository.saveAll(documentsToSave);
+        List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
@@ -1622,8 +1625,8 @@ public class ActivitiesEventsService {
         }
         telemetryTags.put("eventType", resolveTelemetryEventType(request));
         adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
-        syncStageReminderTasksForSavedEvents(documentsToSave, actorUserId);
-        materializeSlotOccurrences();
+        syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
+        List<ActivityEvent> refreshedReadModelDocuments = materializeSlotOccurrences(savedDocuments);
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId) && TYPE_EVENTS.equals(targetType)) {
@@ -1638,7 +1641,28 @@ public class ActivitiesEventsService {
                     bookingStartAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
-        return toEventRecordDto(baseRecord, actor);
+        return toEventRecordDto(selectSyncedResponseRecord(sourceId, targetType, savedDocuments, refreshedReadModelDocuments, baseRecord), actor);
+    }
+
+    private ActivityEvent selectSyncedResponseRecord(
+            String sourceId,
+            String targetType,
+            List<ActivityEvent> savedDocuments,
+            List<ActivityEvent> refreshedReadModelDocuments,
+            ActivityEvent fallback) {
+        for (ActivityEvent record : refreshedReadModelDocuments == null ? List.<ActivityEvent>of() : refreshedReadModelDocuments) {
+            if (sourceId.equals(normalizeId(record == null ? null : record.getSourceId()))
+                    && targetType.equals(normalizeType(record == null ? null : record.getType()))) {
+                return record;
+            }
+        }
+        for (ActivityEvent record : savedDocuments == null ? List.<ActivityEvent>of() : savedDocuments) {
+            if (sourceId.equals(normalizeId(record == null ? null : record.getSourceId()))
+                    && targetType.equals(normalizeType(record == null ? null : record.getType()))) {
+                return record;
+            }
+        }
+        return fallback;
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {
@@ -1919,6 +1943,7 @@ public class ActivitiesEventsService {
                 .include("frequency")
                 .include("pricing")
                 .include("slotsEnabled")
+                .include("upcomingSlots")
                 .include("subEventsDisplayMode");
     }
 
@@ -2225,7 +2250,7 @@ public class ActivitiesEventsService {
         int pendingMembers = membersSnapshot == null
                 ? normalizeCount(record.getPendingMembers())
                 : membersSnapshot.pendingMembers();
-        List<EventSlotOccurrenceDto> upcomingSlots = resolveUpcomingSlotOccurrences(record);
+        List<EventSlotOccurrenceDto> upcomingSlots = cloneSlotOccurrences(record.getUpcomingSlots());
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
@@ -2766,6 +2791,7 @@ public class ActivitiesEventsService {
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
         document.setEventType(slotEvent ? "slot" : "main");
+        document.setUpcomingSlots(slotEvent ? List.of() : cloneSlotOccurrences(existing == null ? null : existing.getUpcomingSlots()));
         document.setAcceptedMembers(acceptedMembers);
         document.setPendingMembers(pendingMembers);
         document.setTopics(normalizeStrings(request.topics()));
@@ -3332,6 +3358,7 @@ public class ActivitiesEventsService {
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
+        clone.setUpcomingSlots(cloneSlotOccurrences(source.getUpcomingSlots()));
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setPolicies(clonePolicies(source.getPolicies()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
@@ -3696,6 +3723,10 @@ public class ActivitiesEventsService {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
+    private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {
+        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
     private PricingConfigDto clonePricing(PricingConfigDto pricing) {
         return pricing;
     }
@@ -3743,19 +3774,27 @@ public class ActivitiesEventsService {
                 && !record.getSlotTemplates().isEmpty();
     }
 
-    private void materializeSlotOccurrences() {
-        List<ActivityEvent> documents = allEventDocuments();
-        List<ActivityEvent> parents = computePreferredEventRecords(documents).stream()
+    private List<ActivityEvent> materializeSlotOccurrences(Collection<ActivityEvent> changedDocuments) {
+        List<String> parentSourceIds = slotReadModelParentSourceIds(changedDocuments);
+        if (parentSourceIds.isEmpty()) {
+            return List.of();
+        }
+        List<ActivityEvent> rawParentDocuments = activityEventsRepository.findBySourceIdIn(parentSourceIds);
+        List<ActivityEvent> parentDocuments = (rawParentDocuments == null ? List.<ActivityEvent>of() : rawParentDocuments).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        List<ActivityEvent> rawSlotDocuments = activityEventsRepository.findByParentEventIdIn(parentSourceIds);
+        List<ActivityEvent> slotDocuments = (rawSlotDocuments == null ? List.<ActivityEvent>of() : rawSlotDocuments).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        List<ActivityEvent> parents = computePreferredEventRecords(parentDocuments).stream()
                 .filter(this::isSlotParentRecord)
                 .toList();
-        if (parents.isEmpty()) {
-            return;
-        }
 
         List<ActivityEvent> toSave = new ArrayList<>();
         for (ActivityEvent parent : parents) {
             Map<String, ActivityEvent> existingBySourceId = new LinkedHashMap<>();
-            for (ActivityEvent record : documents) {
+            for (ActivityEvent record : slotDocuments) {
                 if (isGeneratedSlotRecord(record)
                         && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))) {
                     existingBySourceId.put(normalizeId(record.getSourceId()), record);
@@ -3771,6 +3810,26 @@ public class ActivitiesEventsService {
         if (!toSave.isEmpty()) {
             activityEventsRepository.saveAll(toSave);
         }
+        return eventSlotReadModelService.refreshParentUpcomingSlots(parentSourceIds);
+    }
+
+    private List<String> slotReadModelParentSourceIds(Collection<ActivityEvent> changedDocuments) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (ActivityEvent record : changedDocuments == null ? List.<ActivityEvent>of() : changedDocuments) {
+            if (record == null) {
+                continue;
+            }
+            String parentEventId = normalizeId(record.getParentEventId());
+            if (isGeneratedSlotRecord(record) && StringUtils.hasText(parentEventId)) {
+                ids.add(parentEventId);
+                continue;
+            }
+            String sourceId = normalizeId(record.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                ids.add(sourceId);
+            }
+        }
+        return new ArrayList<>(ids);
     }
 
     private List<ActivityEvent> buildGeneratedSlotRecordsForParent(
@@ -3914,6 +3973,7 @@ public class ActivitiesEventsService {
         next.setSlotTemplateId(slotTemplateId);
         next.setGenerated(true);
         next.setEventType("slot");
+        next.setUpcomingSlots(List.of());
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
@@ -3929,32 +3989,6 @@ public class ActivitiesEventsService {
         next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
         next.normalizeLifecycleState();
         records.add(next);
-    }
-
-    private List<EventSlotOccurrenceDto> resolveUpcomingSlotOccurrences(ActivityEvent record) {
-        if (!isSlotParentRecord(record)) {
-            return List.of();
-        }
-        String parentSourceId = normalizeId(record.getSourceId());
-        long nowMs = System.currentTimeMillis() - (60L * 60L * 1000L);
-        return computePreferredEventRecords(allEventDocuments()).stream()
-                .filter(this::isGeneratedSlotRecord)
-                .filter(item -> parentSourceId.equals(normalizeId(item.getParentEventId())))
-                .filter(item -> !Boolean.TRUE.equals(item.getIsTrashed()))
-                .filter(item -> toSortableDate(item.getEndAtIso()) >= nowMs)
-                .sorted(Comparator.comparing(item -> toSortableDate(item.getStartAtIso())))
-                .map(item -> new EventSlotOccurrenceDto(
-                        normalizeId(item.getSourceId()),
-                        parentSourceId,
-                        safeText(item.getSlotTemplateId()),
-                        safeText(item.getTitle()),
-                        safeText(item.getTimeframe()),
-                        safeText(item.getStartAtIso()),
-                        safeText(item.getEndAtIso()),
-                        normalizeCount(item.getCapacityTotal()),
-                        resolveAcceptedMemberUserIds(item).size(),
-                        resolvePendingMemberUserIds(item).size()))
-                .toList();
     }
 
     private String buildGeneratedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime occurrenceStart) {

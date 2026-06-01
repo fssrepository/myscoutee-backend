@@ -37,6 +37,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageD
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -76,6 +77,8 @@ class ActivitiesEventsServiceTest {
     private ActivitiesChatService activitiesChatService;
     @Mock
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
+    @Mock
+    private EventSlotReadModelService eventSlotReadModelService;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -99,7 +102,8 @@ class ActivitiesEventsServiceTest {
                 notificationOutboxService,
                 eventSchedulerProvider,
                 activitiesChatService,
-                activitiesEventLeaderboardService);
+                activitiesEventLeaderboardService,
+                eventSlotReadModelService);
     }
 
     @Test
@@ -471,6 +475,17 @@ class ActivitiesEventsServiceTest {
         host.setName("Host User");
 
         ActivityEvent first = event("event-1", "host", 0d);
+        first.setUpcomingSlots(List.of(new EventSlotOccurrenceDto(
+                "slot-1",
+                "event-1",
+                "template-1",
+                "Slot 1",
+                "2099-06-01 - 10:00",
+                "2099-06-01T10:00:00Z",
+                "2099-06-01T11:00:00Z",
+                10,
+                2,
+                1)));
         ActivityEvent second = event("event-2", "host", 0d);
         ActivityEvent third = event("event-3", "host", 0d);
 
@@ -484,7 +499,10 @@ class ActivitiesEventsServiceTest {
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(EventRecordDto::id)
                 .containsExactly("event-1", "event-2");
+        assertThat(page.records().get(0).upcomingSlots()).extracting(EventSlotOccurrenceDto::id)
+                .containsExactly("slot-1");
         assertThat(page.nextCursor()).contains("event-2");
+        verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
     }
 
     private Map<String, String> acceptedStatuses(String... sourceIds) {
@@ -509,8 +527,8 @@ class ActivitiesEventsServiceTest {
         event.setCreatorUserId(creatorUserId);
         event.setCreatorName(creatorUserId);
         event.setTitle(sourceId);
-        event.setStartAtIso("2026-06-01T10:00:00Z");
-        event.setEndAtIso("2026-06-01T12:00:00Z");
+        event.setStartAtIso("2099-06-01T10:00:00Z");
+        event.setEndAtIso("2099-06-01T12:00:00Z");
         event.setVisibility("Public");
         event.setCapacityTotal(10);
         event.setRating(0d);

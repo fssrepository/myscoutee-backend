@@ -68,6 +68,7 @@ public class ActivitiesMembersService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final ActivitiesChatService activitiesChatService;
+    private final EventSlotReadModelService eventSlotReadModelService;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -82,7 +83,8 @@ public class ActivitiesMembersService {
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            ActivitiesChatService activitiesChatService) {
+            ActivitiesChatService activitiesChatService,
+            EventSlotReadModelService eventSlotReadModelService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -95,6 +97,7 @@ public class ActivitiesMembersService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.activitiesChatService = activitiesChatService;
+        this.eventSlotReadModelService = eventSlotReadModelService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -1699,7 +1702,8 @@ public class ActivitiesMembersService {
             documentsToSave.add(document);
         }
         if (!documentsToSave.isEmpty()) {
-            activityEventsRepository.saveAll(documentsToSave);
+            List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
+            eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
             affinityRecomputeTaskService.enqueueEventMembersChanged(normalizedEventId, "system");
         }
     }

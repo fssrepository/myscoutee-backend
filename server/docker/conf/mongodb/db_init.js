@@ -259,6 +259,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'event_explore_feed_status' }
   );
   portalDb.events.createIndex(
+    { parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_slot_parent_start' }
+  );
+  portalDb.events.createIndex(
     { locationGeo: '2dsphere' },
     { name: 'event_location_geo' }
   );
