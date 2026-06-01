@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "eventFeedbackStates")
 @CompoundIndexes({
         @CompoundIndex(name = "event_feedback_state_user_event", def = "{'viewerUserId': 1, 'eventId': 1}", unique = true),
-        @CompoundIndex(name = "event_feedback_state_user_updated", def = "{'viewerUserId': 1, 'updatedDate': -1}")
+        @CompoundIndex(name = "event_feedback_state_user_updated", def = "{'viewerUserId': 1, 'updatedDate': -1}"),
+        @CompoundIndex(name = "event_feedback_state_event_updated", def = "{'eventId': 1, 'updatedDate': -1}")
 })
 public class EventFeedbackState {
     @Id

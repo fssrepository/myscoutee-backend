@@ -342,6 +342,14 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'event_feedback_answer_user_event' }
   );
   portalDb.eventFeedbackAnswers.createIndex(
+    { viewerUserId: 1, eventId: 1, submittedAtIso: -1 },
+    { name: 'event_feedback_answer_user_event_submitted' }
+  );
+  portalDb.eventFeedbackAnswers.createIndex(
+    { eventId: 1, submittedAtIso: -1 },
+    { name: 'event_feedback_answer_event_submitted' }
+  );
+  portalDb.eventFeedbackAnswers.createIndex(
     { targetUserId: 1, submittedAtIso: -1 },
     { name: 'event_feedback_answer_target_user_submitted' }
   );

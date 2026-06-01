@@ -388,6 +388,8 @@ db.getCollection('eventFeedbackStates').createIndex({ eventId: 1, updatedDate: -
 db.getCollection('eventFeedbackAnswers').createIndex({ syncKey: 1 }, { name: 'event_feedback_answer_sync_key', unique: true, sparse: true });
 db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, cardId: 1 }, { name: 'event_feedback_answer_user_event_card', unique: true });
 db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1 }, { name: 'event_feedback_answer_user_event' });
+db.getCollection('eventFeedbackAnswers').createIndex({ viewerUserId: 1, eventId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_user_event_submitted' });
+db.getCollection('eventFeedbackAnswers').createIndex({ eventId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_event_submitted' });
 db.getCollection('eventFeedbackAnswers').createIndex({ targetUserId: 1, submittedAtIso: -1 }, { name: 'event_feedback_answer_target_user_submitted' });
 " >/dev/null
       ;;
