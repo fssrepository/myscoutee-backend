@@ -1,0 +1,37 @@
+{
+  "name": "e2e help revision: create explanation revision and delete it",
+  "group": "flows",
+  "order": 9050,
+  "method": "POST",
+  "path": "/api/admin/explanation/revisions",
+  "script": "help-revision.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "actorUserId": "{{adminUserId}}",
+    "baseRevisionId": null,
+    "contextKey": "home.game",
+    "lang": "en",
+    "title": "E2E Explanation Revision {{runId}}",
+    "summary": "E2E revision",
+    "description": "Created by the server e2e suite.",
+    "headerColor": "blue",
+    "sections": [
+      {
+        "id": "e2e-section-{{runId}}",
+        "icon": "info",
+        "title": "E2E Section",
+        "blurb": "Temporary e2e section",
+        "contentHtml": "<p>Created by server e2e.</p>",
+        "imageUrls": [],
+        "panelSpan": "single",
+        "optional": false
+      }
+    ]
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

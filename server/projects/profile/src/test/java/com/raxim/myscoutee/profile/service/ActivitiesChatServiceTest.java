@@ -96,18 +96,17 @@ class ActivitiesChatServiceTest {
     }
 
     @Test
-    void queryChatsRepairsOwnerCopiesOnceAndAvoidsPerChatLookupWhenLoadedCopiesAreComplete() {
+    void queryChatsReadsOwnerCopiesWithoutRepairingMemberCopies() {
         ActivityChat viewerChat = chat("chat-1", "viewer", 0);
-        ActivityChat senderChat = chat("chat-1", "sender", 0);
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(activityChatsRepository.findByMemberIdsContaining("viewer")).thenReturn(List.of(viewerChat, senderChat));
         when(activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc("viewer")).thenReturn(List.of(viewerChat));
 
         assertThat(service.queryChats("viewer")).hasSize(1);
         assertThat(service.queryChats("viewer")).hasSize(1);
 
-        verify(activityChatsRepository, times(1)).findByMemberIdsContaining("viewer");
+        verify(activityChatsRepository, times(2)).findByOwnerUserIdOrderByDateIsoDesc("viewer");
+        verify(activityChatsRepository, never()).findByMemberIdsContaining("viewer");
         verify(activityChatsRepository, never()).findByChatId(anyString());
         verify(activityChatsRepository, never()).findByOwnerUserIdAndChatId(anyString(), anyString());
         verify(activityChatsRepository, never()).saveAll(anyList());

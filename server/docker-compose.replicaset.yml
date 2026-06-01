@@ -1,7 +1,7 @@
 # Optional Mongo replica-set override for features that need change streams.
-# Usage with playground:
-#   MONGO_PLAYGROUND_DATABASE=playground_db \
-#   docker compose -f docker-compose.yml -f docker-compose.playground.yml -f docker-compose.replicaset.yml up --build
+# Usage with e2e:
+#   MONGO_E2E_DATABASE=e2e_db \
+#   docker compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.replicaset.yml up --build
 
 services:
   mongodb:

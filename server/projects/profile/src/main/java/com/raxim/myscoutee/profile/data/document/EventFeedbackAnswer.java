@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @CompoundIndexes({
         @CompoundIndex(name = "event_feedback_answer_user_event_card", def = "{'viewerUserId': 1, 'eventId': 1, 'cardId': 1}", unique = true),
         @CompoundIndex(name = "event_feedback_answer_user_event", def = "{'viewerUserId': 1, 'eventId': 1}"),
+        @CompoundIndex(name = "event_feedback_answer_user_event_submitted", def = "{'viewerUserId': 1, 'eventId': 1, 'submittedAtIso': -1}"),
+        @CompoundIndex(name = "event_feedback_answer_event_submitted", def = "{'eventId': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "event_feedback_answer_target_user_submitted", def = "{'targetUserId': 1, 'submittedAtIso': -1}")
 })
 public class EventFeedbackAnswer {

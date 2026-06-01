@@ -1,0 +1,21 @@
+{
+  "name": "UI admin help editor images slow-mobile benchmark",
+  "flow": "functionalCase",
+  "functionalCase": "admin/help-editor-images",
+  "baseUrl": "http://localhost",
+  "users": 1,
+  "iterations": 1,
+  "rampUpMs": 0,
+  "timeoutMs": 120000,
+  "viewport": { "width": 390, "height": 844 },
+  "cpuThrottleRate": 4,
+  "network": "slow-4g",
+  "cacheDisabled": true,
+  "clearCache": true,
+  "thresholds": {
+    "errorRate": 0,
+    "p95Ms": 120000,
+    "milestones": { "caseReadyMs": 120000 },
+    "maxLongTaskMs": 2500
+  }
+}

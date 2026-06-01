@@ -14,8 +14,10 @@ import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
@@ -56,6 +58,10 @@ public class ActivitiesResourcesService {
         String assetOwnerUserId = normalizeId(request.assetOwnerUserId());
         if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId) || !StringUtils.hasText(assetOwnerUserId)) {
             return null;
+        }
+        ActivitiesMembersService activitiesMembersService = requireActivitiesMembersService();
+        if (!activitiesMembersService.hasAcceptedParticipation("event", ownerId, assetOwnerUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to assign resources.");
         }
 
         String recordId = recordId(ownerId, subEventId, assetOwnerUserId);
@@ -625,6 +631,14 @@ public class ActivitiesResourcesService {
             return;
         }
         activitiesMembersService.refreshEventParticipationProjection(ownerId);
+    }
+
+    private ActivitiesMembersService requireActivitiesMembersService() {
+        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
+        if (activitiesMembersService == null) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Event membership service is unavailable.");
+        }
+        return activitiesMembersService;
     }
 
     private record ResourceCleanupResult(

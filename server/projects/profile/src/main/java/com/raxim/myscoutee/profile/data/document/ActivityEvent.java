@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -32,7 +33,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
         @CompoundIndex(name = "event_auto_inviter_start", def = "{'autoInviter': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
         @CompoundIndex(name = "event_explore_candidates_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
-        @CompoundIndex(name = "event_explore_feed_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'published': 1, 'startAtIso': 1, 'sourceId': 1}")
+        @CompoundIndex(name = "event_explore_feed_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'published': 1, 'startAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_slot_parent_start", def = "{'parentEventId': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}")
 })
 public class ActivityEvent {
     private static final String TYPE_EVENTS = "events";
@@ -101,6 +103,7 @@ public class ActivityEvent {
     private String slotTemplateId;
     private Boolean generated;
     private String eventType;
+    private List<EventSlotOccurrenceDto> upcomingSlots = new ArrayList<>();
     private Integer acceptedMembers;
     private Integer pendingMembers;
     private List<String> topics = new ArrayList<>();
@@ -263,6 +266,10 @@ public class ActivityEvent {
     public void setGenerated(Boolean generated) { this.generated = generated; }
     public String getEventType() { return eventType; }
     public void setEventType(String eventType) { this.eventType = eventType; }
+    public List<EventSlotOccurrenceDto> getUpcomingSlots() { return upcomingSlots; }
+    public void setUpcomingSlots(List<EventSlotOccurrenceDto> upcomingSlots) {
+        this.upcomingSlots = upcomingSlots == null ? new ArrayList<>() : new ArrayList<>(upcomingSlots);
+    }
     public Integer getAcceptedMembers() { return acceptedMembers; }
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }

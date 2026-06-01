@@ -67,6 +67,7 @@ public class AssetsService {
     private static final String STATUS_BLOCKED = "B";
     private static final String STATUS_DELETED = "D";
     private static final String STATUS_INACTIVE = "I";
+    private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
     private static final String ROLE_ADMIN = "Admin";
     private static final String ROLE_MANAGER = "Manager";
@@ -336,12 +337,15 @@ public class AssetsService {
         Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
         Optional<ActivityMember> existingMember = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, normalizedAssetId, normalizedTargetUserId);
+        AssetRequestRecord targetRequest = findAssetRequest(current, normalizedTargetUserId);
+        ActivityMember eventMember = acceptedEventMemberForAssetRequest(targetRequest, normalizedTargetUserId);
         if (current == null
                 || normalizedTargetUserId.equals(normalizeId(current.getOwnerUserId()))
                 || !canManageAssetMembers(current, normalizedUserId)
                 || !isActiveUser(normalizedTargetUserId)
                 || isAcceptedAssetManagerMember(existingMember.orElse(null))
-                || !isKnownAssetParticipant(current, normalizedTargetUserId, existingMember.orElse(null))) {
+                || !isKnownAssetParticipant(current, normalizedTargetUserId, existingMember.orElse(null))
+                || (requiresEventMembership(targetRequest) && eventMember == null)) {
             return null;
         }
 
@@ -472,6 +476,38 @@ public class AssetsService {
                 .and("updatedDate").is(StringUtils.hasText(safeText(current.getUpdatedDate())) ? safeText(current.getUpdatedDate()) : null)
                 .and("role").is(StringUtils.hasText(safeText(current.getRole())) ? safeText(current.getRole()) : null)
                 .and("status").is(StringUtils.hasText(safeText(current.getStatus())) ? safeText(current.getStatus()) : null);
+    }
+
+    private AssetRequestRecord findAssetRequest(Asset asset, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (asset == null || !StringUtils.hasText(normalizedUserId)) {
+            return null;
+        }
+        return safeRequests(asset.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> normalizedUserId.equals(normalizeId(request.userId())))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean requiresEventMembership(AssetRequestRecord request) {
+        return StringUtils.hasText(assetRequestEventId(request));
+    }
+
+    private ActivityMember acceptedEventMemberForAssetRequest(AssetRequestRecord request, String userId) {
+        String eventId = assetRequestEventId(request);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(normalizedUserId)) {
+            return null;
+        }
+        return activityMembersRepository
+                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, eventId, normalizedUserId)
+                .filter(member -> MEMBER_STATUS_ACCEPTED.equals(safeText(member.getStatus())))
+                .orElse(null);
+    }
+
+    private String assetRequestEventId(AssetRequestRecord request) {
+        return normalizeId(request == null || request.booking() == null ? null : request.booking().eventId());
     }
 
     public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {

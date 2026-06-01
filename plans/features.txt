@@ -4,20 +4,10 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-ui speed/stability (rendering - paint)/chucnk size reduction improvements - (chrome - lighthouse)
-------------------
-bootstrap is slow should be speed up
-ui stress test seems to be feasible also by AI - (can do CPU throttling) -- big task
+graph stats + graph view merge
+red counter badges' value on e2e is not being shown properly
 
-event feedback - backend stress test - first load is a little bit slow
-syncing all three db on backend
-close button, press etc. on touch animation, unify
-image lazy load progress bar - spinner-ring?
-some card badge is not circle
+e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
+mobil/desktop view switch like on base44
 
-Bugs
-----
-b) eliminate the need of multiple media queries in the whole application, it should be only one, you need to merge into the 760px one.
-720px/640px (so smaller than 760px) -> change it to 760px, that will be the current one
-naturally when you merge, anything which is in a lager width should be moved to the smaller one,
-but if the smaller one has an override rule that should be applied
+pls. check learning - spring security introduction

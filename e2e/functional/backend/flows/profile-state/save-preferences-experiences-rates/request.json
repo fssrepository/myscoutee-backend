@@ -1,0 +1,90 @@
+{
+  "name": "e2e profile state: preferences, experiences, rates, feedback, logout, delete",
+  "group": "flows",
+  "order": 9020,
+  "method": "POST",
+  "path": "/api/auth/me/filter-preferences",
+  "script": "profile-state.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed profile state owner",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{e2eUserId}}",
+        "name": "E2E Profile State",
+        "age": 32,
+        "birthday": "1994-02-02",
+        "city": "Bratislava",
+        "height": "181 cm",
+        "physique": "active",
+        "languages": ["en", "sk"],
+        "initials": "EP",
+        "gender": "man",
+        "statusText": "E2E profile state",
+        "profileStatus": "public",
+        "images": []
+      }
+    },
+    {
+      "name": "seed rated profile target",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{e2eSecondUserId}}",
+        "name": "E2E Rated Target",
+        "age": 29,
+        "birthday": "1997-03-05",
+        "city": "Bratislava",
+        "height": "168 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "RT",
+        "gender": "woman",
+        "statusText": "E2E rated target",
+        "profileStatus": "public",
+        "images": []
+      }
+    }
+  ],
+  "body": {
+    "userId": "{{e2eUserId}}",
+    "filterPreferences": {
+      "ageMin": 25,
+      "ageMax": 38,
+      "heightMinCm": 150,
+      "heightMaxCm": 205,
+      "interests": ["Hiking"],
+      "values": ["Kindness"],
+      "physiques": ["active"],
+      "languages": ["en"],
+      "genders": ["woman"],
+      "traitLabels": ["Curious"],
+      "smoking": [],
+      "drinking": [],
+      "workout": [],
+      "pets": [],
+      "familyPlans": [],
+      "children": [],
+      "loveStyles": [],
+      "communicationStyles": [],
+      "sexualOrientations": [],
+      "religions": []
+    }
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

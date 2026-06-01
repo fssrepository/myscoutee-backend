@@ -233,8 +233,8 @@ async function resolveSkipReason(testCase, ctx) {
   if (request.skip) {
     return request.skip === true ? 'marked skipped' : request.skip;
   }
-  if (request.playgroundOnly && ctx.mode !== 'playground' && ctx.mode !== 'stress') {
-    return `requires playground mode, current mode is ${ctx.mode ?? 'contract'}`;
+  if (request.e2eOnly && ctx.mode !== 'e2e' && ctx.mode !== 'stress') {
+    return `requires e2e/stress mode, current mode is ${ctx.mode ?? 'contract'}`;
   }
   const prepareModule = await importOptional(testCase.dir, 'prepare.mjs');
   if (prepareModule?.skip) {

@@ -1,0 +1,137 @@
+[
+  {
+    "_id": {
+      "$oid": "af1000000000000000000001"
+    },
+    "syncKey": "event-feedback-state-u1-e1",
+    "viewerUserId": "bf057de7c586eede7e84bdc7",
+    "eventId": "a11a802ee0714a21db94ed4e",
+    "removed": false,
+    "submittedAtIso": "2026-03-04T14:35:00.000Z",
+    "organizerNote": "People loved the pace and the warm hosting tone. Next round I would make the first coordination checkpoint even clearer.",
+    "createdDate": "2026-03-04T14:35:00.000Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-03-04T14:35:00.000Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000002"
+    },
+    "syncKey": "event-feedback-state-u1-e7",
+    "viewerUserId": "bf057de7c586eede7e84bdc7",
+    "eventId": "99fc3b45fb145f50d4026729",
+    "removed": false,
+    "submittedAtIso": "2026-03-20T13:40:00.000Z",
+    "organizerNote": "The curation and mood felt strong. I would keep the same intimate format and slightly tighten transitions between small groups.",
+    "createdDate": "2026-03-20T13:40:00.000Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-03-20T13:40:00.000Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000003"
+    },
+    "syncKey": "event-feedback-state-u3-e5",
+    "viewerUserId": "9f3b3f085e23af6c89dbc432",
+    "eventId": "ceaae76e8afd0975e1087cc8",
+    "removed": false,
+    "submittedAtIso": "2026-03-08T15:45:00.000Z",
+    "organizerNote": "The creative flow was strong and the host made people feel seen. The only improvement would be a slightly firmer wrap-up.",
+    "createdDate": "2026-03-08T15:45:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-03-08T15:45:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000004"
+    },
+    "syncKey": "event-feedback-state-u8-e1-attendee",
+    "viewerUserId": "1d7d3545ba5e0f1d63918589",
+    "eventId": "a11a802ee0714a21db94ed4e",
+    "removed": false,
+    "submittedAtIso": "2026-03-04T16:10:00.000Z",
+    "organizerNote": "The host set a warm tone and the group pacing felt easy to follow. I would just make the first checkpoint and pairing instructions a little clearer.",
+    "createdDate": "2026-03-04T16:10:00.000Z",
+    "createdUser": "1d7d3545ba5e0f1d63918589",
+    "updatedDate": "2026-03-04T16:10:00.000Z",
+    "updatedUser": "1d7d3545ba5e0f1d63918589"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000005"
+    },
+    "syncKey": "event-feedback-state-u2-e1-attendee",
+    "viewerUserId": "b29df68956f3fe15e04558de",
+    "eventId": "a11a802ee0714a21db94ed4e",
+    "removed": false,
+    "submittedAtIso": "2026-03-05T09:20:00.000Z",
+    "organizerNote": "The event felt polished and welcoming. Next time I would keep the same mood and add one clearer recap before the final rotation.",
+    "createdDate": "2026-03-05T09:20:00.000Z",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2026-03-05T09:20:00.000Z",
+    "updatedUser": "b29df68956f3fe15e04558de"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000006"
+    },
+    "syncKey": "event-feedback-state-u4-e7-attendee",
+    "viewerUserId": "1b1c70be2349b3359a8f6f94",
+    "eventId": "99fc3b45fb145f50d4026729",
+    "removed": false,
+    "submittedAtIso": "2026-03-20T15:05:00.000Z",
+    "organizerNote": "The intimate format worked really well and the conversations stayed balanced. I would only tighten the handoff between the intro round and the swap itself.",
+    "createdDate": "2026-03-20T15:05:00.000Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-03-20T15:05:00.000Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000007"
+    },
+    "syncKey": "event-feedback-state-u4-seattle-host-circle",
+    "viewerUserId": "1b1c70be2349b3359a8f6f94",
+    "eventId": "f260f450643e752d226b4253",
+    "removed": false,
+    "submittedAtIso": "2026-05-18T22:18:00.000Z",
+    "organizerNote": "The host kept the room easy to enter and the rotations felt natural. I would add one sharper reset before the last conversation round.",
+    "createdDate": "2026-05-18T22:18:00.000Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-05-18T22:18:00.000Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000008"
+    },
+    "syncKey": "event-feedback-state-u2-seattle-host-circle",
+    "viewerUserId": "b29df68956f3fe15e04558de",
+    "eventId": "f260f450643e752d226b4253",
+    "removed": false,
+    "submittedAtIso": "2026-05-19T08:05:00.000Z",
+    "organizerNote": "The structure was clean and the host had a relaxed way of keeping things moving. A slightly clearer opener would make the first rotation even easier.",
+    "createdDate": "2026-05-19T08:05:00.000Z",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2026-05-19T08:05:00.000Z",
+    "updatedUser": "b29df68956f3fe15e04558de"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000009"
+    },
+    "syncKey": "event-feedback-state-u3-seattle-host-circle",
+    "viewerUserId": "9f3b3f085e23af6c89dbc432",
+    "eventId": "f260f450643e752d226b4253",
+    "removed": false,
+    "submittedAtIso": "2026-05-19T09:40:00.000Z",
+    "organizerNote": "The vibe stayed warm the whole night and the host made rejoining conversations easy. I would only tighten the transition into the final group mix.",
+    "createdDate": "2026-05-19T09:40:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-05-19T09:40:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  }
+]

@@ -54,6 +54,8 @@ class ActivitiesMembersServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private ActivitiesChatService activitiesChatService;
+    @Mock
+    private EventSlotReadModelService eventSlotReadModelService;
 
     private ActivitiesMembersService service;
 
@@ -71,7 +73,8 @@ class ActivitiesMembersServiceTest {
                 eventInviteNotificationService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                activitiesChatService);
+                activitiesChatService,
+                eventSlotReadModelService);
     }
 
     @Test

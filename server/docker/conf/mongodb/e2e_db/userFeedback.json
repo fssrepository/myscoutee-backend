@@ -1,0 +1,30 @@
+[
+  {
+    "_id": {
+      "$oid": "690000000000000000000201"
+    },
+    "syncKey": "admin-demo-feedback-report-status-001",
+    "userId": "bf057de7c586eede7e84bdc7",
+    "category": "UX improvement",
+    "subject": "Need clearer report status",
+    "details": "After reporting a user, I would like to see whether moderation has reviewed the report.",
+    "createdDate": "2026-04-24T13:20:00.000Z",
+    "createdUser": "bf057de7c586eede7e84bdc7",
+    "updatedDate": "2026-04-24T13:20:00.000Z",
+    "updatedUser": "bf057de7c586eede7e84bdc7"
+  },
+  {
+    "_id": {
+      "$oid": "690000000000000000000202"
+    },
+    "syncKey": "admin-demo-feedback-event-warn-002",
+    "userId": "7822c5f99eff99d63abe8933",
+    "category": "Feature request",
+    "subject": "Review event behavior faster",
+    "details": "Hosts need a way to warn members before blocking them from future participation.",
+    "createdDate": "2026-04-23T18:05:00.000Z",
+    "createdUser": "7822c5f99eff99d63abe8933",
+    "updatedDate": "2026-04-23T18:05:00.000Z",
+    "updatedUser": "7822c5f99eff99d63abe8933"
+  }
+]

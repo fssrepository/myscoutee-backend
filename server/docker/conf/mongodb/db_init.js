@@ -12,6 +12,10 @@ const requiredCollections = [
   'eventFeedbackAnswers',
   'ideaPosts',
   'appSettings',
+  'notificationRuleConfigs',
+  'affinityConfigs',
+  'adminStats',
+  'adminMonitoring',
   'helpCenterRevisions',
   'helpCenterAudit',
   'privacyConsents',
@@ -31,7 +35,7 @@ const configuredDatabases = [
   process.env.MONGO_APP_DATABASE,
   process.env.MONGO_DEMO_DATABASE,
   process.env.MONGO_REAL_DATABASE,
-  process.env.MONGO_PLAYGROUND_DATABASE
+  process.env.MONGO_E2E_DATABASE
 ]
   .map(value => (value || '').trim())
   .filter(Boolean);
@@ -91,6 +95,30 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.appSettings.createIndex(
     { settingsKey: 1 },
     { name: 'app_settings_key', unique: true }
+  );
+  portalDb.notificationRuleConfigs.createIndex(
+    { syncKey: 1 },
+    { name: 'notification_rule_config_sync_key', unique: true, sparse: true }
+  );
+  portalDb.notificationRuleConfigs.createIndex(
+    { ruleKey: 1 },
+    { name: 'notification_rule_config_rule_key', unique: true }
+  );
+  portalDb.affinityConfigs.createIndex(
+    { active: 1, version: -1 },
+    { name: 'affinity_config_active_version' }
+  );
+  portalDb.affinityConfigs.createIndex(
+    { key: 1, version: -1 },
+    { name: 'affinity_config_key_version', unique: true }
+  );
+  portalDb.adminStats.createIndex(
+    { statsKey: 1 },
+    { name: 'admin_stats_key', unique: true }
+  );
+  portalDb.adminMonitoring.createIndex(
+    { monitoringKey: 1 },
+    { name: 'admin_monitoring_key', unique: true }
   );
 
   portalDb.userRates.createIndex(
@@ -231,6 +259,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'event_explore_feed_status' }
   );
   portalDb.events.createIndex(
+    { parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_slot_parent_start' }
+  );
+  portalDb.events.createIndex(
     { locationGeo: '2dsphere' },
     { name: 'event_location_geo' }
   );
@@ -312,6 +344,14 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.eventFeedbackAnswers.createIndex(
     { viewerUserId: 1, eventId: 1 },
     { name: 'event_feedback_answer_user_event' }
+  );
+  portalDb.eventFeedbackAnswers.createIndex(
+    { viewerUserId: 1, eventId: 1, submittedAtIso: -1 },
+    { name: 'event_feedback_answer_user_event_submitted' }
+  );
+  portalDb.eventFeedbackAnswers.createIndex(
+    { eventId: 1, submittedAtIso: -1 },
+    { name: 'event_feedback_answer_event_submitted' }
   );
   portalDb.eventFeedbackAnswers.createIndex(
     { targetUserId: 1, submittedAtIso: -1 },

@@ -1,0 +1,24 @@
+{
+  "name": "e2e chat lifecycle: send, edit, pin, react, attachments, delete, device",
+  "group": "flows",
+  "order": 9040,
+  "method": "POST",
+  "path": "/api/activities/chats/{{chatId}}/messages",
+  "requires": ["chat"],
+  "script": "chat-message-lifecycle.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "userId": "{{userId}}"
+  },
+  "body": {
+    "text": "E2E chat message {{runId}}",
+    "replyTo": null,
+    "attachments": []
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

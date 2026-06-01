@@ -68,6 +68,7 @@ public class ActivitiesMembersService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final ActivitiesChatService activitiesChatService;
+    private final EventSlotReadModelService eventSlotReadModelService;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -82,7 +83,8 @@ public class ActivitiesMembersService {
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            ActivitiesChatService activitiesChatService) {
+            ActivitiesChatService activitiesChatService,
+            EventSlotReadModelService eventSlotReadModelService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -95,6 +97,7 @@ public class ActivitiesMembersService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.activitiesChatService = activitiesChatService;
+        this.eventSlotReadModelService = eventSlotReadModelService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -153,6 +156,11 @@ public class ActivitiesMembersService {
     public boolean hasParticipation(String ownerType, String ownerId, String userId) {
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(ownerType, ownerId);
         return snapshot != null && snapshot.hasParticipation(userId);
+    }
+
+    public boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId) {
+        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(ownerType, ownerId);
+        return snapshot != null && snapshot.hasAcceptedParticipation(userId);
     }
 
     public void refreshEventParticipationProjection(String eventId) {
@@ -1699,7 +1707,8 @@ public class ActivitiesMembersService {
             documentsToSave.add(document);
         }
         if (!documentsToSave.isEmpty()) {
-            activityEventsRepository.saveAll(documentsToSave);
+            List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
+            eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
             affinityRecomputeTaskService.enqueueEventMembersChanged(normalizedEventId, "system");
         }
     }
@@ -1982,6 +1991,11 @@ public class ActivitiesMembersService {
         public boolean hasParticipation(String userId) {
             String normalizedUserId = userId == null ? "" : userId.trim();
             return acceptedMemberUserIds.contains(normalizedUserId) || pendingMemberUserIds.contains(normalizedUserId);
+        }
+
+        public boolean hasAcceptedParticipation(String userId) {
+            String normalizedUserId = userId == null ? "" : userId.trim();
+            return acceptedMemberUserIds.contains(normalizedUserId);
         }
 
         public boolean hasAcceptedAdminRole(String userId) {

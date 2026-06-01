@@ -15,13 +15,16 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -34,6 +37,8 @@ import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.profile.data.document.AppSettings;
+import com.raxim.myscoutee.profile.service.AppSettingsService;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -79,6 +84,10 @@ class BackendSecurityContractsE2ETest {
 
     @LocalServerPort
     private int port;
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    @Autowired
+    private AppSettingsService appSettingsService;
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
@@ -103,6 +112,19 @@ class BackendSecurityContractsE2ETest {
     @AfterEach
     void clearSecurityContext() {
         org.springframework.security.core.context.SecurityContextHolder.clearContext();
+    }
+
+    @BeforeEach
+    void seedAdminSettings() {
+        AppSettings settings = new AppSettings();
+        settings.setId("e2e-security-app-settings");
+        settings.setSettingsKey(AppSettingsService.GLOBAL_SETTINGS_KEY);
+        settings.setAdminAccessEnabled(true);
+        settings.setAdminEmails(java.util.List.of(ADMIN_EMAIL));
+        settings.setCreatedDate("2026-06-01T00:00:00Z");
+        settings.setUpdatedDate("2026-06-01T00:00:00Z");
+        mongoTemplate.save(settings);
+        appSettingsService.evictCache();
     }
 
     @Test

@@ -1,0 +1,64 @@
+{
+  "name": "e2e asset lifecycle: upsert, list, delete, restore",
+  "group": "flows",
+  "order": 9010,
+  "method": "POST",
+  "path": "/api/assets/upsert",
+  "script": "asset-lifecycle.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed asset owner profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{e2eUserId}}",
+        "name": "E2E Asset Owner",
+        "age": 31,
+        "birthday": "1995-01-12",
+        "city": "Bratislava",
+        "height": "180 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "EA",
+        "gender": "man",
+        "profileStatus": "public",
+        "images": []
+      }
+    }
+  ],
+  "body": {
+    "userId": "{{e2eUserId}}",
+    "asset": {
+      "id": "e2e-flow-asset-{{runId}}",
+      "type": "Accommodation",
+      "title": "E2E Venue",
+      "subtitle": "Disposable asset from the e2e collection",
+      "category": "venue",
+      "city": "Bratislava",
+      "capacityTotal": 12,
+      "quantity": 1,
+      "details": "Safe to delete in e2e_db.",
+      "imageUrl": "",
+      "sourceLink": "",
+      "routes": [],
+      "policies": [],
+      "visibility": "Public",
+      "status": "active",
+      "ownerUserId": "{{e2eUserId}}",
+      "ownerName": "E2E Asset Owner",
+      "requests": [],
+      "menuActions": []
+    }
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

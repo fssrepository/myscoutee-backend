@@ -1,0 +1,21 @@
+{
+  "name": "Event feedback list first-load benchmark",
+  "mode": "contract",
+  "baseUrl": "http://localhost",
+  "users": 8,
+  "rampUpMs": 8000,
+  "durationMs": 90000,
+  "thinkTimeMs": 100,
+  "thinkTimeJitterMs": 100,
+  "thresholds": {
+    "errorRate": 0.01,
+    "p95Ms": 10000,
+    "p99Ms": 18000
+  },
+  "steps": [
+    {
+      "name": "event feedback list first load",
+      "collectionCase": "events/event-feedback"
+    }
+  ]
+}

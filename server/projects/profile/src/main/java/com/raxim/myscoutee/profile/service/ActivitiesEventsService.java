@@ -119,6 +119,7 @@ public class ActivitiesEventsService {
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
     private final ActivitiesChatService activitiesChatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
+    private final EventSlotReadModelService eventSlotReadModelService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -137,7 +138,8 @@ public class ActivitiesEventsService {
             NotificationOutboxService notificationOutboxService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
             ActivitiesChatService activitiesChatService,
-            ActivitiesEventLeaderboardService activitiesEventLeaderboardService) {
+            ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
+            EventSlotReadModelService eventSlotReadModelService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -155,6 +157,7 @@ public class ActivitiesEventsService {
         this.eventSchedulerProvider = eventSchedulerProvider;
         this.activitiesChatService = activitiesChatService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
+        this.eventSlotReadModelService = eventSlotReadModelService;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -227,7 +230,6 @@ public class ActivitiesEventsService {
                 .filter(record -> trackedSourceIds.contains(normalizeId(record.getSourceId())))
                 .map(record -> buildMembershipProjection(viewer.userId(), record))
                 .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .sorted(eventRecordComparator())
                 .toList());
         return new EventQueryContext(
                 attendingRecords,
@@ -302,7 +304,6 @@ public class ActivitiesEventsService {
                 .filter(record -> trackedStatusesBySourceId.containsKey(normalizeId(record.getSourceId())))
                 .map(record -> buildMembershipProjection(viewer.userId(), record))
                 .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                .sorted(eventRecordComparator())
                 .toList());
         return new EventQueryContext(
                 attendingRecords,
@@ -318,11 +319,16 @@ public class ActivitiesEventsService {
     }
 
     private <T> T withEventQueryContext(EventQueryContext context, Supplier<T> action) {
+        EventQueryContext previous = ACTIVE_CONTEXT.get();
         try {
             ACTIVE_CONTEXT.set(context);
             return action.get();
         } finally {
-            ACTIVE_CONTEXT.remove();
+            if (previous == null) {
+                ACTIVE_CONTEXT.remove();
+            } else {
+                ACTIVE_CONTEXT.set(previous);
+            }
         }
     }
 
@@ -460,7 +466,9 @@ public class ActivitiesEventsService {
         if (preferredBySourceId.isEmpty()) {
             return new LinkedHashMap<>();
         }
-        return new LinkedHashMap<>(activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId));
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshots =
+                activitiesMembersService.buildBatchEventSnapshots(preferredBySourceId);
+        return snapshots == null ? new LinkedHashMap<>() : new LinkedHashMap<>(snapshots);
     }
 
     public boolean isPagedExploreRequest(EventsExploreQueryDto request) {
@@ -498,12 +506,9 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        return withEventQueryContext(buildUserQueryContext(viewer), () -> {
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
-            List<ActivityEvent> sorted = queryUserRecords(viewer).stream()
-                    .filter(Objects::nonNull)
-                    .sorted(eventRecordComparator())
-                    .toList();
+            List<ActivityEvent> sorted = sortEventRecordsByStart(queryUserRecords(viewer));
             int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
@@ -511,10 +516,7 @@ public class ActivitiesEventsService {
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
 
-            return new EventsExplorePageDto(pageRecords.stream()
-                    .map(record -> toEventRecordDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
@@ -555,23 +557,19 @@ public class ActivitiesEventsService {
             return new EventsExplorePageDto(List.of(), 0, null);
         }
 
-        return withEventQueryContext(buildAttendingQueryContext(viewer), () -> {
+        return withEventQueryContext(buildAttendingListCardQueryContext(viewer), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
-            List<ActivityEvent> sorted = allEventDocuments(viewer).stream()
+            List<ActivityEvent> sorted = sortEventRecordsByStart(allEventDocuments(viewer).stream()
                     .filter(Objects::nonNull)
                     .filter(record -> TYPE_EVENTS.equals(resolveViewerScopedEventType(record, viewer.userId())))
-                    .sorted(eventRecordComparator())
-                    .toList();
+                    .toList());
             int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
             String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
-            return new EventsExplorePageDto(pageRecords.stream()
-                    .map(record -> toEventRecordDto(record, viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
@@ -631,7 +629,7 @@ public class ActivitiesEventsService {
                 null,
                 null,
                 null);
-        return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
+        return withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
                 pageDirectScopedRecords(viewer, filter, hostingPublicationFilter, request));
     }
 
@@ -1603,7 +1601,7 @@ public class ActivitiesEventsService {
             eventsOverlay.normalizeLifecycleState();
             documentsToSave.add(eventsOverlay);
         }
-        activityEventsRepository.saveAll(documentsToSave);
+        List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
@@ -1622,8 +1620,8 @@ public class ActivitiesEventsService {
         }
         telemetryTags.put("eventType", resolveTelemetryEventType(request));
         adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
-        syncStageReminderTasksForSavedEvents(documentsToSave, actorUserId);
-        materializeSlotOccurrences();
+        syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
+        List<ActivityEvent> refreshedReadModelDocuments = materializeSlotOccurrences(savedDocuments);
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId) && TYPE_EVENTS.equals(targetType)) {
@@ -1638,7 +1636,28 @@ public class ActivitiesEventsService {
                     bookingStartAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
-        return toEventRecordDto(baseRecord, actor);
+        return toEventRecordDto(selectSyncedResponseRecord(sourceId, targetType, savedDocuments, refreshedReadModelDocuments, baseRecord), actor);
+    }
+
+    private ActivityEvent selectSyncedResponseRecord(
+            String sourceId,
+            String targetType,
+            List<ActivityEvent> savedDocuments,
+            List<ActivityEvent> refreshedReadModelDocuments,
+            ActivityEvent fallback) {
+        for (ActivityEvent record : refreshedReadModelDocuments == null ? List.<ActivityEvent>of() : refreshedReadModelDocuments) {
+            if (sourceId.equals(normalizeId(record == null ? null : record.getSourceId()))
+                    && targetType.equals(normalizeType(record == null ? null : record.getType()))) {
+                return record;
+            }
+        }
+        for (ActivityEvent record : savedDocuments == null ? List.<ActivityEvent>of() : savedDocuments) {
+            if (sourceId.equals(normalizeId(record == null ? null : record.getSourceId()))
+                    && targetType.equals(normalizeType(record == null ? null : record.getType()))) {
+                return record;
+            }
+        }
+        return fallback;
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {
@@ -1740,23 +1759,104 @@ public class ActivitiesEventsService {
                 .toList();
 
         if ("week".equals(view) || "month".equals(view)) {
-            return new EventsExplorePageDto(sorted.stream()
-                    .map(projection -> toEventRecordDto(projection.record(), viewer))
-                    .filter(Objects::nonNull)
-                    .toList(), sorted.size(), null);
+            return new EventsExplorePageDto(
+                    toHydratedEventRecordDtos(viewer, sorted.stream().map(EventProjection::record).toList()),
+                    sorted.size(),
+                    null);
         }
 
         String cursor = request == null ? null : request.cursor();
         int startIndex = resolveCursorStartIndex(sorted, cursor);
         int endIndex = Math.min(sorted.size(), startIndex + limit);
-        List<EventRecordDto> records = sorted.subList(startIndex, endIndex).stream()
-                .map(projection -> toEventRecordDto(projection.record(), viewer))
-                .filter(Objects::nonNull)
-                .toList();
-        String nextCursor = endIndex < sorted.size() && !records.isEmpty()
-                ? serializeCursor(records.get(records.size() - 1))
+        List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
+        List<EventRecordDto> records = toHydratedEventRecordDtos(viewer, pageProjections.stream()
+                .map(EventProjection::record)
+                .toList());
+        String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
+                ? serializeCursorId(pageProjections.get(pageProjections.size() - 1).record().getSourceId())
                 : null;
         return new EventsExplorePageDto(records, sorted.size(), nextCursor);
+    }
+
+    private List<EventRecordDto> toHydratedEventRecordDtos(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
+        List<ActivityEvent> hydratedRecords = hydratePageRecords(viewer, projectedRecords);
+        if (hydratedRecords.isEmpty()) {
+            return List.of();
+        }
+        EventQueryContext current = ACTIVE_CONTEXT.get();
+        EventQueryContext pageContext = new EventQueryContext(
+                hydratedRecords,
+                hydratedRecords,
+                buildMemberSnapshotMap(hydratedRecords),
+                current == null ? Set.of() : current.trackedEventSourceIds(),
+                current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
+                current == null ? Map.of() : current.edgeWeightsByPairKey());
+        return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
+                .map(record -> toEventRecordDto(record, viewer))
+                .filter(Objects::nonNull)
+                .toList());
+    }
+
+    private List<ActivityEvent> hydratePageRecords(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
+        if (projectedRecords == null || projectedRecords.isEmpty()) {
+            return List.of();
+        }
+        List<String> sourceIds = projectedRecords.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        List<ActivityEvent> fullDocuments = loadEventDocumentsBySourceIds(sourceIds);
+        Map<String, ActivityEvent> fullByDocumentId = new LinkedHashMap<>();
+        for (ActivityEvent document : fullDocuments) {
+            String documentId = normalizeId(document == null ? null : document.getId());
+            if (StringUtils.hasText(documentId)) {
+                fullByDocumentId.put(documentId, document);
+            }
+        }
+        Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent document : computePreferredEventRecords(fullDocuments)) {
+            String sourceId = normalizeId(document == null ? null : document.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                preferredBySourceId.put(sourceId, document);
+            }
+        }
+
+        List<ActivityEvent> hydrated = new ArrayList<>();
+        for (ActivityEvent projected : projectedRecords) {
+            if (projected == null) {
+                continue;
+            }
+            String documentId = normalizeId(projected.getId());
+            String sourceId = normalizeId(projected.getSourceId());
+            ActivityEvent full = StringUtils.hasText(documentId) ? fullByDocumentId.get(documentId) : null;
+            if (full == null && StringUtils.hasText(sourceId)) {
+                full = preferredBySourceId.get(sourceId);
+            }
+            hydrated.add(applyPageProjection(viewer, projected, full == null ? projected : full));
+        }
+        return hydrated;
+    }
+
+    private ActivityEvent applyPageProjection(ViewerContext viewer, ActivityEvent projection, ActivityEvent fullRecord) {
+        ActivityEvent hydrated = cloneDocument(fullRecord == null ? projection : fullRecord);
+        String projectedType = normalizeType(projection == null ? null : projection.getType());
+        String projectedOwnerUserId = normalizeId(projection == null ? null : projection.getOwnerUserId());
+        if (TYPE_HOSTING.equals(projectedType) && Boolean.TRUE.equals(projection.getIsHosting())
+                && !Boolean.TRUE.equals(hydrated.getIsHosting())) {
+            return buildHostingProjection(
+                    StringUtils.hasText(projectedOwnerUserId) ? projectedOwnerUserId : viewer == null ? null : viewer.userId(),
+                    hydrated);
+        }
+        if (TYPE_EVENTS.equals(projectedType)
+                && !Boolean.TRUE.equals(projection.getIsHosting())
+                && !Boolean.TRUE.equals(projection.getIsInvitation())
+                && StringUtils.hasText(projectedOwnerUserId)
+                && !projectedOwnerUserId.equals(normalizeId(hydrated.getOwnerUserId()))) {
+            return buildMembershipProjection(projectedOwnerUserId, hydrated);
+        }
+        return hydrated;
     }
 
     private EventListPageDto pageEventListRecords(
@@ -1919,6 +2019,7 @@ public class ActivitiesEventsService {
                 .include("frequency")
                 .include("pricing")
                 .include("slotsEnabled")
+                .include("upcomingSlots")
                 .include("subEventsDisplayMode");
     }
 
@@ -2225,7 +2326,7 @@ public class ActivitiesEventsService {
         int pendingMembers = membersSnapshot == null
                 ? normalizeCount(record.getPendingMembers())
                 : membersSnapshot.pendingMembers();
-        List<EventSlotOccurrenceDto> upcomingSlots = resolveUpcomingSlotOccurrences(record);
+        List<EventSlotOccurrenceDto> upcomingSlots = cloneSlotOccurrences(record.getUpcomingSlots());
         return new EventRecordDto(
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
@@ -2766,6 +2867,7 @@ public class ActivitiesEventsService {
         document.setSlotTemplateId(slotEvent ? slotTemplateId : null);
         document.setGenerated(slotEvent && generated);
         document.setEventType(slotEvent ? "slot" : "main");
+        document.setUpcomingSlots(slotEvent ? List.of() : cloneSlotOccurrences(existing == null ? null : existing.getUpcomingSlots()));
         document.setAcceptedMembers(acceptedMembers);
         document.setPendingMembers(pendingMembers);
         document.setTopics(normalizeStrings(request.topics()));
@@ -3320,9 +3422,20 @@ public class ActivitiesEventsService {
                 .thenComparing(item -> safeText(item.id()));
     }
 
-    private Comparator<ActivityEvent> eventRecordComparator() {
-        return Comparator.comparing((ActivityEvent record) -> toSortableDate(record == null ? null : record.getStartAtIso()))
-                .thenComparing(record -> safeText(normalizeId(record == null ? null : record.getSourceId())));
+    private List<ActivityEvent> sortEventRecordsByStart(List<ActivityEvent> records) {
+        if (records == null || records.isEmpty()) {
+            return List.of();
+        }
+        return records.stream()
+                .filter(Objects::nonNull)
+                .map(record -> new EventRecordSortKey(
+                        record,
+                        toSortableDate(record.getStartAtIso()),
+                        safeText(normalizeId(record.getSourceId()))))
+                .sorted(Comparator.comparingLong(EventRecordSortKey::startAtMs)
+                        .thenComparing(EventRecordSortKey::sourceId))
+                .map(EventRecordSortKey::record)
+                .toList();
     }
 
     private ActivityEvent cloneDocument(ActivityEvent source) {
@@ -3332,6 +3445,7 @@ public class ActivitiesEventsService {
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
+        clone.setUpcomingSlots(cloneSlotOccurrences(source.getUpcomingSlots()));
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setPolicies(clonePolicies(source.getPolicies()));
         clone.setLocationCoordinates(cloneLocation(source.getLocationCoordinates()));
@@ -3696,6 +3810,10 @@ public class ActivitiesEventsService {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
+    private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {
+        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
     private PricingConfigDto clonePricing(PricingConfigDto pricing) {
         return pricing;
     }
@@ -3743,19 +3861,27 @@ public class ActivitiesEventsService {
                 && !record.getSlotTemplates().isEmpty();
     }
 
-    private void materializeSlotOccurrences() {
-        List<ActivityEvent> documents = allEventDocuments();
-        List<ActivityEvent> parents = computePreferredEventRecords(documents).stream()
+    private List<ActivityEvent> materializeSlotOccurrences(Collection<ActivityEvent> changedDocuments) {
+        List<String> parentSourceIds = slotReadModelParentSourceIds(changedDocuments);
+        if (parentSourceIds.isEmpty()) {
+            return List.of();
+        }
+        List<ActivityEvent> rawParentDocuments = activityEventsRepository.findBySourceIdIn(parentSourceIds);
+        List<ActivityEvent> parentDocuments = (rawParentDocuments == null ? List.<ActivityEvent>of() : rawParentDocuments).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        List<ActivityEvent> rawSlotDocuments = activityEventsRepository.findByParentEventIdIn(parentSourceIds);
+        List<ActivityEvent> slotDocuments = (rawSlotDocuments == null ? List.<ActivityEvent>of() : rawSlotDocuments).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        List<ActivityEvent> parents = computePreferredEventRecords(parentDocuments).stream()
                 .filter(this::isSlotParentRecord)
                 .toList();
-        if (parents.isEmpty()) {
-            return;
-        }
 
         List<ActivityEvent> toSave = new ArrayList<>();
         for (ActivityEvent parent : parents) {
             Map<String, ActivityEvent> existingBySourceId = new LinkedHashMap<>();
-            for (ActivityEvent record : documents) {
+            for (ActivityEvent record : slotDocuments) {
                 if (isGeneratedSlotRecord(record)
                         && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))) {
                     existingBySourceId.put(normalizeId(record.getSourceId()), record);
@@ -3771,6 +3897,26 @@ public class ActivitiesEventsService {
         if (!toSave.isEmpty()) {
             activityEventsRepository.saveAll(toSave);
         }
+        return eventSlotReadModelService.refreshParentUpcomingSlots(parentSourceIds);
+    }
+
+    private List<String> slotReadModelParentSourceIds(Collection<ActivityEvent> changedDocuments) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (ActivityEvent record : changedDocuments == null ? List.<ActivityEvent>of() : changedDocuments) {
+            if (record == null) {
+                continue;
+            }
+            String parentEventId = normalizeId(record.getParentEventId());
+            if (isGeneratedSlotRecord(record) && StringUtils.hasText(parentEventId)) {
+                ids.add(parentEventId);
+                continue;
+            }
+            String sourceId = normalizeId(record.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                ids.add(sourceId);
+            }
+        }
+        return new ArrayList<>(ids);
     }
 
     private List<ActivityEvent> buildGeneratedSlotRecordsForParent(
@@ -3914,6 +4060,7 @@ public class ActivitiesEventsService {
         next.setSlotTemplateId(slotTemplateId);
         next.setGenerated(true);
         next.setEventType("slot");
+        next.setUpcomingSlots(List.of());
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
@@ -3929,32 +4076,6 @@ public class ActivitiesEventsService {
         next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
         next.normalizeLifecycleState();
         records.add(next);
-    }
-
-    private List<EventSlotOccurrenceDto> resolveUpcomingSlotOccurrences(ActivityEvent record) {
-        if (!isSlotParentRecord(record)) {
-            return List.of();
-        }
-        String parentSourceId = normalizeId(record.getSourceId());
-        long nowMs = System.currentTimeMillis() - (60L * 60L * 1000L);
-        return computePreferredEventRecords(allEventDocuments()).stream()
-                .filter(this::isGeneratedSlotRecord)
-                .filter(item -> parentSourceId.equals(normalizeId(item.getParentEventId())))
-                .filter(item -> !Boolean.TRUE.equals(item.getIsTrashed()))
-                .filter(item -> toSortableDate(item.getEndAtIso()) >= nowMs)
-                .sorted(Comparator.comparing(item -> toSortableDate(item.getStartAtIso())))
-                .map(item -> new EventSlotOccurrenceDto(
-                        normalizeId(item.getSourceId()),
-                        parentSourceId,
-                        safeText(item.getSlotTemplateId()),
-                        safeText(item.getTitle()),
-                        safeText(item.getTimeframe()),
-                        safeText(item.getStartAtIso()),
-                        safeText(item.getEndAtIso()),
-                        normalizeCount(item.getCapacityTotal()),
-                        resolveAcceptedMemberUserIds(item).size(),
-                        resolvePendingMemberUserIds(item).size()))
-                .toList();
     }
 
     private String buildGeneratedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime occurrenceStart) {
@@ -4298,6 +4419,9 @@ public class ActivitiesEventsService {
             int affinityGap,
             int ratingValue,
             boolean past) {
+    }
+
+    private record EventRecordSortKey(ActivityEvent record, long startAtMs, String sourceId) {
     }
 
     private record EventQueryContext(
