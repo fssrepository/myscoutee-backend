@@ -263,15 +263,15 @@
     },
     "timing": {
       "mode": "interval",
-      "intervalMinutes": 5,
-      "intervalSeconds": 300,
+      "intervalMinutes": 1,
+      "intervalSeconds": 5,
       "intervalAmount": 5,
-      "intervalUnit": "minutes",
+      "intervalUnit": "seconds",
       "month": null,
       "dayOfMonth": null,
       "time": "00:00",
       "timezone": "UTC",
-      "cronExpression": "0 0/5 * * * ?"
+      "cronExpression": "0/5 * * * * ?"
     },
     "scheduleSlots": [],
     "parameters": [],

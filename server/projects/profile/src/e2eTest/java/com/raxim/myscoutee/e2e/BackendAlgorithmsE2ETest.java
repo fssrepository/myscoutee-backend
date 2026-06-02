@@ -203,7 +203,7 @@ class BackendAlgorithmsE2ETest {
         JsonNode counterExpiryRule = ruleByKey(initialState, NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
         assertThat(counterExpiryRule.path("enabled").asBoolean()).isTrue();
         assertThat(counterExpiryRule.path("timing").path("intervalAmount").asInt()).isEqualTo(5);
-        assertThat(counterExpiryRule.path("timing").path("intervalUnit").asString()).isEqualTo("minutes");
+        assertThat(counterExpiryRule.path("timing").path("intervalUnit").asString()).isEqualTo("seconds");
 
         JsonNode savedState = postJson("/admin/notifications", Map.of(
                 "adminUserId", ADMIN_ID,
@@ -571,13 +571,13 @@ class BackendAlgorithmsE2ETest {
                 25);
         NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
         timing.setMode("interval");
-        timing.setIntervalMinutes(5);
-        timing.setIntervalSeconds(300);
+        timing.setIntervalMinutes(1);
+        timing.setIntervalSeconds(5);
         timing.setIntervalAmount(5);
-        timing.setIntervalUnit("minutes");
+        timing.setIntervalUnit("seconds");
         timing.setTime("00:00");
         timing.setTimezone("UTC");
-        timing.setCronExpression("0 0/5 * * * ?");
+        timing.setCronExpression("0/5 * * * * ?");
         counterExpiry.setTiming(timing);
         mongoTemplate.save(counterExpiry);
     }

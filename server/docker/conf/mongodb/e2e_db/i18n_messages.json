@@ -1833,7 +1833,7 @@
     "_id": "i18n-message-en-admin-jobs-rule-event-counter-expiry-description",
     "key": "admin.jobs.rule.event.counter.expiry.description",
     "lang": "en",
-    "value": "Expires past event records and refreshes affected user activity counters every five minutes."
+    "value": "Expires past event records and refreshes affected user activity counters every five seconds in E2E."
   },
   {
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox",
@@ -10881,7 +10881,7 @@
     "_id": "i18n-message-hu-admin-jobs-rule-event-counter-expiry-description",
     "key": "admin.jobs.rule.event.counter.expiry.description",
     "lang": "hu",
-    "value": "Ötpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
+    "value": "E2E-ben öt másodpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox",

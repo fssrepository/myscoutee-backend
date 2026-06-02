@@ -120,6 +120,7 @@ tasks.register('bootRunE2E', org.springframework.boot.gradle.tasks.run.BootRun) 
 	environment 'FIREBASE_ENABLED', 'false'
 	environment 'PAYMENT_ENABLE_PAY', providers.environmentVariable('PAYMENT_ENABLE_PAY').orElse('false').get()
 	environment 'MEDIA_ENABLED', providers.environmentVariable('MEDIA_ENABLED').orElse('true').get()
+	environment 'EVENTS_SCHEDULER_CHECK_DELAY_MS', providers.environmentVariable('EVENTS_SCHEDULER_CHECK_DELAY_MS').orElse('5000').get()
 	environment 'E2E_MODE', 'true'
 }
 
@@ -137,6 +138,7 @@ tasks.register('bootRunStress', org.springframework.boot.gradle.tasks.run.BootRu
 	environment 'FIREBASE_ENABLED', 'false'
 	environment 'PAYMENT_ENABLE_PAY', providers.environmentVariable('PAYMENT_ENABLE_PAY').orElse('false').get()
 	environment 'MEDIA_ENABLED', providers.environmentVariable('MEDIA_ENABLED').orElse('true').get()
+	environment 'EVENTS_SCHEDULER_CHECK_DELAY_MS', providers.environmentVariable('EVENTS_SCHEDULER_CHECK_DELAY_MS').orElse('5000').get()
 	environment 'E2E_MODE', 'true'
 	environment 'E2E_STRESS_MODE', 'true'
 	jvmArgs '-Xms512m', '-Xmx2g'

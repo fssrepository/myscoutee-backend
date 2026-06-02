@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -74,13 +73,6 @@ public class EventCounterExpiryService {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.adminTelemetryService = adminTelemetryService;
         this.batchSize = Math.max(1, Math.min(1000, batchSize));
-    }
-
-    @Scheduled(
-            fixedDelayString = "${events.counter-expiry.poll-delay-ms:300000}",
-            initialDelayString = "${events.counter-expiry.initial-delay-ms:30000}")
-    public void expirePastEventCounters() {
-        runExpiryPass();
     }
 
     public int runExpiryPassNow() {
