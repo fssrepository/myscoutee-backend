@@ -27,7 +27,6 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
-import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
@@ -37,15 +36,12 @@ import com.raxim.myscoutee.profile.service.MediaStorageService;
 public class AuthController {
     private final HomeUserProfileService homeUserProfileService;
     private final MediaStorageService mediaStorageService;
-    private final AccessControlService accessControlService;
 
     public AuthController(
             HomeUserProfileService homeUserProfileService,
-            MediaStorageService mediaStorageService,
-            AccessControlService accessControlService) {
+            MediaStorageService mediaStorageService) {
         this.homeUserProfileService = homeUserProfileService;
         this.mediaStorageService = mediaStorageService;
-        this.accessControlService = accessControlService;
     }
 
     @GetMapping("/demo-users")
@@ -77,6 +73,11 @@ public class AuthController {
     }
 
     @PostMapping("/me/profile")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_PROFILE_EDIT,
+            subject = "#request?.id()",
+            resourceId = "#request?.id()",
+            skipWhenAuthenticationOptional = true)
     public UserDto saveProfile(@RequestBody UserDto request) {
         return homeUserProfileService.saveUserProfile(request);
     }
@@ -97,6 +98,11 @@ public class AuthController {
     }
 
     @PostMapping("/me/delete")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_PROFILE_DELETE,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.userId() ?: #actorUserId",
+            skipWhenAuthenticationOptional = true)
     public UserSubmitActionResponseDto deleteUser(@RequestBody(required = false) UserDeleteRequestDto request) {
         return homeUserProfileService.deleteUser(request);
     }
@@ -111,9 +117,6 @@ public class AuthController {
             @RequestParam("userId") String userId,
             @RequestParam("slotIndex") Integer slotIndex,
             @RequestParam("image") MultipartFile image) {
-        if (!accessControlService.canCurrentActorUploadMedia(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to upload media for this profile.");
-        }
         String imageUrl = mediaStorageService.storeImage("profile", userId, String.valueOf(slotIndex), image);
         if (imageUrl == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Profile image upload unavailable.");

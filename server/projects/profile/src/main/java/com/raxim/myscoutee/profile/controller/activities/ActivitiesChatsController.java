@@ -19,6 +19,8 @@ import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPag
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSupportCaseMutationRequestDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.ActivitiesChatService;
 
 @RestController
@@ -70,6 +72,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/messages")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_MESSAGE_CREATE,
+            subject = "#userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatMessageDto sendMessage(
             @PathVariable("chatId") String chatId,
             @RequestBody ChatPostMessageRequestDto request,
@@ -81,6 +88,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/edit")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_MESSAGE_EDIT,
+            subject = "#userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatMessageDto editMessage(
             @PathVariable("chatId") String chatId,
             @PathVariable("messageId") String messageId,
@@ -90,6 +102,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/delete")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_MESSAGE_DELETE,
+            subject = "#userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatMessageDto deleteMessage(
             @PathVariable("chatId") String chatId,
             @PathVariable("messageId") String messageId,
@@ -98,6 +115,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/pin")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_MESSAGE_PIN,
+            subject = "#userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatMessageDto pinMessage(
             @PathVariable("chatId") String chatId,
             @PathVariable("messageId") String messageId,
@@ -107,6 +129,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/reaction")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_REACTION_MANAGE,
+            subject = "#userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatMessageDto reactToMessage(
             @PathVariable("chatId") String chatId,
             @PathVariable("messageId") String messageId,
@@ -116,6 +143,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/attachments")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_ATTACHMENT_ADD,
+            subject = "#userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatMessageDto updateMessageAttachments(
             @PathVariable("chatId") String chatId,
             @PathVariable("messageId") String messageId,
@@ -154,6 +186,11 @@ public class ActivitiesChatsController {
     }
 
     @PostMapping("/{chatId}/support-case")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.CHAT_SUPPORT_MANAGE,
+            subject = "#request?.userId() ?: #userId ?: #actorUserId",
+            resourceId = "#chatId",
+            skipWhenAuthenticationOptional = true)
     public ChatSummaryDto updateSupportCase(
             @PathVariable("chatId") String chatId,
             @RequestBody(required = false) ChatSupportCaseMutationRequestDto request,
