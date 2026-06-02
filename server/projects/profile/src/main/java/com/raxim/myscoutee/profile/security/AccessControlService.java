@@ -38,6 +38,7 @@ public class AccessControlService implements AccessPolicyData {
     private final ConfigProperties configProperties;
     private final AccessPolicyConditionRegistry conditionRegistry;
     private final MemberPolicyFacts memberPolicyFacts;
+    private final ChatPolicyFacts chatPolicyFacts;
     private final AtomicReference<Map<GrantKey, AccessGrantEffect>> accessGrantCache = new AtomicReference<>(Map.of());
     private final AtomicReference<Map<String, AccessPolicy>> accessPolicyCache = new AtomicReference<>(Map.of());
 
@@ -46,12 +47,14 @@ public class AccessControlService implements AccessPolicyData {
             AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository,
             ConfigProperties configProperties,
             AccessPolicyConditionRegistry conditionRegistry,
-            MemberPolicyFacts memberPolicyFacts) {
+            MemberPolicyFacts memberPolicyFacts,
+            ChatPolicyFacts chatPolicyFacts) {
         this.accessGrantsRepository = accessGrantsRepository;
         this.accessPolicyDefinitionsRepository = accessPolicyDefinitionsRepository;
         this.configProperties = configProperties;
         this.conditionRegistry = conditionRegistry;
         this.memberPolicyFacts = memberPolicyFacts;
+        this.chatPolicyFacts = chatPolicyFacts;
     }
 
     @PostConstruct
@@ -274,6 +277,79 @@ public class AccessControlService implements AccessPolicyData {
         return canCurrentActorUsePolicy(AccessPolicyKeys.ASSET_BORROW_CANCEL, requesterUserId, assetId);
     }
 
+    public boolean canCurrentActorSubmitLeaderboardEntry(String actorUserId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_LEADERBOARD_ENTRY_SUBMIT, actorUserId, eventId);
+    }
+
+    public boolean canCurrentActorSubmitEventFeedback(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT, userId, eventId);
+    }
+
+    public boolean canCurrentActorSaveEventFeedbackNote(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_NOTE, userId, eventId);
+    }
+
+    public boolean canCurrentActorRemoveEventFeedback(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_REMOVE, userId, eventId);
+    }
+
+    public boolean canCurrentActorRestoreEventFeedback(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_FEEDBACK_RESTORE, userId, eventId);
+    }
+
+    public boolean canCurrentActorCreateChatMessage(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_MESSAGE_CREATE, userId, chatId);
+    }
+
+    public boolean canCurrentActorEditChatMessage(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_MESSAGE_EDIT, userId, chatId);
+    }
+
+    public boolean canCurrentActorDeleteChatMessage(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_MESSAGE_DELETE, userId, chatId);
+    }
+
+    public boolean canCurrentActorPinChatMessage(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_MESSAGE_PIN, userId, chatId);
+    }
+
+    public boolean canCurrentActorManageChatReaction(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_REACTION_MANAGE, userId, chatId);
+    }
+
+    public boolean canCurrentActorAddChatAttachment(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_ATTACHMENT_ADD, userId, chatId);
+    }
+
+    public boolean canCurrentActorManageSupportChat(String userId, String chatId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, chatId);
+    }
+
+    public boolean canCurrentActorEditProfile(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        return canCurrentActorUsePolicy(AccessPolicyKeys.USER_PROFILE_EDIT, normalizedUserId, normalizedUserId);
+    }
+
+    public boolean canCurrentActorDeleteProfile(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        return canCurrentActorUsePolicy(AccessPolicyKeys.USER_PROFILE_DELETE, normalizedUserId, normalizedUserId);
+    }
+
+    public boolean canCurrentActorUploadMedia(String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        return canCurrentActorUsePolicy(AccessPolicyKeys.USER_MEDIA_UPLOAD, normalizedOwnerUserId, normalizedOwnerUserId);
+    }
+
+    public boolean canCurrentActorImportMedia(String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        return canCurrentActorUsePolicy(AccessPolicyKeys.USER_MEDIA_IMPORT, normalizedOwnerUserId, normalizedOwnerUserId);
+    }
+
+    public boolean canCurrentActorSubmitPrivacyConsent(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        return canCurrentActorUsePolicy(AccessPolicyKeys.PRIVACY_CONSENT_SUBMIT, normalizedUserId, normalizedUserId);
+    }
+
     private boolean canCurrentActorUseAssetPolicy(String policyKey, String subjectUserId, String resourceId) {
         return canCurrentActorUsePolicy(policyKey, subjectUserId, resourceId);
     }
@@ -424,6 +500,16 @@ public class AccessControlService implements AccessPolicyData {
     @Override
     public boolean canTakeOverAsset(String assetId, String actorUserId) {
         return memberPolicyFacts.canTakeOverAsset(assetId, actorUserId);
+    }
+
+    @Override
+    public boolean canAccessChat(String chatId, String actorUserId) {
+        return chatPolicyFacts.canAccessChat(chatId, actorUserId);
+    }
+
+    @Override
+    public boolean canManageSupportChat(String chatId, String actorUserId) {
+        return chatPolicyFacts.canManageSupportChat(chatId, actorUserId);
     }
 
     public String resolveActorUserId(Authentication authentication) {

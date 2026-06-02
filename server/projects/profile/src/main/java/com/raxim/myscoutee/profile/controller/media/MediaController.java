@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaUploadResponseDto;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
 
@@ -25,9 +26,13 @@ import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject
 @RequestMapping("/media")
 public class MediaController {
     private final MediaStorageService mediaStorageService;
+    private final AccessControlService accessControlService;
 
-    public MediaController(MediaStorageService mediaStorageService) {
+    public MediaController(
+            MediaStorageService mediaStorageService,
+            AccessControlService accessControlService) {
         this.mediaStorageService = mediaStorageService;
+        this.accessControlService = accessControlService;
     }
 
     @PostMapping(path = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -36,6 +41,9 @@ public class MediaController {
             @RequestParam("ownerId") String ownerId,
             @RequestParam(value = "entityId", required = false) String entityId,
             @RequestParam("image") MultipartFile image) {
+        if (!accessControlService.canCurrentActorUploadMedia(ownerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to upload media for this owner.");
+        }
         String imageUrl = mediaStorageService.storeImage(scope, ownerId, entityId, image);
         if (imageUrl == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Image upload unavailable.");
@@ -45,9 +53,13 @@ public class MediaController {
 
     @PostMapping(path = "/images/import", consumes = MediaType.APPLICATION_JSON_VALUE)
     public MediaImageUploadResponseDto importImage(@RequestBody MediaImageImportRequestDto request) {
+        String ownerId = request == null ? null : request.ownerId();
+        if (!accessControlService.canCurrentActorImportMedia(ownerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to import media for this owner.");
+        }
         String imageUrl = mediaStorageService.importImage(
                 request == null ? null : request.scope(),
-                request == null ? null : request.ownerId(),
+                ownerId,
                 request == null ? null : request.entityId(),
                 request == null ? null : request.imageUrl());
         return new MediaImageUploadResponseDto(imageUrl != null, imageUrl, imageUrl);
@@ -59,6 +71,9 @@ public class MediaController {
             @RequestParam("ownerId") String ownerId,
             @RequestParam(value = "entityId", required = false) String entityId,
             @RequestParam("audio") MultipartFile audio) {
+        if (!accessControlService.canCurrentActorUploadMedia(ownerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to upload media for this owner.");
+        }
         String audioUrl = mediaStorageService.storeAudio(scope, ownerId, entityId, audio);
         if (audioUrl == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Audio upload unavailable.");

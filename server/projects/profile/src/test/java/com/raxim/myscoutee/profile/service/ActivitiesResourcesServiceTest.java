@@ -38,6 +38,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -46,6 +47,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.AccessPolicyTestSupport;
+import com.raxim.myscoutee.profile.security.ChatPolicyFacts;
 import com.raxim.myscoutee.profile.security.MemberPolicyFacts;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,6 +65,8 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
+    private ActivityChatsRepository activityChatsRepository;
+    @Mock
     private AssetsRepository assetsRepository;
     @Mock
     private UsersRepository usersRepository;
@@ -70,6 +74,8 @@ class ActivitiesResourcesServiceTest {
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
     private AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
+    @Mock
+    private AdminMenuCounterService adminMenuCounterService;
 
     private ActivitiesResourcesService service;
     private AccessControlService accessControlService;
@@ -85,7 +91,8 @@ class ActivitiesResourcesServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository));
+                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
+                new ChatPolicyFacts(activityChatsRepository, usersRepository, adminMenuCounterService));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,

@@ -57,7 +57,24 @@ class AccessPolicySeedTest {
             AccessPolicyKeys.ASSET_BORROW_REQUEST,
             AccessPolicyKeys.ASSET_BORROW_APPROVE,
             AccessPolicyKeys.ASSET_BORROW_REJECT,
-            AccessPolicyKeys.ASSET_BORROW_CANCEL);
+            AccessPolicyKeys.ASSET_BORROW_CANCEL,
+            AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
+            AccessPolicyKeys.EVENT_FEEDBACK_NOTE,
+            AccessPolicyKeys.EVENT_FEEDBACK_REMOVE,
+            AccessPolicyKeys.EVENT_FEEDBACK_RESTORE,
+            AccessPolicyKeys.EVENT_LEADERBOARD_ENTRY_SUBMIT,
+            AccessPolicyKeys.CHAT_MESSAGE_CREATE,
+            AccessPolicyKeys.CHAT_MESSAGE_EDIT,
+            AccessPolicyKeys.CHAT_MESSAGE_DELETE,
+            AccessPolicyKeys.CHAT_MESSAGE_PIN,
+            AccessPolicyKeys.CHAT_REACTION_MANAGE,
+            AccessPolicyKeys.CHAT_ATTACHMENT_ADD,
+            AccessPolicyKeys.CHAT_SUPPORT_MANAGE,
+            AccessPolicyKeys.USER_PROFILE_EDIT,
+            AccessPolicyKeys.USER_PROFILE_DELETE,
+            AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            AccessPolicyKeys.USER_MEDIA_IMPORT,
+            AccessPolicyKeys.PRIVACY_CONSENT_SUBMIT);
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

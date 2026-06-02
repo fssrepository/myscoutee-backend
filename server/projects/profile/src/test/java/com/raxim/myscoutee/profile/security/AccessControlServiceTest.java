@@ -29,6 +29,7 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
+import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -37,9 +38,11 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventRe
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.AdminMenuCounterService;
 
 @ExtendWith(MockitoExtension.class)
 class AccessControlServiceTest {
@@ -48,6 +51,8 @@ class AccessControlServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
+    private ActivityChatsRepository activityChatsRepository;
+    @Mock
     private AssetsRepository assetsRepository;
     @Mock
     private UsersRepository usersRepository;
@@ -55,6 +60,8 @@ class AccessControlServiceTest {
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
     private AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
+    @Mock
+    private AdminMenuCounterService adminMenuCounterService;
 
     private ConfigProperties configProperties;
     private AccessControlService service;
@@ -70,7 +77,8 @@ class AccessControlServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository));
+                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
+                new ChatPolicyFacts(activityChatsRepository, usersRepository, adminMenuCounterService));
         service.loadAccessControlCacheAtStartup();
     }
 
@@ -485,6 +493,116 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void userOwnedPoliciesRequireCurrentActorToMatchSubject() {
+        authenticateAs("u1");
+
+        assertThat(service.canCurrentActorEditProfile("u1")).isTrue();
+        assertThat(service.canCurrentActorDeleteProfile("u1")).isTrue();
+        assertThat(service.canCurrentActorUploadMedia("u1")).isTrue();
+        assertThat(service.canCurrentActorImportMedia("u1")).isTrue();
+        assertThat(service.canCurrentActorSubmitPrivacyConsent("u1")).isTrue();
+        assertThat(service.canCurrentActorEditProfile("u2")).isFalse();
+        assertThat(service.canCurrentActorDeleteProfile("u2")).isFalse();
+        assertThat(service.canCurrentActorUploadMedia("u2")).isFalse();
+        assertThat(service.canCurrentActorImportMedia("u2")).isFalse();
+        assertThat(service.canCurrentActorSubmitPrivacyConsent("u2")).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void userOwnedPolicyDenyGrantOverridesActorMatch() {
+        authenticateAs("u1");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "user.media.import", "user", "u1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorImportMedia("u1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void leaderboardSubmitAllowsAcceptedEventParticipant() {
+        authenticateAs("u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+
+        boolean allowed = service.canCurrentActorSubmitLeaderboardEntry("u1", "event-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void leaderboardSubmitRejectsActorMismatchBeforeMembershipLookup() {
+        authenticateAs("u2");
+
+        boolean allowed = service.canCurrentActorSubmitLeaderboardEntry("u1", "event-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void leaderboardSubmitDenyGrantOverridesAcceptedParticipation() {
+        authenticateAs("u1");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "event.leaderboard.entry.submit", "event", "event-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorSubmitLeaderboardEntry("u1", "event-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void eventFeedbackPoliciesAllowAcceptedEventParticipant() {
+        authenticateAs("u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+
+        assertThat(service.canCurrentActorSubmitEventFeedback("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorSaveEventFeedbackNote("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorRemoveEventFeedback("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorRestoreEventFeedback("u1", "event-1")).isTrue();
+    }
+
+    @Test
+    void eventFeedbackPoliciesAllowEventManagerForOwnFeedbackState() {
+        authenticateAs("admin");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "admin"))
+                .thenReturn(Optional.empty());
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canCurrentActorSaveEventFeedbackNote("admin", "event-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventFeedbackPoliciesRejectActorMismatchBeforeLookup() {
+        authenticateAs("u2");
+
+        boolean allowed = service.canCurrentActorSubmitEventFeedback("u1", "event-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void eventFeedbackDenyGrantOverridesAcceptedParticipation() {
+        authenticateAs("u1");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "event.feedback.note", "event", "event-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorSaveEventFeedbackNote("u1", "event-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
     void assetSourceRefreshAllowsOwnerPreCreateRefreshWithoutAssetId() {
         authenticateAs("u1");
 
@@ -798,6 +916,67 @@ class AccessControlServiceTest {
         assertThat(allowed).isFalse();
     }
 
+    @Test
+    void chatParticipantPoliciesAllowChatMember() {
+        authenticateAs("u1");
+        when(activityChatsRepository.findByOwnerUserIdAndChatId("u1", "chat-1"))
+                .thenReturn(Optional.of(chat("chat-1", "u1", List.of("u1", "u2"), false)));
+
+        assertThat(service.canCurrentActorCreateChatMessage("u1", "chat-1")).isTrue();
+        assertThat(service.canCurrentActorEditChatMessage("u1", "chat-1")).isTrue();
+        assertThat(service.canCurrentActorDeleteChatMessage("u1", "chat-1")).isTrue();
+        assertThat(service.canCurrentActorPinChatMessage("u1", "chat-1")).isTrue();
+        assertThat(service.canCurrentActorManageChatReaction("u1", "chat-1")).isTrue();
+        assertThat(service.canCurrentActorAddChatAttachment("u1", "chat-1")).isTrue();
+    }
+
+    @Test
+    void chatParticipantPolicyRejectsActorMismatchBeforeChatLookup() {
+        authenticateAs("u2");
+
+        boolean allowed = service.canCurrentActorCreateChatMessage("u1", "chat-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityChatsRepository);
+    }
+
+    @Test
+    void chatParticipantPolicyDenyGrantOverridesChatAccess() {
+        authenticateAs("u1");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "chat.message.create", "chat", "chat-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorCreateChatMessage("u1", "chat-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityChatsRepository);
+    }
+
+    @Test
+    void chatSupportManageAllowsAdminOnSupportChat() {
+        authenticateAs("admin");
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
+        when(adminMenuCounterService.isAdminUser(any(Users.class))).thenReturn(true);
+        when(activityChatsRepository.findByChatId("chat-support"))
+                .thenReturn(List.of(chat("chat-support", "requester", List.of("requester"), true)));
+
+        boolean allowed = service.canCurrentActorManageSupportChat("admin", "chat-support");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void chatSupportManageRejectsNonAdmin() {
+        authenticateAs("u1");
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1")));
+        when(adminMenuCounterService.isAdminUser(any(Users.class))).thenReturn(false);
+
+        boolean allowed = service.canCurrentActorManageSupportChat("u1", "chat-support");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityChatsRepository);
+    }
+
     private Authentication auth(String userId) {
         return new FirebaseAuthenticationToken(
                 new FirebasePrincipal(userId, userId + "@example.test", "U"),
@@ -848,6 +1027,15 @@ class AccessControlServiceTest {
         asset.setOwnerUserId(ownerUserId);
         asset.setStatus(status);
         return asset;
+    }
+
+    private ActivityChat chat(String chatId, String ownerUserId, List<String> memberIds, boolean support) {
+        ActivityChat chat = new ActivityChat();
+        chat.setChatId(chatId);
+        chat.setOwnerUserId(ownerUserId);
+        chat.setMemberIds(memberIds);
+        chat.setSupportCaseStatus(support ? "pending" : "");
+        return chat;
     }
 
     private Users user(String userId) {
@@ -931,6 +1119,125 @@ class AccessControlServiceTest {
                         "event.stage.action",
                         "event",
                         List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_LEADERBOARD_ENTRY_SUBMIT,
+                        "event.leaderboard.entry.submit",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of("acceptedParticipation", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
+                        "event.feedback.submit",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_FEEDBACK_NOTE,
+                        "event.feedback.note",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_FEEDBACK_REMOVE,
+                        "event.feedback.remove",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_FEEDBACK_RESTORE,
+                        "event.feedback.restore",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_MESSAGE_CREATE,
+                        "chat.message.create",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanAccessChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_MESSAGE_EDIT,
+                        "chat.message.edit",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanAccessChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_MESSAGE_DELETE,
+                        "chat.message.delete",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanAccessChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_MESSAGE_PIN,
+                        "chat.message.pin",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanAccessChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_REACTION_MANAGE,
+                        "chat.reaction.manage",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanAccessChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_ATTACHMENT_ADD,
+                        "chat.attachment.add",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanAccessChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.CHAT_SUPPORT_MANAGE,
+                        "chat.support.manage",
+                        "chat",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanManageSupportChat"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.USER_PROFILE_EDIT,
+                        "user.profile.edit",
+                        "user",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.USER_PROFILE_DELETE,
+                        "user.profile.delete",
+                        "user",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.USER_MEDIA_UPLOAD,
+                        "user.media.upload",
+                        "user",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.USER_MEDIA_IMPORT,
+                        "user.media.import",
+                        "user",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.PRIVACY_CONSENT_SUBMIT,
+                        "privacy.consent.submit",
+                        "user",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
                         List.of(),
                         null),
                 policy(

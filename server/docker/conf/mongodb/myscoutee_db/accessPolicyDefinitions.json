@@ -557,9 +557,13 @@
     "policyKey": "chat.message.create",
     "permission": "chat.message.create",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Chat participant may post message.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -571,10 +575,14 @@
     "policyKey": "chat.message.edit",
     "permission": "chat.message.edit",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
-    "description": "Author/admin/moderator may edit message.",
+    "status": "active",
+    "description": "Participant may edit own message.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -585,10 +593,14 @@
     "policyKey": "chat.message.delete",
     "permission": "chat.message.delete",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
-    "description": "Author/admin/moderator may delete message.",
+    "status": "active",
+    "description": "Participant may delete own message.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -599,10 +611,14 @@
     "policyKey": "chat.message.pin",
     "permission": "chat.message.pin",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
-    "description": "Admin/moderator may pin message.",
+    "status": "active",
+    "description": "Participant may pin message.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -613,9 +629,13 @@
     "policyKey": "chat.reaction.manage",
     "permission": "chat.reaction.manage",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Participant may add/remove own reaction.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -627,9 +647,13 @@
     "policyKey": "chat.attachment.add",
     "permission": "chat.attachment.add",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Participant may attach media.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -641,9 +665,13 @@
     "policyKey": "chat.support.manage",
     "permission": "chat.support.manage",
     "resourceType": "chat",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanManageSupportChat"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Admin/support may create or update support case.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -655,10 +683,17 @@
     "policyKey": "event.feedback.submit",
     "permission": "event.feedback.submit",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
-    "description": "Accepted participant may submit feedback.",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may submit feedback.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -669,10 +704,17 @@
     "policyKey": "event.feedback.note",
     "permission": "event.feedback.note",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
-    "description": "Owner/admin may add feedback note.",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may save feedback note.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -683,10 +725,17 @@
     "policyKey": "event.feedback.remove",
     "permission": "event.feedback.remove",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
-    "description": "Owner/admin may remove feedback.",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may remove feedback from own list.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -697,10 +746,17 @@
     "policyKey": "event.feedback.restore",
     "permission": "event.feedback.restore",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
-    "description": "Owner/admin may restore feedback.",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may restore feedback to own list.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
     "updatedUser": "access-policy-seed"
@@ -711,9 +767,15 @@
     "policyKey": "event.leaderboard.entry.submit",
     "permission": "event.leaderboard.entry.submit",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "explicitAllow"
+    ],
+    "status": "active",
     "description": "Participant/system may submit leaderboard entry.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -725,9 +787,12 @@
     "policyKey": "user.profile.edit",
     "permission": "user.profile.edit",
     "resourceType": "user",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may edit own profile.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -739,9 +804,12 @@
     "policyKey": "user.profile.delete",
     "permission": "user.profile.delete",
     "resourceType": "user",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may delete own account.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -753,9 +821,12 @@
     "policyKey": "user.media.upload",
     "permission": "user.media.upload",
     "resourceType": "user",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may upload own media.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -767,9 +838,12 @@
     "policyKey": "user.media.import",
     "permission": "user.media.import",
     "resourceType": "user",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may import media for own object.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -781,9 +855,12 @@
     "policyKey": "privacy.consent.submit",
     "permission": "privacy.consent.submit",
     "resourceType": "user",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may submit own privacy consent.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",

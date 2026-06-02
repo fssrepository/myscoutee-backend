@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,6 +29,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarReco
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesChatServiceTest {
@@ -49,6 +51,8 @@ class ActivitiesChatServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AdminMenuCounterService adminMenuCounterService;
+    @Mock
+    private AccessControlService accessControlService;
 
     private ActivitiesChatService service;
 
@@ -63,7 +67,8 @@ class ActivitiesChatServiceTest {
                 chatStreamPublisher,
                 chatPushNotificationService,
                 adminTelemetryService,
-                adminMenuCounterService);
+                adminMenuCounterService,
+                accessControlService);
     }
 
     @AfterEach
@@ -109,6 +114,42 @@ class ActivitiesChatServiceTest {
         verify(activityChatsRepository, never()).findByMemberIdsContaining("viewer");
         verify(activityChatsRepository, never()).findByChatId(anyString());
         verify(activityChatsRepository, never()).findByOwnerUserIdAndChatId(anyString(), anyString());
+        verify(activityChatsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void sendMessageRejectsDeniedChatBeforeWrite() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.sendMessage("chat-1", "viewer", "hello"))
+                .hasMessageContaining("post in this chat");
+
+        verify(activityChatMessagesRepository, never()).save(any(ActivityChatMessage.class));
+        verify(activityChatsRepository, never()).findByChatId(anyString());
+    }
+
+    @Test
+    void editMessageRejectsDeniedChatBeforeLoadingMessage() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(accessControlService.canCurrentActorEditChatMessage("viewer", "chat-1")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.editMessage("chat-1", "viewer", "m1", "updated"))
+                .hasMessageContaining("change messages");
+
+        verify(activityChatMessagesRepository, never()).findByChatIdAndMessageId(anyString(), anyString());
+        verify(activityChatMessagesRepository, never()).save(any(ActivityChatMessage.class));
+    }
+
+    @Test
+    void updateSupportCaseRejectsDeniedChatBeforeSavingState() {
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canCurrentActorManageSupportChat("admin", "chat-support")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.updateSupportCase("chat-support", "admin", "pick"))
+                .hasMessageContaining("support chat");
+
+        verify(activityChatsRepository, never()).findByChatId(anyString());
         verify(activityChatsRepository, never()).saveAll(anyList());
     }
 

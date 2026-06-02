@@ -17,6 +17,10 @@ public interface AccessPolicyData {
 
     boolean canTakeOverAsset(String assetId, String actorUserId);
 
+    boolean canAccessChat(String chatId, String actorUserId);
+
+    boolean canManageSupportChat(String chatId, String actorUserId);
+
     boolean hasExplicitGrant(
             String subjectUserId,
             String permission,

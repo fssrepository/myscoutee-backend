@@ -3,9 +3,11 @@ package com.raxim.myscoutee.profile.security;
 import java.util.List;
 
 import com.raxim.myscoutee.profile.security.condition.AcceptedParticipationCondition;
+import com.raxim.myscoutee.profile.security.condition.ActorCanAccessChatCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageAssetCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageEventCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageMembersCondition;
+import com.raxim.myscoutee.profile.security.condition.ActorCanManageSupportChatCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanRefreshAssetSourceCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanTakeOverAssetCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanTakeOverEventCondition;
@@ -33,6 +35,8 @@ public final class AccessPolicyTestSupport {
                 new ActorCanManageEventCondition(),
                 new ActorCanTakeOverEventCondition(),
                 new ActorCanManageMembersCondition(),
+                new ActorCanAccessChatCondition(),
+                new ActorCanManageSupportChatCondition(),
                 new ActorCanManageAssetCondition(),
                 new ActorCanRefreshAssetSourceCondition(),
                 new ActorCanTakeOverAssetCondition(),

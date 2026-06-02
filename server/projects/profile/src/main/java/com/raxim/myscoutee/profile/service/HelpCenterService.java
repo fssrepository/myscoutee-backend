@@ -38,6 +38,7 @@ import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSa
 import com.raxim.myscoutee.profile.repository.HelpCenterAuditRepository;
 import com.raxim.myscoutee.profile.repository.HelpCenterRevisionsRepository;
 import com.raxim.myscoutee.profile.repository.PrivacyConsentsRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class HelpCenterService {
@@ -85,6 +86,7 @@ public class HelpCenterService {
     private final PrivacyConsentsRepository privacyConsentsRepository;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
+    private final AccessControlService accessControlService;
 
     public HelpCenterService(
             ConfigProperties configProperties,
@@ -92,13 +94,15 @@ public class HelpCenterService {
             HelpCenterAuditRepository auditRepository,
             PrivacyConsentsRepository privacyConsentsRepository,
             AdminTelemetryService adminTelemetryService,
-            AppSettingsService appSettingsService) {
+            AppSettingsService appSettingsService,
+            AccessControlService accessControlService) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
         this.privacyConsentsRepository = privacyConsentsRepository;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
+        this.accessControlService = accessControlService;
     }
 
     public HelpCenterStateDto activeState() {
@@ -307,6 +311,9 @@ public class HelpCenterService {
         String revisionId = normalize(request == null ? null : request.revisionId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(revisionId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
+        }
+        if (!accessControlService.canCurrentActorSubmitPrivacyConsent(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit privacy consent for this user.");
         }
 
         HelpCenterRevision revision = revisionsRepository.findById(revisionId)

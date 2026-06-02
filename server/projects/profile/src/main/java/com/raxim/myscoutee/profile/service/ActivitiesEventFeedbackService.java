@@ -11,8 +11,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
@@ -30,19 +32,18 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class ActivitiesEventFeedbackService {
-    private static final String OWNER_TYPE_EVENT = "event";
-
     private final HomeUserProfileService homeUserProfileService;
     private final ActivityEventsRepository activityEventsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
-    private final ActivitiesMembersService activitiesMembersService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
+    private final AccessControlService accessControlService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -50,17 +51,17 @@ public class ActivitiesEventFeedbackService {
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UsersRepository usersRepository,
-            ActivitiesMembersService activitiesMembersService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService) {
+            AdminTelemetryService adminTelemetryService,
+            AccessControlService accessControlService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.usersRepository = usersRepository;
-        this.activitiesMembersService = activitiesMembersService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
+        this.accessControlService = accessControlService;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -156,10 +157,13 @@ public class ActivitiesEventFeedbackService {
     }
 
     public void submit(EventFeedbackSubmitRequestDto request) {
-        String userId = resolveEligibleUserId(request == null ? null : request.userId(), request == null ? null : request.eventId());
+        String userId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
             return;
+        }
+        if (!accessControlService.canCurrentActorSubmitEventFeedback(userId, eventId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit feedback for this event.");
         }
 
         String nowIso = firstNonBlank(firstAnswerSubmittedAt(request == null ? null : request.answers()), Instant.now().toString());
@@ -205,10 +209,13 @@ public class ActivitiesEventFeedbackService {
     }
 
     public void saveNote(EventFeedbackNoteRequestDto request) {
-        String userId = resolveEligibleUserId(request == null ? null : request.userId(), request == null ? null : request.eventId());
+        String userId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
             return;
+        }
+        if (!accessControlService.canCurrentActorSaveEventFeedbackNote(userId, eventId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to save feedback note for this event.");
         }
         String nowIso = Instant.now().toString();
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
@@ -220,10 +227,16 @@ public class ActivitiesEventFeedbackService {
     }
 
     public void markRemoved(EventFeedbackToggleRequestDto request, boolean removed) {
-        String userId = resolveEligibleUserId(request == null ? null : request.userId(), request == null ? null : request.eventId());
+        String userId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
             return;
+        }
+        boolean allowed = removed
+                ? accessControlService.canCurrentActorRemoveEventFeedback(userId, eventId)
+                : accessControlService.canCurrentActorRestoreEventFeedback(userId, eventId);
+        if (!allowed) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to change feedback state for this event.");
         }
         String nowIso = Instant.now().toString();
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
@@ -232,19 +245,6 @@ public class ActivitiesEventFeedbackService {
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
-    }
-
-    private String resolveEligibleUserId(String requestedUserId, String eventId) {
-        String userId = homeUserProfileService.resolveSelectedUserId(requestedUserId);
-        String normalizedEventId = normalizeId(eventId);
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(normalizedEventId)) {
-            return null;
-        }
-        boolean ownsEventRecord = activityEventsRepository.existsByOwnerUserIdAndSourceId(userId, normalizedEventId);
-        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot =
-                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
-        boolean acceptedMember = membersSnapshot != null && membersSnapshot.acceptedMemberUserIds().contains(userId);
-        return ownsEventRecord || acceptedMember ? userId : null;
     }
 
     private EventFeedbackState findOrCreateState(String userId, String eventId, String nowIso) {
