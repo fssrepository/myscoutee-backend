@@ -2825,6 +2825,7 @@ public class ActivitiesEventsService {
         document.setEndAtIso(publishedManageMode
                 ? normalizeDateTime(existing == null ? null : existing.getEndAtIso(), document.getStartAtIso())
                 : normalizeDateTime(request.endAt(), document.getStartAtIso()));
+        resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
         document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
@@ -2889,6 +2890,28 @@ public class ActivitiesEventsService {
                 : resolveAdminUserIds(StringUtils.hasText(parentEventId) ? parentEventId : sourceId, document.getCreatorUserId()));
         document.normalizeLifecycleState();
         return document;
+    }
+
+    private void resetExpiredOnBoundaryChange(ActivityEvent document, ActivityEvent existing) {
+        if (document == null) {
+            return;
+        }
+        if (existing == null) {
+            document.setIsExpired(false);
+            return;
+        }
+        String previousBoundary = expiryBoundaryIso(existing);
+        String nextBoundary = expiryBoundaryIso(document);
+        if (!Objects.equals(previousBoundary, nextBoundary)) {
+            document.setIsExpired(false);
+        }
+    }
+
+    private String expiryBoundaryIso(ActivityEvent event) {
+        if (event == null) {
+            return "";
+        }
+        return firstNonBlank(event.getEndAtIso(), event.getStartAtIso());
     }
 
     private double resolveAffinity(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
@@ -4038,6 +4061,7 @@ public class ActivitiesEventsService {
         next.setBlindMode(parent.getBlindMode());
         next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
         next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
+        next.setIsExpired(false);
         next.setDistanceKm(null);
         String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
         String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());

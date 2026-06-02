@@ -264,6 +264,7 @@ public class EventParticipationTicketService {
         next.setBlindMode(safeText(preferred.getBlindMode()));
         next.setStartAtIso(normalizeDateTime(preferred.getStartAtIso(), null));
         next.setEndAtIso(normalizeDateTime(preferred.getEndAtIso(), next.getStartAtIso()));
+        next.setIsExpired(preferred.getIsExpired());
         next.setDistanceKm(null);
         next.setImageUrl(safeText(preferred.getImageUrl()));
         next.setSourceLink(safeText(preferred.getSourceLink()));

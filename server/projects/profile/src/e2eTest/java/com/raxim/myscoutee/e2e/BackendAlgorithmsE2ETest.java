@@ -200,6 +200,10 @@ class BackendAlgorithmsE2ETest {
         JsonNode initialState = getJson("/admin/notifications?adminUserId=" + ADMIN_ID);
         assertThat(ruleByKey(initialState, NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
                 .path("enabled").asBoolean()).isTrue();
+        JsonNode counterExpiryRule = ruleByKey(initialState, NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+        assertThat(counterExpiryRule.path("enabled").asBoolean()).isTrue();
+        assertThat(counterExpiryRule.path("timing").path("intervalAmount").asInt()).isEqualTo(5);
+        assertThat(counterExpiryRule.path("timing").path("intervalUnit").asString()).isEqualTo("minutes");
 
         JsonNode savedState = postJson("/admin/notifications", Map.of(
                 "adminUserId", ADMIN_ID,
@@ -555,6 +559,27 @@ class BackendAlgorithmsE2ETest {
                 false,
                 20);
         mongoTemplate.save(autoInviter);
+
+        NotificationRuleConfig counterExpiry = notificationRule(
+                "e2e-event-counter-expiry-rule",
+                NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                "Event counter expiry",
+                "E2E event counter expiry rule.",
+                "event.counter.expiry",
+                true,
+                false,
+                25);
+        NotificationRuleConfig.Timing timing = new NotificationRuleConfig.Timing();
+        timing.setMode("interval");
+        timing.setIntervalMinutes(5);
+        timing.setIntervalSeconds(300);
+        timing.setIntervalAmount(5);
+        timing.setIntervalUnit("minutes");
+        timing.setTime("00:00");
+        timing.setTimezone("UTC");
+        timing.setCronExpression("0 0/5 * * * ?");
+        counterExpiry.setTiming(timing);
+        mongoTemplate.save(counterExpiry);
     }
 
     private NotificationRuleConfig notificationRule(

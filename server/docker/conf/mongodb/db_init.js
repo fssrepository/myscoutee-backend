@@ -263,6 +263,14 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'event_slot_parent_start' }
   );
   portalDb.events.createIndex(
+    { expired: 1, endAtIso: 1, sourceId: 1 },
+    { name: 'event_expired_end' }
+  );
+  portalDb.events.createIndex(
+    { expired: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_expired_start' }
+  );
+  portalDb.events.createIndex(
     { locationGeo: '2dsphere' },
     { name: 'event_location_geo' }
   );

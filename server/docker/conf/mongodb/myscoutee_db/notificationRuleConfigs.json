@@ -243,6 +243,51 @@
     "updatedUser": "notification-registry"
   },
   {
+    "_id": "notification-rule-event-counter-expiry",
+    "syncKey": "notification-rule-event-counter-expiry",
+    "ruleKey": "event-counter-expiry",
+    "label": "admin.jobs.rule.event.counter.expiry",
+    "category": "admin.jobs.category.scheduled",
+    "description": "admin.jobs.rule.event.counter.expiry.description",
+    "actionKey": "event.counter.expiry",
+    "triggerKind": "scheduled_process",
+    "enabled": true,
+    "manualRunEnabled": false,
+    "adminManageable": true,
+    "priority": 225,
+    "channels": {
+      "pushEnabled": false,
+      "emailEnabled": false,
+      "inAppEnabled": false,
+      "supportChatEnabled": false
+    },
+    "timing": {
+      "mode": "interval",
+      "intervalMinutes": 5,
+      "intervalSeconds": 300,
+      "intervalAmount": 5,
+      "intervalUnit": "minutes",
+      "month": null,
+      "dayOfMonth": null,
+      "time": "00:00",
+      "timezone": "UTC",
+      "cronExpression": "0 0/5 * * * ?"
+    },
+    "scheduleSlots": [],
+    "parameters": [],
+    "message": {},
+    "runState": {
+      "currentStatus": "idle",
+      "progressPercent": 0,
+      "progressDetail": "Ready for the next scheduled slot."
+    },
+    "runHistory": [],
+    "createdDate": "2026-05-31T00:00:00.000Z",
+    "createdUser": "notification-registry",
+    "updatedDate": "2026-05-31T00:00:00.000Z",
+    "updatedUser": "notification-registry"
+  },
+  {
     "_id": "notification-rule-notification-outbox",
     "syncKey": "notification-rule-notification-outbox",
     "ruleKey": "notification-outbox",
