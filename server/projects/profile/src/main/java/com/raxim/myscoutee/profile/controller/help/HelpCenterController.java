@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSaveRequestDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 
 @RestController
@@ -53,6 +55,11 @@ public class HelpCenterController {
     }
 
     @PostMapping("/privacy/consents")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.PRIVACY_CONSENT_SUBMIT,
+            subject = "#request?.userId()",
+            resourceId = "#request?.userId()",
+            skipWhenAuthenticationOptional = true)
     public PrivacyConsentDto savePrivacyConsent(@RequestBody(required = false) PrivacyConsentSaveRequestDto request) {
         return helpCenterService.savePrivacyConsent(request);
     }

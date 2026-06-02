@@ -27,20 +27,24 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventRe
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class ActivitiesResourcesService {
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final AssetsService assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
+    private final AccessControlService accessControlService;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             AssetsService assetsService,
-            ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider) {
+            ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
+            AccessControlService accessControlService) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.assetsService = assetsService;
         this.activitiesMembersServiceProvider = activitiesMembersServiceProvider;
+        this.accessControlService = accessControlService;
     }
 
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
@@ -59,8 +63,11 @@ public class ActivitiesResourcesService {
         if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId) || !StringUtils.hasText(assetOwnerUserId)) {
             return null;
         }
-        ActivitiesMembersService activitiesMembersService = requireActivitiesMembersService();
-        if (!activitiesMembersService.hasAcceptedParticipation("event", ownerId, assetOwnerUserId)) {
+        if (!accessControlService.canCurrentActorAssignEventResources(request)
+                && !accessControlService.canCurrentActorManageEventResourceAssignment(request)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to assign resources for this event.");
+        }
+        if (!accessControlService.canAssignEventResourcesForSubject(ownerId, assetOwnerUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to assign resources.");
         }
 
@@ -96,6 +103,9 @@ public class ActivitiesResourcesService {
             String nowIso) {
         String normalizedOwnerId = normalizeId(ownerId);
         if (!StringUtils.hasText(normalizedOwnerId) || removedMembers == null || removedMembers.isEmpty()) {
+            return Set.of();
+        }
+        if (!accessControlService.canCleanupEventResourceAssignments(normalizedOwnerId, actorUserId)) {
             return Set.of();
         }
 
@@ -631,14 +641,6 @@ public class ActivitiesResourcesService {
             return;
         }
         activitiesMembersService.refreshEventParticipationProjection(ownerId);
-    }
-
-    private ActivitiesMembersService requireActivitiesMembersService() {
-        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
-        if (activitiesMembersService == null) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Event membership service is unavailable.");
-        }
-        return activitiesMembersService;
     }
 
     private record ResourceCleanupResult(

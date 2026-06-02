@@ -122,6 +122,12 @@ async function selectFirstExplanationSurface(page) {
 }
 
 async function startEmptyRevision(page) {
+  await page.waitFor('help editor create revision action enabled', async () => {
+    return page.evaluate(() => {
+      const button = document.querySelector('button[title="Create empty revision"]');
+      return Boolean(button) && !button.disabled;
+    });
+  }, 30000);
   await page.clickVisible('button[title="Create empty revision"]');
   await page.waitForSelector('.help-editor-draft-row');
   const contextSelected = await page.evaluate(() => {

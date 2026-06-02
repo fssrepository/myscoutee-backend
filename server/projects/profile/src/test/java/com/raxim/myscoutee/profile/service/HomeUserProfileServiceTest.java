@@ -1,8 +1,11 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -38,8 +41,10 @@ import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @ExtendWith(MockitoExtension.class)
 class HomeUserProfileServiceTest {
@@ -85,6 +90,8 @@ class HomeUserProfileServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AdminMenuCounterService adminMenuCounterService;
+    @Mock
+    private AccessControlService accessControlService;
 
     private HomeUserProfileService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -95,6 +102,9 @@ class HomeUserProfileServiceTest {
         lenient().when(userRatesRepository.findByOwnerUserIdAndMode("active", "pair")).thenReturn(List.of());
         lenient().when(activityMembersRepository.findAll()).thenReturn(List.of());
         lenient().when(assetsRepository.findByOwnerUserId("active")).thenReturn(List.of());
+        lenient().when(accessControlService.canCurrentActorEditProfile(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorDeleteProfile(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorUploadMedia(anyString())).thenReturn(true);
         service = new HomeUserProfileService(
                 usersRepository,
                 userFilterPreferencesRepository,
@@ -117,7 +127,8 @@ class HomeUserProfileServiceTest {
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                adminMenuCounterService);
+                adminMenuCounterService,
+                accessControlService);
     }
 
     @Test
@@ -278,6 +289,18 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void profileImageSaveRejectsDeniedOwnerBeforeSaving() {
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
+        when(accessControlService.canCurrentActorUploadMedia("active")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.saveUserProfileImage("active", 0, "https://cdn.example.com/avatar.jpg"))
+                .hasMessageContaining("upload media");
+
+        verify(usersRepository, never()).save(any(Users.class));
+        verifyNoInteractions(affinityRecomputeTaskService);
+    }
+
+    @Test
     void onboardingAutosaveKeepsThirtyDayPurgeTimestamp() {
         Users active = user("active", 0d);
         active.setStatus("A");
@@ -290,6 +313,27 @@ class HomeUserProfileServiceTest {
 
         assertThat(saved.profileStatus()).isEqualTo("onboarding");
         assertThat(saved.deletedAtIso()).isEqualTo("2026-05-01T00:00:00Z");
+    }
+
+    @Test
+    void deleteUserRejectsDeniedUserBeforeSchedulingDeletion() {
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
+        when(accessControlService.canCurrentActorDeleteProfile("active")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.deleteUser(new UserDeleteRequestDto("active")))
+                .hasMessageContaining("delete this profile");
+
+        verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    void profileAutosaveRejectsDeniedUserBeforeSaving() {
+        when(accessControlService.canCurrentActorEditProfile("active")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.saveUserProfile(onboardingDraftUser("active")))
+                .hasMessageContaining("edit this profile");
+
+        verify(usersRepository, never()).save(any(Users.class));
     }
 
     @Test

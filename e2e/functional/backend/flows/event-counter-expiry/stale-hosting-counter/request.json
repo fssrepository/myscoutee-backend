@@ -1,0 +1,34 @@
+{
+  "name": "e2e event counter expiry: stale hosting counter is refreshed",
+  "group": "flows",
+  "order": 9020,
+  "method": "POST",
+  "path": "/api/auth/me/profile",
+  "script": "event-counter-expiry.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "body": {
+    "id": "e2e-counter-host-{{runId}}",
+    "name": "E2E Counter Host",
+    "age": 31,
+    "birthday": "1995-01-12",
+    "city": "Bratislava",
+    "height": "180 cm",
+    "physique": "active",
+    "languages": ["en"],
+    "initials": "EC",
+    "gender": "man",
+    "statusText": "E2E counter host",
+    "profileStatus": "public",
+    "locationCoordinates": {
+      "latitude": 48.1486,
+      "longitude": 17.1077
+    },
+    "images": []
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}

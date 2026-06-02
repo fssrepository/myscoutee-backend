@@ -5,8 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,9 +56,33 @@ class EventSchedulerTest {
     @Mock
     private EventInviteNotificationService eventInviteNotificationService;
     @Mock
+    private EventCounterExpiryService eventCounterExpiryService;
+    @Mock
     private NotificationRuleRegistryService notificationRuleRegistryService;
     @Mock
     private PlatformParametersService platformParametersService;
+
+    @Test
+    void runScheduledWrappersRunsCounterExpiryWhenAdminRuleIsDue() {
+        EventScheduler scheduler = createScheduler();
+        when(notificationRuleRegistryService.hasEnabledScheduledEventRule()).thenReturn(true);
+        when(notificationRuleRegistryService.shouldRunScheduledRule(anyString(), any(Instant.class))).thenReturn(false);
+        when(notificationRuleRegistryService.shouldRunScheduledRule(eq(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY), any(Instant.class))).thenReturn(true);
+
+        scheduler.runScheduledWrappers();
+
+        verify(eventCounterExpiryService).runExpiryPassNow();
+    }
+
+    @Test
+    void runScheduledWrappersSkipsCounterExpiryWhenAdminRuleIsNotDue() {
+        EventScheduler scheduler = createScheduler();
+        when(notificationRuleRegistryService.hasEnabledScheduledEventRule()).thenReturn(true);
+
+        scheduler.runScheduledWrappers();
+
+        verify(eventCounterExpiryService, never()).runExpiryPassNow();
+    }
 
     @Test
     void generatePriorityPlansIgnoresPendingInvitesWhenSizingBatch() {
@@ -413,6 +439,7 @@ class EventSchedulerTest {
                 activitiesMembersService,
                 activitiesEventLeaderboardService,
                 eventInviteNotificationService,
+                eventCounterExpiryService,
                 notificationRuleRegistryService,
                 platformParametersService);
     }

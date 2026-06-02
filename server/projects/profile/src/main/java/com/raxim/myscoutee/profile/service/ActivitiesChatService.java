@@ -1,7 +1,10 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiPredicate;
 
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -55,6 +59,8 @@ import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSum
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 
 @Service
 public class ActivitiesChatService {
@@ -76,6 +82,7 @@ public class ActivitiesChatService {
     private final ChatPushNotificationService chatPushNotificationService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
+    private final AccessControlService accessControlService;
     private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
     public ActivitiesChatService(
@@ -87,7 +94,8 @@ public class ActivitiesChatService {
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
             AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService) {
+            AdminMenuCounterService adminMenuCounterService,
+            AccessControlService accessControlService) {
         this.activityChatsRepository = activityChatsRepository;
         this.activityChatMessagesRepository = activityChatMessagesRepository;
         this.mongoTemplate = mongoTemplate;
@@ -97,6 +105,7 @@ public class ActivitiesChatService {
         this.chatPushNotificationService = chatPushNotificationService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
+        this.accessControlService = accessControlService;
     }
 
     @PreDestroy
@@ -213,14 +222,14 @@ public class ActivitiesChatService {
 
     public ChatSummaryDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
         String userId = requireResolvedUserId(requestedUserId);
-        Users actor = findUser(userId);
-        if (!isAdminUser(actor)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
-        }
         String normalizedChatId = normalizeId(chatId);
         if (!StringUtils.hasText(normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
         }
+        if (!accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, userId, normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage this support chat.");
+        }
+        Users actor = findUser(userId);
         String action = normalizeSupportCaseAction(actionValue);
         if (!StringUtils.hasText(action)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
@@ -301,8 +310,15 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedText) && normalizedAttachments.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat message text is required.");
         }
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        if (!accessControlService.canCurrentActorCreateChatMessage(userId, normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to post in this chat.");
+        }
 
-        ChatDocumentsSnapshot accessSnapshot = requireChatAccessForSend(chatId, userId);
+        ChatDocumentsSnapshot accessSnapshot = requireChatAccessForSend(normalizedChatId, userId);
         Users sender = findUser(userId);
         ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
         ChatStreamEvent streamEvent = toStreamEvent(accessSnapshot.chatId(), messageRecord);
@@ -321,7 +337,7 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedText)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat message text is required.");
         }
-        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorEditChatMessage, (message, userId, user) -> {
             requireOwnMessage(message, userId);
             if (StringUtils.hasText(message.getDeletedAtIso())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deleted messages cannot be edited.");
@@ -332,7 +348,7 @@ public class ActivitiesChatService {
     }
 
     public ChatMessageDto deleteMessage(String chatId, String requestedUserId, String messageId) {
-        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorDeleteChatMessage, (message, userId, user) -> {
             requireOwnMessage(message, userId);
             message.setText("");
             message.setDeletedAtIso(Instant.now().toString());
@@ -349,7 +365,7 @@ public class ActivitiesChatService {
     }
 
     public ChatMessageDto pinMessage(String chatId, String requestedUserId, String messageId, Boolean pinned) {
-        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorPinChatMessage, (message, userId, user) -> {
             if (Boolean.TRUE.equals(pinned)) {
                 message.setPinnedAtIso(Instant.now().toString());
                 message.setPinnedByUserId(userId);
@@ -361,7 +377,7 @@ public class ActivitiesChatService {
     }
 
     public ChatMessageDto reactToMessage(String chatId, String requestedUserId, String messageId, String emoji) {
-        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorManageChatReaction, (message, userId, user) -> {
             String normalizedEmoji = normalizeText(emoji);
             List<ChatMessageReactionRecord> reactions = new ArrayList<>();
             for (ChatMessageReactionRecord reaction : safeReactions(message.getReactions())) {
@@ -388,7 +404,7 @@ public class ActivitiesChatService {
             String requestedUserId,
             String messageId,
             List<ChatMessageAttachmentDto> attachments) {
-        return mutateMessage(chatId, requestedUserId, messageId, (message, userId, user) -> {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorAddChatAttachment, (message, userId, user) -> {
             if (StringUtils.hasText(message.getDeletedAtIso())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deleted messages cannot be updated.");
             }
@@ -747,13 +763,21 @@ public class ActivitiesChatService {
             String chatId,
             String requestedUserId,
             String messageId,
+            BiPredicate<String, String> policyGuard,
             ChatMessageMutator mutator) {
         String userId = requireResolvedUserId(requestedUserId);
         String normalizedMessageId = normalizeId(messageId);
         if (!StringUtils.hasText(normalizedMessageId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message id is required.");
         }
-        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        if (policyGuard != null && !policyGuard.test(userId, normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to change messages in this chat.");
+        }
+        ChatDocumentsSnapshot snapshot = requireChat(normalizedChatId, userId);
         Users user = findUser(userId);
         ActivityChatMessage message = activityChatMessagesRepository
                 .findByChatIdAndMessageId(snapshot.chatId(), normalizedMessageId)
@@ -1912,8 +1936,24 @@ public class ActivitiesChatService {
     }
 
     private long sortableDate(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return 0L;
+        }
         try {
-            return StringUtils.hasText(value) ? Instant.parse(value.trim()).toEpochMilli() : 0L;
+            return Instant.parse(normalized).toEpochMilli();
+        } catch (Exception exception) {
+            // Some Mongo seed dates are stored as ISO local date-times without a zone.
+        }
+        try {
+            return OffsetDateTime.parse(normalized).toInstant().toEpochMilli();
+        } catch (Exception exception) {
+            // Fall through to local date-time parsing.
+        }
+        try {
+            return LocalDateTime.parse(normalized, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    .toInstant(ZoneOffset.UTC)
+                    .toEpochMilli();
         } catch (Exception exception) {
             return 0L;
         }

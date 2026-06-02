@@ -32,8 +32,12 @@ public final class AssetsDtos {
 
     public record AssetSourceRefreshRequestDto(
             String userId,
+            String assetId,
             String type,
             String sourceLink) {
+        public AssetSourceRefreshRequestDto(String userId, String type, String sourceLink) {
+            this(userId, null, type, sourceLink);
+        }
     }
 
     public record AssetSourceRefreshResponseDto(

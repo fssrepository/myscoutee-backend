@@ -17,8 +17,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -35,6 +37,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class ActivitiesMembersService {
@@ -44,6 +47,8 @@ public class ActivitiesMembersService {
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
     private static final String STATUS_DISQUALIFIED = "disqualified";
+    private static final String ACTION_ACCEPT = "accept";
+    private static final String ACTION_REMOVE = "remove";
     private static final String ACTION_DISQUALIFY = "disqualify";
     private static final String ACTION_REINSTATE = "reinstate";
     private static final String REQUEST_KIND_JOIN = "join";
@@ -69,6 +74,7 @@ public class ActivitiesMembersService {
     private final AdminTelemetryService adminTelemetryService;
     private final ActivitiesChatService activitiesChatService;
     private final EventSlotReadModelService eventSlotReadModelService;
+    private final AccessControlService accessControlService;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -84,7 +90,8 @@ public class ActivitiesMembersService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             ActivitiesChatService activitiesChatService,
-            EventSlotReadModelService eventSlotReadModelService) {
+            EventSlotReadModelService eventSlotReadModelService,
+            AccessControlService accessControlService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -98,12 +105,17 @@ public class ActivitiesMembersService {
         this.adminTelemetryService = adminTelemetryService;
         this.activitiesChatService = activitiesChatService;
         this.eventSlotReadModelService = eventSlotReadModelService;
+        this.accessControlService = accessControlService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
         String normalizedOwnerType = normalizeOwnerType(ownerType);
         String normalizedOwnerId = normalizeId(ownerId);
         if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
+            return List.of();
+        }
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)
+                && !accessControlService.canCurrentActorViewEventMembers(normalizedOwnerId)) {
             return List.of();
         }
 
@@ -123,6 +135,12 @@ public class ActivitiesMembersService {
 
         List<ActivityMembersSummaryDto> summaries = new ArrayList<>();
         for (ActivityMemberOwnerRefDto owner : request.owners()) {
+            String ownerType = normalizeOwnerType(owner == null ? null : owner.ownerType());
+            String ownerId = normalizeId(owner == null ? null : owner.ownerId());
+            if (OWNER_TYPE_EVENT.equals(ownerType)
+                    && !accessControlService.canCurrentActorViewEventMembers(ownerId)) {
+                continue;
+            }
             ActivityMembersSummaryDto summary = querySummary(owner == null ? null : owner.ownerType(), owner == null ? null : owner.ownerId());
             if (summary != null) {
                 summaries.add(summary);
@@ -156,11 +174,6 @@ public class ActivitiesMembersService {
     public boolean hasParticipation(String ownerType, String ownerId, String userId) {
         OwnerMembersSnapshot snapshot = queryOwnerSnapshot(ownerType, ownerId);
         return snapshot != null && snapshot.hasParticipation(userId);
-    }
-
-    public boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId) {
-        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(ownerType, ownerId);
-        return snapshot != null && snapshot.hasAcceptedParticipation(userId);
     }
 
     public void refreshEventParticipationProjection(String eventId) {
@@ -362,7 +375,13 @@ public class ActivitiesMembersService {
             return;
         }
 
-        String actorUserId = resolveActorUserId(null);
+        String actorUserId = resolveActorUserId(request.actorUserId());
+        if (OWNER_TYPE_EVENT.equals(ownerType) && !accessControlService.canManageEventMembers(ownerId, actorUserId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Authenticated user is not allowed to replace members for this event.");
+        }
+
         String nowIso = Instant.now().toString();
         List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
         List<ActivityMember> existingVisibleMembers = existing;
@@ -475,8 +494,14 @@ public class ActivitiesMembersService {
                 || !StringUtils.hasText(ownerId)
                 || !StringUtils.hasText(actorUserId)
                 || !StringUtils.hasText(targetUserId)
-                || !StringUtils.hasText(action)
-                || !canManageOwnerMembers(ownerType, ownerId, actorUserId)
+                || !StringUtils.hasText(action)) {
+            return queryMembers(ownerType, ownerId);
+        }
+        if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            if (!canApplyEventMemberAction(ownerId, actorUserId, targetUserId, action)) {
+                return queryMembers(ownerType, ownerId);
+            }
+        } else if (!canManageOwnerMembers(ownerType, ownerId, actorUserId)
                 || actorUserId.equals(targetUserId)
                 || isProtectedOwnerMember(ownerType, ownerId, targetUserId)) {
             return queryMembers(ownerType, ownerId);
@@ -494,7 +519,14 @@ public class ActivitiesMembersService {
 
         String currentStatus = normalizeStatus(current.getStatus());
         String nextStatus;
-        if (ACTION_DISQUALIFY.equals(action)) {
+        if (ACTION_ACCEPT.equals(action)) {
+            if (!STATUS_PENDING.equals(currentStatus)) {
+                return queryMembers(ownerType, ownerId);
+            }
+            nextStatus = STATUS_ACCEPTED;
+        } else if (ACTION_REMOVE.equals(action)) {
+            nextStatus = STATUS_DELETED;
+        } else if (ACTION_DISQUALIFY.equals(action)) {
             if (!STATUS_ACCEPTED.equals(currentStatus)) {
                 return queryMembers(ownerType, ownerId);
             }
@@ -509,19 +541,23 @@ public class ActivitiesMembersService {
         }
 
         String nowIso = Instant.now().toString();
-        ActivityMember next = cloneMember(current);
-        next.setStatus(nextStatus);
-        next.setPendingSource(null);
-        next.setRequestKind(null);
-        next.setInvitedByUserId(null);
-        next.setActionAtIso(nowIso);
-        next.setUpdatedDate(nowIso);
-        next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+        ActivityMember next = STATUS_DELETED.equals(nextStatus)
+                ? toDeletedMember(current, actorUserId, nowIso)
+                : cloneMember(current);
+        if (!STATUS_DELETED.equals(nextStatus)) {
+            next.setStatus(nextStatus);
+            next.setPendingSource(null);
+            next.setRequestKind(null);
+            next.setInvitedByUserId(null);
+            next.setActionAtIso(nowIso);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+        }
         activityMembersRepository.save(next);
 
         enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
         adminTelemetryService.record(
-                ACTION_DISQUALIFY.equals(action) ? "event.member.disqualified" : "event.member.reinstated",
+                memberActionTelemetry(action),
                 ownerType,
                 ownerId,
                 actorUserId,
@@ -529,9 +565,22 @@ public class ActivitiesMembersService {
                 Map.of("targetUserId", targetUserId));
 
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            if (ACTION_REMOVE.equals(action)) {
+                cascadeRemovedEventMembersFromAssignedAssets(ownerId, List.of(current), actorUserId, nowIso);
+                Set<String> removedManagedAssetIds = activitiesResourcesService
+                        .removeManagedResourcesForRemovedEventMembers(ownerId, List.of(current), actorUserId, nowIso);
+                clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
+                processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
+            }
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
-            postMemberActionChatMessage(ownerId, action, next);
+            if (ACTION_ACCEPT.equals(action)) {
+                postEventMembershipChangeMessages(ownerId, List.of(next), List.of());
+            } else if (ACTION_REMOVE.equals(action)) {
+                postEventMembershipChangeMessages(ownerId, List.of(), List.of(current));
+            } else {
+                postMemberActionChatMessage(ownerId, action, next);
+            }
         } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, List.of(next));
         }
@@ -655,6 +704,9 @@ public class ActivitiesMembersService {
                 StringUtils.hasText(inviterUserId)
                         ? inviterUserId
                         : eventRecord == null ? null : eventRecord.getCreatorUserId());
+        if (!accessControlService.canInviteEventMembers(normalizedEventId, actorUserId)) {
+            return List.of();
+        }
         String nowIso = Instant.now().toString();
         String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
 
@@ -1550,6 +1602,35 @@ public class ActivitiesMembersService {
         }
     }
 
+    private boolean canApplyEventMemberAction(String ownerId, String actorUserId, String targetUserId, String action) {
+        if (ACTION_ACCEPT.equals(action)) {
+            return accessControlService.canAcceptEventMember(ownerId, actorUserId, targetUserId);
+        }
+        if (ACTION_REMOVE.equals(action)) {
+            return accessControlService.canRemoveEventMember(ownerId, actorUserId, targetUserId);
+        }
+        if (ACTION_DISQUALIFY.equals(action)) {
+            return accessControlService.canDisqualifyEventMember(ownerId, actorUserId, targetUserId);
+        }
+        if (ACTION_REINSTATE.equals(action)) {
+            return accessControlService.canReinstateEventMember(ownerId, actorUserId, targetUserId);
+        }
+        return false;
+    }
+
+    private String memberActionTelemetry(String action) {
+        if (ACTION_ACCEPT.equals(action)) {
+            return "event.member.accepted";
+        }
+        if (ACTION_REMOVE.equals(action)) {
+            return "event.member.removed";
+        }
+        if (ACTION_DISQUALIFY.equals(action)) {
+            return "event.member.disqualified";
+        }
+        return "event.member.reinstated";
+    }
+
     private boolean canManageOwnerMembers(String ownerType, String ownerId, String actorUserId) {
         String normalizedOwnerType = normalizeOwnerType(ownerType);
         String normalizedOwnerId = normalizeId(ownerId);
@@ -1734,6 +1815,12 @@ public class ActivitiesMembersService {
         }
         if (ACTION_REINSTATE.equals(normalizedAction)) {
             return ACTION_REINSTATE;
+        }
+        if (ACTION_ACCEPT.equals(normalizedAction)) {
+            return ACTION_ACCEPT;
+        }
+        if (ACTION_REMOVE.equals(normalizedAction)) {
+            return ACTION_REMOVE;
         }
         return "";
     }
@@ -1991,11 +2078,6 @@ public class ActivitiesMembersService {
         public boolean hasParticipation(String userId) {
             String normalizedUserId = userId == null ? "" : userId.trim();
             return acceptedMemberUserIds.contains(normalizedUserId) || pendingMemberUserIds.contains(normalizedUserId);
-        }
-
-        public boolean hasAcceptedParticipation(String userId) {
-            String normalizedUserId = userId == null ? "" : userId.trim();
-            return acceptedMemberUserIds.contains(normalizedUserId);
         }
 
         public boolean hasAcceptedAdminRole(String userId) {

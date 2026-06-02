@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -344,6 +344,8 @@ db.getCollection('events').createIndex({ status: 1, creatorUserId: 1, visibility
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, creatorUserId: 1, sourceId: 1 }, { name: 'event_explore_candidates_status' });
 db.getCollection('events').createIndex({ type: 1, status: 1, generated: 1, published: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_explore_feed_status' });
 db.getCollection('events').createIndex({ parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_slot_parent_start' });
+db.getCollection('events').createIndex({ expired: 1, endAtIso: 1, sourceId: 1 }, { name: 'event_expired_end' });
+db.getCollection('events').createIndex({ expired: 1, startAtIso: 1, sourceId: 1 }, { name: 'event_expired_start' });
 db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'event_location_geo' });
 " >/dev/null
       ;;

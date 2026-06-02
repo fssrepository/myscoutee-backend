@@ -26,10 +26,16 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -43,6 +49,7 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = asset();
         Users owner = user("u1", "Owner One", "OO");
@@ -62,6 +69,7 @@ class AssetsServiceTest {
         when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -75,7 +83,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -103,16 +112,19 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = assetWithEventRequest();
+        Users owner = user("u1", "Owner One", "OO");
         Users target = user("u2", "Member Two", "MT");
 
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(target));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
-                .thenReturn(Optional.empty());
+        when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(false);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -126,7 +138,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -135,6 +148,7 @@ class AssetsServiceTest {
         verify(mongoTemplate, never()).updateFirst(any(), any(), eq(Asset.class));
         verify(affinityRecomputeTaskService, never()).enqueueAssetChanged(any(), any());
         verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
+        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
     }
 
     @Test
@@ -146,6 +160,7 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = assetWithEventRequest();
         Users owner = user("u1", "Owner One", "OO");
@@ -159,8 +174,8 @@ class AssetsServiceTest {
         when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
-                .thenReturn(Optional.of(eventMember));
+        when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(promotedMember));
         when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
@@ -181,7 +196,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -196,6 +212,7 @@ class AssetsServiceTest {
 
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
         verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(any(), any());
+        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
     }
 
     @Test
@@ -207,6 +224,7 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = asset();
         Users owner = user("u1", "Owner One", "OO");
@@ -220,6 +238,7 @@ class AssetsServiceTest {
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
                 .thenReturn(UpdateResult.acknowledged(0L, 0L, null));
+        when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -233,7 +252,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -251,6 +271,7 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = asset();
         asset.setOwnerUserId("u1");
@@ -265,6 +286,7 @@ class AssetsServiceTest {
                 .thenReturn(Optional.of(managerMember));
         when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
                 .thenReturn(UpdateResult.acknowledged(0L, 0L, null));
+        when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -278,7 +300,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -296,11 +319,13 @@ class AssetsServiceTest {
         AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = asset();
         when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of(asset));
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(asset));
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(accessControlService.canCurrentActorDeleteAsset("u1", "asset-1")).thenReturn(true);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -314,7 +339,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -343,6 +369,7 @@ class AssetsServiceTest {
         AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = asset();
         asset.setStatus("T");
@@ -356,6 +383,7 @@ class AssetsServiceTest {
         when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
         when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(accessControlService.canCurrentActorRestoreAsset("u1", "asset-1")).thenReturn(true);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -369,7 +397,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.restore(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -393,12 +422,14 @@ class AssetsServiceTest {
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
         Users owner = user("u1", "Owner One", "OO");
 
         when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of());
         when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
         when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
         when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
+        when(accessControlService.canCurrentActorReplaceAssets("u1")).thenReturn(true);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -412,12 +443,441 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         service.replace(new AssetReplaceRequestDto("u1", List.of(assetCard("asset-1"))));
 
         verify(assetsRepository).saveAll(any());
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+    }
+
+    @Test
+    void deleteDoesNotLoadOrSaveAssetWhenPolicyDenies() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
+
+        verify(assetsRepository, never()).findByOwnerUserIdAndAssetId(any(), any());
+        verify(assetsRepository, never()).save(any(Asset.class));
+    }
+
+    @Test
+    void takeOverDoesNotLoadAssetWhenPolicyDenies() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        AssetCardDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
+
+        assertThat(card).isNull();
+        verify(assetsRepository, never()).findByAssetId(any());
+    }
+
+    @Test
+    void makeManagerDoesNotLoadAssetWhenActorPolicyDenies() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
+
+        assertThat(card).isNull();
+        verify(assetsRepository, never()).findByAssetId(any());
+    }
+
+    @Test
+    void upsertUsesCreatePolicyForNewAsset() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Users owner = user("u1", "Owner One", "OO");
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.empty());
+        when(accessControlService.canCurrentActorCreateAsset("u1", "asset-1")).thenReturn(true);
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
+        when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto("u1", assetCard("asset-1")));
+
+        verify(accessControlService).canCurrentActorCreateAsset("u1", "asset-1");
+        verify(accessControlService, never()).canCurrentActorEditAsset(any(), any());
+        verify(assetsRepository).save(any(Asset.class));
+    }
+
+    @Test
+    void upsertUsesEditPolicyForExistingAssetAndStopsWhenDenied() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = asset();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto("u1", assetCard("asset-1")));
+
+        verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+    }
+
+    @Test
+    void upsertAllowsPendingBorrowRequestWithoutFullAssetEditAndIgnoresAssetFieldChanges() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = asset();
+        existing.setRequests(List.of());
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Spoofed Title",
+                        1,
+                        List.of(borrowRequestDto("request-2", "u2", "pending", "event-1")))));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
+        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(1);
+        assertThat(savedAsset.getValue().getRequests()).hasSize(1);
+        assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("pending");
+        verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
+        verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
+    }
+
+    @Test
+    void upsertRejectsPendingBorrowRequestWhenRequesterPolicyDenies() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = asset();
+        existing.setRequests(List.of());
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Camp Kit",
+                        2,
+                        List.of(borrowRequestDto("request-2", "u2", "pending", "event-1")))));
+
+        verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+    }
+
+    @Test
+    void upsertRequiresBorrowApprovePolicyEvenWhenFullAssetEditIsAllowed() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithPendingBorrowRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Camp Kit",
+                        2,
+                        List.of(borrowRequestDto("request-1", "u2", "accepted", "event-1")))));
+
+        verify(accessControlService).canCurrentActorApproveAssetBorrow("u2", "asset-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+    }
+
+    @Test
+    void upsertAllowsBorrowApproveWhenApprovePolicyAllows() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithPendingBorrowRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.canCurrentActorApproveAssetBorrow("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Camp Kit",
+                        2,
+                        List.of(borrowRequestDto("request-1", "u2", "accepted", "event-1")))));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("accepted");
+    }
+
+    @Test
+    void upsertAllowsBorrowRejectWithoutFullAssetEdit() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithPendingBorrowRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorRejectAssetBorrow("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
+        assertThat(savedAsset.getValue().getRequests()).isEmpty();
+        verify(accessControlService).canCurrentActorRejectAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
+    void upsertAllowsBorrowCancelWithoutFullAssetEdit() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithEventRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
+        assertThat(savedAsset.getValue().getRequests()).isEmpty();
+        verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
+    void refreshFromSourceStopsBeforeHostValidationWhenPolicyDenies() {
+        AssetSourceRefreshProperties refreshProperties = mock(AssetSourceRefreshProperties.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        when(refreshProperties.isEnabled()).thenReturn(true);
+        when(accessControlService.canCurrentActorRefreshAssetSource("u1", "asset-1")).thenReturn(false);
+
+        AssetsService service = new AssetsService(
+                mock(AssetsRepository.class),
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                refreshProperties,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        AssetSourceRefreshResponseDto response = service.refreshFromSource(
+                new AssetSourceRefreshRequestDto("u1", "asset-1", "Car", "https://example.com/car"));
+
+        assertThat(response.enabled()).isTrue();
+        assertThat(response.supported()).isFalse();
+        assertThat(response.normalizedUrl()).isEqualTo("https://example.com/car");
+        verify(accessControlService).canCurrentActorRefreshAssetSource("u1", "asset-1");
+        verify(refreshProperties, never()).getAllowedHosts();
+    }
+
+    @Test
+    void refreshFromSourceUsesOwnerContextWhenAssetIdIsMissing() {
+        AssetSourceRefreshProperties refreshProperties = mock(AssetSourceRefreshProperties.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        when(refreshProperties.isEnabled()).thenReturn(true);
+        when(refreshProperties.getAllowedHosts()).thenReturn(List.of("booking.com"));
+        when(accessControlService.canCurrentActorRefreshAssetSource("u1", null)).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                mock(AssetsRepository.class),
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                refreshProperties,
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        AssetSourceRefreshResponseDto response = service.refreshFromSource(
+                new AssetSourceRefreshRequestDto("u1", "Car", "https://example.com/car"));
+
+        assertThat(response.enabled()).isTrue();
+        assertThat(response.supported()).isFalse();
+        verify(accessControlService).canCurrentActorRefreshAssetSource("u1", null);
     }
 
     private Asset asset() {
@@ -476,16 +936,41 @@ class AssetsServiceTest {
         return asset;
     }
 
+    private Asset assetWithPendingBorrowRequest() {
+        Asset asset = assetWithEventRequest();
+        AssetRequestRecord request = asset.getRequests().get(0);
+        asset.setRequests(List.of(new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                "pending",
+                "Awaiting owner confirmation.",
+                request.requestKind(),
+                request.requestedAtIso(),
+                request.booking())));
+        return asset;
+    }
+
     private AssetCardDto assetCard(String assetId) {
+        return assetCard(assetId, "Camp Kit", 2, List.of());
+    }
+
+    private AssetCardDto assetCard(
+            String assetId,
+            String title,
+            Integer quantity,
+            List<AssetMemberRequestDto> requests) {
         return new AssetCardDto(
                 assetId,
                 "Supplies",
-                "Camp Kit",
+                title,
                 "",
                 "Camping",
                 "Austin",
                 2,
-                2,
+                quantity,
                 "Shared camping kit.",
                 "",
                 "",
@@ -496,7 +981,37 @@ class AssetsServiceTest {
                 "A",
                 "u1",
                 "Owner One",
-                List.of(),
+                requests,
+                List.of());
+    }
+
+    private AssetMemberRequestDto borrowRequestDto(String requestId, String userId, String status, String eventId) {
+        return new AssetMemberRequestDto(
+                requestId,
+                userId,
+                "Member Two",
+                "MT",
+                "man",
+                status,
+                "Borrow request.",
+                "borrow",
+                "2026-05-11T10:00:00Z",
+                new AssetRequestBookingDto(
+                        eventId,
+                        "Weekend Ride",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2026-05-12T09:00:00Z",
+                        "2026-05-12T11:00:00Z",
+                        1,
+                        0d,
+                        "USD",
+                        List.of(),
+                        null,
+                        null),
                 List.of());
     }
 

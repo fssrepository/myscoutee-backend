@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaUploadResponseDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
 
@@ -31,6 +33,11 @@ public class MediaController {
     }
 
     @PostMapping(path = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            subject = "#ownerId",
+            resourceId = "#ownerId",
+            skipWhenAuthenticationOptional = true)
     public MediaImageUploadResponseDto uploadImage(
             @RequestParam("scope") String scope,
             @RequestParam("ownerId") String ownerId,
@@ -44,16 +51,27 @@ public class MediaController {
     }
 
     @PostMapping(path = "/images/import", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_IMPORT,
+            subject = "#request?.ownerId()",
+            resourceId = "#request?.ownerId()",
+            skipWhenAuthenticationOptional = true)
     public MediaImageUploadResponseDto importImage(@RequestBody MediaImageImportRequestDto request) {
+        String ownerId = request == null ? null : request.ownerId();
         String imageUrl = mediaStorageService.importImage(
                 request == null ? null : request.scope(),
-                request == null ? null : request.ownerId(),
+                ownerId,
                 request == null ? null : request.entityId(),
                 request == null ? null : request.imageUrl());
         return new MediaImageUploadResponseDto(imageUrl != null, imageUrl, imageUrl);
     }
 
     @PostMapping(path = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            subject = "#ownerId",
+            resourceId = "#ownerId",
+            skipWhenAuthenticationOptional = true)
     public MediaUploadResponseDto uploadAudio(
             @RequestParam("scope") String scope,
             @RequestParam("ownerId") String ownerId,

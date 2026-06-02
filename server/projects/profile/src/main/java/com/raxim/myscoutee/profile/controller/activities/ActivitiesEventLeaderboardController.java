@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.ActivitiesEventLeaderboardService;
 
 @RestController
@@ -28,6 +30,11 @@ public class ActivitiesEventLeaderboardController {
     }
 
     @PostMapping("/entry")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_LEADERBOARD_ENTRY_SUBMIT,
+            subject = "#request?.actorUserId() ?: #actorUserId",
+            resourceId = "#request?.eventId()",
+            skipWhenAuthenticationOptional = true)
     public EventLeaderboardStateDto upsertEntry(@RequestBody EventLeaderboardEntryUpsertRequestDto request) {
         return activitiesEventLeaderboardService.upsertEntry(request);
     }

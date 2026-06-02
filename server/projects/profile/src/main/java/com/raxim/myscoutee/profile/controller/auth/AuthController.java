@@ -26,6 +26,8 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 
@@ -71,6 +73,11 @@ public class AuthController {
     }
 
     @PostMapping("/me/profile")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_PROFILE_EDIT,
+            subject = "#request?.id()",
+            resourceId = "#request?.id()",
+            skipWhenAuthenticationOptional = true)
     public UserDto saveProfile(@RequestBody UserDto request) {
         return homeUserProfileService.saveUserProfile(request);
     }
@@ -91,11 +98,21 @@ public class AuthController {
     }
 
     @PostMapping("/me/delete")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_PROFILE_DELETE,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.userId() ?: #actorUserId",
+            skipWhenAuthenticationOptional = true)
     public UserSubmitActionResponseDto deleteUser(@RequestBody(required = false) UserDeleteRequestDto request) {
         return homeUserProfileService.deleteUser(request);
     }
 
     @PostMapping(path = "/me/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            subject = "#userId",
+            resourceId = "#userId",
+            skipWhenAuthenticationOptional = true)
     public UserProfileImageUploadResponseDto uploadProfileImage(
             @RequestParam("userId") String userId,
             @RequestParam("slotIndex") Integer slotIndex,

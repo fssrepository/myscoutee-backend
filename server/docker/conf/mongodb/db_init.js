@@ -5,6 +5,8 @@ const requiredCollections = [
   'assets',
   'activityMembers',
   'activityResources',
+  'accessPolicyDefinitions',
+  'accessGrants',
   'chats',
   'chatMessages',
   'events',
@@ -214,6 +216,28 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'activity_resource_owner_key' }
   );
 
+  portalDb.accessPolicyDefinitions.createIndex(
+    { syncKey: 1 },
+    { name: 'access_policy_definition_sync_key', unique: true, sparse: true }
+  );
+  portalDb.accessPolicyDefinitions.createIndex(
+    { policyKey: 1 },
+    { name: 'access_policy_definition_key', unique: true }
+  );
+
+  portalDb.accessGrants.createIndex(
+    { syncKey: 1 },
+    { name: 'access_grant_sync_key', unique: true, sparse: true }
+  );
+  portalDb.accessGrants.createIndex(
+    { subjectUserId: 1, permission: 1, resourceType: 1, resourceId: 1 },
+    { name: 'access_grant_subject_permission_resource' }
+  );
+  portalDb.accessGrants.createIndex(
+    { resourceType: 1, resourceId: 1, permission: 1 },
+    { name: 'access_grant_resource_permission' }
+  );
+
   portalDb.events.createIndex(
     { syncKey: 1 },
     { name: 'event_sync_key', unique: true, sparse: true }
@@ -261,6 +285,14 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.events.createIndex(
     { parentEventId: 1, generated: 1, startAtIso: 1, sourceId: 1 },
     { name: 'event_slot_parent_start' }
+  );
+  portalDb.events.createIndex(
+    { expired: 1, endAtIso: 1, sourceId: 1 },
+    { name: 'event_expired_end' }
+  );
+  portalDb.events.createIndex(
+    { expired: 1, startAtIso: 1, sourceId: 1 },
+    { name: 'event_expired_start' }
   );
   portalDb.events.createIndex(
     { locationGeo: '2dsphere' },

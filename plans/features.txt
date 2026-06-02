@@ -4,10 +4,12 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-graph stats + graph view merge
-red counter badges' value on e2e is not being shown properly
-
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
-pls. check learning - spring security introduction
+demo ui bootstrap speedup 2-3x (if one step is reading from indexeddb to generate data for the next step, 
+you should avoid - if you can't speed up in present form, then slash the data to be inserted in the indexeddb)
+
+build github to commit
+
+curl smoke test the stack is up and running on prod

@@ -1,11 +1,15 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterEach;
@@ -24,9 +28,11 @@ import com.raxim.myscoutee.profile.data.document.HelpCenterAuditEntry;
 import com.raxim.myscoutee.profile.data.document.HelpCenterRevision;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterSectionDto;
+import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.HelpCenterAuditRepository;
 import com.raxim.myscoutee.profile.repository.HelpCenterRevisionsRepository;
 import com.raxim.myscoutee.profile.repository.PrivacyConsentsRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @ExtendWith(MockitoExtension.class)
 class HelpCenterServiceTest {
@@ -40,6 +46,8 @@ class HelpCenterServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AppSettingsService appSettingsService;
+    @Mock
+    private AccessControlService accessControlService;
 
     private HelpCenterService service;
 
@@ -52,7 +60,8 @@ class HelpCenterServiceTest {
                 auditRepository,
                 privacyConsentsRepository,
                 adminTelemetryService,
-                appSettingsService);
+                appSettingsService,
+                accessControlService);
     }
 
     @AfterEach
@@ -105,6 +114,41 @@ class HelpCenterServiceTest {
         assertThat(revisionCaptor.getAllValues())
                 .extracting(HelpCenterRevision::getVersion)
                 .containsExactly(2, 3);
+    }
+
+    @Test
+    void savePrivacyConsentRejectsDeniedUserBeforeRevisionLookup() {
+        when(accessControlService.canCurrentActorSubmitPrivacyConsent("user-1")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.savePrivacyConsent(new PrivacyConsentSaveRequestDto(
+                "user-1",
+                "revision-1",
+                null,
+                List.of(),
+                "onboarding")))
+                .hasMessageContaining("privacy consent");
+
+        verify(revisionsRepository, never()).findById(anyString());
+    }
+
+    @Test
+    void savePrivacyConsentAllowsOwnUserWhenPolicyAllows() {
+        HelpCenterRevision privacy = revision("revision-1", 3);
+        privacy.setDocumentType("privacy");
+        when(accessControlService.canCurrentActorSubmitPrivacyConsent("user-1")).thenReturn(true);
+        when(revisionsRepository.findById("revision-1")).thenReturn(Optional.of(privacy));
+        when(privacyConsentsRepository.findByUserIdAndRevisionId("user-1", "revision-1")).thenReturn(Optional.empty());
+        when(privacyConsentsRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.savePrivacyConsent(new PrivacyConsentSaveRequestDto(
+                "user-1",
+                "revision-1",
+                null,
+                List.of(),
+                "onboarding"));
+
+        assertThat(result.userId()).isEqualTo("user-1");
+        assertThat(result.revisionVersion()).isEqualTo(3);
     }
 
     private HelpCenterRevision revision(String id, Integer version) {

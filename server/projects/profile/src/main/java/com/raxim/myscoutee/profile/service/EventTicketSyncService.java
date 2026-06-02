@@ -267,6 +267,7 @@ public class EventTicketSyncService {
             next.setBlindMode(safeText(canonical.getBlindMode()));
             next.setStartAtIso(safeNullableText(canonical.getStartAtIso()));
             next.setEndAtIso(safeNullableText(canonical.getEndAtIso()));
+            next.setIsExpired(canonical.getIsExpired());
             next.setDistanceKm(null);
             next.setImageUrl(safeText(canonical.getImageUrl()));
             next.setSourceLink(safeText(canonical.getSourceLink()));

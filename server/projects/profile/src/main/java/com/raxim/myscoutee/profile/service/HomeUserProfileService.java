@@ -74,6 +74,7 @@ import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class HomeUserProfileService {
@@ -198,6 +199,7 @@ public class HomeUserProfileService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
+    private final AccessControlService accessControlService;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -226,7 +228,8 @@ public class HomeUserProfileService {
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService) {
+            AdminMenuCounterService adminMenuCounterService,
+            AccessControlService accessControlService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -249,6 +252,7 @@ public class HomeUserProfileService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
+        this.accessControlService = accessControlService;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -381,6 +385,9 @@ public class HomeUserProfileService {
         }
 
         String normalizedUserId = normalizeId(user.id());
+        if (!accessControlService.canCurrentActorEditProfile(normalizedUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
+        }
         evictUserReadCaches(normalizedUserId);
         Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
         Users saved = usersRepository.save(mergeUserDocument(existing, user));
@@ -404,6 +411,9 @@ public class HomeUserProfileService {
         String normalizedImageUrl = nullToEmpty(imageUrl);
         if (!StringUtils.hasText(resolvedUserId) || normalizedSlotIndex < 0 || !StringUtils.hasText(normalizedImageUrl)) {
             return;
+        }
+        if (!accessControlService.canCurrentActorUploadMedia(resolvedUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to upload media for this profile.");
         }
 
         Users user = usersRepository.findByUserId(resolvedUserId).orElse(null);
@@ -549,6 +559,9 @@ public class HomeUserProfileService {
         String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
         if (!StringUtils.hasText(resolvedUserId)) {
             return new UserSubmitActionResponseDto(false, "Unable to delete user.");
+        }
+        if (!accessControlService.canCurrentActorDeleteProfile(resolvedUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to delete this profile.");
         }
         return scheduleUserDeletionByUserId(resolvedUserId, "status:D");
     }

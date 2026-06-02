@@ -10,8 +10,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.algo.gen.EventGeneratorByScore;
 import com.raxim.myscoutee.algo.gen.GeneratorModels;
@@ -30,21 +32,25 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class ActivitiesEventLeaderboardService {
     private final ActivityEventsRepository activityEventsRepository;
     private final EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     private final ActivitiesMembersService activitiesMembersService;
+    private final AccessControlService accessControlService;
     private final EventGeneratorByScore scoreGenerator = new EventGeneratorByScore();
 
     public ActivitiesEventLeaderboardService(
             ActivityEventsRepository activityEventsRepository,
             EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository,
-            ActivitiesMembersService activitiesMembersService) {
+            ActivitiesMembersService activitiesMembersService,
+            AccessControlService accessControlService) {
         this.activityEventsRepository = activityEventsRepository;
         this.eventLeaderboardEntriesRepository = eventLeaderboardEntriesRepository;
         this.activitiesMembersService = activitiesMembersService;
+        this.accessControlService = accessControlService;
     }
 
     public EventLeaderboardStateDto queryState(String eventId, String subEventId) {
@@ -99,6 +105,9 @@ public class ActivitiesEventLeaderboardService {
         String mode = normalizeLeaderboardType(request.mode());
         String nowIso = Instant.now().toString();
         String actorUserId = normalizeId(request.actorUserId());
+        if (!accessControlService.canCurrentActorSubmitLeaderboardEntry(actorUserId, normalizedEventId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit leaderboard entry for this event.");
+        }
         if ("Fifa".equalsIgnoreCase(mode)) {
             String pairKey = pairKey(request.homeMemberId(), request.awayMemberId());
             if (!StringUtils.hasText(pairKey)) {

@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
@@ -34,7 +35,9 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
         @CompoundIndex(name = "event_explore_candidates_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_explore_feed_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'published': 1, 'startAtIso': 1, 'sourceId': 1}"),
-        @CompoundIndex(name = "event_slot_parent_start", def = "{'parentEventId': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}")
+        @CompoundIndex(name = "event_slot_parent_start", def = "{'parentEventId': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_expired_end", def = "{'expired': 1, 'endAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_expired_start", def = "{'expired': 1, 'startAtIso': 1, 'sourceId': 1}")
 })
 public class ActivityEvent {
     private static final String TYPE_EVENTS = "events";
@@ -72,6 +75,8 @@ public class ActivityEvent {
     private Boolean isHosting;
     private Boolean isTrashed;
     private Boolean published;
+    @Field("expired")
+    private Boolean expired;
     private String trashedAtIso;
     private String creatorUserId;
     private String creatorName;
@@ -202,6 +207,8 @@ public class ActivityEvent {
         return !STATUS_DRAFT.equals(getStatus());
     }
     public void setPublished(Boolean published) { this.published = published; }
+    public Boolean getIsExpired() { return expired; }
+    public void setIsExpired(Boolean expired) { this.expired = expired; }
     public String getTrashedAtIso() { return trashedAtIso; }
     public void setTrashedAtIso(String trashedAtIso) { this.trashedAtIso = trashedAtIso; }
     public String getCreatorUserId() { return creatorUserId; }

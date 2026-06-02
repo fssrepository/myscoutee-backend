@@ -73,3 +73,6 @@ Thumbs.db
 /server/docker/conf/nginx/keys/*.key
 /server/docker/conf/nginx/keys/*.crt
 !/server/docker/conf/nginx/keys/README.md
+
+# local target deploy configs
+/tools/install/*.env

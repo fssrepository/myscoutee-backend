@@ -56,6 +56,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -87,6 +88,7 @@ public class AssetsService {
     private final AdminTelemetryService adminTelemetryService;
     private final NotificationOutboxService notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
+    private final AccessControlService accessControlService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -100,7 +102,8 @@ public class AssetsService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             NotificationOutboxService notificationOutboxService,
-            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
+            ChatAttachmentLifecycleService chatAttachmentLifecycleService,
+            AccessControlService accessControlService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -113,6 +116,7 @@ public class AssetsService {
         this.adminTelemetryService = adminTelemetryService;
         this.notificationOutboxService = notificationOutboxService;
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
+        this.accessControlService = accessControlService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -196,6 +200,9 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
+        if (!accessControlService.canCurrentActorReplaceAssets(normalizedUserId)) {
+            return;
+        }
 
         List<Asset> existing = assetsRepository.findByOwnerUserId(normalizedUserId);
         Map<String, Asset> existingByAssetId = new LinkedHashMap<>();
@@ -247,6 +254,9 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return;
         }
+        if (!accessControlService.canCurrentActorDeleteAsset(normalizedUserId, normalizedAssetId)) {
+            return;
+        }
         assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
                 .filter(asset -> !STATUS_TRASHED.equals(safeText(asset.getStatus())))
                 .map(asset -> toTrashedAsset(asset, normalizedUserId, Instant.now().toString()))
@@ -263,6 +273,9 @@ public class AssetsService {
         String normalizedUserId = normalizeId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorRestoreAsset(normalizedUserId, normalizedAssetId)) {
             return null;
         }
         Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
@@ -292,6 +305,9 @@ public class AssetsService {
         String normalizedUserId = normalizeId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorTakeOverAsset(normalizedUserId, normalizedAssetId)) {
             return null;
         }
         Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
@@ -334,18 +350,22 @@ public class AssetsService {
                 || !StringUtils.hasText(normalizedTargetUserId)) {
             return null;
         }
+        if (!accessControlService.canCurrentActorPromoteAssetManager(normalizedUserId, normalizedAssetId)) {
+            return null;
+        }
         Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
         Optional<ActivityMember> existingMember = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, normalizedAssetId, normalizedTargetUserId);
         AssetRequestRecord targetRequest = findAssetRequest(current, normalizedTargetUserId);
-        ActivityMember eventMember = acceptedEventMemberForAssetRequest(targetRequest, normalizedTargetUserId);
+        String targetRequestEventId = assetRequestEventId(targetRequest);
         if (current == null
                 || normalizedTargetUserId.equals(normalizeId(current.getOwnerUserId()))
                 || !canManageAssetMembers(current, normalizedUserId)
                 || !isActiveUser(normalizedTargetUserId)
                 || isAcceptedAssetManagerMember(existingMember.orElse(null))
                 || !isKnownAssetParticipant(current, normalizedTargetUserId, existingMember.orElse(null))
-                || (requiresEventMembership(targetRequest) && eventMember == null)) {
+                || (StringUtils.hasText(targetRequestEventId)
+                        && !accessControlService.canReceiveEventAssetManagerRole(targetRequestEventId, normalizedTargetUserId))) {
             return null;
         }
 
@@ -490,27 +510,13 @@ public class AssetsService {
                 .orElse(null);
     }
 
-    private boolean requiresEventMembership(AssetRequestRecord request) {
-        return StringUtils.hasText(assetRequestEventId(request));
-    }
-
-    private ActivityMember acceptedEventMemberForAssetRequest(AssetRequestRecord request, String userId) {
-        String eventId = assetRequestEventId(request);
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(normalizedUserId)) {
-            return null;
-        }
-        return activityMembersRepository
-                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, eventId, normalizedUserId)
-                .filter(member -> MEMBER_STATUS_ACCEPTED.equals(safeText(member.getStatus())))
-                .orElse(null);
-    }
-
     private String assetRequestEventId(AssetRequestRecord request) {
         return normalizeId(request == null || request.booking() == null ? null : request.booking().eventId());
     }
 
     public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
+        String normalizedUserId = normalizeId(request == null ? null : request.userId());
+        String normalizedAssetId = normalizeId(request == null ? null : request.assetId());
         String normalizedUrl = normalizeExternalUrl(request == null ? null : request.sourceLink());
         boolean enabled = assetSourceRefreshProperties.isEnabled();
         if (!StringUtils.hasText(normalizedUrl)) {
@@ -518,6 +524,9 @@ public class AssetsService {
         }
         if (!enabled) {
             return new AssetSourceRefreshResponseDto(false, false, normalizedUrl, null, null, null, null);
+        }
+        if (!accessControlService.canCurrentActorRefreshAssetSource(normalizedUserId, normalizedAssetId)) {
+            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
         }
 
         URI uri = toUri(normalizedUrl);
@@ -611,16 +620,153 @@ public class AssetsService {
             return null;
         }
 
-        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, normalizeId(assetDto.id())).orElse(null);
-        Asset saved = toDocument(assetDto, ownerUserId, existing);
-        if (saved == null) {
+        String assetId = normalizeId(assetDto == null ? null : assetDto.id());
+        if (!StringUtils.hasText(assetId)) {
             return null;
+        }
+        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, assetId).orElse(null);
+        boolean fullAssetWriteAllowed = existing == null
+                ? accessControlService.canCurrentActorCreateAsset(ownerUserId, assetId)
+                : accessControlService.canCurrentActorEditAsset(ownerUserId, assetId);
+        if (existing == null && !fullAssetWriteAllowed) {
+            return null;
+        }
+        Asset proposed = toDocument(assetDto, ownerUserId, existing);
+        if (proposed == null) {
+            return null;
+        }
+        Asset saved = proposed;
+        if (existing != null) {
+            if (!canApplyAssetRequestPolicies(existing, proposed, fullAssetWriteAllowed)) {
+                return null;
+            }
+            if (!fullAssetWriteAllowed) {
+                if (!hasAssetRequestChanges(existing, proposed)) {
+                    return null;
+                }
+                saved = toRequestScopedAsset(existing, proposed, ownerUserId);
+            }
         }
         assetsRepository.save(saved);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         return toDto(saved);
+    }
+
+    private boolean canApplyAssetRequestPolicies(Asset existing, Asset proposed, boolean fullAssetWriteAllowed) {
+        if (existing == null || proposed == null) {
+            return true;
+        }
+
+        String assetId = normalizeId(existing.getAssetId());
+        Map<String, AssetRequestRecord> previousById = requestsById(existing.getRequests());
+        Map<String, AssetRequestRecord> nextById = requestsById(proposed.getRequests());
+
+        for (Map.Entry<String, AssetRequestRecord> entry : nextById.entrySet()) {
+            AssetRequestRecord previous = previousById.get(entry.getKey());
+            AssetRequestRecord next = entry.getValue();
+            if (Objects.equals(previous, next)) {
+                continue;
+            }
+            if (!canApplyAddedOrUpdatedAssetRequestPolicy(assetId, previous, next, fullAssetWriteAllowed)) {
+                return false;
+            }
+        }
+
+        for (Map.Entry<String, AssetRequestRecord> entry : previousById.entrySet()) {
+            if (nextById.containsKey(entry.getKey())) {
+                continue;
+            }
+            if (!canApplyRemovedAssetRequestPolicy(assetId, entry.getValue(), fullAssetWriteAllowed)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean canApplyAddedOrUpdatedAssetRequestPolicy(
+            String assetId,
+            AssetRequestRecord previous,
+            AssetRequestRecord next,
+            boolean fullAssetWriteAllowed) {
+        if (!isBorrowRequest(previous) && !isBorrowRequest(next)) {
+            return fullAssetWriteAllowed;
+        }
+
+        String requesterUserId = normalizeId(next == null ? null : next.userId());
+        if (!StringUtils.hasText(requesterUserId)) {
+            return false;
+        }
+        if (previous == null) {
+            if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(next.status()))) {
+                return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
+            }
+            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next));
+        }
+
+        String previousStatus = normalizeRequestStatus(previous.status());
+        String nextStatus = normalizeRequestStatus(next.status());
+        if ("pending".equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
+            return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
+        }
+        if ("pending".equals(previousStatus) && "pending".equals(nextStatus)) {
+            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next));
+        }
+        if (MEMBER_STATUS_ACCEPTED.equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
+            return fullAssetWriteAllowed;
+        }
+        return false;
+    }
+
+    private boolean canApplyRemovedAssetRequestPolicy(
+            String assetId,
+            AssetRequestRecord previous,
+            boolean fullAssetWriteAllowed) {
+        if (!isBorrowRequest(previous)) {
+            return fullAssetWriteAllowed;
+        }
+        String requesterUserId = normalizeId(previous == null ? null : previous.userId());
+        if (!StringUtils.hasText(requesterUserId)) {
+            return false;
+        }
+        if ("pending".equals(normalizeRequestStatus(previous.status()))
+                && accessControlService.canCurrentActorRejectAssetBorrow(requesterUserId, assetId)) {
+            return true;
+        }
+        return accessControlService.canCurrentActorCancelAssetBorrow(requesterUserId, assetId);
+    }
+
+    private Asset toRequestScopedAsset(Asset existing, Asset proposed, String ownerUserId) {
+        Asset next = cloneAsset(existing);
+        next.setQuantity(proposed.getQuantity());
+        next.setRequests(new ArrayList<>(safeRequests(proposed.getRequests())));
+        next.setUpdatedDate(proposed.getUpdatedDate());
+        next.setUpdatedUser(ownerUserId);
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
+        return next;
+    }
+
+    private boolean hasAssetRequestChanges(Asset existing, Asset proposed) {
+        return !Objects.equals(
+                requestsById(existing == null ? null : existing.getRequests()),
+                requestsById(proposed == null ? null : proposed.getRequests()));
+    }
+
+    private Map<String, AssetRequestRecord> requestsById(List<AssetRequestRecord> requests) {
+        Map<String, AssetRequestRecord> byId = new LinkedHashMap<>();
+        for (AssetRequestRecord request : safeRequests(requests)) {
+            String requestId = normalizeId(request == null ? null : request.id());
+            if (StringUtils.hasText(requestId)) {
+                byId.put(requestId, request);
+            }
+        }
+        return byId;
+    }
+
+    private boolean isBorrowRequest(AssetRequestRecord request) {
+        return request != null && "borrow".equals(normalizeAssetRequestKind(request.requestKind()));
     }
 
     private void syncAssetRequestPayments(Asset existing, Asset saved) {

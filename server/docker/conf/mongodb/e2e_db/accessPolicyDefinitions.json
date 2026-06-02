@@ -1,0 +1,869 @@
+[
+  {
+    "_id": "access-policy-event-create",
+    "syncKey": "access-policy-event-create",
+    "policyKey": "event.create",
+    "permission": "event.create",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may create or sync a new event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-edit",
+    "syncKey": "access-policy-event-edit",
+    "policyKey": "event.edit",
+    "permission": "event.edit",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may edit event details.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-publish",
+    "syncKey": "access-policy-event-publish",
+    "policyKey": "event.publish",
+    "permission": "event.publish",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin may publish event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-unpublish",
+    "syncKey": "access-policy-event-unpublish",
+    "policyKey": "event.unpublish",
+    "permission": "event.unpublish",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin may unpublish event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-delete",
+    "syncKey": "access-policy-event-delete",
+    "policyKey": "event.delete",
+    "permission": "event.delete",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin may trash or delete event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-restore",
+    "syncKey": "access-policy-event-restore",
+    "policyKey": "event.restore",
+    "permission": "event.restore",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin may restore event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-takeover",
+    "syncKey": "access-policy-event-takeover",
+    "policyKey": "event.takeover",
+    "permission": "event.takeover",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanTakeOverEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Admin/eligible manager may take over event control.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-join",
+    "syncKey": "access-policy-event-join",
+    "policyKey": "event.join",
+    "permission": "event.join",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may request to join event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-stage-action",
+    "syncKey": "access-policy-event-stage-action",
+    "policyKey": "event.stage.action",
+    "permission": "event.stage.action",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User/member/manager may perform event stage action.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-view",
+    "syncKey": "access-policy-event-member-view",
+    "policyKey": "event.member.view",
+    "permission": "event.member.view",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "User may view event member list or summaries.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-manage",
+    "syncKey": "access-policy-event-member-manage",
+    "policyKey": "event.member.manage",
+    "permission": "event.member.manage",
+    "resourceType": "event",
+    "required": ["noExplicitDeny", "actorCanManageMembers"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may replace event member list.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-accept",
+    "syncKey": "access-policy-event-member-accept",
+    "policyKey": "event.member.accept",
+    "permission": "event.member.accept",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageMembers",
+      "actorDiffersFromSubject",
+      "subjectIsNotProtectedMember",
+      "pendingParticipation"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may accept pending member.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-remove",
+    "syncKey": "access-policy-event-member-remove",
+    "policyKey": "event.member.remove",
+    "permission": "event.member.remove",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageMembers",
+      "actorDiffersFromSubject",
+      "subjectIsNotProtectedMember"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "pendingParticipation",
+      "disqualifiedParticipation"
+    ],
+    "status": "active",
+    "description": "Owner/admin/manager may remove member.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-disqualify",
+    "syncKey": "access-policy-event-member-disqualify",
+    "policyKey": "event.member.disqualify",
+    "permission": "event.member.disqualify",
+    "resourceType": "event",
+    "required": ["noExplicitDeny", "actorCanManageMembers", "actorDiffersFromSubject", "subjectIsNotProtectedMember", "acceptedParticipation"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may disqualify member.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-reinstate",
+    "syncKey": "access-policy-event-member-reinstate",
+    "policyKey": "event.member.reinstate",
+    "permission": "event.member.reinstate",
+    "resourceType": "event",
+    "required": ["noExplicitDeny", "actorCanManageMembers", "actorDiffersFromSubject", "subjectIsNotProtectedMember", "disqualifiedParticipation"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may reinstate member.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-member-invite",
+    "syncKey": "access-policy-event-member-invite",
+    "policyKey": "event.member.invite",
+    "permission": "event.member.invite",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may invite users.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-resource-assign-submit",
+    "syncKey": "access-policy-resource-assign-submit",
+    "policyKey": "resource.assign.submit",
+    "permission": "resource.assign",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Actor may submit an event resource assignment for their own asset-owner row.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-resource-assign-subject",
+    "syncKey": "access-policy-resource-assign-subject",
+    "policyKey": "resource.assign.subject",
+    "permission": "resource.assign",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Subject user may receive/keep resources assigned to an event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-resource-assign-manage",
+    "syncKey": "access-policy-resource-assign-manage",
+    "policyKey": "resource.assign.manage",
+    "permission": "resource.assign.manage",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/admin/manager may assign resources for another participant.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-resource-assign-cleanup",
+    "syncKey": "access-policy-resource-assign-cleanup",
+    "policyKey": "resource.assign.cleanup",
+    "permission": "resource.assign.cleanup",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "System/admin may remove resources when event members are removed.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-create",
+    "syncKey": "access-policy-asset-create",
+    "policyKey": "asset.create",
+    "permission": "asset.create",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny"],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may create/upsert own asset.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-replace",
+    "syncKey": "access-policy-asset-replace",
+    "policyKey": "asset.replace",
+    "permission": "asset.replace",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny"],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may replace/sync own asset list.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-edit",
+    "syncKey": "access-policy-asset-edit",
+    "policyKey": "asset.edit",
+    "permission": "asset.edit",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/manager may edit asset.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-delete",
+    "syncKey": "access-policy-asset-delete",
+    "policyKey": "asset.delete",
+    "permission": "asset.delete",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner may trash asset.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-restore",
+    "syncKey": "access-policy-asset-restore",
+    "policyKey": "asset.restore",
+    "permission": "asset.restore",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner may restore asset.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-takeover",
+    "syncKey": "access-policy-asset-takeover",
+    "policyKey": "asset.takeover",
+    "permission": "asset.takeover",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny", "actorCanTakeOverAsset"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Accepted manager may take over under-review asset.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-manager-promote-target",
+    "syncKey": "access-policy-asset-manager-promote-target",
+    "policyKey": "asset.manager.promote.target",
+    "permission": "asset.manager.promote",
+    "resourceType": "event",
+    "required": [
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Target user may receive asset manager role for an event-linked asset request.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-manager-promote-actor",
+    "syncKey": "access-policy-asset-manager-promote-actor",
+    "policyKey": "asset.manager.promote.actor",
+    "permission": "asset.manager.promote.actor",
+    "resourceType": "asset",
+    "required": ["actorMatchesSubject", "noExplicitDeny", "actorCanManageAsset"],
+    "anyOf": [],
+    "status": "active",
+    "description": "Actor may promote another user to asset manager.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-source-refresh",
+    "syncKey": "access-policy-asset-source-refresh",
+    "policyKey": "asset.source.refresh",
+    "permission": "asset.source.refresh",
+    "resourceType": "asset",
+    "required": [
+      "noExplicitDeny",
+      "actorCanRefreshAssetSource"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/manager may refresh asset from external source.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-borrow-request",
+    "syncKey": "access-policy-asset-borrow-request",
+    "policyKey": "asset.borrow.request",
+    "permission": "asset.borrow.request",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Event participant may request/borrow asset for event.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-borrow-approve",
+    "syncKey": "access-policy-asset-borrow-approve",
+    "policyKey": "asset.borrow.approve",
+    "permission": "asset.borrow.approve",
+    "resourceType": "asset",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageAsset"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/manager may approve borrow request.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-borrow-reject",
+    "syncKey": "access-policy-asset-borrow-reject",
+    "policyKey": "asset.borrow.reject",
+    "permission": "asset.borrow.reject",
+    "resourceType": "asset",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageAsset"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Owner/manager may reject borrow request.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-asset-borrow-cancel",
+    "syncKey": "access-policy-asset-borrow-cancel",
+    "policyKey": "asset.borrow.cancel",
+    "permission": "asset.borrow.cancel",
+    "resourceType": "asset",
+    "required": [
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "actorMatchesSubject",
+      "actorCanManageAsset"
+    ],
+    "status": "active",
+    "description": "Requester or owner/manager may cancel request.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-message-create",
+    "syncKey": "access-policy-chat-message-create",
+    "policyKey": "chat.message.create",
+    "permission": "chat.message.create",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Chat participant may post message.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-message-edit",
+    "syncKey": "access-policy-chat-message-edit",
+    "policyKey": "chat.message.edit",
+    "permission": "chat.message.edit",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Participant may edit own message.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-message-delete",
+    "syncKey": "access-policy-chat-message-delete",
+    "policyKey": "chat.message.delete",
+    "permission": "chat.message.delete",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Participant may delete own message.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-message-pin",
+    "syncKey": "access-policy-chat-message-pin",
+    "policyKey": "chat.message.pin",
+    "permission": "chat.message.pin",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Participant may pin message.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-reaction-manage",
+    "syncKey": "access-policy-chat-reaction-manage",
+    "policyKey": "chat.reaction.manage",
+    "permission": "chat.reaction.manage",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Participant may add/remove own reaction.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-attachment-add",
+    "syncKey": "access-policy-chat-attachment-add",
+    "policyKey": "chat.attachment.add",
+    "permission": "chat.attachment.add",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanAccessChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Participant may attach media.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-chat-support-manage",
+    "syncKey": "access-policy-chat-support-manage",
+    "policyKey": "chat.support.manage",
+    "permission": "chat.support.manage",
+    "resourceType": "chat",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny",
+      "actorCanManageSupportChat"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "Admin/support may create or update support case.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-feedback-submit",
+    "syncKey": "access-policy-event-feedback-submit",
+    "policyKey": "event.feedback.submit",
+    "permission": "event.feedback.submit",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may submit feedback.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-feedback-note",
+    "syncKey": "access-policy-event-feedback-note",
+    "policyKey": "event.feedback.note",
+    "permission": "event.feedback.note",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may save feedback note.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-feedback-remove",
+    "syncKey": "access-policy-event-feedback-remove",
+    "policyKey": "event.feedback.remove",
+    "permission": "event.feedback.remove",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may remove feedback from own list.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-feedback-restore",
+    "syncKey": "access-policy-event-feedback-restore",
+    "policyKey": "event.feedback.restore",
+    "permission": "event.feedback.restore",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Accepted participant or event manager may restore feedback to own list.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-event-leaderboard-entry-submit",
+    "syncKey": "access-policy-event-leaderboard-entry-submit",
+    "policyKey": "event.leaderboard.entry.submit",
+    "permission": "event.leaderboard.entry.submit",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "explicitAllow"
+    ],
+    "status": "active",
+    "description": "Participant/system may submit leaderboard entry.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-user-profile-edit",
+    "syncKey": "access-policy-user-profile-edit",
+    "policyKey": "user.profile.edit",
+    "permission": "user.profile.edit",
+    "resourceType": "user",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may edit own profile.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-user-profile-delete",
+    "syncKey": "access-policy-user-profile-delete",
+    "policyKey": "user.profile.delete",
+    "permission": "user.profile.delete",
+    "resourceType": "user",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may delete own account.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-user-media-upload",
+    "syncKey": "access-policy-user-media-upload",
+    "policyKey": "user.media.upload",
+    "permission": "user.media.upload",
+    "resourceType": "user",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may upload own media.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-user-media-import",
+    "syncKey": "access-policy-user-media-import",
+    "policyKey": "user.media.import",
+    "permission": "user.media.import",
+    "resourceType": "user",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may import media for own object.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  },
+  {
+    "_id": "access-policy-privacy-consent-submit",
+    "syncKey": "access-policy-privacy-consent-submit",
+    "policyKey": "privacy.consent.submit",
+    "permission": "privacy.consent.submit",
+    "resourceType": "user",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [],
+    "status": "active",
+    "description": "User may submit own privacy consent.",
+    "createdDate": "2026-06-02T00:00:00Z",
+    "updatedDate": "2026-06-02T00:00:00Z",
+    "updatedUser": "access-policy-seed"
+  }
+]

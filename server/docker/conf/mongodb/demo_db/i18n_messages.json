@@ -1824,6 +1824,18 @@
     "value": "Moves tournament stages into review states so admins can start, resume, or finalize them deliberately."
   },
   {
+    "_id": "i18n-message-en-admin-jobs-rule-event-counter-expiry",
+    "key": "admin.jobs.rule.event.counter.expiry",
+    "lang": "en",
+    "value": "Event counter expiry"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-event-counter-expiry-description",
+    "key": "admin.jobs.rule.event.counter.expiry.description",
+    "lang": "en",
+    "value": "Expires past event records and refreshes affected user activity counters every five minutes."
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "en",
@@ -2572,6 +2584,18 @@
     "key": "event.scheduler.tournament-review.description",
     "lang": "en",
     "value": "Moves tournament stages into admin review states."
+  },
+  {
+    "_id": "i18n-message-en-event-counter-expiry",
+    "key": "event.counter.expiry",
+    "lang": "en",
+    "value": "Event counter expiry"
+  },
+  {
+    "_id": "i18n-message-en-event-counter-expiry-description",
+    "key": "event.counter.expiry.description",
+    "lang": "en",
+    "value": "Expires past events and refreshes affected counters."
   },
   {
     "_id": "i18n-message-en-notifications-outbox-worker",
@@ -10848,6 +10872,18 @@
     "value": "A bajnokság szakaszait admin ellenőrzésre teszi, hogy az indítás, folytatás és véglegesítés szándékos legyen."
   },
   {
+    "_id": "i18n-message-hu-admin-jobs-rule-event-counter-expiry",
+    "key": "admin.jobs.rule.event.counter.expiry",
+    "lang": "hu",
+    "value": "Esemény számláló lejáratás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-event-counter-expiry-description",
+    "key": "admin.jobs.rule.event.counter.expiry.description",
+    "lang": "hu",
+    "value": "Ötpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "hu",
@@ -11596,6 +11632,18 @@
     "key": "event.scheduler.tournament-review.description",
     "lang": "hu",
     "value": "A bajnokság szakaszait admin ellenőrzésre teszi."
+  },
+  {
+    "_id": "i18n-message-hu-event-counter-expiry",
+    "key": "event.counter.expiry",
+    "lang": "hu",
+    "value": "Esemény számláló lejáratás"
+  },
+  {
+    "_id": "i18n-message-hu-event-counter-expiry-description",
+    "key": "event.counter.expiry.description",
+    "lang": "hu",
+    "value": "Lejáratja a múltbeli eseményeket, és frissíti az érintett számlálókat."
   },
   {
     "_id": "i18n-message-hu-notifications-outbox-worker",

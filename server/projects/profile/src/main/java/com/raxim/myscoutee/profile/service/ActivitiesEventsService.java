@@ -65,6 +65,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -120,6 +121,7 @@ public class ActivitiesEventsService {
     private final ActivitiesChatService activitiesChatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
+    private final AccessControlService accessControlService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -139,7 +141,8 @@ public class ActivitiesEventsService {
             ObjectProvider<EventScheduler> eventSchedulerProvider,
             ActivitiesChatService activitiesChatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
-            EventSlotReadModelService eventSlotReadModelService) {
+            EventSlotReadModelService eventSlotReadModelService,
+            AccessControlService accessControlService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -158,6 +161,7 @@ public class ActivitiesEventsService {
         this.activitiesChatService = activitiesChatService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventSlotReadModelService = eventSlotReadModelService;
+        this.accessControlService = accessControlService;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -714,6 +718,11 @@ public class ActivitiesEventsService {
     }
 
     public void trash(EventActionRequestDto request) {
+        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (isOrganizerLifecycleRequest(request)
+                && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
+            return;
+        }
         maybePostMemberLeftMessage(request);
         maybeApplyLeaveCancellationRefund(request);
         List<ActivityEvent> updated = updateItemState(request, current -> {
@@ -726,6 +735,9 @@ public class ActivitiesEventsService {
     }
 
     public void publish(EventActionRequestDto request) {
+        if (!accessControlService.canCurrentActorPublishEvent(request == null ? null : request.sourceId())) {
+            return;
+        }
         String nowIso = Instant.now().toString();
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(TYPE_HOSTING.equals(normalizeType(current.getType())) ? STATUS_HOSTING : STATUS_ACTIVE);
@@ -740,6 +752,9 @@ public class ActivitiesEventsService {
     }
 
     public void unpublish(EventActionRequestDto request) {
+        if (!accessControlService.canCurrentActorUnpublishEvent(request == null ? null : request.sourceId())) {
+            return;
+        }
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(STATUS_DRAFT);
             current.setPublished(false);
@@ -749,6 +764,10 @@ public class ActivitiesEventsService {
     }
 
     public void restore(EventActionRequestDto request) {
+        if (isOrganizerLifecycleRequest(request)
+                && !accessControlService.canCurrentActorRestoreEvent(request == null ? null : request.sourceId())) {
+            return;
+        }
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(TYPE_HOSTING.equals(normalizeType(current.getType())) ? STATUS_HOSTING : STATUS_ACTIVE);
             current.setStatusBeforeSuppression(null);
@@ -763,6 +782,9 @@ public class ActivitiesEventsService {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return;
+        }
+        if (!accessControlService.canCurrentActorTakeOverEvent(sourceId)) {
             return;
         }
         List<ActivityEvent> documents = activityEventsRepository.findBySourceId(sourceId).stream()
@@ -814,6 +836,9 @@ public class ActivitiesEventsService {
         String sourceId = normalizeId(request.sourceId());
         StageActionTarget actionTarget = resolveStageActionTarget(request);
         if (viewer == null || !StringUtils.hasText(sourceId) || actionTarget == null) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorApplyEventStageAction(sourceId)) {
             return null;
         }
 
@@ -921,6 +946,9 @@ public class ActivitiesEventsService {
             return null;
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
+            return toEventRecordDto(preferred, viewer);
+        }
+        if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
             return toEventRecordDto(preferred, viewer);
         }
         boolean approvalRequested = isApprovalRequested(request);
@@ -1583,6 +1611,19 @@ public class ActivitiesEventsService {
         }
 
         Users creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
+        String ownerUserId = normalizeId(request.creatorUserId());
+        if (!StringUtils.hasText(ownerUserId)) {
+            ownerUserId = actorUserId;
+        }
+        ActivityEvent existing = activityEventsRepository
+                .findByOwnerUserIdAndTypeAndSourceId(ownerUserId, targetType, sourceId)
+                .orElse(null);
+        boolean allowed = existing == null
+                ? accessControlService.canCurrentActorCreateEvent(ownerUserId, sourceId)
+                : accessControlService.canCurrentActorEditEvent(sourceId);
+        if (!allowed) {
+            return null;
+        }
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, targetType, syncedMembersSnapshot);
         List<ActivityEvent> documentsToSave = new ArrayList<>();
         documentsToSave.add(baseRecord);
@@ -2599,6 +2640,10 @@ public class ActivitiesEventsService {
         return saved;
     }
 
+    private boolean isOrganizerLifecycleRequest(EventActionRequestDto request) {
+        return TYPE_HOSTING.equals(normalizeType(request == null ? null : request.type()));
+    }
+
     private void syncStageReminderTasksForSavedEvents(List<ActivityEvent> documents, String actorUserId) {
         if (documents == null || documents.isEmpty()) {
             return;
@@ -2825,6 +2870,7 @@ public class ActivitiesEventsService {
         document.setEndAtIso(publishedManageMode
                 ? normalizeDateTime(existing == null ? null : existing.getEndAtIso(), document.getStartAtIso())
                 : normalizeDateTime(request.endAt(), document.getStartAtIso()));
+        resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
         document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
@@ -2889,6 +2935,28 @@ public class ActivitiesEventsService {
                 : resolveAdminUserIds(StringUtils.hasText(parentEventId) ? parentEventId : sourceId, document.getCreatorUserId()));
         document.normalizeLifecycleState();
         return document;
+    }
+
+    private void resetExpiredOnBoundaryChange(ActivityEvent document, ActivityEvent existing) {
+        if (document == null) {
+            return;
+        }
+        if (existing == null) {
+            document.setIsExpired(false);
+            return;
+        }
+        String previousBoundary = expiryBoundaryIso(existing);
+        String nextBoundary = expiryBoundaryIso(document);
+        if (!Objects.equals(previousBoundary, nextBoundary)) {
+            document.setIsExpired(false);
+        }
+    }
+
+    private String expiryBoundaryIso(ActivityEvent event) {
+        if (event == null) {
+            return "";
+        }
+        return firstNonBlank(event.getEndAtIso(), event.getStartAtIso());
     }
 
     private double resolveAffinity(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
@@ -4038,6 +4106,7 @@ public class ActivitiesEventsService {
         next.setBlindMode(parent.getBlindMode());
         next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
         next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
+        next.setIsExpired(false);
         next.setDistanceKm(null);
         String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
         String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());

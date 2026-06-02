@@ -17,6 +17,8 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefresh
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.AssetsService;
 
 @RestController
@@ -56,31 +58,61 @@ public class AssetsController {
     }
 
     @PostMapping("/replace")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_REPLACE,
+            subject = "#request?.userId()",
+            resourceId = "#request?.userId()",
+            skipWhenAuthenticationOptional = true)
     public void replace(@RequestBody AssetReplaceRequestDto request) {
         assetsService.replace(request);
     }
 
     @PostMapping("/delete")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_DELETE,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId()",
+            skipWhenAuthenticationOptional = true)
     public void delete(@RequestBody AssetDeleteRequestDto request) {
         assetsService.delete(request);
     }
 
     @PostMapping("/restore")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_RESTORE,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId()",
+            skipWhenAuthenticationOptional = true)
     public AssetCardDto restore(@RequestBody AssetDeleteRequestDto request) {
         return assetsService.restore(request);
     }
 
     @PostMapping("/take-over")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_TAKEOVER,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId()",
+            skipWhenAuthenticationOptional = true)
     public AssetCardDto takeOver(@RequestBody AssetDeleteRequestDto request) {
         return assetsService.takeOver(request);
     }
 
     @PostMapping("/make-manager")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId()",
+            skipWhenAuthenticationOptional = true)
     public AssetCardDto makeManager(@RequestBody AssetMakeManagerRequestDto request) {
         return assetsService.makeManager(request);
     }
 
     @PostMapping("/refresh-from-source")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.ASSET_SOURCE_REFRESH,
+            subject = "#request?.userId()",
+            resourceId = "#request?.assetId() ?: #request?.userId()",
+            skipWhenAuthenticationOptional = true)
     public AssetSourceRefreshResponseDto refreshFromSource(@RequestBody AssetSourceRefreshRequestDto request) {
         return assetsService.refreshFromSource(request);
     }

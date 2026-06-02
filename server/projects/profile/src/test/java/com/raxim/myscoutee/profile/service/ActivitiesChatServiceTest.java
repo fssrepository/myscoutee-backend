@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -28,6 +29,8 @@ import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarReco
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesChatServiceTest {
@@ -49,6 +52,8 @@ class ActivitiesChatServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AdminMenuCounterService adminMenuCounterService;
+    @Mock
+    private AccessControlService accessControlService;
 
     private ActivitiesChatService service;
 
@@ -63,7 +68,8 @@ class ActivitiesChatServiceTest {
                 chatStreamPublisher,
                 chatPushNotificationService,
                 adminTelemetryService,
-                adminMenuCounterService);
+                adminMenuCounterService,
+                accessControlService);
     }
 
     @AfterEach
@@ -112,16 +118,150 @@ class ActivitiesChatServiceTest {
         verify(activityChatsRepository, never()).saveAll(anyList());
     }
 
+    @Test
+    void queryChatPageSortsLocalIsoSeedDatesByRequestedDateOrder() {
+        ActivityChat oldChat = chat("zz-old", "viewer", 0, "2026-03-01T07:48:00");
+        ActivityChat newChat = chat("aa-new", "viewer", 0, "2026-03-01T14:03:00");
+        ActivityChat midChat = chat("mm-mid", "viewer", 0, "2026-02-28T17:48:00");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityChatsRepository.findByOwnerUserId("viewer")).thenReturn(List.of(oldChat, newChat, midChat));
+
+        var result = service.queryChatPage(
+                "viewer",
+                "all",
+                "date",
+                "desc",
+                null,
+                null,
+                10,
+                null,
+                null,
+                false,
+                null);
+
+        assertThat(result.items())
+                .extracting(item -> item.id())
+                .containsExactly("aa-new", "zz-old", "mm-mid");
+    }
+
+    @Test
+    void queryChatPageFiltersChannelContextsOnServer() {
+        ActivityChat eventChat = chat("chat-event", "viewer", 0, "2026-03-01T07:48:00", "mainEvent");
+        ActivityChat subEventChat = chat("chat-sub-event", "viewer", 0, "2026-03-01T08:48:00", "optionalSubEvent");
+        ActivityChat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
+        ActivityChat serviceChat = chat("chat-service", "viewer", 0, "2026-03-01T10:48:00", "serviceEvent");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(activityChatsRepository.findByOwnerUserId("viewer")).thenReturn(List.of(
+                eventChat,
+                subEventChat,
+                groupChat,
+                serviceChat));
+
+        var all = service.queryChatPage(
+                "viewer",
+                "all",
+                "date",
+                "desc",
+                null,
+                null,
+                10,
+                null,
+                null,
+                false,
+                null);
+        var serviceOnly = service.queryChatPage(
+                "viewer",
+                "service",
+                "date",
+                "desc",
+                null,
+                null,
+                10,
+                null,
+                null,
+                false,
+                null);
+        var subEventOnly = service.queryChatPage(
+                "viewer",
+                "subEvent",
+                "date",
+                "desc",
+                null,
+                null,
+                10,
+                null,
+                null,
+                false,
+                null);
+
+        assertThat(all.items())
+                .extracting(item -> item.id())
+                .containsExactly("chat-service", "chat-group", "chat-sub-event", "chat-event");
+        assertThat(serviceOnly.items())
+                .extracting(item -> item.id())
+                .containsExactly("chat-service");
+        assertThat(subEventOnly.items())
+                .extracting(item -> item.id())
+                .containsExactly("chat-sub-event");
+    }
+
+    @Test
+    void sendMessageRejectsDeniedChatBeforeWrite() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.sendMessage("chat-1", "viewer", "hello"))
+                .hasMessageContaining("post in this chat");
+
+        verify(activityChatMessagesRepository, never()).save(any(ActivityChatMessage.class));
+        verify(activityChatsRepository, never()).findByChatId(anyString());
+    }
+
+    @Test
+    void editMessageRejectsDeniedChatBeforeLoadingMessage() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(accessControlService.canCurrentActorEditChatMessage("viewer", "chat-1")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.editMessage("chat-1", "viewer", "m1", "updated"))
+                .hasMessageContaining("change messages");
+
+        verify(activityChatMessagesRepository, never()).findByChatIdAndMessageId(anyString(), anyString());
+        verify(activityChatMessagesRepository, never()).save(any(ActivityChatMessage.class));
+    }
+
+    @Test
+    void updateSupportCaseRejectsDeniedChatBeforeSavingState() {
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, "admin", "admin", "chat-support")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.updateSupportCase("chat-support", "admin", "pick"))
+                .hasMessageContaining("support chat");
+
+        verify(activityChatsRepository, never()).findByChatId(anyString());
+        verify(activityChatsRepository, never()).saveAll(anyList());
+    }
+
     private ActivityChat chat(String chatId, String ownerUserId, int unread) {
+        return chat(chatId, ownerUserId, unread, "2026-05-26T08:00:00Z");
+    }
+
+    private ActivityChat chat(String chatId, String ownerUserId, int unread, String dateIso) {
+        return chat(chatId, ownerUserId, unread, dateIso, null);
+    }
+
+    private ActivityChat chat(String chatId, String ownerUserId, int unread, String dateIso, String channelType) {
         ActivityChat chat = new ActivityChat();
         chat.setMongoId("chat-owner-copy:" + ownerUserId + ":" + chatId);
         chat.setChatId(chatId);
         chat.setOwnerUserId(ownerUserId);
         chat.setTitle("Test chat");
         chat.setLastMessage("hello");
-        chat.setDateIso("2026-05-26T08:00:00Z");
+        chat.setDateIso(dateIso);
         chat.setMemberIds(List.of("viewer", "sender"));
         chat.setUnread(unread);
+        chat.setChannelType(channelType);
         return chat;
     }
 

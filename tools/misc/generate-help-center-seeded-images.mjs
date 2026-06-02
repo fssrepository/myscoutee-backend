@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const repoRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+const repoRoot = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const frontendRoot = join(repoRoot, 'frontend', 'src', 'assets', 'help-center', 'explanations');
 const serverRoot = join(repoRoot, 'server', 'projects', 'profile', 'src', 'main', 'resources', 'mongo-seed', 'profile', 'help-center-media');
 

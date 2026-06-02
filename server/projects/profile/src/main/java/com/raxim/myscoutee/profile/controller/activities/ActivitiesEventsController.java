@@ -22,6 +22,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.ActivitiesEventFeedbackService;
 
 @RestController
@@ -111,11 +113,21 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/publish")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_PUBLISH,
+            subject = "#actorUserId",
+            resourceId = "#request?.sourceId()",
+            skipWhenAuthenticationOptional = true)
     public void publish(@RequestBody EventActionRequestDto request) {
         activitiesEventsService.publish(request);
     }
 
     @PostMapping("/unpublish")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_UNPUBLISH,
+            subject = "#actorUserId",
+            resourceId = "#request?.sourceId()",
+            skipWhenAuthenticationOptional = true)
     public void unpublish(@RequestBody EventActionRequestDto request) {
         activitiesEventsService.unpublish(request);
     }
@@ -126,16 +138,31 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/take-over")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_TAKEOVER,
+            subject = "#actorUserId",
+            resourceId = "#request?.sourceId()",
+            skipWhenAuthenticationOptional = true)
     public void takeOver(@RequestBody EventActionRequestDto request) {
         activitiesEventsService.takeOver(request);
     }
 
     @PostMapping("/join")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_JOIN,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.sourceId()",
+            skipWhenAuthenticationOptional = true)
     public EventRecordDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
     }
 
     @PostMapping("/stage-action")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_STAGE_ACTION,
+            subject = "#actorUserId",
+            resourceId = "#request?.sourceId()",
+            skipWhenAuthenticationOptional = true)
     public EventRecordDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
         return activitiesEventsService.applyStageAction(request);
     }
@@ -151,21 +178,41 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/feedback/submit")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.eventId()",
+            skipWhenAuthenticationOptional = true)
     public void submitFeedback(@RequestBody EventFeedbackSubmitRequestDto request) {
         activitiesEventFeedbackService.submit(request);
     }
 
     @PostMapping("/feedback/note")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_FEEDBACK_NOTE,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.eventId()",
+            skipWhenAuthenticationOptional = true)
     public void saveFeedbackNote(@RequestBody EventFeedbackNoteRequestDto request) {
         activitiesEventFeedbackService.saveNote(request);
     }
 
     @PostMapping("/feedback/remove")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_FEEDBACK_REMOVE,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.eventId()",
+            skipWhenAuthenticationOptional = true)
     public void removeFeedbackEvent(@RequestBody EventFeedbackToggleRequestDto request) {
         activitiesEventFeedbackService.markRemoved(request, true);
     }
 
     @PostMapping("/feedback/restore")
+    @RequiresPolicy(
+            key = AccessPolicyKeys.EVENT_FEEDBACK_RESTORE,
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.eventId()",
+            skipWhenAuthenticationOptional = true)
     public void restoreFeedbackEvent(@RequestBody EventFeedbackToggleRequestDto request) {
         activitiesEventFeedbackService.markRemoved(request, false);
     }
