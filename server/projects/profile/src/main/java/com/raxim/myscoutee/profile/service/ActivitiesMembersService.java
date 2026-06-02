@@ -158,11 +158,6 @@ public class ActivitiesMembersService {
         return snapshot != null && snapshot.hasParticipation(userId);
     }
 
-    public boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId) {
-        OwnerMembersSnapshot snapshot = queryOwnerSnapshot(ownerType, ownerId);
-        return snapshot != null && snapshot.hasAcceptedParticipation(userId);
-    }
-
     public void refreshEventParticipationProjection(String eventId) {
         refreshEmbeddedEventMembers(eventId);
     }
@@ -1991,11 +1986,6 @@ public class ActivitiesMembersService {
         public boolean hasParticipation(String userId) {
             String normalizedUserId = userId == null ? "" : userId.trim();
             return acceptedMemberUserIds.contains(normalizedUserId) || pendingMemberUserIds.contains(normalizedUserId);
-        }
-
-        public boolean hasAcceptedParticipation(String userId) {
-            String normalizedUserId = userId == null ? "" : userId.trim();
-            return acceptedMemberUserIds.contains(normalizedUserId);
         }
 
         public boolean hasAcceptedAdminRole(String userId) {

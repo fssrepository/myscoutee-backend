@@ -56,6 +56,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -87,6 +88,7 @@ public class AssetsService {
     private final AdminTelemetryService adminTelemetryService;
     private final NotificationOutboxService notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
+    private final AccessControlService accessControlService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -100,7 +102,8 @@ public class AssetsService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             NotificationOutboxService notificationOutboxService,
-            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
+            ChatAttachmentLifecycleService chatAttachmentLifecycleService,
+            AccessControlService accessControlService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -113,6 +116,7 @@ public class AssetsService {
         this.adminTelemetryService = adminTelemetryService;
         this.notificationOutboxService = notificationOutboxService;
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
+        this.accessControlService = accessControlService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -338,14 +342,15 @@ public class AssetsService {
         Optional<ActivityMember> existingMember = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, normalizedAssetId, normalizedTargetUserId);
         AssetRequestRecord targetRequest = findAssetRequest(current, normalizedTargetUserId);
-        ActivityMember eventMember = acceptedEventMemberForAssetRequest(targetRequest, normalizedTargetUserId);
+        String targetRequestEventId = assetRequestEventId(targetRequest);
         if (current == null
                 || normalizedTargetUserId.equals(normalizeId(current.getOwnerUserId()))
                 || !canManageAssetMembers(current, normalizedUserId)
                 || !isActiveUser(normalizedTargetUserId)
                 || isAcceptedAssetManagerMember(existingMember.orElse(null))
                 || !isKnownAssetParticipant(current, normalizedTargetUserId, existingMember.orElse(null))
-                || (requiresEventMembership(targetRequest) && eventMember == null)) {
+                || (StringUtils.hasText(targetRequestEventId)
+                        && !accessControlService.canReceiveEventAssetManagerRole(targetRequestEventId, normalizedTargetUserId))) {
             return null;
         }
 
@@ -487,22 +492,6 @@ public class AssetsService {
                 .filter(Objects::nonNull)
                 .filter(request -> normalizedUserId.equals(normalizeId(request.userId())))
                 .findFirst()
-                .orElse(null);
-    }
-
-    private boolean requiresEventMembership(AssetRequestRecord request) {
-        return StringUtils.hasText(assetRequestEventId(request));
-    }
-
-    private ActivityMember acceptedEventMemberForAssetRequest(AssetRequestRecord request, String userId) {
-        String eventId = assetRequestEventId(request);
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(normalizedUserId)) {
-            return null;
-        }
-        return activityMembersRepository
-                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, eventId, normalizedUserId)
-                .filter(member -> MEMBER_STATUS_ACCEPTED.equals(safeText(member.getStatus())))
                 .orElse(null);
     }
 

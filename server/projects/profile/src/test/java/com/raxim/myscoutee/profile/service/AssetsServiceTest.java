@@ -30,6 +30,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -75,7 +76,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -103,16 +105,18 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = assetWithEventRequest();
+        Users owner = user("u1", "Owner One", "OO");
         Users target = user("u2", "Member Two", "MT");
 
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(target));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
-                .thenReturn(Optional.empty());
+        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(false);
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -126,7 +130,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -135,6 +140,7 @@ class AssetsServiceTest {
         verify(mongoTemplate, never()).updateFirst(any(), any(), eq(Asset.class));
         verify(affinityRecomputeTaskService, never()).enqueueAssetChanged(any(), any());
         verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
+        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
     }
 
     @Test
@@ -146,6 +152,7 @@ class AssetsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
 
         Asset asset = assetWithEventRequest();
         Users owner = user("u1", "Owner One", "OO");
@@ -159,8 +166,7 @@ class AssetsServiceTest {
         when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
-                .thenReturn(Optional.of(eventMember));
+        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
                 .thenReturn(List.of(promotedMember));
         when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
@@ -181,7 +187,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -196,6 +203,7 @@ class AssetsServiceTest {
 
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
         verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(any(), any());
+        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
     }
 
     @Test
@@ -233,7 +241,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -278,7 +287,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class));
 
         AssetCardDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -314,7 +324,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class));
 
         service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -369,7 +380,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class));
 
         AssetCardDto card = service.restore(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -412,7 +424,8 @@ class AssetsServiceTest {
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
-                mock(ChatAttachmentLifecycleService.class));
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class));
 
         service.replace(new AssetReplaceRequestDto("u1", List.of(assetCard("asset-1"))));
 
