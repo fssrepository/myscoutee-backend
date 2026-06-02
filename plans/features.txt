@@ -6,3 +6,5 @@ https://developers.facebook.com/ -> business verfication is needed
 
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
+
+demo ui bootstrap speedup
