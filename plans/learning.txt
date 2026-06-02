@@ -16,3 +16,7 @@ Example: CPU metrics, event telemetry, sensor data, request latency logs.
 Atlas Search
 MongoDB’s advanced full-text search product, mainly tied to MongoDB Atlas.
 Example: fuzzy search, autocomplete, relevance scoring.
+
+Openstack
+---------
+security group - ingress/egress port allow (even set-up the user id, who can access, like ssh)

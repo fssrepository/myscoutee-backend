@@ -772,6 +772,8 @@ class BackendChatMediaE2ETest {
         seedCountryPartition(DEMO_DB);
         seedFastPlatformConfig(REAL_DB);
         seedFastPlatformConfig(DEMO_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, REAL_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, DEMO_DB);
     }
 
     private static void seedCountryPartition(String databaseName) {

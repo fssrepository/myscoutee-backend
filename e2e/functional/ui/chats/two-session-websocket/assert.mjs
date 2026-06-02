@@ -208,9 +208,7 @@ async function openChatList(page) {
 }
 
 async function openChatById(page, chatId) {
-  await page.waitFor(`chat ${chatId} visible in activities list`, async () => {
-    return page.evaluate(chatId => Boolean(document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`)), chatId);
-  }, 30000);
+  await scrollActivitiesChatListUntilRow(page, chatId, 60000);
   const result = await page.evaluate(chatId => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();
@@ -242,6 +240,65 @@ async function openChatById(page, chatId) {
   }, chatId);
   assert(result.opened, `Should open chat ${chatId} from the activities UI`, result);
   return result;
+}
+
+async function scrollActivitiesChatListUntilRow(page, chatId, timeoutMs = 60000) {
+  const started = Date.now();
+  let lastState = null;
+  while (Date.now() - started < timeoutMs) {
+    const found = await page.evaluate(chatId => {
+      const row = document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`);
+      if (!row) {
+        return false;
+      }
+      const rect = row.getBoundingClientRect();
+      const style = window.getComputedStyle(row);
+      return rect.width > 0
+        && rect.height > 0
+        && style.visibility !== 'hidden'
+        && style.display !== 'none';
+    }, chatId);
+    if (found) {
+      return;
+    }
+    lastState = await scrollActivitiesChatListOnce(page);
+    await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 400)));
+  }
+  await page.recordStep('chat-row-missing-after-scroll');
+  page.recordFinding?.({
+    severity: 'fatal',
+    title: 'Activities chat list did not expose the selected chat after scrolling',
+    details: {
+      chatId,
+      lastState: lastState ?? {}
+    }
+  });
+  assert(false, `chat ${chatId} should be visible in activities list after scrolling`, lastState ?? {});
+}
+
+async function scrollActivitiesChatListOnce(page) {
+  return page.evaluate(() => {
+    const root = document.querySelector('.popup-panel-activities') ?? document;
+    const list = root.querySelector('.smart-list');
+    if (!list) {
+      return { hasList: false };
+    }
+    const before = list.scrollTop;
+    const step = Math.max(260, Math.floor((list.clientHeight || window.innerHeight || 360) * 0.82));
+    list.scrollTo({ top: Math.min(list.scrollHeight, before + step), behavior: 'auto' });
+    list.dispatchEvent(new Event('scroll', { bubbles: true }));
+    return {
+      hasList: true,
+      before,
+      after: list.scrollTop,
+      clientHeight: list.clientHeight,
+      scrollHeight: list.scrollHeight,
+      visibleRowIds: Array.from(root.querySelectorAll('[data-chat-id]'))
+        .map(row => row.getAttribute('data-chat-id'))
+        .filter(Boolean)
+        .slice(0, 20)
+    };
+  });
 }
 
 async function assertOpenChatId(page, expectedChatId) {

@@ -17,8 +17,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -373,9 +375,11 @@ public class ActivitiesMembersService {
             return;
         }
 
-        String actorUserId = resolveActorUserId(null);
+        String actorUserId = resolveActorUserId(request.actorUserId());
         if (OWNER_TYPE_EVENT.equals(ownerType) && !accessControlService.canManageEventMembers(ownerId, actorUserId)) {
-            return;
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Authenticated user is not allowed to replace members for this event.");
         }
 
         String nowIso = Instant.now().toString();

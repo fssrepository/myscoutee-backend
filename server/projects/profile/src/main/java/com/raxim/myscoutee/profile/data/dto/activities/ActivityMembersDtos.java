@@ -16,7 +16,8 @@ public final class ActivityMembersDtos {
     public record ActivityMembersReplaceRequestDto(
             ActivityMemberOwnerRefDto owner,
             List<ActivityMemberEntryDto> members,
-            Integer capacityTotal) {
+            Integer capacityTotal,
+            String actorUserId) {
     }
 
     public record ActivityMemberActionRequestDto(

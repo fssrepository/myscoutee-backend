@@ -221,6 +221,12 @@ class BackendAlgorithmsE2ETest {
                 + "/runtime?adminUserId=" + ADMIN_ID);
         assertThat(runtimeRule.path("enabled").asBoolean()).isFalse();
         assertThat(runtimeRule.path("updatedUser").asString()).isEqualTo(ADMIN_ID);
+
+        JsonNode restoredState = postJson("/admin/notifications", Map.of(
+                "adminUserId", ADMIN_ID,
+                "rules", List.of(restoredAutoInviterRule())));
+        JsonNode restoredRule = ruleByKey(restoredState, NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER);
+        assertThat(restoredRule.path("enabled").asBoolean()).isTrue();
     }
 
     private Map<String, Object> editedAutoInviterRule() {
@@ -257,6 +263,21 @@ class BackendAlgorithmsE2ETest {
         rule.put("message", Map.of(
                         "pushTitle", "E2E Auto Invite",
                         "pushBody", "Edited through backend e2e.",
+                        "emailTemplateKey", "",
+                        "emailSubject", "",
+                        "emailBody", "",
+                        "ctaPath", "/game"));
+        return rule;
+    }
+
+    private Map<String, Object> restoredAutoInviterRule() {
+        Map<String, Object> rule = editedAutoInviterRule();
+        rule.put("description", "E2E auto inviter rule.");
+        rule.put("enabled", true);
+        rule.put("priority", 20);
+        rule.put("message", Map.of(
+                        "pushTitle", "Auto invite",
+                        "pushBody", "You have a priority event invite.",
                         "emailTemplateKey", "",
                         "emailSubject", "",
                         "emailBody", "",
@@ -944,6 +965,8 @@ class BackendAlgorithmsE2ETest {
         mongoBaseUri = "mongodb://" + serverAddress.getHost() + ":" + serverAddress.getPort();
         seedCountryPartition(REAL_DB);
         seedCountryPartition(DEMO_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, REAL_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, DEMO_DB);
     }
 
     private static void seedCountryPartition(String databaseName) {

@@ -180,7 +180,33 @@ async function openChatByTitle(page, title, options = {}) {
 }
 
 async function selectMessageContaining(page, text) {
-  const point = await page.evaluate(text => {
+  let details = null;
+  const deadline = Date.now() + 12000;
+  while (Date.now() < deadline) {
+    const target = await chatMessageClickTarget(page, text);
+    assert(target, `Should select chat message containing ${text}`);
+    if (target.toolsVisible) {
+      return;
+    }
+    await clickPoint(page, target.point);
+    const toolsVisible = await page.waitForSelector('.chat-message-tools', { timeoutMs: 1600 })
+      .then(() => true)
+      .catch(() => false);
+    if (toolsVisible) {
+      return;
+    }
+    details = target.details;
+  }
+  page.recordFinding?.({
+    severity: 'fatal',
+    title: 'Chat message action toolbar did not open after selecting a message',
+    details
+  });
+  assert(false, 'Chat message tools should open after selecting a message', { text });
+}
+
+async function chatMessageClickTarget(page, text) {
+  return page.evaluate(text => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
@@ -189,42 +215,42 @@ async function selectMessageContaining(page, text) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
+    const root = document.querySelector('.popup-panel-event-chat');
     const message = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
       .find(element => isVisible(element) && (element.textContent ?? '').includes(text));
     if (!message) {
       return null;
     }
     message.scrollIntoView({ block: 'center', inline: 'center' });
-    const rect = message.getBoundingClientRect();
+    const clickTarget = message.querySelector('.chat-bubble')
+      ?? message.querySelector('.chat-message-content')
+      ?? message;
+    const rect = clickTarget.getBoundingClientRect();
     return {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2
-    };
-  }, text);
-  assert(point, `Should select chat message containing ${text}`);
-  await clickPoint(page, point);
-  const toolsVisible = await page.waitForSelector('.chat-message-tools', { timeoutMs: 8000 })
-    .then(() => true)
-    .catch(() => false);
-  if (!toolsVisible) {
-    const details = await page.evaluate(text => {
-      const root = document.querySelector('.popup-panel-event-chat');
-      return {
+      toolsVisible: Boolean(message.querySelector('.chat-message-tools')),
+      point: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      },
+      details: {
         selectedText: text,
+        messageId: message.getAttribute('data-chat-message-id') ?? '',
+        messageClasses: message.getAttribute('class') ?? '',
+        targetClasses: clickTarget.getAttribute('class') ?? '',
+        targetRect: {
+          left: Math.round(rect.left),
+          top: Math.round(rect.top),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height)
+        },
         viewport: {
           width: window.innerWidth,
           height: window.innerHeight
         },
         chatText: (root?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1200)
-      };
-    }, text);
-    page.recordFinding?.({
-      severity: 'fatal',
-      title: 'Chat message action toolbar did not open after selecting a message',
-      details
-    });
-  }
-  assert(toolsVisible, 'Chat message tools should open after selecting a message', { text });
+      }
+    };
+  }, text);
 }
 
 async function clickPoint(page, point) {

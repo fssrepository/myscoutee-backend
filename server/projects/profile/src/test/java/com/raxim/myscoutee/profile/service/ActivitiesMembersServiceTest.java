@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -204,16 +206,51 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
-    void replaceEventMembersReturnsWithoutSavingWhenPolicyDenies() {
-        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("admin");
+    void replaceEventMembersThrowsForbiddenWhenPolicyDenies() {
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(false);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> service.replace(new ActivityMembersReplaceRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                List.of(entry("target")),
+                10,
+                "admin")));
+
+        assertThat(exception.getStatusCode().value()).isEqualTo(403);
+        verify(activityMembersRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void replaceEventMembersUsesRequestActorAndPersistsAcceptedMembership() {
+        ActivityEvent event = event("event-1", "admin", "admin");
+        Users targetUser = new Users();
+        targetUser.setId("target");
+        targetUser.setName("Target User");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1")).thenReturn(List.of());
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(targetUser));
 
         service.replace(new ActivityMembersReplaceRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"),
                 List.of(entry("target")),
-                10));
+                10,
+                "admin"));
 
-        verify(activityMembersRepository, never()).saveAll(anyList());
+        ArgumentCaptor<List<ActivityMember>> savedMembers = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedMembers.capture());
+        assertThat(savedMembers.getValue())
+                .filteredOn(member -> "target".equals(member.getUserId()))
+                .singleElement()
+                .satisfies(member -> {
+                    assertThat(member.getOwnerType()).isEqualTo("event");
+                    assertThat(member.getOwnerId()).isEqualTo("event-1");
+                    assertThat(member.getStatus()).isEqualTo("accepted");
+                });
     }
 
     @Test

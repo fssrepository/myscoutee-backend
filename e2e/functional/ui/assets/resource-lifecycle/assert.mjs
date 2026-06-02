@@ -506,7 +506,8 @@ async function seedAcceptedResourceEventMember(page, { eventId, userId, actionAt
           metAtIso: actionAtIso,
           metWhere: 'E2E Resource Yard'
         }],
-        capacityTotal: 8
+        capacityTotal: 8,
+        actorUserId: userId
       })
     });
     return {

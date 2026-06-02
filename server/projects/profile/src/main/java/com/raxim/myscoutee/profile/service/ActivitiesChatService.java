@@ -1,7 +1,10 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 
 @Service
 public class ActivitiesChatService {
@@ -222,7 +226,7 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
         }
-        if (!accessControlService.canCurrentActorManageSupportChat(userId, normalizedChatId)) {
+        if (!accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, userId, normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage this support chat.");
         }
         Users actor = findUser(userId);
@@ -1932,8 +1936,24 @@ public class ActivitiesChatService {
     }
 
     private long sortableDate(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return 0L;
+        }
         try {
-            return StringUtils.hasText(value) ? Instant.parse(value.trim()).toEpochMilli() : 0L;
+            return Instant.parse(normalized).toEpochMilli();
+        } catch (Exception exception) {
+            // Some Mongo seed dates are stored as ISO local date-times without a zone.
+        }
+        try {
+            return OffsetDateTime.parse(normalized).toInstant().toEpochMilli();
+        } catch (Exception exception) {
+            // Fall through to local date-time parsing.
+        }
+        try {
+            return LocalDateTime.parse(normalized, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    .toInstant(ZoneOffset.UTC)
+                    .toEpochMilli();
         } catch (Exception exception) {
             return 0L;
         }
