@@ -11,7 +11,7 @@
     "X-App-Session-Kind": "demo"
   },
   "body": {
-    "id": "{{e2eUserId}}",
+    "id": "e2e-counter-host-{{runId}}",
     "name": "E2E Counter Host",
     "age": 31,
     "birthday": "1995-01-12",
