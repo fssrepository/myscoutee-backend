@@ -25,11 +25,26 @@ import tools.jackson.databind.json.JsonMapper;
 class AccessPolicySeedTest {
     private static final List<String> SEED_DATABASES = List.of("demo_db", "myscoutee_db", "e2e_db");
     private static final Set<String> ACTIVE_POLICY_KEYS = Set.of(
+            AccessPolicyKeys.EVENT_CREATE,
+            AccessPolicyKeys.EVENT_EDIT,
+            AccessPolicyKeys.EVENT_PUBLISH,
+            AccessPolicyKeys.EVENT_UNPUBLISH,
+            AccessPolicyKeys.EVENT_DELETE,
+            AccessPolicyKeys.EVENT_RESTORE,
+            AccessPolicyKeys.EVENT_TAKEOVER,
+            AccessPolicyKeys.EVENT_JOIN,
+            AccessPolicyKeys.EVENT_STAGE_ACTION,
+            AccessPolicyKeys.EVENT_MEMBER_VIEW,
             AccessPolicyKeys.EVENT_MEMBER_MANAGE,
+            AccessPolicyKeys.EVENT_MEMBER_ACCEPT,
+            AccessPolicyKeys.EVENT_MEMBER_REMOVE,
             AccessPolicyKeys.EVENT_MEMBER_DISQUALIFY,
             AccessPolicyKeys.EVENT_MEMBER_REINSTATE,
+            AccessPolicyKeys.EVENT_MEMBER_INVITE,
             AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
             AccessPolicyKeys.RESOURCE_ASSIGN_SUBJECT,
+            AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
+            AccessPolicyKeys.RESOURCE_ASSIGN_CLEANUP,
             AccessPolicyKeys.ASSET_CREATE,
             AccessPolicyKeys.ASSET_REPLACE,
             AccessPolicyKeys.ASSET_EDIT,
@@ -38,7 +53,11 @@ class AccessPolicySeedTest {
             AccessPolicyKeys.ASSET_TAKEOVER,
             AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET,
             AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
-            AccessPolicyKeys.ASSET_SOURCE_REFRESH);
+            AccessPolicyKeys.ASSET_SOURCE_REFRESH,
+            AccessPolicyKeys.ASSET_BORROW_REQUEST,
+            AccessPolicyKeys.ASSET_BORROW_APPROVE,
+            AccessPolicyKeys.ASSET_BORROW_REJECT,
+            AccessPolicyKeys.ASSET_BORROW_CANCEL);
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

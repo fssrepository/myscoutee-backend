@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,8 +31,10 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
@@ -180,6 +184,29 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void replaceAllowsEventManagerToAssignForAcceptedParticipant() {
+        authenticateAs("manager");
+        when(usersRepository.findByUserId("manager")).thenReturn(Optional.of(user("manager")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "host", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
+                .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted", "Member")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByRecordId("u1:event-1:sub-1")).thenReturn(Optional.empty());
+        when(assetsService.queryAssets("u1")).thenReturn(List.of());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitySubEventResourceStateDto saved = service.replace(request("event-1", "sub-1", "u1"));
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.assetOwnerUserId()).isEqualTo("u1");
+        verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+    }
+
+    @Test
     void replaceRejectsExplicitAssignmentDenyBeforeSaving() {
         authenticateAs("u1");
         when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "resource.assign", "event", "event-1", "deny")));
@@ -190,6 +217,18 @@ class ActivitiesResourcesServiceTest {
                         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
 
         verify(activitySubEventResourcesRepository, never()).save(any(ActivitySubEventResource.class));
+    }
+
+    @Test
+    void cleanupReturnsEmptyWhenPolicyDeniesBeforeLoadingResources() {
+        Set<String> removed = service.removeManagedResourcesForRemovedEventMembers(
+                "event-1",
+                List.of(member("event-1", "u1", "accepted", "Manager")),
+                "manager",
+                "2026-06-02T12:00:00Z");
+
+        assertThat(removed).isEmpty();
+        verify(activitySubEventResourcesRepository, never()).findByOwnerId(anyString());
     }
 
     private void authenticateAs(String userId) {
@@ -204,13 +243,35 @@ class ActivitiesResourcesServiceTest {
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {
+        return member(ownerId, userId, status, "Member");
+    }
+
+    private ActivityMember member(String ownerId, String userId, String status, String role) {
         ActivityMember member = new ActivityMember();
         member.setOwnerType("event");
         member.setOwnerId(ownerId);
         member.setUserId(userId);
         member.setStatus(status);
-        member.setRole("Member");
+        member.setRole(role);
         return member;
+    }
+
+    private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId(sourceId);
+        event.setCreatorUserId(creatorUserId);
+        event.setAdmins(List.of(adminUserId));
+        event.setType("events");
+        event.setStatus("A");
+        return event;
+    }
+
+    private Users user(String userId) {
+        Users user = new Users();
+        user.setUserId(userId);
+        user.setStatus("A");
+        user.setProfileStatus("public");
+        return user;
     }
 
     private List<AccessPolicyDefinition> defaultPolicyDefinitions() {
@@ -226,7 +287,19 @@ class ActivitiesResourcesServiceTest {
                         "resource.assign",
                         "event",
                         List.of("noExplicitDeny"),
-                        List.of("acceptedParticipation", "explicitAllow")));
+                        List.of("acceptedParticipation", "explicitAllow")),
+                policy(
+                        AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
+                        "resource.assign.manage",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of()),
+                policy(
+                        AccessPolicyKeys.RESOURCE_ASSIGN_CLEANUP,
+                        "resource.assign.cleanup",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of()));
     }
 
     private AccessPolicyDefinition policy(

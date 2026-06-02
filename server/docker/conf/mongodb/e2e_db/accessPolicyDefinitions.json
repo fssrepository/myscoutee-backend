@@ -5,9 +5,12 @@
     "policyKey": "event.create",
     "permission": "event.create",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may create or sync a new event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -19,9 +22,12 @@
     "policyKey": "event.edit",
     "permission": "event.edit",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin/manager may edit event details.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -33,9 +39,12 @@
     "policyKey": "event.publish",
     "permission": "event.publish",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin may publish event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -47,9 +56,12 @@
     "policyKey": "event.unpublish",
     "permission": "event.unpublish",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin may unpublish event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -61,9 +73,12 @@
     "policyKey": "event.delete",
     "permission": "event.delete",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin may trash or delete event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -75,9 +90,12 @@
     "policyKey": "event.restore",
     "permission": "event.restore",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin may restore event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -89,9 +107,12 @@
     "policyKey": "event.takeover",
     "permission": "event.takeover",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanTakeOverEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Admin/eligible manager may take over event control.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -103,9 +124,12 @@
     "policyKey": "event.join",
     "permission": "event.join",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User may request to join event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -117,9 +141,12 @@
     "policyKey": "event.stage.action",
     "permission": "event.stage.action",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "User/member/manager may perform event stage action.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -131,9 +158,15 @@
     "policyKey": "event.member.view",
     "permission": "event.member.view",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
+    "required": [
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "actorCanManageEvent",
+      "explicitAllow"
+    ],
+    "status": "active",
     "description": "User may view event member list or summaries.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -159,9 +192,15 @@
     "policyKey": "event.member.accept",
     "permission": "event.member.accept",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageMembers",
+      "actorDiffersFromSubject",
+      "subjectIsNotProtectedMember",
+      "pendingParticipation"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin/manager may accept pending member.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -173,9 +212,18 @@
     "policyKey": "event.member.remove",
     "permission": "event.member.remove",
     "resourceType": "event",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageMembers",
+      "actorDiffersFromSubject",
+      "subjectIsNotProtectedMember"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "pendingParticipation",
+      "disqualifiedParticipation"
+    ],
+    "status": "active",
     "description": "Owner/admin/manager may remove member.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -215,9 +263,12 @@
     "policyKey": "event.member.invite",
     "permission": "event.member.invite",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin/manager may invite users.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -265,9 +316,12 @@
     "policyKey": "resource.assign.manage",
     "permission": "resource.assign.manage",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/admin/manager may assign resources for another participant.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -279,9 +333,12 @@
     "policyKey": "resource.assign.cleanup",
     "permission": "resource.assign.cleanup",
     "resourceType": "event",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageEvent"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "System/admin may remove resources when event members are removed.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -426,10 +483,16 @@
     "syncKey": "access-policy-asset-borrow-request",
     "policyKey": "asset.borrow.request",
     "permission": "asset.borrow.request",
-    "resourceType": "asset",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
+    "resourceType": "event",
+    "required": [
+      "actorMatchesSubject",
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "acceptedParticipation",
+      "explicitAllow"
+    ],
+    "status": "active",
     "description": "Event participant may request/borrow asset for event.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -441,9 +504,12 @@
     "policyKey": "asset.borrow.approve",
     "permission": "asset.borrow.approve",
     "resourceType": "asset",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageAsset"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/manager may approve borrow request.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -455,9 +521,12 @@
     "policyKey": "asset.borrow.reject",
     "permission": "asset.borrow.reject",
     "resourceType": "asset",
-    "required": [],
+    "required": [
+      "noExplicitDeny",
+      "actorCanManageAsset"
+    ],
     "anyOf": [],
-    "status": "disabled",
+    "status": "active",
     "description": "Owner/manager may reject borrow request.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",
@@ -469,9 +538,14 @@
     "policyKey": "asset.borrow.cancel",
     "permission": "asset.borrow.cancel",
     "resourceType": "asset",
-    "required": [],
-    "anyOf": [],
-    "status": "disabled",
+    "required": [
+      "noExplicitDeny"
+    ],
+    "anyOf": [
+      "actorMatchesSubject",
+      "actorCanManageAsset"
+    ],
+    "status": "active",
     "description": "Requester or owner/manager may cancel request.",
     "createdDate": "2026-06-02T00:00:00Z",
     "updatedDate": "2026-06-02T00:00:00Z",

@@ -3,7 +3,9 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,6 +84,8 @@ class ActivitiesMembersServiceTest {
                 activitiesChatService,
                 eventSlotReadModelService,
                 accessControlService);
+        lenient().when(accessControlService.canCurrentActorViewEventMembers(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canInviteEventMembers(anyString(), anyString())).thenReturn(true);
     }
 
     @Test
@@ -210,6 +214,161 @@ class ActivitiesMembersServiceTest {
                 10));
 
         verify(activityMembersRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void queryMembersReturnsEmptyWhenViewPolicyDenies() {
+        when(accessControlService.canCurrentActorViewEventMembers("event-1")).thenReturn(false);
+
+        List<ActivityMemberEntryDto> result = service.queryMembers("event", "event-1");
+
+        assertThat(result).isEmpty();
+        verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+    }
+
+    @Test
+    void acceptPendingMemberUsesPolicyAndSavesAcceptedMember() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");
+        AtomicReference<ActivityMember> storedMember = new AtomicReference<>(member);
+        Users targetUser = new Users();
+        targetUser.setId("target");
+        targetUser.setName("Target User");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMember.set(saved);
+            return saved;
+        });
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(targetUser));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+        ArgumentCaptor<ActivityMember> savedMember = ArgumentCaptor.forClass(ActivityMember.class);
+        verify(activityMembersRepository).save(savedMember.capture());
+        assertThat(savedMember.getValue().getPendingSource()).isNull();
+        assertThat(savedMember.getValue().getRequestKind()).isNull();
+        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        verify(activitiesChatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
+    }
+
+    @Test
+    void acceptPendingMemberReturnsCurrentMembersWhenPolicyDenies() {
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(false);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(member));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("pending");
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void removeMemberUsesPolicyAndRunsCleanupBeforeReturningMembers() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
+        AtomicReference<ActivityMember> storedMember = new AtomicReference<>(member);
+        Users targetUser = new Users();
+        targetUser.setId("target");
+        targetUser.setName("Target User");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canRemoveEventMember("event-1", "admin", "target")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMember.set(saved);
+            return saved;
+        });
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(targetUser));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result).isEmpty();
+        ArgumentCaptor<ActivityMember> savedMember = ArgumentCaptor.forClass(ActivityMember.class);
+        verify(activityMembersRepository).save(savedMember.capture());
+        assertThat(savedMember.getValue().getStatus()).isEqualTo("deleted");
+        verify(activitiesResourcesService).removeManagedResourcesForRemovedEventMembers(
+                org.mockito.ArgumentMatchers.eq("event-1"),
+                anyList(),
+                org.mockito.ArgumentMatchers.eq("admin"),
+                anyString());
+        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        verify(activitiesChatService).postSystemMessage("event-1", "Target User left the event.", "member-left");
+    }
+
+    @Test
+    void inviteUsersReturnsEmptyWhenPolicyDenies() {
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(false);
+
+        List<String> result = service.inviteUsers("event-1", "admin", List.of("target"), event("event-1", "host", "admin"));
+
+        assertThat(result).isEmpty();
+        verify(activityMembersRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void inviteUsersUsesPolicyAndSavesPendingInvites() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        event.setLocation("Bratislava");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1")).thenReturn(List.of());
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        List<String> result = service.inviteUsers("event-1", "admin", List.of("target"), event);
+
+        assertThat(result).containsExactly("target");
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityMember>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityMembersRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved -> {
+            assertThat(saved.getStatus()).isEqualTo("pending");
+            assertThat(saved.getPendingSource()).isEqualTo("admin");
+            assertThat(saved.getRequestKind()).isEqualTo("invite");
+            assertThat(saved.getInvitedByUserId()).isEqualTo("admin");
+        });
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {

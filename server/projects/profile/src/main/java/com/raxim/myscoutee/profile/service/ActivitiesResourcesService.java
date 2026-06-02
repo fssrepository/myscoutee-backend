@@ -63,7 +63,8 @@ public class ActivitiesResourcesService {
         if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId) || !StringUtils.hasText(assetOwnerUserId)) {
             return null;
         }
-        if (!accessControlService.canCurrentActorAssignEventResources(request)) {
+        if (!accessControlService.canCurrentActorAssignEventResources(request)
+                && !accessControlService.canCurrentActorManageEventResourceAssignment(request)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to assign resources for this event.");
         }
         if (!accessControlService.canAssignEventResourcesForSubject(ownerId, assetOwnerUserId)) {
@@ -102,6 +103,9 @@ public class ActivitiesResourcesService {
             String nowIso) {
         String normalizedOwnerId = normalizeId(ownerId);
         if (!StringUtils.hasText(normalizedOwnerId) || removedMembers == null || removedMembers.isEmpty()) {
+            return Set.of();
+        }
+        if (!accessControlService.canCleanupEventResourceAssignments(normalizedOwnerId, actorUserId)) {
             return Set.of();
         }
 

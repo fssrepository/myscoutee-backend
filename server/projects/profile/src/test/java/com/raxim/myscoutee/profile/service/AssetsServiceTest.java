@@ -28,7 +28,10 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRe
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -596,6 +599,225 @@ class AssetsServiceTest {
     }
 
     @Test
+    void upsertAllowsPendingBorrowRequestWithoutFullAssetEditAndIgnoresAssetFieldChanges() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = asset();
+        existing.setRequests(List.of());
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Spoofed Title",
+                        1,
+                        List.of(borrowRequestDto("request-2", "u2", "pending", "event-1")))));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
+        assertThat(savedAsset.getValue().getQuantity()).isEqualTo(1);
+        assertThat(savedAsset.getValue().getRequests()).hasSize(1);
+        assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("pending");
+        verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
+        verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
+    }
+
+    @Test
+    void upsertRejectsPendingBorrowRequestWhenRequesterPolicyDenies() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = asset();
+        existing.setRequests(List.of());
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Camp Kit",
+                        2,
+                        List.of(borrowRequestDto("request-2", "u2", "pending", "event-1")))));
+
+        verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+    }
+
+    @Test
+    void upsertRequiresBorrowApprovePolicyEvenWhenFullAssetEditIsAllowed() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithPendingBorrowRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Camp Kit",
+                        2,
+                        List.of(borrowRequestDto("request-1", "u2", "accepted", "event-1")))));
+
+        verify(accessControlService).canCurrentActorApproveAssetBorrow("u2", "asset-1");
+        verify(assetsRepository, never()).save(any(Asset.class));
+    }
+
+    @Test
+    void upsertAllowsBorrowApproveWhenApprovePolicyAllows() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithPendingBorrowRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(accessControlService.canCurrentActorApproveAssetBorrow("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard(
+                        "asset-1",
+                        "Camp Kit",
+                        2,
+                        List.of(borrowRequestDto("request-1", "u2", "accepted", "event-1")))));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("accepted");
+    }
+
+    @Test
+    void upsertAllowsBorrowRejectWithoutFullAssetEdit() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithPendingBorrowRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorRejectAssetBorrow("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
+        assertThat(savedAsset.getValue().getRequests()).isEmpty();
+        verify(accessControlService).canCurrentActorRejectAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
+    void upsertAllowsBorrowCancelWithoutFullAssetEdit() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Asset existing = assetWithEventRequest();
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AssetSourceRefreshProperties.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService);
+
+        service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
+        assertThat(savedAsset.getValue().getRequests()).isEmpty();
+        verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
+    }
+
+    @Test
     void refreshFromSourceStopsBeforeHostValidationWhenPolicyDenies() {
         AssetSourceRefreshProperties refreshProperties = mock(AssetSourceRefreshProperties.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
@@ -714,16 +936,41 @@ class AssetsServiceTest {
         return asset;
     }
 
+    private Asset assetWithPendingBorrowRequest() {
+        Asset asset = assetWithEventRequest();
+        AssetRequestRecord request = asset.getRequests().get(0);
+        asset.setRequests(List.of(new AssetRequestRecord(
+                request.id(),
+                request.userId(),
+                request.name(),
+                request.initials(),
+                request.gender(),
+                "pending",
+                "Awaiting owner confirmation.",
+                request.requestKind(),
+                request.requestedAtIso(),
+                request.booking())));
+        return asset;
+    }
+
     private AssetCardDto assetCard(String assetId) {
+        return assetCard(assetId, "Camp Kit", 2, List.of());
+    }
+
+    private AssetCardDto assetCard(
+            String assetId,
+            String title,
+            Integer quantity,
+            List<AssetMemberRequestDto> requests) {
         return new AssetCardDto(
                 assetId,
                 "Supplies",
-                "Camp Kit",
+                title,
                 "",
                 "Camping",
                 "Austin",
                 2,
-                2,
+                quantity,
                 "Shared camping kit.",
                 "",
                 "",
@@ -734,7 +981,37 @@ class AssetsServiceTest {
                 "A",
                 "u1",
                 "Owner One",
-                List.of(),
+                requests,
+                List.of());
+    }
+
+    private AssetMemberRequestDto borrowRequestDto(String requestId, String userId, String status, String eventId) {
+        return new AssetMemberRequestDto(
+                requestId,
+                userId,
+                "Member Two",
+                "MT",
+                "man",
+                status,
+                "Borrow request.",
+                "borrow",
+                "2026-05-11T10:00:00Z",
+                new AssetRequestBookingDto(
+                        eventId,
+                        "Weekend Ride",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2026-05-12T09:00:00Z",
+                        "2026-05-12T11:00:00Z",
+                        1,
+                        0d,
+                        "USD",
+                        List.of(),
+                        null,
+                        null),
                 List.of());
     }
 

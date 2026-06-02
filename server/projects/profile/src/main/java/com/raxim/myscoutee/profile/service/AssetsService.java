@@ -625,21 +625,148 @@ public class AssetsService {
             return null;
         }
         Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, assetId).orElse(null);
-        boolean allowed = existing == null
+        boolean fullAssetWriteAllowed = existing == null
                 ? accessControlService.canCurrentActorCreateAsset(ownerUserId, assetId)
                 : accessControlService.canCurrentActorEditAsset(ownerUserId, assetId);
-        if (!allowed) {
+        if (existing == null && !fullAssetWriteAllowed) {
             return null;
         }
-        Asset saved = toDocument(assetDto, ownerUserId, existing);
-        if (saved == null) {
+        Asset proposed = toDocument(assetDto, ownerUserId, existing);
+        if (proposed == null) {
             return null;
+        }
+        Asset saved = proposed;
+        if (existing != null) {
+            if (!canApplyAssetRequestPolicies(existing, proposed, fullAssetWriteAllowed)) {
+                return null;
+            }
+            if (!fullAssetWriteAllowed) {
+                if (!hasAssetRequestChanges(existing, proposed)) {
+                    return null;
+                }
+                saved = toRequestScopedAsset(existing, proposed, ownerUserId);
+            }
         }
         assetsRepository.save(saved);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         return toDto(saved);
+    }
+
+    private boolean canApplyAssetRequestPolicies(Asset existing, Asset proposed, boolean fullAssetWriteAllowed) {
+        if (existing == null || proposed == null) {
+            return true;
+        }
+
+        String assetId = normalizeId(existing.getAssetId());
+        Map<String, AssetRequestRecord> previousById = requestsById(existing.getRequests());
+        Map<String, AssetRequestRecord> nextById = requestsById(proposed.getRequests());
+
+        for (Map.Entry<String, AssetRequestRecord> entry : nextById.entrySet()) {
+            AssetRequestRecord previous = previousById.get(entry.getKey());
+            AssetRequestRecord next = entry.getValue();
+            if (Objects.equals(previous, next)) {
+                continue;
+            }
+            if (!canApplyAddedOrUpdatedAssetRequestPolicy(assetId, previous, next, fullAssetWriteAllowed)) {
+                return false;
+            }
+        }
+
+        for (Map.Entry<String, AssetRequestRecord> entry : previousById.entrySet()) {
+            if (nextById.containsKey(entry.getKey())) {
+                continue;
+            }
+            if (!canApplyRemovedAssetRequestPolicy(assetId, entry.getValue(), fullAssetWriteAllowed)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean canApplyAddedOrUpdatedAssetRequestPolicy(
+            String assetId,
+            AssetRequestRecord previous,
+            AssetRequestRecord next,
+            boolean fullAssetWriteAllowed) {
+        if (!isBorrowRequest(previous) && !isBorrowRequest(next)) {
+            return fullAssetWriteAllowed;
+        }
+
+        String requesterUserId = normalizeId(next == null ? null : next.userId());
+        if (!StringUtils.hasText(requesterUserId)) {
+            return false;
+        }
+        if (previous == null) {
+            if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(next.status()))) {
+                return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
+            }
+            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next));
+        }
+
+        String previousStatus = normalizeRequestStatus(previous.status());
+        String nextStatus = normalizeRequestStatus(next.status());
+        if ("pending".equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
+            return accessControlService.canCurrentActorApproveAssetBorrow(requesterUserId, assetId);
+        }
+        if ("pending".equals(previousStatus) && "pending".equals(nextStatus)) {
+            return accessControlService.canCurrentActorRequestAssetBorrow(requesterUserId, assetRequestEventId(next));
+        }
+        if (MEMBER_STATUS_ACCEPTED.equals(previousStatus) && MEMBER_STATUS_ACCEPTED.equals(nextStatus)) {
+            return fullAssetWriteAllowed;
+        }
+        return false;
+    }
+
+    private boolean canApplyRemovedAssetRequestPolicy(
+            String assetId,
+            AssetRequestRecord previous,
+            boolean fullAssetWriteAllowed) {
+        if (!isBorrowRequest(previous)) {
+            return fullAssetWriteAllowed;
+        }
+        String requesterUserId = normalizeId(previous == null ? null : previous.userId());
+        if (!StringUtils.hasText(requesterUserId)) {
+            return false;
+        }
+        if ("pending".equals(normalizeRequestStatus(previous.status()))
+                && accessControlService.canCurrentActorRejectAssetBorrow(requesterUserId, assetId)) {
+            return true;
+        }
+        return accessControlService.canCurrentActorCancelAssetBorrow(requesterUserId, assetId);
+    }
+
+    private Asset toRequestScopedAsset(Asset existing, Asset proposed, String ownerUserId) {
+        Asset next = cloneAsset(existing);
+        next.setQuantity(proposed.getQuantity());
+        next.setRequests(new ArrayList<>(safeRequests(proposed.getRequests())));
+        next.setUpdatedDate(proposed.getUpdatedDate());
+        next.setUpdatedUser(ownerUserId);
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
+        return next;
+    }
+
+    private boolean hasAssetRequestChanges(Asset existing, Asset proposed) {
+        return !Objects.equals(
+                requestsById(existing == null ? null : existing.getRequests()),
+                requestsById(proposed == null ? null : proposed.getRequests()));
+    }
+
+    private Map<String, AssetRequestRecord> requestsById(List<AssetRequestRecord> requests) {
+        Map<String, AssetRequestRecord> byId = new LinkedHashMap<>();
+        for (AssetRequestRecord request : safeRequests(requests)) {
+            String requestId = normalizeId(request == null ? null : request.id());
+            if (StringUtils.hasText(requestId)) {
+                byId.put(requestId, request);
+            }
+        }
+        return byId;
+    }
+
+    private boolean isBorrowRequest(AssetRequestRecord request) {
+        return request != null && "borrow".equals(normalizeAssetRequestKind(request.requestKind()));
     }
 
     private void syncAssetRequestPayments(Asset existing, Asset saved) {

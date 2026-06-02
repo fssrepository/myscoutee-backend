@@ -287,6 +287,181 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void eventCreateAndJoinPoliciesRequireCurrentActorToMatchRequestUser() {
+        authenticateAs("u1");
+
+        assertThat(service.canCurrentActorCreateEvent("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorJoinEvent("u1", "event-1")).isTrue();
+        assertThat(service.canCurrentActorCreateEvent("u2", "event-1")).isFalse();
+        assertThat(service.canCurrentActorJoinEvent("u2", "event-1")).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void eventManagePoliciesAllowEventCreator() {
+        authenticateAs("creator");
+        when(usersRepository.findByUserId("creator")).thenReturn(Optional.of(user("creator")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        assertThat(service.canCurrentActorEditEvent("event-1")).isTrue();
+        assertThat(service.canCurrentActorPublishEvent("event-1")).isTrue();
+        assertThat(service.canCurrentActorUnpublishEvent("event-1")).isTrue();
+        assertThat(service.canCurrentActorDeleteEvent("event-1")).isTrue();
+        assertThat(service.canCurrentActorRestoreEvent("event-1")).isTrue();
+        assertThat(service.canCurrentActorApplyEventStageAction("event-1")).isTrue();
+    }
+
+    @Test
+    void eventManagePoliciesAllowAcceptedEventManager() {
+        authenticateAs("manager");
+        when(usersRepository.findByUserId("manager")).thenReturn(Optional.of(user("manager")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
+                .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
+
+        boolean allowed = service.canCurrentActorApplyEventStageAction("event-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventManagePoliciesRejectPlainMember() {
+        authenticateAs("member");
+        when(usersRepository.findByUserId("member")).thenReturn(Optional.of(user("member")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "member"))
+                .thenReturn(Optional.of(member("event-1", "member", "accepted", "Member")));
+
+        boolean allowed = service.canCurrentActorPublishEvent("event-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventTakeoverRequiresUnderReviewEventAndManager() {
+        authenticateAs("manager");
+        when(usersRepository.findByUserId("manager")).thenReturn(Optional.of(user("manager")));
+        ActivityEvent underReview = event("event-1", "creator", "admin");
+        underReview.setStatus("UR");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(underReview));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
+                .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
+
+        assertThat(service.canCurrentActorTakeOverEvent("event-1")).isTrue();
+
+        ActivityEvent active = event("event-1", "creator", "admin");
+        active.setStatus("A");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(active));
+
+        assertThat(service.canCurrentActorTakeOverEvent("event-1")).isFalse();
+    }
+
+    @Test
+    void eventJoinDenyGrantOverridesActorMatch() {
+        authenticateAs("u1");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "event.join", "event", "event-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorJoinEvent("u1", "event-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberViewAllowsAcceptedParticipant() {
+        authenticateAs("member");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "member"))
+                .thenReturn(Optional.of(member("event-1", "member", "accepted", "Member")));
+
+        boolean allowed = service.canCurrentActorViewEventMembers("event-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberViewDenyGrantOverridesAcceptedParticipation() {
+        authenticateAs("member");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("member", "event.member.view", "event", "event-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorViewEventMembers("event-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository);
+    }
+
+    @Test
+    void eventMemberAcceptAllowsManagerForPendingNonProtectedMember() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "pending", "Member")));
+
+        boolean allowed = service.canAcceptEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberAcceptRequiresPendingTargetStatus() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "accepted", "Member")));
+
+        boolean allowed = service.canAcceptEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberRemoveAllowsManagerForPendingMember() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "pending", "Member")));
+
+        boolean allowed = service.canRemoveEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberRemoveRejectsProtectedCreatorTarget() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canRemoveEventMember("event-1", "admin", "creator");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberInviteAllowsEventManager() {
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canInviteEventMembers("event-1", "admin");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void resourceAssignmentManageAndCleanupAllowEventManager() {
+        authenticateAs("admin");
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        assertThat(service.canCurrentActorManageEventResourceAssignment(request("event-1", "sub-1", "member"))).isTrue();
+        assertThat(service.canCleanupEventResourceAssignments("event-1", "admin")).isTrue();
+    }
+
+    @Test
     void assetOwnerPoliciesRequireCurrentActorToMatchRequestUser() {
         authenticateAs("u1");
 
@@ -349,6 +524,78 @@ class AccessControlServiceTest {
         service.refreshAccessControlCache();
 
         boolean allowed = service.canCurrentActorRefreshAssetSource("u1", "asset-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void assetBorrowRequestAllowsAcceptedEventParticipant() {
+        authenticateAs("u2");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
+                .thenReturn(Optional.of(member("event-1", "u2", "accepted")));
+
+        boolean allowed = service.canCurrentActorRequestAssetBorrow("u2", "event-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetBorrowRequestRejectsAnotherActorAndNonParticipant() {
+        authenticateAs("u3");
+
+        assertThat(service.canCurrentActorRequestAssetBorrow("u2", "event-1")).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+
+        authenticateAs("u2");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
+                .thenReturn(Optional.empty());
+
+        assertThat(service.canCurrentActorRequestAssetBorrow("u2", "event-1")).isFalse();
+    }
+
+    @Test
+    void assetBorrowApproveAllowsAssetOwner() {
+        authenticateAs("u1");
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+
+        boolean allowed = service.canCurrentActorApproveAssetBorrow("u2", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetBorrowRejectAllowsAcceptedAssetManager() {
+        authenticateAs("u3");
+        when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(user("u3")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u3"))
+                .thenReturn(Optional.of(member("asset", "asset-1", "u3", "accepted", "Manager")));
+
+        boolean allowed = service.canCurrentActorRejectAssetBorrow("u2", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetBorrowCancelAllowsRequesterWithoutAssetLookup() {
+        authenticateAs("u2");
+
+        boolean allowed = service.canCurrentActorCancelAssetBorrow("u2", "asset-1");
+
+        assertThat(allowed).isTrue();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void assetBorrowCancelDenyGrantOverridesRequesterRule() {
+        authenticateAs("u2");
+        when(accessGrantsRepository.findAll())
+                .thenReturn(List.of(grant("u2", "asset.borrow.cancel", "asset", "asset-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorCancelAssetBorrow("u2", "asset-1");
 
         assertThat(allowed).isFalse();
         verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
@@ -624,6 +871,69 @@ class AccessControlServiceTest {
     private List<AccessPolicyDefinition> defaultPolicyDefinitions() {
         return List.of(
                 policy(
+                        AccessPolicyKeys.EVENT_CREATE,
+                        "event.create",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_EDIT,
+                        "event.edit",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_PUBLISH,
+                        "event.publish",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_UNPUBLISH,
+                        "event.unpublish",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_DELETE,
+                        "event.delete",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_RESTORE,
+                        "event.restore",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_TAKEOVER,
+                        "event.takeover",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanTakeOverEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_JOIN,
+                        "event.join",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_STAGE_ACTION,
+                        "event.stage.action",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
                         AccessPolicyKeys.ASSET_CREATE,
                         "asset.create",
                         "asset",
@@ -680,11 +990,69 @@ class AccessControlServiceTest {
                         List.of(),
                         null),
                 policy(
+                        AccessPolicyKeys.ASSET_BORROW_REQUEST,
+                        "asset.borrow.request",
+                        "event",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of("acceptedParticipation", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_BORROW_APPROVE,
+                        "asset.borrow.approve",
+                        "asset",
+                        List.of("noExplicitDeny", "actorCanManageAsset"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_BORROW_REJECT,
+                        "asset.borrow.reject",
+                        "asset",
+                        List.of("noExplicitDeny", "actorCanManageAsset"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_BORROW_CANCEL,
+                        "asset.borrow.cancel",
+                        "asset",
+                        List.of("noExplicitDeny"),
+                        List.of("actorMatchesSubject", "actorCanManageAsset"),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_MEMBER_VIEW,
+                        "event.member.view",
+                        "event",
+                        List.of("noExplicitDeny"),
+                        List.of("acceptedParticipation", "actorCanManageEvent", "explicitAllow"),
+                        null),
+                policy(
                         AccessPolicyKeys.EVENT_MEMBER_MANAGE,
                         "event.member.manage",
                         "event",
                         List.of("noExplicitDeny", "actorCanManageMembers"),
                         List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_MEMBER_ACCEPT,
+                        "event.member.accept",
+                        "event",
+                        List.of(
+                                "noExplicitDeny",
+                                "actorCanManageMembers",
+                                "actorDiffersFromSubject",
+                                "subjectIsNotProtectedMember",
+                                "pendingParticipation"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_MEMBER_REMOVE,
+                        "event.member.remove",
+                        "event",
+                        List.of(
+                                "noExplicitDeny",
+                                "actorCanManageMembers",
+                                "actorDiffersFromSubject",
+                                "subjectIsNotProtectedMember"),
+                        List.of("acceptedParticipation", "pendingParticipation", "disqualifiedParticipation"),
                         null),
                 policy(
                         AccessPolicyKeys.EVENT_MEMBER_DISQUALIFY,
@@ -711,6 +1079,13 @@ class AccessControlServiceTest {
                         List.of(),
                         null),
                 policy(
+                        AccessPolicyKeys.EVENT_MEMBER_INVITE,
+                        "event.member.invite",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
                         AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
                         "resource.assign",
                         "event",
@@ -723,6 +1098,20 @@ class AccessControlServiceTest {
                         "event",
                         List.of("noExplicitDeny"),
                         List.of("acceptedParticipation", "explicitAllow"),
+                        null),
+                policy(
+                        AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
+                        "resource.assign.manage",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.RESOURCE_ASSIGN_CLEANUP,
+                        "resource.assign.cleanup",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageEvent"),
+                        List.of(),
                         null),
                 policy(
                         AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET,

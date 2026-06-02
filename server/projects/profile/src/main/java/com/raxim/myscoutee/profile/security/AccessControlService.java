@@ -222,7 +222,63 @@ public class AccessControlService implements AccessPolicyData {
         return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_SOURCE_REFRESH, normalizedOwnerUserId, resourceId);
     }
 
+    public boolean canCurrentActorCreateEvent(String ownerUserId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_CREATE, ownerUserId, eventId);
+    }
+
+    public boolean canCurrentActorEditEvent(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_EDIT, eventId);
+    }
+
+    public boolean canCurrentActorPublishEvent(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_PUBLISH, eventId);
+    }
+
+    public boolean canCurrentActorUnpublishEvent(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_UNPUBLISH, eventId);
+    }
+
+    public boolean canCurrentActorDeleteEvent(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_DELETE, eventId);
+    }
+
+    public boolean canCurrentActorRestoreEvent(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_RESTORE, eventId);
+    }
+
+    public boolean canCurrentActorTakeOverEvent(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_TAKEOVER, eventId);
+    }
+
+    public boolean canCurrentActorJoinEvent(String userId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_JOIN, userId, eventId);
+    }
+
+    public boolean canCurrentActorApplyEventStageAction(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_STAGE_ACTION, eventId);
+    }
+
+    public boolean canCurrentActorRequestAssetBorrow(String requesterUserId, String eventId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.ASSET_BORROW_REQUEST, requesterUserId, eventId);
+    }
+
+    public boolean canCurrentActorApproveAssetBorrow(String requesterUserId, String assetId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.ASSET_BORROW_APPROVE, requesterUserId, assetId);
+    }
+
+    public boolean canCurrentActorRejectAssetBorrow(String requesterUserId, String assetId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.ASSET_BORROW_REJECT, requesterUserId, assetId);
+    }
+
+    public boolean canCurrentActorCancelAssetBorrow(String requesterUserId, String assetId) {
+        return canCurrentActorUsePolicy(AccessPolicyKeys.ASSET_BORROW_CANCEL, requesterUserId, assetId);
+    }
+
     private boolean canCurrentActorUseAssetPolicy(String policyKey, String subjectUserId, String resourceId) {
+        return canCurrentActorUsePolicy(policyKey, subjectUserId, resourceId);
+    }
+
+    private boolean canCurrentActorUsePolicy(String policyKey, String subjectUserId, String resourceId) {
         String normalizedSubjectUserId = normalizeId(subjectUserId);
         String normalizedResourceId = normalizeId(resourceId);
         if (!StringUtils.hasText(normalizedSubjectUserId) || !StringUtils.hasText(normalizedResourceId)) {
@@ -235,6 +291,18 @@ public class AccessControlService implements AccessPolicyData {
         return can(policyKey, actorUserId, normalizedSubjectUserId, normalizedResourceId);
     }
 
+    private boolean canCurrentActorUseCurrentSubjectPolicy(String policyKey, String resourceId) {
+        String normalizedResourceId = normalizeId(resourceId);
+        if (!StringUtils.hasText(normalizedResourceId)) {
+            return false;
+        }
+        if (!requiresAuthenticatedActor()) {
+            return true;
+        }
+        String actorUserId = resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
+        return can(policyKey, actorUserId, actorUserId, normalizedResourceId);
+    }
+
     public boolean canManageEventMembers(String eventId, String actorUserId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedActorUserId = normalizeId(actorUserId);
@@ -242,6 +310,26 @@ public class AccessControlService implements AccessPolicyData {
             return false;
         }
         return can(AccessPolicyKeys.EVENT_MEMBER_MANAGE, normalizedActorUserId, normalizedActorUserId, normalizedEventId);
+    }
+
+    public boolean canCurrentActorViewEventMembers(String eventId) {
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.EVENT_MEMBER_VIEW, eventId);
+    }
+
+    public boolean canAcceptEventMember(String eventId, String actorUserId, String targetUserId) {
+        return canEventMemberAction(
+                AccessPolicyKeys.EVENT_MEMBER_ACCEPT,
+                eventId,
+                actorUserId,
+                targetUserId);
+    }
+
+    public boolean canRemoveEventMember(String eventId, String actorUserId, String targetUserId) {
+        return canEventMemberAction(
+                AccessPolicyKeys.EVENT_MEMBER_REMOVE,
+                eventId,
+                actorUserId,
+                targetUserId);
     }
 
     public boolean canDisqualifyEventMember(String eventId, String actorUserId, String targetUserId) {
@@ -258,6 +346,32 @@ public class AccessControlService implements AccessPolicyData {
                 eventId,
                 actorUserId,
                 targetUserId);
+    }
+
+    public boolean canInviteEventMembers(String eventId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedActorUserId)) {
+            return false;
+        }
+        return can(AccessPolicyKeys.EVENT_MEMBER_INVITE, normalizedActorUserId, normalizedActorUserId, normalizedEventId);
+    }
+
+    public boolean canCurrentActorManageEventResourceAssignment(ActivitySubEventResourceStateDto request) {
+        String eventId = normalizeId(request == null ? null : request.ownerId());
+        if (!StringUtils.hasText(eventId)) {
+            return false;
+        }
+        return canCurrentActorUseCurrentSubjectPolicy(AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE, eventId);
+    }
+
+    public boolean canCleanupEventResourceAssignments(String eventId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedActorUserId)) {
+            return false;
+        }
+        return can(AccessPolicyKeys.RESOURCE_ASSIGN_CLEANUP, normalizedActorUserId, normalizedActorUserId, normalizedEventId);
     }
 
     private boolean canEventMemberAction(String policyKey, String eventId, String actorUserId, String targetUserId) {
@@ -290,6 +404,16 @@ public class AccessControlService implements AccessPolicyData {
     @Override
     public boolean isProtectedMember(String ownerType, String ownerId, String userId) {
         return memberPolicyFacts.isProtectedMember(ownerType, ownerId, userId);
+    }
+
+    @Override
+    public boolean canManageEvent(String eventId, String actorUserId) {
+        return memberPolicyFacts.canManageEvent(eventId, actorUserId);
+    }
+
+    @Override
+    public boolean canTakeOverEvent(String eventId, String actorUserId) {
+        return memberPolicyFacts.canTakeOverEvent(eventId, actorUserId);
     }
 
     @Override

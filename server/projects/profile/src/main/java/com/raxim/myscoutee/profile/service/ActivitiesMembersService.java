@@ -45,6 +45,8 @@ public class ActivitiesMembersService {
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";
     private static final String STATUS_DISQUALIFIED = "disqualified";
+    private static final String ACTION_ACCEPT = "accept";
+    private static final String ACTION_REMOVE = "remove";
     private static final String ACTION_DISQUALIFY = "disqualify";
     private static final String ACTION_REINSTATE = "reinstate";
     private static final String REQUEST_KIND_JOIN = "join";
@@ -110,6 +112,10 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
             return List.of();
         }
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)
+                && !accessControlService.canCurrentActorViewEventMembers(normalizedOwnerId)) {
+            return List.of();
+        }
 
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
         return loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
@@ -127,6 +133,12 @@ public class ActivitiesMembersService {
 
         List<ActivityMembersSummaryDto> summaries = new ArrayList<>();
         for (ActivityMemberOwnerRefDto owner : request.owners()) {
+            String ownerType = normalizeOwnerType(owner == null ? null : owner.ownerType());
+            String ownerId = normalizeId(owner == null ? null : owner.ownerId());
+            if (OWNER_TYPE_EVENT.equals(ownerType)
+                    && !accessControlService.canCurrentActorViewEventMembers(ownerId)) {
+                continue;
+            }
             ActivityMembersSummaryDto summary = querySummary(owner == null ? null : owner.ownerType(), owner == null ? null : owner.ownerId());
             if (summary != null) {
                 summaries.add(summary);
@@ -503,7 +515,14 @@ public class ActivitiesMembersService {
 
         String currentStatus = normalizeStatus(current.getStatus());
         String nextStatus;
-        if (ACTION_DISQUALIFY.equals(action)) {
+        if (ACTION_ACCEPT.equals(action)) {
+            if (!STATUS_PENDING.equals(currentStatus)) {
+                return queryMembers(ownerType, ownerId);
+            }
+            nextStatus = STATUS_ACCEPTED;
+        } else if (ACTION_REMOVE.equals(action)) {
+            nextStatus = STATUS_DELETED;
+        } else if (ACTION_DISQUALIFY.equals(action)) {
             if (!STATUS_ACCEPTED.equals(currentStatus)) {
                 return queryMembers(ownerType, ownerId);
             }
@@ -518,19 +537,23 @@ public class ActivitiesMembersService {
         }
 
         String nowIso = Instant.now().toString();
-        ActivityMember next = cloneMember(current);
-        next.setStatus(nextStatus);
-        next.setPendingSource(null);
-        next.setRequestKind(null);
-        next.setInvitedByUserId(null);
-        next.setActionAtIso(nowIso);
-        next.setUpdatedDate(nowIso);
-        next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+        ActivityMember next = STATUS_DELETED.equals(nextStatus)
+                ? toDeletedMember(current, actorUserId, nowIso)
+                : cloneMember(current);
+        if (!STATUS_DELETED.equals(nextStatus)) {
+            next.setStatus(nextStatus);
+            next.setPendingSource(null);
+            next.setRequestKind(null);
+            next.setInvitedByUserId(null);
+            next.setActionAtIso(nowIso);
+            next.setUpdatedDate(nowIso);
+            next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
+        }
         activityMembersRepository.save(next);
 
         enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
         adminTelemetryService.record(
-                ACTION_DISQUALIFY.equals(action) ? "event.member.disqualified" : "event.member.reinstated",
+                memberActionTelemetry(action),
                 ownerType,
                 ownerId,
                 actorUserId,
@@ -538,9 +561,22 @@ public class ActivitiesMembersService {
                 Map.of("targetUserId", targetUserId));
 
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            if (ACTION_REMOVE.equals(action)) {
+                cascadeRemovedEventMembersFromAssignedAssets(ownerId, List.of(current), actorUserId, nowIso);
+                Set<String> removedManagedAssetIds = activitiesResourcesService
+                        .removeManagedResourcesForRemovedEventMembers(ownerId, List.of(current), actorUserId, nowIso);
+                clearRemovedManagedAssetMembers(removedManagedAssetIds, actorUserId, nowIso);
+                processEventWaitlist(ownerId, findPreferredEventRecord(ownerId), true);
+            }
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
-            postMemberActionChatMessage(ownerId, action, next);
+            if (ACTION_ACCEPT.equals(action)) {
+                postEventMembershipChangeMessages(ownerId, List.of(next), List.of());
+            } else if (ACTION_REMOVE.equals(action)) {
+                postEventMembershipChangeMessages(ownerId, List.of(), List.of(current));
+            } else {
+                postMemberActionChatMessage(ownerId, action, next);
+            }
         } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, List.of(next));
         }
@@ -664,6 +700,9 @@ public class ActivitiesMembersService {
                 StringUtils.hasText(inviterUserId)
                         ? inviterUserId
                         : eventRecord == null ? null : eventRecord.getCreatorUserId());
+        if (!accessControlService.canInviteEventMembers(normalizedEventId, actorUserId)) {
+            return List.of();
+        }
         String nowIso = Instant.now().toString();
         String metWhere = safeText(eventRecord == null ? null : eventRecord.getLocation());
 
@@ -1560,6 +1599,12 @@ public class ActivitiesMembersService {
     }
 
     private boolean canApplyEventMemberAction(String ownerId, String actorUserId, String targetUserId, String action) {
+        if (ACTION_ACCEPT.equals(action)) {
+            return accessControlService.canAcceptEventMember(ownerId, actorUserId, targetUserId);
+        }
+        if (ACTION_REMOVE.equals(action)) {
+            return accessControlService.canRemoveEventMember(ownerId, actorUserId, targetUserId);
+        }
         if (ACTION_DISQUALIFY.equals(action)) {
             return accessControlService.canDisqualifyEventMember(ownerId, actorUserId, targetUserId);
         }
@@ -1567,6 +1612,19 @@ public class ActivitiesMembersService {
             return accessControlService.canReinstateEventMember(ownerId, actorUserId, targetUserId);
         }
         return false;
+    }
+
+    private String memberActionTelemetry(String action) {
+        if (ACTION_ACCEPT.equals(action)) {
+            return "event.member.accepted";
+        }
+        if (ACTION_REMOVE.equals(action)) {
+            return "event.member.removed";
+        }
+        if (ACTION_DISQUALIFY.equals(action)) {
+            return "event.member.disqualified";
+        }
+        return "event.member.reinstated";
     }
 
     private boolean canManageOwnerMembers(String ownerType, String ownerId, String actorUserId) {
@@ -1753,6 +1811,12 @@ public class ActivitiesMembersService {
         }
         if (ACTION_REINSTATE.equals(normalizedAction)) {
             return ACTION_REINSTATE;
+        }
+        if (ACTION_ACCEPT.equals(normalizedAction)) {
+            return ACTION_ACCEPT;
+        }
+        if (ACTION_REMOVE.equals(normalizedAction)) {
+            return ACTION_REMOVE;
         }
         return "";
     }

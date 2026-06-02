@@ -21,6 +21,7 @@ public class MemberPolicyFacts {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
     private static final String STATUS_ACCEPTED = "accepted";
+    private static final String EVENT_STATUS_UNDER_REVIEW = "UR";
     private static final String ASSET_STATUS_UNDER_REVIEW = "UR";
     private static final String ASSET_STATUS_TRASHED = "T";
     private static final String USER_STATUS_BLOCKED = "B";
@@ -101,6 +102,37 @@ public class MemberPolicyFacts {
             return true;
         }
         return hasAcceptedManagerRole(normalizedOwnerType, normalizedOwnerId, normalizedUserId);
+    }
+
+    public boolean canManageEvent(String eventId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !isActiveUser(normalizedActorUserId)) {
+            return false;
+        }
+        ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
+        if (eventRecord == null) {
+            return false;
+        }
+        return isEventCreatorOrAdmin(normalizedEventId, normalizedActorUserId)
+                || hasAcceptedManagerRole(OWNER_TYPE_EVENT, normalizedEventId, normalizedActorUserId);
+    }
+
+    public boolean canTakeOverEvent(String eventId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !isActiveUser(normalizedActorUserId)) {
+            return false;
+        }
+        ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
+        return eventRecord != null
+                && EVENT_STATUS_UNDER_REVIEW.equals(safeText(eventRecord.getStatus()))
+                && (isEventCreatorOrAdmin(normalizedEventId, normalizedActorUserId)
+                        || hasAcceptedManagerRole(OWNER_TYPE_EVENT, normalizedEventId, normalizedActorUserId));
     }
 
     public boolean canManageAsset(String assetId, String actorUserId) {

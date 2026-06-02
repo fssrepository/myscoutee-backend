@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +42,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenc
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,6 +81,8 @@ class ActivitiesEventsServiceTest {
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     @Mock
     private EventSlotReadModelService eventSlotReadModelService;
+    @Mock
+    private AccessControlService accessControlService;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -103,7 +107,17 @@ class ActivitiesEventsServiceTest {
                 eventSchedulerProvider,
                 activitiesChatService,
                 activitiesEventLeaderboardService,
-                eventSlotReadModelService);
+                eventSlotReadModelService,
+                accessControlService);
+        lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorUnpublishEvent(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorDeleteEvent(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorRestoreEvent(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorTakeOverEvent(anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorJoinEvent(anyString(), anyString())).thenReturn(true);
+        lenient().when(accessControlService.canCurrentActorApplyEventStageAction(anyString())).thenReturn(true);
     }
 
     @Test
@@ -186,6 +200,200 @@ class ActivitiesEventsServiceTest {
             assertThat(record.getIsHosting()).isFalse();
         });
         verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
+    }
+
+    @Test
+    void publishStopsBeforeSaveWhenPolicyDenies() {
+        when(accessControlService.canCurrentActorPublishEvent("event-1")).thenReturn(false);
+
+        service.publish(new EventActionRequestDto(
+                "host",
+                "hosting",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(scheduledMessageTaskService, never()).scheduleEventStageReminders(any(), anyString());
+        verify(chatAttachmentLifecycleService, never()).markEventAvailable(anyString());
+    }
+
+    @Test
+    void unpublishStopsBeforeSaveWhenPolicyDenies() {
+        when(accessControlService.canCurrentActorUnpublishEvent("event-1")).thenReturn(false);
+
+        service.unpublish(new EventActionRequestDto(
+                "host",
+                "hosting",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(scheduledMessageTaskService, never()).scheduleEventStageReminders(any(), anyString());
+        verify(chatAttachmentLifecycleService, never()).markEventUnavailable(anyString(), anyString());
+    }
+
+    @Test
+    void organizerTrashStopsBeforeLeaveSideEffectsWhenPolicyDenies() {
+        when(accessControlService.canCurrentActorDeleteEvent("event-1")).thenReturn(false);
+
+        service.trash(new EventActionRequestDto(
+                "host",
+                "hosting",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(paymentService, never()).cancelEventBooking(anyString(), anyString(), any(), any());
+        verify(activitiesChatService, never()).postSystemMessage(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void organizerRestoreStopsBeforeSaveWhenPolicyDenies() {
+        when(accessControlService.canCurrentActorRestoreEvent("event-1")).thenReturn(false);
+
+        service.restore(new EventActionRequestDto(
+                "host",
+                "hosting",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(chatAttachmentLifecycleService, never()).markEventAvailable(anyString());
+    }
+
+    @Test
+    void takeOverStopsBeforeLoadWhenPolicyDenies() {
+        Users host = new Users();
+        host.setId("host");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(accessControlService.canCurrentActorTakeOverEvent("event-1")).thenReturn(false);
+
+        service.takeOver(new EventActionRequestDto(
+                "host",
+                "hosting",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        verify(activityEventsRepository, never()).findBySourceId(anyString());
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void requestJoinStopsBeforeMemberWriteWhenPolicyDenies() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+        ActivityEvent event = event("event-1", "host", 0d);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(accessControlService.canCurrentActorJoinEvent("viewer", "event-1")).thenReturn(false);
+
+        EventRecordDto result = service.requestJoin(new EventActionRequestDto(
+                "viewer",
+                "events",
+                "event-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                null,
+                null,
+                null));
+
+        assertThat(result).isNotNull();
+        verify(activitiesMembersService, never()).requestJoin(anyString(), any(), any(), any(Boolean.class), any(Boolean.class), any(Boolean.class));
+        verify(paymentService, never()).recordEventJoin(anyString(), any(), anyString(), any(), any(), any());
+    }
+
+    @Test
+    void stageActionStopsBeforeLoadWhenPolicyDenies() {
+        Users host = new Users();
+        host.setId("host");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(accessControlService.canCurrentActorApplyEventStageAction("event-1")).thenReturn(false);
+
+        EventRecordDto result = service.applyStageAction(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+                "host",
+                "event-1",
+                "stage-1",
+                null,
+                "start-tournament",
+                null));
+
+        assertThat(result).isNull();
+        verify(activityEventsRepository, never()).findBySourceId(anyString());
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void eventCreateStopsBeforeSaveWhenPolicyDenies() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "draft-1"))
+                .thenReturn(Optional.empty());
+        when(accessControlService.canCurrentActorCreateEvent("host", "draft-1")).thenReturn(false);
+
+        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "hosting", "host", false));
+
+        assertThat(result).isNull();
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(affinityRecomputeTaskService, never()).enqueueEventChanged(anyString(), anyString());
+    }
+
+    @Test
+    void eventEditStopsBeforeSaveWhenPolicyDenies() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("draft-1", "host", 0d);
+        existing.setType("hosting");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "draft-1"))
+                .thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditEvent("draft-1")).thenReturn(false);
+
+        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "hosting", "host", false));
+
+        assertThat(result).isNull();
+        verify(activityEventsRepository, never()).saveAll(anyList());
+        verify(affinityRecomputeTaskService, never()).enqueueEventChanged(anyString(), anyString());
     }
 
     @Test
@@ -538,6 +746,60 @@ class ActivitiesEventsServiceTest {
         event.setBoost(0d);
         event.setAffinity(affinity);
         return event;
+    }
+
+    private ActivitiesEventSyncPayloadDto eventPayload(
+            String syncKey,
+            String id,
+            String target,
+            String creatorUserId,
+            Boolean published) {
+        return new ActivitiesEventSyncPayloadDto(
+                syncKey,
+                id,
+                target,
+                "Draft Event",
+                "Draft short description",
+                "May 24, 3:28 AM - 4:28 AM",
+                0,
+                true,
+                "2026-05-24T03:28:00Z",
+                "2026-05-24T04:28:00Z",
+                0d,
+                "",
+                0,
+                0,
+                1,
+                null,
+                1,
+                null,
+                false,
+                "One-time",
+                false,
+                null,
+                List.of(),
+                false,
+                List.of(),
+                null,
+                null,
+                false,
+                "main",
+                null,
+                "Public",
+                "Open Event",
+                published,
+                creatorUserId,
+                "Host User",
+                "HU",
+                "man",
+                "",
+                "",
+                null,
+                "",
+                List.of(),
+                List.of(),
+                "",
+                null);
     }
 
     private UserAffinityEdge edge(String leftUserId, String rightUserId, double edgeWeight) {
