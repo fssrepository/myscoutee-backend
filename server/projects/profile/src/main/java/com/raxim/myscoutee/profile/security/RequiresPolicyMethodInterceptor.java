@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.security;
 
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -26,41 +28,91 @@ public class RequiresPolicyMethodInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        RequiresPolicy requiresPolicy = RequiresPolicySupport.findAnnotation(invocation.getMethod(), invocation.getThis());
-        if (requiresPolicy == null) {
+        RequiresPolicySupport.PolicyRequirement requirement = RequiresPolicySupport.findRequirement(
+                invocation.getMethod(),
+                invocation.getThis());
+        if (requirement == null) {
             return invocation.proceed();
         }
-        if (requiresPolicy.skipWhenAuthenticationOptional() && !accessControlService.requiresAuthenticatedActor()) {
+        if (requirement.skipWhenAuthenticationOptional() && !accessControlService.requiresAuthenticatedActor()) {
             return invocation.proceed();
+        }
+        if (requirement.policies().isEmpty()) {
+            throw denied();
         }
 
         Method method = mostSpecificMethod(invocation);
         Object[] arguments = invocation.getArguments();
         Object target = invocation.getThis();
-        String actorUserId = resolveActorUserId(requiresPolicy, method, arguments, target);
-        String subjectUserId = evaluate(requiresPolicy.subject(), method, arguments, target);
-        String resourceId = evaluate(requiresPolicy.resourceId(), method, arguments, target);
-        if (!accessControlService.can(requiresPolicy.key(), actorUserId, subjectUserId, resourceId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Policy authorization denied.");
+        if (allows(requirement, method, arguments, target)) {
+            return invocation.proceed();
         }
-        return invocation.proceed();
+        throw denied();
+    }
+
+    private boolean allows(
+            RequiresPolicySupport.PolicyRequirement requirement,
+            Method method,
+            Object[] arguments,
+            Object target) {
+        if (requirement.mode() == RequiresPolicies.Mode.ANY) {
+            ResponseStatusException expressionFailure = null;
+            for (RequiresPolicy requiresPolicy : requirement.policies()) {
+                try {
+                    if (allows(requiresPolicy, method, arguments, target)) {
+                        return true;
+                    }
+                } catch (ResponseStatusException exception) {
+                    expressionFailure = exception;
+                }
+            }
+            if (expressionFailure != null) {
+                throw expressionFailure;
+            }
+            return false;
+        }
+
+        for (RequiresPolicy requiresPolicy : requirement.policies()) {
+            if (!allows(requiresPolicy, method, arguments, target)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean allows(RequiresPolicy requiresPolicy, Method method, Object[] arguments, Object target) {
+        String actorUserId = resolveActorUserId(requiresPolicy, method, arguments, target);
+        Map<String, Object> variables = new LinkedHashMap<>();
+        variables.put("actorUserId", actorUserId);
+        String subjectUserId = evaluate(requiresPolicy.subject(), method, arguments, target, variables);
+        String resourceId = evaluate(requiresPolicy.resourceId(), method, arguments, target, variables);
+        return accessControlService.can(requiresPolicy.key(), actorUserId, subjectUserId, resourceId);
     }
 
     private String resolveActorUserId(RequiresPolicy requiresPolicy, Method method, Object[] arguments, Object target) {
         String actorExpression = requiresPolicy.actor();
         if (StringUtils.hasText(actorExpression)) {
-            return evaluate(actorExpression, method, arguments, target);
+            return evaluate(actorExpression, method, arguments, target, Map.of());
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return accessControlService.resolveActorUserId(authentication);
     }
 
-    private String evaluate(String expression, Method method, Object[] arguments, Object target) {
+    private String evaluate(
+            String expression,
+            Method method,
+            Object[] arguments,
+            Object target,
+            Map<String, Object> variables) {
         try {
-            return expressionEvaluator.evaluate(expression, method, arguments, target);
+            return expressionEvaluator.evaluate(expression, method, arguments, target, variables);
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Policy expression could not be evaluated.", exception);
         }
+    }
+
+    private ResponseStatusException denied() {
+        return new ResponseStatusException(HttpStatus.FORBIDDEN, "Policy authorization denied.");
     }
 
     private Method mostSpecificMethod(MethodInvocation invocation) {

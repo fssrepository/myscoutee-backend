@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.security;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -9,19 +11,43 @@ final class RequiresPolicySupport {
     private RequiresPolicySupport() {
     }
 
-    static RequiresPolicy findAnnotation(Method method, Object target) {
+    static PolicyRequirement findRequirement(Method method, Object target) {
         Class<?> targetClass = target == null ? null : target.getClass();
-        return findAnnotation(method, targetClass);
+        return findRequirement(method, targetClass);
     }
 
-    static RequiresPolicy findAnnotation(Method method, Class<?> targetClass) {
+    static PolicyRequirement findRequirement(Method method, Class<?> targetClass) {
         Method specificMethod = targetClass == null
                 ? method
                 : AopUtils.getMostSpecificMethod(method, targetClass);
-        RequiresPolicy annotation = AnnotatedElementUtils.findMergedAnnotation(specificMethod, RequiresPolicy.class);
-        if (annotation != null) {
-            return annotation;
+        PolicyRequirement requirement = findRequirement(specificMethod);
+        if (requirement != null) {
+            return requirement;
         }
-        return AnnotatedElementUtils.findMergedAnnotation(method, RequiresPolicy.class);
+        return specificMethod.equals(method) ? null : findRequirement(method);
+    }
+
+    private static PolicyRequirement findRequirement(Method method) {
+        RequiresPolicies policies = AnnotatedElementUtils.findMergedAnnotation(method, RequiresPolicies.class);
+        if (policies != null) {
+            return new PolicyRequirement(
+                    policies.mode(),
+                    policies.skipWhenAuthenticationOptional(),
+                    Arrays.asList(policies.value()));
+        }
+        RequiresPolicy annotation = AnnotatedElementUtils.findMergedAnnotation(method, RequiresPolicy.class);
+        if (annotation != null) {
+            return new PolicyRequirement(
+                    RequiresPolicies.Mode.ALL,
+                    annotation.skipWhenAuthenticationOptional(),
+                    List.of(annotation));
+        }
+        return null;
+    }
+
+    record PolicyRequirement(
+            RequiresPolicies.Mode mode,
+            boolean skipWhenAuthenticationOptional,
+            List<RequiresPolicy> policies) {
     }
 }

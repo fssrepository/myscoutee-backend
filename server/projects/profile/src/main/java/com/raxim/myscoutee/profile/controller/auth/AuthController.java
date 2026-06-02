@@ -26,7 +26,9 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 
@@ -100,6 +102,11 @@ public class AuthController {
     }
 
     @PostMapping(path = "/me/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            subject = "#userId",
+            resourceId = "#userId",
+            skipWhenAuthenticationOptional = true)
     public UserProfileImageUploadResponseDto uploadProfileImage(
             @RequestParam("userId") String userId,
             @RequestParam("slotIndex") Integer slotIndex,

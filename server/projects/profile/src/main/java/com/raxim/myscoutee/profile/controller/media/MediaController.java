@@ -18,7 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaUploadResponseDto;
+import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
 
@@ -36,6 +38,11 @@ public class MediaController {
     }
 
     @PostMapping(path = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            subject = "#ownerId",
+            resourceId = "#ownerId",
+            skipWhenAuthenticationOptional = true)
     public MediaImageUploadResponseDto uploadImage(
             @RequestParam("scope") String scope,
             @RequestParam("ownerId") String ownerId,
@@ -52,6 +59,11 @@ public class MediaController {
     }
 
     @PostMapping(path = "/images/import", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_IMPORT,
+            subject = "#request?.ownerId()",
+            resourceId = "#request?.ownerId()",
+            skipWhenAuthenticationOptional = true)
     public MediaImageUploadResponseDto importImage(@RequestBody MediaImageImportRequestDto request) {
         String ownerId = request == null ? null : request.ownerId();
         if (!accessControlService.canCurrentActorImportMedia(ownerId)) {
@@ -66,6 +78,11 @@ public class MediaController {
     }
 
     @PostMapping(path = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(
+            key = AccessPolicyKeys.USER_MEDIA_UPLOAD,
+            subject = "#ownerId",
+            resourceId = "#ownerId",
+            skipWhenAuthenticationOptional = true)
     public MediaUploadResponseDto uploadAudio(
             @RequestParam("scope") String scope,
             @RequestParam("ownerId") String ownerId,

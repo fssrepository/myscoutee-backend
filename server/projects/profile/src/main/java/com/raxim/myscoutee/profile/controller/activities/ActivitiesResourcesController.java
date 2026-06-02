@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.RequiresPolicies;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.ActivitiesResourcesService;
 
@@ -30,11 +31,19 @@ public class ActivitiesResourcesController {
     }
 
     @PostMapping("/replace")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
-            subject = "#request.assetOwnerUserId()",
-            resourceId = "#request.ownerId()",
-            skipWhenAuthenticationOptional = true)
+    @RequiresPolicies(
+            mode = RequiresPolicies.Mode.ANY,
+            skipWhenAuthenticationOptional = true,
+            value = {
+                    @RequiresPolicy(
+                            key = AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
+                            subject = "#request.assetOwnerUserId()",
+                            resourceId = "#request.ownerId()"),
+                    @RequiresPolicy(
+                            key = AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
+                            subject = "#actorUserId",
+                            resourceId = "#request.ownerId()")
+            })
     public ActivitySubEventResourceStateDto replace(@RequestBody ActivitySubEventResourceStateDto request) {
         return activitiesResourcesService.replace(request);
     }

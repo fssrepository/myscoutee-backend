@@ -60,6 +60,34 @@ class RequiresPolicyMethodInterceptorTest {
     }
 
     @Test
+    void allowsAnyPolicyGroupWhenOnePolicyPasses() throws Throwable {
+        RequiresPolicyMethodInterceptor interceptor = interceptor();
+        MethodInvocation invocation = invocation("replaceWithSubmitOrManagerPolicy", request("event-1", "u1"));
+        when(accessControlService.resolveActorUserId(null)).thenReturn("manager-1");
+        when(accessControlService.can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, "manager-1", "u1", "event-1")).thenReturn(false);
+        when(accessControlService.can(AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE, "manager-1", "manager-1", "event-1")).thenReturn(true);
+
+        Object result = interceptor.invoke(invocation);
+
+        assertThat(result).isEqualTo("ok");
+        verify(invocation).proceed();
+    }
+
+    @Test
+    void deniesAnyPolicyGroupWhenAllPoliciesFail() throws Throwable {
+        RequiresPolicyMethodInterceptor interceptor = interceptor();
+        MethodInvocation invocation = invocation("replaceWithSubmitOrManagerPolicy", request("event-1", "u1"));
+        when(accessControlService.resolveActorUserId(null)).thenReturn("manager-1");
+        when(accessControlService.can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, "manager-1", "u1", "event-1")).thenReturn(false);
+        when(accessControlService.can(AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE, "manager-1", "manager-1", "event-1")).thenReturn(false);
+
+        assertThatThrownBy(() -> interceptor.invoke(invocation))
+                .isInstanceOf(ResponseStatusException.class);
+
+        verify(invocation, never()).proceed();
+    }
+
+    @Test
     void supportsActorExpressionAndParameterIndexFallback() throws Throwable {
         RequiresPolicyMethodInterceptor interceptor = interceptor();
         MethodInvocation invocation = invocation("replaceWithActorExpression", request("event-1", "u1"));
@@ -75,6 +103,18 @@ class RequiresPolicyMethodInterceptorTest {
     void bypassesPolicyWhenAuthenticationIsOptional() throws Throwable {
         RequiresPolicyMethodInterceptor interceptor = interceptor();
         MethodInvocation invocation = invocation("replaceInDevMode", request("event-1", "u1"));
+        when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
+
+        Object result = interceptor.invoke(invocation);
+
+        assertThat(result).isEqualTo("ok");
+        verify(accessControlService, never()).can(any(), any(), any(), any());
+    }
+
+    @Test
+    void bypassesPolicyGroupWhenAuthenticationIsOptional() throws Throwable {
+        RequiresPolicyMethodInterceptor interceptor = interceptor();
+        MethodInvocation invocation = invocation("replaceWithOptionalPolicyGroup", request("event-1", "u1"));
         when(accessControlService.requiresAuthenticatedActor()).thenReturn(false);
 
         Object result = interceptor.invoke(invocation);
@@ -135,6 +175,22 @@ class RequiresPolicyMethodInterceptorTest {
             return "unused";
         }
 
+        @RequiresPolicies(
+                mode = RequiresPolicies.Mode.ANY,
+                value = {
+                        @RequiresPolicy(
+                                key = AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
+                                subject = "#request.assetOwnerUserId()",
+                                resourceId = "#request.ownerId()"),
+                        @RequiresPolicy(
+                                key = AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
+                                subject = "#actorUserId",
+                                resourceId = "#request.ownerId()")
+                })
+        String replaceWithSubmitOrManagerPolicy(ActivitySubEventResourceStateDto request) {
+            return "unused";
+        }
+
         @RequiresPolicy(
                 key = AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
                 actor = "#request.assetOwnerUserId()",
@@ -150,6 +206,23 @@ class RequiresPolicyMethodInterceptorTest {
                 resourceId = "#request.ownerId()",
                 skipWhenAuthenticationOptional = true)
         String replaceInDevMode(ActivitySubEventResourceStateDto request) {
+            return "unused";
+        }
+
+        @RequiresPolicies(
+                mode = RequiresPolicies.Mode.ANY,
+                skipWhenAuthenticationOptional = true,
+                value = {
+                        @RequiresPolicy(
+                                key = AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
+                                subject = "#request.assetOwnerUserId()",
+                                resourceId = "#request.ownerId()"),
+                        @RequiresPolicy(
+                                key = AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
+                                subject = "#actorUserId",
+                                resourceId = "#request.ownerId()")
+                })
+        String replaceWithOptionalPolicyGroup(ActivitySubEventResourceStateDto request) {
             return "unused";
         }
 

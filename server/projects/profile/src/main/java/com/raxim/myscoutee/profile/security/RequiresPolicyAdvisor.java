@@ -15,6 +15,6 @@ public class RequiresPolicyAdvisor extends StaticMethodMatcherPointcutAdvisor {
 
     @Override
     public boolean matches(Method method, Class<?> targetClass) {
-        return RequiresPolicySupport.findAnnotation(method, targetClass) != null;
+        return RequiresPolicySupport.findRequirement(method, targetClass) != null;
     }
 }

@@ -20,6 +20,15 @@ public class PolicyExpressionEvaluator {
     private final Map<String, Expression> expressionCache = new ConcurrentHashMap<>();
 
     public String evaluate(String expressionText, Method method, Object[] arguments, Object target) {
+        return evaluate(expressionText, method, arguments, target, Map.of());
+    }
+
+    public String evaluate(
+            String expressionText,
+            Method method,
+            Object[] arguments,
+            Object target,
+            Map<String, Object> variables) {
         String normalizedExpression = safeText(expressionText);
         if (!StringUtils.hasText(normalizedExpression)) {
             return null;
@@ -38,6 +47,9 @@ public class PolicyExpressionEvaluator {
             for (int index = 0; index < Math.min(parameterNames.length, safeArguments.length); index += 1) {
                 context.setVariable(parameterNames[index], safeArguments[index]);
             }
+        }
+        if (variables != null) {
+            variables.forEach(context::setVariable);
         }
 
         Object value = expressionCache
