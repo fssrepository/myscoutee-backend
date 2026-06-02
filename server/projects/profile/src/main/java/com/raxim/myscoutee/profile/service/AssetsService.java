@@ -200,6 +200,9 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
+        if (!accessControlService.canCurrentActorReplaceAssets(normalizedUserId)) {
+            return;
+        }
 
         List<Asset> existing = assetsRepository.findByOwnerUserId(normalizedUserId);
         Map<String, Asset> existingByAssetId = new LinkedHashMap<>();
@@ -251,6 +254,9 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return;
         }
+        if (!accessControlService.canCurrentActorDeleteAsset(normalizedUserId, normalizedAssetId)) {
+            return;
+        }
         assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
                 .filter(asset -> !STATUS_TRASHED.equals(safeText(asset.getStatus())))
                 .map(asset -> toTrashedAsset(asset, normalizedUserId, Instant.now().toString()))
@@ -267,6 +273,9 @@ public class AssetsService {
         String normalizedUserId = normalizeId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorRestoreAsset(normalizedUserId, normalizedAssetId)) {
             return null;
         }
         Asset current = assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId).orElse(null);
@@ -296,6 +305,9 @@ public class AssetsService {
         String normalizedUserId = normalizeId(request.userId());
         String normalizedAssetId = normalizeId(request.assetId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorTakeOverAsset(normalizedUserId, normalizedAssetId)) {
             return null;
         }
         Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
@@ -336,6 +348,9 @@ public class AssetsService {
         if (!StringUtils.hasText(normalizedUserId)
                 || !StringUtils.hasText(normalizedAssetId)
                 || !StringUtils.hasText(normalizedTargetUserId)) {
+            return null;
+        }
+        if (!accessControlService.canCurrentActorPromoteAssetManager(normalizedUserId, normalizedAssetId)) {
             return null;
         }
         Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
@@ -500,6 +515,8 @@ public class AssetsService {
     }
 
     public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
+        String normalizedUserId = normalizeId(request == null ? null : request.userId());
+        String normalizedAssetId = normalizeId(request == null ? null : request.assetId());
         String normalizedUrl = normalizeExternalUrl(request == null ? null : request.sourceLink());
         boolean enabled = assetSourceRefreshProperties.isEnabled();
         if (!StringUtils.hasText(normalizedUrl)) {
@@ -507,6 +524,9 @@ public class AssetsService {
         }
         if (!enabled) {
             return new AssetSourceRefreshResponseDto(false, false, normalizedUrl, null, null, null, null);
+        }
+        if (!accessControlService.canCurrentActorRefreshAssetSource(normalizedUserId, normalizedAssetId)) {
+            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
         }
 
         URI uri = toUri(normalizedUrl);
@@ -600,7 +620,17 @@ public class AssetsService {
             return null;
         }
 
-        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, normalizeId(assetDto.id())).orElse(null);
+        String assetId = normalizeId(assetDto == null ? null : assetDto.id());
+        if (!StringUtils.hasText(assetId)) {
+            return null;
+        }
+        Asset existing = assetsRepository.findByOwnerUserIdAndAssetId(ownerUserId, assetId).orElse(null);
+        boolean allowed = existing == null
+                ? accessControlService.canCurrentActorCreateAsset(ownerUserId, assetId)
+                : accessControlService.canCurrentActorEditAsset(ownerUserId, assetId);
+        if (!allowed) {
+            return null;
+        }
         Asset saved = toDocument(assetDto, ownerUserId, existing);
         if (saved == null) {
             return null;

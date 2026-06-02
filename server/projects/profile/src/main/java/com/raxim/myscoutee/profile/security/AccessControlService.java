@@ -187,6 +187,54 @@ public class AccessControlService implements AccessPolicyData {
         return can(AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET, null, normalizedUserId, normalizedEventId);
     }
 
+    public boolean canCurrentActorCreateAsset(String ownerUserId, String assetId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_CREATE, ownerUserId, assetId);
+    }
+
+    public boolean canCurrentActorReplaceAssets(String ownerUserId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_REPLACE, ownerUserId, ownerUserId);
+    }
+
+    public boolean canCurrentActorEditAsset(String ownerUserId, String assetId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_EDIT, ownerUserId, assetId);
+    }
+
+    public boolean canCurrentActorDeleteAsset(String ownerUserId, String assetId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_DELETE, ownerUserId, assetId);
+    }
+
+    public boolean canCurrentActorRestoreAsset(String ownerUserId, String assetId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_RESTORE, ownerUserId, assetId);
+    }
+
+    public boolean canCurrentActorTakeOverAsset(String actorUserId, String assetId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_TAKEOVER, actorUserId, assetId);
+    }
+
+    public boolean canCurrentActorPromoteAssetManager(String actorUserId, String assetId) {
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR, actorUserId, assetId);
+    }
+
+    public boolean canCurrentActorRefreshAssetSource(String ownerUserId, String assetId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        String normalizedAssetId = normalizeId(assetId);
+        String resourceId = StringUtils.hasText(normalizedAssetId) ? normalizedAssetId : normalizedOwnerUserId;
+        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_SOURCE_REFRESH, normalizedOwnerUserId, resourceId);
+    }
+
+    private boolean canCurrentActorUseAssetPolicy(String policyKey, String subjectUserId, String resourceId) {
+        String normalizedSubjectUserId = normalizeId(subjectUserId);
+        String normalizedResourceId = normalizeId(resourceId);
+        if (!StringUtils.hasText(normalizedSubjectUserId) || !StringUtils.hasText(normalizedResourceId)) {
+            return false;
+        }
+        if (!requiresAuthenticatedActor()) {
+            return true;
+        }
+        String actorUserId = resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
+        return can(policyKey, actorUserId, normalizedSubjectUserId, normalizedResourceId);
+    }
+
     public boolean canManageEventMembers(String eventId, String actorUserId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedActorUserId = normalizeId(actorUserId);
@@ -242,6 +290,16 @@ public class AccessControlService implements AccessPolicyData {
     @Override
     public boolean isProtectedMember(String ownerType, String ownerId, String userId) {
         return memberPolicyFacts.isProtectedMember(ownerType, ownerId, userId);
+    }
+
+    @Override
+    public boolean canManageAsset(String assetId, String actorUserId) {
+        return memberPolicyFacts.canManageAsset(assetId, actorUserId);
+    }
+
+    @Override
+    public boolean canTakeOverAsset(String assetId, String actorUserId) {
+        return memberPolicyFacts.canTakeOverAsset(assetId, actorUserId);
     }
 
     public String resolveActorUserId(Authentication authentication) {

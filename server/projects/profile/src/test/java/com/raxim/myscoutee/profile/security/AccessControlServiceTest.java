@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationToken;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
@@ -29,12 +31,15 @@ import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AccessControlServiceTest {
@@ -44,6 +49,8 @@ class AccessControlServiceTest {
     private ActivityEventsRepository activityEventsRepository;
     @Mock
     private AssetsRepository assetsRepository;
+    @Mock
+    private UsersRepository usersRepository;
     @Mock
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
@@ -63,8 +70,13 @@ class AccessControlServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository));
+                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository));
         service.loadAccessControlCacheAtStartup();
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
@@ -275,6 +287,135 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void assetOwnerPoliciesRequireCurrentActorToMatchRequestUser() {
+        authenticateAs("u1");
+
+        assertThat(service.canCurrentActorCreateAsset("u1", "asset-1")).isTrue();
+        assertThat(service.canCurrentActorReplaceAssets("u1")).isTrue();
+        assertThat(service.canCurrentActorEditAsset("u1", "asset-1")).isTrue();
+        assertThat(service.canCurrentActorDeleteAsset("u1", "asset-1")).isTrue();
+        assertThat(service.canCurrentActorRestoreAsset("u1", "asset-1")).isTrue();
+        assertThat(service.canCurrentActorDeleteAsset("u2", "asset-1")).isFalse();
+    }
+
+    @Test
+    void assetOwnerPolicyDenyGrantOverridesActorMatch() {
+        authenticateAs("u1");
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "asset.delete", "asset", "asset-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorDeleteAsset("u1", "asset-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void assetSourceRefreshAllowsOwnerPreCreateRefreshWithoutAssetId() {
+        authenticateAs("u1");
+
+        assertThat(service.canCurrentActorRefreshAssetSource("u1", null)).isTrue();
+        assertThat(service.canCurrentActorRefreshAssetSource("u2", null)).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void assetSourceRefreshAllowsAcceptedAssetManagerWhenAssetIdIsPresent() {
+        authenticateAs("u2");
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(member("asset", "asset-1", "u2", "accepted", "Manager")));
+
+        boolean allowed = service.canCurrentActorRefreshAssetSource("u1", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetSourceRefreshRejectsAnotherActorWhenAssetIdIsMissing() {
+        authenticateAs("u2");
+
+        boolean allowed = service.canCurrentActorRefreshAssetSource("u1", null);
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void assetSourceRefreshDenyGrantOverridesAssetManagerRule() {
+        authenticateAs("u2");
+        when(accessGrantsRepository.findAll())
+                .thenReturn(List.of(grant("u1", "asset.source.refresh", "asset", "asset-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canCurrentActorRefreshAssetSource("u1", "asset-1");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
+    }
+
+    @Test
+    void assetManagerPromotionActorAllowsAssetOwner() {
+        authenticateAs("u1");
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(user("u1")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+
+        boolean allowed = service.canCurrentActorPromoteAssetManager("u1", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetManagerPromotionActorAllowsAcceptedAssetManager() {
+        authenticateAs("u2");
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(member("asset-1", "u2", "accepted", "Manager")));
+
+        boolean allowed = service.canCurrentActorPromoteAssetManager("u2", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetManagerPromotionActorRejectsPlainMember() {
+        authenticateAs("u2");
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(member("asset-1", "u2", "accepted", "Member")));
+
+        boolean allowed = service.canCurrentActorPromoteAssetManager("u2", "asset-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void assetTakeoverAllowsAcceptedManagerForUnderReviewAsset() {
+        authenticateAs("u2");
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "UR")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
+                .thenReturn(Optional.of(member("asset-1", "u2", "accepted", "Manager")));
+
+        boolean allowed = service.canCurrentActorTakeOverAsset("u2", "asset-1");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void assetTakeoverRejectsActiveAssetEvenForManager() {
+        authenticateAs("u2");
+        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
+
+        boolean allowed = service.canCurrentActorTakeOverAsset("u2", "asset-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
     void eventMemberManageAllowsEventCreator() {
         when(activityEventsRepository.findBySourceId("event-1"))
                 .thenReturn(List.of(event("event-1", "creator", "admin")));
@@ -417,6 +558,10 @@ class AccessControlServiceTest {
                 List.of(new SimpleGrantedAuthority("U")));
     }
 
+    private void authenticateAs(String userId) {
+        SecurityContextHolder.getContext().setAuthentication(auth(userId));
+    }
+
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {
         return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of());
     }
@@ -426,8 +571,12 @@ class AccessControlServiceTest {
     }
 
     private ActivityMember member(String ownerId, String userId, String status, String role) {
+        return member("event", ownerId, userId, status, role);
+    }
+
+    private ActivityMember member(String ownerType, String ownerId, String userId, String status, String role) {
         ActivityMember member = new ActivityMember();
-        member.setOwnerType("event");
+        member.setOwnerType(ownerType);
         member.setOwnerId(ownerId);
         member.setUserId(userId);
         member.setStatus(status);
@@ -446,6 +595,22 @@ class AccessControlServiceTest {
         return event;
     }
 
+    private Asset asset(String assetId, String ownerUserId, String status) {
+        Asset asset = new Asset();
+        asset.setAssetId(assetId);
+        asset.setOwnerUserId(ownerUserId);
+        asset.setStatus(status);
+        return asset;
+    }
+
+    private Users user(String userId) {
+        Users user = new Users();
+        user.setUserId(userId);
+        user.setStatus("A");
+        user.setProfileStatus("public");
+        return user;
+    }
+
     private AccessGrant grant(String subjectUserId, String permission, String resourceType, String resourceId, String effect) {
         AccessGrant grant = new AccessGrant();
         grant.setSubjectUserId(subjectUserId);
@@ -458,6 +623,62 @@ class AccessControlServiceTest {
 
     private List<AccessPolicyDefinition> defaultPolicyDefinitions() {
         return List.of(
+                policy(
+                        AccessPolicyKeys.ASSET_CREATE,
+                        "asset.create",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_REPLACE,
+                        "asset.replace",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_EDIT,
+                        "asset.edit",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_DELETE,
+                        "asset.delete",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_RESTORE,
+                        "asset.restore",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_TAKEOVER,
+                        "asset.takeover",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanTakeOverAsset"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
+                        "asset.manager.promote.actor",
+                        "asset",
+                        List.of("actorMatchesSubject", "noExplicitDeny", "actorCanManageAsset"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.ASSET_SOURCE_REFRESH,
+                        "asset.source.refresh",
+                        "asset",
+                        List.of("noExplicitDeny", "actorCanRefreshAssetSource"),
+                        List.of(),
+                        null),
                 policy(
                         AccessPolicyKeys.EVENT_MEMBER_MANAGE,
                         "event.member.manage",

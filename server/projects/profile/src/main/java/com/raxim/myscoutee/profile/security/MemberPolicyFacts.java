@@ -10,28 +10,38 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Component
 public class MemberPolicyFacts {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
     private static final String STATUS_ACCEPTED = "accepted";
+    private static final String ASSET_STATUS_UNDER_REVIEW = "UR";
+    private static final String ASSET_STATUS_TRASHED = "T";
+    private static final String USER_STATUS_BLOCKED = "B";
+    private static final String USER_STATUS_DELETED = "D";
+    private static final String USER_STATUS_INACTIVE = "I";
     private static final Set<String> MANAGER_ROLES = Set.of("Admin", "Manager");
 
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final AssetsRepository assetsRepository;
+    private final UsersRepository usersRepository;
 
     public MemberPolicyFacts(
             ActivityMembersRepository activityMembersRepository,
             ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository) {
+            AssetsRepository assetsRepository,
+            UsersRepository usersRepository) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.assetsRepository = assetsRepository;
+        this.usersRepository = usersRepository;
     }
 
     public boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId) {
@@ -91,6 +101,37 @@ public class MemberPolicyFacts {
             return true;
         }
         return hasAcceptedManagerRole(normalizedOwnerType, normalizedOwnerId, normalizedUserId);
+    }
+
+    public boolean canManageAsset(String assetId, String actorUserId) {
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !isActiveUser(normalizedActorUserId)) {
+            return false;
+        }
+        Asset asset = assetsRepository.findByAssetId(normalizedAssetId).orElse(null);
+        if (asset == null || ASSET_STATUS_TRASHED.equals(safeText(asset.getStatus()))) {
+            return false;
+        }
+        return normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))
+                || hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId);
+    }
+
+    public boolean canTakeOverAsset(String assetId, String actorUserId) {
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !isActiveUser(normalizedActorUserId)) {
+            return false;
+        }
+        Asset asset = assetsRepository.findByAssetId(normalizedAssetId).orElse(null);
+        return asset != null
+                && ASSET_STATUS_UNDER_REVIEW.equals(safeText(asset.getStatus()))
+                && (normalizedActorUserId.equals(normalizeId(asset.getOwnerUserId()))
+                        || hasAcceptedManagerRole(OWNER_TYPE_ASSET, normalizedAssetId, normalizedActorUserId));
     }
 
     private boolean isEventCreatorOrAdmin(String eventId, String userId) {
@@ -161,6 +202,21 @@ public class MemberPolicyFacts {
                 .map(this::safeText)
                 .filter(MANAGER_ROLES::contains)
                 .isPresent();
+    }
+
+    private boolean isActiveUser(String userId) {
+        return usersRepository.findByUserId(normalizeId(userId))
+                .map(user -> {
+                    String profileStatus = safeText(user.getProfileStatus());
+                    String status = safeText(user.getStatus());
+                    return !"blocked".equals(profileStatus)
+                            && !"deleted".equals(profileStatus)
+                            && !"inactive".equals(profileStatus)
+                            && !USER_STATUS_BLOCKED.equalsIgnoreCase(status)
+                            && !USER_STATUS_DELETED.equalsIgnoreCase(status)
+                            && !USER_STATUS_INACTIVE.equalsIgnoreCase(status);
+                })
+                .orElse(false);
     }
 
     private Set<String> normalizeIds(Collection<String> values) {

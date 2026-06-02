@@ -30,7 +30,15 @@ class AccessPolicySeedTest {
             AccessPolicyKeys.EVENT_MEMBER_REINSTATE,
             AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
             AccessPolicyKeys.RESOURCE_ASSIGN_SUBJECT,
-            AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET);
+            AccessPolicyKeys.ASSET_CREATE,
+            AccessPolicyKeys.ASSET_REPLACE,
+            AccessPolicyKeys.ASSET_EDIT,
+            AccessPolicyKeys.ASSET_DELETE,
+            AccessPolicyKeys.ASSET_RESTORE,
+            AccessPolicyKeys.ASSET_TAKEOVER,
+            AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET,
+            AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
+            AccessPolicyKeys.ASSET_SOURCE_REFRESH);
 
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

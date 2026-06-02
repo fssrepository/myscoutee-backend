@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageMembersCondition;
+import com.raxim.myscoutee.profile.security.condition.ActorCanRefreshAssetSourceCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorMatchesSubjectCondition;
 
 class AccessPolicyConditionRegistryTest {
@@ -17,6 +18,7 @@ class AccessPolicyConditionRegistryTest {
 
         assertThat(registry.named(" actorMatchesSubject ")).isInstanceOf(ActorMatchesSubjectCondition.class);
         assertThat(registry.named("ACTORCANMANAGEMEMBERS")).isInstanceOf(ActorCanManageMembersCondition.class);
+        assertThat(registry.named("actorCanRefreshAssetSource")).isInstanceOf(ActorCanRefreshAssetSourceCondition.class);
     }
 
     @Test

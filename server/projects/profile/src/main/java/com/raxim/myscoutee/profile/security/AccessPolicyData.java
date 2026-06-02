@@ -9,6 +9,10 @@ public interface AccessPolicyData {
 
     boolean isProtectedMember(String ownerType, String ownerId, String userId);
 
+    boolean canManageAsset(String assetId, String actorUserId);
+
+    boolean canTakeOverAsset(String assetId, String actorUserId);
+
     boolean hasExplicitGrant(
             String subjectUserId,
             String permission,

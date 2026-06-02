@@ -38,6 +38,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.AccessPolicyTestSupport;
@@ -60,6 +61,8 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private AssetsRepository assetsRepository;
     @Mock
+    private UsersRepository usersRepository;
+    @Mock
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
     private AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
@@ -78,7 +81,7 @@ class ActivitiesResourcesServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository));
+                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,
