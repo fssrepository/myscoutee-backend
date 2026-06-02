@@ -34,10 +34,14 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.security.AccessPolicyTestSupport;
+import com.raxim.myscoutee.profile.security.MemberPolicyFacts;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesResourcesServiceTest {
@@ -51,6 +55,10 @@ class ActivitiesResourcesServiceTest {
     private ActivitiesMembersService activitiesMembersService;
     @Mock
     private ActivityMembersRepository activityMembersRepository;
+    @Mock
+    private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private AssetsRepository assetsRepository;
     @Mock
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
@@ -66,10 +74,11 @@ class ActivitiesResourcesServiceTest {
         when(accessGrantsRepository.findAll()).thenReturn(List.of());
         when(accessPolicyDefinitionsRepository.findAll()).thenReturn(defaultPolicyDefinitions());
         accessControlService = new AccessControlService(
-                activityMembersRepository,
                 accessGrantsRepository,
                 accessPolicyDefinitionsRepository,
-                configProperties);
+                configProperties,
+                AccessPolicyTestSupport.conditionRegistry(),
+                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,

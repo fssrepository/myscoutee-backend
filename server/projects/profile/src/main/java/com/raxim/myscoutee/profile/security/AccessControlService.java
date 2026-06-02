@@ -25,32 +25,33 @@ import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
-import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
 import jakarta.annotation.PostConstruct;
 
 @Service("accessControl")
 public class AccessControlService implements AccessPolicyData {
-    private static final String STATUS_ACCEPTED = "accepted";
     private static final String EFFECT_ALLOW = "allow";
     private static final String EFFECT_DENY = "deny";
 
-    private final ActivityMembersRepository activityMembersRepository;
     private final AccessGrantsRepository accessGrantsRepository;
     private final AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
     private final ConfigProperties configProperties;
+    private final AccessPolicyConditionRegistry conditionRegistry;
+    private final MemberPolicyFacts memberPolicyFacts;
     private final AtomicReference<Map<GrantKey, AccessGrantEffect>> accessGrantCache = new AtomicReference<>(Map.of());
     private final AtomicReference<Map<String, AccessPolicy>> accessPolicyCache = new AtomicReference<>(Map.of());
 
     public AccessControlService(
-            ActivityMembersRepository activityMembersRepository,
             AccessGrantsRepository accessGrantsRepository,
             AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository,
-            ConfigProperties configProperties) {
-        this.activityMembersRepository = activityMembersRepository;
+            ConfigProperties configProperties,
+            AccessPolicyConditionRegistry conditionRegistry,
+            MemberPolicyFacts memberPolicyFacts) {
         this.accessGrantsRepository = accessGrantsRepository;
         this.accessPolicyDefinitionsRepository = accessPolicyDefinitionsRepository;
         this.configProperties = configProperties;
+        this.conditionRegistry = conditionRegistry;
+        this.memberPolicyFacts = memberPolicyFacts;
     }
 
     @PostConstruct
@@ -120,7 +121,7 @@ public class AccessControlService implements AccessPolicyData {
         }
         List<AccessPolicyCondition> conditions = new ArrayList<>();
         for (String conditionName : conditionNames) {
-            AccessPolicyCondition condition = AccessPolicyConditions.named(conditionName);
+            AccessPolicyCondition condition = conditionRegistry.named(conditionName);
             if (condition == null) {
                 return null;
             }
@@ -186,22 +187,61 @@ public class AccessControlService implements AccessPolicyData {
         return can(AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET, null, normalizedUserId, normalizedEventId);
     }
 
-    @Override
-    public boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId) {
-        String normalizedOwnerType = normalizeOwnerType(ownerType);
-        String normalizedOwnerId = normalizeId(ownerId);
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedOwnerType)
-                || !StringUtils.hasText(normalizedOwnerId)
-                || !StringUtils.hasText(normalizedUserId)) {
+    public boolean canManageEventMembers(String eventId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedActorUserId)) {
             return false;
         }
-        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
-                        normalizedOwnerType,
-                        normalizedOwnerId,
-                        normalizedUserId)
-                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
-                .isPresent();
+        return can(AccessPolicyKeys.EVENT_MEMBER_MANAGE, normalizedActorUserId, normalizedActorUserId, normalizedEventId);
+    }
+
+    public boolean canDisqualifyEventMember(String eventId, String actorUserId, String targetUserId) {
+        return canEventMemberAction(
+                AccessPolicyKeys.EVENT_MEMBER_DISQUALIFY,
+                eventId,
+                actorUserId,
+                targetUserId);
+    }
+
+    public boolean canReinstateEventMember(String eventId, String actorUserId, String targetUserId) {
+        return canEventMemberAction(
+                AccessPolicyKeys.EVENT_MEMBER_REINSTATE,
+                eventId,
+                actorUserId,
+                targetUserId);
+    }
+
+    private boolean canEventMemberAction(String policyKey, String eventId, String actorUserId, String targetUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedActorUserId = normalizeId(actorUserId);
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedActorUserId)
+                || !StringUtils.hasText(normalizedTargetUserId)) {
+            return false;
+        }
+        return can(policyKey, normalizedActorUserId, normalizedTargetUserId, normalizedEventId);
+    }
+
+    @Override
+    public boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId) {
+        return memberPolicyFacts.hasAcceptedParticipation(ownerType, ownerId, userId);
+    }
+
+    @Override
+    public boolean hasMemberStatus(String ownerType, String ownerId, String userId, String status) {
+        return memberPolicyFacts.hasMemberStatus(ownerType, ownerId, userId, status);
+    }
+
+    @Override
+    public boolean canManageMembers(String ownerType, String ownerId, String actorUserId) {
+        return memberPolicyFacts.canManageMembers(ownerType, ownerId, actorUserId);
+    }
+
+    @Override
+    public boolean isProtectedMember(String ownerType, String ownerId, String userId) {
+        return memberPolicyFacts.isProtectedMember(ownerType, ownerId, userId);
     }
 
     public String resolveActorUserId(Authentication authentication) {
@@ -292,22 +332,9 @@ public class AccessControlService implements AccessPolicyData {
         return DemoSessionRequestSupport.isDemoSessionRequest(servletRequestAttributes.getRequest());
     }
 
-    private String normalizeStatus(String status) {
-        String normalizedStatus = safeText(status).toLowerCase(Locale.ROOT);
-        if ("a".equals(normalizedStatus)) {
-            return STATUS_ACCEPTED;
-        }
-        return normalizedStatus;
-    }
-
     private String normalizeId(String value) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
-    }
-
-    private String normalizeOwnerType(String ownerType) {
-        String normalizedOwnerType = safeText(ownerType);
-        return StringUtils.hasText(normalizedOwnerType) ? normalizedOwnerType : null;
     }
 
     private String safeText(String value) {

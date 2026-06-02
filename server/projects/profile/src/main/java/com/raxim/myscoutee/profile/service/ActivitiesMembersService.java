@@ -35,6 +35,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class ActivitiesMembersService {
@@ -69,6 +70,7 @@ public class ActivitiesMembersService {
     private final AdminTelemetryService adminTelemetryService;
     private final ActivitiesChatService activitiesChatService;
     private final EventSlotReadModelService eventSlotReadModelService;
+    private final AccessControlService accessControlService;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -84,7 +86,8 @@ public class ActivitiesMembersService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             ActivitiesChatService activitiesChatService,
-            EventSlotReadModelService eventSlotReadModelService) {
+            EventSlotReadModelService eventSlotReadModelService,
+            AccessControlService accessControlService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -98,6 +101,7 @@ public class ActivitiesMembersService {
         this.adminTelemetryService = adminTelemetryService;
         this.activitiesChatService = activitiesChatService;
         this.eventSlotReadModelService = eventSlotReadModelService;
+        this.accessControlService = accessControlService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -358,6 +362,10 @@ public class ActivitiesMembersService {
         }
 
         String actorUserId = resolveActorUserId(null);
+        if (OWNER_TYPE_EVENT.equals(ownerType) && !accessControlService.canManageEventMembers(ownerId, actorUserId)) {
+            return;
+        }
+
         String nowIso = Instant.now().toString();
         List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
         List<ActivityMember> existingVisibleMembers = existing;
@@ -470,8 +478,14 @@ public class ActivitiesMembersService {
                 || !StringUtils.hasText(ownerId)
                 || !StringUtils.hasText(actorUserId)
                 || !StringUtils.hasText(targetUserId)
-                || !StringUtils.hasText(action)
-                || !canManageOwnerMembers(ownerType, ownerId, actorUserId)
+                || !StringUtils.hasText(action)) {
+            return queryMembers(ownerType, ownerId);
+        }
+        if (OWNER_TYPE_EVENT.equals(ownerType)) {
+            if (!canApplyEventMemberAction(ownerId, actorUserId, targetUserId, action)) {
+                return queryMembers(ownerType, ownerId);
+            }
+        } else if (!canManageOwnerMembers(ownerType, ownerId, actorUserId)
                 || actorUserId.equals(targetUserId)
                 || isProtectedOwnerMember(ownerType, ownerId, targetUserId)) {
             return queryMembers(ownerType, ownerId);
@@ -1543,6 +1557,16 @@ public class ActivitiesMembersService {
         } else if (OWNER_TYPE_ASSET.equals(normalizedOwnerType)) {
             affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizedOwnerId, normalizedActorUserId);
         }
+    }
+
+    private boolean canApplyEventMemberAction(String ownerId, String actorUserId, String targetUserId, String action) {
+        if (ACTION_DISQUALIFY.equals(action)) {
+            return accessControlService.canDisqualifyEventMember(ownerId, actorUserId, targetUserId);
+        }
+        if (ACTION_REINSTATE.equals(action)) {
+            return accessControlService.canReinstateEventMember(ownerId, actorUserId, targetUserId);
+        }
+        return false;
     }
 
     private boolean canManageOwnerMembers(String ownerType, String ownerId, String actorUserId) {

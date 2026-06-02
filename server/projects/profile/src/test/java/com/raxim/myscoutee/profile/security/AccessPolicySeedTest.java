@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,6 +25,9 @@ import tools.jackson.databind.json.JsonMapper;
 class AccessPolicySeedTest {
     private static final List<String> SEED_DATABASES = List.of("demo_db", "myscoutee_db", "e2e_db");
     private static final Set<String> ACTIVE_POLICY_KEYS = Set.of(
+            AccessPolicyKeys.EVENT_MEMBER_MANAGE,
+            AccessPolicyKeys.EVENT_MEMBER_DISQUALIFY,
+            AccessPolicyKeys.EVENT_MEMBER_REINSTATE,
             AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
             AccessPolicyKeys.RESOURCE_ASSIGN_SUBJECT,
             AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET);
@@ -31,6 +35,7 @@ class AccessPolicySeedTest {
     private final ObjectMapper objectMapper = JsonMapper.builder()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .build();
+    private final AccessPolicyConditionRegistry conditionRegistry = AccessPolicyTestSupport.conditionRegistry();
 
     @Test
     void mongoSeedsDefineTheCompletePolicyCatalogueForEveryDatabase() throws Exception {
@@ -79,11 +84,59 @@ class AccessPolicySeedTest {
 
             for (AccessPolicyDefinition definition : activeDefinitions) {
                 for (String conditionName : conditionNames(definition)) {
-                    assertThat(AccessPolicyConditions.named(conditionName))
+                    assertThat(conditionRegistry.named(conditionName))
                             .as(database + " " + definition.getPolicyKey() + " " + conditionName)
                             .isNotNull();
                 }
             }
+        }
+    }
+
+    @Test
+    void inactiveMongoSeedPoliciesAreExactlyTheUnwiredCatalogueRemainder() throws Exception {
+        Set<String> expectedInactivePolicyKeys = new LinkedHashSet<>(policyKeysFromConstants());
+        expectedInactivePolicyKeys.removeAll(ACTIVE_POLICY_KEYS);
+
+        for (String database : SEED_DATABASES) {
+            List<AccessPolicyDefinition> inactiveDefinitions = readDefinitions(
+                    mongoSeedRoot().resolve(database).resolve("accessPolicyDefinitions.json"))
+                    .stream()
+                    .filter(definition -> "disabled".equals(definition.getStatus()))
+                    .toList();
+
+            assertThat(inactiveDefinitions)
+                    .as(database)
+                    .hasSize(expectedInactivePolicyKeys.size())
+                    .extracting(AccessPolicyDefinition::getPolicyKey)
+                    .containsExactlyInAnyOrderElementsOf(expectedInactivePolicyKeys);
+        }
+    }
+
+    @Test
+    void mongoSeedFilesAreIdenticalAcrossDatabases() throws Exception {
+        Path seedRoot = mongoSeedRoot();
+        String reference = Files.readString(seedRoot.resolve("demo_db").resolve("accessPolicyDefinitions.json"));
+
+        assertThat(Files.readString(seedRoot.resolve("myscoutee_db").resolve("accessPolicyDefinitions.json")))
+                .isEqualTo(reference);
+        assertThat(Files.readString(seedRoot.resolve("e2e_db").resolve("accessPolicyDefinitions.json")))
+                .isEqualTo(reference);
+    }
+
+    @Test
+    void mongoSeedDocumentsUseStableIdsForExistingImporterUpserts() throws Exception {
+        for (String database : SEED_DATABASES) {
+            List<Map<String, Object>> documents = objectMapper.readValue(
+                    Files.readString(mongoSeedRoot().resolve(database).resolve("accessPolicyDefinitions.json")),
+                    new TypeReference<List<Map<String, Object>>>() {
+                    });
+
+            assertThat(documents)
+                    .as(database)
+                    .allSatisfy(document -> {
+                        assertThat(document.get("_id")).isEqualTo(document.get("syncKey"));
+                        assertThat((String) document.get("_id")).startsWith("access-policy-");
+                    });
         }
     }
 

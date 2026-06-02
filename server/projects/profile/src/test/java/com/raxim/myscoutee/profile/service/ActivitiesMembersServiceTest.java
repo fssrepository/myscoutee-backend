@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,11 +23,14 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberOwnerRefDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesMembersServiceTest {
@@ -56,6 +60,8 @@ class ActivitiesMembersServiceTest {
     private ActivitiesChatService activitiesChatService;
     @Mock
     private EventSlotReadModelService eventSlotReadModelService;
+    @Mock
+    private AccessControlService accessControlService;
 
     private ActivitiesMembersService service;
 
@@ -74,7 +80,8 @@ class ActivitiesMembersServiceTest {
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 activitiesChatService,
-                eventSlotReadModelService);
+                eventSlotReadModelService,
+                accessControlService);
     }
 
     @Test
@@ -88,6 +95,7 @@ class ActivitiesMembersServiceTest {
         targetUser.setInitials("TU");
 
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
@@ -123,6 +131,87 @@ class ActivitiesMembersServiceTest {
         verify(activitiesChatService).postSystemMessage("event-1", "Target User was disqualified from the event.", "member-disqualify");
     }
 
+    @Test
+    void disqualifyReturnsCurrentMembersWhenPolicyDenies() {
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(false);
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("admin");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(member));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "disqualify",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void reinstateMemberUsesPolicyAndRestoresAcceptedParticipation() {
+        ActivityEvent event = event("event-1", "host", "admin");
+        ActivityMember member = member("member-sync", "event-1", "target", "Member", "disqualified");
+        AtomicReference<ActivityMember> storedMember = new AtomicReference<>(member);
+        Users targetUser = new Users();
+        targetUser.setId("target");
+        targetUser.setName("Target User");
+        targetUser.setInitials("TU");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canReinstateEventMember("event-1", "admin", "target")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMember.set(saved);
+            return saved;
+        });
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(targetUser));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "reinstate",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("accepted");
+
+        ArgumentCaptor<ActivityMember> savedMember = ArgumentCaptor.forClass(ActivityMember.class);
+        verify(activityMembersRepository).save(savedMember.capture());
+        assertThat(savedMember.getValue().getStatus()).isEqualTo("accepted");
+        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        verify(activitiesChatService).postSystemMessage("event-1", "Target User was reinstated to the event.", "member-reinstate");
+    }
+
+    @Test
+    void replaceEventMembersReturnsWithoutSavingWhenPolicyDenies() {
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("admin");
+        when(accessControlService.canManageEventMembers("event-1", "admin")).thenReturn(false);
+
+        service.replace(new ActivityMembersReplaceRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                List.of(entry("target")),
+                10));
+
+        verify(activityMembersRepository, never()).saveAll(anyList());
+    }
+
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {
         ActivityEvent event = new ActivityEvent();
         event.setId(sourceId + "-document");
@@ -152,5 +241,27 @@ class ActivitiesMembersServiceTest {
         member.setUpdatedDate("2026-05-12T10:00:00Z");
         member.setUpdatedUser("host");
         return member;
+    }
+
+    private ActivityMemberEntryDto entry(String userId) {
+        return new ActivityMemberEntryDto(
+                null,
+                userId,
+                userId,
+                "TU",
+                "man",
+                "",
+                "",
+                "Member",
+                "accepted",
+                null,
+                null,
+                null,
+                false,
+                "2026-05-12T10:00:00Z",
+                "2026-05-12T10:00:00Z",
+                "",
+                null,
+                null);
     }
 }

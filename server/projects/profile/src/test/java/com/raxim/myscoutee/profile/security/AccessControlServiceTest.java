@@ -27,16 +27,23 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AccessControlServiceTest {
     @Mock
     private ActivityMembersRepository activityMembersRepository;
+    @Mock
+    private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private AssetsRepository assetsRepository;
     @Mock
     private AccessGrantsRepository accessGrantsRepository;
     @Mock
@@ -52,10 +59,11 @@ class AccessControlServiceTest {
         when(accessGrantsRepository.findAll()).thenReturn(List.of());
         when(accessPolicyDefinitionsRepository.findAll()).thenReturn(defaultPolicyDefinitions());
         service = new AccessControlService(
-                activityMembersRepository,
                 accessGrantsRepository,
                 accessPolicyDefinitionsRepository,
-                configProperties);
+                configProperties,
+                AccessPolicyTestSupport.conditionRegistry(),
+                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository));
         service.loadAccessControlCacheAtStartup();
     }
 
@@ -195,6 +203,22 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void disabledCataloguePolicyWithNoConditionsStillDeniesWhenCalledDirectly() {
+        when(accessPolicyDefinitionsRepository.findAll()).thenReturn(List.of(policy(
+                AccessPolicyKeys.EVENT_CREATE,
+                "event.create",
+                "event",
+                List.of(),
+                List.of(),
+                "disabled")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.can(AccessPolicyKeys.EVENT_CREATE, "u1", "u1", "event-1");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
     void refreshesMongoPolicyDefinitionCache() {
         when(accessPolicyDefinitionsRepository.findAll()).thenReturn(List.of());
         service.refreshAccessControlCache();
@@ -250,6 +274,142 @@ class AccessControlServiceTest {
         verifyNoInteractions(activityMembersRepository);
     }
 
+    @Test
+    void eventMemberManageAllowsEventCreator() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canManageEventMembers("event-1", "creator");
+
+        assertThat(allowed).isTrue();
+        verifyNoInteractions(activityMembersRepository);
+    }
+
+    @Test
+    void eventMemberManageAllowsEventAdmin() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canManageEventMembers("event-1", "admin");
+
+        assertThat(allowed).isTrue();
+        verifyNoInteractions(activityMembersRepository);
+    }
+
+    @Test
+    void eventMemberManageAllowsAcceptedManagerRole() {
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "manager"))
+                .thenReturn(Optional.of(member("event-1", "manager", "accepted", "Manager")));
+
+        boolean allowed = service.canManageEventMembers("event-1", "manager");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberManageRejectsPlainAcceptedMember() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "member"))
+                .thenReturn(Optional.of(member("event-1", "member", "accepted", "Member")));
+
+        boolean allowed = service.canManageEventMembers("event-1", "member");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberDisqualifyAllowsManagerAgainstAcceptedNonProtectedMember() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "accepted", "Member")));
+
+        boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberDisqualifyRejectsActorTargetSelfAction() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "admin");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberDisqualifyRejectsProtectedCreatorTarget() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+
+        boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "creator");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberDisqualifyRejectsProtectedManagerTarget() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "accepted", "Manager")));
+
+        boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberDisqualifyRequiresAcceptedTargetStatus() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "pending", "Member")));
+
+        boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isFalse();
+    }
+
+    @Test
+    void eventMemberDisqualifyDenyGrantOverridesManagerRule() {
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("target", "event.member.disqualify", "event", "event-1", "deny")));
+        service.refreshAccessControlCache();
+
+        boolean allowed = service.canDisqualifyEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isFalse();
+        verifyNoInteractions(activityEventsRepository, activityMembersRepository);
+    }
+
+    @Test
+    void eventMemberReinstateAllowsManagerAgainstDisqualifiedNonProtectedMember() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "disqualified", "Member")));
+
+        boolean allowed = service.canReinstateEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isTrue();
+    }
+
+    @Test
+    void eventMemberReinstateRequiresDisqualifiedTargetStatus() {
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "creator", "admin")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(member("event-1", "target", "accepted", "Member")));
+
+        boolean allowed = service.canReinstateEventMember("event-1", "admin", "target");
+
+        assertThat(allowed).isFalse();
+    }
+
     private Authentication auth(String userId) {
         return new FirebaseAuthenticationToken(
                 new FirebasePrincipal(userId, userId + "@example.test", "U"),
@@ -262,13 +422,28 @@ class AccessControlServiceTest {
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {
+        return member(ownerId, userId, status, "Member");
+    }
+
+    private ActivityMember member(String ownerId, String userId, String status, String role) {
         ActivityMember member = new ActivityMember();
         member.setOwnerType("event");
         member.setOwnerId(ownerId);
         member.setUserId(userId);
         member.setStatus(status);
-        member.setRole("Member");
+        member.setRole(role);
         return member;
+    }
+
+    private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId(sourceId);
+        event.setType("events");
+        event.setStatus("A");
+        event.setCreatorUserId(creatorUserId);
+        event.setAdmins(List.of(adminUserId));
+        event.setUpdatedDate("2026-06-02T10:00:00Z");
+        return event;
     }
 
     private AccessGrant grant(String subjectUserId, String permission, String resourceType, String resourceId, String effect) {
@@ -283,6 +458,37 @@ class AccessControlServiceTest {
 
     private List<AccessPolicyDefinition> defaultPolicyDefinitions() {
         return List.of(
+                policy(
+                        AccessPolicyKeys.EVENT_MEMBER_MANAGE,
+                        "event.member.manage",
+                        "event",
+                        List.of("noExplicitDeny", "actorCanManageMembers"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_MEMBER_DISQUALIFY,
+                        "event.member.disqualify",
+                        "event",
+                        List.of(
+                                "noExplicitDeny",
+                                "actorCanManageMembers",
+                                "actorDiffersFromSubject",
+                                "subjectIsNotProtectedMember",
+                                "acceptedParticipation"),
+                        List.of(),
+                        null),
+                policy(
+                        AccessPolicyKeys.EVENT_MEMBER_REINSTATE,
+                        "event.member.reinstate",
+                        "event",
+                        List.of(
+                                "noExplicitDeny",
+                                "actorCanManageMembers",
+                                "actorDiffersFromSubject",
+                                "subjectIsNotProtectedMember",
+                                "disqualifiedParticipation"),
+                        List.of(),
+                        null),
                 policy(
                         AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
                         "resource.assign",

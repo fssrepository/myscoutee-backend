@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.security;
 
-@FunctionalInterface
 public interface AccessPolicyCondition {
+    String name();
+
     boolean matches(AccessPolicyContext context, AccessPolicyData data);
 }
