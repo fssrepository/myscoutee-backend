@@ -18,4 +18,5 @@ demo delete on http - the demo user should be listed as deleted or blocked or et
 on demo mutual rate, there are duplicates
 "Tesztverzió - bug report >"
 firebase email login does not work
-admin can't login on prod --- from /admin, shouldn1t go back to main screen, if login didn't succeed
+admin can't login on prod --- from /admin, shouldn1t go back to main screen (/entry), if login didn't succeed
+arrow is moving down on hover - when returned to /entry - not sure why
