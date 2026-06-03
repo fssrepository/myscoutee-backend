@@ -47,6 +47,13 @@ install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" "
 install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose.replicaset.yml"
 install -m 0644 "${SERVER_DIR}/projects/profile/secrets/README.md" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/README.md"
 install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json.example" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json.example"
+if [[ -s "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json" ]]; then
+  install -m 0600 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json"
+elif grep -q '^[[:space:]]*FIREBASE_ENABLED[[:space:]]*=[[:space:]]*true[[:space:]]*$' "${REPO_ROOT}/packaging/templates/myscoutee.env"; then
+  echo "Missing Firebase service account: ${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json" >&2
+  echo "Add the gitignored JSON file or set FIREBASE_ENABLED=false before packaging." >&2
+  exit 1
+fi
 cp -a "${SERVER_DIR}/docker/conf/mongodb" "${STAGING_DIR}/opt/myscoutee/server/docker/conf/"
 cp -a "${SERVER_DIR}/docker/scripts/." "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
@@ -62,6 +69,9 @@ sed \
 
 find "${STAGING_DIR}" -type d -exec chmod 0755 {} +
 find "${STAGING_DIR}" -type f -exec chmod 0644 {} +
+if [[ -f "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json" ]]; then
+  chmod 0600 "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json"
+fi
 chmod 0755 "${STAGING_DIR}/DEBIAN/postinst" "${STAGING_DIR}/DEBIAN/prerm" "${STAGING_DIR}/DEBIAN/postrm"
 find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" -type f -name "*.sh" -exec chmod 0755 {} +
 find "${STAGING_DIR}/opt/myscoutee/server/docker" -type f -name "*.sh" -exec chmod 0755 {} +

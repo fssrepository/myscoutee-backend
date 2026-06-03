@@ -6,10 +6,10 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 8,
-      "events": 162,
+      "events": 2,
       "game": 9,
-      "hosting": 5,
-      "invitations": 4
+      "hosting": 29,
+      "invitations": 3
     },
     "affinity": 432507,
     "age": 28,
@@ -145,9 +145,9 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 2,
-      "events": 164,
+      "events": 2,
       "game": 4,
-      "hosting": 1,
+      "hosting": 31,
       "invitations": 1
     },
     "affinity": 499225,
@@ -191,9 +191,9 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 4,
-      "events": 166,
+      "events": 3,
       "game": 6,
-      "hosting": 1,
+      "hosting": 30,
       "invitations": 1
     },
     "affinity": 581523,
@@ -330,10 +330,10 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 165,
+      "events": 4,
       "game": 7,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 31,
+      "invitations": 1
     },
     "affinity": 440843,
     "age": 29,
@@ -468,10 +468,10 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 88,
+      "events": 3,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 444724,
     "age": 27,
@@ -514,10 +514,10 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 79,
+      "events": 9,
       "game": 3,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 620130,
     "age": 26,
@@ -560,10 +560,10 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 90,
+      "events": 5,
       "game": 8,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -605,10 +605,10 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 82,
+      "events": 6,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 443988,
     "age": 32,
@@ -651,10 +651,10 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 88,
+      "events": 9,
       "game": 2,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 227821,
     "age": 25,
@@ -696,10 +696,10 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 147,
+      "events": 6,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 30,
+      "invitations": 1
     },
     "affinity": 522709,
     "age": 29,
@@ -742,10 +742,10 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 78,
+      "events": 11,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 398080,
     "age": 33,
@@ -787,10 +787,10 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 154,
+      "events": 5,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 31,
+      "invitations": 1
     },
     "affinity": 329173,
     "age": 27,
@@ -833,10 +833,10 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 83,
+      "events": 13,
       "game": 9,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -879,10 +879,10 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 70,
+      "events": 6,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -925,10 +925,10 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 0,
-      "events": 90,
+      "events": 11,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 581523,
     "age": 26,
@@ -971,10 +971,10 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 78,
+      "events": 7,
       "game": 7,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 440843,
     "age": 27,
@@ -1016,10 +1016,10 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 90,
+      "events": 7,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 444724,
     "age": 28,
@@ -1062,10 +1062,10 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 88,
+      "events": 8,
       "game": 3,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 620130,
     "age": 29,
@@ -1108,10 +1108,10 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 75,
+      "events": 4,
       "game": 8,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -1153,10 +1153,10 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 93,
+      "events": 6,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 443988,
     "age": 31,
@@ -1199,10 +1199,10 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 84,
+      "events": 1,
       "game": 2,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 227821,
     "age": 32,
@@ -1244,10 +1244,10 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 89,
+      "events": 4,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 522709,
     "age": 33,
@@ -1290,10 +1290,10 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 81,
+      "events": 1,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 398080,
     "age": 34,
@@ -1335,10 +1335,10 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 83,
+      "events": 2,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 329173,
     "age": 35,
@@ -1381,10 +1381,10 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 82,
+      "events": 1,
       "game": 9,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -1427,10 +1427,10 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 85,
+      "events": 3,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -1473,10 +1473,10 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 0,
-      "events": 85,
+      "events": 2,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 581523,
     "age": 26,
@@ -1519,10 +1519,10 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 90,
+      "events": 4,
       "game": 7,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 440843,
     "age": 27,
@@ -1564,10 +1564,10 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 80,
+      "events": 5,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 444724,
     "age": 28,
@@ -1610,10 +1610,10 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 91,
+      "events": 3,
       "game": 3,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 620130,
     "age": 29,
@@ -1656,10 +1656,10 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 87,
+      "events": 4,
       "game": 8,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -1701,10 +1701,10 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 84,
+      "events": 3,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 443988,
     "age": 31,
@@ -1747,10 +1747,10 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 94,
+      "events": 5,
       "game": 2,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 227821,
     "age": 32,
@@ -1792,10 +1792,10 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 82,
+      "events": 2,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 522709,
     "age": 33,
@@ -1838,10 +1838,10 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 92,
+      "events": 4,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 398080,
     "age": 34,
@@ -1883,10 +1883,10 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 83,
+      "events": 5,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 329173,
     "age": 35,
@@ -1929,10 +1929,10 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 81,
+      "events": 3,
       "game": 9,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -1975,10 +1975,10 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 85,
+      "events": 8,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -2021,10 +2021,10 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 0,
-      "events": 86,
+      "events": 2,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 581523,
     "age": 26,
@@ -2067,10 +2067,10 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 89,
+      "events": 7,
       "game": 7,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 440843,
     "age": 27,
@@ -2112,10 +2112,10 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 85,
+      "events": 3,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 444724,
     "age": 28,
@@ -2158,10 +2158,10 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 85,
+      "events": 2,
       "game": 3,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 620130,
     "age": 29,
@@ -2204,10 +2204,10 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 88,
+      "events": 4,
       "game": 8,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 305793,
     "age": 30,
@@ -2249,10 +2249,10 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 84,
+      "events": 3,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 443988,
     "age": 31,
@@ -2295,10 +2295,10 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 82,
+      "events": 4,
       "game": 2,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 227821,
     "age": 32,
@@ -2340,10 +2340,10 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 87,
+      "events": 2,
       "game": 6,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 522709,
     "age": 33,
@@ -2386,10 +2386,10 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 81,
+      "events": 4,
       "game": 5,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 398080,
     "age": 34,
@@ -2431,10 +2431,10 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 88,
+      "events": 3,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 329173,
     "age": 35,
@@ -2477,10 +2477,10 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 88,
+      "events": 2,
       "game": 9,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 432507,
     "age": 24,
@@ -2523,10 +2523,10 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 86,
+      "events": 4,
       "game": 4,
-      "hosting": 0,
-      "invitations": 0
+      "hosting": 1,
+      "invitations": 1
     },
     "affinity": 499225,
     "age": 25,
@@ -2569,10 +2569,10 @@
     "about": "I am the seeded bridge profile for Friends in Common demo discovery.",
     "activities": {
       "chat": 2,
-      "events": 4,
+      "events": 0,
       "game": 1,
       "hosting": 0,
-      "invitations": 1
+      "invitations": 0
     },
     "affinity": 612400,
     "age": 32,
@@ -2613,7 +2613,7 @@
     "about": "A fresh public profile connected only through a seeded friend bridge.",
     "activities": {
       "chat": 1,
-      "events": 3,
+      "events": 0,
       "game": 0,
       "hosting": 0,
       "invitations": 0
@@ -2658,7 +2658,7 @@
     "about": "A fresh public outside-network profile for Preferences discovery.",
     "activities": {
       "chat": 1,
-      "events": 2,
+      "events": 0,
       "game": 0,
       "hosting": 0,
       "invitations": 0
@@ -2758,7 +2758,7 @@
       "chat": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0,
+      "hosting": 2,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,

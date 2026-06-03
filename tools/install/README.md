@@ -63,6 +63,12 @@ http://${REMOTE_HOST}
 Remote Install
 --------------
 
+For a fresh-install check, purge the remote package, config, data directories, compose stack, and MyScoutee Docker volumes first:
+
+```bash
+tools/install/purge.sh
+```
+
 Run the install:
 
 ```bash
