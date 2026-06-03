@@ -8,3 +8,5 @@ e-kozig onya form editor and display on view (indexeddb save and grid layout+for
 mobil/desktop view switch like on base44
 
 build github to commit
+
+menu counter functional test
