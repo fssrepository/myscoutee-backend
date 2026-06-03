@@ -18,3 +18,4 @@ demo delete on http - the demo user should be listed as deleted or blocked or et
 on demo mutual rate, there are duplicates
 "Tesztverzió - bug report >"
 firebase email login does not work
+admin can't login on prod --- admin shouldn't be onboarding (i have asked the feature several times, codex didn't do it)
