@@ -75,6 +75,7 @@ public class ActivitiesMembersService {
     private final ActivitiesChatService activitiesChatService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
+    private final UserActivityCountersService userActivityCountersService;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -91,7 +92,8 @@ public class ActivitiesMembersService {
             AdminTelemetryService adminTelemetryService,
             ActivitiesChatService activitiesChatService,
             EventSlotReadModelService eventSlotReadModelService,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            UserActivityCountersService userActivityCountersService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -106,6 +108,7 @@ public class ActivitiesMembersService {
         this.activitiesChatService = activitiesChatService;
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
+        this.userActivityCountersService = userActivityCountersService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -474,6 +477,7 @@ public class ActivitiesMembersService {
             eventParticipationTicketService.syncParticipationTicketsForEvent(ownerId);
             refreshEmbeddedEventMembers(ownerId);
             postEventMembershipChangeMessages(ownerId, joinedEventMembers, removedVisibleMembers);
+            userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
         }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
@@ -581,6 +585,7 @@ public class ActivitiesMembersService {
             } else {
                 postMemberActionChatMessage(ownerId, action, next);
             }
+            userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
         } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, List.of(next));
         }
@@ -662,6 +667,7 @@ public class ActivitiesMembersService {
             }
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
             refreshEmbeddedEventMembers(normalizedEventId);
+            userActivityCountersService.refreshEventCountersForSourceIds(List.of(normalizedEventId));
         }
         return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
@@ -756,6 +762,7 @@ public class ActivitiesMembersService {
             adminTelemetryService.record("event.member.invited", "events", normalizedEventId, actorUserId, membersToSave.size());
             eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
             refreshEmbeddedEventMembers(normalizedEventId);
+            userActivityCountersService.refreshEventCountersForSourceIds(List.of(normalizedEventId));
         }
         return newlyInvitedUserIds;
     }

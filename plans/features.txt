@@ -8,5 +8,3 @@ e-kozig onya form editor and display on view (indexeddb save and grid layout+for
 mobil/desktop view switch like on base44
 
 build github to commit
-
-i would reiterate, first  you need to check who inserts/updates counters in the users.json, you need to add more counters, what the ui can query on login time, and pass to the app context, so the popup just locally reads them --- we have counters for the menubar buttons but not for the internal mostly dropdown list at top, which is practically will be derived from it --- so the menubar is showing all in one counter, but on the activitity event screen -- fuggo and other badges on scondary dropdown box is a child of that parent summary value with some kind of logic
