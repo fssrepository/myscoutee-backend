@@ -6,10 +6,10 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 8,
-      "events": 2,
+      "events": 46,
       "game": 9,
       "hosting": 29,
-      "invitations": 3
+      "invitations": 19
     },
     "affinity": 432507,
     "age": 28,
@@ -145,10 +145,10 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 2,
-      "events": 2,
+      "events": 44,
       "game": 4,
-      "hosting": 31,
-      "invitations": 1
+      "hosting": 30,
+      "invitations": 16
     },
     "affinity": 499225,
     "age": 31,
@@ -191,10 +191,10 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 4,
-      "events": 3,
+      "events": 44,
       "game": 6,
-      "hosting": 30,
-      "invitations": 1
+      "hosting": 29,
+      "invitations": 14
     },
     "affinity": 581523,
     "age": 30,
@@ -330,10 +330,10 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 49,
       "game": 7,
       "hosting": 31,
-      "invitations": 1
+      "invitations": 10
     },
     "affinity": 440843,
     "age": 29,
@@ -468,10 +468,10 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 17,
       "game": 5,
       "hosting": 1,
-      "invitations": 1
+      "invitations": 5
     },
     "affinity": 444724,
     "age": 27,
@@ -514,7 +514,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 9,
+      "events": 19,
       "game": 3,
       "hosting": 1,
       "invitations": 1
@@ -560,10 +560,10 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 5,
+      "events": 17,
       "game": 8,
       "hosting": 1,
-      "invitations": 1
+      "invitations": 3
     },
     "affinity": 305793,
     "age": 30,
@@ -605,7 +605,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 6,
+      "events": 22,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -651,7 +651,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 9,
+      "events": 24,
       "game": 2,
       "hosting": 1,
       "invitations": 1
@@ -696,7 +696,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 6,
+      "events": 49,
       "game": 6,
       "hosting": 30,
       "invitations": 1
@@ -742,7 +742,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 11,
+      "events": 30,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -787,7 +787,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 5,
+      "events": 53,
       "game": 4,
       "hosting": 31,
       "invitations": 1
@@ -833,7 +833,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 13,
+      "events": 30,
       "game": 9,
       "hosting": 1,
       "invitations": 1
@@ -879,7 +879,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 6,
+      "events": 28,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -925,7 +925,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 0,
-      "events": 11,
+      "events": 29,
       "game": 6,
       "hosting": 1,
       "invitations": 1
@@ -971,7 +971,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 7,
+      "events": 27,
       "game": 7,
       "hosting": 1,
       "invitations": 1
@@ -1016,7 +1016,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 7,
+      "events": 25,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -1062,7 +1062,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 8,
+      "events": 22,
       "game": 3,
       "hosting": 1,
       "invitations": 1
@@ -1108,7 +1108,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 18,
       "game": 8,
       "hosting": 1,
       "invitations": 1
@@ -1153,7 +1153,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 6,
+      "events": 16,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -1199,7 +1199,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 1,
+      "events": 12,
       "game": 2,
       "hosting": 1,
       "invitations": 1
@@ -1244,7 +1244,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 11,
       "game": 6,
       "hosting": 1,
       "invitations": 1
@@ -1290,7 +1290,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 1,
+      "events": 8,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -1335,7 +1335,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 7,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -1381,7 +1381,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 1,
+      "events": 4,
       "game": 9,
       "hosting": 1,
       "invitations": 1
@@ -1427,7 +1427,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 6,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -1473,7 +1473,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 8,
       "game": 6,
       "hosting": 1,
       "invitations": 1
@@ -1519,7 +1519,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 10,
       "game": 7,
       "hosting": 1,
       "invitations": 1
@@ -1564,7 +1564,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 5,
+      "events": 12,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -1610,7 +1610,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 14,
       "game": 3,
       "hosting": 1,
       "invitations": 1
@@ -1656,7 +1656,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 15,
       "game": 8,
       "hosting": 1,
       "invitations": 1
@@ -1701,7 +1701,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 16,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -1747,7 +1747,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 5,
+      "events": 18,
       "game": 2,
       "hosting": 1,
       "invitations": 1
@@ -1792,7 +1792,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 20,
       "game": 6,
       "hosting": 1,
       "invitations": 1
@@ -1838,7 +1838,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 20,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -1883,7 +1883,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 5,
+      "events": 21,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -1929,7 +1929,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 20,
       "game": 9,
       "hosting": 1,
       "invitations": 1
@@ -1975,7 +1975,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 8,
+      "events": 21,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -2021,7 +2021,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 19,
       "game": 6,
       "hosting": 1,
       "invitations": 1
@@ -2067,7 +2067,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "chat": 0,
-      "events": 7,
+      "events": 18,
       "game": 7,
       "hosting": 1,
       "invitations": 1
@@ -2112,7 +2112,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 19,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -2158,7 +2158,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 28,
       "game": 3,
       "hosting": 1,
       "invitations": 1
@@ -2204,7 +2204,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 12,
       "game": 8,
       "hosting": 1,
       "invitations": 1
@@ -2249,7 +2249,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 14,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -2295,7 +2295,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 10,
       "game": 2,
       "hosting": 1,
       "invitations": 1
@@ -2340,7 +2340,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 10,
       "game": 6,
       "hosting": 1,
       "invitations": 1
@@ -2386,7 +2386,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 13,
       "game": 5,
       "hosting": 1,
       "invitations": 1
@@ -2431,7 +2431,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "chat": 0,
-      "events": 3,
+      "events": 10,
       "game": 4,
       "hosting": 1,
       "invitations": 1
@@ -2477,7 +2477,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "chat": 0,
-      "events": 2,
+      "events": 11,
       "game": 9,
       "hosting": 1,
       "invitations": 1
@@ -2523,7 +2523,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "chat": 0,
-      "events": 4,
+      "events": 14,
       "game": 4,
       "hosting": 1,
       "invitations": 1

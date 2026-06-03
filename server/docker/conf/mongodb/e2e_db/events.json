@@ -54,8 +54,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 4,
-    "pendingMembers": 1,
+    "acceptedMembers": 1,
+    "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
       "#Biohacking",
@@ -1129,8 +1129,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#SelfDevelopment",
       "#Biohacking"
@@ -1322,8 +1322,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 3,
+    "pendingMembers": 3,
     "topics": [
       "#Cocktails",
       "#LuxuryExperiences"
@@ -1707,7 +1707,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 5,
+    "acceptedMembers": 4,
     "pendingMembers": 2,
     "topics": [
       "#Meditation",
@@ -1898,8 +1898,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#InfluencerLife",
       "#Festivals",
@@ -2023,8 +2023,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#ExtremeSports",
       "#Wellness"
@@ -2164,8 +2164,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -2288,8 +2288,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#Sports",
       "#Hiking"
@@ -2479,8 +2479,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 33,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Anime",
       "#Creativity",
@@ -2621,8 +2621,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Outdoors",
       "#Fitness",
@@ -2763,7 +2763,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -2954,7 +2954,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -3078,7 +3078,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -3270,7 +3270,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Festivals",
@@ -3461,7 +3461,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 33,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -3653,7 +3653,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Entrepreneurship",
@@ -3795,7 +3795,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -3937,7 +3937,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Outdoors",
@@ -4062,7 +4062,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 29,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -4253,7 +4253,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -4444,7 +4444,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 29,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Minimalism",
@@ -4585,7 +4585,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -4726,7 +4726,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 29,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -4851,7 +4851,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Movies",
@@ -4976,7 +4976,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 31,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -5118,7 +5118,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#InfluencerLife",
@@ -5260,7 +5260,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -5385,7 +5385,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -5576,8 +5576,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#StreetFood",
       "#GoingOut"
@@ -5717,8 +5717,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#MentalHealth",
       "#HealthyLifestyle",
@@ -5842,8 +5842,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#StayingIn",
       "#CoffeeDates",
@@ -5967,8 +5967,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Foodie",
       "#Cooking",
@@ -6109,8 +6109,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Entrepreneurship",
       "#Activism"
@@ -6300,8 +6300,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#Foodie",
       "#Cooking",
@@ -6425,8 +6425,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#StreetFood",
       "#CraftBeer",
@@ -6550,8 +6550,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -6742,8 +6742,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#Meditation",
       "#Spirituality"
@@ -6883,7 +6883,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -7024,8 +7024,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#FamilyOriented",
       "#Minimalism"
@@ -7148,8 +7148,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#CoffeeDates",
       "#Music"
@@ -7289,7 +7289,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -7414,7 +7414,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -7606,7 +7606,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -7748,7 +7748,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -7873,7 +7873,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -8014,7 +8014,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -8138,8 +8138,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Nightlife",
       "#WineTasting",
@@ -8263,7 +8263,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -8455,7 +8455,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -8647,7 +8647,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -8838,7 +8838,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -8962,7 +8962,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -9086,7 +9086,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -9277,7 +9277,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
@@ -9468,7 +9468,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -9610,7 +9610,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -9734,7 +9734,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -9926,7 +9926,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -10118,7 +10118,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#Music",
@@ -10242,8 +10242,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -10385,8 +10385,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#Wellness",
       "#MentalHealth",
@@ -10577,8 +10577,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
-    "pendingMembers": 0,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#SelfDevelopment",
       "#Biohacking"
@@ -10718,8 +10718,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#Foodie",
       "#Cooking",
@@ -10860,8 +10860,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#Fitness",
       "#SelfDevelopment",
@@ -11052,8 +11052,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Biohacking",
       "#Entrepreneurship",
@@ -11244,8 +11244,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#Anime",
       "#Creativity"
@@ -11435,8 +11435,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Creativity",
       "#StreetFood",
@@ -11577,7 +11577,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Tech",
@@ -11768,7 +11768,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -11959,7 +11959,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
+    "acceptedMembers": 5,
     "pendingMembers": 1,
     "topics": [
       "#CoffeeDates",
@@ -12083,8 +12083,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#StreetFood",
       "#CraftBeer",
@@ -12275,7 +12275,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 4,
     "pendingMembers": 1,
     "topics": [
       "#Sustainability",
@@ -12417,8 +12417,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Travel",
       "#Gym"
@@ -12608,7 +12608,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CareerDriven",
@@ -12799,8 +12799,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#CraftBeer",
       "#Sports"
@@ -12990,7 +12990,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 1,
     "topics": [
       "#Hiking",
@@ -13132,8 +13132,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Music",
       "#Movies",
@@ -13324,7 +13324,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 4,
     "pendingMembers": 1,
     "topics": [
       "#Entrepreneurship",
@@ -13449,8 +13449,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Wellness",
       "#MentalHealth",
@@ -13641,7 +13641,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -13832,7 +13832,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -13973,7 +13973,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -14115,7 +14115,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#WineTasting",
@@ -14240,7 +14240,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -14432,7 +14432,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -14557,7 +14557,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -14682,7 +14682,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#TVShows",
@@ -14873,7 +14873,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -15014,7 +15014,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Gaming",
@@ -15140,8 +15140,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Yoga",
       "#Meditation"
@@ -15264,8 +15264,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -15455,8 +15455,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#Tech",
       "#Nightlife",
@@ -15647,8 +15647,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Entrepreneurship",
       "#Activism",
@@ -15789,8 +15789,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Music",
       "#Movies"
@@ -15913,8 +15913,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
     "topics": [
       "#MentalHealth",
       "#HealthyLifestyle",
@@ -16105,7 +16105,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -16246,8 +16246,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Travel",
       "#Gym",
@@ -16371,8 +16371,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
-    "pendingMembers": 0,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
     "topics": [
       "#Books",
       "#Foodie"
@@ -16495,8 +16495,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#CoffeeDates",
       "#Music",
@@ -16620,7 +16620,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -16812,7 +16812,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
@@ -17003,7 +17003,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
@@ -17145,7 +17145,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -17337,7 +17337,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -17462,7 +17462,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
@@ -17604,7 +17604,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -17745,7 +17745,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
@@ -17936,7 +17936,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -18077,7 +18077,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -18218,7 +18218,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -18409,7 +18409,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -18600,7 +18600,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -18725,7 +18725,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -18916,7 +18916,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -19057,7 +19057,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -19182,7 +19182,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -19374,7 +19374,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Yoga",
@@ -19516,7 +19516,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -19708,7 +19708,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -19832,8 +19832,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 3,
     "topics": [
       "#GoingOut",
       "#Brunch"
@@ -19956,8 +19956,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
-    "pendingMembers": 0,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#GoingOut",
       "#Brunch",
@@ -20098,8 +20098,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#TVShows",
       "#Anime",
@@ -20240,8 +20240,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#Brunch",
       "#ContentCreation"
@@ -20364,8 +20364,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Photography",
       "#FineDining",
@@ -20506,8 +20506,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -20630,7 +20630,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -20754,7 +20754,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -20879,7 +20879,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Outdoors",
@@ -21020,7 +21020,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Activism",
@@ -21145,7 +21145,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -21337,7 +21337,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -21528,7 +21528,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Cocktails",
@@ -21669,7 +21669,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Brunch",
@@ -21860,7 +21860,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#ContentCreation",
@@ -22002,7 +22002,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Festivals",
@@ -22144,7 +22144,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -22286,7 +22286,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -22411,7 +22411,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#CraftBeer",
@@ -22603,7 +22603,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -22794,7 +22794,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CareerDriven",
@@ -22936,7 +22936,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 19,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -23128,7 +23128,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -23252,7 +23252,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Hiking",
@@ -23376,8 +23376,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -23567,7 +23567,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -23759,8 +23759,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#GoingOut",
       "#Brunch"
@@ -23950,7 +23950,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 4,
     "pendingMembers": 2,
     "topics": [
       "#Running",
@@ -24091,7 +24091,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Entrepreneurship",
@@ -24216,7 +24216,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Activism",
@@ -24408,8 +24408,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -24550,8 +24550,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Hiking",
       "#Yoga",
@@ -24675,8 +24675,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#WineTasting",
       "#InfluencerLife"
@@ -24799,8 +24799,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#CoffeeDates",
       "#Music"
@@ -24990,8 +24990,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Gym",
       "#Outdoors",
@@ -25115,8 +25115,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Sports",
       "#Hiking"
@@ -25239,7 +25239,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 15,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -25381,7 +25381,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -25523,7 +25523,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 15,
+    "acceptedMembers": 4,
     "pendingMembers": 1,
     "topics": [
       "#Festivals",
@@ -25647,7 +25647,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -25771,7 +25771,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 14,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -25912,7 +25912,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -26104,7 +26104,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 14,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -26296,7 +26296,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -26488,7 +26488,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -26679,7 +26679,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -26870,7 +26870,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -26994,7 +26994,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Gym",
@@ -27119,7 +27119,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 12,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -27261,7 +27261,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Gym",
@@ -27386,7 +27386,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -27577,7 +27577,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -27769,7 +27769,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -27961,7 +27961,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -28103,7 +28103,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#HealthyLifestyle",
@@ -28227,7 +28227,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -28369,7 +28369,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -28510,7 +28510,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -28702,7 +28702,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -30206,8 +30206,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#InfluencerLife",
       "#Festivals",
@@ -30331,8 +30331,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#InfluencerLife",
       "#Festivals",
@@ -30456,8 +30456,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#InfluencerLife",
       "#Festivals",
@@ -30581,8 +30581,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#ExtremeSports",
       "#Wellness"
@@ -30722,8 +30722,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#ExtremeSports",
       "#Wellness"
@@ -30863,8 +30863,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#ExtremeSports",
       "#Wellness"
@@ -31004,8 +31004,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#ExtremeSports",
       "#Wellness"
@@ -31145,8 +31145,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 33,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Anime",
       "#Creativity",
@@ -31287,8 +31287,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 33,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Anime",
       "#Creativity",
@@ -31429,8 +31429,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 33,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Anime",
       "#Creativity",
@@ -31571,8 +31571,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 33,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Anime",
       "#Creativity",
@@ -31713,8 +31713,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Outdoors",
       "#Fitness",
@@ -31855,8 +31855,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Outdoors",
       "#Fitness",
@@ -31997,8 +31997,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Outdoors",
       "#Fitness",
@@ -32139,8 +32139,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Outdoors",
       "#Fitness",
@@ -32281,8 +32281,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 34,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Outdoors",
       "#Fitness",
@@ -32423,7 +32423,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -32614,7 +32614,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -32805,7 +32805,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 32,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Music",
@@ -32996,7 +32996,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -33137,7 +33137,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -33278,7 +33278,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -33419,7 +33419,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -33560,7 +33560,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#MentalHealth",
@@ -33701,7 +33701,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Movies",
@@ -33826,7 +33826,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Movies",
@@ -33951,7 +33951,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Movies",
@@ -34076,7 +34076,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Movies",
@@ -34201,8 +34201,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#StreetFood",
       "#GoingOut"
@@ -34342,8 +34342,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#StreetFood",
       "#GoingOut"
@@ -34483,8 +34483,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#StreetFood",
       "#GoingOut"
@@ -34624,8 +34624,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 22,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
     "topics": [
       "#StreetFood",
       "#GoingOut"
@@ -34765,8 +34765,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#StayingIn",
       "#CoffeeDates",
@@ -34890,8 +34890,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#StayingIn",
       "#CoffeeDates",
@@ -35015,8 +35015,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#StayingIn",
       "#CoffeeDates",
@@ -35140,8 +35140,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#Foodie",
       "#Cooking",
@@ -35265,8 +35265,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#Foodie",
       "#Cooking",
@@ -35390,8 +35390,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#Foodie",
       "#Cooking",
@@ -35515,8 +35515,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -35707,8 +35707,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -35899,8 +35899,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -36091,8 +36091,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -36283,8 +36283,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#HealthyLifestyle",
       "#CareerDriven",
@@ -36475,8 +36475,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#Meditation",
       "#Spirituality"
@@ -36616,8 +36616,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#Meditation",
       "#Spirituality"
@@ -36757,8 +36757,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 1,
     "topics": [
       "#Meditation",
       "#Spirituality"
@@ -36898,7 +36898,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -37039,7 +37039,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -37180,7 +37180,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -37321,7 +37321,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#GoingOut",
@@ -37462,7 +37462,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -37603,7 +37603,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -37744,7 +37744,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -37885,7 +37885,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -38026,7 +38026,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -38167,8 +38167,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Nightlife",
       "#WineTasting",
@@ -38292,8 +38292,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Nightlife",
       "#WineTasting",
@@ -38417,8 +38417,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Nightlife",
       "#WineTasting",
@@ -38542,8 +38542,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Nightlife",
       "#WineTasting",
@@ -38667,7 +38667,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -38859,7 +38859,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -39051,7 +39051,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -39243,7 +39243,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -39435,7 +39435,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Biohacking",
@@ -39627,7 +39627,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -39819,7 +39819,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -40011,7 +40011,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -40203,7 +40203,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -40327,7 +40327,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -40451,7 +40451,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -40575,7 +40575,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -40699,7 +40699,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 26,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Books",
@@ -40823,7 +40823,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -40947,7 +40947,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -41071,7 +41071,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Wellness",
@@ -41195,7 +41195,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -41337,7 +41337,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -41479,7 +41479,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 25,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -41621,7 +41621,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -41745,7 +41745,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -41869,7 +41869,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -41993,7 +41993,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -42117,7 +42117,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -42309,7 +42309,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -42501,7 +42501,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -42693,7 +42693,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -42885,7 +42885,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 24,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Fitness",
@@ -43077,8 +43077,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -43218,8 +43218,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -43359,8 +43359,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -43500,8 +43500,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -43641,8 +43641,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
-    "pendingMembers": 1,
+    "acceptedMembers": 7,
+    "pendingMembers": 2,
     "topics": [
       "#FineDining",
       "#Cocktails"
@@ -43782,8 +43782,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Biohacking",
       "#Entrepreneurship",
@@ -43974,8 +43974,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Biohacking",
       "#Entrepreneurship",
@@ -44166,8 +44166,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Biohacking",
       "#Entrepreneurship",
@@ -44358,8 +44358,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Biohacking",
       "#Entrepreneurship",
@@ -44550,8 +44550,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Biohacking",
       "#Entrepreneurship",
@@ -44742,7 +44742,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -44933,7 +44933,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -45124,7 +45124,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Creativity",
@@ -45315,7 +45315,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CareerDriven",
@@ -45506,7 +45506,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CareerDriven",
@@ -45697,7 +45697,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CareerDriven",
@@ -45888,7 +45888,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CareerDriven",
@@ -46079,7 +46079,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 6,
     "pendingMembers": 1,
     "topics": [
       "#CareerDriven",
@@ -46270,7 +46270,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 4,
     "pendingMembers": 1,
     "topics": [
       "#Entrepreneurship",
@@ -46395,7 +46395,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 4,
     "pendingMembers": 1,
     "topics": [
       "#Entrepreneurship",
@@ -46520,7 +46520,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 4,
     "pendingMembers": 1,
     "topics": [
       "#Entrepreneurship",
@@ -46645,7 +46645,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -46786,7 +46786,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -46927,7 +46927,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -47068,7 +47068,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -47210,7 +47210,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -47352,7 +47352,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -47494,7 +47494,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Spirituality",
@@ -47636,7 +47636,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -47777,7 +47777,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -47918,7 +47918,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -48059,7 +48059,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -48200,8 +48200,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Yoga",
       "#Meditation"
@@ -48324,8 +48324,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Yoga",
       "#Meditation"
@@ -48448,8 +48448,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Yoga",
       "#Meditation"
@@ -48572,8 +48572,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 27,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Yoga",
       "#Meditation"
@@ -48696,8 +48696,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -48887,8 +48887,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -49078,8 +49078,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -49269,8 +49269,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -49460,8 +49460,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 1,
     "topics": [
       "#Festivals",
       "#Theatre"
@@ -49651,8 +49651,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
     "topics": [
       "#MentalHealth",
       "#HealthyLifestyle",
@@ -49843,8 +49843,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 3,
+    "pendingMembers": 1,
     "topics": [
       "#MentalHealth",
       "#HealthyLifestyle",
@@ -50035,8 +50035,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Travel",
       "#Gym",
@@ -50160,8 +50160,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Travel",
       "#Gym",
@@ -50285,8 +50285,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Travel",
       "#Gym",
@@ -50410,8 +50410,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#Travel",
       "#Gym",
@@ -50535,7 +50535,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -50660,7 +50660,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -50785,7 +50785,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 23,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Concerts",
@@ -50910,7 +50910,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Yoga",
@@ -51052,7 +51052,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Yoga",
@@ -51194,7 +51194,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Yoga",
@@ -51336,7 +51336,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Yoga",
@@ -51478,8 +51478,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 3,
     "topics": [
       "#GoingOut",
       "#Brunch"
@@ -51602,8 +51602,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 3,
     "topics": [
       "#GoingOut",
       "#Brunch"
@@ -51726,8 +51726,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 3,
     "topics": [
       "#GoingOut",
       "#Brunch"
@@ -51850,8 +51850,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#TVShows",
       "#Anime",
@@ -51992,8 +51992,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#TVShows",
       "#Anime",
@@ -52134,8 +52134,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 4,
+    "pendingMembers": 2,
     "topics": [
       "#TVShows",
       "#Anime",
@@ -52276,8 +52276,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Photography",
       "#FineDining",
@@ -52418,8 +52418,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Photography",
       "#FineDining",
@@ -52560,8 +52560,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Photography",
       "#FineDining",
@@ -52702,8 +52702,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Photography",
       "#FineDining",
@@ -52844,8 +52844,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 6,
+    "pendingMembers": 2,
     "topics": [
       "#Photography",
       "#FineDining",
@@ -52986,7 +52986,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -53111,7 +53111,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -53236,7 +53236,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -53361,7 +53361,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -53486,7 +53486,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 21,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#FineDining",
@@ -53611,7 +53611,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -53802,7 +53802,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -53993,7 +53993,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -54184,7 +54184,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 18,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#LuxuryExperiences",
@@ -54375,7 +54375,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -54500,7 +54500,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -54625,7 +54625,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -54750,7 +54750,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 20,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Meditation",
@@ -54875,7 +54875,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -54999,7 +54999,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -55123,7 +55123,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -55247,8 +55247,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -55438,8 +55438,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -55629,8 +55629,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -55820,8 +55820,8 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
-    "pendingMembers": 0,
+    "acceptedMembers": 5,
+    "pendingMembers": 1,
     "topics": [
       "#ContentCreation",
       "#Concerts"
@@ -56011,7 +56011,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 4,
     "pendingMembers": 2,
     "topics": [
       "#Running",
@@ -56152,7 +56152,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 4,
     "pendingMembers": 2,
     "topics": [
       "#Running",
@@ -56293,7 +56293,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 4,
     "pendingMembers": 2,
     "topics": [
       "#Running",
@@ -56434,7 +56434,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 15,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -56576,7 +56576,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 15,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -56718,7 +56718,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 15,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -56860,7 +56860,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -57002,7 +57002,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -57144,7 +57144,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -57286,7 +57286,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#StreetFood",
@@ -57428,7 +57428,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 14,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -57569,7 +57569,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 14,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#SelfDevelopment",
@@ -57710,7 +57710,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 14,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -57902,7 +57902,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 14,
+    "acceptedMembers": 3,
     "pendingMembers": 0,
     "topics": [
       "#ExtremeSports",
@@ -58094,7 +58094,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -58286,7 +58286,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -58478,7 +58478,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -58670,7 +58670,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Theatre",
@@ -58862,7 +58862,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -59053,7 +59053,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -59244,7 +59244,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -59435,7 +59435,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -59626,7 +59626,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 17,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Nightlife",
@@ -59817,7 +59817,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -59941,7 +59941,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -60065,7 +60065,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -60189,7 +60189,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#CoffeeDates",
@@ -60313,7 +60313,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -60504,7 +60504,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -60695,7 +60695,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -60886,7 +60886,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -61077,7 +61077,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#StayingIn",
@@ -61268,7 +61268,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -61460,7 +61460,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -61652,7 +61652,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -61844,7 +61844,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 13,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Foodie",
@@ -62036,7 +62036,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -62178,7 +62178,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -62320,7 +62320,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -62462,7 +62462,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -62604,7 +62604,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 6,
     "pendingMembers": 0,
     "topics": [
       "#Running",
@@ -62746,7 +62746,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -62888,7 +62888,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -63030,7 +63030,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -63172,7 +63172,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 50,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Photography",
@@ -63314,7 +63314,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -63506,7 +63506,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -63698,7 +63698,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -63890,7 +63890,7 @@
     "slotTemplateId": null,
     "generated": false,
     "eventType": "main",
-    "acceptedMembers": 16,
+    "acceptedMembers": 5,
     "pendingMembers": 0,
     "topics": [
       "#Sports",
@@ -70909,8 +70909,8 @@
     "capacityMin": 8,
     "capacityMax": 16,
     "capacityTotal": 16,
-    "acceptedMembers": 10,
-    "pendingMembers": 6,
+    "acceptedMembers": 0,
+    "pendingMembers": 0,
     "admins": [
       "admin-demo-ava",
       "admin-demo-noel"
@@ -71008,7 +71008,7 @@
     "capacityMin": 8,
     "capacityMax": 16,
     "capacityTotal": 16,
-    "acceptedMembers": 16,
+    "acceptedMembers": 0,
     "pendingMembers": 0,
     "admins": [
       "admin-demo-ava",
