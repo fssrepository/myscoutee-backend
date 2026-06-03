@@ -16,3 +16,4 @@ onboarding - it showed a popup login is unavailable
 demo delete on http - the demo user should be listed as deleted or blocked or etc.
 on demo mutual rate, there are duplicates
 "Tesztverzió - bug report >"
+firebase email login does not work
