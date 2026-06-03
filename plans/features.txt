@@ -15,3 +15,4 @@ article (5 items should be reduced to 4), pls. merge on demo bootstrap also (re-
 onboarding - it showed a popup login is unavailable
 demo delete on http - the demo user should be listed as deleted or blocked or etc.
 on demo mutual rate, there are duplicates
+"Tesztverzió - bug report >"
