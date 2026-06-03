@@ -122,6 +122,7 @@ public class ActivitiesEventsService {
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
+    private final UserActivityCountersService userActivityCountersService;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -142,7 +143,8 @@ public class ActivitiesEventsService {
             ActivitiesChatService activitiesChatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventSlotReadModelService eventSlotReadModelService,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            UserActivityCountersService userActivityCountersService) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -162,6 +164,7 @@ public class ActivitiesEventsService {
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
+        this.userActivityCountersService = userActivityCountersService;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -732,6 +735,7 @@ public class ActivitiesEventsService {
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsUnavailable(updated, "trashed");
+        userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
     public void publish(EventActionRequestDto request) {
@@ -749,6 +753,7 @@ public class ActivitiesEventsService {
         markEventAttachmentsAvailable(publishedDocuments);
         enqueueTournamentStartReviewNotifications(publishedDocuments, request == null ? null : request.userId());
         runInitialAutoInviteBatch(publishedDocuments);
+        userActivityCountersService.refreshEventCountersForDocuments(publishedDocuments);
     }
 
     public void unpublish(EventActionRequestDto request) {
@@ -761,6 +766,7 @@ public class ActivitiesEventsService {
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsUnavailable(updated, "unpublished");
+        userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
     public void restore(EventActionRequestDto request) {
@@ -776,6 +782,7 @@ public class ActivitiesEventsService {
         });
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsAvailable(updated);
+        userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
     public void takeOver(EventActionRequestDto request) {
@@ -826,6 +833,7 @@ public class ActivitiesEventsService {
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsAvailable(updated);
+        userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
     public EventRecordDto applyStageAction(EventStageActionRequestDto request) {
@@ -929,6 +937,7 @@ public class ActivitiesEventsService {
                 "action", actionTarget.action(),
                 "stageStatus", actionTarget.nextStatus(),
                 "stageId", firstNonBlank(stageId, Integer.toString(preferredStageIndex))));
+        userActivityCountersService.refreshEventCountersForDocuments(saved);
         return toEventRecordDto(savedPreferred, viewer);
     }
 
@@ -1663,6 +1672,7 @@ public class ActivitiesEventsService {
         adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
         syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
         List<ActivityEvent> refreshedReadModelDocuments = materializeSlotOccurrences(savedDocuments);
+        userActivityCountersService.refreshEventCountersForDocuments(refreshedReadModelDocuments.isEmpty() ? savedDocuments : refreshedReadModelDocuments);
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId) && TYPE_EVENTS.equals(targetType)) {

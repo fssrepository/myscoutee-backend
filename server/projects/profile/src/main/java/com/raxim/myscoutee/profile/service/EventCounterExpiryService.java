@@ -340,6 +340,20 @@ public class EventCounterExpiryService {
                 count(existing == null ? null : existing.tickets()),
                 count(existing == null ? null : existing.contacts()),
                 count(existing == null ? null : existing.feedback()),
+                new Users.UserEventCountersRecord(
+                        safeCounters.events()
+                                + safeCounters.invitations()
+                                + safeCounters.hosting()
+                                + count(existing == null || existing.event() == null ? null : existing.event().pending())
+                                + count(existing == null || existing.event() == null ? null : existing.event().drafts()),
+                        safeCounters.events(),
+                        count(existing == null || existing.event() == null ? null : existing.event().pending()),
+                        safeCounters.invitations(),
+                        safeCounters.hosting(),
+                        count(existing == null || existing.event() == null ? null : existing.event().drafts()),
+                        count(existing == null || existing.event() == null ? null : existing.event().trash())),
+                existing == null ? null : existing.asset(),
+                existing == null ? null : existing.eventFeedback(),
                 count(existing == null ? null : existing.adminJobs()),
                 count(existing == null ? null : existing.adminMetrics()));
     }

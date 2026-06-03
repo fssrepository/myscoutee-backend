@@ -89,6 +89,7 @@ public class AssetsService {
     private final NotificationOutboxService notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final AccessControlService accessControlService;
+    private final UserActivityCountersService userActivityCountersService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -103,7 +104,8 @@ public class AssetsService {
             AdminTelemetryService adminTelemetryService,
             NotificationOutboxService notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            UserActivityCountersService userActivityCountersService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -117,6 +119,7 @@ public class AssetsService {
         this.notificationOutboxService = notificationOutboxService;
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
         this.accessControlService = accessControlService;
+        this.userActivityCountersService = userActivityCountersService;
     }
 
     public List<AssetCardDto> queryAssets(String userId) {
@@ -243,6 +246,7 @@ public class AssetsService {
                 affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved == null ? null : saved.getAssetId()), normalizedUserId);
             }
         }
+        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
     }
 
     public void delete(AssetDeleteRequestDto request) {
@@ -263,6 +267,7 @@ public class AssetsService {
                 .ifPresent(trashed -> {
                     assetsRepository.save(trashed);
                     handleAssetTrashed(trashed, normalizedUserId);
+                    userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
                 });
     }
 
@@ -295,6 +300,7 @@ public class AssetsService {
         adminTelemetryService.record("asset.restored", "assets", normalizedAssetId, normalizedUserId);
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetRestoredNotification(next, normalizedUserId);
+        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
         return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
@@ -335,6 +341,8 @@ public class AssetsService {
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);
+        userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
+        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
         return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
@@ -651,6 +659,7 @@ public class AssetsService {
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
+        userActivityCountersService.refreshAssetCountersForUser(ownerUserId);
         return toDto(saved);
     }
 

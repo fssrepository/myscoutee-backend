@@ -1,0 +1,592 @@
+package com.raxim.myscoutee.profile.service;
+
+import java.time.Instant;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
+import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.AssetsRepository;
+import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
+
+@Service
+public class UserActivityCountersService {
+    private static final String OWNER_TYPE_EVENT = "event";
+    private static final String TYPE_EVENTS = "events";
+    private static final String TYPE_HOSTING = "hosting";
+    private static final String TYPE_INVITATIONS = "invitations";
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_HOSTING = "H";
+    private static final String STATUS_INVITATION = "INV";
+    private static final String STATUS_DRAFT = "DR";
+    private static final String STATUS_TRASHED = "T";
+    private static final String STATUS_UNDER_REVIEW = "UR";
+    private static final String STATUS_BLOCKED = "B";
+    private static final String STATUS_DELETED = "D";
+    private static final String STATUS_INACTIVE = "I";
+    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
+    private static final String MEMBER_STATUS_PENDING = "pending";
+
+    private final UsersRepository usersRepository;
+    private final ActivityEventsRepository activityEventsRepository;
+    private final ActivityMembersRepository activityMembersRepository;
+    private final AssetsRepository assetsRepository;
+    private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
+
+    public UserActivityCountersService(
+            UsersRepository usersRepository,
+            ActivityEventsRepository activityEventsRepository,
+            ActivityMembersRepository activityMembersRepository,
+            AssetsRepository assetsRepository,
+            EventFeedbackStatesRepository eventFeedbackStatesRepository) {
+        this.usersRepository = usersRepository;
+        this.activityEventsRepository = activityEventsRepository;
+        this.activityMembersRepository = activityMembersRepository;
+        this.assetsRepository = assetsRepository;
+        this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+    }
+
+    public void refreshEventCountersForDocuments(Collection<ActivityEvent> events) {
+        refreshEventCountersForSourceIds(events == null
+                ? List.of()
+                : events.stream()
+                        .map(event -> normalizeId(event == null ? null : event.getSourceId()))
+                        .filter(StringUtils::hasText)
+                        .toList());
+    }
+
+    public void refreshEventCountersForSourceIds(Collection<String> sourceIds) {
+        List<String> normalizedSourceIds = normalizeIds(sourceIds);
+        if (normalizedSourceIds.isEmpty()) {
+            return;
+        }
+        Set<String> userIds = new LinkedHashSet<>();
+        for (ActivityEvent event : activityEventsRepository.findBySourceIdIn(normalizedSourceIds)) {
+            collectEventUserIds(userIds, event);
+        }
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, normalizedSourceIds)) {
+            String userId = normalizeId(member == null ? null : member.getUserId());
+            if (StringUtils.hasText(userId)) {
+                userIds.add(userId);
+            }
+        }
+        refreshEventCountersForUsers(userIds);
+    }
+
+    public void refreshEventCountersForUsers(Collection<String> userIds) {
+        for (String userId : normalizeIds(userIds)) {
+            usersRepository.findByUserId(userId).ifPresent(user -> {
+                Users.UserActivitiesRecord next = withEventCounters(user.getActivities(), resolveEventCounters(userId));
+                if (!Objects.equals(user.getActivities(), next)) {
+                    user.setActivities(next);
+                    usersRepository.save(user);
+                }
+            });
+        }
+    }
+
+    public void refreshAssetCountersForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        usersRepository.findByUserId(normalizedUserId).ifPresent(user -> {
+            Users.UserActivitiesRecord next = withAssetCounters(user.getActivities(), resolveAssetCounters(normalizedUserId));
+            if (!Objects.equals(user.getActivities(), next)) {
+                user.setActivities(next);
+                usersRepository.save(user);
+            }
+        });
+    }
+
+    public void applyFeedbackStateTransition(
+            String userId,
+            boolean wasSubmitted,
+            boolean wasRemoved,
+            boolean isSubmitted,
+            boolean isRemoved) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        usersRepository.findByUserId(normalizedUserId).ifPresent(user -> {
+            FeedbackCounters counters = currentFeedbackCounters(user.getActivities());
+            String previousBucket = feedbackBucket(wasSubmitted, wasRemoved);
+            String nextBucket = feedbackBucket(isSubmitted, isRemoved);
+            if (!Objects.equals(previousBucket, nextBucket)) {
+                counters = counters.minus(previousBucket).plus(nextBucket);
+            }
+            Users.UserActivitiesRecord next = withFeedbackCounters(user.getActivities(), counters);
+            if (!Objects.equals(user.getActivities(), next)) {
+                user.setActivities(next);
+                usersRepository.save(user);
+            }
+        });
+    }
+
+    public void refreshFeedbackReceivedCountersForEvent(String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return;
+        }
+        Set<String> ownerUserIds = new LinkedHashSet<>();
+        for (ActivityEvent event : activityEventsRepository.findBySourceId(normalizedEventId)) {
+            if (event == null || Boolean.TRUE.equals(event.getIsInvitation()) || isTrashScopeStatus(event)) {
+                continue;
+            }
+            String creatorUserId = normalizeId(event.getCreatorUserId());
+            if (StringUtils.hasText(creatorUserId)) {
+                ownerUserIds.add(creatorUserId);
+            }
+            safeStrings(event.getAdmins()).forEach(ownerUserIds::add);
+        }
+        for (String ownerUserId : ownerUserIds) {
+            refreshFeedbackReceivedCountersForUser(ownerUserId);
+        }
+    }
+
+    public void refreshFeedbackReceivedCountersForUser(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return;
+        }
+        usersRepository.findByUserId(normalizedUserId).ifPresent(user -> {
+            Users.UserActivitiesRecord current = user.getActivities();
+            FeedbackCounters counters = currentFeedbackCounters(current);
+            counters = new FeedbackCounters(
+                    resolveReceivedFeedbackEventCount(normalizedUserId),
+                    counters.pending(),
+                    counters.feedbacked(),
+                    counters.removed());
+            Users.UserActivitiesRecord next = withFeedbackCounters(current, counters);
+            if (!Objects.equals(current, next)) {
+                user.setActivities(next);
+                usersRepository.save(user);
+            }
+        });
+    }
+
+    private EventCounters resolveEventCounters(String userId) {
+        List<ActivityEvent> directRecords = activityEventsRepository.findByOwnerUserId(userId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        Map<String, String> memberStatusBySourceId = new LinkedHashMap<>();
+        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId)) {
+            String sourceId = normalizeId(member == null ? null : member.getOwnerId());
+            String status = safeText(member == null ? null : member.getStatus());
+            if (StringUtils.hasText(sourceId)
+                    && (MEMBER_STATUS_ACCEPTED.equals(status) || MEMBER_STATUS_PENDING.equals(status))) {
+                memberStatusBySourceId.put(sourceId, status);
+            }
+        }
+
+        Set<String> sourceIds = new LinkedHashSet<>(memberStatusBySourceId.keySet());
+        directRecords.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .forEach(sourceIds::add);
+        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(
+                sourceIds.isEmpty() ? directRecords : activityEventsRepository.findBySourceIdIn(sourceIds));
+
+        int active = 0;
+        int pending = 0;
+        int invitations = 0;
+        int hosting = 0;
+        int drafts = 0;
+        int trash = 0;
+        Set<String> countedSources = new LinkedHashSet<>();
+        for (ActivityEvent event : preferredBySourceId.values()) {
+            String sourceId = normalizeId(event.getSourceId());
+            if (!countedSources.add(sourceId)) {
+                continue;
+            }
+            if (isTrashScopeStatus(event)) {
+                trash += 1;
+                continue;
+            }
+            if (isInvitationRecord(event)) {
+                invitations += 1;
+                continue;
+            }
+            boolean hostingRecord = isHostingRecordForUser(event, userId);
+            if (hostingRecord) {
+                hosting += 1;
+                if (isDraftStatus(event)) {
+                    drafts += 1;
+                }
+                if (isPendingReviewStatus(event)) {
+                    pending += 1;
+                }
+                continue;
+            }
+            String memberStatus = memberStatusBySourceId.get(sourceId);
+            if (MEMBER_STATUS_PENDING.equals(memberStatus) || isPendingReviewStatus(event)) {
+                pending += 1;
+                continue;
+            }
+            if (MEMBER_STATUS_ACCEPTED.equals(memberStatus) || isActiveEventStatus(event)) {
+                active += 1;
+            }
+        }
+        return new EventCounters(active + pending + invitations + hosting, active, pending, invitations, hosting, drafts, trash);
+    }
+
+    private AssetCounters resolveAssetCounters(String userId) {
+        int cars = 0;
+        int accommodation = 0;
+        int supplies = 0;
+        for (Asset asset : assetsRepository.findByOwnerUserId(userId)) {
+            if (asset == null || isSuppressedAssetStatus(asset.getStatus())) {
+                continue;
+            }
+            switch (safeText(asset.getType())) {
+                case "Car" -> cars += 1;
+                case "Accommodation" -> accommodation += 1;
+                case "Supplies" -> supplies += 1;
+                default -> {
+                }
+            }
+        }
+        return new AssetCounters(cars, accommodation, supplies);
+    }
+
+    private int resolveReceivedFeedbackEventCount(String userId) {
+        Set<String> eventIds = new LinkedHashSet<>();
+        for (ActivityEvent event : activityEventsRepository.findByCreatorUserId(userId)) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (StringUtils.hasText(sourceId) && !Boolean.TRUE.equals(event.getIsInvitation()) && !isTrashScopeStatus(event)) {
+                eventIds.add(sourceId);
+            }
+        }
+        for (ActivityEvent event : activityEventsRepository.findByAdminsContaining(userId)) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (StringUtils.hasText(sourceId) && !Boolean.TRUE.equals(event.getIsInvitation()) && !isTrashScopeStatus(event)) {
+                eventIds.add(sourceId);
+            }
+        }
+        if (eventIds.isEmpty()) {
+            return 0;
+        }
+        Set<String> eventsWithFeedback = new LinkedHashSet<>();
+        for (EventFeedbackState state : eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(eventIds)) {
+            String eventId = normalizeId(state == null ? null : state.getEventId());
+            String viewerUserId = normalizeId(state == null ? null : state.getViewerUserId());
+            if (StringUtils.hasText(eventId)
+                    && !Objects.equals(userId, viewerUserId)
+                    && (StringUtils.hasText(state.getSubmittedAtIso()) || StringUtils.hasText(state.getOrganizerNote()))) {
+                eventsWithFeedback.add(eventId);
+            }
+        }
+        return eventsWithFeedback.size();
+    }
+
+    private Users.UserActivitiesRecord withEventCounters(Users.UserActivitiesRecord current, EventCounters counters) {
+        Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
+        return new Users.UserActivitiesRecord(
+                count(safe.game()),
+                count(safe.chat()),
+                counters.invitations(),
+                counters.active(),
+                counters.hosting(),
+                count(safe.cars()),
+                count(safe.accommodation()),
+                count(safe.supplies()),
+                count(safe.tickets()),
+                count(safe.contacts()),
+                count(safe.feedback()),
+                new Users.UserEventCountersRecord(
+                        counters.all(),
+                        counters.active(),
+                        counters.pending(),
+                        counters.invitations(),
+                        counters.hosting(),
+                        counters.drafts(),
+                        counters.trash()),
+                safe.asset(),
+                safe.eventFeedback(),
+                count(safe.adminJobs()),
+                count(safe.adminMetrics()));
+    }
+
+    private Users.UserActivitiesRecord withAssetCounters(Users.UserActivitiesRecord current, AssetCounters counters) {
+        Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
+        return new Users.UserActivitiesRecord(
+                count(safe.game()),
+                count(safe.chat()),
+                count(safe.invitations()),
+                count(safe.events()),
+                count(safe.hosting()),
+                counters.cars(),
+                counters.accommodation(),
+                counters.supplies(),
+                count(safe.tickets()),
+                count(safe.contacts()),
+                count(safe.feedback()),
+                safe.event(),
+                new Users.UserAssetCountersRecord(
+                        counters.cars(),
+                        counters.accommodation(),
+                        counters.supplies(),
+                        count(safe.asset() == null ? null : safe.asset().tickets())),
+                safe.eventFeedback(),
+                count(safe.adminJobs()),
+                count(safe.adminMetrics()));
+    }
+
+    private Users.UserActivitiesRecord withFeedbackCounters(Users.UserActivitiesRecord current, FeedbackCounters counters) {
+        Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
+        return new Users.UserActivitiesRecord(
+                count(safe.game()),
+                count(safe.chat()),
+                count(safe.invitations()),
+                count(safe.events()),
+                count(safe.hosting()),
+                count(safe.cars()),
+                count(safe.accommodation()),
+                count(safe.supplies()),
+                count(safe.tickets()),
+                count(safe.contacts()),
+                counters.pending(),
+                safe.event(),
+                safe.asset(),
+                new Users.UserEventFeedbackCountersRecord(
+                        counters.ownEvents(),
+                        counters.pending(),
+                        counters.feedbacked(),
+                        counters.removed()),
+                count(safe.adminJobs()),
+                count(safe.adminMetrics()));
+    }
+
+    private Users.UserActivitiesRecord emptyActivities() {
+        return new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0);
+    }
+
+    private FeedbackCounters currentFeedbackCounters(Users.UserActivitiesRecord current) {
+        Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
+        Users.UserEventFeedbackCountersRecord feedback = safe.eventFeedback();
+        return new FeedbackCounters(
+                count(feedback == null ? null : feedback.ownEvents()),
+                count(feedback == null ? null : feedback.pending()),
+                count(feedback == null ? null : feedback.feedbacked()),
+                count(feedback == null ? null : feedback.removed()));
+    }
+
+    private String feedbackBucket(boolean submitted, boolean removed) {
+        if (removed) {
+            return "removed";
+        }
+        return submitted ? "feedbacked" : "pending";
+    }
+
+    private void collectEventUserIds(Set<String> userIds, ActivityEvent event) {
+        if (event == null) {
+            return;
+        }
+        addUserId(userIds, event.getOwnerUserId());
+        addUserId(userIds, event.getCreatorUserId());
+        safeStrings(event.getAdmins()).forEach(userIds::add);
+    }
+
+    private void addUserId(Set<String> userIds, String userId) {
+        String normalized = normalizeId(userId);
+        if (StringUtils.hasText(normalized)) {
+            userIds.add(normalized);
+        }
+    }
+
+    private Map<String, ActivityEvent> preferredEventsBySourceId(Collection<ActivityEvent> events) {
+        Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (!StringUtils.hasText(sourceId)) {
+                continue;
+            }
+            ActivityEvent current = preferred.get(sourceId);
+            if (current == null || eventPreferenceScore(event) > eventPreferenceScore(current)) {
+                preferred.put(sourceId, event);
+            }
+        }
+        return preferred;
+    }
+
+    private int eventPreferenceScore(ActivityEvent event) {
+        if (event == null) {
+            return 0;
+        }
+        return (isTrashScopeStatus(event) ? 0 : 16)
+                + (isHostingRecordForUser(event, normalizeId(event.getCreatorUserId())) ? 8 : 0)
+                + (isInvitationRecord(event) ? 0 : 4)
+                + (isActiveEventStatus(event) ? 2 : 0)
+                + (Boolean.TRUE.equals(event.getIsAdmin()) ? 1 : 0);
+    }
+
+    private boolean isHostingRecordForUser(ActivityEvent event, String userId) {
+        if (event == null) {
+            return false;
+        }
+        if (TYPE_HOSTING.equals(normalizeType(event.getType()))
+                || Boolean.TRUE.equals(event.getIsHosting())
+                || Boolean.TRUE.equals(event.getIsAdmin())) {
+            return true;
+        }
+        String normalizedUserId = normalizeId(userId);
+        return StringUtils.hasText(normalizedUserId)
+                && (normalizedUserId.equals(normalizeId(event.getCreatorUserId()))
+                        || safeStrings(event.getAdmins()).contains(normalizedUserId));
+    }
+
+    private boolean isInvitationRecord(ActivityEvent event) {
+        return event != null
+                && (TYPE_INVITATIONS.equals(normalizeType(event.getType()))
+                        || Boolean.TRUE.equals(event.getIsInvitation())
+                        || STATUS_INVITATION.equals(normalizeStatus(event.getStatus())));
+    }
+
+    private boolean isDraftStatus(ActivityEvent event) {
+        return event != null
+                && (Boolean.FALSE.equals(event.getPublished()) || STATUS_DRAFT.equals(normalizeStatus(event.getStatus())));
+    }
+
+    private boolean isPendingReviewStatus(ActivityEvent event) {
+        String status = normalizeStatus(event == null ? null : event.getStatus());
+        return STATUS_UNDER_REVIEW.equals(status) || STATUS_BLOCKED.equals(status);
+    }
+
+    private boolean isActiveEventStatus(ActivityEvent event) {
+        String status = normalizeStatus(event == null ? null : event.getStatus());
+        return STATUS_ACTIVE.equals(status) || STATUS_HOSTING.equals(status) || !StringUtils.hasText(status);
+    }
+
+    private boolean isTrashScopeStatus(ActivityEvent event) {
+        if (event == null || Boolean.TRUE.equals(event.getIsTrashed())) {
+            return true;
+        }
+        String status = normalizeStatus(event.getStatus());
+        return STATUS_TRASHED.equals(status)
+                || STATUS_DELETED.equals(status)
+                || STATUS_INACTIVE.equals(status);
+    }
+
+    private boolean isSuppressedAssetStatus(String status) {
+        String normalized = normalizeStatus(status);
+        return STATUS_UNDER_REVIEW.equals(normalized)
+                || STATUS_BLOCKED.equals(normalized)
+                || STATUS_DELETED.equals(normalized)
+                || STATUS_INACTIVE.equals(normalized)
+                || STATUS_TRASHED.equals(normalized);
+    }
+
+    private List<String> normalizeIds(Collection<String> values) {
+        return values == null
+                ? List.of()
+                : values.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList();
+    }
+
+    private List<String> safeStrings(Collection<String> values) {
+        return values == null
+                ? List.of()
+                : values.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList();
+    }
+
+    private String normalizeType(String value) {
+        return safeText(value).toLowerCase();
+    }
+
+    private String normalizeStatus(String value) {
+        String normalized = safeText(value);
+        return switch (normalized) {
+            case "active" -> STATUS_ACTIVE;
+            case "hosting" -> STATUS_HOSTING;
+            case "invitation" -> STATUS_INVITATION;
+            case "draft" -> STATUS_DRAFT;
+            case "trashed", "trash" -> STATUS_TRASHED;
+            case "under-review", "under review" -> STATUS_UNDER_REVIEW;
+            case "blocked" -> STATUS_BLOCKED;
+            case "deleted" -> STATUS_DELETED;
+            case "inactive" -> STATUS_INACTIVE;
+            default -> normalized.toUpperCase();
+        };
+    }
+
+    private String normalizeId(String value) {
+        return safeText(value);
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private int count(Integer value) {
+        if (value == null) {
+            return 0;
+        }
+        return Math.max(0, value.intValue());
+    }
+
+    private record EventCounters(
+            int all,
+            int active,
+            int pending,
+            int invitations,
+            int hosting,
+            int drafts,
+            int trash) {
+    }
+
+    private record AssetCounters(
+            int cars,
+            int accommodation,
+            int supplies) {
+    }
+
+    private record FeedbackCounters(
+            int ownEvents,
+            int pending,
+            int feedbacked,
+            int removed) {
+        FeedbackCounters plus(String bucket) {
+            return switch (bucket) {
+                case "removed" -> new FeedbackCounters(ownEvents, pending, feedbacked, removed + 1);
+                case "feedbacked" -> new FeedbackCounters(ownEvents, pending, feedbacked + 1, removed);
+                default -> new FeedbackCounters(ownEvents, pending + 1, feedbacked, removed);
+            };
+        }
+
+        FeedbackCounters minus(String bucket) {
+            return switch (bucket) {
+                case "removed" -> new FeedbackCounters(ownEvents, pending, feedbacked, Math.max(0, removed - 1));
+                case "feedbacked" -> new FeedbackCounters(ownEvents, pending, Math.max(0, feedbacked - 1), removed);
+                default -> new FeedbackCounters(ownEvents, Math.max(0, pending - 1), feedbacked, removed);
+            };
+        }
+    }
+}
