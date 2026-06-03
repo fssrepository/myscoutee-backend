@@ -9,6 +9,9 @@ mobil/desktop view switch like on base44
 
 menu counter e2e functional test
 
-elotte-utana preferenciak, pls. merge on demo bootstrap also (re-reate seed) -- check other sources (http json collections)
-
+bugs
+----
+article (5 items should be reduced to 4), pls. merge on demo bootstrap also (re-reate seed) -- check other sources (http json collections)
 onboarding - it showed a popup login is unavailable
+demo delete on http - the demo user should be listed as deleted or blocked or etc.
+on demo mutual rate, there are duplicates
