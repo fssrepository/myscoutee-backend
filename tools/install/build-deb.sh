@@ -1,12 +1,12 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
+SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(CDPATH= cd "${SCRIPT_DIR}/../.." && pwd)"
 PACKAGE_SCRIPT="${REPO_ROOT}/packaging/scripts/package-production.sh"
 DIST_DIR="${REPO_ROOT}/packaging/dist"
 
-if [[ ! -f "${PACKAGE_SCRIPT}" ]]; then
+if [ ! -f "${PACKAGE_SCRIPT}" ]; then
   echo "Package script not found: ${PACKAGE_SCRIPT}" >&2
   exit 1
 fi
@@ -18,7 +18,7 @@ latest_deb="$(find "${DIST_DIR}" -maxdepth 1 -type f -name 'myscoutee_*_*.deb' -
   | sort -nr \
   | awk 'NR == 1 { print $2 }')"
 
-if [[ -z "${latest_deb}" ]]; then
+if [ -z "${latest_deb}" ]; then
   echo "Debian package was not found under ${DIST_DIR}." >&2
   exit 1
 fi
