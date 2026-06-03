@@ -10,3 +10,5 @@ mobil/desktop view switch like on base44
 menu counter e2e functional test
 
 elotte-utana preferenciak, pls. merge on demo bootstrap also (re-reate seed) -- check other sources (http json collections)
+
+onboarding - it showed a popup login is unavailable
