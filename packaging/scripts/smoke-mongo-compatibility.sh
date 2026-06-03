@@ -281,8 +281,10 @@ main() {
 
   check_http_or_internal "backend health" "/api/health" '"status":"UP"'
   check_http_or_internal "landing content query" "/api/landing/content?lang=en" '"ideas"'
+  check_http_or_internal "active help content" "/api/help/active?lang=en" '"documentKind":"help"'
   check_http_or_internal "active privacy content" "/api/privacy/active?lang=en" '"documentKind":"privacy"'
   check_http_or_internal "active privacy sections" "/api/privacy/active?lang=en" '"sections":[{'
+  check_http_or_internal "active explanation content" "/api/explanation/active?lang=en&contextKey=home.game" '"documentKind":"explanation"'
 
   status_line ok "Mongo ${EXPECTED_MONGO_MINOR} compatibility smoke passed"
 }
