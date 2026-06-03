@@ -8,3 +8,5 @@ e-kozig onya form editor and display on view (indexeddb save and grid layout+for
 mobil/desktop view switch like on base44
 
 menu counter e2e functional test
+
+elotte-utana preferenciak, pls. merge on demo bootstrap also (re-reate seed) -- check other sources (http json collections)
