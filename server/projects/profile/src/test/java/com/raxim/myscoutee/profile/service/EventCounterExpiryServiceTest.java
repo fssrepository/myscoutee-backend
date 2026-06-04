@@ -97,7 +97,23 @@ class EventCounterExpiryServiceTest {
 
         Users member = new Users();
         member.setUserId("member");
-        member.setActivities(new Users.UserActivitiesRecord(1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+        member.setActivities(new Users.UserActivitiesRecord(
+                1,
+                2,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                new Users.UserEventCountersRecord(18, 6, 0, 5, 7, 0, 0),
+                new Users.UserAssetCountersRecord(8, 9, 10, 11),
+                new Users.UserEventFeedbackCountersRecord(0, 13, 0, 0),
+                14,
+                15));
         when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(member));
         when(usersRepository.saveAll(any())).thenAnswer(invocation -> toList(invocation.getArgument(0)));
         when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class)))

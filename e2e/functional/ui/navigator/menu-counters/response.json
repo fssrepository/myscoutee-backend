@@ -1,0 +1,11 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".game-page"
+  ],
+  "network": [
+    "/api/auth/me"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true
+}

@@ -43,7 +43,13 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
@@ -364,25 +370,32 @@ class HomeUserProfileServiceTest {
     @Test
     void realtimeSnapshotUsesStoredActivityCountersWithoutRecomputing() {
         Users active = user("active", 0d);
-        active.setActivities(new Users.UserActivitiesRecord(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+        active.setActivities(storedActivityCounters());
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
         when(eventFeedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("active")).thenReturn(List.of());
 
         var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("active", null));
 
-        assertThat(snapshot.counters().game()).isEqualTo(3);
-        assertThat(snapshot.counters().chat()).isEqualTo(4);
-        assertThat(snapshot.counters().invitations()).isEqualTo(5);
-        assertThat(snapshot.counters().events()).isEqualTo(6);
-        assertThat(snapshot.counters().hosting()).isEqualTo(7);
-        assertThat(snapshot.counters().cars()).isEqualTo(8);
-        assertThat(snapshot.counters().accommodation()).isEqualTo(9);
-        assertThat(snapshot.counters().supplies()).isEqualTo(10);
-        assertThat(snapshot.counters().tickets()).isEqualTo(11);
-        assertThat(snapshot.counters().contacts()).isEqualTo(12);
-        assertThat(snapshot.counters().feedback()).isEqualTo(13);
-        assertThat(snapshot.counters().adminJobs()).isEqualTo(14);
-        assertThat(snapshot.counters().adminMetrics()).isEqualTo(15);
+        assertFlatCounters(snapshot.counters());
+        assertNestedCounters(snapshot.counters());
+        verifyNoInteractions(activityChatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
+                eventParticipationTicketService, assetsRepository);
+    }
+
+    @Test
+    void queryUserByIdReturnsStoredMenuCounterOverridesWithNestedGroups() {
+        Users active = user("active", 0d);
+        active.setActivities(storedActivityCounters());
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+
+        var response = service.queryUserById("active");
+
+        assertThat(response).isNotNull();
+        assertFlatCounters(response.counterOverrides());
+        assertNestedCounters(response.counterOverrides());
+        assertFlatCounters(response.activities());
+        assertNestedCounters(response.activities());
+        assertThat(response.filterCount()).isEqualTo(3);
         verifyNoInteractions(activityChatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
     }
@@ -400,6 +413,111 @@ class HomeUserProfileServiceTest {
         user.setName(userId);
         user.setAffinity(affinity);
         return user;
+    }
+
+    private Users.UserActivitiesRecord storedActivityCounters() {
+        return new Users.UserActivitiesRecord(
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                new Users.UserEventCountersRecord(20, 6, 2, 5, 7, 1, 3),
+                new Users.UserAssetCountersRecord(8, 9, 10, 11),
+                new Users.UserEventFeedbackCountersRecord(4, 13, 14, 2),
+                15,
+                16);
+    }
+
+    private void assertFlatCounters(UserRealtimeCountersDto counters) {
+        assertFlatCounters(
+                counters.game(), counters.chat(), counters.invitations(), counters.events(), counters.hosting(),
+                counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+    }
+
+    private void assertFlatCounters(UserMenuCountersDto counters) {
+        assertFlatCounters(
+                counters.game(), counters.chat(), counters.invitations(), counters.events(), counters.hosting(),
+                counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+    }
+
+    private void assertFlatCounters(UserActivitiesDto counters) {
+        assertFlatCounters(
+                counters.game(), counters.chat(), counters.invitations(), counters.events(), counters.hosting(),
+                counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
+                counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
+    }
+
+    private void assertFlatCounters(
+            Integer game,
+            Integer chat,
+            Integer invitations,
+            Integer events,
+            Integer hosting,
+            Integer cars,
+            Integer accommodation,
+            Integer supplies,
+            Integer tickets,
+            Integer contacts,
+            Integer feedback,
+            Integer adminJobs,
+            Integer adminMetrics) {
+        assertThat(game).isEqualTo(3);
+        assertThat(chat).isEqualTo(4);
+        assertThat(invitations).isEqualTo(5);
+        assertThat(events).isEqualTo(6);
+        assertThat(hosting).isEqualTo(7);
+        assertThat(cars).isEqualTo(8);
+        assertThat(accommodation).isEqualTo(9);
+        assertThat(supplies).isEqualTo(10);
+        assertThat(tickets).isEqualTo(11);
+        assertThat(contacts).isEqualTo(12);
+        assertThat(feedback).isEqualTo(13);
+        assertThat(adminJobs).isEqualTo(15);
+        assertThat(adminMetrics).isEqualTo(16);
+    }
+
+    private void assertNestedCounters(UserRealtimeCountersDto counters) {
+        assertNestedCounters(counters.event(), counters.asset(), counters.eventFeedback());
+    }
+
+    private void assertNestedCounters(UserMenuCountersDto counters) {
+        assertNestedCounters(counters.event(), counters.asset(), counters.eventFeedback());
+    }
+
+    private void assertNestedCounters(UserActivitiesDto counters) {
+        assertNestedCounters(counters.event(), counters.asset(), counters.eventFeedback());
+    }
+
+    private void assertNestedCounters(
+            UserEventCountersDto event,
+            UserAssetCountersDto asset,
+            UserEventFeedbackCountersDto eventFeedback) {
+        assertThat(event.all()).isEqualTo(20);
+        assertThat(event.active()).isEqualTo(6);
+        assertThat(event.pending()).isEqualTo(2);
+        assertThat(event.invitations()).isEqualTo(5);
+        assertThat(event.hosting()).isEqualTo(7);
+        assertThat(event.drafts()).isEqualTo(1);
+        assertThat(event.trash()).isEqualTo(3);
+
+        assertThat(asset.cars()).isEqualTo(8);
+        assertThat(asset.accommodation()).isEqualTo(9);
+        assertThat(asset.supplies()).isEqualTo(10);
+        assertThat(asset.tickets()).isEqualTo(11);
+
+        assertThat(eventFeedback.ownEvents()).isEqualTo(4);
+        assertThat(eventFeedback.pending()).isEqualTo(13);
+        assertThat(eventFeedback.feedbacked()).isEqualTo(14);
+        assertThat(eventFeedback.removed()).isEqualTo(2);
     }
 
     private UserRate metRate(String ownerUserId, String relatedUserId) {

@@ -317,6 +317,33 @@ check_restart_loops() {
   fi
 }
 
+cleanup_same_version_runtime() {
+  local image
+
+  if ! command -v docker >/dev/null 2>&1; then
+    return
+  fi
+
+  log "cleaning same-version Docker runtime before reinstall"
+  stop_myscoutee
+
+  if [[ -d /opt/myscoutee/server && -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
+    (
+      cd /opt/myscoutee/server
+      sudo_run docker compose -f docker-compose-prod.yml down --remove-orphans
+    ) || true
+  fi
+
+  for image in \
+    "myscoutee-nginx:${PACKAGE_VERSION}-base" \
+    "myscoutee-nginx:${PACKAGE_VERSION}-prod" \
+    "myscoutee-api:${PACKAGE_VERSION}-prod"; do
+    if sudo_run docker image inspect "${image}" >/dev/null 2>&1; then
+      sudo_run docker image rm -f "${image}" || true
+    fi
+  done
+}
+
 installed_package_version() {
   local line status version
 
@@ -342,6 +369,7 @@ if [[ -z "${installed_version}" ]]; then
   log "${PACKAGE_NAME} is not installed; installing ${PACKAGE_VERSION}"
 elif [[ "${installed_version}" == "${PACKAGE_VERSION}" ]]; then
   log "${PACKAGE_NAME} ${installed_version} is already installed; removing before reinstall"
+  cleanup_same_version_runtime
   sudo_run env DEBIAN_FRONTEND=noninteractive apt-get remove -y "${PACKAGE_NAME}"
 else
   log "${PACKAGE_NAME} ${installed_version} is installed; upgrading to ${PACKAGE_VERSION}"

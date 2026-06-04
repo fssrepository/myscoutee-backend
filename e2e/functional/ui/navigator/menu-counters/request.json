@@ -1,0 +1,10 @@
+{
+  "name": "navigator menu and popup counters stay app-context consistent",
+  "group": "navigator",
+  "order": 64,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 90000
+}

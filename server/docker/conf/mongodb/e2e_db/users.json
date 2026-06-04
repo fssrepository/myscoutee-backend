@@ -10,6 +10,12 @@
       "game": 9,
       "hosting": 29,
       "invitations": 19,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 8,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 94,
         "active": 46,
@@ -20,15 +26,15 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 8
       },
       "eventFeedback": {
-        "ownEvents": 0,
+        "ownEvents": 2,
         "pending": 0,
-        "feedbacked": 0,
+        "feedbacked": 2,
         "removed": 0
       }
     },
@@ -170,6 +176,12 @@
       "game": 4,
       "hosting": 30,
       "invitations": 16,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 17,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 90,
         "active": 44,
@@ -180,15 +192,15 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 17
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
-        "feedbacked": 0,
+        "feedbacked": 2,
         "removed": 0
       }
     },
@@ -237,6 +249,12 @@
       "game": 6,
       "hosting": 29,
       "invitations": 14,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 10,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 87,
         "active": 44,
@@ -247,15 +265,15 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 10
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
-        "feedbacked": 0,
+        "feedbacked": 2,
         "removed": 0
       }
     },
@@ -397,6 +415,12 @@
       "game": 7,
       "hosting": 31,
       "invitations": 10,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 13,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 90,
         "active": 49,
@@ -407,15 +431,15 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 13
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
-        "feedbacked": 0,
+        "feedbacked": 2,
         "removed": 0
       }
     },
@@ -556,6 +580,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 5,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 23,
         "active": 17,
@@ -566,10 +596,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -623,6 +653,12 @@
       "game": 3,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 9,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 21,
         "active": 19,
@@ -633,10 +669,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 9
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -690,6 +726,12 @@
       "game": 8,
       "hosting": 1,
       "invitations": 3,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 5,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 21,
         "active": 17,
@@ -700,10 +742,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 5
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -756,6 +798,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 6,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 24,
         "active": 22,
@@ -766,15 +814,15 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 6
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
-        "feedbacked": 0,
+        "feedbacked": 1,
         "removed": 0
       }
     },
@@ -823,6 +871,12 @@
       "game": 2,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 9,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 26,
         "active": 24,
@@ -833,10 +887,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 9
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -889,6 +943,12 @@
       "game": 6,
       "hosting": 30,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 12,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 80,
         "active": 49,
@@ -899,10 +959,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 12
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -956,6 +1016,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 11,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 32,
         "active": 30,
@@ -966,13 +1032,13 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 11
       },
       "eventFeedback": {
-        "ownEvents": 0,
+        "ownEvents": 1,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
@@ -1022,6 +1088,12 @@
       "game": 4,
       "hosting": 31,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 17,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 85,
         "active": 53,
@@ -1032,10 +1104,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 17
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1089,6 +1161,12 @@
       "game": 9,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 13,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 32,
         "active": 30,
@@ -1099,10 +1177,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 13
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1156,6 +1234,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 6,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 30,
         "active": 28,
@@ -1166,10 +1250,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 6
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1223,6 +1307,12 @@
       "game": 6,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 11,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 31,
         "active": 29,
@@ -1233,10 +1323,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 11
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1290,6 +1380,12 @@
       "game": 7,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 7,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 29,
         "active": 27,
@@ -1300,10 +1396,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 7
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1356,6 +1452,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 7,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 27,
         "active": 25,
@@ -1366,10 +1468,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 7
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1423,6 +1525,12 @@
       "game": 3,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 8,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 24,
         "active": 22,
@@ -1433,10 +1541,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 8
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1490,6 +1598,12 @@
       "game": 8,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 20,
         "active": 18,
@@ -1500,10 +1614,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1556,6 +1670,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 6,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 18,
         "active": 16,
@@ -1566,10 +1686,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 6
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1623,6 +1743,12 @@
       "game": 2,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 1,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 14,
         "active": 12,
@@ -1633,10 +1759,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 1
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1689,6 +1815,12 @@
       "game": 6,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 13,
         "active": 11,
@@ -1699,10 +1831,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1756,6 +1888,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 1,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 10,
         "active": 8,
@@ -1766,10 +1904,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 1
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1822,6 +1960,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 9,
         "active": 7,
@@ -1832,10 +1976,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1889,6 +2033,12 @@
       "game": 9,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 1,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 6,
         "active": 4,
@@ -1899,10 +2049,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 1
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1956,6 +2106,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 8,
         "active": 6,
@@ -1966,10 +2122,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2023,6 +2179,12 @@
       "game": 6,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 10,
         "active": 8,
@@ -2033,10 +2195,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2090,6 +2252,12 @@
       "game": 7,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 12,
         "active": 10,
@@ -2100,10 +2268,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2156,6 +2324,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 5,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 14,
         "active": 12,
@@ -2166,10 +2340,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 5
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2223,6 +2397,12 @@
       "game": 3,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 16,
         "active": 14,
@@ -2233,10 +2413,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2290,6 +2470,12 @@
       "game": 8,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 17,
         "active": 15,
@@ -2300,10 +2486,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2356,6 +2542,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 18,
         "active": 16,
@@ -2366,10 +2558,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2423,6 +2615,12 @@
       "game": 2,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 5,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 20,
         "active": 18,
@@ -2433,10 +2631,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 5
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2489,6 +2687,12 @@
       "game": 6,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 22,
         "active": 20,
@@ -2499,10 +2703,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2556,6 +2760,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 22,
         "active": 20,
@@ -2566,10 +2776,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2622,6 +2832,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 5,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 23,
         "active": 21,
@@ -2632,10 +2848,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 5
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2689,6 +2905,12 @@
       "game": 9,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 22,
         "active": 20,
@@ -2699,10 +2921,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2756,6 +2978,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 8,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 23,
         "active": 21,
@@ -2766,10 +2994,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 8
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2823,6 +3051,12 @@
       "game": 6,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 21,
         "active": 19,
@@ -2833,10 +3067,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2890,6 +3124,12 @@
       "game": 7,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 7,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 20,
         "active": 18,
@@ -2900,10 +3140,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 7
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -2956,6 +3196,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 21,
         "active": 19,
@@ -2966,10 +3212,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3023,6 +3269,12 @@
       "game": 3,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 30,
         "active": 28,
@@ -3033,13 +3285,13 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
-        "ownEvents": 0,
+        "ownEvents": 1,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
@@ -3090,6 +3342,12 @@
       "game": 8,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 14,
         "active": 12,
@@ -3100,10 +3358,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3156,6 +3414,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 16,
         "active": 14,
@@ -3166,10 +3430,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3223,6 +3487,12 @@
       "game": 2,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 12,
         "active": 10,
@@ -3233,10 +3503,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3289,6 +3559,12 @@
       "game": 6,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 12,
         "active": 10,
@@ -3299,10 +3575,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3356,6 +3632,12 @@
       "game": 5,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 15,
         "active": 13,
@@ -3366,10 +3648,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3422,6 +3704,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 3,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 12,
         "active": 10,
@@ -3432,10 +3720,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3489,6 +3777,12 @@
       "game": 9,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 2,
+      "tickets": 2,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 13,
         "active": 11,
@@ -3499,10 +3793,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
-        "supplies": 0,
-        "tickets": 0
+        "cars": 2,
+        "accommodation": 2,
+        "supplies": 2,
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3556,6 +3850,12 @@
       "game": 4,
       "hosting": 1,
       "invitations": 1,
+      "cars": 2,
+      "accommodation": 2,
+      "supplies": 0,
+      "tickets": 4,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 16,
         "active": 14,
@@ -3566,10 +3866,10 @@
         "trash": 0
       },
       "asset": {
-        "cars": 0,
-        "accommodation": 0,
+        "cars": 2,
+        "accommodation": 2,
         "supplies": 0,
-        "tickets": 0
+        "tickets": 4
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -3623,6 +3923,12 @@
       "game": 1,
       "hosting": 0,
       "invitations": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 0,
         "active": 0,
@@ -3688,6 +3994,12 @@
       "game": 0,
       "hosting": 0,
       "invitations": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 0,
         "active": 0,
@@ -3754,6 +4066,12 @@
       "game": 0,
       "hosting": 0,
       "invitations": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 0,
         "active": 0,
@@ -3819,6 +4137,12 @@
       "game": 0,
       "hosting": 0,
       "invitations": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
       "event": {
         "all": 0,
         "active": 0,
@@ -3888,19 +4212,17 @@
     "profileStatus": "public",
     "images": [],
     "activities": {
-      "game": 0,
       "chat": 0,
-      "invitations": 0,
       "events": 0,
+      "game": 0,
       "hosting": 2,
+      "invitations": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
-      "adminJobs": 0,
-      "adminMetrics": 0,
       "event": {
         "all": 2,
         "active": 0,
@@ -3921,7 +4243,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     }
   },
   {
@@ -3943,19 +4267,17 @@
     "profileStatus": "public",
     "images": [],
     "activities": {
-      "game": 0,
       "chat": 0,
-      "invitations": 0,
       "events": 0,
+      "game": 0,
       "hosting": 0,
+      "invitations": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
-      "adminJobs": 0,
-      "adminMetrics": 0,
       "event": {
         "all": 0,
         "active": 0,
@@ -3976,7 +4298,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     }
   }
 ]

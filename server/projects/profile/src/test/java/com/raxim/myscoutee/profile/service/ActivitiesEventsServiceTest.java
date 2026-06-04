@@ -83,6 +83,8 @@ class ActivitiesEventsServiceTest {
     private EventSlotReadModelService eventSlotReadModelService;
     @Mock
     private AccessControlService accessControlService;
+    @Mock
+    private UserActivityCountersService userActivityCountersService;
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
@@ -108,7 +110,8 @@ class ActivitiesEventsServiceTest {
                 activitiesChatService,
                 activitiesEventLeaderboardService,
                 eventSlotReadModelService,
-                accessControlService);
+                accessControlService,
+                userActivityCountersService);
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);

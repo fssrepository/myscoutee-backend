@@ -66,6 +66,8 @@ class ActivitiesMembersServiceTest {
     private EventSlotReadModelService eventSlotReadModelService;
     @Mock
     private AccessControlService accessControlService;
+    @Mock
+    private UserActivityCountersService userActivityCountersService;
 
     private ActivitiesMembersService service;
 
@@ -85,7 +87,8 @@ class ActivitiesMembersServiceTest {
                 adminTelemetryService,
                 activitiesChatService,
                 eventSlotReadModelService,
-                accessControlService);
+                accessControlService,
+                userActivityCountersService);
         lenient().when(accessControlService.canCurrentActorViewEventMembers(anyString())).thenReturn(true);
         lenient().when(accessControlService.canInviteEventMembers(anyString(), anyString())).thenReturn(true);
     }
