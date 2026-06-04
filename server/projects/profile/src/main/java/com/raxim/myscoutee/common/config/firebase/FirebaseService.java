@@ -251,7 +251,8 @@ public class FirebaseService {
     }
 
     private String resolveRole(String email) {
-        if (appSettingsService.isAdminEmail(normalizeEmail(email))) {
+        String normalizedEmail = normalizeEmail(email);
+        if (config.isAdminUser(normalizedEmail) || appSettingsService.isAdminEmail(normalizedEmail)) {
             return "A";
         }
         return "U";

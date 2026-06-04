@@ -13,11 +13,4 @@ admin - stats screen - how many users bought event/borrowed asset
 bugs
 ----
 on login the menu bar does not show the real counters, or the popup open updates mistakenly
-article (5 items should be reduced to 4), pls. merge on demo bootstrap also (re-reate seed) -- check other sources (http json collections)
-onboarding - it showed a popup login is unavailable
-demo delete on http - the demo user should be listed as deleted or blocked or etc.
-on demo mutual rate, there are duplicates
 "Tesztverzió - bug report >"
-firebase email login does not work
-admin can't login on prod --- from /admin, shouldn1t go back to main screen (/entry), if login didn't succeed
-arrow is moving down on hover - when returned to /entry - not sure why

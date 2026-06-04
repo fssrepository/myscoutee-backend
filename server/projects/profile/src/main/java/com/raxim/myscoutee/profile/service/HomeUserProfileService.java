@@ -261,12 +261,12 @@ public class HomeUserProfileService {
     public UserByIdResponseDto queryUserById(String requestedUserId) {
         String resolvedUserId = resolveSelectedUserId(requestedUserId);
         if (!StringUtils.hasText(resolvedUserId)) {
-            return null;
+            return StringUtils.hasText(requestedUserId) ? null : buildCurrentAdminPrincipalResponse();
         }
 
         Users user = findUser(resolvedUserId);
         if (user == null) {
-            return null;
+            return buildCurrentAdminPrincipalResponse();
         }
         if (!StringUtils.hasText(requestedUserId)) {
             scheduledMessageTaskService.touchUserActivity(resolvedUserId);
@@ -309,6 +309,56 @@ public class HomeUserProfileService {
                 userDto.activities(),
                 filterCount,
                 filterPreferences,
+                menuCounters);
+    }
+
+    private UserByIdResponseDto buildCurrentAdminPrincipalResponse() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null
+                || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)
+                || !isCurrentRequestAdmin()) {
+            return null;
+        }
+        String userId = normalizeId(firebasePrincipal.getUserId());
+        if (!StringUtils.hasText(userId)) {
+            return null;
+        }
+        String email = safeText(firebasePrincipal.getEmail());
+        String name = adminDisplayName(email);
+        UserActivitiesDto activities = toUserActivitiesDto(null);
+        UserMenuCountersDto menuCounters = emptyMenuCounters();
+        return new UserByIdResponseDto(
+                userId,
+                name,
+                0,
+                "",
+                "",
+                "",
+                "",
+                List.of(),
+                "",
+                adminInitials(name),
+                "man",
+                "",
+                "",
+                "",
+                0,
+                0,
+                "",
+                "",
+                null,
+                null,
+                "",
+                List.of(),
+                List.of(),
+                null,
+                "public",
+                "",
+                "",
+                true,
+                activities,
+                0,
+                null,
                 menuCounters);
     }
 
@@ -1279,7 +1329,7 @@ public class HomeUserProfileService {
 
     private boolean isSelectableDemoUserDocument(Users user) {
         return isUsableUserDocument(user)
-                && !HARD_HIDDEN_PROFILE_STATUSES.contains(resolveProfileStatus(user));
+                && !PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user));
     }
 
     boolean isPublicGameUser(Users user) {
@@ -1617,6 +1667,41 @@ public class HomeUserProfileService {
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()));
+    }
+
+    private UserMenuCountersDto emptyMenuCounters() {
+        return new UserMenuCountersDto(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
+                new UserAssetCountersDto(0, 0, 0, 0),
+                new UserEventFeedbackCountersDto(0, 0, 0, 0),
+                0, 0);
+    }
+
+    private String adminDisplayName(String email) {
+        String normalizedEmail = safeText(email);
+        if (!StringUtils.hasText(normalizedEmail)) {
+            return "Admin";
+        }
+        int atIndex = normalizedEmail.indexOf('@');
+        String localPart = atIndex > 0 ? normalizedEmail.substring(0, atIndex) : normalizedEmail;
+        String normalizedName = localPart.replaceAll("[^A-Za-z0-9]+", " ").trim();
+        return StringUtils.hasText(normalizedName) ? normalizedName : "Admin";
+    }
+
+    private String adminInitials(String name) {
+        String[] words = safeText(name).split("\\s+");
+        List<String> usableWords = java.util.Arrays.stream(words)
+                .filter(StringUtils::hasText)
+                .toList();
+        if (usableWords.isEmpty()) {
+            return "A";
+        }
+        if (usableWords.size() == 1) {
+            String word = usableWords.get(0);
+            return word.substring(0, Math.min(2, word.length())).toUpperCase();
+        }
+        return (usableWords.get(0).substring(0, 1) + usableWords.get(1).substring(0, 1)).toUpperCase();
     }
 
     private Users mergeUserDocument(Users current, UserDto user) {

@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.lenient;
@@ -275,6 +276,30 @@ class HomeUserProfileServiceTest {
         assertThat(service.queryDemoUserListItems(2))
                 .extracting(item -> item.id())
                 .containsExactly("high", "medium");
+    }
+
+    @Test
+    void demoUserListItemsIncludeLifecycleStatuses() {
+        Users active = user("active", 30d);
+        Users blocked = user("blocked", 20d);
+        blocked.setProfileStatus("blocked");
+        Users inactive = user("inactive", 10d);
+        inactive.setProfileStatus("inactive");
+        Users deleted = user("deleted", 5d);
+        deleted.setStatus("D");
+        deleted.setProfileStatus("deleted");
+        deleted.setDeletedAtIso("2026-01-02T03:04:05Z");
+        Users onboarding = user("onboarding", 40d);
+        onboarding.setProfileStatus("onboarding");
+        when(usersRepository.findAll()).thenReturn(List.of(onboarding, deleted, inactive, blocked, active));
+
+        assertThat(service.queryDemoUserListItems())
+                .extracting(item -> item.id())
+                .containsExactly("active", "blocked", "inactive", "deleted");
+        assertThat(service.queryDemoUserListItems())
+                .filteredOn(item -> "deleted".equals(item.id()))
+                .extracting(item -> item.profileStatus(), item -> item.deletedAtIso())
+                .containsExactly(tuple("deleted", "2026-01-02T03:04:05Z"));
     }
 
     @Test
