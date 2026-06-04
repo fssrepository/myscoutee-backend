@@ -1,0 +1,10 @@
+{
+  "name": "navigator contacts popup renders saved contact methods",
+  "group": "navigator",
+  "order": 66,
+  "route": "/game",
+  "suiteDemoLogin": true,
+  "script": "assert.mjs",
+  "fullStackOnly": true,
+  "maxMs": 90000
+}

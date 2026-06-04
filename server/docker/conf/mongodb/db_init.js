@@ -22,6 +22,7 @@ const requiredCollections = [
   'helpCenterAudit',
   'privacyConsents',
   'userExperienceProfiles',
+  'navigatorContacts',
   'countryPartitions',
   'i18n_bundles',
   'i18n_messages'
@@ -431,6 +432,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.userExperienceProfiles.createIndex(
     { userId: 1 },
     { name: 'user_experience_profiles_user_id', unique: true }
+  );
+  portalDb.navigatorContacts.createIndex(
+    { userId: 1 },
+    { name: 'navigator_contacts_user_id', unique: true }
   );
 
   portalDb.i18n_bundles.createIndex(

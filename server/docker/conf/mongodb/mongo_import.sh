@@ -363,6 +363,19 @@ db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'eve
 db.getCollection('userExperienceProfiles').createIndex({ userId: 1 }, { name: 'user_experience_profiles_user_id', unique: true });
 " >/dev/null
       ;;
+    navigatorContacts)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('navigatorContacts').createIndex({ userId: 1 }, { name: 'navigator_contacts_user_id', unique: true });
+" >/dev/null
+      ;;
     eventFeedbackStates)
       mongosh \
         --host "${mongo_host}" \

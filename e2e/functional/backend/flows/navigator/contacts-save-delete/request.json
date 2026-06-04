@@ -1,0 +1,69 @@
+{
+  "name": "e2e navigator contacts: save, load, delete, counter update",
+  "group": "flows",
+  "order": 9020,
+  "method": "PUT",
+  "path": "/api/navigator/contacts",
+  "script": "navigator-contacts-flow.mjs",
+  "mutation": true,
+  "e2eOnly": true,
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "setup": [
+    {
+      "name": "seed contacts owner profile",
+      "method": "POST",
+      "path": "/api/auth/me/profile",
+      "headers": {
+        "X-App-Session-Kind": "demo"
+      },
+      "expectedStatus": 200,
+      "body": {
+        "id": "{{e2eUserId}}",
+        "name": "E2E Contacts Owner",
+        "age": 30,
+        "birthday": "1996-02-12",
+        "city": "Bratislava",
+        "height": "175 cm",
+        "physique": "active",
+        "languages": ["en"],
+        "initials": "EC",
+        "gender": "woman",
+        "profileStatus": "public",
+        "images": []
+      }
+    }
+  ],
+  "body": {
+    "userId": "{{e2eUserId}}",
+    "contacts": [
+      {
+        "id": "e2e-contact-primary-{{runId}}",
+        "userId": "{{e2eSecondUserId}}",
+        "name": "E2E Saved Contact",
+        "initials": "ES",
+        "gender": "man",
+        "city": "Bratislava",
+        "avatarUrl": "",
+        "headline": "Saved through backend e2e",
+        "createdAtIso": "2026-06-04T00:00:00Z",
+        "updatedAtIso": "2026-06-04T00:00:00Z",
+        "methods": [
+          {
+            "id": "e2e-contact-email-{{runId}}",
+            "type": "email",
+            "value": "navigator-contact-e2e@example.com"
+          },
+          {
+            "id": "e2e-contact-phone-{{runId}}",
+            "type": "phone",
+            "value": "+421 900 000 001"
+          }
+        ]
+      }
+    ]
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

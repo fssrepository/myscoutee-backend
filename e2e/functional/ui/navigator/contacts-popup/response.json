@@ -1,0 +1,8 @@
+{
+  "urlPath": "/game",
+  "selectors": [
+    ".game-page"
+  ],
+  "noCrashText": true,
+  "noBrokenImages": true
+}
