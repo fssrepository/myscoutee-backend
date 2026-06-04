@@ -325,6 +325,8 @@ public class AdminStatsService {
         long avgAssetPriceCents = metrics.getOrDefault("avg-asset-price-cents", 0L);
         long actualPaymentCents = metrics.getOrDefault("actual-payment-cents", 0L);
         long payingUsers = metrics.getOrDefault("paying-users", 0L);
+        long eventBuyers = metrics.getOrDefault("event-buyers", 0L);
+        long assetBorrowers = metrics.getOrDefault("asset-borrowers", 0L);
         long avgPaymentCents = metrics.getOrDefault("avg-payment-cents", 0L);
         long projectedTotalCents = Math.max(1L, projectedEventCents + projectedAssetCents);
         List<AdminStatsMetricDto> revenueMetrics = List.of(
@@ -336,12 +338,18 @@ public class AdminStatsService {
                 graphMetric("avg-asset-price", "stats.revenue.metric.avg.asset.price", avgAssetPriceCents, moneyLabel(avgAssetPriceCents), "payments", "slate", pct(avgAssetPriceCents, 10000)),
                 graphMetric("actual-paid", "stats.revenue.metric.actual.paid", actualPaymentCents, moneyLabel(actualPaymentCents), "paid", actualPaymentCents > 0 ? "blue" : "slate", pct(actualPaymentCents, projectedTotalCents)),
                 graphMetric("paying-users", "stats.revenue.metric.paying.users", payingUsers, formatCount(payingUsers), "group", "red", pct(payingUsers, Math.max(1L, metrics.getOrDefault("actual-payments", 0L)))),
+                graphMetric("event-buyers", "stats.revenue.metric.event.buyers", eventBuyers, formatCount(eventBuyers), "local_activity", "green", pct(eventBuyers, Math.max(1L, payingUsers))),
+                graphMetric("asset-borrowers", "stats.revenue.metric.asset.borrowers", assetBorrowers, formatCount(assetBorrowers), "assignment_returned", "gold", pct(assetBorrowers, Math.max(1L, activeAssetCount(snapshot)))),
                 graphMetric("avg-payment", "stats.revenue.metric.avg.payment", avgPaymentCents, moneyLabel(avgPaymentCents), "receipt_long", "purple", pct(avgPaymentCents, 10000))
         );
         return new AdminStatsRevenueDto(
                 revenueMetrics,
                 revenueAssetCategoryItems(snapshot.getRevenueAssetCategories()),
                 revenueTimelineItems(snapshot.getDailyRevenueActivity()));
+    }
+
+    private long activeAssetCount(AdminStatsSnapshot snapshot) {
+        return safeStringMap(snapshot == null ? null : snapshot.getActiveAssets()).size();
     }
 
     private List<AdminStatsBreakdownItemDto> revenueAssetCategoryItems(Map<String, Long> values) {

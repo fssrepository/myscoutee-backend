@@ -6054,6 +6054,18 @@
     "value": "Avg paid amount"
   },
   {
+    "_id": "i18n-message-en-stats-revenue-metric-asset-borrowers",
+    "key": "stats.revenue.metric.asset.borrowers",
+    "lang": "en",
+    "value": "Asset borrowers"
+  },
+  {
+    "_id": "i18n-message-en-stats-revenue-metric-event-buyers",
+    "key": "stats.revenue.metric.event.buyers",
+    "lang": "en",
+    "value": "Event buyers"
+  },
+  {
     "_id": "i18n-message-en-stats-revenue-metric-payable-assets",
     "key": "stats.revenue.metric.payable.assets",
     "lang": "en",
@@ -6405,31 +6417,19 @@
     "_id": "i18n-message-en-landing-preview-guide-title",
     "key": "landing.preview.guide.title",
     "lang": "en",
-    "value": "Preview version guide"
+    "value": "Preview version"
   },
   {
     "_id": "i18n-message-en-landing-preview-guide-intro",
     "key": "landing.preview.guide.intro",
     "lang": "en",
-    "value": "MyScoutee is currently a test version. Use it with your own responsibility while features, data, and availability are still being improved."
+    "value": "MyScoutee is currently a test version, so some features may still change or break."
   },
   {
-    "_id": "i18n-message-en-landing-preview-guide-step-1",
-    "key": "landing.preview.guide.step.1",
+    "_id": "i18n-message-en-landing-preview-guide-github",
+    "key": "landing.preview.guide.github",
     "lang": "en",
-    "value": "If something breaks, open Report Bugs and include what you expected, what happened, and the steps to repeat it."
-  },
-  {
-    "_id": "i18n-message-en-landing-preview-guide-step-2",
-    "key": "landing.preview.guide.step.2",
-    "lang": "en",
-    "value": "Add your device, browser, and a screenshot when it helps. Do not include passwords, payment data, or private codes."
-  },
-  {
-    "_id": "i18n-message-en-landing-preview-guide-step-3",
-    "key": "landing.preview.guide.step.3",
-    "lang": "en",
-    "value": "For account, safety, or privacy problems, use the in-app report and feedback tools after login so the team gets the right context."
+    "value": "Bug reports use GitHub Issues so fixes can be tracked. Add what happened and the steps to repeat it."
   },
   {
     "_id": "i18n-message-en-landing-preview-guide-report-button",
@@ -15102,6 +15102,18 @@
     "value": "Átlagos fizetés"
   },
   {
+    "_id": "i18n-message-hu-stats-revenue-metric-asset-borrowers",
+    "key": "stats.revenue.metric.asset.borrowers",
+    "lang": "hu",
+    "value": "Eszközkölcsönzők"
+  },
+  {
+    "_id": "i18n-message-hu-stats-revenue-metric-event-buyers",
+    "key": "stats.revenue.metric.event.buyers",
+    "lang": "hu",
+    "value": "Eseményvásárlók"
+  },
+  {
     "_id": "i18n-message-hu-stats-revenue-metric-payable-assets",
     "key": "stats.revenue.metric.payable.assets",
     "lang": "hu",
@@ -15453,31 +15465,19 @@
     "_id": "i18n-message-hu-landing-preview-guide-title",
     "key": "landing.preview.guide.title",
     "lang": "hu",
-    "value": "Tesztverzió útmutató"
+    "value": "Tesztverzió"
   },
   {
     "_id": "i18n-message-hu-landing-preview-guide-intro",
     "key": "landing.preview.guide.intro",
     "lang": "hu",
-    "value": "A MyScoutee jelenleg tesztverzió. Saját felelősségre használd, amíg a funkciók, adatok és elérhetőség még finomodnak."
+    "value": "A MyScoutee jelenleg tesztverzió, ezért néhány funkció még változhat vagy hibázhat."
   },
   {
-    "_id": "i18n-message-hu-landing-preview-guide-step-1",
-    "key": "landing.preview.guide.step.1",
+    "_id": "i18n-message-hu-landing-preview-guide-github",
+    "key": "landing.preview.guide.github",
     "lang": "hu",
-    "value": "Ha valami hibásan működik, nyisd meg a Hibák jelentése lehetőséget, és írd le, mire számítottál, mi történt, és milyen lépésekkel ismételhető meg."
-  },
-  {
-    "_id": "i18n-message-hu-landing-preview-guide-step-2",
-    "key": "landing.preview.guide.step.2",
-    "lang": "hu",
-    "value": "Add meg az eszközöd, a böngésződ és ha segít, egy képernyőképet. Ne küldj jelszót, fizetési adatot vagy privát kódot."
-  },
-  {
-    "_id": "i18n-message-hu-landing-preview-guide-step-3",
-    "key": "landing.preview.guide.step.3",
-    "lang": "hu",
-    "value": "Fiók-, biztonsági vagy adatvédelmi problémáknál bejelentkezés után használd az app jelentési és visszajelzési eszközeit, hogy a csapat megkapja a megfelelő kontextust."
+    "value": "A hibajelentések GitHub Issues alatt futnak, hogy követhető legyen a javítás. Írd le, mi történt és hogyan ismételhető meg."
   },
   {
     "_id": "i18n-message-hu-landing-preview-guide-report-button",

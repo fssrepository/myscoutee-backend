@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.AdminStatsSnapshot;
 import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
@@ -26,6 +27,8 @@ import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 public class AdminRevenueStatsService {
     private static final int TIMELINE_DAYS = 14;
     private static final String TYPE_EVENTS = "events";
+    private static final String STATUS_ACCEPTED = "accepted";
+    private static final String REQUEST_KIND_BORROW = "borrow";
 
     private final ActivityEventsRepository activityEventsRepository;
     private final AssetsRepository assetsRepository;
@@ -49,6 +52,10 @@ public class AdminRevenueStatsService {
         Map<String, Long> assetCategories = new LinkedHashMap<>();
         Map<String, Map<String, Long>> daily = emptyDailyRevenueActivity();
         Set<String> payingUsers = new java.util.LinkedHashSet<>();
+        Set<String> eventSourceIds = new java.util.LinkedHashSet<>();
+        Set<String> assetIds = new java.util.LinkedHashSet<>();
+        Set<String> eventBuyers = new java.util.LinkedHashSet<>();
+        Set<String> assetBorrowers = new java.util.LinkedHashSet<>();
 
         long payableEvents = 0L;
         long eventUnitCents = 0L;
@@ -57,6 +64,7 @@ public class AdminRevenueStatsService {
             if (!isCanonicalEvent(event)) {
                 continue;
             }
+            addIfText(eventSourceIds, event.getSourceId());
             long unitCents = eventUnitCents(event);
             if (unitCents <= 0L) {
                 continue;
@@ -77,6 +85,12 @@ public class AdminRevenueStatsService {
         for (Asset asset : assetsRepository.findAll()) {
             if (asset == null) {
                 continue;
+            }
+            addIfText(assetIds, asset.getAssetId());
+            for (AssetRequestRecord request : asset.getRequests() == null ? java.util.List.<AssetRequestRecord>of() : asset.getRequests()) {
+                if (isAcceptedBorrowRequest(request)) {
+                    addIfText(assetBorrowers, request.userId());
+                }
             }
             long unitCents = pricingUnitCents(asset.getPricing());
             if (unitCents <= 0L) {
@@ -106,8 +120,14 @@ public class AdminRevenueStatsService {
             }
             actualPayments++;
             actualPaymentCents += amountCents;
-            if (StringUtils.hasText(safeText(payment.getUserId()))) {
-                payingUsers.add(safeText(payment.getUserId()));
+            String paymentUserId = safeText(payment.getUserId());
+            String paymentSourceId = safeText(payment.getSourceId());
+            addIfText(payingUsers, paymentUserId);
+            if (eventSourceIds.contains(paymentSourceId)) {
+                addIfText(eventBuyers, paymentUserId);
+            }
+            if (assetIds.contains(paymentSourceId)) {
+                addIfText(assetBorrowers, paymentUserId);
             }
             Map<String, Long> day = daily.computeIfAbsent(dayKey(firstNonBlank(payment.getJoinedAtIso(), payment.getCreatedDate())), ignored -> new LinkedHashMap<>());
             add(day, "actualPaymentCents", amountCents);
@@ -126,6 +146,8 @@ public class AdminRevenueStatsService {
         metrics.put("avg-asset-price-cents", payableAssets == 0L ? 0L : Math.round(assetUnitCents / (double) payableAssets));
         metrics.put("actual-payments", actualPayments);
         metrics.put("paying-users", (long) payingUsers.size());
+        metrics.put("event-buyers", (long) eventBuyers.size());
+        metrics.put("asset-borrowers", (long) assetBorrowers.size());
         metrics.put("actual-payment-cents", actualPaymentCents);
         metrics.put("avg-payment-cents", actualPayments == 0L ? 0L : Math.round(actualPaymentCents / (double) actualPayments));
 
@@ -198,6 +220,12 @@ public class AdminRevenueStatsService {
         return !"cancelled".equals(bookingStatus) && !"full".equals(refundStatus);
     }
 
+    private boolean isAcceptedBorrowRequest(AssetRequestRecord request) {
+        return request != null
+                && STATUS_ACCEPTED.equals(safeText(request.status()).toLowerCase(Locale.ROOT))
+                && REQUEST_KIND_BORROW.equals(safeText(request.requestKind()).toLowerCase(Locale.ROOT));
+    }
+
     private Map<String, Map<String, Long>> emptyDailyRevenueActivity() {
         Map<String, Map<String, Long>> result = new LinkedHashMap<>();
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
@@ -226,6 +254,13 @@ public class AdminRevenueStatsService {
 
     private void add(Map<String, Long> target, String key, long amount) {
         target.put(key, target.getOrDefault(key, 0L) + amount);
+    }
+
+    private void addIfText(Set<String> target, String value) {
+        String normalized = safeText(value);
+        if (StringUtils.hasText(normalized)) {
+            target.add(normalized);
+        }
     }
 
     private String firstNonBlank(String value, String fallback) {

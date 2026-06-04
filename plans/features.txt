@@ -8,9 +8,7 @@ e-kozig onya form editor and display on view (indexeddb save and grid layout+for
 mobil/desktop view switch like on base44
 
 menu counter e2e functional test
-admin - stats screen - how many users bought event/borrowed asset
 
 bugs
 ----
 on login the menu bar does not show the real counters, or the popup open updates mistakenly
-"Tesztverzió - bug report >"
