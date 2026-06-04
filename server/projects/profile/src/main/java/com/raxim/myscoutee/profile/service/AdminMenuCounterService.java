@@ -120,6 +120,9 @@ public class AdminMenuCounterService {
                 count(existing == null ? null : existing.tickets()),
                 count(existing == null ? null : existing.contacts()),
                 count(existing == null ? null : existing.feedback()),
+                existing == null ? null : existing.event(),
+                existing == null ? null : existing.asset(),
+                existing == null ? null : existing.eventFeedback(),
                 counters.jobs(),
                 counters.metrics());
         if (activitiesEqual(existing, next)) {

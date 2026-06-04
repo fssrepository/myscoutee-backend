@@ -245,6 +245,8 @@
       "avg-asset-price-cents": 13313,
       "actual-payments": 22,
       "paying-users": 22,
+      "event-buyers": 14,
+      "asset-borrowers": 18,
       "actual-payment-cents": 52200,
       "avg-payment-cents": 2373
     },

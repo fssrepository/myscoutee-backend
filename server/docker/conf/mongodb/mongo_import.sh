@@ -152,6 +152,7 @@ db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, updatedDate
 db.getCollection('userRates').createIndex({ relatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_primary_lookup_v2' });
 db.getCollection('userRates').createIndex({ secondaryRelatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_secondary_lookup_v2', sparse: true });
 db.getCollection('userRates').createIndex({ ownerUserId: 1, relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_owner_primary_mode_v2' });
+db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, relatedUserId: 1, secondaryRelatedUserId: 1 }, { name: 'user_rate_owner_mode_target_unique_v1', unique: true });
 db.getCollection('userRates').createIndex({ relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_pair_lookup_v2' });
 " >/dev/null
       ;;
@@ -360,6 +361,19 @@ db.getCollection('events').createIndex({ locationGeo: '2dsphere' }, { name: 'eve
         "${target_db}" \
         --eval "
 db.getCollection('userExperienceProfiles').createIndex({ userId: 1 }, { name: 'user_experience_profiles_user_id', unique: true });
+" >/dev/null
+      ;;
+    navigatorContacts)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('navigatorContacts').createIndex({ userId: 1 }, { name: 'navigator_contacts_user_id', unique: true });
 " >/dev/null
       ;;
     eventFeedbackStates)

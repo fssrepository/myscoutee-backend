@@ -46,8 +46,35 @@ public final class AuthDtos {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserEventCountersDto event,
+            UserAssetCountersDto asset,
+            UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics) {
+    }
+
+    public record UserEventCountersDto(
+            Integer all,
+            Integer active,
+            Integer pending,
+            Integer invitations,
+            Integer hosting,
+            Integer drafts,
+            Integer trash) {
+    }
+
+    public record UserAssetCountersDto(
+            Integer cars,
+            Integer accommodation,
+            Integer supplies,
+            Integer tickets) {
+    }
+
+    public record UserEventFeedbackCountersDto(
+            Integer ownEvents,
+            Integer pending,
+            Integer feedbacked,
+            Integer removed) {
     }
 
     public record UserRealtimeCountersDto(
@@ -62,6 +89,9 @@ public final class AuthDtos {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserEventCountersDto event,
+            UserAssetCountersDto asset,
+            UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics,
             Boolean impressionsHostChanged,
@@ -104,6 +134,9 @@ public final class AuthDtos {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserEventCountersDto event,
+            UserAssetCountersDto asset,
+            UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics) {
     }

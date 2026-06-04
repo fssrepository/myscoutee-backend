@@ -40,6 +40,8 @@ class ActivitiesEventFeedbackServiceTest {
     private AdminTelemetryService adminTelemetryService;
     @Mock
     private AccessControlService accessControlService;
+    @Mock
+    private UserActivityCountersService userActivityCountersService;
 
     private ActivitiesEventFeedbackService service;
 
@@ -53,7 +55,8 @@ class ActivitiesEventFeedbackServiceTest {
                 usersRepository,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                accessControlService);
+                accessControlService,
+                userActivityCountersService);
         when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
     }
 

@@ -92,6 +92,32 @@ class FirebaseServiceTest {
     }
 
     @Test
+    void configAdminUserGetsAdminRoleWithoutOnboardingUser() {
+        ConfigProperties configProperties = new ConfigProperties();
+        configProperties.setAdminUser("Admin@Example.com");
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AppSettingsService appSettingsService = mock(AppSettingsService.class);
+        FirebaseCredential credential = mock(FirebaseCredential.class);
+
+        String email = "admin@example.com";
+        String expectedUserId = stableUserId(email);
+        when(credential.getEmail()).thenReturn("Admin@Example.com");
+        when(usersRepository.findFirstByEmail(email)).thenReturn(Optional.empty());
+        when(usersRepository.findByUserId(expectedUserId)).thenReturn(Optional.empty());
+        when(usersRepository.findById(expectedUserId)).thenReturn(Optional.empty());
+
+        FirebaseService service = new FirebaseService(configProperties, usersRepository, appSettingsService);
+
+        UserDetails userDetails = service.loadUserByCredential(credential, null, "/admin");
+
+        FirebasePrincipal principal = (FirebasePrincipal) userDetails;
+        assertThat(principal.getUserId()).isEqualTo(expectedUserId);
+        assertThat(principal.getAuthorities()).extracting(Object::toString).containsExactly("A");
+        assertThat(principal.getUser()).isNull();
+        verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
     void usesFirebaseUidWhenProviderDoesNotReturnEmail() {
         ConfigProperties configProperties = mock(ConfigProperties.class);
         UsersRepository usersRepository = mock(UsersRepository.class);

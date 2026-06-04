@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
+SCRIPT_DIR="$(CDPATH= cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(CDPATH= cd "${SCRIPT_DIR}/../.." && pwd)"
 
 usage() {
   cat >&2 <<'USAGE'
@@ -18,14 +18,13 @@ USAGE
 }
 
 fail() {
-  local message="$1"
-  echo "fail ${message}" >&2
+  echo "fail $1" >&2
   exit 1
 }
 
 is_truthy() {
-  case "${1,,}" in
-    1|true|yes|on|enabled)
+  case "$1" in
+    1|true|TRUE|True|yes|YES|Yes|on|ON|On|enabled|ENABLED|Enabled)
       return 0
       ;;
     *)
@@ -35,7 +34,7 @@ is_truthy() {
 }
 
 latest_deb() {
-  [[ -d "${REPO_ROOT}/packaging/dist" ]] || return 0
+  [ -d "${REPO_ROOT}/packaging/dist" ] || return 0
 
   find "${REPO_ROOT}/packaging/dist" -maxdepth 1 -type f -name 'myscoutee_*_*.deb' -printf '%T@ %p\n' 2>/dev/null \
     | sort -nr \
@@ -44,12 +43,17 @@ latest_deb() {
 
 CONFIG_FILE="${CONFIG_FILE:-${SCRIPT_DIR}/install.env}"
 
-if [[ ! -f "${CONFIG_FILE}" ]]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  usage
+  exit 0
+fi
+
+if [ ! -f "${CONFIG_FILE}" ]; then
   fail "config file not found: ${CONFIG_FILE}"
 fi
 
 # shellcheck source=/dev/null
-source "${CONFIG_FILE}"
+. "${CONFIG_FILE}"
 
 REMOTE_HOST="${REMOTE_HOST:-}"
 REMOTE_USER="${REMOTE_USER:-}"
@@ -67,14 +71,14 @@ STOP_ON_FAILURE="${STOP_ON_FAILURE:-true}"
 WAIT_AFTER_START_SECONDS="${WAIT_AFTER_START_SECONDS:-20}"
 
 DEB_PATH="${DEB_PATH:-${1:-}}"
-if [[ -z "${DEB_PATH}" ]]; then
+if [ -z "${DEB_PATH}" ]; then
   DEB_PATH="$(latest_deb)"
 fi
 
-[[ -n "${REMOTE_HOST}" ]] || fail "REMOTE_HOST is required in ${CONFIG_FILE}"
-[[ -n "${REMOTE_USER}" ]] || fail "REMOTE_USER is required in ${CONFIG_FILE}"
-[[ -n "${DEB_PATH}" ]] || fail "DEB_PATH is not set and no deb was found under packaging/dist"
-[[ -f "${DEB_PATH}" ]] || fail "deb file not found: ${DEB_PATH}"
+[ -n "${REMOTE_HOST}" ] || fail "REMOTE_HOST is required in ${CONFIG_FILE}"
+[ -n "${REMOTE_USER}" ] || fail "REMOTE_USER is required in ${CONFIG_FILE}"
+[ -n "${DEB_PATH}" ] || fail "DEB_PATH is not set and no deb was found under packaging/dist"
+[ -f "${DEB_PATH}" ] || fail "deb file not found: ${DEB_PATH}"
 
 SMOKE_BASE_URL="http://${REMOTE_HOST}"
 
@@ -84,41 +88,23 @@ fi
 
 PACKAGE_NAME="$(dpkg-deb -f "${DEB_PATH}" Package)"
 PACKAGE_VERSION="$(dpkg-deb -f "${DEB_PATH}" Version)"
-[[ -n "${PACKAGE_NAME}" ]] || fail "package name is missing from ${DEB_PATH}"
-[[ -n "${PACKAGE_VERSION}" ]] || fail "package version is missing from ${DEB_PATH}"
+[ -n "${PACKAGE_NAME}" ] || fail "package name is missing from ${DEB_PATH}"
+[ -n "${PACKAGE_VERSION}" ] || fail "package version is missing from ${DEB_PATH}"
 
 ssh_target="${REMOTE_USER}@${REMOTE_HOST}"
-ssh_cmd=(ssh -p "${REMOTE_PORT}" -o "ConnectTimeout=${REMOTE_CONNECT_TIMEOUT_SECONDS}")
-scp_cmd=(scp -P "${REMOTE_PORT}" -o "ConnectTimeout=${REMOTE_CONNECT_TIMEOUT_SECONDS}")
-
-if [[ -n "${REMOTE_HOST_KEY_CHECKING}" ]]; then
-  ssh_cmd+=(-o "StrictHostKeyChecking=${REMOTE_HOST_KEY_CHECKING}")
-  scp_cmd+=(-o "StrictHostKeyChecking=${REMOTE_HOST_KEY_CHECKING}")
-fi
-
-if [[ -n "${REMOTE_KEY_FILE}" ]]; then
-  ssh_cmd+=(-i "${REMOTE_KEY_FILE}")
-  scp_cmd+=(-i "${REMOTE_KEY_FILE}")
-fi
-
-if [[ -n "${REMOTE_SSH_OPTIONS}" ]]; then
-  read -r -a remote_ssh_options <<< "${REMOTE_SSH_OPTIONS}"
-  ssh_cmd+=("${remote_ssh_options[@]}")
-  scp_cmd+=("${remote_ssh_options[@]}")
-fi
 
 PASSWORD_AUTH_MODE=""
 SSH_ASKPASS_HELPER=""
 
 cleanup_password_helper() {
-  if [[ -n "${SSH_ASKPASS_HELPER}" ]]; then
+  if [ -n "${SSH_ASKPASS_HELPER}" ]; then
     rm -f "${SSH_ASKPASS_HELPER}"
   fi
 }
 trap cleanup_password_helper EXIT
 
 setup_password_auth() {
-  [[ -n "${REMOTE_PASSWORD}" ]] || return 0
+  [ -n "${REMOTE_PASSWORD}" ] || return 0
 
   if command -v sshpass >/dev/null 2>&1; then
     PASSWORD_AUTH_MODE="sshpass"
@@ -132,7 +118,7 @@ setup_password_auth() {
   SSH_ASKPASS_HELPER="$(mktemp)"
   chmod 0700 "${SSH_ASKPASS_HELPER}"
   cat > "${SSH_ASKPASS_HELPER}" <<'ASKPASS'
-#!/usr/bin/env bash
+#!/bin/sh
 printf '%s\n' "${REMOTE_PASSWORD:?}"
 ASKPASS
 
@@ -146,7 +132,9 @@ ASKPASS
 run_password_command() {
   case "${PASSWORD_AUTH_MODE}" in
     sshpass)
-      SSHPASS="${REMOTE_PASSWORD}" sshpass -e "$@"
+      SSHPASS="${REMOTE_PASSWORD}"
+      export SSHPASS
+      sshpass -e "$@"
       ;;
     askpass)
       setsid "$@"
@@ -158,24 +146,54 @@ run_password_command() {
 }
 
 run_ssh() {
-  if [[ -n "${REMOTE_PASSWORD}" ]]; then
-    run_password_command "${ssh_cmd[@]}" "${ssh_target}" "$@"
+  if [ -n "${REMOTE_KEY_FILE}" ]; then
+    # shellcheck disable=SC2086
+    run_password_command ssh \
+      -p "${REMOTE_PORT}" \
+      -o "ConnectTimeout=${REMOTE_CONNECT_TIMEOUT_SECONDS}" \
+      -o "StrictHostKeyChecking=${REMOTE_HOST_KEY_CHECKING}" \
+      -i "${REMOTE_KEY_FILE}" \
+      ${REMOTE_SSH_OPTIONS} \
+      "${ssh_target}" \
+      "$@"
     return
   fi
 
-  "${ssh_cmd[@]}" "${ssh_target}" "$@"
+  # shellcheck disable=SC2086
+  run_password_command ssh \
+    -p "${REMOTE_PORT}" \
+    -o "ConnectTimeout=${REMOTE_CONNECT_TIMEOUT_SECONDS}" \
+    -o "StrictHostKeyChecking=${REMOTE_HOST_KEY_CHECKING}" \
+    ${REMOTE_SSH_OPTIONS} \
+    "${ssh_target}" \
+    "$@"
 }
 
 run_scp() {
-  local source="$1"
-  local destination="$2"
+  source_path="$1"
+  destination_path="$2"
 
-  if [[ -n "${REMOTE_PASSWORD}" ]]; then
-    run_password_command "${scp_cmd[@]}" "${source}" "${ssh_target}:${destination}"
+  if [ -n "${REMOTE_KEY_FILE}" ]; then
+    # shellcheck disable=SC2086
+    run_password_command scp \
+      -P "${REMOTE_PORT}" \
+      -o "ConnectTimeout=${REMOTE_CONNECT_TIMEOUT_SECONDS}" \
+      -o "StrictHostKeyChecking=${REMOTE_HOST_KEY_CHECKING}" \
+      -i "${REMOTE_KEY_FILE}" \
+      ${REMOTE_SSH_OPTIONS} \
+      "${source_path}" \
+      "${ssh_target}:${destination_path}"
     return
   fi
 
-  "${scp_cmd[@]}" "${source}" "${ssh_target}:${destination}"
+  # shellcheck disable=SC2086
+  run_password_command scp \
+    -P "${REMOTE_PORT}" \
+    -o "ConnectTimeout=${REMOTE_CONNECT_TIMEOUT_SECONDS}" \
+    -o "StrictHostKeyChecking=${REMOTE_HOST_KEY_CHECKING}" \
+    ${REMOTE_SSH_OPTIONS} \
+    "${source_path}" \
+    "${ssh_target}:${destination_path}"
 }
 
 setup_password_auth
@@ -299,6 +317,33 @@ check_restart_loops() {
   fi
 }
 
+cleanup_same_version_runtime() {
+  local image
+
+  if ! command -v docker >/dev/null 2>&1; then
+    return
+  fi
+
+  log "cleaning same-version Docker runtime before reinstall"
+  stop_myscoutee
+
+  if [[ -d /opt/myscoutee/server && -f /opt/myscoutee/server/docker-compose-prod.yml ]]; then
+    (
+      cd /opt/myscoutee/server
+      sudo_run docker compose -f docker-compose-prod.yml down --remove-orphans
+    ) || true
+  fi
+
+  for image in \
+    "myscoutee-nginx:${PACKAGE_VERSION}-base" \
+    "myscoutee-nginx:${PACKAGE_VERSION}-prod" \
+    "myscoutee-api:${PACKAGE_VERSION}-prod"; do
+    if sudo_run docker image inspect "${image}" >/dev/null 2>&1; then
+      sudo_run docker image rm -f "${image}" || true
+    fi
+  done
+}
+
 installed_package_version() {
   local line status version
 
@@ -324,6 +369,7 @@ if [[ -z "${installed_version}" ]]; then
   log "${PACKAGE_NAME} is not installed; installing ${PACKAGE_VERSION}"
 elif [[ "${installed_version}" == "${PACKAGE_VERSION}" ]]; then
   log "${PACKAGE_NAME} ${installed_version} is already installed; removing before reinstall"
+  cleanup_same_version_runtime
   sudo_run env DEBIAN_FRONTEND=noninteractive apt-get remove -y "${PACKAGE_NAME}"
 else
   log "${PACKAGE_NAME} ${installed_version} is installed; upgrading to ${PACKAGE_VERSION}"

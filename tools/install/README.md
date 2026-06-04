@@ -63,6 +63,12 @@ http://${REMOTE_HOST}
 Remote Install
 --------------
 
+For a fresh-install check, purge the remote package, config, data directories, compose stack, and MyScoutee Docker volumes first:
+
+```bash
+tools/install/purge.sh
+```
+
 Run the install:
 
 ```bash
@@ -87,3 +93,22 @@ The install flow is:
 8. check for MyScoutee Docker containers stuck in `Restarting`
 
 The script is fail-safe by default. If install, start, smoke test, or restart-loop detection fails, the remote script prints `systemctl`, Docker, compose, and journal diagnostics to the terminal, then stops `myscoutee`. Set `STOP_ON_FAILURE=false` only when you explicitly want to leave the failed service running for manual inspection.
+
+Local Forward
+-------------
+
+Forward the configured `REMOTE_HOST` to localhost:
+
+```bash
+tools/install/forward-localhost.sh
+```
+
+By default it uses same-port forwarding from `install.env`:
+
+```text
+127.0.0.1:80 -> REMOTE_HOST:80
+```
+
+Re-running the script replaces an existing forward on the same local host and port, so changing `REMOTE_HOST` in `install.env` updates the active tunnel.
+
+Port `80` requires a privileged local bind, so the script re-runs through `sudo`.

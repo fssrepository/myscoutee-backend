@@ -1,0 +1,7 @@
+{
+  "status": 200,
+  "body": {
+    "type": "array",
+    "minItems": 1
+  }
+}

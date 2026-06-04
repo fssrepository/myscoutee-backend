@@ -21,6 +21,7 @@ const DEFAULT_COLLECTIONS = [
   'helpCenterAudit',
   'privacyConsents',
   'userExperienceProfiles',
+  'navigatorContacts',
   'userFeedback',
   'userReports',
   'userSessionActions',

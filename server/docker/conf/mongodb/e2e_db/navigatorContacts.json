@@ -1,0 +1,83 @@
+[
+  {
+    "_id": {
+      "$oid": "665000000000000000000601"
+    },
+    "userId": "bf057de7c586eede7e84bdc7",
+    "updatedAtIso": "2026-05-04T00:00:00Z",
+    "contacts": [
+      {
+        "id": "b29df68956f3fe15e04558de",
+        "userId": "b29df68956f3fe15e04558de",
+        "name": "Kiss Balázs",
+        "initials": "KB",
+        "gender": "man",
+        "city": "Chicago",
+        "avatarUrl": "https://randomuser.me/api/portraits/men/75.jpg",
+        "headline": "Reliable planning, zero drama.",
+        "createdAtIso": "2026-04-22T08:15:00Z",
+        "updatedAtIso": "2026-05-04T00:00:00Z",
+        "methods": [
+          {
+            "id": "kb-phone",
+            "type": "phone",
+            "value": "+1 312 555 0184"
+          },
+          {
+            "id": "kb-email",
+            "type": "email",
+            "value": "balazs.kiss@example.com"
+          }
+        ]
+      },
+      {
+        "id": "9f3b3f085e23af6c89dbc432",
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "name": "Nagy Eszter",
+        "initials": "NE",
+        "gender": "woman",
+        "city": "Seattle",
+        "avatarUrl": "https://randomuser.me/api/portraits/women/76.jpg",
+        "headline": "Keeping group plans kind and clear.",
+        "createdAtIso": "2026-04-24T10:30:00Z",
+        "updatedAtIso": "2026-05-04T00:00:00Z",
+        "methods": [
+          {
+            "id": "ne-instagram",
+            "type": "instagram",
+            "value": "eszter.groups"
+          },
+          {
+            "id": "ne-telegram",
+            "type": "telegram",
+            "value": "@eszter_groups"
+          }
+        ]
+      },
+      {
+        "id": "1b1c70be2349b3359a8f6f94",
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "name": "Maya Stone",
+        "initials": "MS",
+        "gender": "woman",
+        "city": "San Diego",
+        "avatarUrl": "https://randomuser.me/api/portraits/women/77.jpg",
+        "headline": "Social logistics with calm energy.",
+        "createdAtIso": "2026-04-29T17:45:00Z",
+        "updatedAtIso": "2026-05-04T00:00:00Z",
+        "methods": [
+          {
+            "id": "ms-whatsapp",
+            "type": "whatsapp",
+            "value": "+1 619 555 0142"
+          },
+          {
+            "id": "ms-linkedin",
+            "type": "linkedin",
+            "value": "https://www.linkedin.com/in/maya-stone-demo"
+          }
+        ]
+      }
+    ]
+  }
+]

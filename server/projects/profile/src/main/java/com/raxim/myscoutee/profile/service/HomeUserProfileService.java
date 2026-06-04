@@ -40,9 +40,12 @@ import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserImpressionsDto;
@@ -258,12 +261,12 @@ public class HomeUserProfileService {
     public UserByIdResponseDto queryUserById(String requestedUserId) {
         String resolvedUserId = resolveSelectedUserId(requestedUserId);
         if (!StringUtils.hasText(resolvedUserId)) {
-            return null;
+            return StringUtils.hasText(requestedUserId) ? null : buildCurrentAdminPrincipalResponse();
         }
 
         Users user = findUser(resolvedUserId);
         if (user == null) {
-            return null;
+            return buildCurrentAdminPrincipalResponse();
         }
         if (!StringUtils.hasText(requestedUserId)) {
             scheduledMessageTaskService.touchUserActivity(resolvedUserId);
@@ -306,6 +309,56 @@ public class HomeUserProfileService {
                 userDto.activities(),
                 filterCount,
                 filterPreferences,
+                menuCounters);
+    }
+
+    private UserByIdResponseDto buildCurrentAdminPrincipalResponse() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null
+                || !(authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal)
+                || !isCurrentRequestAdmin()) {
+            return null;
+        }
+        String userId = normalizeId(firebasePrincipal.getUserId());
+        if (!StringUtils.hasText(userId)) {
+            return null;
+        }
+        String email = safeText(firebasePrincipal.getEmail());
+        String name = adminDisplayName(email);
+        UserActivitiesDto activities = toUserActivitiesDto(null);
+        UserMenuCountersDto menuCounters = emptyMenuCounters();
+        return new UserByIdResponseDto(
+                userId,
+                name,
+                0,
+                "",
+                "",
+                "",
+                "",
+                List.of(),
+                "",
+                adminInitials(name),
+                "man",
+                "",
+                "",
+                "",
+                0,
+                0,
+                "",
+                "",
+                null,
+                null,
+                "",
+                List.of(),
+                List.of(),
+                null,
+                "public",
+                "",
+                "",
+                true,
+                activities,
+                0,
+                null,
                 menuCounters);
     }
 
@@ -1276,7 +1329,7 @@ public class HomeUserProfileService {
 
     private boolean isSelectableDemoUserDocument(Users user) {
         return isUsableUserDocument(user)
-                && !HARD_HIDDEN_PROFILE_STATUSES.contains(resolveProfileStatus(user));
+                && !PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user));
     }
 
     boolean isPublicGameUser(Users user) {
@@ -1609,8 +1662,46 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.tickets()),
                 activities == null ? 0 : normalizeCount(activities.contacts()),
                 activities == null ? 0 : normalizeCount(activities.feedback()),
+                toUserEventCountersDto(activities == null ? null : activities.event()),
+                toUserAssetCountersDto(activities == null ? null : activities.asset()),
+                toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
                 activities == null ? 0 : normalizeCount(activities.adminJobs()),
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()));
+    }
+
+    private UserMenuCountersDto emptyMenuCounters() {
+        return new UserMenuCountersDto(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
+                new UserAssetCountersDto(0, 0, 0, 0),
+                new UserEventFeedbackCountersDto(0, 0, 0, 0),
+                0, 0);
+    }
+
+    private String adminDisplayName(String email) {
+        String normalizedEmail = safeText(email);
+        if (!StringUtils.hasText(normalizedEmail)) {
+            return "Admin";
+        }
+        int atIndex = normalizedEmail.indexOf('@');
+        String localPart = atIndex > 0 ? normalizedEmail.substring(0, atIndex) : normalizedEmail;
+        String normalizedName = localPart.replaceAll("[^A-Za-z0-9]+", " ").trim();
+        return StringUtils.hasText(normalizedName) ? normalizedName : "Admin";
+    }
+
+    private String adminInitials(String name) {
+        String[] words = safeText(name).split("\\s+");
+        List<String> usableWords = java.util.Arrays.stream(words)
+                .filter(StringUtils::hasText)
+                .toList();
+        if (usableWords.isEmpty()) {
+            return "A";
+        }
+        if (usableWords.size() == 1) {
+            String word = usableWords.get(0);
+            return word.substring(0, Math.min(2, word.length())).toUpperCase();
+        }
+        return (usableWords.get(0).substring(0, 1) + usableWords.get(1).substring(0, 1)).toUpperCase();
     }
 
     private Users mergeUserDocument(Users current, UserDto user) {
@@ -1942,7 +2033,8 @@ public class HomeUserProfileService {
             String requestCursor,
             UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
-        int fingerprintOffset = cursorPartCount(requestCursor) >= 16 ? 14 : 10;
+        int cursorPartCount = cursorPartCount(requestCursor);
+        int fingerprintOffset = cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
         String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
         String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
         String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
@@ -1959,6 +2051,9 @@ public class HomeUserProfileService {
                 counters.tickets(),
                 counters.contacts(),
                 counters.feedback(),
+                counters.event(),
+                counters.asset(),
+                counters.eventFeedback(),
                 counters.adminJobs(),
                 counters.adminMetrics(),
                 StringUtils.hasText(previousHostHash) && !Objects.equals(previousHostHash, nextHostHash),
@@ -1982,6 +2077,21 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.tickets())),
                 String.valueOf(normalizeCount(counters.contacts())),
                 String.valueOf(normalizeCount(counters.feedback())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().all())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().active())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().pending())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().invitations())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().hosting())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().drafts())),
+                String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().trash())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().cars())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().accommodation())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().supplies())),
+                String.valueOf(normalizeCount(counters.asset() == null ? null : counters.asset().tickets())),
+                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().ownEvents())),
+                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().pending())),
+                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().feedbacked())),
+                String.valueOf(normalizeCount(counters.eventFeedback() == null ? null : counters.eventFeedback().removed())),
                 String.valueOf(normalizeCount(counters.adminJobs())),
                 String.valueOf(normalizeCount(counters.adminMetrics())),
                 impressionsFingerprint(impressions == null ? null : impressions.host()),
@@ -2096,7 +2206,12 @@ public class HomeUserProfileService {
 
     private UserActivitiesDto toUserActivitiesDto(Users.UserActivitiesRecord activities) {
         if (activities == null) {
-            return new UserActivitiesDto(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new UserActivitiesDto(
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
+                    new UserAssetCountersDto(0, 0, 0, 0),
+                    new UserEventFeedbackCountersDto(0, 0, 0, 0),
+                    0, 0);
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
@@ -2110,13 +2225,21 @@ public class HomeUserProfileService {
                 normalizeCount(activities.tickets()),
                 normalizeCount(activities.contacts()),
                 normalizeCount(activities.feedback()),
+                toUserEventCountersDto(activities.event()),
+                toUserAssetCountersDto(activities.asset()),
+                toUserEventFeedbackCountersDto(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()));
     }
 
     private Users.UserActivitiesRecord toUserActivitiesRecord(UserActivitiesDto activities) {
         if (activities == null) {
-            return new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new Users.UserActivitiesRecord(
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                    new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                    new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                    0, 0);
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
@@ -2130,8 +2253,65 @@ public class HomeUserProfileService {
                 normalizeCount(activities.tickets()),
                 normalizeCount(activities.contacts()),
                 normalizeCount(activities.feedback()),
+                toUserEventCountersRecord(activities.event()),
+                toUserAssetCountersRecord(activities.asset()),
+                toUserEventFeedbackCountersRecord(activities.eventFeedback()),
                 normalizeCount(activities.adminJobs()),
                 normalizeCount(activities.adminMetrics()));
+    }
+
+    private UserEventCountersDto toUserEventCountersDto(Users.UserEventCountersRecord event) {
+        return new UserEventCountersDto(
+                event == null ? 0 : normalizeCount(event.all()),
+                event == null ? 0 : normalizeCount(event.active()),
+                event == null ? 0 : normalizeCount(event.pending()),
+                event == null ? 0 : normalizeCount(event.invitations()),
+                event == null ? 0 : normalizeCount(event.hosting()),
+                event == null ? 0 : normalizeCount(event.drafts()),
+                event == null ? 0 : normalizeCount(event.trash()));
+    }
+
+    private UserAssetCountersDto toUserAssetCountersDto(Users.UserAssetCountersRecord asset) {
+        return new UserAssetCountersDto(
+                asset == null ? 0 : normalizeCount(asset.cars()),
+                asset == null ? 0 : normalizeCount(asset.accommodation()),
+                asset == null ? 0 : normalizeCount(asset.supplies()),
+                asset == null ? 0 : normalizeCount(asset.tickets()));
+    }
+
+    private UserEventFeedbackCountersDto toUserEventFeedbackCountersDto(Users.UserEventFeedbackCountersRecord feedback) {
+        return new UserEventFeedbackCountersDto(
+                feedback == null ? 0 : normalizeCount(feedback.ownEvents()),
+                feedback == null ? 0 : normalizeCount(feedback.pending()),
+                feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
+                feedback == null ? 0 : normalizeCount(feedback.removed()));
+    }
+
+    private Users.UserEventCountersRecord toUserEventCountersRecord(UserEventCountersDto event) {
+        return new Users.UserEventCountersRecord(
+                event == null ? 0 : normalizeCount(event.all()),
+                event == null ? 0 : normalizeCount(event.active()),
+                event == null ? 0 : normalizeCount(event.pending()),
+                event == null ? 0 : normalizeCount(event.invitations()),
+                event == null ? 0 : normalizeCount(event.hosting()),
+                event == null ? 0 : normalizeCount(event.drafts()),
+                event == null ? 0 : normalizeCount(event.trash()));
+    }
+
+    private Users.UserAssetCountersRecord toUserAssetCountersRecord(UserAssetCountersDto asset) {
+        return new Users.UserAssetCountersRecord(
+                asset == null ? 0 : normalizeCount(asset.cars()),
+                asset == null ? 0 : normalizeCount(asset.accommodation()),
+                asset == null ? 0 : normalizeCount(asset.supplies()),
+                asset == null ? 0 : normalizeCount(asset.tickets()));
+    }
+
+    private Users.UserEventFeedbackCountersRecord toUserEventFeedbackCountersRecord(UserEventFeedbackCountersDto feedback) {
+        return new Users.UserEventFeedbackCountersRecord(
+                feedback == null ? 0 : normalizeCount(feedback.ownEvents()),
+                feedback == null ? 0 : normalizeCount(feedback.pending()),
+                feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
+                feedback == null ? 0 : normalizeCount(feedback.removed()));
     }
 
     private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord record) {

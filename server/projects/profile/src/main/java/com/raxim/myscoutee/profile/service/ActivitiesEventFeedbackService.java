@@ -44,6 +44,7 @@ public class ActivitiesEventFeedbackService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AccessControlService accessControlService;
+    private final UserActivityCountersService userActivityCountersService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -53,7 +54,8 @@ public class ActivitiesEventFeedbackService {
             UsersRepository usersRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            UserActivityCountersService userActivityCountersService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
@@ -62,6 +64,7 @@ public class ActivitiesEventFeedbackService {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.accessControlService = accessControlService;
+        this.userActivityCountersService = userActivityCountersService;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -167,6 +170,9 @@ public class ActivitiesEventFeedbackService {
         }
 
         String nowIso = firstNonBlank(firstAnswerSubmittedAt(request == null ? null : request.answers()), Instant.now().toString());
+        EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
+        boolean wasSubmitted = StringUtils.hasText(previousState == null ? null : previousState.getSubmittedAtIso());
+        boolean wasRemoved = Boolean.TRUE.equals(previousState == null ? null : previousState.getRemoved());
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
         state.setRemoved(false);
         state.setSubmittedAtIso(nowIso);
@@ -206,6 +212,8 @@ public class ActivitiesEventFeedbackService {
             affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
         adminTelemetryService.record("event.feedback.submitted", "events", eventId, userId);
+        userActivityCountersService.applyFeedbackStateTransition(userId, wasSubmitted, wasRemoved, true, false);
+        userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
     }
 
     public void saveNote(EventFeedbackNoteRequestDto request) {
@@ -224,6 +232,7 @@ public class ActivitiesEventFeedbackService {
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
+        userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
     }
 
     public void markRemoved(EventFeedbackToggleRequestDto request, boolean removed) {
@@ -239,12 +248,22 @@ public class ActivitiesEventFeedbackService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to change feedback state for this event.");
         }
         String nowIso = Instant.now().toString();
+        EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
+        boolean wasSubmitted = StringUtils.hasText(previousState == null ? null : previousState.getSubmittedAtIso());
+        boolean wasRemoved = Boolean.TRUE.equals(previousState == null ? null : previousState.getRemoved());
         EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
         state.setRemoved(removed);
         state.setRemovedAtIso(removed ? nowIso : null);
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
         eventFeedbackStatesRepository.save(state);
+        userActivityCountersService.applyFeedbackStateTransition(
+                userId,
+                wasSubmitted,
+                wasRemoved,
+                StringUtils.hasText(state.getSubmittedAtIso()),
+                removed);
+        userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
     }
 
     private EventFeedbackState findOrCreateState(String userId, String eventId, String nowIso) {

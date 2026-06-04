@@ -12,10 +12,12 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityInviteDtos.ActivityInviteCandidatesRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.profile.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -25,16 +27,19 @@ public class ActivitiesInviteCandidatesService {
     private final UserRatesRepository userRatesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final HomeUserProfileService homeUserProfileService;
+    private final NavigatorContactsProfilesRepository navigatorContactsProfilesRepository;
 
     public ActivitiesInviteCandidatesService(
             UsersRepository usersRepository,
             UserRatesRepository userRatesRepository,
             ActivitiesMembersService activitiesMembersService,
-            HomeUserProfileService homeUserProfileService) {
+            HomeUserProfileService homeUserProfileService,
+            NavigatorContactsProfilesRepository navigatorContactsProfilesRepository) {
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
         this.activitiesMembersService = activitiesMembersService;
         this.homeUserProfileService = homeUserProfileService;
+        this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
     }
 
     public List<ActivityMemberEntryDto> queryCandidates(ActivityInviteCandidatesRequestDto request) {
@@ -56,6 +61,9 @@ public class ActivitiesInviteCandidatesService {
         if (snapshot != null) {
             blockedUserIds.addAll(snapshot.acceptedMemberUserIds());
             blockedUserIds.addAll(snapshot.pendingMemberUserIds());
+        }
+        if ("asset".equals(ownerType)) {
+            blockedUserIds.addAll(querySavedContactUserIds(activeUserId));
         }
 
         Map<String, CandidateSignal> signalsByUserId = new LinkedHashMap<>();
@@ -172,6 +180,25 @@ public class ActivitiesInviteCandidatesService {
         if (StringUtils.hasText(normalizedCandidateUserId) && !normalizedCandidateUserId.equals(activeUserId)) {
             counterpartIds.add(normalizedCandidateUserId);
         }
+    }
+
+    private Set<String> querySavedContactUserIds(String activeUserId) {
+        return navigatorContactsProfilesRepository.findByUserId(activeUserId)
+                .map(NavigatorContactsProfile::getContacts)
+                .map(contacts -> {
+                    LinkedHashSet<String> contactUserIds = new LinkedHashSet<>();
+                    for (NavigatorContactsProfile.NavigatorContactRecord contact : contacts) {
+                        if (contact == null) {
+                            continue;
+                        }
+                        String contactUserId = normalizeId(firstNonBlank(contact.getUserId(), contact.getId()));
+                        if (StringUtils.hasText(contactUserId)) {
+                            contactUserIds.add(contactUserId);
+                        }
+                    }
+                    return contactUserIds;
+                })
+                .orElseGet(LinkedHashSet::new);
     }
 
     private String normalizeOwnerType(String ownerType) {

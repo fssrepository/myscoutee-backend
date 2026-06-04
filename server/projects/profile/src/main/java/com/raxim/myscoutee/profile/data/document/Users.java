@@ -381,8 +381,35 @@ public class Users {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserEventCountersRecord event,
+            UserAssetCountersRecord asset,
+            UserEventFeedbackCountersRecord eventFeedback,
             Integer adminJobs,
             Integer adminMetrics) {
+    }
+
+    public record UserEventCountersRecord(
+            Integer all,
+            Integer active,
+            Integer pending,
+            Integer invitations,
+            Integer hosting,
+            Integer drafts,
+            Integer trash) {
+    }
+
+    public record UserAssetCountersRecord(
+            Integer cars,
+            Integer accommodation,
+            Integer supplies,
+            Integer tickets) {
+    }
+
+    public record UserEventFeedbackCountersRecord(
+            Integer ownEvents,
+            Integer pending,
+            Integer feedbacked,
+            Integer removed) {
     }
 
     public record ProfileDetailGroupRecord(

@@ -141,7 +141,12 @@ public class FirebaseService {
         user.setCompletion(0);
         user.setProfileFormVersion(0);
         user.setDeletedAtIso(nowIso);
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         try {
             return usersRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
@@ -246,7 +251,8 @@ public class FirebaseService {
     }
 
     private String resolveRole(String email) {
-        if (appSettingsService.isAdminEmail(normalizeEmail(email))) {
+        String normalizedEmail = normalizeEmail(email);
+        if (config.isAdminUser(normalizedEmail) || appSettingsService.isAdminEmail(normalizedEmail)) {
             return "A";
         }
         return "U";

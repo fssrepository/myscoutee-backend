@@ -201,7 +201,7 @@ async function runUiCase({ browser, page, testCase, ctx, record, artifactsDir })
     sessionStorage: request.sessionStorage ?? {}
   };
   if (request.suiteDemoLogin) {
-    assert(ctx.suiteDemoStorage?.localStorage?.['app-session'], 'suiteDemoLogin requires a completed suite demo login');
+    assert(hasStoredDemoSession(ctx.suiteDemoStorage?.localStorage), 'suiteDemoLogin requires a completed suite demo login');
   }
 
   try {
@@ -429,6 +429,19 @@ function interpolate(value, vars) {
     return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, interpolate(item, vars)]));
   }
   return value;
+}
+
+function hasStoredDemoSession(localStorageSnapshot = {}) {
+  return Object.entries(localStorageSnapshot).some(([key, rawValue]) => {
+    if (typeof rawValue !== 'string' || !key.endsWith('session.v1')) {
+      return false;
+    }
+    try {
+      return JSON.parse(rawValue)?.kind === 'demo';
+    } catch {
+      return false;
+    }
+  });
 }
 
 function matchesFilter(testCase, options) {

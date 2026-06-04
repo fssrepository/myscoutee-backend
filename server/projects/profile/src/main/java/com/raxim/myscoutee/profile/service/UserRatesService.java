@@ -256,6 +256,13 @@ public class UserRatesService {
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC));
         indexOps.createIndex(new Index()
+                .named("user_rate_owner_mode_target_unique_v1")
+                .on("ownerUserId", Sort.Direction.ASC)
+                .on("mode", Sort.Direction.ASC)
+                .on("relatedUserId", Sort.Direction.ASC)
+                .on("secondaryRelatedUserId", Sort.Direction.ASC)
+                .unique());
+        indexOps.createIndex(new Index()
                 .named("user_rate_pair_lookup_v2")
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)

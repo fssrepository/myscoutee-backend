@@ -84,7 +84,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -139,7 +140,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -197,7 +199,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -253,7 +256,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -301,7 +305,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -340,7 +345,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -398,7 +404,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.restore(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -444,7 +451,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.replace(new AssetReplaceRequestDto("u1", List.of(assetCard("asset-1"))));
 
@@ -470,7 +478,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -496,7 +505,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -522,7 +532,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetCardDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -560,7 +571,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto("u1", assetCard("asset-1")));
 
@@ -590,7 +602,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto("u1", assetCard("asset-1")));
 
@@ -621,7 +634,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -663,7 +677,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -699,7 +714,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -736,7 +752,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -773,7 +790,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
 
@@ -806,7 +824,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
 
@@ -837,7 +856,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetSourceRefreshResponseDto response = service.refreshFromSource(
                 new AssetSourceRefreshRequestDto("u1", "asset-1", "Car", "https://example.com/car"));
@@ -870,7 +890,8 @@ class AssetsServiceTest {
                 mock(AdminTelemetryService.class),
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
-                accessControlService);
+                accessControlService,
+                mock(UserActivityCountersService.class));
 
         AssetSourceRefreshResponseDto response = service.refreshFromSource(
                 new AssetSourceRefreshRequestDto("u1", "Car", "https://example.com/car"));
