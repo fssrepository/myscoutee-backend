@@ -232,7 +232,9 @@ stop_local_compose() {
     docker compose version >/dev/null 2>&1 || fail "docker compose is required to stop local containers"
   fi
 
-  if [ -f "${SERVER_DIR}/docker-compose.yml" ]; then
+  if [ -f "${SERVER_DIR}/docker-compose-dev.yml" ]; then
+    run_in_server docker compose -p "$LOCAL_COMPOSE_PROJECT" -f docker-compose-dev.yml down -v --remove-orphans
+  elif [ -f "${SERVER_DIR}/docker-compose.yml" ]; then
     run_in_server docker compose -p "$LOCAL_COMPOSE_PROJECT" -f docker-compose.yml down -v --remove-orphans
   fi
 

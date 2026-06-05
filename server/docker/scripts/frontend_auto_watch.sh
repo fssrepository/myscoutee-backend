@@ -6,7 +6,6 @@ SYNC_SCRIPT="${SYNC_SCRIPT:-/scripts/sync_frontend_assets.sh}"
 BUILD_MODE="${FRONTEND_BUILD_MODE:-}"
 BUILD_CONFIGURATION="${FRONTEND_BUILD_CONFIGURATION:-}"
 BUILD_LOG_FILE="${BUILD_LOG_FILE:-}"
-LEGACY_FRONTEND_ACTIVITIES_DATA_SOURCE="${FRONTEND_ACTIVITIES_DATA_SOURCE:-}"
 BUILD_FRONTEND_ROOT="${BUILD_FRONTEND_ROOT:-}"
 SOURCE_SYNC_DEBOUNCE_SECONDS="${SOURCE_SYNC_DEBOUNCE_SECONDS:-1}"
 SOURCE_SYNC_EXCLUDE_REGEX='(^|/)(node_modules|dev|docs|out-tsc|\.angular|\.git|\.agent)(/|$)'
@@ -29,25 +28,11 @@ resolve_build_configuration() {
     return 0
   fi
 
-  case "${LEGACY_FRONTEND_ACTIVITIES_DATA_SOURCE}" in
-    demo)
-      printf '%s\n' "demo-npm"
-      ;;
-    http)
-      printf '%s\n' "demo-http"
-      ;;
-    "")
-      if [[ "${BUILD_MODE}" == "prod" ]]; then
-        printf '%s\n' "production"
-      else
-        printf '%s\n' "demo-npm"
-      fi
-      ;;
-    *)
-      echo "Error: FRONTEND_ACTIVITIES_DATA_SOURCE must be 'demo' or 'http'." >&2
-      exit 1
-      ;;
-  esac
+  if [[ "${BUILD_MODE}" == "prod" ]]; then
+    printf '%s\n' "production"
+  else
+    printf '%s\n' "dev"
+  fi
 }
 
 resolve_build_mode() {
@@ -57,7 +42,7 @@ resolve_build_mode() {
   fi
 
   case "${BUILD_CONFIGURATION}" in
-    e2e|demo-github|production|production-demo)
+    e2e|github|production)
       printf '%s\n' "prod"
       ;;
     *)
@@ -68,7 +53,7 @@ resolve_build_mode() {
 
 validate_build_configuration() {
   case "${BUILD_CONFIGURATION}" in
-    development|demo-npm|demo-http|e2e|demo-github|production|production-demo)
+    dev|e2e|github|production)
       ;;
     *)
       echo "Error: unsupported FRONTEND_BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}" >&2

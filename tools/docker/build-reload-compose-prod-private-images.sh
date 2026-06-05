@@ -11,7 +11,7 @@ BUILD_FRONTEND="${BUILD_FRONTEND:-true}"
 BUILD_BACKEND="${BUILD_BACKEND:-true}"
 BUILD_IMAGES="${BUILD_IMAGES:-true}"
 RELOAD_IMAGES="${RELOAD_IMAGES:-true}"
-FRONTEND_BUILD_SCRIPT="${FRONTEND_BUILD_SCRIPT:-build:prod:http}"
+FRONTEND_BUILD_SCRIPT="${FRONTEND_BUILD_SCRIPT:-build:prod}"
 
 usage() {
   cat <<'USAGE'
@@ -51,7 +51,7 @@ Environment:
   NGINX_BASE_IMAGE           Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-base.
   NGINX_PRODUCTION_IMAGE     Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-prod.
   MYSCOUTEE_PRODUCTION_IMAGE Defaults to myscoutee-api:${MYSCOUTEE_VERSION}-prod.
-  FRONTEND_BUILD_SCRIPT      Defaults to build:prod:http.
+  FRONTEND_BUILD_SCRIPT      Defaults to build:prod.
   BUILD_FRONTEND             Defaults to true.
   BUILD_BACKEND              Defaults to true.
   BUILD_IMAGES               Defaults to true.
