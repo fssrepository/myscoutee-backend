@@ -57,7 +57,12 @@ public class EventCounterExpiryService {
     private final int batchSize;
     private final AtomicBoolean processing = new AtomicBoolean(false);
 
-    private record ExpiryRunResult(int dueSources, int affectedUsers, int updatedUsers, long markedEventRecords) {}
+    private record ExpiryRunResult(
+            int dueSources,
+            int affectedUsers,
+            int updatedUsers,
+            long markedEventRecords,
+            long markedTicketRecords) {}
     private record EventCounterState(int invitations, int events, int hosting) {}
 
     public EventCounterExpiryService(
@@ -81,7 +86,7 @@ public class EventCounterExpiryService {
 
     private ExpiryRunResult runExpiryPass() {
         if (!processing.compareAndSet(false, true)) {
-            return new ExpiryRunResult(0, 0, 0, 0L);
+            return new ExpiryRunResult(0, 0, 0, 0L, 0L);
         }
         Instant startedAt = Instant.now();
         try {
@@ -91,12 +96,13 @@ public class EventCounterExpiryService {
                     SYSTEM_USER,
                     startedAt);
             ExpiryRunResult result = processDueEvents(Instant.now());
-            String detail = result.dueSources() == 0
-                    ? "No expired event counters were due."
+            String detail = result.dueSources() == 0 && result.markedTicketRecords() == 0
+                    ? "No expired event counters or ticket records were due."
                     : "Expired " + result.dueSources() + " event source(s), refreshed "
                     + result.updatedUsers() + "/" + result.affectedUsers()
-                    + " affected user counter document(s), and marked "
-                    + result.markedEventRecords() + " event record(s).";
+                    + " affected user counter document(s), marked "
+                    + result.markedEventRecords() + " event record(s), and marked "
+                    + result.markedTicketRecords() + " ticket record(s).";
             notificationRuleRegistryService.recordRun(
                     NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
                     result.dueSources(),
@@ -122,7 +128,7 @@ public class EventCounterExpiryService {
                     safeText(exception.getMessage()),
                     SYSTEM_USER,
                     startedAt);
-            return new ExpiryRunResult(0, 0, 0, 0L);
+            return new ExpiryRunResult(0, 0, 0, 0L, 0L);
         } finally {
             processing.set(false);
         }
@@ -131,9 +137,11 @@ public class EventCounterExpiryService {
     private ExpiryRunResult processDueEvents(Instant now) {
         String nowIso = (now == null ? Instant.now() : now).toString();
         List<ActivityEvent> dueDocuments = dueEventDocuments(nowIso);
+        List<ActivityEvent> dueTicketDocuments = dueTicketDocuments(nowIso);
         LinkedHashSet<String> dueSourceIds = sourceIds(dueDocuments);
+        long markedTicketRecords = markDueTicketsExpired(dueTicketDocuments, nowIso);
         if (dueSourceIds.isEmpty()) {
-            return new ExpiryRunResult(0, 0, 0, 0L);
+            return new ExpiryRunResult(0, 0, 0, 0L, markedTicketRecords);
         }
 
         List<ActivityEvent> sourceDocuments = loadEventDocumentsBySourceIds(dueSourceIds);
@@ -141,25 +149,36 @@ public class EventCounterExpiryService {
         LinkedHashSet<String> affectedUserIds = affectedUserIds(sourceDocuments, sourceMembers);
         int updatedUsers = refreshAffectedUserCounters(affectedUserIds, nowIso);
         long markedEventRecords = markDueEventsExpired(dueSourceIds, nowIso);
-        return new ExpiryRunResult(dueSourceIds.size(), affectedUserIds.size(), updatedUsers, markedEventRecords);
+        return new ExpiryRunResult(
+                dueSourceIds.size(),
+                affectedUserIds.size(),
+                updatedUsers,
+                markedEventRecords,
+                markedTicketRecords);
     }
 
     private List<ActivityEvent> dueEventDocuments(String nowIso) {
-        Criteria missingEnd = new Criteria().orOperator(
-                Criteria.where("endAtIso").exists(false),
-                Criteria.where("endAtIso").is(null),
-                Criteria.where("endAtIso").is(""));
-        Criteria dueBoundary = new Criteria().orOperator(
-                Criteria.where("endAtIso").lte(nowIso),
-                new Criteria().andOperator(missingEnd, Criteria.where("startAtIso").lte(nowIso)));
         Query query = new Query(new Criteria().andOperator(
                 Criteria.where("expired").ne(true),
                 Criteria.where("sourceId").exists(true).nin("", null),
                 Criteria.where("published").ne(false),
                 Criteria.where("isTrashed").ne(true),
                 Criteria.where("status").nin(STATUS_DRAFT, STATUS_TRASHED, STATUS_DELETED, STATUS_INACTIVE),
-                dueBoundary));
+                dueBoundary(nowIso)));
         query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("startAtIso"), Sort.Order.asc("sourceId")));
+        query.limit(batchSize);
+        return mongoTemplate.find(query, ActivityEvent.class);
+    }
+
+    private List<ActivityEvent> dueTicketDocuments(String nowIso) {
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("expired").ne(true),
+                Criteria.where("ticketing").is(true),
+                Criteria.where("sourceId").exists(true).nin("", null),
+                Criteria.where("isInvitation").ne(true),
+                Criteria.where("isTrashed").ne(true),
+                dueBoundary(nowIso)));
+        query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("startAtIso"), Sort.Order.asc("_id")));
         query.limit(batchSize);
         return mongoTemplate.find(query, ActivityEvent.class);
     }
@@ -169,23 +188,58 @@ public class EventCounterExpiryService {
         if (normalizedSourceIds.isEmpty()) {
             return 0L;
         }
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("sourceId").in(normalizedSourceIds),
+                Criteria.where("expired").ne(true),
+                dueBoundary(nowIso)));
+        Update update = expiryUpdate(nowIso);
+        UpdateResult result = mongoTemplate.updateMulti(query, update, ActivityEvent.class);
+        return result == null ? 0L : result.getModifiedCount();
+    }
+
+    private long markDueTicketsExpired(Collection<ActivityEvent> ticketDocuments, String nowIso) {
+        LinkedHashSet<String> ticketRecordIds = recordIds(ticketDocuments);
+        if (ticketRecordIds.isEmpty()) {
+            return 0L;
+        }
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("_id").in(ticketRecordIds),
+                Criteria.where("expired").ne(true),
+                Criteria.where("ticketing").is(true),
+                Criteria.where("isInvitation").ne(true),
+                Criteria.where("isTrashed").ne(true),
+                dueBoundary(nowIso)));
+        Update update = expiryUpdate(nowIso);
+        UpdateResult result = mongoTemplate.updateMulti(query, update, ActivityEvent.class);
+        return result == null ? 0L : result.getModifiedCount();
+    }
+
+    private Update expiryUpdate(String nowIso) {
+        return new Update()
+                .set("expired", true)
+                .set("updatedDate", nowIso)
+                .set("updatedUser", SYSTEM_USER);
+    }
+
+    private Criteria dueBoundary(String nowIso) {
         Criteria missingEnd = new Criteria().orOperator(
                 Criteria.where("endAtIso").exists(false),
                 Criteria.where("endAtIso").is(null),
                 Criteria.where("endAtIso").is(""));
-        Criteria dueBoundary = new Criteria().orOperator(
+        return new Criteria().orOperator(
                 Criteria.where("endAtIso").lte(nowIso),
                 new Criteria().andOperator(missingEnd, Criteria.where("startAtIso").lte(nowIso)));
-        Query query = new Query(new Criteria().andOperator(
-                Criteria.where("sourceId").in(normalizedSourceIds),
-                Criteria.where("expired").ne(true),
-                dueBoundary));
-        Update update = new Update()
-                .set("expired", true)
-                .set("updatedDate", nowIso)
-                .set("updatedUser", SYSTEM_USER);
-        UpdateResult result = mongoTemplate.updateMulti(query, update, ActivityEvent.class);
-        return result == null ? 0L : result.getModifiedCount();
+    }
+
+    private LinkedHashSet<String> recordIds(Collection<ActivityEvent> records) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            String id = normalizeId(record == null ? null : record.getId());
+            if (StringUtils.hasText(id)) {
+                ids.add(id);
+            }
+        }
+        return ids;
     }
 
     private int refreshAffectedUserCounters(Set<String> affectedUserIds, String nowIso) {

@@ -29,7 +29,8 @@ import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredOb
 
 @Service
 public class MediaStorageService {
-    private static final Set<String> ALLOWED_SCOPES = Set.of("profile", "event", "asset", "chat", "idea", "content");
+    private static final String IMAGE_MEDIA_KIND = "images";
+    private static final String AUDIO_MEDIA_KIND = "audio";
     private static final Set<String> ALLOWED_IMAGE_CONTENT_TYPES = Set.of("image/jpeg", "image/png", "image/webp", "image/gif");
     private static final Set<String> ALLOWED_AUDIO_CONTENT_TYPES = Set.of(
             "audio/mpeg",
@@ -58,29 +59,43 @@ public class MediaStorageService {
         this.objectStoreClient = objectStoreClient;
     }
 
-    public String storeImage(String scope, String ownerId, String entityId, MultipartFile image) {
+    public String storeImage(String ownerId, String entityId, MultipartFile image) {
         if (!isEnabled() || image == null || image.isEmpty()) {
             return null;
         }
         try {
-            return storeMediaBytes(scope, ownerId, entityId, image.getOriginalFilename(), image.getContentType(), image.getBytes(), "image/");
+            return storeMediaBytes(
+                    IMAGE_MEDIA_KIND,
+                    ownerId,
+                    entityId,
+                    image.getOriginalFilename(),
+                    image.getContentType(),
+                    image.getBytes(),
+                    "image/");
         } catch (IOException | RuntimeException ex) {
             return null;
         }
     }
 
-    public String storeAudio(String scope, String ownerId, String entityId, MultipartFile audio) {
+    public String storeAudio(String ownerId, String entityId, MultipartFile audio) {
         if (!isEnabled() || audio == null || audio.isEmpty()) {
             return null;
         }
         try {
-            return storeMediaBytes(scope, ownerId, entityId, audio.getOriginalFilename(), audio.getContentType(), audio.getBytes(), "audio/");
+            return storeMediaBytes(
+                    AUDIO_MEDIA_KIND,
+                    ownerId,
+                    entityId,
+                    audio.getOriginalFilename(),
+                    audio.getContentType(),
+                    audio.getBytes(),
+                    "audio/");
         } catch (IOException | RuntimeException ex) {
             return null;
         }
     }
 
-    public String importImage(String scope, String ownerId, String entityId, String imageUrl) {
+    public String importImage(String ownerId, String entityId, String imageUrl) {
         if (!isEnabled()) {
             return null;
         }
@@ -93,7 +108,6 @@ public class MediaStorageService {
             return null;
         }
         return storeImageBytes(
-                scope,
                 ownerId,
                 entityId,
                 importedImage.originalFilename(),
@@ -102,7 +116,6 @@ public class MediaStorageService {
     }
 
     public String storeImageBytes(
-            String scope,
             String ownerId,
             String entityId,
             String originalFilename,
@@ -111,16 +124,15 @@ public class MediaStorageService {
         if (!isEnabled() || bytes == null || bytes.length == 0) {
             return null;
         }
-        String normalizedScope = normalizeScope(scope);
         String normalizedOwnerId = sanitizeSegment(ownerId);
-        if (!StringUtils.hasText(normalizedScope) || !StringUtils.hasText(normalizedOwnerId)) {
+        if (!StringUtils.hasText(normalizedOwnerId)) {
             return null;
         }
-        return storeMediaBytes(scope, ownerId, entityId, originalFilename, contentTypeValue, bytes, "image/");
+        return storeMediaBytes(IMAGE_MEDIA_KIND, ownerId, entityId, originalFilename, contentTypeValue, bytes, "image/");
     }
 
-    public String storeMediaBytes(
-            String scope,
+    private String storeMediaBytes(
+            String mediaKind,
             String ownerId,
             String entityId,
             String originalFilename,
@@ -130,10 +142,10 @@ public class MediaStorageService {
         if (!isEnabled() || bytes == null || bytes.length == 0) {
             return null;
         }
-        String normalizedScope = normalizeScope(scope);
+        String normalizedMediaKind = sanitizeSegment(mediaKind);
         String normalizedOwnerId = sanitizeSegment(ownerId);
         String normalizedEntityId = sanitizeSegment(entityId);
-        if (!StringUtils.hasText(normalizedScope) || !StringUtils.hasText(normalizedOwnerId)) {
+        if (!StringUtils.hasText(normalizedMediaKind) || !StringUtils.hasText(normalizedOwnerId)) {
             return null;
         }
         String contentType = normalizeContentType(contentTypeValue);
@@ -148,7 +160,7 @@ public class MediaStorageService {
         }
         try {
             String objectKey = String.join("/",
-                    normalizedScope,
+                    normalizedMediaKind,
                     normalizedOwnerId,
                     StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
                     Instant.now().toEpochMilli() + "-" + UUID.randomUUID() + resolveExtension(originalFilename, contentType));
@@ -197,11 +209,6 @@ public class MediaStorageService {
                 && objectStoreClient != null
                 && objectStoreClient.isEnabled()
                 && StringUtils.hasText(safeText(properties.getBucket()));
-    }
-
-    private String normalizeScope(String value) {
-        String normalized = safeText(value).toLowerCase(Locale.ROOT);
-        return ALLOWED_SCOPES.contains(normalized) ? normalized : "";
     }
 
     private String normalizeContentType(String value) {

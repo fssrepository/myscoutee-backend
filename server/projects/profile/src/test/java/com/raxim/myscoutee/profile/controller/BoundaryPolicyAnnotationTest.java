@@ -36,19 +36,6 @@ import com.raxim.myscoutee.profile.security.RequiresPolicy;
 
 class BoundaryPolicyAnnotationTest {
     @Test
-    void authProfileImageUploadDeclaresMediaUploadPolicy() throws Exception {
-        Method method = AuthController.class.getDeclaredMethod(
-                "uploadProfileImage",
-                String.class,
-                Integer.class,
-                MultipartFile.class);
-
-        RequiresPolicy policy = method.getAnnotation(RequiresPolicy.class);
-
-        assertPolicy(policy, AccessPolicyKeys.USER_MEDIA_UPLOAD, "#userId", "#userId");
-    }
-
-    @Test
     void authProfileWriteMethodsDeclareProfilePolicies() throws Exception {
         assertMethodPolicy(
                 AuthController.class,
@@ -72,7 +59,6 @@ class BoundaryPolicyAnnotationTest {
                 "uploadImage",
                 String.class,
                 String.class,
-                String.class,
                 MultipartFile.class);
 
         RequiresPolicy policy = method.getAnnotation(RequiresPolicy.class);
@@ -93,7 +79,6 @@ class BoundaryPolicyAnnotationTest {
     void mediaUploadAudioDeclaresMediaUploadPolicy() throws Exception {
         Method method = MediaController.class.getDeclaredMethod(
                 "uploadAudio",
-                String.class,
                 String.class,
                 String.class,
                 MultipartFile.class);

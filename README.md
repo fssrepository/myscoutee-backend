@@ -43,7 +43,7 @@ Frontend Runtime Sync (optional)
 Production Compose
 ------------------
 * Build frontend production assets in the frontend submodule:
-* `cd frontend && npm run build:prod:http`
+* `cd frontend && npm run build:prod`
 * Sync assets into backend nginx app folder:
 * `cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod`
 * Run dockerized production stack:
@@ -53,5 +53,5 @@ Full Integration E2E Collections
 --------------------------------
 * Postman-like server/API and UI collections live under `./e2e`.
 * Safe contract checks against the normal dev stack: `node e2e/server/run.mjs`
-* Disposable mutation/stress checks use `e2e_db`: `cd server && docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build`
+* Disposable mutation/stress checks use `e2e_db`: `cd server && docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build`
 * Details: `./e2e/README.md`

@@ -22,7 +22,7 @@ class MediaControllerTest {
     void uploadImageReportsUnavailableWhenStorageFails() {
         MediaController controller = new MediaController(mediaStorageService);
 
-        assertThatThrownBy(() -> controller.uploadImage("profile", "owner-1", "slot-0", multipartFile))
+        assertThatThrownBy(() -> controller.uploadImage("owner-1", "slot-0", multipartFile))
                 .hasMessageContaining("Image upload unavailable");
     }
 
@@ -30,7 +30,7 @@ class MediaControllerTest {
     void uploadAudioReportsUnavailableWhenStorageFails() {
         MediaController controller = new MediaController(mediaStorageService);
 
-        assertThatThrownBy(() -> controller.uploadAudio("chat", "owner-1", "message-1", multipartFile))
+        assertThatThrownBy(() -> controller.uploadAudio("owner-1", "message-1", multipartFile))
                 .hasMessageContaining("Audio upload unavailable");
     }
 
@@ -39,7 +39,6 @@ class MediaControllerTest {
         MediaController controller = new MediaController(mediaStorageService);
 
         var response = controller.importImage(new MediaImageImportRequestDto(
-                "profile",
                 "owner-1",
                 "slot-0",
                 "https://cdn.example.com/avatar.jpg"));

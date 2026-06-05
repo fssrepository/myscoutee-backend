@@ -39,11 +39,10 @@ public class MediaController {
             resourceId = "#ownerId",
             skipWhenAuthenticationOptional = true)
     public MediaImageUploadResponseDto uploadImage(
-            @RequestParam("scope") String scope,
             @RequestParam("ownerId") String ownerId,
             @RequestParam(value = "entityId", required = false) String entityId,
             @RequestParam("image") MultipartFile image) {
-        String imageUrl = mediaStorageService.storeImage(scope, ownerId, entityId, image);
+        String imageUrl = mediaStorageService.storeImage(ownerId, entityId, image);
         if (imageUrl == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Image upload unavailable.");
         }
@@ -59,7 +58,6 @@ public class MediaController {
     public MediaImageUploadResponseDto importImage(@RequestBody MediaImageImportRequestDto request) {
         String ownerId = request == null ? null : request.ownerId();
         String imageUrl = mediaStorageService.importImage(
-                request == null ? null : request.scope(),
                 ownerId,
                 request == null ? null : request.entityId(),
                 request == null ? null : request.imageUrl());
@@ -73,11 +71,10 @@ public class MediaController {
             resourceId = "#ownerId",
             skipWhenAuthenticationOptional = true)
     public MediaUploadResponseDto uploadAudio(
-            @RequestParam("scope") String scope,
             @RequestParam("ownerId") String ownerId,
             @RequestParam(value = "entityId", required = false) String entityId,
             @RequestParam("audio") MultipartFile audio) {
-        String audioUrl = mediaStorageService.storeAudio(scope, ownerId, entityId, audio);
+        String audioUrl = mediaStorageService.storeAudio(ownerId, entityId, audio);
         if (audioUrl == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Audio upload unavailable.");
         }

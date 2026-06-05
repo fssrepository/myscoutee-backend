@@ -1,0 +1,268 @@
+networks:
+  myscoutee:
+    driver: bridge
+
+services:
+  # certbot:
+  #   image: ${CERT_BOT}
+  #   container_name: certbot
+  #   hostname: certbot
+  #   networks:
+  #     - myscoutee
+  #   environment:
+  #     - RENEWAL_INTERVAL=12h
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep $${RENEWAL_INTERVAL} & wait $${!}; done;'"
+  #   volumes:
+  #    - ./data/certbot/conf:/etc/letsencrypt
+  #    - ./data/certbot/www:/var/www/certbot
+  #   depends_on:
+  #     - nginx
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: ${NGINX_IMAGE:-myscoutee-nginx:1.0.0-dev}
+    pull_policy: build
+    build:
+      context: docker
+      dockerfile: images/nginx/dev/Dockerfile
+      args:
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    environment:
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    #  WAIT_FOR: profilemanagement:8080
+    ports:
+      - 80:80
+      - 443:443
+      - 127.0.0.1:27017-27019:27017-27019
+    volumes:
+      - ./docker/conf/nginx/conf/http:/etc/nginx/conf.d/
+      - ./docker/conf/nginx/conf/stream:/etc/nginx/stream_conf.d/
+      - ./docker/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/conf/nginx/app/myscoutee:/usr/share/nginx/html
+      - ./docker/conf/nginx/keys:/etc/nginx/keys
+      #- ./docker/scripts:/scripts
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+      - redis
+      - profilemanagement
+      #- certbot
+    #command: ["/scripts/wait-for-it.sh", "-t", "0", "profilemanagement:8080", "--", "nginx", "-g", "daemon off;"]
+  mongodb:
+    image: ${MONGO_IMAGE}
+    container_name: mongodb
+    hostname: mongodb
+    env_file:
+      - .env.secrets
+    #restart: always
+    #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_SEED_DIRECTORY: demo_db
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB}
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
+      - ./data/mongodb/demo-data-v8-0:/data/db
+      - ./docker/scripts:/scripts
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    #ports:
+    #  - 27017-27019:27017-27019
+  mongodb-sync:
+    image: ${MONGODB_SYNC_IMAGE}
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: docker/images/mongodb-sync/dev/Dockerfile
+      args:
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    container_name: mongodb-sync
+    hostname: mongodb-sync
+    env_file:
+      - .env.secrets
+    command: >
+      bash -lc '
+      watch_candidates="/docker-entrypoint-initdb.d/demo_db /docker-entrypoint-initdb.d/myscoutee_db /docker-entrypoint-initdb.d/e2e_db";
+      watch_roots="";
+      for candidate in $$watch_candidates; do
+        if [ -d "$$candidate" ]; then
+          watch_roots="$${watch_roots} $$candidate";
+        fi;
+      done;
+      auth_db="$${MONGO_APP_DATABASE:-$${MONGO_DEMO_DATABASE:-demo_db}}";
+      debounce_seconds="$${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}";
+      wait_for_mongo() {
+        until mongosh --host mongodb --port 27017 --username "$${MONGO_APP_USERNAME:-guest}" --password "$${MONGO_APP_PASSWORD:-guest}" --authenticationDatabase "$$auth_db" --quiet "$$auth_db" --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; do
+          sleep 2;
+        done;
+      };
+      import_all() {
+        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME="$${MONGO_APP_USERNAME:-guest}" MONGO_IMPORT_PASSWORD="$${MONGO_APP_PASSWORD:-guest}" MONGO_IMPORT_ALL_SEED_DATABASES=true MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
+      };
+      import_file() {
+        changed_file="$$1";
+        case "$$changed_file" in
+          */demo_db/*.json) target_db="$${MONGO_DEMO_DATABASE:-demo_db}" ;;
+          */myscoutee_db/*.json) target_db="$${MONGO_REAL_DATABASE:-myscoutee_db}" ;;
+          */e2e_db/*.json) target_db="$${MONGO_E2E_DATABASE:-e2e_db}" ;;
+          *) return 0 ;;
+        esac;
+        MONGO_IMPORT_HOST=mongodb MONGO_IMPORT_PORT=27017 MONGO_IMPORT_USERNAME="$${MONGO_APP_USERNAME:-guest}" MONGO_IMPORT_PASSWORD="$${MONGO_APP_PASSWORD:-guest}" MONGO_APP_DATABASE="$$target_db" MONGO_IMPORT_SINGLE_FILE="$$changed_file" MONGO_IMPORT_REPLACE_COLLECTIONS=true /docker-entrypoint-initdb.d/mongo_import.sh;
+      };
+      wait_for_mongo;
+      import_all;
+      if [ -z "$$watch_roots" ]; then
+        echo "No Mongo seed directories found to watch.";
+        tail -f /dev/null;
+      fi;
+      while changed_file=$$(inotifywait -q -r -e close_write,create,move --format "%w%f" $$watch_roots); do
+        changed_files="$$changed_file";
+        while next_file=$$(inotifywait -q -r -t "$$debounce_seconds" -e close_write,create,move --format "%w%f" $$watch_roots 2>/dev/null); do
+          changed_files="$${changed_files}
+      $${next_file}";
+        done;
+        printf "%s\n" "$$changed_files" | sed "/^[[:space:]]*$$/d" | sort -u | while read -r file; do
+          import_file "$$file";
+        done;
+      done'
+    environment:
+      MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_DEMO_DATABASE: ${MONGO_DEMO_DATABASE}
+      MONGO_REAL_DATABASE: ${MONGO_REAL_DATABASE}
+      MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB: ${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB}
+      MONGODB_SEED_SYNC_DEBOUNCE_SECONDS: "${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}"
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./docker/conf/mongodb:/docker-entrypoint-initdb.d:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+  redis:
+    image: ${REDIS_IMAGE}
+    container_name: redis
+    hostname: redis
+    environment:
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+  minio:
+    image: ${MINIO_IMAGE}
+    container_name: minio
+    hostname: minio
+    env_file:
+      - .env.secrets
+    command: server /data --console-address ":9001"
+    environment:
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./data/minio:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+  profilemanagement:
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: docker/images/profilemanagement/dev/Dockerfile
+      args:
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    container_name: myscoutee
+    hostname: myscoutee
+    env_file:
+      - .env.secrets
+    working_dir: /workspace
+    user: "${UID:-1000}:${GID:-1000}"
+    command:
+      - sh
+      - -lc
+      - BOOTRUN_DEBUG_ARGS=''; if [ -n "$${PROFILEMANAGEMENT_DEBUG_PORT}" ]; then BOOTRUN_DEBUG_ARGS="-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$${PROFILEMANAGEMENT_DEBUG_PORT}"; fi; if [ "$${PROFILEMANAGEMENT_HOT_RELOAD}" = "true" ]; then ./gradlew :projects:profile:classes --continuous & fi; exec ./gradlew $${BOOTRUN_DEBUG_ARGS} :projects:profile:bootRun
+    environment:
+      HOME: /workspace
+      GRADLE_USER_HOME: /workspace/.gradle
+      PROFILEMANAGEMENT_HOT_RELOAD: "${PROFILEMANAGEMENT_HOT_RELOAD:-true}"
+      PROFILEMANAGEMENT_DEBUG_PORT: "${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_DEVTOOLS_RESTART_ENABLED: "${PROFILEMANAGEMENT_HOT_RELOAD:-true}"
+      MONGODB_HOST: "mongodb"
+      MONGODB_DATABASE: "${MONGO_DEMO_DATABASE}"
+      MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
+      SPRING_DATA_REDIS_HOST: "redis"
+      SPRING_DATA_REDIS_PORT: "6379"
+      CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
+      FIREBASE_ENABLED: "false"
+      DEV_USER: "dev@myscoutee.local"
+      ADMIN_USER: "myscoutee@gmail.com"
+      MEDIA_ENABLED: "true"
+      MEDIA_OBJECT_STORE_ENDPOINT: "http://minio:9000"
+      MEDIA_OBJECT_STORE_REGION: "eu-central-1"
+      MEDIA_BUCKET: "${MEDIA_BUCKET}"
+      MEDIA_OBJECT_STORE_PATH_STYLE: "true"
+      ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED}"
+      ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS}"
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      JAVA_TOOL_OPTIONS: "--enable-native-access=ALL-UNNAMED"
+    ports:
+      - "127.0.0.1:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
+    volumes:
+      - ./:/workspace
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - mongodb
+      - redis
+      - minio
+  frontend-sync:
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: docker/images/frontend-sync/dev/Dockerfile
+      args:
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    container_name: frontend-sync
+    hostname: frontend-sync
+    user: "${UID:-1000}:${GID:-1000}"
+    command: >
+      bash -c "while true; do
+      bash /scripts/frontend_auto_watch.sh || true;
+      echo 'frontend-sync watcher restarting in 3s...';
+      sleep 3;
+      done"
+    environment:
+      FRONTEND_ROOT: /workspace/frontend
+      FRONTEND_SOURCE_DIR: /workspace/frontend/dev
+      FRONTEND_BUILD_CONFIGURATION: dev
+      NGINX_HTML_DIR: /workspace/nginx-html
+      NG_BUILD_MAX_WORKERS: "12"
+      WAIT_FOR_HOSTS: "profilemanagement:8080"
+      SYNC_DEBOUNCE_SECONDS: "2"
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ../frontend:/workspace/frontend
+      - ./docker/conf/nginx/app/myscoutee:/workspace/nginx-html
+      - ./docker/scripts/sync_frontend_assets.sh:/scripts/sync_frontend_assets.sh:ro
+      - ./docker/scripts/frontend_auto_watch.sh:/scripts/frontend_auto_watch.sh:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee

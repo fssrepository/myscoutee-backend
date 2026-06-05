@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -110,7 +110,22 @@ clear_collection() {
 collection_should_replace_on_import() {
   local collection_name="$1"
 
+  if [ "${collection_name}" = "adminUsers" ]; then
+    return 1
+  fi
+
   [ "${replace_collections}" = "true" ] || [ "${collection_name}" = "helpCenterRevisions" ]
+}
+
+target_collection_name() {
+  local collection_name="$1"
+
+  if [ "${collection_name}" = "adminUsers" ]; then
+    printf '%s\n' "users"
+    return 0
+  fi
+
+  printf '%s\n' "${collection_name}"
 }
 
 ensure_collection_indexes() {
@@ -584,7 +599,9 @@ import_json_file() {
   local target_db="$1"
   local jsonfile="$2"
   local collection_name
+  local target_collection
   collection_name="$(basename "${jsonfile}" .json)"
+  target_collection="$(target_collection_name "${collection_name}")"
 
   if ! collection_is_seed_managed "${target_db}" "${collection_name}"; then
     echo "Skipping runtime-managed collection ${target_db}.${collection_name}; seed import is disabled for this collection."
@@ -595,9 +612,9 @@ import_json_file() {
   # start at all, it is just an empty array like "[]", which mongoimport rejects.
   if ! json_file_has_documents "${jsonfile}"; then
     if collection_should_replace_on_import "${collection_name}" && database_has_wildcard_seed_rule "${target_db}"; then
-      clear_collection "${target_db}" "${collection_name}"
-      ensure_collection_indexes "${target_db}" "${collection_name}"
-      echo "Cleared ${target_db}.${collection_name} because the seed file ${jsonfile} is empty."
+      clear_collection "${target_db}" "${target_collection}"
+      ensure_collection_indexes "${target_db}" "${target_collection}"
+      echo "Cleared ${target_db}.${target_collection} because the seed file ${jsonfile} is empty."
       return 0
     fi
 
@@ -606,14 +623,14 @@ import_json_file() {
   fi
 
   if collection_should_replace_on_import "${collection_name}"; then
-    clear_collection "${target_db}" "${collection_name}"
+    clear_collection "${target_db}" "${target_collection}"
   fi
 
   mongoimport \
     -h "${mongo_host}" \
     --port "${mongo_port}" \
     -d "${target_db}" \
-    -c "${collection_name}" \
+    -c "${target_collection}" \
     -u "${mongo_username}" \
     -p "${mongo_password}" \
     --mode=upsert \
@@ -622,7 +639,7 @@ import_json_file() {
     --jsonArray \
     --type json
 
-  ensure_collection_indexes "${target_db}" "${collection_name}"
+  ensure_collection_indexes "${target_db}" "${target_collection}"
 }
 
 import_seed_directory() {

@@ -37,11 +37,19 @@ public class UserExperienceProfilesService {
             return new UserExperiencesResponseDto(normalizeId(requestedUserId), List.of());
         }
 
-        List<ExperienceEntryDto> entries = userExperienceProfilesRepository.findByUserId(resolvedUserId)
+        List<ExperienceEntryDto> entries = queryEntriesByUserId(resolvedUserId);
+        return new UserExperiencesResponseDto(resolvedUserId, entries);
+    }
+
+    public List<ExperienceEntryDto> queryEntriesByUserId(String userId) {
+        String resolvedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return List.of();
+        }
+        return userExperienceProfilesRepository.findByUserId(resolvedUserId)
                 .map(UserExperienceProfile::getEntries)
                 .map(this::toDtos)
                 .orElseGet(List::of);
-        return new UserExperiencesResponseDto(resolvedUserId, entries);
     }
 
     public UserExperiencesResponseDto saveUserExperiences(UserExperiencesSaveRequestDto request) {

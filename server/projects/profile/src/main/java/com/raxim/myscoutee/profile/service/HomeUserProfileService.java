@@ -457,41 +457,6 @@ public class HomeUserProfileService {
         return toUserDto(resolved);
     }
 
-    @CacheEvict(value = "demo_users", allEntries = true)
-    public void saveUserProfileImage(String requestedUserId, Integer slotIndex, String imageUrl) {
-        String resolvedUserId = resolveSelectedUserId(requestedUserId);
-        int normalizedSlotIndex = slotIndex == null ? -1 : slotIndex.intValue();
-        String normalizedImageUrl = nullToEmpty(imageUrl);
-        if (!StringUtils.hasText(resolvedUserId) || normalizedSlotIndex < 0 || !StringUtils.hasText(normalizedImageUrl)) {
-            return;
-        }
-        if (!accessControlService.canCurrentActorUploadMedia(resolvedUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to upload media for this profile.");
-        }
-
-        Users user = usersRepository.findByUserId(resolvedUserId).orElse(null);
-        if (user == null) {
-            return;
-        }
-
-        evictUserReadCaches(resolvedUserId);
-        List<String> slots = new ArrayList<>(normalizeStrings(user.getImages()));
-        while (slots.size() <= normalizedSlotIndex) {
-            slots.add("");
-        }
-        slots.set(normalizedSlotIndex, normalizedImageUrl);
-        user.setImages(normalizeStrings(slots));
-        Users saved = usersRepository.save(user);
-        affinityRecomputeTaskService.enqueueUserChanged(resolvedUserId);
-        adminTelemetryService.record(
-                "profile.fill.sampled",
-                "profiles",
-                resolvedUserId,
-                resolvedUserId,
-                1L,
-                profileTelemetryTags(saved));
-    }
-
     public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
         Users currentUser = resolveCurrentUser(request == null ? null : request.userId());
         String userId = normalizeId(currentUser == null ? null : currentUser.getId());

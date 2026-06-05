@@ -165,36 +165,35 @@ class BackendContentMediaE2ETest {
     @Test
     void mediaContentPrivacyLandingAndShareTokensWorkThroughHttp() {
         String imageUrl = uploadImage("/media/images", "image", Map.of(
-                "scope", "profile",
                 "ownerId", MEDIA_USER_ID,
                 "entityId", "avatar"),
                 "avatar.png",
                 "image/png",
                 pngBytes()).path("url").asString();
-        assertThat(imageUrl).startsWith("/media/public?key=profile/");
+        assertThat(imageUrl).startsWith("/media/public?key=images/");
         assertPublicMedia(imageUrl, "image/png", pngBytes());
 
-        String profileImageUrl = uploadImage("/auth/me/profile-image", "image", Map.of(
-                "userId", MEDIA_USER_ID,
-                "slotIndex", "0"),
+        String profileImageUrl = uploadImage("/media/images", "image", Map.of(
+                "ownerId", MEDIA_USER_ID,
+                "entityId", "profile-0"),
                 "profile.png",
                 "image/png",
                 pngBytes()).path("url").asString();
+        assertThat(getJson("/auth/me?userId=" + MEDIA_USER_ID).path("images")).isEmpty();
+        postJson("/auth/me/profile", userProfilePayloadWithImages(MEDIA_USER_ID, List.of(profileImageUrl)));
         assertThat(getJson("/auth/me?userId=" + MEDIA_USER_ID).path("images").path(0).asString())
                 .isEqualTo(profileImageUrl);
 
         String audioUrl = uploadImage("/media/audio", "audio", Map.of(
-                "scope", "chat",
                 "ownerId", MEDIA_USER_ID,
                 "entityId", "voice"),
                 "voice.wav",
                 "audio/wav",
                 wavBytes()).path("url").asString();
-        assertThat(audioUrl).startsWith("/media/public?key=chat/");
+        assertThat(audioUrl).startsWith("/media/public?key=audio/");
         assertPublicMedia(audioUrl, "audio/wav", wavBytes());
 
         assertThat(uploadStatus("/media/images", "image", Map.of(
-                "scope", "profile",
                 "ownerId", MEDIA_USER_ID),
                 "not-image.txt",
                 "text/plain",
@@ -318,9 +317,9 @@ class BackendContentMediaE2ETest {
         assertThat(getJson("/auth/me?userId=" + MEDIA_USER_ID).path("images")).isEmpty();
 
         mediaObjectStoreClient.failNextPut();
-        int status = uploadStatus("/auth/me/profile-image", "image", Map.of(
-                "userId", MEDIA_USER_ID,
-                "slotIndex", "0"),
+        int status = uploadStatus("/media/images", "image", Map.of(
+                "ownerId", MEDIA_USER_ID,
+                "entityId", "profile-0"),
                 "profile.png",
                 "image/png",
                 pngBytes());
@@ -375,8 +374,47 @@ class BackendContentMediaE2ETest {
         user.setPartitionKey("country:hu");
         user.setImages(new ArrayList<>());
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
+    }
+
+    private Map<String, Object> userProfilePayloadWithImages(String userId, List<String> images) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("id", userId);
+        payload.put("name", "Content User 03");
+        payload.put("age", 27);
+        payload.put("birthday", "");
+        payload.put("city", "Budapest");
+        payload.put("height", "");
+        payload.put("physique", "");
+        payload.put("languages", List.of());
+        payload.put("horoscope", "");
+        payload.put("initials", "CU");
+        payload.put("gender", "woman");
+        payload.put("statusText", "");
+        payload.put("hostTier", "");
+        payload.put("traitLabel", "");
+        payload.put("completion", 100);
+        payload.put("profileFormVersion", 1);
+        payload.put("headline", "Backend e2e content user");
+        payload.put("about", "Seeded for content, media, and moderation e2e coverage.");
+        payload.put("affinity", 0);
+        payload.put("locationCoordinates", new LocationCoordinatesDto(47.4979d, 19.0402d));
+        payload.put("partitionKey", "country:hu");
+        payload.put("images", images);
+        payload.put("profileDetails", List.of());
+        payload.put("impressions", null);
+        payload.put("profileStatus", "public");
+        payload.put("previousProfileStatus", "");
+        payload.put("deletedAtIso", null);
+        payload.put("admin", false);
+        payload.put("activities", null);
+        return payload;
     }
 
     private void seedShareEvent() {

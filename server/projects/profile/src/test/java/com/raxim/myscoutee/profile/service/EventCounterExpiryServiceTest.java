@@ -67,6 +67,31 @@ class EventCounterExpiryServiceTest {
     }
 
     @Test
+    void runExpiryPassNowMarksPastTicketExpiredWhenNoCounterEventsAreDue() {
+        Instant now = Instant.now();
+        String pastStart = now.minusSeconds(172_800L).toString();
+        String pastEnd = now.minusSeconds(86_400L).toString();
+        ActivityEvent pastTicket = event("past-ticket", "member", "events", pastStart, pastEnd, false);
+        pastTicket.setTicketing(true);
+
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of())
+                .thenReturn(List.of(pastTicket));
+        when(mongoTemplate.updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
+
+        int processed = service.runExpiryPassNow();
+
+        assertThat(processed).isZero();
+        verify(usersRepository, never()).saveAll(any());
+        ArgumentCaptor<Query> queryCaptor = ArgumentCaptor.forClass(Query.class);
+        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateMulti(queryCaptor.capture(), updateCaptor.capture(), eq(ActivityEvent.class));
+        assertThat(queryCaptor.getValue().getQueryObject().toJson()).contains("\"ticketing\": true", "\"_id\"");
+        assertThat(updateCaptor.getValue().getUpdateObject().toJson()).contains("\"expired\": true");
+    }
+
+    @Test
     void runExpiryPassNowRecomputesAffectedCountersAndMarksPastEventExpired() {
         Instant now = Instant.now();
         String pastStart = now.minusSeconds(172_800L).toString();
@@ -87,6 +112,7 @@ class EventCounterExpiryServiceTest {
 
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(dueEvent))
+                .thenReturn(List.of())
                 .thenReturn(List.of(dueEvent, pastMemberOverlay))
                 .thenReturn(List.of(pastMemberOverlay, liveMemberOverlay, liveInvitation, pastInvitation))
                 .thenReturn(List.of(dueEvent, liveCanonical));

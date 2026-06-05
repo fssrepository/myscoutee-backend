@@ -53,14 +53,17 @@ public class FirebaseService {
 
     public UserDetails loadUserByCredential(FirebaseCredential credential, String xLink, String currentPage) {
         String normalizedEmail = normalizeCredentialEmail(credential);
-        Users user = findUserByEmail(normalizedEmail);
+        String role = resolveRole(normalizedEmail);
+        Users user = "A".equals(role) ? findUser(normalizedEmail) : null;
+        if (user == null) {
+            user = findUserByEmail(normalizedEmail);
+        }
         if (user == null) {
             user = findUserByProvider(credential);
         }
         if (user == null) {
             user = findUser(stableUserId(normalizedEmail));
         }
-        String role = resolveRole(normalizedEmail);
         if (user == null && "U".equals(role)) {
             user = createOnboardingUser(normalizedEmail, credential);
         } else if (user != null) {

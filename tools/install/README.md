@@ -112,3 +112,28 @@ By default it uses same-port forwarding from `install.env`:
 Re-running the script replaces an existing forward on the same local host and port, so changing `REMOTE_HOST` in `install.env` updates the active tunnel.
 
 Port `80` requires a privileged local bind, so the script re-runs through `sudo`.
+
+Local DB Purge
+--------------
+
+Purge the local MyScoutee DB state:
+
+```bash
+tools/install/purge-localhost-dbs.sh
+```
+
+Preview the local DB purge without deleting anything:
+
+```bash
+tools/install/purge-localhost-dbs.sh --dry-run
+```
+
+The script stops the local `server` Docker Compose project, removes local MongoDB
+and MinIO data under `server/data/`, and clears Redis by removing the local
+compose container state. Use `--mongo`, `--redis`, or `--minio` to limit the
+purge to one backend. If you pass `--skip-compose --redis`, the script flushes
+the running `redis` container instead.
+
+If Docker created root-owned database files, the script retries data removal
+with passwordless `sudo`, then with an already-local Docker helper image. Set
+`LOCAL_PURGE_HELPER_IMAGE` to choose a specific helper image.

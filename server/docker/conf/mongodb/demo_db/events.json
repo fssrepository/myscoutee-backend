@@ -946,7 +946,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-03-04T09:45:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -1966,7 +1967,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-03-01T09:00:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -2107,7 +2109,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-03-03T10:30:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -2564,7 +2567,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-03-09T13:00:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -2706,7 +2710,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-03-11T14:30:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -2897,7 +2902,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-03-13T09:00:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -4669,7 +4675,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-04-04T13:30:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -4919,7 +4926,8 @@
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2027-04-08T09:30:00",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -5660,7 +5668,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-17T18:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -5910,7 +5919,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-01T09:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -6368,7 +6378,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-07T12:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -6685,7 +6696,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-11T14:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -6826,7 +6838,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-13T09:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -6967,7 +6980,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-15T10:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -7957,7 +7971,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-29T10:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -8206,7 +8221,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-02T12:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -8398,7 +8414,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-04T13:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -8590,7 +8607,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-06T08:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -8905,7 +8923,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-10T10:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -9029,7 +9048,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-12T11:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -9553,7 +9573,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-18T08:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -9677,7 +9698,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-20T09:30:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -9869,7 +9891,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-04-22T10:00:00",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -10328,7 +10351,8 @@
     "updatedUser": "d04cd419e735549e3f312977",
     "statusBeforeSuppression": "A",
     "isTrashed": false,
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -11187,7 +11211,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-03-07T12:30:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -11902,7 +11927,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-03-15T10:30:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -12742,7 +12768,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-03-25T09:00:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -13392,7 +13419,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-04-02T12:00:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -13916,7 +13944,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-04-08T09:30:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -14058,7 +14087,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-04-10T10:00:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -14957,7 +14987,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-04-22T10:00:00",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -15207,7 +15238,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-01T09:00:00",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -15398,7 +15430,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-03T10:30:00",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -16048,7 +16081,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-11T14:30:00",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -16314,7 +16348,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-15T10:30:00",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -17405,7 +17440,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-29T10:00:00",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -19459,7 +19495,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-04-24T11:30:00",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -19899,7 +19936,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-02T11:30:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -20183,7 +20221,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-03T10:30:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -20449,7 +20488,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-07T12:30:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -20822,7 +20862,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-13T09:00:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -21471,7 +21512,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-21T13:00:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -22354,7 +22396,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-04-02T12:00:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -23195,7 +23238,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-04-12T11:30:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -23510,7 +23554,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-04-16T13:30:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -24034,7 +24079,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-04-22T10:00:00",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -25324,7 +25370,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-13T09:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -25466,7 +25513,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-15T10:30:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -25855,7 +25903,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-21T13:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -26239,7 +26288,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-25T09:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -26431,7 +26481,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-27T10:30:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -26622,7 +26673,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-29T10:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -26937,7 +26989,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-04-02T12:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -27520,7 +27573,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-04-10T10:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -27904,7 +27958,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-04-14T12:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -28046,7 +28101,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-04-16T13:30:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -28312,7 +28368,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-04-20T09:30:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -28837,7 +28894,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-04-26T12:00:00",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -29576,7 +29634,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:51.325Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -29767,7 +29826,8 @@
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2027-03-25T13:07:51.325Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -29958,7 +30018,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:51.325Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30149,7 +30210,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:51.325Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30274,7 +30336,8 @@
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2027-03-25T13:07:51.494Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30399,7 +30462,8 @@
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2027-03-25T13:07:51.494Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30524,7 +30588,8 @@
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2027-03-25T13:07:51.494Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30665,7 +30730,8 @@
     "createdUser": "a0fb804ad6f347d6a9dab526",
     "updatedDate": "2027-03-25T13:07:51.515Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30806,7 +30872,8 @@
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2027-03-25T13:07:51.515Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -30947,7 +31014,8 @@
     "createdUser": "8f6ff3752a1f0912cd63e912",
     "updatedDate": "2027-03-25T13:07:51.515Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31088,7 +31156,8 @@
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2027-03-25T13:07:51.515Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31230,7 +31299,8 @@
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2027-03-25T13:07:51.577Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31372,7 +31442,8 @@
     "createdUser": "8f6ff3752a1f0912cd63e912",
     "updatedDate": "2027-03-25T13:07:51.577Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31514,7 +31585,8 @@
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2027-03-25T13:07:51.577Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31656,7 +31728,8 @@
     "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
     "updatedDate": "2027-03-25T13:07:51.577Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31798,7 +31871,8 @@
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2027-03-25T13:07:51.597Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -31940,7 +32014,8 @@
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2027-03-25T13:07:51.597Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -32082,7 +32157,8 @@
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2027-03-25T13:07:51.597Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -32224,7 +32300,8 @@
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2027-03-25T13:07:51.597Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -32366,7 +32443,8 @@
     "createdUser": "e904dad402b47dd2cdaa8bec",
     "updatedDate": "2027-03-25T13:07:51.597Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -32557,7 +32635,8 @@
     "createdUser": "8f6ff3752a1f0912cd63e912",
     "updatedDate": "2027-03-25T13:07:51.617Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -32748,7 +32827,8 @@
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2027-03-25T13:07:51.617Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -32939,7 +33019,8 @@
     "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
     "updatedDate": "2027-03-25T13:07:51.617Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33080,7 +33161,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:51.867Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33221,7 +33303,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:51.867Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33362,7 +33445,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:51.867Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33503,7 +33587,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:51.867Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33644,7 +33729,8 @@
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2027-03-25T13:07:51.867Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33769,7 +33855,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:51.907Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -33894,7 +33981,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:51.907Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34019,7 +34107,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:51.907Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34144,7 +34233,8 @@
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2027-03-25T13:07:51.907Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34285,7 +34375,8 @@
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2027-03-25T13:07:52.007Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34426,7 +34517,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-03-25T13:07:52.007Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34567,7 +34659,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-25T13:07:52.007Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34708,7 +34801,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:52.007Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34833,7 +34927,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-03-25T13:07:52.047Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -34958,7 +35053,8 @@
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2027-03-25T13:07:52.048Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -35083,7 +35179,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:52.048Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -35208,7 +35305,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:52.117Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -35333,7 +35431,8 @@
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2027-03-25T13:07:52.117Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -35458,7 +35557,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:52.117Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -35650,7 +35750,8 @@
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2027-03-25T13:07:52.165Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -35842,7 +35943,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-25T13:07:52.165Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36034,7 +36136,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:52.165Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36226,7 +36329,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:52.165Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36418,7 +36522,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:52.165Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36559,7 +36664,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:52.185Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36700,7 +36806,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:52.185Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36841,7 +36948,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-25T13:07:52.185Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -36982,7 +37090,8 @@
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2027-03-25T13:07:52.206Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37123,7 +37232,8 @@
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2027-03-25T13:07:52.206Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37264,7 +37374,8 @@
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2027-03-25T13:07:52.206Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37405,7 +37516,8 @@
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2027-03-25T13:07:52.206Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37546,7 +37658,8 @@
     "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
     "updatedDate": "2027-03-25T13:07:52.354Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37687,7 +37800,8 @@
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2027-03-25T13:07:52.354Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37828,7 +37942,8 @@
     "createdUser": "e904dad402b47dd2cdaa8bec",
     "updatedDate": "2027-03-25T13:07:52.354Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -37969,7 +38084,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:52.354Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38110,7 +38226,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:52.354Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38235,7 +38352,8 @@
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2027-03-25T13:07:52.418Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38360,7 +38478,8 @@
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2027-03-25T13:07:52.418Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38485,7 +38604,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:52.418Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38610,7 +38730,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:52.418Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38802,7 +38923,8 @@
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2027-03-25T13:07:52.452Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -38994,7 +39116,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-25T13:07:52.452Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -39186,7 +39309,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:52.452Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -39378,7 +39502,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:52.452Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -39570,7 +39695,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:52.452Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -39762,7 +39888,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:52.471Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -39954,7 +40081,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:52.471Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40146,7 +40274,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-25T13:07:52.471Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40270,7 +40399,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:52.510Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40394,7 +40524,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:52.510Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40518,7 +40649,8 @@
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2027-03-25T13:07:52.510Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40642,7 +40774,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:52.510Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40766,7 +40899,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:52.510Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -40890,7 +41024,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-25T13:07:52.529Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41014,7 +41149,8 @@
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2027-03-25T13:07:52.529Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41138,7 +41274,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:52.529Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41280,7 +41417,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:52.587Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41422,7 +41560,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:52.587Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41564,7 +41703,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:52.587Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41688,7 +41828,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:52.609Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41812,7 +41953,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:52.609Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -41936,7 +42078,8 @@
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2027-03-25T13:07:52.609Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -42060,7 +42203,8 @@
     "createdUser": "0b8e5df4ec85d858c304a350",
     "updatedDate": "2027-03-25T13:07:52.609Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -42252,7 +42396,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:52.637Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -42444,7 +42589,8 @@
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2027-03-25T13:07:52.637Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -42636,7 +42782,8 @@
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2027-03-25T13:07:52.637Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -42828,7 +42975,8 @@
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2027-03-25T13:07:52.637Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43020,7 +43168,8 @@
     "createdUser": "e1dccfc3443239865c6ac69a",
     "updatedDate": "2027-03-25T13:07:52.637Z",
     "updatedUser": "b29df68956f3fe15e04558de",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43161,7 +43310,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:52.705Z",
     "updatedUser": "d04cd419e735549e3f312977",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43302,7 +43452,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-25T13:07:52.705Z",
     "updatedUser": "d04cd419e735549e3f312977",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43443,7 +43594,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:52.705Z",
     "updatedUser": "d04cd419e735549e3f312977",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43584,7 +43736,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:52.705Z",
     "updatedUser": "d04cd419e735549e3f312977",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43725,7 +43878,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:52.705Z",
     "updatedUser": "d04cd419e735549e3f312977",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -43917,7 +44071,8 @@
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2027-03-25T13:07:52.808Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -44109,7 +44264,8 @@
     "createdUser": "c033e546ef7c928fb8cf073b",
     "updatedDate": "2027-03-25T13:07:52.808Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -44301,7 +44457,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:52.808Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -44493,7 +44650,8 @@
     "createdUser": "23820c1e76d3bd843f61c799",
     "updatedDate": "2027-03-25T13:07:52.808Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -44685,7 +44843,8 @@
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2027-03-25T13:07:52.808Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -44876,7 +45035,8 @@
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2027-03-25T13:07:52.887Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -45067,7 +45227,8 @@
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2027-03-25T13:07:52.887Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -45258,7 +45419,8 @@
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2027-03-25T13:07:52.887Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -45449,7 +45611,8 @@
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2027-03-25T13:07:52.986Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -45640,7 +45803,8 @@
     "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
     "updatedDate": "2027-03-25T13:07:52.986Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -45831,7 +45995,8 @@
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2027-03-25T13:07:52.986Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46022,7 +46187,8 @@
     "createdUser": "e904dad402b47dd2cdaa8bec",
     "updatedDate": "2027-03-25T13:07:52.986Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46213,7 +46379,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:52.986Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46338,7 +46505,8 @@
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2027-03-25T13:07:53.080Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46463,7 +46631,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:53.080Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46588,7 +46757,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-25T13:07:53.080Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46729,7 +46899,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-25T13:07:53.146Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -46870,7 +47041,8 @@
     "createdUser": "eb1ca0b761885bb0763e2929",
     "updatedDate": "2027-03-25T13:07:53.146Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47011,7 +47183,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:53.146Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47153,7 +47326,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:53.165Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47295,7 +47469,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:53.165Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47437,7 +47612,8 @@
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2027-03-25T13:07:53.165Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47579,7 +47755,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:53.165Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47720,7 +47897,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:53.285Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -47861,7 +48039,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:53.285Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48002,7 +48181,8 @@
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2027-03-25T13:07:53.285Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48143,7 +48323,8 @@
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2027-03-25T13:07:53.285Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48267,7 +48448,8 @@
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2027-03-25T13:07:53.332Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48391,7 +48573,8 @@
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2027-03-25T13:07:53.332Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48515,7 +48698,8 @@
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2027-03-25T13:07:53.332Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48639,7 +48823,8 @@
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2027-03-25T13:07:53.332Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -48830,7 +49015,8 @@
     "createdUser": "af70e41dbe826cbd7d8b3500",
     "updatedDate": "2027-03-25T13:07:53.355Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -49021,7 +49207,8 @@
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2027-03-25T13:07:53.355Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -49212,7 +49399,8 @@
     "createdUser": "f01086c19a00a6f46b6d41a7",
     "updatedDate": "2027-03-25T13:07:53.355Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -49403,7 +49591,8 @@
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2027-03-25T13:07:53.355Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -49594,7 +49783,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-25T13:07:53.355Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -49786,7 +49976,8 @@
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2027-03-25T13:07:53.437Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -49978,7 +50169,8 @@
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2027-03-25T13:07:53.437Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50103,7 +50295,8 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2027-03-25T13:07:53.478Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50228,7 +50421,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-25T13:07:53.478Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50353,7 +50547,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:53.478Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50478,7 +50673,8 @@
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2027-03-25T13:07:53.478Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50603,7 +50799,8 @@
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2027-03-25T13:07:53.620Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50728,7 +50925,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:53.620Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50853,7 +51051,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:53.620Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -50995,7 +51194,8 @@
     "createdUser": "23820c1e76d3bd843f61c799",
     "updatedDate": "2027-03-25T13:07:53.893Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51137,7 +51337,8 @@
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2027-03-25T13:07:53.893Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51279,7 +51480,8 @@
     "createdUser": "af70e41dbe826cbd7d8b3500",
     "updatedDate": "2027-03-25T13:07:53.893Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51421,7 +51623,8 @@
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2027-03-25T13:07:53.893Z",
     "updatedUser": "d182041b8a54132d5168034f",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51545,7 +51748,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:53.990Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51669,7 +51873,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:53.990Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51793,7 +51998,8 @@
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2027-03-25T13:07:53.990Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -51935,7 +52141,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:54.062Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52077,7 +52284,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:54.062Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52219,7 +52427,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:54.062Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52361,7 +52570,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:54.105Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52503,7 +52713,8 @@
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2027-03-25T13:07:54.105Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52645,7 +52856,8 @@
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2027-03-25T13:07:54.105Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52787,7 +52999,8 @@
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2027-03-25T13:07:54.105Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -52929,7 +53142,8 @@
     "createdUser": "e1dccfc3443239865c6ac69a",
     "updatedDate": "2027-03-25T13:07:54.105Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53054,7 +53268,8 @@
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2027-03-25T13:07:54.176Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53179,7 +53394,8 @@
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2027-03-25T13:07:54.176Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53304,7 +53520,8 @@
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2027-03-25T13:07:54.176Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53429,7 +53646,8 @@
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2027-03-25T13:07:54.176Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53554,7 +53772,8 @@
     "createdUser": "a0fb804ad6f347d6a9dab526",
     "updatedDate": "2027-03-25T13:07:54.176Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53745,7 +53964,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:54.263Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -53936,7 +54156,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:54.263Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54127,7 +54348,8 @@
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2027-03-25T13:07:54.263Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54318,7 +54540,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:54.263Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54443,7 +54666,8 @@
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2027-03-25T13:07:54.395Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54568,7 +54792,8 @@
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2027-03-25T13:07:54.395Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54693,7 +54918,8 @@
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2027-03-25T13:07:54.395Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54818,7 +55044,8 @@
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2027-03-25T13:07:54.395Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -54942,7 +55169,8 @@
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2027-03-25T13:07:54.501Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -55066,7 +55294,8 @@
     "createdUser": "af70e41dbe826cbd7d8b3500",
     "updatedDate": "2027-03-25T13:07:54.501Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -55190,7 +55419,8 @@
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2027-03-25T13:07:54.501Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -55381,7 +55611,8 @@
     "createdUser": "af70e41dbe826cbd7d8b3500",
     "updatedDate": "2027-03-25T13:07:54.542Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -55572,7 +55803,8 @@
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2027-03-25T13:07:54.542Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -55763,7 +55995,8 @@
     "createdUser": "f01086c19a00a6f46b6d41a7",
     "updatedDate": "2027-03-25T13:07:54.542Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -55954,7 +56187,8 @@
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2027-03-25T13:07:54.542Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56095,7 +56329,8 @@
     "createdUser": "f01086c19a00a6f46b6d41a7",
     "updatedDate": "2027-03-25T13:07:54.604Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56236,7 +56471,8 @@
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2027-03-25T13:07:54.604Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56377,7 +56613,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:54.604Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56519,7 +56756,8 @@
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2027-03-25T13:07:54.806Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56661,7 +56899,8 @@
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2027-03-25T13:07:54.806Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56803,7 +57042,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:54.806Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -56945,7 +57185,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:54.827Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -57087,7 +57328,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:54.827Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -57229,7 +57471,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:54.827Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -57371,7 +57614,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:54.827Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -57512,7 +57756,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-25T13:07:54.888Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -57653,7 +57898,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:54.888Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -57845,7 +58091,8 @@
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2027-03-25T13:07:54.929Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -58037,7 +58284,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:54.929Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -58229,7 +58477,8 @@
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2027-03-25T13:07:54.949Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -58421,7 +58670,8 @@
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2027-03-25T13:07:54.949Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -58613,7 +58863,8 @@
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2027-03-25T13:07:54.949Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -58805,7 +59056,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:54.949Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -58996,7 +59248,8 @@
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2027-03-25T13:07:54.974Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -59187,7 +59440,8 @@
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2027-03-25T13:07:54.974Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -59378,7 +59632,8 @@
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2027-03-25T13:07:54.974Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -59569,7 +59824,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-25T13:07:54.974Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -59760,7 +60016,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:54.974Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -59884,7 +60141,8 @@
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2027-03-25T13:07:55.030Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -60008,7 +60266,8 @@
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedDate": "2027-03-25T13:07:55.030Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -60132,7 +60391,8 @@
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2027-03-25T13:07:55.030Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -60256,7 +60516,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:55.030Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -60447,7 +60708,8 @@
     "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
     "updatedDate": "2027-03-25T13:07:55.118Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -60638,7 +60900,8 @@
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2027-03-25T13:07:55.118Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -60829,7 +61092,8 @@
     "createdUser": "e904dad402b47dd2cdaa8bec",
     "updatedDate": "2027-03-25T13:07:55.118Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -61020,7 +61284,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:55.118Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -61211,7 +61476,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:55.118Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -61403,7 +61669,8 @@
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2027-03-25T13:07:55.162Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -61595,7 +61862,8 @@
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2027-03-25T13:07:55.162Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -61787,7 +62055,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:55.162Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -61979,7 +62248,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:55.162Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62121,7 +62391,8 @@
     "createdUser": "e904dad402b47dd2cdaa8bec",
     "updatedDate": "2027-03-25T13:07:55.185Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62263,7 +62534,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:55.185Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62405,7 +62677,8 @@
     "createdUser": "c033e546ef7c928fb8cf073b",
     "updatedDate": "2027-03-25T13:07:55.185Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62547,7 +62820,8 @@
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2027-03-25T13:07:55.185Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62689,7 +62963,8 @@
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2027-03-25T13:07:55.185Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62831,7 +63106,8 @@
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2027-03-25T13:07:55.229Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -62973,7 +63249,8 @@
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2027-03-25T13:07:55.229Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -63115,7 +63392,8 @@
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2027-03-25T13:07:55.229Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -63257,7 +63535,8 @@
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2027-03-25T13:07:55.229Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -63449,7 +63728,8 @@
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2027-03-25T13:07:55.294Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -63641,7 +63921,8 @@
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2027-03-25T13:07:55.294Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -63833,7 +64114,8 @@
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2027-03-25T13:07:55.294Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {
@@ -64025,7 +64307,8 @@
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2027-03-25T13:07:55.294Z",
     "updatedUser": "eb1ca0b761885bb0763e2929",
-    "upcomingSlots": []
+    "upcomingSlots": [],
+    "expired": true
   },
   {
     "_id": {

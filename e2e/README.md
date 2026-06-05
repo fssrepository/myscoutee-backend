@@ -58,7 +58,7 @@ E2E mode is for destructive or weird end-to-end flows. It uses
 ```bash
 cd server
 MONGO_E2E_DATABASE=e2e_db \
-docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build
 
 cd ..
 # Start the e2e stack first; this runner expects localhost to route to it.

@@ -75,7 +75,7 @@ e2e/stress stack instead:
 ```bash
 cd server
 MONGO_E2E_DATABASE=e2e_db \
-docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build
 ```
 
 ## Scenario Matrix

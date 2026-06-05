@@ -1,6 +1,6 @@
 # Disposable full-stack e2e mode for destructive functional/stress tests.
 # Usage:
-#   MONGO_E2E_DATABASE=e2e_db docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --build
+#   MONGO_E2E_DATABASE=e2e_db docker compose -f docker-compose-dev.yml -f docker-compose.e2e.yml up --build
 #
 # This keeps the normal demo_db volume untouched and points both real/demo routing
 # at the e2e database so tests can mutate freely.

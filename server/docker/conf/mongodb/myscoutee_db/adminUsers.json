@@ -1,0 +1,167 @@
+[
+  {
+    "_id": "admin-real-raxim-uk-gmail-com",
+    "syncKey": "admin-real-raxim-uk-gmail-com",
+    "userId": "raxim.uk@gmail.com",
+    "email": "raxim.uk@gmail.com",
+    "name": "raxim.uk@gmail.com",
+    "initials": "RU",
+    "gender": "woman",
+    "statusText": "Admin workspace",
+    "hostTier": "Admin",
+    "traitLabel": "Safety",
+    "completion": 100,
+    "profileFormVersion": 1,
+    "headline": "Moderation workspace",
+    "about": "Reviews reports, feedback, and support chats.",
+    "status": "A",
+    "profileStatus": "public",
+    "images": [],
+    "activities": {
+      "game": 0,
+      "chat": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
+      "adminJobs": 0,
+      "adminMetrics": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      },
+      "asset": {
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
+        "tickets": 0
+      },
+      "eventFeedback": {
+        "ownEvents": 0,
+        "pending": 0,
+        "feedbacked": 0,
+        "removed": 0
+      }
+    }
+  },
+  {
+    "_id": "admin-real-myscoutee1-gmail-com",
+    "syncKey": "admin-real-myscoutee1-gmail-com",
+    "userId": "myscoutee1@gmail.com",
+    "email": "myscoutee1@gmail.com",
+    "name": "myscoutee1@gmail.com",
+    "initials": "M",
+    "gender": "woman",
+    "statusText": "Admin workspace",
+    "hostTier": "Admin",
+    "traitLabel": "Safety",
+    "completion": 100,
+    "profileFormVersion": 1,
+    "headline": "Moderation workspace",
+    "about": "Reviews reports, feedback, and support chats.",
+    "status": "A",
+    "profileStatus": "public",
+    "images": [],
+    "activities": {
+      "game": 0,
+      "chat": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
+      "adminJobs": 0,
+      "adminMetrics": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      },
+      "asset": {
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
+        "tickets": 0
+      },
+      "eventFeedback": {
+        "ownEvents": 0,
+        "pending": 0,
+        "feedbacked": 0,
+        "removed": 0
+      }
+    }
+  },
+  {
+    "_id": "admin-real-myscoutee-gmail-com",
+    "syncKey": "admin-real-myscoutee-gmail-com",
+    "userId": "myscoutee@gmail.com",
+    "email": "myscoutee@gmail.com",
+    "name": "myscoutee@gmail.com",
+    "initials": "M",
+    "gender": "woman",
+    "statusText": "Admin workspace",
+    "hostTier": "Admin",
+    "traitLabel": "Safety",
+    "completion": 100,
+    "profileFormVersion": 1,
+    "headline": "Moderation workspace",
+    "about": "Reviews reports, feedback, and support chats.",
+    "status": "A",
+    "profileStatus": "public",
+    "images": [],
+    "activities": {
+      "game": 0,
+      "chat": 0,
+      "invitations": 0,
+      "events": 0,
+      "hosting": 0,
+      "cars": 0,
+      "accommodation": 0,
+      "supplies": 0,
+      "tickets": 0,
+      "contacts": 0,
+      "feedback": 0,
+      "adminJobs": 0,
+      "adminMetrics": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      },
+      "asset": {
+        "cars": 0,
+        "accommodation": 0,
+        "supplies": 0,
+        "tickets": 0
+      },
+      "eventFeedback": {
+        "ownEvents": 0,
+        "pending": 0,
+        "feedbacked": 0,
+        "removed": 0
+      }
+    }
+  }
+]

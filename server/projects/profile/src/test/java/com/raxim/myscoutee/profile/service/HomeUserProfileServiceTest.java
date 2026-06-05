@@ -309,29 +309,6 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
-    void profileImageSaveEnqueuesUserRecompute() {
-        Users active = user("active", 0d);
-        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
-        when(usersRepository.save(active)).thenReturn(active);
-
-        service.saveUserProfileImage("active", 0, "https://cdn.example.com/avatar.jpg");
-
-        verify(affinityRecomputeTaskService).enqueueUserChanged("active");
-    }
-
-    @Test
-    void profileImageSaveRejectsDeniedOwnerBeforeSaving() {
-        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(user("active", 0d)));
-        when(accessControlService.canCurrentActorUploadMedia("active")).thenReturn(false);
-
-        assertThatThrownBy(() -> service.saveUserProfileImage("active", 0, "https://cdn.example.com/avatar.jpg"))
-                .hasMessageContaining("upload media");
-
-        verify(usersRepository, never()).save(any(Users.class));
-        verifyNoInteractions(affinityRecomputeTaskService);
-    }
-
-    @Test
     void onboardingAutosaveKeepsThirtyDayPurgeTimestamp() {
         Users active = user("active", 0d);
         active.setStatus("A");

@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.controller.navigator;
 
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactDeleteRequestDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactDto;
+import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactProfileDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactsSaveRequestDto;
 
 import java.util.List;
@@ -30,6 +31,11 @@ public class NavigatorContactsController {
     public List<NavigatorContactDto> loadContacts(
             @RequestParam(value = "userId", required = false) String userId) {
         return navigatorContactsService.loadContacts(userId);
+    }
+
+    @GetMapping("/{userId}/profile")
+    public NavigatorContactProfileDto loadContactProfile(@PathVariable String userId) {
+        return navigatorContactsService.loadContactProfile(userId);
     }
 
     @PutMapping

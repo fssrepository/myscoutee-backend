@@ -5,38 +5,40 @@
     },
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
-      "chat": 12,
-      "events": 46,
-      "game": 9,
+      "game": 106,
+      "chat": 121,
+      "invitations": 4,
+      "events": 1,
       "hosting": 29,
-      "invitations": 19,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 8,
+      "tickets": 0,
       "contacts": 3,
       "feedback": 0,
       "event": {
-        "all": 94,
-        "active": 46,
-        "pending": 0,
-        "invitations": 19,
+        "all": 63,
+        "active": 1,
+        "pending": 28,
+        "invitations": 4,
         "hosting": 29,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 8
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 2,
         "pending": 0,
         "feedbacked": 2,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 432507,
     "age": 28,
@@ -171,38 +173,40 @@
     },
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
-      "chat": 4,
-      "events": 44,
-      "game": 4,
-      "hosting": 30,
-      "invitations": 16,
+      "game": 154,
+      "chat": 117,
+      "invitations": 1,
+      "events": 3,
+      "hosting": 33,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 17,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 90,
-        "active": 44,
-        "pending": 0,
-        "invitations": 16,
-        "hosting": 30,
-        "drafts": 0,
-        "trash": 0
+        "all": 61,
+        "active": 3,
+        "pending": 24,
+        "invitations": 1,
+        "hosting": 33,
+        "drafts": 1,
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 17
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 2,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 499225,
     "age": 31,
@@ -244,38 +248,40 @@
     },
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
-      "chat": 4,
-      "events": 44,
-      "game": 6,
-      "hosting": 29,
-      "invitations": 14,
+      "game": 109,
+      "chat": 125,
+      "invitations": 1,
+      "events": 7,
+      "hosting": 31,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 10,
+      "tickets": 1,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 87,
-        "active": 44,
-        "pending": 0,
-        "invitations": 14,
-        "hosting": 29,
-        "drafts": 0,
-        "trash": 0
+        "all": 59,
+        "active": 7,
+        "pending": 19,
+        "invitations": 1,
+        "hosting": 31,
+        "drafts": 1,
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 10
+        "tickets": 1
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 2,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 581523,
     "age": 30,
@@ -410,38 +416,40 @@
     },
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
-      "chat": 0,
-      "events": 49,
-      "game": 7,
-      "hosting": 31,
-      "invitations": 10,
+      "game": 118,
+      "chat": 124,
+      "invitations": 1,
+      "events": 10,
+      "hosting": 32,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 13,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 90,
-        "active": 49,
-        "pending": 0,
-        "invitations": 10,
-        "hosting": 31,
+        "all": 60,
+        "active": 10,
+        "pending": 17,
+        "invitations": 1,
+        "hosting": 32,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 13
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 2,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 440843,
     "age": 29,
@@ -575,38 +583,40 @@
     },
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
-      "chat": 0,
-      "events": 17,
-      "game": 5,
+      "game": 121,
+      "chat": 50,
+      "invitations": 2,
+      "events": 12,
       "hosting": 1,
-      "invitations": 5,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 23,
-        "active": 17,
-        "pending": 0,
-        "invitations": 5,
+        "all": 22,
+        "active": 12,
+        "pending": 7,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 444724,
     "age": 27,
@@ -648,38 +658,40 @@
     },
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
-      "chat": 0,
-      "events": 19,
-      "game": 3,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 108,
+      "chat": 42,
+      "invitations": 2,
+      "events": 16,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 9,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 21,
-        "active": 19,
+        "all": 20,
+        "active": 16,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
-        "trash": 0
+        "trash": 2
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 9
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 620130,
     "age": 26,
@@ -721,38 +733,40 @@
     },
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
-      "chat": 0,
-      "events": 17,
-      "game": 8,
+      "game": 106,
+      "chat": 39,
+      "invitations": 2,
+      "events": 14,
       "hosting": 1,
-      "invitations": 3,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 5,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 21,
-        "active": 17,
-        "pending": 0,
-        "invitations": 3,
+        "all": 20,
+        "active": 14,
+        "pending": 3,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 5
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -793,38 +807,40 @@
     },
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
-      "chat": 0,
-      "events": 22,
-      "game": 4,
+      "game": 104,
+      "chat": 57,
+      "invitations": 2,
+      "events": 20,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 6,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 24,
-        "active": 22,
+        "all": 23,
+        "active": 20,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 6
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 1,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 443988,
     "age": 32,
@@ -866,38 +882,40 @@
     },
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
-      "chat": 0,
-      "events": 24,
-      "game": 2,
+      "game": 104,
+      "chat": 44,
+      "invitations": 2,
+      "events": 22,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 9,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 26,
-        "active": 24,
+        "all": 25,
+        "active": 22,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 9
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 227821,
     "age": 25,
@@ -938,38 +956,40 @@
     },
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
-      "chat": 0,
-      "events": 49,
-      "game": 6,
+      "game": 104,
+      "chat": 114,
+      "invitations": 2,
+      "events": 18,
       "hosting": 30,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 12,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 80,
-        "active": 49,
+        "all": 50,
+        "active": 18,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 30,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 12
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 522709,
     "age": 29,
@@ -1011,23 +1031,23 @@
     },
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
-      "chat": 0,
-      "events": 30,
-      "game": 5,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 120,
+      "chat": 63,
+      "invitations": 2,
+      "events": 27,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 11,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 32,
-        "active": 30,
+        "all": 31,
+        "active": 27,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
@@ -1035,14 +1055,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 11
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 1,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 398080,
     "age": 33,
@@ -1083,38 +1105,40 @@
     },
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
-      "chat": 0,
-      "events": 53,
-      "game": 4,
-      "hosting": 31,
-      "invitations": 1,
+      "game": 118,
+      "chat": 109,
+      "invitations": 2,
+      "events": 20,
+      "hosting": 32,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 17,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 85,
-        "active": 53,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 31,
+        "all": 55,
+        "active": 20,
+        "pending": 1,
+        "invitations": 2,
+        "hosting": 32,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 17
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 329173,
     "age": 27,
@@ -1156,22 +1180,22 @@
     },
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
-      "chat": 0,
-      "events": 30,
-      "game": 9,
+      "game": 150,
+      "chat": 73,
+      "invitations": 2,
+      "events": 28,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 13,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 32,
-        "active": 30,
+        "all": 31,
+        "active": 28,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -1180,14 +1204,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 13
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -1229,38 +1255,40 @@
     },
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
-      "chat": 0,
-      "events": 28,
-      "game": 4,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 153,
+      "chat": 48,
+      "invitations": 2,
+      "events": 24,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 6,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 30,
-        "active": 28,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "active": 24,
+        "pending": 2,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 6
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -1302,23 +1330,23 @@
     },
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
-      "chat": 0,
-      "events": 29,
-      "game": 6,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 111,
+      "chat": 57,
+      "invitations": 2,
+      "events": 26,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 11,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 31,
-        "active": 29,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "active": 26,
+        "pending": 1,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
@@ -1326,14 +1354,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 11
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 581523,
     "age": 26,
@@ -1375,22 +1405,22 @@
     },
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
-      "chat": 0,
-      "events": 27,
-      "game": 7,
+      "game": 104,
+      "chat": 55,
+      "invitations": 2,
+      "events": 24,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 7,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 29,
-        "active": 27,
-        "pending": 0,
-        "invitations": 1,
+        "all": 28,
+        "active": 24,
+        "pending": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -1399,14 +1429,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 7
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -1447,23 +1479,23 @@
     },
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
-      "chat": 0,
-      "events": 25,
-      "game": 5,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 139,
+      "chat": 38,
+      "invitations": 2,
+      "events": 21,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 7,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 27,
-        "active": 25,
-        "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "active": 21,
+        "pending": 2,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
@@ -1471,14 +1503,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 7
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -1520,22 +1554,22 @@
     },
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
-      "chat": 0,
-      "events": 22,
-      "game": 3,
+      "game": 104,
+      "chat": 35,
+      "invitations": 2,
+      "events": 20,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 8,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 24,
-        "active": 22,
+        "all": 23,
+        "active": 20,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -1544,14 +1578,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 8
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 620130,
     "age": 29,
@@ -1593,22 +1629,22 @@
     },
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
-      "chat": 0,
-      "events": 18,
-      "game": 8,
+      "game": 150,
+      "chat": 25,
+      "invitations": 2,
+      "events": 16,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 20,
-        "active": 18,
+        "all": 19,
+        "active": 16,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -1617,14 +1653,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -1665,23 +1703,23 @@
     },
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
-      "chat": 0,
-      "events": 16,
-      "game": 4,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 126,
+      "chat": 23,
+      "invitations": 2,
+      "events": 14,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 6,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 18,
-        "active": 16,
+        "all": 17,
+        "active": 14,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
@@ -1689,14 +1727,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 6
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -1738,23 +1778,23 @@
     },
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
-      "chat": 0,
-      "events": 12,
-      "game": 2,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 127,
+      "chat": 13,
+      "invitations": 2,
+      "events": 10,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 1,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 14,
-        "active": 12,
+        "all": 13,
+        "active": 10,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
+        "invitations": 2,
+        "hosting": 2,
         "drafts": 0,
         "trash": 0
       },
@@ -1762,14 +1802,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 1
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -1810,38 +1852,40 @@
     },
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
-      "chat": 0,
-      "events": 11,
-      "game": 6,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 116,
+      "chat": 16,
+      "invitations": 2,
+      "events": 10,
+      "hosting": 3,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 13,
-        "active": 11,
+        "active": 10,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 3,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -1883,38 +1927,40 @@
     },
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
-      "chat": 0,
-      "events": 8,
-      "game": 5,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 111,
+      "chat": 7,
+      "invitations": 2,
+      "events": 7,
+      "hosting": 4,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 1,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 10,
-        "active": 8,
+        "active": 7,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 4,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 1
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -1955,38 +2001,40 @@
     },
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
-      "chat": 0,
-      "events": 7,
-      "game": 4,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 176,
+      "chat": 9,
+      "invitations": 2,
+      "events": 6,
+      "hosting": 3,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 9,
-        "active": 7,
+        "active": 6,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 3,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -2028,38 +2076,40 @@
     },
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
-      "chat": 0,
+      "game": 153,
+      "chat": 7,
+      "invitations": 2,
       "events": 4,
-      "game": 9,
-      "hosting": 1,
-      "invitations": 1,
+      "hosting": 3,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 1,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 6,
+        "all": 7,
         "active": 4,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 3,
+        "drafts": 2,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 1
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -2101,38 +2151,40 @@
     },
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
-      "chat": 0,
-      "events": 6,
-      "game": 4,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 129,
+      "chat": 8,
+      "invitations": 2,
+      "events": 5,
+      "hosting": 3,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 8,
-        "active": 6,
+        "active": 5,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 3,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -2174,38 +2226,40 @@
     },
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
-      "chat": 0,
-      "events": 8,
-      "game": 6,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 104,
+      "chat": 13,
+      "invitations": 2,
+      "events": 7,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 10,
-        "active": 8,
+        "active": 7,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 2,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 581523,
     "age": 26,
@@ -2247,22 +2301,22 @@
     },
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
-      "chat": 0,
-      "events": 10,
-      "game": 7,
+      "game": 105,
+      "chat": 17,
+      "invitations": 2,
+      "events": 8,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 12,
-        "active": 10,
+        "all": 11,
+        "active": 8,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2271,14 +2325,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -2319,38 +2375,40 @@
     },
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
-      "chat": 0,
-      "events": 12,
-      "game": 5,
-      "hosting": 1,
-      "invitations": 1,
+      "game": 122,
+      "chat": 17,
+      "invitations": 2,
+      "events": 11,
+      "hosting": 2,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 5,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
         "all": 14,
-        "active": 12,
+        "active": 11,
         "pending": 0,
-        "invitations": 1,
-        "hosting": 1,
-        "drafts": 0,
+        "invitations": 2,
+        "hosting": 2,
+        "drafts": 1,
         "trash": 0
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 5
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -2392,22 +2450,22 @@
     },
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
-      "chat": 0,
-      "events": 14,
-      "game": 3,
+      "game": 106,
+      "chat": 30,
+      "invitations": 2,
+      "events": 12,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 16,
-        "active": 14,
+        "all": 15,
+        "active": 12,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2416,14 +2474,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 620130,
     "age": 29,
@@ -2465,22 +2525,22 @@
     },
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
-      "chat": 0,
-      "events": 15,
-      "game": 8,
+      "game": 115,
+      "chat": 19,
+      "invitations": 2,
+      "events": 13,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 17,
-        "active": 15,
+        "all": 16,
+        "active": 13,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2489,14 +2549,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -2537,22 +2599,22 @@
     },
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
-      "chat": 0,
-      "events": 16,
-      "game": 4,
+      "game": 121,
+      "chat": 32,
+      "invitations": 2,
+      "events": 14,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 18,
-        "active": 16,
+        "all": 17,
+        "active": 14,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2561,14 +2623,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -2610,22 +2674,22 @@
     },
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
-      "chat": 0,
-      "events": 18,
-      "game": 2,
+      "game": 104,
+      "chat": 37,
+      "invitations": 2,
+      "events": 16,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 5,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 20,
-        "active": 18,
+        "all": 19,
+        "active": 16,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2634,14 +2698,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 5
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -2682,22 +2748,22 @@
     },
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
-      "chat": 0,
-      "events": 20,
-      "game": 6,
+      "game": 107,
+      "chat": 36,
+      "invitations": 2,
+      "events": 18,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 22,
-        "active": 20,
+        "all": 21,
+        "active": 18,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2706,14 +2772,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -2755,22 +2823,22 @@
     },
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
-      "chat": 0,
-      "events": 20,
-      "game": 5,
+      "game": 105,
+      "chat": 45,
+      "invitations": 2,
+      "events": 18,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 22,
-        "active": 20,
+        "all": 21,
+        "active": 18,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2779,14 +2847,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -2827,22 +2897,22 @@
     },
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
-      "chat": 0,
-      "events": 21,
-      "game": 4,
+      "game": 149,
+      "chat": 43,
+      "invitations": 2,
+      "events": 19,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 5,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 23,
-        "active": 21,
+        "all": 22,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2851,14 +2921,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 5
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -2900,22 +2972,22 @@
     },
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
-      "chat": 0,
-      "events": 20,
-      "game": 9,
+      "game": 106,
+      "chat": 42,
+      "invitations": 2,
+      "events": 18,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 22,
-        "active": 20,
+        "all": 21,
+        "active": 18,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2924,14 +2996,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -2973,22 +3047,22 @@
     },
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
-      "chat": 0,
-      "events": 21,
-      "game": 4,
+      "game": 114,
+      "chat": 43,
+      "invitations": 2,
+      "events": 19,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 8,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 23,
-        "active": 21,
+        "all": 22,
+        "active": 19,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -2997,14 +3071,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 8
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -3046,22 +3122,22 @@
     },
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
-      "chat": 0,
-      "events": 19,
-      "game": 6,
+      "game": 118,
+      "chat": 41,
+      "invitations": 2,
+      "events": 17,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 21,
-        "active": 19,
+        "all": 20,
+        "active": 17,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3070,14 +3146,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 581523,
     "age": 26,
@@ -3119,22 +3197,22 @@
     },
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
-      "chat": 0,
-      "events": 18,
-      "game": 7,
+      "game": 104,
+      "chat": 40,
+      "invitations": 2,
+      "events": 16,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 7,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 20,
-        "active": 18,
+        "all": 19,
+        "active": 16,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3143,14 +3221,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 7
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 440843,
     "age": 27,
@@ -3191,22 +3271,22 @@
     },
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
-      "chat": 0,
-      "events": 19,
-      "game": 5,
+      "game": 104,
+      "chat": 41,
+      "invitations": 2,
+      "events": 17,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 21,
-        "active": 19,
+        "all": 20,
+        "active": 17,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3215,14 +3295,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 444724,
     "age": 28,
@@ -3264,22 +3346,22 @@
     },
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
-      "chat": 0,
-      "events": 28,
-      "game": 3,
+      "game": 105,
+      "chat": 35,
+      "invitations": 2,
+      "events": 25,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 30,
-        "active": 28,
-        "pending": 0,
-        "invitations": 1,
+        "all": 29,
+        "active": 25,
+        "pending": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3288,14 +3370,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 1,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 620130,
     "age": 29,
@@ -3337,22 +3421,22 @@
     },
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
-      "chat": 0,
-      "events": 12,
-      "game": 8,
+      "game": 104,
+      "chat": 22,
+      "invitations": 2,
+      "events": 10,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 14,
-        "active": 12,
+        "all": 13,
+        "active": 10,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3361,14 +3445,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 305793,
     "age": 30,
@@ -3409,22 +3495,22 @@
     },
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
-      "chat": 0,
-      "events": 14,
-      "game": 4,
+      "game": 124,
+      "chat": 24,
+      "invitations": 2,
+      "events": 12,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 16,
-        "active": 14,
+        "all": 15,
+        "active": 12,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3433,14 +3519,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 443988,
     "age": 31,
@@ -3482,22 +3570,22 @@
     },
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
-      "chat": 0,
-      "events": 10,
-      "game": 2,
+      "game": 104,
+      "chat": 20,
+      "invitations": 2,
+      "events": 8,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 12,
-        "active": 10,
+        "all": 11,
+        "active": 8,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3506,14 +3594,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 227821,
     "age": 32,
@@ -3554,22 +3644,22 @@
     },
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
-      "chat": 0,
-      "events": 10,
-      "game": 6,
+      "game": 105,
+      "chat": 17,
+      "invitations": 2,
+      "events": 8,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 12,
-        "active": 10,
+        "all": 11,
+        "active": 8,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3578,14 +3668,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 522709,
     "age": 33,
@@ -3627,22 +3719,22 @@
     },
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
-      "chat": 0,
-      "events": 13,
-      "game": 5,
+      "game": 104,
+      "chat": 26,
+      "invitations": 2,
+      "events": 11,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 15,
-        "active": 13,
+        "all": 14,
+        "active": 11,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3651,14 +3743,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 398080,
     "age": 34,
@@ -3699,22 +3793,22 @@
     },
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
-      "chat": 0,
-      "events": 10,
-      "game": 4,
+      "game": 134,
+      "chat": 23,
+      "invitations": 2,
+      "events": 8,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 3,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 12,
-        "active": 10,
+        "all": 11,
+        "active": 8,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3723,14 +3817,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 3
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 329173,
     "age": 35,
@@ -3772,38 +3868,40 @@
     },
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
-      "chat": 0,
-      "events": 11,
-      "game": 9,
+      "game": 127,
+      "chat": 28,
+      "invitations": 2,
+      "events": 9,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 2,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 13,
-        "active": 11,
+        "all": 12,
+        "active": 9,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
-        "trash": 0
+        "trash": 1
       },
       "asset": {
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 2
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 432507,
     "age": 24,
@@ -3845,22 +3943,22 @@
     },
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
-      "chat": 0,
-      "events": 14,
-      "game": 4,
+      "game": 114,
+      "chat": 27,
+      "invitations": 2,
+      "events": 12,
       "hosting": 1,
-      "invitations": 1,
       "cars": 2,
       "accommodation": 2,
       "supplies": 0,
-      "tickets": 4,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "event": {
-        "all": 16,
-        "active": 14,
+        "all": 15,
+        "active": 12,
         "pending": 0,
-        "invitations": 1,
+        "invitations": 2,
         "hosting": 1,
         "drafts": 0,
         "trash": 0
@@ -3869,14 +3967,16 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 0,
-        "tickets": 4
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 499225,
     "age": 25,
@@ -3918,11 +4018,11 @@
     },
     "about": "I am the seeded bridge profile for Friends in Common demo discovery.",
     "activities": {
+      "game": 2,
       "chat": 0,
-      "events": 0,
-      "game": 1,
-      "hosting": 0,
       "invitations": 0,
+      "events": 0,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -3949,7 +4049,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 612400,
     "age": 32,
@@ -3989,11 +4091,11 @@
     },
     "about": "A fresh public profile connected only through a seeded friend bridge.",
     "activities": {
+      "game": 1,
       "chat": 0,
-      "events": 0,
-      "game": 0,
-      "hosting": 0,
       "invitations": 0,
+      "events": 0,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -4020,7 +4122,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 684300,
     "age": 27,
@@ -4132,11 +4236,11 @@
     },
     "about": "",
     "activities": {
+      "game": 7,
       "chat": 0,
-      "events": 0,
-      "game": 0,
-      "hosting": 0,
       "invitations": 0,
+      "events": 0,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
@@ -4163,7 +4267,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     },
     "affinity": 990000,
     "age": 0,
