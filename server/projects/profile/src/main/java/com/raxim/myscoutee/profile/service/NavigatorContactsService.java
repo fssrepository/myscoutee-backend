@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactDeleteRequestDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactMethodDto;
+import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactProfileDto;
 import static com.raxim.myscoutee.profile.data.dto.navigator.NavigatorContactsDtos.NavigatorContactsSaveRequestDto;
 
 import java.time.OffsetDateTime;
@@ -19,6 +20,8 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 
@@ -37,14 +40,17 @@ public class NavigatorContactsService {
 
     private final NavigatorContactsProfilesRepository navigatorContactsProfilesRepository;
     private final HomeUserProfileService homeUserProfileService;
+    private final UserExperienceProfilesService userExperienceProfilesService;
     private final UsersRepository usersRepository;
 
     public NavigatorContactsService(
             NavigatorContactsProfilesRepository navigatorContactsProfilesRepository,
             HomeUserProfileService homeUserProfileService,
+            UserExperienceProfilesService userExperienceProfilesService,
             UsersRepository usersRepository) {
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.userExperienceProfilesService = userExperienceProfilesService;
         this.usersRepository = usersRepository;
     }
 
@@ -57,6 +63,21 @@ public class NavigatorContactsService {
                 .map(NavigatorContactsProfile::getContacts)
                 .map(this::toDtos)
                 .orElseGet(List::of);
+    }
+
+    public NavigatorContactProfileDto loadContactProfile(String userId) {
+        String targetUserId = safeText(userId);
+        if (!StringUtils.hasText(targetUserId)) {
+            return new NavigatorContactProfileDto(null, List.of());
+        }
+        UserDto user = usersRepository.findByUserId(targetUserId)
+                .map(homeUserProfileService::toUserDto)
+                .orElse(null);
+        if (user == null) {
+            return new NavigatorContactProfileDto(null, List.of());
+        }
+        List<ExperienceEntryDto> experiences = userExperienceProfilesService.queryEntriesByUserId(targetUserId);
+        return new NavigatorContactProfileDto(user, experiences);
     }
 
     public List<NavigatorContactDto> saveContacts(NavigatorContactsSaveRequestDto request) {
