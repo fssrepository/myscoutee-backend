@@ -302,9 +302,4 @@ public final class AuthDtos {
             boolean submitted,
             String message) {
     }
-
-    public record UserProfileImageUploadResponseDto(
-            String imageUrl,
-            String url) {
-    }
 }

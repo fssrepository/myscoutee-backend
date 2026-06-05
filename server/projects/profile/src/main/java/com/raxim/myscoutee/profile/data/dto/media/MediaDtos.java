@@ -11,7 +11,6 @@ public final class MediaDtos {
     }
 
     public record MediaImageImportRequestDto(
-            String scope,
             String ownerId,
             String entityId,
             String imageUrl) {

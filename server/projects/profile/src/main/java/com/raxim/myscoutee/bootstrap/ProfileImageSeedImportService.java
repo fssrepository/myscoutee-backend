@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.service;
+package com.raxim.myscoutee.bootstrap;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.service.MediaStorageService;
 
 @Service
 public class ProfileImageSeedImportService {
@@ -93,7 +94,6 @@ public class ProfileImageSeedImportService {
                 }
 
                 String storedImageUrl = mediaStorageService.storeImageBytes(
-                        "profile",
                         userId,
                         "seed-import-" + index,
                         remoteImage.originalFilename(),
@@ -182,7 +182,7 @@ public class ProfileImageSeedImportService {
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(imageUrl))
                     .timeout(REQUEST_TIMEOUT)
-                    .header("User-Agent", "myscoutee-profile-image-import/1.0")
+                    .header("User-Agent", "myscoutee-media-import/1.0")
                     .GET()
                     .build();
             HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());

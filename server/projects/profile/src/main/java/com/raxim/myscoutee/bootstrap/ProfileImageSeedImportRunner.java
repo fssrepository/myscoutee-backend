@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.profile.service;
+package com.raxim.myscoutee.bootstrap;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

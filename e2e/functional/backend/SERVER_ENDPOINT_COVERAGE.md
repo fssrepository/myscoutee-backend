@@ -90,7 +90,7 @@ two minutes and should be started only when a hard local load probe is wanted.
 
 - Payment execution is not run by default because local compose has
   `PAYMENT_ENABLE_PAY=false`.
-- Multipart media/profile-image upload is not in the default server suite yet;
+- Multipart media upload is not in the default server suite yet;
   media reachability is covered through collected image URLs.
 - Hard destructive admin moderation actions are not in the read-only contract
   run. E2E admin/content mutations are covered by the help revision flow.
