@@ -13,7 +13,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 17,
+      "tickets": 8,
       "contacts": 3,
       "feedback": 0,
       "event": {
@@ -29,7 +29,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 17
+        "tickets": 8
       },
       "eventFeedback": {
         "ownEvents": 2,
@@ -181,7 +181,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 27,
+      "tickets": 17,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -197,7 +197,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 27
+        "tickets": 17
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -256,7 +256,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 19,
+      "tickets": 11,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -272,7 +272,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 19
+        "tickets": 11
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -424,7 +424,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 16,
+      "tickets": 13,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -440,7 +440,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 16
+        "tickets": 13
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -591,7 +591,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 7,
+      "tickets": 3,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -607,7 +607,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 7
+        "tickets": 3
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -741,7 +741,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 7,
+      "tickets": 5,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -757,7 +757,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 7
+        "tickets": 5
       },
       "eventFeedback": {
         "ownEvents": 0,
@@ -1039,7 +1039,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 12,
+      "tickets": 11,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -1055,7 +1055,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 12
+        "tickets": 11
       },
       "eventFeedback": {
         "ownEvents": 1,
@@ -3354,7 +3354,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 7,
+      "tickets": 2,
       "contacts": 0,
       "feedback": 0,
       "event": {
@@ -3370,7 +3370,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 7
+        "tickets": 2
       },
       "eventFeedback": {
         "ownEvents": 1,
