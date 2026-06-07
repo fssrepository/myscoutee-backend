@@ -7,18 +7,4 @@ https://developers.facebook.com/ -> business verfication is needed
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
-Yes. `http` / `local` are accessed from outside.
-
-There are two categories:
-
-Expected: `shared/core/base/services/*` imports `Http*` and `Local*` services/repositories to route between them.
-
-Direct external bypasses also exist:
-
-- [app.config.ts](/home/raxim/workspace/myscoutee-backend/frontend/src/app/app.config.ts:5) imports HTTP interceptors directly from `core/http`.
-- [event-editor-popup.component.ts](/home/raxim/workspace/myscoutee-backend/frontend/src/app/activity/components/event-editor-popup/event-editor-popup.component.ts:30), [event-chat-popup.component.ts](/home/raxim/workspace/myscoutee-backend/frontend/src/app/activity/components/event-chat-popup/event-chat-popup.component.ts:34), and [owned-assets-popup-facade.service.ts](/home/raxim/workspace/myscoutee-backend/frontend/src/app/asset/owned-assets-popup-facade.service.ts:9) import `HttpMediaService`.
-- Admin services import local/http repositories directly, especially admin workspace/moderation/affinity graph.
-- Entry/admin components import `LocalBootstrapProgressStage` / local bootstrap constants.
-- A couple feature files import local builders like `LocalEventFeedbackBuilder` and `LocalUserImpressionsBuilder`.
-
-So `http` and `local` are **not private implementation packages today**. They are mostly implementation packages, but some exports are public escape hatches. That matters for naming: whatever replaces `base` is not the only public core surface unless we clean those direct imports up too.
+some ui services still exist, and member popups are emty on local repositories
