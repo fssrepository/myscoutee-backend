@@ -7,6 +7,8 @@ https://developers.facebook.com/ -> business verfication is needed
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
+admin ui services merge to admin page component - models should be moving to shared package
+
 desktop
 -------
 0) refactor ui services and move back to components (split components if they are too large to addtional components)
