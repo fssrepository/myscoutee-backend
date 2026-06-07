@@ -58,6 +58,7 @@ public class WebSecurityConfig {
                             "/error",
                             "/auth/eligibility",
                             "/auth/facebook/data-deletion",
+                            "/auth/facebook/data-deletion/status",
                             "/i18n/bundle",
                             "/api/i18n/bundle",
                             "/landing/**",

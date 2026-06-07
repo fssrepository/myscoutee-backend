@@ -176,6 +176,27 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
+  minio-seed:
+    image: ${MINIO_CLIENT_IMAGE:-minio/mc:latest}
+    container_name: minio-seed
+    hostname: minio-seed
+    env_file:
+      - .env.secrets
+    command: ["/bin/sh", "/scripts/bootstrap_minio_seed.sh"]
+    environment:
+      MEDIA_BUCKET: "${MEDIA_BUCKET}"
+      MINIO_ENDPOINT: "http://minio:9000"
+      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+    volumes:
+      - ./docker/conf/minio:/seed:ro
+      - ./docker/scripts/bootstrap_minio_seed.sh:/scripts/bootstrap_minio_seed.sh:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - myscoutee
+    depends_on:
+      - minio
+    restart: "no"
   profilemanagement:
     image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
     pull_policy: build
@@ -228,9 +249,12 @@ services:
     networks:
       - myscoutee
     depends_on:
-      - mongodb
-      - redis
-      - minio
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      minio-seed:
+        condition: service_completed_successfully
   frontend-sync:
     image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
     pull_policy: build
