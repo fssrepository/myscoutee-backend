@@ -7,4 +7,11 @@ https://developers.facebook.com/ -> business verfication is needed
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
-some ui services still exist, and member popups are emty on local repositories
+desktop
+-------
+1) some ui services still exist, and member popups are empty on local repositories
+2) button ring delay has been removed from the save policy
+3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
+4) Jelentesek -> can't login as the user
+5) admin profile can't be closed
+6) feltetelek menu v1 version is not being shown
