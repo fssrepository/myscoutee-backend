@@ -18202,5 +18202,341 @@
     "key": "your.rights",
     "lang": "hu",
     "value": "Jogaid"
+  },
+  {
+    "_id": "i18n-message-en-active-terms-version",
+    "key": "active.terms.version",
+    "lang": "en",
+    "value": "Active terms v{version}"
+  },
+  {
+    "_id": "i18n-message-en-add-terms-section",
+    "key": "add.terms.section",
+    "lang": "en",
+    "value": "Add terms section"
+  },
+  {
+    "_id": "i18n-message-en-close-terms-popup",
+    "key": "close.terms.popup",
+    "lang": "en",
+    "value": "Close terms popup"
+  },
+  {
+    "_id": "i18n-message-en-collapse-terms-section",
+    "key": "collapse.terms.section",
+    "lang": "en",
+    "value": "Collapse terms section"
+  },
+  {
+    "_id": "i18n-message-en-create-revision-to-enable-terms-popup",
+    "key": "create.revision.to.enable.terms.popup",
+    "lang": "en",
+    "value": "Create a revision to enable the terms popup."
+  },
+  {
+    "_id": "i18n-message-en-expand-terms-section",
+    "key": "expand.terms.section",
+    "lang": "en",
+    "value": "Expand terms section"
+  },
+  {
+    "_id": "i18n-message-en-loading-terms-content",
+    "key": "loading.terms.content",
+    "lang": "en",
+    "value": "Loading terms content"
+  },
+  {
+    "_id": "i18n-message-en-loading-terms-revisions",
+    "key": "loading.terms.revisions",
+    "lang": "en",
+    "value": "Loading terms revisions"
+  },
+  {
+    "_id": "i18n-message-en-no-active-terms-revision",
+    "key": "no.active.terms.revision",
+    "lang": "en",
+    "value": "No active terms revision"
+  },
+  {
+    "_id": "i18n-message-en-no-terms-revisions",
+    "key": "no.terms.revisions",
+    "lang": "en",
+    "value": "No terms revisions"
+  },
+  {
+    "_id": "i18n-message-en-remove-terms-section",
+    "key": "remove.terms.section",
+    "lang": "en",
+    "value": "Remove terms section"
+  },
+  {
+    "_id": "i18n-message-en-terms",
+    "key": "terms",
+    "lang": "en",
+    "value": "Terms"
+  },
+  {
+    "_id": "i18n-message-en-terms-are-not-available",
+    "key": "terms.are.not.available",
+    "lang": "en",
+    "value": "Terms are not available"
+  },
+  {
+    "_id": "i18n-message-en-terms-content-is-not-available-right-now",
+    "key": "terms.content.is.not.available.right.now.",
+    "lang": "en",
+    "value": "Terms content is not available right now."
+  },
+  {
+    "_id": "i18n-message-en-terms-description",
+    "key": "terms.description",
+    "lang": "en",
+    "value": "Terms description"
+  },
+  {
+    "_id": "i18n-message-en-terms-editor",
+    "key": "terms.editor",
+    "lang": "en",
+    "value": "Terms editor"
+  },
+  {
+    "_id": "i18n-message-en-terms-of-service",
+    "key": "terms.of.service",
+    "lang": "en",
+    "value": "Terms of service"
+  },
+  {
+    "_id": "i18n-message-en-terms-popup-header",
+    "key": "terms.popup.header",
+    "lang": "en",
+    "value": "Terms popup header"
+  },
+  {
+    "_id": "i18n-message-en-terms-revisions",
+    "key": "terms.revisions",
+    "lang": "en",
+    "value": "Terms revisions"
+  },
+  {
+    "_id": "i18n-message-en-terms-section-title",
+    "key": "terms.section.title",
+    "lang": "en",
+    "value": "Terms section title"
+  },
+  {
+    "_id": "i18n-message-en-terms-sections",
+    "key": "terms.sections",
+    "lang": "en",
+    "value": "Terms sections"
+  },
+  {
+    "_id": "i18n-message-en-toggle-terms-section",
+    "key": "toggle.terms.section",
+    "lang": "en",
+    "value": "Toggle terms section"
+  },
+  {
+    "_id": "i18n-message-en-unable-to-activate-terms-revisions",
+    "key": "unable.to.activate.terms.revisions",
+    "lang": "en",
+    "value": "Unable to activate terms revision."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-delete-terms-revisions",
+    "key": "unable.to.delete.terms.revisions",
+    "lang": "en",
+    "value": "Unable to delete terms revision."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-load-terms-revisions",
+    "key": "unable.to.load.terms.revisions",
+    "lang": "en",
+    "value": "Unable to load terms revisions."
+  },
+  {
+    "_id": "i18n-message-en-unable-to-save-terms-revisions",
+    "key": "unable.to.save.terms.revisions",
+    "lang": "en",
+    "value": "Unable to save terms revision."
+  },
+  {
+    "_id": "i18n-message-en-usage-terms",
+    "key": "usage.terms",
+    "lang": "en",
+    "value": "Usage terms"
+  },
+  {
+    "_id": "i18n-message-en-review-the-terms-that-apply-when-you-use-myscoutee-features-accounts-events-chats-and-community-tools",
+    "key": "review.the.terms.that.apply.when.you.use.myscoutee.features.accounts.events.chats.and.community.tools.",
+    "lang": "en",
+    "value": "Review the terms that apply when you use MyScoutee features, accounts, events, chats, and community tools."
+  },
+  {
+    "_id": "i18n-message-hu-active-terms-version",
+    "key": "active.terms.version",
+    "lang": "hu",
+    "value": "Aktív feltételek v{version}"
+  },
+  {
+    "_id": "i18n-message-hu-add-terms-section",
+    "key": "add.terms.section",
+    "lang": "hu",
+    "value": "Feltételek szakasz hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-close-terms-popup",
+    "key": "close.terms.popup",
+    "lang": "hu",
+    "value": "Feltételek ablak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-collapse-terms-section",
+    "key": "collapse.terms.section",
+    "lang": "hu",
+    "value": "Feltételek szakasz összecsukása"
+  },
+  {
+    "_id": "i18n-message-hu-create-revision-to-enable-terms-popup",
+    "key": "create.revision.to.enable.terms.popup",
+    "lang": "hu",
+    "value": "Hozz létre egy verziót a feltételek ablak engedélyezéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-expand-terms-section",
+    "key": "expand.terms.section",
+    "lang": "hu",
+    "value": "Feltételek szakasz kibontása"
+  },
+  {
+    "_id": "i18n-message-hu-loading-terms-content",
+    "key": "loading.terms.content",
+    "lang": "hu",
+    "value": "Feltételek betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-loading-terms-revisions",
+    "key": "loading.terms.revisions",
+    "lang": "hu",
+    "value": "Feltételek verzióinak betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-no-active-terms-revision",
+    "key": "no.active.terms.revision",
+    "lang": "hu",
+    "value": "Nincs aktív feltételek verzió"
+  },
+  {
+    "_id": "i18n-message-hu-no-terms-revisions",
+    "key": "no.terms.revisions",
+    "lang": "hu",
+    "value": "Nincsenek feltételek verziók"
+  },
+  {
+    "_id": "i18n-message-hu-remove-terms-section",
+    "key": "remove.terms.section",
+    "lang": "hu",
+    "value": "Feltételek szakasz eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-terms",
+    "key": "terms",
+    "lang": "hu",
+    "value": "Feltételek"
+  },
+  {
+    "_id": "i18n-message-hu-terms-are-not-available",
+    "key": "terms.are.not.available",
+    "lang": "hu",
+    "value": "A feltételek nem érhetők el"
+  },
+  {
+    "_id": "i18n-message-hu-terms-content-is-not-available-right-now",
+    "key": "terms.content.is.not.available.right.now.",
+    "lang": "hu",
+    "value": "A feltételek tartalma jelenleg nem érhető el."
+  },
+  {
+    "_id": "i18n-message-hu-terms-description",
+    "key": "terms.description",
+    "lang": "hu",
+    "value": "Feltételek leírása"
+  },
+  {
+    "_id": "i18n-message-hu-terms-editor",
+    "key": "terms.editor",
+    "lang": "hu",
+    "value": "Feltételek szerkesztő"
+  },
+  {
+    "_id": "i18n-message-hu-terms-of-service",
+    "key": "terms.of.service",
+    "lang": "hu",
+    "value": "Felhasználási feltételek"
+  },
+  {
+    "_id": "i18n-message-hu-terms-popup-header",
+    "key": "terms.popup.header",
+    "lang": "hu",
+    "value": "Feltételek ablak fejléce"
+  },
+  {
+    "_id": "i18n-message-hu-terms-revisions",
+    "key": "terms.revisions",
+    "lang": "hu",
+    "value": "Feltételek verziók"
+  },
+  {
+    "_id": "i18n-message-hu-terms-section-title",
+    "key": "terms.section.title",
+    "lang": "hu",
+    "value": "Feltételek szakasz címe"
+  },
+  {
+    "_id": "i18n-message-hu-terms-sections",
+    "key": "terms.sections",
+    "lang": "hu",
+    "value": "Feltételek szakaszai"
+  },
+  {
+    "_id": "i18n-message-hu-toggle-terms-section",
+    "key": "toggle.terms.section",
+    "lang": "hu",
+    "value": "Feltételek szakasz kapcsolása"
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-activate-terms-revisions",
+    "key": "unable.to.activate.terms.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült aktiválni a feltételek verzióját."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-delete-terms-revisions",
+    "key": "unable.to.delete.terms.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a feltételek verzióját."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-load-terms-revisions",
+    "key": "unable.to.load.terms.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni a feltételek verzióit."
+  },
+  {
+    "_id": "i18n-message-hu-unable-to-save-terms-revisions",
+    "key": "unable.to.save.terms.revisions",
+    "lang": "hu",
+    "value": "Nem sikerült menteni a feltételek verzióját."
+  },
+  {
+    "_id": "i18n-message-hu-usage-terms",
+    "key": "usage.terms",
+    "lang": "hu",
+    "value": "Használati feltételek"
+  },
+  {
+    "_id": "i18n-message-hu-review-the-terms-that-apply-when-you-use-myscoutee-features-accounts-events-chats-and-community-tools",
+    "key": "review.the.terms.that.apply.when.you.use.myscoutee.features.accounts.events.chats.and.community.tools.",
+    "lang": "hu",
+    "value": "Tekintsd át a MyScoutee funkcióira, fiókjaira, eseményeire, csevegéseire és közösségi eszközeire vonatkozó feltételeket."
   }
 ]

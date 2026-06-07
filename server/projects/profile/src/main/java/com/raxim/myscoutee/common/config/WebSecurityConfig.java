@@ -64,6 +64,7 @@ public class WebSecurityConfig {
                             "/landing/**",
                             "/help/active",
                             "/privacy/active",
+                            "/terms/active",
                             "/explanation/active",
                             "/css/**",
                             "/js/**",

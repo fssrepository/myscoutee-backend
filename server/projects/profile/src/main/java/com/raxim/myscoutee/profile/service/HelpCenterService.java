@@ -44,6 +44,7 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 public class HelpCenterService {
     private static final String DOCUMENT_HELP = "help";
     private static final String DOCUMENT_PRIVACY = "privacy";
+    private static final String DOCUMENT_TERMS = "terms";
     private static final String DOCUMENT_EXPLANATION = "explanation";
     private static final String DEFAULT_LANG = "en";
     private static final int REVISION_SAVE_MAX_ATTEMPTS = 5;
@@ -640,6 +641,9 @@ public class HelpCenterService {
         if (DOCUMENT_PRIVACY.equals(normalized)) {
             return DOCUMENT_PRIVACY;
         }
+        if (DOCUMENT_TERMS.equals(normalized)) {
+            return DOCUMENT_TERMS;
+        }
         if (DOCUMENT_EXPLANATION.equals(normalized)) {
             return DOCUMENT_EXPLANATION;
         }
@@ -649,6 +653,9 @@ public class HelpCenterService {
     private String defaultTitle(String kind, Integer version, String lang) {
         if (DOCUMENT_PRIVACY.equals(kind)) {
             return "Privacy revision v" + version;
+        }
+        if (DOCUMENT_TERMS.equals(kind)) {
+            return "Terms revision v" + version;
         }
         if (DOCUMENT_EXPLANATION.equals(kind)) {
             return "Explanation revision v" + version;
@@ -701,6 +708,9 @@ public class HelpCenterService {
         if (DOCUMENT_PRIVACY.equals(kind)) {
             return "policy";
         }
+        if (DOCUMENT_TERMS.equals(kind)) {
+            return "rule";
+        }
         if (DOCUMENT_EXPLANATION.equals(kind)) {
             return "tips_and_updates";
         }
@@ -710,6 +720,9 @@ public class HelpCenterService {
     private String documentLabel(String kind) {
         if (DOCUMENT_PRIVACY.equals(kind)) {
             return "Privacy";
+        }
+        if (DOCUMENT_TERMS.equals(kind)) {
+            return "Terms";
         }
         if (DOCUMENT_EXPLANATION.equals(kind)) {
             return "Explanation";
