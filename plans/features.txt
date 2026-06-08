@@ -8,6 +8,7 @@ e-kozig onya form editor and display on view (indexeddb save and grid layout+for
 mobil/desktop view switch like on base44
 
 admin ui services merge to admin page component - models should be moving to shared package
+declarative shared menu component (dropdown + menu - different styles)
 
 desktop
 -------
