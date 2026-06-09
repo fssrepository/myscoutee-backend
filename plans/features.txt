@@ -20,3 +20,4 @@ desktop
 5) admin profile can't be closed
 6) feltetelek menu v1 version is not being shown
 7) mini io seed failed
+8) text translate to emoji on chat
