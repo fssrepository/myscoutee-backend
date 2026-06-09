@@ -17,7 +17,24 @@ desktop
 2) button ring delay has been removed from the save policy
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
 4) Jelentesek -> can't login as the user
-5) admin profile can't be closed
-6) feltetelek menu v1 version is not being shown
+6) feltetelek menu v1 version is not being shown (only admin)
 7) mini io seed failed
 8) text translate to emoji on chat
+9) when delete activity - event, the record is being shown duplicated
+10) visszaallitas has no confirmation dialog
+11) the counters are not changin when this kind of thing happens
+12) there is some force redraw on sub events - not sure why - there is also a hated fallback on sub resource creation (like auto and so on)
+13) delete is not working, and when i click on sub menu, the red badge has been cut off
+14) can't delete a group
+15) even stage one is review to start, if stage one is closed
+16) leaderboard shouldn't seed data on-demand, clicking on + button
+17) switching between tournament and normal even -> generates too many groups (shouldn1t even generate  a single group)
+18) some of the action, like stage delete is indexedb hit, some of them are not on staged events
+19) profile betoltese shouldn't be customized (progress indicator and time out)
+20) counter badges on asset popup drop down boxes are not visible
+21) the artificial menu red badge counter increase disappeared (has been only customized to Nagy Eszter)
+22) visszajelzes/jelentesek is not lazy loaded (not really using even indexeddb probably)
+23) the popups not covering the other popups many times
+24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
+25) image ring delay is not what i have expected
+26) admin / member distroying each others db
