@@ -10,8 +10,6 @@ mobil/desktop view switch like on base44
 admin ui services merge to admin page component - models should be moving to shared package
 declarative shared menu component (dropdown + menu - different styles)
 
-7) mini io seed failed
-
 desktop
 -------
 0) refactor ui services and move back to components (split components if they are too large to addtional components)
@@ -42,3 +40,4 @@ desktop
 28) remove demo menu counter fake increase emulator
 29) leaderboard redesign - too small rows
 30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
+31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
