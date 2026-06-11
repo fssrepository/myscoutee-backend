@@ -10,6 +10,8 @@ mobil/desktop view switch like on base44
 admin ui services merge to admin page component - models should be moving to shared package
 declarative shared menu component (dropdown + menu - different styles)
 
+7) mini io seed failed
+
 desktop
 -------
 0) refactor ui services and move back to components (split components if they are too large to addtional components)
@@ -17,8 +19,6 @@ desktop
 2) button ring delay has been removed from the save policy
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
 4) Jelentesek -> can't login as the user
-6) feltetelek menu v1 version is not being shown (only admin)
-7) mini io seed failed
 8) text translate to emoji on chat
 9) when delete activity - event, the record is being shown duplicated
 10) visszaallitas has no confirmation dialog
@@ -38,3 +38,7 @@ desktop
 24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
 25) image ring delay is not what i have expected
 26) admin / member distroying each others db
+27) parameters screen is not that wide
+28) remove demo menu counter fake increase emulator
+29) leaderboard redesign - too small rows
+30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))

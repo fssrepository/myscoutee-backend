@@ -118,7 +118,13 @@ services:
       retries: 5
       start_period: 10s
   minio:
-    image: ${MINIO_IMAGE}
+    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.0-prod}
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: docker/images/minio/Dockerfile
+      args:
+        MINIO_BASE_IMAGE: ${MINIO_BASE_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}
     container_name: minio
     hostname: minio
     restart: unless-stopped
@@ -126,6 +132,8 @@ services:
       - .env.secrets
     command: server /data --console-address ":9001"
     environment:
+      MEDIA_BUCKET: "${MEDIA_BUCKET}"
+      MINIO_ENDPOINT: "http://127.0.0.1:9000"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./data/minio:/data
@@ -134,33 +142,11 @@ services:
     networks:
       - myscoutee
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "test -f /tmp/myscoutee-minio-seeded && curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 20s
-  minio-seed:
-    image: ${MINIO_CLIENT_IMAGE:-minio/mc:latest}
-    container_name: minio-seed
-    hostname: minio-seed
-    env_file:
-      - .env.secrets
-    command: ["/bin/sh", "/scripts/bootstrap_minio_seed.sh"]
-    environment:
-      MEDIA_BUCKET: "${MEDIA_BUCKET}"
-      MINIO_ENDPOINT: "http://minio:9000"
-      TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
-    volumes:
-      - ./docker/conf/minio:/seed:ro
-      - ./docker/scripts/bootstrap_minio_seed.sh:/scripts/bootstrap_minio_seed.sh:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    networks:
-      - myscoutee
-    depends_on:
-      minio:
-        condition: service_healthy
-    restart: "no"
   profilemanagement:
     image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.0.0-prod}
     pull_policy: build
@@ -208,8 +194,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      minio-seed:
-        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health | grep -q UP"]
       interval: 30s

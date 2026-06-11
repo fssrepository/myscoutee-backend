@@ -137,6 +137,10 @@ normalize_packaged_image_values() {
     "myscoutee-api:${version}" \
     "myscoutee-api:\${MYSCOUTEE_VERSION}" \
     "myscoutee-api:\${MYSCOUTEE_VERSION}-prod"
+  normalize_packaged_image_value "${env_file}" MINIO_PRODUCTION_IMAGE "myscoutee-minio:${version}-prod" \
+    "myscoutee-minio:${version}" \
+    "myscoutee-minio:\${MYSCOUTEE_VERSION}" \
+    "myscoutee-minio:\${MYSCOUTEE_VERSION}-prod"
 }
 
 normalize_packaged_image_value() {
@@ -176,15 +180,13 @@ ensure_docker_image() {
 ensure_service_images() {
   ensure_docker_image "$(config_value MONGO_IMAGE mongo:8.0.4)" "MongoDB"
   ensure_docker_image "$(config_value REDIS_IMAGE redis:8.6.1-alpine)" "Redis"
-  ensure_docker_image "$(config_value MINIO_IMAGE minio/minio:RELEASE.2025-09-07T16-13-09Z)" "MinIO"
-  ensure_docker_image "$(config_value MINIO_CLIENT_IMAGE minio/mc:latest)" "MinIO client"
 }
 
 if [[ ! -f /etc/myscoutee/myscoutee.env ]]; then
   install -m 0644 /opt/myscoutee/packaging/templates/myscoutee.env /etc/myscoutee/myscoutee.env
 fi
 
-upsert_env_value /etc/myscoutee/myscoutee.env MINIO_CLIENT_IMAGE "minio/mc:latest"
+upsert_env_value /etc/myscoutee/myscoutee.env MINIO_PRODUCTION_IMAGE "myscoutee-minio:$(config_value MYSCOUTEE_VERSION 1.0.0)-prod"
 ensure_mongo_seed_allow_list
 
 normalize_packaged_image_values

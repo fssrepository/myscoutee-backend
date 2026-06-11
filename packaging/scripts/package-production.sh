@@ -21,6 +21,7 @@ export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
 export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
 export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
+export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
 
 if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
@@ -55,7 +56,6 @@ elif grep -q '^[[:space:]]*FIREBASE_ENABLED[[:space:]]*=[[:space:]]*true[[:space
   exit 1
 fi
 cp -a "${SERVER_DIR}/docker/conf/mongodb" "${STAGING_DIR}/opt/myscoutee/server/docker/conf/"
-cp -a "${SERVER_DIR}/docker/conf/minio" "${STAGING_DIR}/opt/myscoutee/server/docker/conf/"
 cp -a "${SERVER_DIR}/docker/scripts/." "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
 cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
@@ -66,6 +66,7 @@ sed \
   -e "s/^NGINX_BASE_IMAGE=.*/NGINX_BASE_IMAGE=myscoutee-nginx:${VERSION}-base/" \
   -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}-prod/" \
   -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}-prod/" \
+  -e "s/^MINIO_PRODUCTION_IMAGE=.*/MINIO_PRODUCTION_IMAGE=myscoutee-minio:${VERSION}-prod/" \
   -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
 
 find "${STAGING_DIR}" -type d -exec chmod 0755 {} +
@@ -101,13 +102,12 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   save_image "${NGINX_BASE_IMAGE}" "myscoutee-nginx-${VERSION}-base"
   save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}-prod"
   save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}-prod"
+  save_image "${MINIO_PRODUCTION_IMAGE}" "myscoutee-minio-${VERSION}-prod"
 fi
 
 if [[ "${PACKAGE_OFFICIAL_IMAGES:-false}" == "true" ]]; then
   save_image "${MONGO_IMAGE:-mongo:8.0.4}" "mongo" true
   save_image "${REDIS_IMAGE:-redis:8.6.1-alpine}" "redis" true
-  save_image "${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}" "minio" true
-  save_image "${MINIO_CLIENT_IMAGE:-minio/mc:latest}" "minio-mc" true
 fi
 
 if ! command -v dpkg-deb >/dev/null 2>&1; then
