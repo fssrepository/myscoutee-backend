@@ -8805,7 +8805,7 @@
     "_id": "i18n-message-en-use-case-host-a-small-event-and-let-the-right-people-join",
     "key": "use.case.host.a.small.event.and.let.the.right.people.join",
     "lang": "en",
-    "value": "Use case: host a small event and let the right people join"
+    "value": "Host a small event and let the right people join"
   },
   {
     "_id": "i18n-message-en-use-create-contact-to-add-members-into-your-personal-quick-reach-list",
@@ -17907,7 +17907,7 @@
     "_id": "i18n-message-hu-use-case-host-a-small-event-and-let-the-right-people-join",
     "key": "use.case.host.a.small.event.and.let.the.right.people.join",
     "lang": "hu",
-    "value": "Példa: szervezz kis eseményt, és engedd csatlakozni a megfelelő embereket"
+    "value": "Szervezz kis eseményt, és engedd csatlakozni a megfelelő embereket"
   },
   {
     "_id": "i18n-message-hu-use-create-contact-to-add-members-into-your-personal-quick-reach-list",
