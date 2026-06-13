@@ -50,7 +50,7 @@ class FacebookDataDeletionServiceTest {
                 signedRequest("{\"algorithm\":\"HMAC-SHA256\",\"user_id\":\"facebook-user-1\"}", "facebook-secret"));
 
         assertThat(response.confirmation_code()).startsWith("FB").hasSize(26);
-        assertThat(response.url()).isEqualTo("https://myscoutee.com/data-deletion?code=" + response.confirmation_code());
+        assertThat(response.url()).isEqualTo("https://myscoutee.com/api/auth/facebook/data-deletion/status?code=" + response.confirmation_code());
         verify(homeUserProfileService).scheduleUserDeletionByUserId("user-1", "facebook-data-deletion");
     }
 

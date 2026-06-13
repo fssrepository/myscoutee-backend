@@ -36,8 +36,9 @@ public class AuthController {
 
     @GetMapping("/demo-users")
     public List<DemoUserListItemDto> queryDemoUsers(
-            @RequestParam(value = "limit", required = false) Integer limit) {
-        return homeUserProfileService.queryDemoUserListItems(limit);
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "role", required = false) String role) {
+        return homeUserProfileService.queryDemoUserListItems(limit, role);
     }
 
     @GetMapping("/me")

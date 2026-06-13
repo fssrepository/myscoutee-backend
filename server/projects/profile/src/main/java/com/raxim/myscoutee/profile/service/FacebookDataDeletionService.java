@@ -28,6 +28,7 @@ import tools.jackson.databind.ObjectMapper;
 public class FacebookDataDeletionService {
     private static final String SIGNATURE_ALGORITHM = "HmacSHA256";
     private static final String PAYLOAD_ALGORITHM = "HMAC-SHA256";
+    private static final String PUBLIC_STATUS_ROUTE = "/api/auth/facebook/data-deletion/status";
 
     private final ConfigProperties configProperties;
     private final EmailProperties emailProperties;
@@ -58,6 +59,33 @@ public class FacebookDataDeletionService {
             homeUserProfileService.scheduleUserDeletionByUserId(user.getId(), "facebook-data-deletion");
         }
         return new FacebookDataDeletionResponseDto(statusUrl(confirmationCode), confirmationCode);
+    }
+
+    public String renderStatusPage(String confirmationCode) {
+        String normalizedCode = safeText(confirmationCode);
+        String statusContent = StringUtils.hasText(normalizedCode)
+                ? "<p>Confirmation code: <strong>" + escapeHtml(normalizedCode) + "</strong></p>"
+                        + "<p>The deletion request has been received. If it matches an existing MyScoutee account, "
+                        + "that account is scheduled for deletion through the same account deletion flow used in the app.</p>"
+                : "<p>No confirmation code was provided. If you requested deletion through Meta/Facebook, "
+                        + "use the status URL returned with the confirmation response.</p>";
+        return "<!doctype html>"
+                + "<html lang=\"en\">"
+                + "<head>"
+                + "<meta charset=\"utf-8\">"
+                + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+                + "<title>MyScoutee data deletion status</title>"
+                + "<style>"
+                + "body{font-family:system-ui,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;margin:0;background:#f6f7fb;color:#10233f;}"
+                + "main{max-width:720px;margin:48px auto;padding:32px;background:#fff;border:1px solid #d8e0ee;border-radius:12px;box-shadow:0 16px 40px rgba(16,35,63,.08);}"
+                + "h1{margin:0 0 12px;font-size:28px;line-height:1.15;}p{font-size:16px;line-height:1.6;color:#41516d;}strong{color:#10233f;}"
+                + "</style>"
+                + "</head>"
+                + "<body><main>"
+                + "<h1>MyScoutee data deletion status</h1>"
+                + statusContent
+                + "<p>Deleted accounts can be reactivated within 30 days. After that window, eligible account data is permanently purged or anonymized according to the privacy policy.</p>"
+                + "</main></body></html>";
     }
 
     private FacebookDeletionPayload parseSignedRequest(String signedRequest) {
@@ -128,7 +156,7 @@ public class FacebookDataDeletionService {
         while (baseUrl.endsWith("/")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
-        return baseUrl + "/data-deletion?code=" + URLEncoder.encode(confirmationCode, StandardCharsets.UTF_8);
+        return baseUrl + PUBLIC_STATUS_ROUTE + "?code=" + URLEncoder.encode(confirmationCode, StandardCharsets.UTF_8);
     }
 
     private byte[] sha256(byte[] value) {
@@ -141,6 +169,15 @@ public class FacebookDataDeletionService {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String escapeHtml(String value) {
+        return safeText(value)
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
     }
 
     private record FacebookDeletionPayload(String userId) {

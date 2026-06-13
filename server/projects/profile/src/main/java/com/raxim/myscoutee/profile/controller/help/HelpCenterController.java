@@ -38,6 +38,13 @@ public class HelpCenterController {
         return helpCenterService.activeState("privacy", lang, acceptLanguage);
     }
 
+    @GetMapping("/terms/active")
+    public HelpCenterStateDto activeTerms(
+            @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return helpCenterService.activeState("terms", lang, acceptLanguage);
+    }
+
     @GetMapping("/explanation/active")
     public HelpCenterStateDto activeExplanation(
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,

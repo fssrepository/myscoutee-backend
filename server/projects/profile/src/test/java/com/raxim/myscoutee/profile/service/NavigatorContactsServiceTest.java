@@ -31,6 +31,8 @@ class NavigatorContactsServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private UserExperienceProfilesService userExperienceProfilesService;
+    @Mock
     private UsersRepository usersRepository;
 
     private NavigatorContactsService service;
@@ -40,6 +42,7 @@ class NavigatorContactsServiceTest {
         service = new NavigatorContactsService(
                 navigatorContactsProfilesRepository,
                 homeUserProfileService,
+                userExperienceProfilesService,
                 usersRepository);
     }
 

@@ -12,6 +12,7 @@ public final class LandingContentDtos {
 
     public record LandingContentDto(
             HelpCenterStateDto privacy,
+            HelpCenterStateDto terms,
             List<IdeaPostDto> ideas,
             UserLocationEligibilityResponseDto loginAvailability) {
     }

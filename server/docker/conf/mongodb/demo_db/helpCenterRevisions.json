@@ -20,36 +20,28 @@
         "icon": "event_note",
         "title": "Events and Sub Events",
         "blurb": "Build the full event flow with stages or optional items.",
-        "contentHtml": "\n      <p><strong>Build the full event flow with stages or optional items.</strong></p>\n      <p>Create a main event, then split execution into sub events for stages, side activities, or optional sessions.</p>\n      <p>Each sub event carries its own date range, description, and status so planning stays clean and trackable.</p>\n      <ul>\n        <li>Supports casual and tournament structures</li>\n        <li>Keeps stage context visible in related screens</li>\n        <li>Lets hosts edit details without losing hierarchy</li>\n      </ul>\n    ",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Build the full event flow with stages or optional items.</strong></p><p>Create a main event, then split execution into sub events for stages, side activities, or optional sessions.</p><p>Each sub event carries its own date range, description, and status so planning stays clean and trackable.</p><ul><li>Supports casual and tournament structures</li><li>Keeps stage context visible in related screens</li><li>Lets hosts edit details without losing hierarchy</li></ul>"
       },
       {
         "id": "resources",
         "icon": "inventory_2",
         "title": "Resources and Capacity",
         "blurb": "Assign people, cars, accommodation, and supplies with limits.",
-        "contentHtml": "\n      <p><strong>Assign people, cars, accommodation, and supplies with limits.</strong></p>\n      <p>Use resource menus to assign assets into sub events and groups, then adjust capacity ranges directly where needed.</p>\n      <p>Badges summarize pending requests and remaining capacity so action priorities are visible at a glance.</p>\n      <ul>\n        <li>Capacity min/max control per assignment</li>\n        <li>Contextual badges for pending requests</li>\n        <li>Route and location support for travel resources</li>\n      </ul>\n    ",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Assign people, cars, accommodation, and supplies with limits.</strong></p><p>Use resource menus to assign assets into sub events and groups, then adjust capacity ranges directly where needed.</p><p>Badges summarize pending requests and remaining capacity so action priorities are visible at a glance.</p><ul><li>Capacity min/max control per assignment</li><li>Contextual badges for pending requests</li><li>Route and location support for travel resources</li></ul>"
       },
       {
         "id": "activities",
         "icon": "forum",
         "title": "Activities and Chats",
         "blurb": "Coordinate with context-aware channels and filters.",
-        "contentHtml": "\n      <p><strong>Coordinate with context-aware channels and filters.</strong></p>\n      <p>Chat channels follow event scope: main event, optional sub event, and group channels can all coexist.</p>\n      <p>Context actions in chat headers help jump directly to related event/sub-event views and resources.</p>\n      <ul>\n        <li>Fast channel filtering by context</li>\n        <li>Unread counters scoped to relevant channels</li>\n        <li>Works for both mobile and desktop flows</li>\n      </ul>\n    ",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Coordinate with context-aware channels and filters.</strong></p><p>Chat channels follow event scope: main event, optional sub event, and group channels can all coexist.</p><p>Context actions in chat headers help jump directly to related event/sub-event views and resources.</p><ul><li>Fast channel filtering by context</li><li>Unread counters scoped to relevant channels</li><li>Works for both mobile and desktop flows</li></ul>"
       },
       {
         "id": "safety",
         "icon": "verified_user",
         "title": "Profiles and Safety",
         "blurb": "Improve trust with profile quality and moderation tools.",
-        "contentHtml": "\n      <p><strong>Improve trust with profile quality and moderation tools.</strong></p>\n      <p>Profile completion updates in real time as users fill key fields and detail sections.</p>\n      <p>Safety controls include report tools, privacy visibility options, and clear moderation pathways.</p>\n      <ul>\n        <li>Live profile completion feedback</li>\n        <li>Report user and feedback workflows</li>\n        <li>Privacy and access visibility controls</li>\n      </ul>\n    ",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Improve trust with profile quality and moderation tools.</strong></p><p>Profile completion updates in real time as users fill key fields and detail sections.</p><p>Safety controls include report tools, privacy visibility options, and clear moderation pathways.</p><ul><li>Live profile completion feedback</li><li>Report user and feedback workflows</li><li>Privacy and access visibility controls</li></ul>"
       }
     ]
   },
@@ -74,36 +66,28 @@
         "icon": "event_note",
         "title": "Események és alesemények",
         "blurb": "Építsd fel a teljes eseményfolyamatot szakaszokkal vagy opcionális elemekkel.",
-        "contentHtml": "<p><strong>Építsd fel a teljes eseményfolyamatot szakaszokkal vagy opcionális elemekkel.</strong></p><p>Hozz létre fő eseményt, majd bontsd aleseményekre szakaszokhoz, mellékprogramokhoz vagy opcionális alkalmakhoz.</p><ul><li>Alkalmi és verseny jellegű struktúrák támogatása</li><li>A szakaszkontextus látható marad a kapcsolódó képernyőkön</li><li>A szervezők a hierarchia elvesztése nélkül szerkeszthetnek</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Építsd fel a teljes eseményfolyamatot szakaszokkal vagy opcionális elemekkel.</strong></p><p>Hozz létre fő eseményt, majd bontsd aleseményekre szakaszokhoz, mellékprogramokhoz vagy opcionális alkalmakhoz.</p><ul><li>Alkalmi és verseny jellegű struktúrák támogatása</li><li>A szakaszkontextus látható marad a kapcsolódó képernyőkön</li><li>A szervezők a hierarchia elvesztése nélkül szerkeszthetnek</li></ul>"
       },
       {
         "id": "resources",
         "icon": "inventory_2",
         "title": "Erőforrások és kapacitás",
         "blurb": "Rendelj embereket, autókat, szállást és kellékeket limitekkel.",
-        "contentHtml": "<p><strong>Rendelj embereket, autókat, szállást és kellékeket limitekkel.</strong></p><p>Az erőforrásmenükben eszközöket rendelhetsz aleseményekhez és csoportokhoz, majd közvetlenül állíthatod a kapacitásokat.</p><ul><li>Minimum/maximum kapacitás feladatonként</li><li>Kontextusos jelvények függő kérésekhez</li><li>Útvonal- és helytámogatás utazási erőforrásokhoz</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Rendelj embereket, autókat, szállást és kellékeket limitekkel.</strong></p><p>Az erőforrásmenükben eszközöket rendelhetsz aleseményekhez és csoportokhoz, majd közvetlenül állíthatod a kapacitásokat.</p><ul><li>Minimum/maximum kapacitás feladatonként</li><li>Kontextusos jelvények függő kérésekhez</li><li>Útvonal- és helytámogatás utazási erőforrásokhoz</li></ul>"
       },
       {
         "id": "activities",
         "icon": "forum",
         "title": "Tevékenységek és csevegések",
         "blurb": "Koordinálj kontextustudatos csatornákkal és szűrőkkel.",
-        "contentHtml": "<p><strong>Koordinálj kontextustudatos csatornákkal és szűrőkkel.</strong></p><p>A csevegőcsatornák követik az esemény hatókörét: fő esemény, opcionális alesemény és csoportcsatorna is együtt létezhet.</p><ul><li>Gyors csatornaszűrés kontextus szerint</li><li>Olvasatlan számlálók releváns csatornákra szűkítve</li><li>Mobilon és asztali nézetben is működik</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Koordinálj kontextustudatos csatornákkal és szűrőkkel.</strong></p><p>A csevegőcsatornák követik az esemény hatókörét: fő esemény, opcionális alesemény és csoportcsatorna is együtt létezhet.</p><ul><li>Gyors csatornaszűrés kontextus szerint</li><li>Olvasatlan számlálók releváns csatornákra szűkítve</li><li>Mobilon és asztali nézetben is működik</li></ul>"
       },
       {
         "id": "safety",
         "icon": "verified_user",
         "title": "Profilok és biztonság",
         "blurb": "Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.",
-        "contentHtml": "<p><strong>Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.</strong></p><p>A profilkészültség valós időben frissül, ahogy a felhasználók kitöltik a fontos mezőket.</p><ul><li>Élő profilkészültségi visszajelzés</li><li>Felhasználójelentési és visszajelzési folyamatok</li><li>Adatvédelmi és hozzáférési láthatósági kontrollok</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Erősítsd a bizalmat profilminőséggel és moderációs eszközökkel.</strong></p><p>A profilkészültség valós időben frissül, ahogy a felhasználók kitöltik a fontos mezőket.</p><ul><li>Élő profilkészültségi visszajelzés</li><li>Felhasználójelentési és visszajelzési folyamatok</li><li>Adatvédelmi és hozzáférési láthatósági kontrollok</li></ul>"
       }
     ]
   },
@@ -128,81 +112,70 @@
         "icon": "policy",
         "title": "Privacy",
         "blurb": "How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).",
-        "contentHtml": "\n      <p>How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).</p>\n      <p><strong>Last updated:</strong> February 1, 2026</p>\n    ",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p>How MyScoutee handles personal data for profile, events, and social activity (including GDPR rights).</p><p><strong>Last updated:</strong> February 1, 2026</p>"
       },
       {
         "id": "contact-details",
         "icon": "contact_mail",
         "title": "Contact details",
         "blurb": "Who to contact about privacy and data protection.",
-        "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee</li><li><strong>Support Email:</strong> myscoutee1@gmail.com</li><li><strong>DPO Contact:</strong> myscoutee1@gmail.com</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li><strong>Data Controller:</strong> MyScoutee demo platform</li><li><strong>Support Email:</strong> privacy@myscoutee.app</li><li><strong>DPO Contact:</strong> dpo@myscoutee.app</li></ul>"
       },
       {
         "id": "legal-basis",
         "icon": "gavel",
         "title": "Legal basis",
         "blurb": "Why MyScoutee processes data for product and safety workflows.",
-        "contentHtml": "<ul><li>Contract performance for account and event features.</li><li>Legitimate interest for platform safety and abuse prevention.</li><li>Consent for optional profile details, precise location coordinates, and marketing communication.</li><li>Legal obligation for security logs and compliance records.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Contract performance for account and event features.</li><li>Legitimate interest for platform safety and abuse prevention.</li><li>Consent for optional profile details, precise location coordinates, and marketing communication.</li><li>Legal obligation for security logs and compliance records.</li></ul>"
       },
       {
         "id": "your-rights",
         "icon": "fact_check",
         "title": "Your rights",
         "blurb": "Rights available for your account and personal data.",
-        "contentHtml": "<h4>Access</h4><ul><li>Request a copy of your stored personal data.</li></ul>\n<h4>Rectification</h4><ul><li>Correct inaccurate profile or account details.</li></ul>\n<h4>Erasure</h4><ul><li>Request account and personal data deletion where legally possible.</li></ul>\n<h4>Portability</h4><ul><li>Export your data in a commonly used machine-readable format.</li></ul>\n<h4>Restriction / Objection</h4><ul><li>Limit or object to specific processing activities.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<h4>Access</h4><ul><li>Request a copy of your stored personal data.</li></ul><h4>Rectification</h4><ul><li>Correct inaccurate profile or account details.</li></ul><h4>Erasure</h4><ul><li>Request account and personal data deletion where legally possible.</li></ul><h4>Portability</h4><ul><li>Export your data in a commonly used machine-readable format.</li></ul><h4>Restriction / Objection</h4><ul><li>Limit or object to specific processing activities.</li></ul>"
       },
       {
         "id": "data-categories",
         "icon": "category",
         "title": "Data categories",
         "blurb": "Types of data MyScoutee may process.",
-        "contentHtml": "<h4>Account & Identity</h4><ul><li>Name</li><li>Birthday</li><li>Home city</li><li>Gender</li><li>Profile images</li></ul>\n<h4>Location & Coordinates</h4><ul><li>Approximate location (city/region)</li><li>Precise GPS coordinates (latitude/longitude) when requested</li><li>Location update timestamps for event logistics</li></ul>\n<h4>Activity Data</h4><ul><li>Chats</li><li>Invitations</li><li>Events</li><li>Hosting interactions</li><li>Ratings</li></ul>\n<h4>Preference Data</h4><ul><li>Interests</li><li>Values</li><li>Visibility settings</li><li>Language preferences</li></ul>\n<h4>Technical Data</h4><ul><li>Device/browser metadata</li><li>IP/log records</li><li>Session events</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<h4>Account & Identity</h4><ul><li>Name</li><li>Birthday</li><li>Home city</li><li>Gender</li><li>Profile images</li></ul><h4>Location & Coordinates</h4><ul><li>Approximate location (city/region)</li><li>Precise GPS coordinates (latitude/longitude) when requested</li><li>Location update timestamps for event logistics</li></ul><h4>Activity Data</h4><ul><li>Chats</li><li>Invitations</li><li>Events</li><li>Hosting interactions</li><li>Ratings</li></ul><h4>Preference Data</h4><ul><li>Interests</li><li>Values</li><li>Visibility settings</li><li>Language preferences</li></ul><h4>Technical Data</h4><ul><li>Device/browser metadata</li><li>IP/log records</li><li>Session events</li></ul>"
       },
       {
         "id": "purposes",
         "icon": "tips_and_updates",
         "title": "Purposes",
         "blurb": "How data supports profile, event, chat, and trust features.",
-        "contentHtml": "<ul><li>Operate profile, chat, event, and hosting features.</li><li>Match relevant members and improve discovery quality.</li><li>Support location-based matching and distance-aware event coordination.</li><li>Detect abuse, spam, and suspicious platform activity.</li><li>Support account requests and compliance processes.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Operate profile, chat, event, and hosting features.</li><li>Match relevant members and improve discovery quality.</li><li>Support location-based matching and distance-aware event coordination.</li><li>Detect abuse, spam, and suspicious platform activity.</li><li>Support account requests and compliance processes.</li></ul>"
       },
       {
         "id": "retention",
         "icon": "schedule",
         "title": "Retention",
         "blurb": "How long data is kept.",
-        "contentHtml": "<ul><li>Account profile data: retained while account is active.</li><li>Precise location coordinates: stored only for active location-enabled features and deleted when no longer required.</li><li>Safety and audit logs: retained based on legal/compliance needs.</li><li>Deleted accounts: data removed or anonymized after retention window.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Account profile data: retained while account is active.</li><li>Precise location coordinates: stored only for active location-enabled features and deleted when no longer required.</li><li>Safety and audit logs: retained based on legal/compliance needs.</li><li>Deleted accounts: data removed or anonymized after retention window.</li></ul>"
+      },
+      {
+        "id": "account-data-deletion",
+        "icon": "manage_accounts",
+        "title": "Account and data deletion",
+        "blurb": "How account deletion, reactivation, and Meta/Facebook deletion requests are handled.",
+        "contentHtml": "<ul><li>Delete account is available from the user settings menu. Confirming it schedules the account for deletion and signs the user out.</li><li>If the account has been deleted but not yet purged, signing in again can show a reactivation confirmation before the 30-day deletion window ends.</li><li>If deletion is requested from Meta/Facebook account settings after Facebook login, Meta sends the request to the MyScoutee backend callback and matching accounts follow the same deletion schedule.</li><li>Deletion requests can also be sent to the support email listed in Contact details from the email address connected to the MyScoutee account.</li></ul>"
       },
       {
         "id": "sharing",
         "icon": "share",
         "title": "Third-party sharing",
         "blurb": "When data may be shared outside MyScoutee.",
-        "contentHtml": "<ul><li>Service providers for hosting, analytics, and support operations.</li><li>Authorities only when required by applicable law.</li><li>No sale of personal data.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Service providers for hosting, analytics, and support operations.</li><li>Authorities only when required by applicable law.</li><li>No sale of personal data.</li></ul>"
       },
       {
         "id": "security",
         "icon": "security",
         "title": "Security",
         "blurb": "Controls used to protect data.",
-        "contentHtml": "<ul><li>Role-based access control for internal tools.</li><li>Encrypted transport for data in transit.</li><li>Operational monitoring and incident response procedures.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Role-based access control for internal tools.</li><li>Encrypted transport for data in transit.</li><li>Operational monitoring and incident response procedures.</li></ul>"
       }
     ]
   },
@@ -227,81 +200,190 @@
         "icon": "policy",
         "title": "Adatvédelem",
         "blurb": "Hogyan kezeli a MyScoutee a profilhoz, eseményekhez és közösségi aktivitáshoz kapcsolódó személyes adatokat.",
-        "contentHtml": "<p>Hogyan kezeli a MyScoutee a profilhoz, eseményekhez és közösségi aktivitáshoz kapcsolódó személyes adatokat.</p><p><strong>Utolsó frissítés:</strong> 2026. február 1.</p>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<p><strong>Utolsó frissítés:</strong> 2026. február 1.</p>"
       },
       {
         "id": "contact-details",
         "icon": "contact_mail",
         "title": "Kapcsolati adatok",
         "blurb": "Kihez fordulhatsz adatvédelemmel és adatkezeléssel kapcsolatban.",
-        "contentHtml": "<ul><li><strong>Adatkezelő:</strong> MyScoutee</li><li><strong>Támogatási email:</strong> myscoutee1@gmail.com</li><li><strong>DPO kapcsolat:</strong> myscoutee1@gmail.com</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li><strong>Adatkezelő:</strong> MyScoutee demo platform</li><li><strong>Támogatási email:</strong> privacy@myscoutee.app</li><li><strong>DPO kapcsolat:</strong> dpo@myscoutee.app</li></ul>"
       },
       {
         "id": "legal-basis",
         "icon": "gavel",
         "title": "Jogalap",
         "blurb": "Miért kezel adatokat a MyScoutee a termék- és biztonsági folyamatokhoz.",
-        "contentHtml": "<ul><li>Szerződés teljesítése a fiók- és eseményfunkciókhoz.</li><li>Jogos érdek a platform biztonsága és a visszaélések megelőzése érdekében.</li><li>Hozzájárulás opcionális profiladatokhoz, pontos helykoordinátákhoz és marketingkommunikációhoz.</li><li>Jogi kötelezettség biztonsági naplókhoz és megfelelőségi nyilvántartásokhoz.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Szerződés teljesítése a fiók- és eseményfunkciókhoz.</li><li>Jogos érdek a platform biztonsága és a visszaélések megelőzése érdekében.</li><li>Hozzájárulás opcionális profiladatokhoz, pontos helykoordinátákhoz és marketingkommunikációhoz.</li><li>Jogi kötelezettség biztonsági naplókhoz és megfelelőségi nyilvántartásokhoz.</li></ul>"
       },
       {
         "id": "your-rights",
         "icon": "fact_check",
         "title": "Jogaid",
         "blurb": "A fiókoddal és személyes adataiddal kapcsolatos jogaid.",
-        "contentHtml": "<h4>Hozzáférés</h4><ul><li>Kérhetsz másolatot a tárolt személyes adataidról.</li></ul><h4>Helyesbítés</h4><ul><li>Javíthatod a pontatlan profil- vagy fiókadatokat.</li></ul><h4>Törlés</h4><ul><li>Kérheted a fiók és a személyes adatok törlését, ahol ezt jogszabály lehetővé teszi.</li></ul><h4>Adathordozhatóság</h4><ul><li>Exportálhatod az adataidat általánosan használt, géppel olvasható formátumban.</li></ul><h4>Korlátozás / tiltakozás</h4><ul><li>Korlátozhatod vagy kifogásolhatod egyes adatkezelési tevékenységeket.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<h4>Hozzáférés</h4><ul><li>Kérhetsz másolatot a tárolt személyes adataidról.</li></ul><h4>Helyesbítés</h4><ul><li>Javíthatod a pontatlan profil- vagy fiókadatokat.</li></ul><h4>Törlés</h4><ul><li>Kérheted a fiók és a személyes adatok törlését, ahol ezt jogszabály lehetővé teszi.</li></ul><h4>Adathordozhatóság</h4><ul><li>Exportálhatod az adataidat általánosan használt, géppel olvasható formátumban.</li></ul><h4>Korlátozás / tiltakozás</h4><ul><li>Korlátozhatod vagy kifogásolhatod egyes adatkezelési tevékenységeket.</li></ul>"
       },
       {
         "id": "data-categories",
         "icon": "category",
         "title": "Adatkategóriák",
         "blurb": "Milyen típusú adatokat kezelhet a MyScoutee.",
-        "contentHtml": "<h4>Fiók és azonosítás</h4><ul><li>Név</li><li>Születésnap</li><li>Lakóhely városa</li><li>Nem</li><li>Profilképek</li></ul><h4>Hely és koordináták</h4><ul><li>Hozzávetőleges hely (város/régió)</li><li>Pontos GPS-koordináták (szélesség/hosszúság), ha kéred</li><li>Helyfrissítési időbélyegek eseménylogisztikához</li></ul><h4>Aktivitási adatok</h4><ul><li>Csevegések</li><li>Meghívások</li><li>Események</li><li>Szervezési interakciók</li><li>Értékelések</li></ul><h4>Preferenciaadatok</h4><ul><li>Érdeklődési körök</li><li>Értékek</li><li>Láthatósági beállítások</li><li>Nyelvi preferenciák</li></ul><h4>Technikai adatok</h4><ul><li>Eszköz- és böngészőmetaadatok</li><li>IP- és naplórekordok</li><li>Munkamenetesemények</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<h4>Fiók és azonosítás</h4><ul><li>Név</li><li>Születésnap</li><li>Lakóhely városa</li><li>Nem</li><li>Profilképek</li></ul><h4>Hely és koordináták</h4><ul><li>Hozzávetőleges hely (város/régió)</li><li>Pontos GPS-koordináták (szélesség/hosszúság), ha kéred</li><li>Helyfrissítési időbélyegek eseménylogisztikához</li></ul><h4>Aktivitási adatok</h4><ul><li>Csevegések</li><li>Meghívások</li><li>Események</li><li>Szervezési interakciók</li><li>Értékelések</li></ul><h4>Preferenciaadatok</h4><ul><li>Érdeklődési körök</li><li>Értékek</li><li>Láthatósági beállítások</li><li>Nyelvi preferenciák</li></ul><h4>Technikai adatok</h4><ul><li>Eszköz- és böngészőmetaadatok</li><li>IP- és naplórekordok</li><li>Munkamenetesemények</li></ul>"
       },
       {
         "id": "purposes",
         "icon": "tips_and_updates",
         "title": "Célok",
         "blurb": "Hogyan támogatják az adatok a profil-, esemény-, chat- és bizalmi funkciókat.",
-        "contentHtml": "<ul><li>Profil-, chat-, esemény- és szervezési funkciók működtetése.</li><li>Releváns tagok ajánlása és a felfedezés minőségének javítása.</li><li>Helyalapú párosítás és távolságtudatos eseménykoordináció támogatása.</li><li>Visszaélések, spam és gyanús platformaktivitás észlelése.</li><li>Fiókkérések és megfelelőségi folyamatok támogatása.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Profil-, chat-, esemény- és szervezési funkciók működtetése.</li><li>Releváns tagok ajánlása és a felfedezés minőségének javítása.</li><li>Helyalapú párosítás és távolságtudatos eseménykoordináció támogatása.</li><li>Visszaélések, spam és gyanús platformaktivitás észlelése.</li><li>Fiókkérések és megfelelőségi folyamatok támogatása.</li></ul>"
       },
       {
         "id": "retention",
         "icon": "schedule",
         "title": "Megőrzés",
         "blurb": "Mennyi ideig őrizzük meg az adatokat.",
-        "contentHtml": "<ul><li>Fiókprofil-adatok: amíg a fiók aktív.</li><li>Pontos helykoordináták: csak az aktív helyalapú funkciókhoz szükséges ideig.</li><li>Biztonsági és auditnaplók: jogi vagy megfelelőségi igény szerint.</li><li>Törölt fiókok: az adatok a megőrzési idő után törlődnek vagy anonimizálódnak.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Fiókprofil-adatok: amíg a fiók aktív.</li><li>Pontos helykoordináták: csak az aktív helyalapú funkciókhoz szükséges ideig.</li><li>Biztonsági és auditnaplók: jogi vagy megfelelőségi igény szerint.</li><li>Törölt fiókok: az adatok a megőrzési idő után törlődnek vagy anonimizálódnak.</li></ul>"
+      },
+      {
+        "id": "account-data-deletion",
+        "icon": "manage_accounts",
+        "title": "Fiók és adatok törlése",
+        "blurb": "Hogyan működik a fióktörlés, az újraaktiválás és a Meta/Facebook törlési kérés.",
+        "contentHtml": "<ul><li>A fiók törlése a felhasználói beállítások menüben érhető el. A megerősítés után a fiók törlésre kerül ütemezésre, és a felhasználó kijelentkezik.</li><li>Ha a fiók törölt állapotban van, de még nem lett véglegesen törölve, az ismételt bejelentkezés újraaktiválási megerősítést jeleníthet meg a 30 napos törlési időszak lejárta előtt.</li><li>Ha a törlést Facebook-belépés után a Meta/Facebook fiókbeállításokból kérik, a Meta a MyScoutee backend callbacket hívja meg, és az egyező fiókok ugyanazt a törlési ütemezést követik.</li><li>Törlési kérés küldhető a Kapcsolati adatoknál megadott támogatási email címre a MyScoutee fiókhoz kapcsolódó email címről.</li></ul>"
       },
       {
         "id": "sharing",
         "icon": "share",
         "title": "Harmadik felekkel megosztás",
         "blurb": "Mikor kerülhetnek adatok a MyScoutee-n kívülre.",
-        "contentHtml": "<ul><li>Szolgáltatókkal tárhely, analitika és támogatási működés céljából.</li><li>Hatóságokkal csak akkor, ha alkalmazandó jog előírja.</li><li>Személyes adatot nem értékesítünk.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Szolgáltatókkal tárhely, analitika és támogatási működés céljából.</li><li>Hatóságokkal csak akkor, ha alkalmazandó jog előírja.</li><li>Személyes adatot nem értékesítünk.</li></ul>"
       },
       {
         "id": "security",
         "icon": "security",
         "title": "Biztonság",
         "blurb": "Az adatok védelmét szolgáló kontrollok.",
-        "contentHtml": "<ul><li>Szerepköralapú hozzáférés belső eszközökhöz.</li><li>Titkosított adatátvitel.</li><li>Üzemeltetési monitorozás és incidenskezelési folyamatok.</li></ul>",
-        "imageUrls": [],
-        "optional": false
+        "contentHtml": "<ul><li>Szerepköralapú hozzáférés belső eszközökhöz.</li><li>Titkosított adatátvitel.</li><li>Üzemeltetési monitorozás és incidenskezelési folyamatok.</li></ul>"
+      }
+    ]
+  },
+  {
+    "_id": "terms-default-v1",
+    "documentType": "terms",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": true,
+    "title": "Terms of service",
+    "summary": "Usage terms",
+    "description": "Review the terms that apply when you use MyScoutee features, accounts, events, chats, and community tools.",
+    "headerColor": "slate",
+    "createdDate": "2026-02-01T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-02-01T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "terms",
+        "icon": "rule",
+        "title": "Terms of service",
+        "blurb": "The baseline rules for using MyScoutee.",
+        "contentHtml": "<p>These terms describe the rules for using MyScoutee accounts, profiles, events, chats, moderation tools, and related services.</p><p><strong>Last updated:</strong> February 1, 2026</p>"
+      },
+      {
+        "id": "account-access",
+        "icon": "manage_accounts",
+        "title": "Account access",
+        "blurb": "You are responsible for the account and sign-in method you use.",
+        "contentHtml": "<ul><li>Use accurate account information and keep your sign-in method secure.</li><li>Do not impersonate another person or create accounts intended to mislead other members.</li><li>OAuth sign-in is also subject to the relevant provider terms.</li></ul>"
+      },
+      {
+        "id": "community-conduct",
+        "icon": "groups",
+        "title": "Community conduct",
+        "blurb": "Respectful behavior keeps events and chats usable for everyone.",
+        "contentHtml": "<ul><li>Do not harass, threaten, spam, scam, or intentionally mislead other members.</li><li>Do not post illegal, hateful, exploitative, or unsafe content.</li><li>Hosts and admins may moderate, limit, or remove content and accounts that violate these terms.</li></ul>"
+      },
+      {
+        "id": "events-and-content",
+        "icon": "event_note",
+        "title": "Events and content",
+        "blurb": "Hosts and members are responsible for the events and content they create.",
+        "contentHtml": "<ul><li>Only create events, invitations, chats, resources, and posts that you are allowed to share.</li><li>Respect other people&apos;s privacy, images, and intellectual property.</li><li>Event details, availability, and attendee behavior are managed by the relevant hosts and participants.</li></ul>"
+      },
+      {
+        "id": "safety-and-moderation",
+        "icon": "verified_user",
+        "title": "Safety and moderation",
+        "blurb": "MyScoutee may act when platform safety or policy compliance requires it.",
+        "contentHtml": "<ul><li>Reports, support cases, and automated signals may be reviewed for safety and abuse prevention.</li><li>Accounts may be warned, restricted, blocked, reactivated, or deleted according to platform policy and applicable law.</li><li>Critical operational and security actions may be logged for audit purposes.</li></ul>"
+      },
+      {
+        "id": "changes",
+        "icon": "history",
+        "title": "Changes to terms",
+        "blurb": "Published revisions define the active terms.",
+        "contentHtml": "<ul><li>MyScoutee may update these terms as features, legal requirements, or safety needs change.</li><li>The active published version is shown with the terms page and can be reviewed before continuing where required.</li></ul>"
+      }
+    ]
+  },
+  {
+    "_id": "terms-default-hu-v1",
+    "documentType": "terms",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": true,
+    "title": "Felhasználási feltételek",
+    "summary": "Használati feltételek",
+    "description": "Tekintsd át a MyScoutee funkcióira, fiókjaira, eseményeire, csevegéseire és közösségi eszközeire vonatkozó feltételeket.",
+    "headerColor": "slate",
+    "createdDate": "2026-02-01T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-02-01T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "terms",
+        "icon": "rule",
+        "title": "Felhasználási feltételek",
+        "blurb": "A MyScoutee használatának alapvető szabályai.",
+        "contentHtml": "<p>Ezek a feltételek írják le a MyScoutee fiókok, profilok, események, csevegések, moderációs eszközök és kapcsolódó szolgáltatások használatának szabályait.</p><p><strong>Utolsó frissítés:</strong> 2026. február 1.</p>"
+      },
+      {
+        "id": "account-access",
+        "icon": "manage_accounts",
+        "title": "Fiókhozzáférés",
+        "blurb": "Te felelsz a használt fiókért és belépési módért.",
+        "contentHtml": "<ul><li>Használj pontos fiókadatokat, és tartsd biztonságban a belépési módodat.</li><li>Ne add ki magad más személynek, és ne hozz létre megtévesztő fiókot.</li><li>Az OAuth-belépésre az adott szolgáltató feltételei is vonatkoznak.</li></ul>"
+      },
+      {
+        "id": "community-conduct",
+        "icon": "groups",
+        "title": "Közösségi viselkedés",
+        "blurb": "A tiszteletteljes működés tartja használhatóan az eseményeket és csevegéseket.",
+        "contentHtml": "<ul><li>Ne zaklass, fenyegetőzz, spammelj, csalj, és ne vezesd félre szándékosan a tagokat.</li><li>Ne tegyél közzé jogellenes, gyűlöletkeltő, kizsákmányoló vagy veszélyes tartalmat.</li><li>A szervezők és adminok moderálhatják, korlátozhatják vagy eltávolíthatják a feltételeket sértő tartalmakat és fiókokat.</li></ul>"
+      },
+      {
+        "id": "events-and-content",
+        "icon": "event_note",
+        "title": "Események és tartalom",
+        "blurb": "A szervezők és tagok felelnek az általuk létrehozott eseményekért és tartalmakért.",
+        "contentHtml": "<ul><li>Csak olyan eseményt, meghívást, csevegést, erőforrást és bejegyzést hozz létre, amelyet jogosult vagy megosztani.</li><li>Tartsd tiszteletben mások magánszféráját, képeit és szellemi tulajdonát.</li><li>Az eseményrészleteket, elérhetőséget és résztvevői viselkedést az érintett szervezők és résztvevők kezelik.</li></ul>"
+      },
+      {
+        "id": "safety-and-moderation",
+        "icon": "verified_user",
+        "title": "Biztonság és moderáció",
+        "blurb": "A MyScoutee léphet, ha a platform biztonsága vagy a szabályok betartása ezt igényli.",
+        "contentHtml": "<ul><li>A jelentéseket, support ügyeket és automatikus jelzéseket biztonsági és visszaélés-megelőzési célból át lehet tekinteni.</li><li>A fiókok figyelmeztethetők, korlátozhatók, blokkolhatók, újraaktiválhatók vagy törölhetők a platformszabályok és az alkalmazandó jog szerint.</li><li>A kritikus működési és biztonsági műveletek audit célból naplózhatók.</li></ul>"
+      },
+      {
+        "id": "changes",
+        "icon": "history",
+        "title": "A feltételek változása",
+        "blurb": "A közzétett verziók határozzák meg az aktív feltételeket.",
+        "contentHtml": "<ul><li>A MyScoutee frissítheti ezeket a feltételeket, ha a funkciók, jogi követelmények vagy biztonsági igények változnak.</li><li>Az aktív közzétett verzió megjelenik a feltételek oldalon, és szükség esetén folytatás előtt áttekinthető.</li></ul>"
       }
     ]
   },
@@ -328,7 +410,7 @@
         "blurb": "Pick which kind of rating cards should be shown.",
         "contentHtml": "<p>Open the first menu to choose cards you rated, cards where someone rated you, mutual ratings, people you met, or suggestions.</p><p>The red number tells you how many cards are in that choice. The Social switch simply decides whether cards suggested through shared people or events are included.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Factivities-rates%2Factivity-rate-filter\" alt=\"What you are looking at\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/activities-rates/activity-rate-filter"
+          "/media/public?key=seeded-help/4d240cdac0d52bf207ae06a6.svg"
         ],
         "optional": false
       },
@@ -339,7 +421,7 @@
         "blurb": "These buttons only change how the list is shown.",
         "contentHtml": "<p><strong>Recent</strong>, <strong>Relevant</strong>, and <strong>Past</strong> decide what comes first. They do not change anyone&rsquo;s score.</p><p><strong>Month</strong>, <strong>Week</strong>, <strong>Day</strong>, and <strong>Distance</strong> decide how the same cards are grouped. A label like <strong>10 km</strong> is just a group title.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Factivities-rates%2Factivity-header-controls\" alt=\"Order and view\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/activities-rates/activity-header-controls"
+          "/media/public?key=seeded-help/6f1c99a9d73442f7684e906e.svg"
         ],
         "optional": false
       },
@@ -350,7 +432,7 @@
         "blurb": "Tap a card, then use the 1-10 bar to change your rating.",
         "contentHtml": "<p>The star badge shows your current rating for that card. After you select a card, the bar at the bottom changes only that selected card.</p><p>If a card is read-only, you may still see a received score, but the bottom bar will not change it.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Factivities-rates%2Factivity-score-badge\" alt=\"Rating one card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/activities-rates/activity-score-badge"
+          "/media/public?key=seeded-help/993bb27482d4c98b4fff1919.svg"
         ],
         "optional": false
       },
@@ -361,7 +443,7 @@
         "blurb": "Use fullscreen when you want to focus on a single card.",
         "contentHtml": "<p>The fullscreen button opens a larger card. The small bars at the top of the image show when there are more photos.</p><p>The rating bar sits below the image and changes only the card you can see. When you exit fullscreen, you return to the same filtered list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Factivities-rates%2Factivity-fullscreen\" alt=\"Rating one by one\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/activities-rates/activity-fullscreen"
+          "/media/public?key=seeded-help/ae9f336bdd34a5f6da8c6fdc.svg"
         ],
         "optional": false
       }
@@ -391,7 +473,7 @@
         "blurb": "Itt választod ki, milyen értékeléskártyák látszanak.",
         "contentHtml": "<p>Nyisd le az első menüt, és válassz: akiket te értékeltél, akik téged értékeltek, kölcsönös értékelések, akikkel találkoztál, vagy ajánlások.</p><p>A piros szám azt mutatja, hány kártya van abban a választásban. A Social kapcsoló csak azt dönti el, hogy bekerüljenek-e a közös emberek vagy események alapján ajánlott kártyák.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Factivities-rates%2Factivity-rate-filter\" alt=\"Mit nézel?\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/activities-rates/activity-rate-filter"
+          "/media/public?key=seeded-help/fbe1068d690b7c7a33eb4459.svg"
         ],
         "optional": false
       },
@@ -402,7 +484,7 @@
         "blurb": "Ezek a gombok csak azt változtatják, hogyan látod a listát.",
         "contentHtml": "<p>A <strong>Legutóbbi</strong>, <strong>Releváns</strong> és <strong>Korábbi</strong> azt dönti el, mi kerüljön előre. Ettől senkinek nem változik a pontja.</p><p>A <strong>Hónap</strong>, <strong>Hét</strong>, <strong>Nap</strong> és <strong>Távolság</strong> azt dönti el, milyen csoportokban látod ugyanazokat a kártyákat. A <strong>10 km</strong> felirat csak egy csoportcím.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Factivities-rates%2Factivity-header-controls\" alt=\"Sorrend és nézet\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/activities-rates/activity-header-controls"
+          "/media/public?key=seeded-help/9d19d38c5a2e96b74ebca633.svg"
         ],
         "optional": false
       },
@@ -413,7 +495,7 @@
         "blurb": "Koppints egy kártyára, majd az 1-10-es sávval módosítsd az értékelést.",
         "contentHtml": "<p>A csillagos jelvény azt mutatja, most mennyire értékelted azt a kártyát. Ha kijelölsz egy kártyát, az alsó sáv csak azt az egy kártyát módosítja.</p><p>Ha egy kártya csak olvasható, láthatod rajta a kapott pontot, de az alsó sáv nem fogja átírni.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Factivities-rates%2Factivity-score-badge\" alt=\"Egy kártya pontozása\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/activities-rates/activity-score-badge"
+          "/media/public?key=seeded-help/e54b4aef66087da62de966ef.svg"
         ],
         "optional": false
       },
@@ -424,7 +506,7 @@
         "blurb": "A teljes képernyő akkor jó, ha csak egy kártyára szeretnél figyelni.",
         "contentHtml": "<p>A teljes képernyő ikon nagyobb kártyát nyit. A kép tetején lévő kis sávok mutatják, ha több fotó van.</p><p>A pontozósáv közvetlenül a kép alatt van, és csak az éppen látható kártyát módosítja. Kilépés után ugyanabba a szűrt listába térsz vissza.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Factivities-rates%2Factivity-fullscreen\" alt=\"Egyesével pontozás\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/activities-rates/activity-fullscreen"
+          "/media/public?key=seeded-help/ae9f336bdd34a5f6da8c6fdc.svg"
         ],
         "optional": false
       }
@@ -454,7 +536,7 @@
         "blurb": "This popup starts from your own things, not from one event.",
         "contentHtml": "<p>The type menu switches between <strong>Car</strong>, <strong>Accommodation</strong>, <strong>Supplies</strong>, and <strong>Ticket</strong>. The red number is the count for that type.</p><p><strong>Car</strong>, <strong>Accommodation</strong>, and <strong>Supplies</strong> are editable assets you own. The plus button creates a new one. <strong>Ticket</strong> is different: it is for event entry codes and scanning, not for editing a physical asset.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-entry\" alt=\"Your assets\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets/assets-entry"
+          "/media/public?key=seeded-help/4bb070c7b7a156ae95e274a5.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -466,7 +548,7 @@
         "blurb": "This is the short version of one thing you own.",
         "contentHtml": "<p>The picture is the asset photo; if there is no image, the card shows the built-in no-image placeholder. The small icon shows the asset type. The title is the name, the line under it shows type/category/city, and the text is your practical note.</p><p>The right badge is the useful number: seats, beds, quantity, or pending requests. The three-dot menu is for owner actions such as <strong>Share</strong>, <strong>Edit</strong>, and <strong>Delete</strong>. Accommodation can also show a location/map button.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-card\" alt=\"One asset card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets/assets-card"
+          "/media/public?key=seeded-help/8b698d81df5286079810a8f9.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -478,7 +560,7 @@
         "blurb": "Cars, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>For every real asset you set the image/source link, type, title, category, capacity, quantity, details, visibility, optional pricing, and lending policies.</p><p><strong>Public</strong> can be found broadly in Asset Explorer. <strong>Friends only</strong> limits discovery to your friend/network context. <strong>Invitation only</strong> keeps it out of normal discovery, so it is used by direct sharing or assignment.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-editor\" alt=\"Common asset editor\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets/assets-editor"
+          "/media/public?key=seeded-help/1e6e0fafa93a7dc7ddb47726.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -490,7 +572,7 @@
         "blurb": "Open the badge when somebody wants to use what you own.",
         "contentHtml": "<p>The requests popup can show all rows, active items, pending requests, and borrowed items. A row shows who asked, the related event or use context, the time window, and how much capacity is left.</p><p>You can approve or reject pending requests. For accepted people you may promote someone to <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-requests\" alt=\"Requests and helpers\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets/assets-requests"
+          "/media/public?key=seeded-help/57e7f5ad1e92e845ede5da23.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -502,7 +584,7 @@
         "blurb": "Visibility controls discovery; event screens assign the asset.",
         "contentHtml": "<p>Your own asset can appear in <strong>Asset Explorer</strong> when its visibility allows it. That is where other people can discover it and request it.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That assignment screen can have extra event-only states, but those are not the normal own-assets list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-scope\" alt=\"Where an asset can be used\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets/assets-scope"
+          "/media/public?key=seeded-help/ed771fd8aca61800112f358e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -533,7 +615,7 @@
         "blurb": "Ez a popup a saját dolgaidból indul ki, nem egy konkrét eseményből.",
         "contentHtml": "<p>A típusmenü vált: <strong>Autó</strong>, <strong>Ingatlan</strong>, <strong>Kellékek</strong> és <strong>Jegy</strong>. A piros szám az adott típus darabszáma.</p><p>Az <strong>Autó</strong>, <strong>Ingatlan</strong> és <strong>Kellékek</strong> szerkeszthető saját eszközök. A plusz gomb újat hoz létre. A <strong>Jegy</strong> más: belépőkódokra és szkennelésre való, nem tárgyi eszköz szerkesztésére.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-entry\" alt=\"Saját eszközeid\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets/assets-entry"
+          "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -545,7 +627,7 @@
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
         "contentHtml": "<p>A kép az eszköz fotója; ha nincs kép, a kártya a beépített nincs-kép jelzést mutatja. A kis ikon a típust jelzi. A cím az eszköz neve, alatta típus/kategória/város, a szöveg pedig praktikus megjegyzés.</p><p>A jobb oldali jelvény a hasznos szám: férőhely, ágy, mennyiség vagy függő kérés. A hárompontos menüben tulajdonosi műveletek vannak: <strong>Megosztás</strong>, <strong>Szerkesztés</strong>, <strong>Törlés</strong>. Ingatlannál helyszín/térkép gomb is megjelenhet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-card\" alt=\"Egy eszközkártya\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets/assets-card"
+          "/media/public?key=seeded-help/698694e2d2bd85c6ca344e45.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -557,7 +639,7 @@
         "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
         "contentHtml": "<p>Minden valódi eszköznél képet/forráslinket, típust, címet, kategóriát, kapacitást, mennyiséget, leírást, láthatóságot, opcionális árat és kölcsönzési szabályokat adhatsz meg.</p><p>A <strong>Public</strong> szélesen megjelenhet az Eszköz Felfedezésben. A <strong>Friends only</strong> az ismerősi/hálózati körre szűkít. Az <strong>Invitation only</strong> nem normál felfedezésre való, hanem közvetlen megosztásra vagy hozzárendelésre.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-editor\" alt=\"Közös eszközszerkesztő\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets/assets-editor"
+          "/media/public?key=seeded-help/5756209f04ce59e79ba0d04e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -569,7 +651,7 @@
         "blurb": "A jelvényt nyisd meg, ha valaki használni szeretné, ami a tied.",
         "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-requests\" alt=\"Kérések és segítők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets/assets-requests"
+          "/media/public?key=seeded-help/ff75c0e9ce75458dcd00843e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -581,7 +663,7 @@
         "blurb": "A láthatóság a felfedezést szabályozza; az eseményképernyők hozzárendelnek.",
         "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-scope\" alt=\"Hol használható egy eszköz\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets/assets-scope"
+          "/media/public?key=seeded-help/4185f4f19af46bb1094f35ae.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -612,7 +694,7 @@
         "blurb": "Accommodation uses the common editor, with location as the important extra.",
         "contentHtml": "<p>The <strong>Accommodation</strong> tab lists places, rooms, beds, or stays you own or manage as your own assets. Add a place, then describe location, sleeping capacity, rules, price, and visibility.</p><p>A public or friends-only stay can be discovered in Asset Explorer and requested. It can also be assigned to an event or sub-event from that event&rsquo;s resource screen.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-accommodation%2Fassets-entry\" alt=\"Your accommodation\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-accommodation/assets-entry"
+          "/media/public?key=seeded-help/4bb070c7b7a156ae95e274a5.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -624,7 +706,7 @@
         "blurb": "This is the short version of one thing you own.",
         "contentHtml": "<p>The photo shows the place. The icon confirms it is accommodation, the title is the place name, and the second line can show type, city, or category.</p><p>The right badge is the useful number: beds/rooms/capacity or pending requests. The location icon can open the map when the place has a location.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-accommodation%2Fassets-card\" alt=\"Reading an accommodation card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-accommodation/assets-card"
+          "/media/public?key=seeded-help/f876792fb24a2dcbb9088247.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -636,7 +718,7 @@
         "blurb": "Cars, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>Beyond the common fields, accommodation needs a <strong>location</strong>. The map/location button uses that place. Use details for check-in, sleeping setup, shared rooms, quiet hours, pets, parking, and what a guest must know before requesting it.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-accommodation%2Fassets-editor\" alt=\"Accommodation-specific fields\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-accommodation/assets-editor"
+          "/media/public?key=seeded-help/2d15f16061402b2c050b1ac7.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -648,7 +730,7 @@
         "blurb": "Open the badge when somebody wants to use what you own.",
         "contentHtml": "<p>The requests popup can show all rows, active items, pending requests, and borrowed items. A row shows who asked, the related event or use context, the time window, and how much capacity is left.</p><p>You can approve or reject pending requests. For accepted people you may promote someone to <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-accommodation%2Fassets-requests\" alt=\"Requests and helpers\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-accommodation/assets-requests"
+          "/media/public?key=seeded-help/57e7f5ad1e92e845ede5da23.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -660,7 +742,7 @@
         "blurb": "Visibility controls discovery; event screens assign the asset.",
         "contentHtml": "<p>Your own asset can appear in <strong>Asset Explorer</strong> when its visibility allows it. That is where other people can discover it and request it.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That assignment screen can have extra event-only states, but those are not the normal own-assets list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-accommodation%2Fassets-scope\" alt=\"Where an asset can be used\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-accommodation/assets-scope"
+          "/media/public?key=seeded-help/ed771fd8aca61800112f358e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -691,7 +773,7 @@
         "blurb": "Az ingatlan a közös eszközszerkesztőt használja, helyszínnel kiegészítve.",
         "contentHtml": "<p>Az <strong>Ingatlan</strong> tab szállást, szobát, ágyat vagy helyet listáz, amit saját eszközként birtokolsz vagy kezelsz. Adj hozzá helyet, majd írd le a lokációt, alvó kapacitást, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható szállás megjelenhet az Eszköz Felfedezésben, és kérhető. Eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-entry\" alt=\"Saját ingatlanok\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-accommodation/assets-entry"
+          "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -703,7 +785,7 @@
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
         "contentHtml": "<p>A kép a helyet mutatja. Az ikon jelzi, hogy ingatlan/szállás, a cím a hely neve, alatta típus, város vagy kategória jelenhet meg.</p><p>A jobb oldali jelvény ágyat, szobát, kapacitást vagy függő kérést mutathat. A hely ikon térképet nyithat, ha van helyszín.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-card\" alt=\"Egy ingatlankártya\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-accommodation/assets-card"
+          "/media/public?key=seeded-help/4bb5a82eaaf7a9fbf1466fbd.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -715,7 +797,7 @@
         "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
         "contentHtml": "<p>A közös mezőkön túl az ingatlannál a <strong>helyszín</strong> fontos. A térkép/helyszín gomb ezt használja. Írd a részletekhez a bejutást, alvási rendet, közös szobát, csendidőt, kisállatot, parkolást és amit kérés előtt tudni kell.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-editor\" alt=\"Ingatlanra jellemző mezők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-accommodation/assets-editor"
+          "/media/public?key=seeded-help/3265a9e299133b901acf812e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -727,7 +809,7 @@
         "blurb": "A jelvényt nyisd meg, ha valaki használni szeretné, ami a tied.",
         "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-requests\" alt=\"Kérések és segítők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-accommodation/assets-requests"
+          "/media/public?key=seeded-help/ff75c0e9ce75458dcd00843e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -739,7 +821,7 @@
         "blurb": "A láthatóság a felfedezést szabályozza; az eseményképernyők hozzárendelnek.",
         "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-scope\" alt=\"Hol használható egy eszköz\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-accommodation/assets-scope"
+          "/media/public?key=seeded-help/4185f4f19af46bb1094f35ae.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -770,7 +852,7 @@
         "blurb": "Cars use the common editor, with travel details added.",
         "contentHtml": "<p>The <strong>Car</strong> tab lists vehicles you own or manage as your own assets. Use plus to add a car, then describe seats, route, city, pickup notes, rules, price, and visibility.</p><p>A public or friends-only car can be discovered in Asset Explorer and requested. The same car can also be assigned to an event or sub-event from that event&rsquo;s resource screen.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-entry\" alt=\"Your cars\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-car/assets-entry"
+          "/media/public?key=seeded-help/4bb070c7b7a156ae95e274a5.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -782,7 +864,7 @@
         "blurb": "This is the short version of one thing you own.",
         "contentHtml": "<p>The photo shows the car. The icon confirms it is a car, the title is the car name, and the second line can show model, transmission, category, route, or city.</p><p>The right badge is seats or pending requests. The three-dot menu is where the owner shares, edits, or deletes the car.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-card\" alt=\"Reading a car card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-car/assets-card"
+          "/media/public?key=seeded-help/8b698d81df5286079810a8f9.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -794,7 +876,7 @@
         "blurb": "Cars, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>Beyond the common fields, a car is mainly about <strong>seats</strong> and <strong>route</strong>. Use details for pickup window, luggage limits, fuel sharing, route stops, driver notes, and whether people can request it outside your own events.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-editor\" alt=\"Car-specific fields\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-car/assets-editor"
+          "/media/public?key=seeded-help/1e6e0fafa93a7dc7ddb47726.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -806,7 +888,7 @@
         "blurb": "Open the badge when somebody wants to use what you own.",
         "contentHtml": "<p>The requests popup can show all rows, active items, pending requests, and borrowed items. A row shows who asked, the related event or use context, the time window, and how much capacity is left.</p><p>You can approve or reject pending requests. For accepted people you may promote someone to <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-requests\" alt=\"Requests and helpers\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-car/assets-requests"
+          "/media/public?key=seeded-help/57e7f5ad1e92e845ede5da23.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -818,7 +900,7 @@
         "blurb": "Visibility controls discovery; event screens assign the asset.",
         "contentHtml": "<p>Your own asset can appear in <strong>Asset Explorer</strong> when its visibility allows it. That is where other people can discover it and request it.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That assignment screen can have extra event-only states, but those are not the normal own-assets list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-scope\" alt=\"Where an asset can be used\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-car/assets-scope"
+          "/media/public?key=seeded-help/ed771fd8aca61800112f358e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -849,7 +931,7 @@
         "blurb": "Az autó a közös eszközszerkesztőt használja, utazási adatokkal kiegészítve.",
         "contentHtml": "<p>Az <strong>Autó</strong> tab azokat a járműveket listázza, amelyeket saját eszközként birtokolsz vagy kezelsz. A plusz gombbal adhatsz hozzá autót, majd megadhatod a férőhelyet, útvonalat, várost, indulási megjegyzést, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható autó megjelenhet az Eszköz Felfedezésben, és kérhető. Ugyanez az autó eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-entry\" alt=\"Saját autóid\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-car/assets-entry"
+          "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -861,7 +943,7 @@
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
         "contentHtml": "<p>A kép az autót mutatja. Az ikon jelzi, hogy autóról van szó, a cím az autó neve, alatta modell, váltó, kategória, útvonal vagy város jelenhet meg.</p><p>A jobb oldali jelvény férőhelyet vagy függő kérést mutat. A hárompontos menüben a tulajdonos megoszt, szerkeszt vagy töröl.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-card\" alt=\"Egy autókártya\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-car/assets-card"
+          "/media/public?key=seeded-help/698694e2d2bd85c6ca344e45.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -873,7 +955,7 @@
         "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
         "contentHtml": "<p>A közös mezőkön túl az autó főleg <strong>férőhelyről</strong> és <strong>útvonalról</strong> szól. Írd a részletekhez az indulási ablakot, csomaglimitet, üzemanyag-megosztást, megállókat, sofőr megjegyzést, és hogy kérhető-e a saját eseményeiden kívül is.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-editor\" alt=\"Autóra jellemző mezők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-car/assets-editor"
+          "/media/public?key=seeded-help/5756209f04ce59e79ba0d04e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -885,7 +967,7 @@
         "blurb": "A jelvényt nyisd meg, ha valaki használni szeretné, ami a tied.",
         "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-requests\" alt=\"Kérések és segítők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-car/assets-requests"
+          "/media/public?key=seeded-help/ff75c0e9ce75458dcd00843e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -897,7 +979,7 @@
         "blurb": "A láthatóság a felfedezést szabályozza; az eseményképernyők hozzárendelnek.",
         "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-scope\" alt=\"Hol használható egy eszköz\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-car/assets-scope"
+          "/media/public?key=seeded-help/4185f4f19af46bb1094f35ae.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -928,7 +1010,7 @@
         "blurb": "Supplies use the common editor, with quantity as the important extra.",
         "contentHtml": "<p>The <strong>Supplies</strong> tab lists gear, tools, kits, food packs, camping items, and other practical things you own. Add a supply item, then describe quantity, condition, rules, price, and visibility.</p><p>A public or friends-only supply can be discovered in Asset Explorer and requested. It can also be assigned to an event or sub-event from that event&rsquo;s resource screen.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-supplies%2Fassets-entry\" alt=\"Your supplies\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-supplies/assets-entry"
+          "/media/public?key=seeded-help/4bb070c7b7a156ae95e274a5.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -940,7 +1022,7 @@
         "blurb": "This is the short version of one thing you own.",
         "contentHtml": "<p>The photo shows the item. The icon confirms it is a supply asset, the title is the item name, and the second line can show type, category, or city.</p><p>The right badge is usually quantity or pending requests. The three-dot menu is where the owner normally shares, edits, or deletes the item.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-supplies%2Fassets-card\" alt=\"Reading a supply card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-supplies/assets-card"
+          "/media/public?key=seeded-help/a44769c4e4e067bce79efdd5.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -952,7 +1034,7 @@
         "blurb": "Cars, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>Beyond the common fields, supplies are mainly about <strong>quantity</strong>. Use details for condition, pickup/return rules, what is included, missing parts, deposit, and whether several people can borrow parts of the quantity.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-supplies%2Fassets-editor\" alt=\"Supply-specific fields\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-supplies/assets-editor"
+          "/media/public?key=seeded-help/d1931e08d9ce04d9b9a60dee.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -964,7 +1046,7 @@
         "blurb": "Open the badge when somebody wants to use what you own.",
         "contentHtml": "<p>The requests popup can show all rows, active items, pending requests, and borrowed items. A row shows who asked, the related event or use context, the time window, and how much capacity is left.</p><p>You can approve or reject pending requests. For accepted people you may promote someone to <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-supplies%2Fassets-requests\" alt=\"Requests and helpers\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-supplies/assets-requests"
+          "/media/public?key=seeded-help/57e7f5ad1e92e845ede5da23.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -976,7 +1058,7 @@
         "blurb": "Visibility controls discovery; event screens assign the asset.",
         "contentHtml": "<p>Your own asset can appear in <strong>Asset Explorer</strong> when its visibility allows it. That is where other people can discover it and request it.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That assignment screen can have extra event-only states, but those are not the normal own-assets list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-supplies%2Fassets-scope\" alt=\"Where an asset can be used\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-supplies/assets-scope"
+          "/media/public?key=seeded-help/ed771fd8aca61800112f358e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1007,7 +1089,7 @@
         "blurb": "A kellék a közös eszközszerkesztőt használja, mennyiséggel kiegészítve.",
         "contentHtml": "<p>A <strong>Kellékek</strong> tab felszerelést, szerszámot, csomagot, ételt, kempingcuccot és más praktikus tárgyat listáz, amit te birtokolsz. Adj hozzá kelléket, majd írd le a mennyiséget, állapotot, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható kellék megjelenhet az Eszköz Felfedezésben, és kérhető. Eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-supplies%2Fassets-entry\" alt=\"Saját kellékek\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-supplies/assets-entry"
+          "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1019,7 +1101,7 @@
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
         "contentHtml": "<p>A kép a tárgyat mutatja. Az ikon jelzi, hogy kellék, a cím az eszköz neve, alatta típus, kategória vagy város jelenhet meg.</p><p>A jobb oldali jelvény általában mennyiséget vagy függő kérést mutat. A hárompontos menüben a tulajdonos jellemzően megoszt, szerkeszt vagy töröl.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-supplies%2Fassets-card\" alt=\"Egy kellékkártya\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-supplies/assets-card"
+          "/media/public?key=seeded-help/be42b1cb15c5b5cafc572451.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1031,7 +1113,7 @@
         "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
         "contentHtml": "<p>A közös mezőkön túl a kellék főleg <strong>mennyiségről</strong> szól. Írd a részletekhez az állapotot, átvétel/visszahozás módját, mit tartalmaz, mi hiányzik, van-e kaució, és osztható-e a mennyiség több ember között.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-supplies%2Fassets-editor\" alt=\"Kellékre jellemző mezők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-supplies/assets-editor"
+          "/media/public?key=seeded-help/0dde84f0e82906a8fb5242df.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1043,7 +1125,7 @@
         "blurb": "A jelvényt nyisd meg, ha valaki használni szeretné, ami a tied.",
         "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-supplies%2Fassets-requests\" alt=\"Kérések és segítők\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-supplies/assets-requests"
+          "/media/public?key=seeded-help/ff75c0e9ce75458dcd00843e.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1055,7 +1137,7 @@
         "blurb": "A láthatóság a felfedezést szabályozza; az eseményképernyők hozzárendelnek.",
         "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-supplies%2Fassets-scope\" alt=\"Hol használható egy eszköz\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-supplies/assets-scope"
+          "/media/public?key=seeded-help/4185f4f19af46bb1094f35ae.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1086,7 +1168,7 @@
         "blurb": "Tickets are event entry records, not editable owned assets.",
         "contentHtml": "<p>The <strong>Ticket</strong> tab is separate from Car, Accommodation, and Supplies. It lists ticketed events and entry codes connected to you.</p><p>Use <strong>Upcoming</strong> and <strong>Past</strong> to change the list. The <strong>Scan Ticket</strong> button opens scanner mode for reading another person&rsquo;s QR code at check-in.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-tickets\" alt=\"Your tickets\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-tickets/assets-tickets"
+          "/media/public?key=seeded-help/6074b4e9186e40ccb8ae6770.svg"
         ],
         "optional": false
       },
@@ -1097,7 +1179,7 @@
         "blurb": "A ticket card points back to an event.",
         "contentHtml": "<p>The card shows the event image, title, date, role, and ticket context. Tap the QR badge in the top-right corner to open your own code for that ticket.</p><p>You do not edit this like a car or supply. Its data comes from the event, booking, member role, and ticketing/check-in setup.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Reading a ticket card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-tickets/assets-ticket-card"
+          "/media/public?key=seeded-help/c63b93f558678f70f154dc2c.svg"
         ],
         "optional": false
       },
@@ -1108,7 +1190,7 @@
         "blurb": "Use it when you need to read somebody else&rsquo;s QR code.",
         "contentHtml": "<p>The scanner opens a camera/check-in screen. After reading a QR code it shows the ticket holder, event, role, and time, so you can confirm whether the ticket belongs here.</p><p>This is a check-in tool. It does not create or edit tickets.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-scanner\" alt=\"Ticket scanner\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/assets-tickets/assets-ticket-scanner"
+          "/media/public?key=seeded-help/ad885244e5aa445d6870ebd4.svg"
         ],
         "optional": false
       }
@@ -1138,7 +1220,7 @@
         "blurb": "A jegy belépési rekord, nem szerkeszthető saját tárgyi eszköz.",
         "contentHtml": "<p>A <strong>Jegy</strong> tab külön van az Autó, Ingatlan és Kellékek típusoktól. Jegyes eseményeket és hozzád kapcsolódó belépőkódokat listáz.</p><p>A <strong>Közelgő</strong> és <strong>Korábbi</strong> a listát váltja. A <strong>Scan Ticket</strong> gomb szkenner módot nyit, amikor más ember QR kódját kell beolvasni beléptetésnél.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-tickets\" alt=\"Saját jegyek\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-tickets/assets-tickets"
+          "/media/public?key=seeded-help/b23fc9b2494ddc7c4d0d1211.svg"
         ],
         "optional": false
       },
@@ -1149,7 +1231,7 @@
         "blurb": "A jegykártya egy eseményre mutat vissza.",
         "contentHtml": "<p>A kártya eseményképet, címet, dátumot, szerepet és jegykörnyezetet mutat. A jobb felső QR jelvényre koppintva a saját jegykódod nyílik meg.</p><p>Ezt nem úgy szerkeszted, mint egy autót vagy kelléket. Az adatai az eseményből, foglalásból, tagszerepből és ticketing/check-in beállításból jönnek.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Egy jegykártya\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-tickets/assets-ticket-card"
+          "/media/public?key=seeded-help/45f386e7ae216b8c69d572af.svg"
         ],
         "optional": false
       },
@@ -1160,7 +1242,7 @@
         "blurb": "Akkor használod, amikor más QR kódját kell beolvasni.",
         "contentHtml": "<p>A scanner kamerás/check-in képernyőt nyit. QR olvasás után megmutatja a jegy tulajdonosát, az eseményt, szerepet és időpontot, így ellenőrizhető, hogy ide tartozik-e.</p><p>Ez beléptető eszköz. Nem hoz létre és nem szerkeszt jegyet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-scanner\" alt=\"Jegyszkenner\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/assets-tickets/assets-ticket-scanner"
+          "/media/public?key=seeded-help/86dda0eaaef232cc842d9be2.svg"
         ],
         "optional": false
       }
@@ -1190,7 +1272,7 @@
         "blurb": "Pick which conversations you want to see.",
         "contentHtml": "<p>Open <strong>Chats</strong> to see conversations connected to your events and groups. The second menu filters the list: All, Event, Sub event, Group, or Service.</p><p>Red bubbles mean unread or waiting items. Date bars group the conversations so you can quickly see what is new today and what is older.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fchats%2Factivity-chat-list\" alt=\"Chat lists\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/chats/activity-chat-list"
+          "/media/public?key=seeded-help/0ba2c41d1934d447a06bae45.svg"
         ],
         "optional": false
       },
@@ -1201,7 +1283,7 @@
         "blurb": "A row tells you who spoke, which channel it is, and how many people are inside.",
         "contentHtml": "<p>The round avatar is the last sender or channel person. The bold name is who last wrote, and the line under it shows the channel name, for example <strong>Main Event</strong>, <strong>Group Channel</strong>, or <strong>Contact Organizer</strong>.</p><p>The dark pill like <strong>4 members</strong> shows how many people are in that chat. A small red number on it is unread messages or pending chat-related work.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fchats%2Factivity-chat-card\" alt=\"Reading a chat row\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/chats/activity-chat-card"
+          "/media/public?key=seeded-help/d3cd02596da14fac782be290.svg"
         ],
         "optional": false
       },
@@ -1212,7 +1294,7 @@
         "blurb": "Different chats are for different jobs.",
         "contentHtml": "<p><strong>Main event</strong> is the broad event chat. <strong>Sub event</strong> is for one stage or optional part. <strong>Group</strong> is for a smaller team inside the event. <strong>Service</strong> or <strong>Organizer</strong> is for questions, support, notifications, or admin handling.</p><p>This keeps planning tidy: you can ask a ticket question in organizer chat, arrange a stage in sub-event chat, and talk with only your group in group chat.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fchats%2Factivity-chat-channels\" alt=\"Channel types\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/chats/activity-chat-channels"
+          "/media/public?key=seeded-help/3ff11b748f47c5de20e01959.svg"
         ],
         "optional": false
       },
@@ -1223,7 +1305,7 @@
         "blurb": "Tap a row to open the conversation and the typing box.",
         "contentHtml": "<p>The top bar shows the channel name. The member button opens people in the chat, the context button opens the related event or group area, and the pin icon opens messages marked as important.</p><p>Messages are bubbles: other people are on the left, your messages are on the right. A bubble can hold text, an image, a voice clip, a poll, a shared event, or a shared asset card.</p><p>Tap a message to select it. Floating buttons appear for reply, reaction, and more actions. The menu can show View, Reply, Edit, Unsend, Mark important/remove important, or Report depending on the message and your role.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fchats%2Factivity-chat-message-window\" alt=\"Opening messages\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/chats/activity-chat-message-window"
+          "/media/public?key=seeded-help/7d87782f354962f4232cc7e3.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1235,7 +1317,7 @@
         "blurb": "Chats are for coordination, not only hello messages.",
         "contentHtml": "<p>The plus button beside Write message opens the same tools you use in the real chat: upload image, send voice clip, create poll, share event, and share asset.</p><p>Polls and shared event or asset cards appear inside the message stream, so people can vote or open the shared item later. Use it for practical planning: meeting spot, who brings what, rides, tickets, approvals, or last-minute changes.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fchats%2Factivity-chat-tools\" alt=\"Useful chat tools\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/chats/activity-chat-tools"
+          "/media/public?key=seeded-help/199f3a446072d21276f353e8.svg"
         ],
         "optional": false
       }
@@ -1265,7 +1347,7 @@
         "blurb": "Itt választod ki, melyik beszélgetéseket látod.",
         "contentHtml": "<p>A <strong>Chatek</strong> nézetben az eseményekhez és csoportokhoz tartozó beszélgetéseket látod. A második menü szűr: Összes, Esemény, Alesemény, Csoport vagy Szerviz.</p><p>A piros buborék olvasatlant vagy várakozó tennivalót jelent. A dátumsávok csoportosítják a beszélgetéseket, így látod, mi friss és mi régebbi.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fchats%2Factivity-chat-list\" alt=\"Chatlisták\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/chats/activity-chat-list"
+          "/media/public?key=seeded-help/ffb31c1021df8452f383cc83.svg"
         ],
         "optional": false
       },
@@ -1276,7 +1358,7 @@
         "blurb": "A sor megmutatja, ki írt, melyik csatorna ez, és hányan vannak benne.",
         "contentHtml": "<p>A kerek avatar az utolsó írót vagy a csatorna emberét jelzi. A vastag név mutatja, ki írt utoljára, az alatta lévő sor pedig a csatornát, például <strong>Main Event</strong>, <strong>Group Channel</strong> vagy <strong>Contact Organizer</strong>.</p><p>A sötét jelvény, például <strong>4 tag</strong>, azt mutatja, hányan vannak a chatben. A kis piros szám olvasatlan üzenetet vagy chathez tartozó tennivalót jelez.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fchats%2Factivity-chat-card\" alt=\"Egy chat sor olvasása\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/chats/activity-chat-card"
+          "/media/public?key=seeded-help/14e95d7e23753acaed6b7f5e.svg"
         ],
         "optional": false
       },
@@ -1287,7 +1369,7 @@
         "blurb": "Más chat más feladatra való.",
         "contentHtml": "<p>A <strong>Main event</strong> a fő esemény chatje. A <strong>Sub event</strong> egy szakaszhoz vagy opcionális részhez tartozik. A <strong>Group</strong> kisebb csapatnak szól. A <strong>Service</strong> vagy <strong>Organizer</strong> kérdéshez, támogatáshoz, értesítéshez vagy admin kezeléshez való.</p><p>Így nem keveredik minden: jegykérdést írhatsz a szervezőnek, szakaszról beszélhetsz az alesemény chatben, és csak a saját csoportoddal egyeztethetsz a group chatben.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fchats%2Factivity-chat-channels\" alt=\"Csatornatípusok\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/chats/activity-chat-channels"
+          "/media/public?key=seeded-help/fa84938c7383bbc9344b2bcf.svg"
         ],
         "optional": false
       },
@@ -1298,7 +1380,7 @@
         "blurb": "Koppints egy sorra: megnyílik a beszélgetés és az írómező.",
         "contentHtml": "<p>Felül a csatorna neve látszik. Mellette a tagok gomb, a kapcsolódó esemény vagy csoport gomb és a gombostű ikon van. A gombostű a fontosnak jelölt üzenetek listáját nyitja, hogy később gyorsan visszatalálj.</p><p>Az üzenetek buborékokban vannak: bal oldalon mások, jobb oldalon a saját üzeneted. Egy buborékban lehet szöveg, kép, hang, szavazás, megosztott esemény vagy eszközkártya.</p><p>Koppints egy üzenetre a kijelöléshez. A lebegő gombokkal válaszolhatsz, reagálhatsz, vagy megnyithatod a menüt. A menüben szereptől és üzenettípustól függően Megnyitás, Válasz, Szerkesztés, Visszavonás, Fontosnak jelölés vagy Jelentés jelenhet meg.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fchats%2Factivity-chat-message-window\" alt=\"Üzenetek megnyitása\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/chats/activity-chat-message-window"
+          "/media/public?key=seeded-help/840bc5c0cdda76bda5127d9d.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1310,7 +1392,7 @@
         "blurb": "A chat nem csak köszönésre van, hanem szervezésre is.",
         "contentHtml": "<p>Az Üzenet írása mező melletti plusz gomb ugyanazokat az eszközöket nyitja, mint a valódi chatben: kép feltöltése, hangüzenet, szavazás, esemény megosztása és eszköz megosztása.</p><p>A szavazás és a megosztott esemény vagy eszköz kártya magában a beszélgetésben jelenik meg, így később is lehet rá szavazni vagy megnyitni. Használd gyakorlati dolgokra: találkozási pont, ki mit hoz, fuvar, jegyek, jóváhagyás vagy utolsó pillanatos változás.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fchats%2Factivity-chat-tools\" alt=\"Hasznos chat eszközök\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/chats/activity-chat-tools"
+          "/media/public?key=seeded-help/6c9a047da3f4ec6d8c3a9fec.svg"
         ],
         "optional": false
       }
@@ -1340,7 +1422,7 @@
         "blurb": "This is your private quick-reach list.",
         "contentHtml": "<p>Use the search field to filter saved contacts by name. <strong>Create contact</strong> lets you pick a member and add that person to your own list.</p><p>An empty list only means you have not saved anyone here yet. It does not remove people from events, chats, ratings, or profiles.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fcontacts%2Fcontacts-list\" alt=\"Your contact list\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/contacts/contacts-list"
+          "/media/public?key=seeded-help/7b82be4c27e01e0be5086ff3.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1352,7 +1434,7 @@
         "blurb": "Each row shows who the person is and the shortcuts you saved.",
         "contentHtml": "<p>The avatar and name identify the person. The eye button opens the profile. The three-dot button opens the card actions: saved contact methods, Edit, and Delete.</p><p>The chips below the city are one-tap ways to reach that person, such as phone, email, WhatsApp, Telegram, Facebook, Instagram, LinkedIn, or a website, depending on what you saved.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fcontacts%2Fcontacts-card\" alt=\"Reading a contact card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/contacts/contacts-card"
+          "/media/public?key=seeded-help/f934315e916526f83b2c7a7f.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1364,7 +1446,7 @@
         "blurb": "Friends or trusted contacts can have richer reach details.",
         "contentHtml": "<p>Public profile fields stay separate from this list. When you know someone well, for example after becoming friends, you can keep more private ways to reach them here: email, phone, social handle, website, or another useful link.</p><p>Use <strong>Edit</strong> to add, change, or remove methods. These are your quick shortcuts for that saved contact; deleting the contact only removes it from this list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fcontacts%2Fcontacts-private-methods\" alt=\"Private contact methods\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/contacts/contacts-private-methods"
+          "/media/public?key=seeded-help/1a37aae0bbca79bc6207ee5a.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1395,7 +1477,7 @@
         "blurb": "Ez a saját, gyorsan elérhető kapcsolatlistád.",
         "contentHtml": "<p>A keresővel név alapján szűrheted a mentett kapcsolatokat. A <strong>Kapcsolat létrehozása</strong> gombbal kiválasztasz egy tagot, és hozzáadod a saját listádhoz.</p><p>Az üres lista csak azt jelenti, hogy ide még nem mentettél senkit. Ettől az eseményekben, chatekben, értékelésekben és profilokon semmi nem tűnik el.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fcontacts%2Fcontacts-list\" alt=\"Kapcsolatlista\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/contacts/contacts-list"
+          "/media/public?key=seeded-help/e76ba1239963582ad9f20aa6.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1407,7 +1489,7 @@
         "blurb": "A sor megmutatja, ki az ember, és milyen gyors eléréseket mentettél hozzá.",
         "contentHtml": "<p>Az avatar és a név azonosítja az embert. A szem gomb megnyitja a profilt. A hárompontos gomb nyitja a kártyaműveleteket: mentett elérési módok, szerkesztés és törlés.</p><p>A város alatti chipek egyérintéses elérések, például telefon, email, WhatsApp, Telegram, Facebook, Instagram, LinkedIn vagy weboldal, attól függően, mit mentettél.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fcontacts%2Fcontacts-card\" alt=\"Egy kapcsolatkártya\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/contacts/contacts-card"
+          "/media/public?key=seeded-help/364698ef2dcf9d30f9912cab.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1419,7 +1501,7 @@
         "blurb": "Barátokhoz vagy megbízható kapcsolatokhoz több praktikus adatot is menthetsz.",
         "contentHtml": "<p>A nyilvános profilmezők ettől külön maradnak. Ha valakit jobban ismersz, például barátok vagytok, itt tarthatsz privátabb elérési módokat: emailt, telefonszámot, közösségi profilt, weboldalt vagy más hasznos linket.</p><p>A <strong>Szerkesztés</strong> alatt adhatsz hozzá, módosíthatsz vagy törölhetsz módszereket. Ezek a saját gyorsgombjaid ehhez a mentett kapcsolathoz; a kapcsolat törlése csak ebből a listából veszi ki.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fcontacts%2Fcontacts-private-methods\" alt=\"Privátabb elérési módok\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/contacts/contacts-private-methods"
+          "/media/public?key=seeded-help/e5374545d5013f7a3e93cb74.svg"
         ],
         "optional": false,
         "panelSpan": "span-2"
@@ -1450,7 +1532,7 @@
         "blurb": "Fill the card first: picture, name, seats, text, date, and place.",
         "contentHtml": "<p>The big image box is the event photo. <strong>Name</strong>, <strong>Capacity</strong>, and <strong>Description</strong> are required; a red outline just means something is still missing.</p><p>The top <strong>Members</strong> button opens the people list. <strong>Public</strong>, <strong>Friends only</strong>, or <strong>Invitation only</strong> decides who can find the event. The red check saves; X closes.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-main\" alt=\"Main event form\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/event-editor/event-editor-main"
+          "/media/public?key=seeded-help/58171d2ebe95f6d603d12996.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1462,7 +1544,7 @@
         "blurb": "Visibility and Blind/Open are different things.",
         "contentHtml": "<p><strong>Public</strong>, <strong>Friends only</strong>, and <strong>Invitation only</strong> decide who can discover or join. <strong>Open Event</strong> and <strong>Blind Event</strong> only decide whether normal attendees can preview each other before the event.</p><p><strong>Blind Event</strong> is not a secret event. It hides the attendee preview, while Admin and Manager can still manage members. <strong>Topics</strong> help matching, <strong>Auto Inviter</strong> can fill open seats from the priority plan, and <strong>Ticketing</strong> adds ticket/QR check-in.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-switches\" alt=\"Finding, joining, preview\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/event-editor/event-editor-switches"
+          "/media/public?key=seeded-help/6f7dd1c016f6f521f89632e0.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1474,7 +1556,7 @@
         "blurb": "This part answers: when, price, rules, and place.",
         "contentHtml": "<p><strong>Date</strong> can be one-time or repeating. If the event repeats, <strong>Slot Setup</strong> controls the normal time windows and any date-specific changes.</p><p><strong>Pricing</strong> can stay off or add a charge. <strong>Event Policies</strong> are rules people must accept before joining or booking. The location row and map button set where the event happens.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-schedule\" alt=\"Time, price, rules\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/event-editor/event-editor-schedule"
+          "/media/public?key=seeded-help/d93a71ed2218e956d85bcae0.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1486,7 +1568,7 @@
         "blurb": "Sub Events are smaller pieces under the main event.",
         "contentHtml": "<p>Use <strong>Sub Events</strong> for stages, rounds, side plans, group blocks, or optional sessions. <strong>Mandatory</strong> means included in the main event. <strong>Optional</strong> means people can choose it separately, often with its own seats or price.</p><p><strong>Casual</strong> is a simple list. <strong>Tournament</strong> adds stages, groups, scores, status changes, and a leaderboard. The editor keeps sub-event times inside the main event; for repeating events, the same sub-event timing is repeated inside each slot.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-subevents\" alt=\"Parts and tournaments\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/event-editor/event-editor-subevents"
+          "/media/public?key=seeded-help/db133f74fef1f1e5a98a4add.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1498,7 +1580,7 @@
         "blurb": "This popup is where organizers handle people.",
         "contentHtml": "<p><strong>Admin</strong> is the main organizer. <strong>Manager</strong> is a helper under Admin: managers can help with members and resources, and can also appear because someone manages an assigned car, accommodation, or supply. <strong>Member</strong> is a normal attendee.</p><p><strong>Invite</strong> adds people. <strong>Pending only</strong> shows waiting requests/invites. The status chip shows Admin, Manager, Member, pending, invite, or disqualified. The eye opens a profile; the three-dot menu can approve, reject/delete, remove, disqualify, reinstate, or report depending on your role and the member state.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-members\" alt=\"Members and roles\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/event-editor/event-editor-members"
+          "/media/public?key=seeded-help/228e0ada667e7c0f154f48cd.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1510,7 +1592,7 @@
         "blurb": "Resources are the people and things assigned to one part.",
         "contentHtml": "<p>From a sub-event or group menu you can open <strong>Members</strong>, <strong>Car</strong>, <strong>Accommodation</strong>, or <strong>Supplies</strong>. <strong>Assign</strong> attaches something you already control. <strong>Explore</strong> searches available assets and can start a request/booking flow.</p><p>Counts show accepted and pending assignments. Capacity tells you whether that part has enough people, car seats, beds/rooms, or supplies. If a resource has its own manager, that person can become a Manager for the event context.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-assets\" alt=\"Resources\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/event-editor/event-editor-assets"
+          "/media/public?key=seeded-help/755030cd4258714d5ecde44b.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1541,7 +1623,7 @@
         "blurb": "Először ezt töltsd ki: kép, név, létszám, szöveg, dátum és hely.",
         "contentHtml": "<p>A nagy képes mező lesz az esemény fotója. A <strong>Name</strong>, <strong>Capacity</strong> és <strong>Description</strong> kötelező; a piros keret csak azt jelzi, hogy ott még hiányzik valami.</p><p>Felül a <strong>Members</strong> gomb nyitja az embereket. A <strong>Public</strong>, <strong>Friends only</strong> vagy <strong>Invitation only</strong> azt dönti el, ki találhatja meg az eseményt. A piros pipa ment, az X bezár.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-main\" alt=\"Fő esemény űrlap\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/event-editor/event-editor-main"
+          "/media/public?key=seeded-help/7270e86b72ba1fef12c0f47f.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1553,7 +1635,7 @@
         "blurb": "A láthatóság és a Blind/Open két külön beállítás.",
         "contentHtml": "<p>A <strong>Public</strong>, <strong>Friends only</strong> és <strong>Invitation only</strong> azt dönti el, ki találhatja meg vagy kérheti az eseményt. Az <strong>Open Event</strong> és <strong>Blind Event</strong> csak azt dönti el, hogy a sima résztvevők előre láthatják-e egymást.</p><p>A <strong>Blind Event</strong> tehát nem titkos esemény. Csak a résztvevői előnézetet rejti el; az Admin és Manager továbbra is kezeli az embereket. A <strong>Topics</strong> segít a keresésben/illesztésben, az <strong>Auto Inviter</strong> a prioritási tervből tud szabad helyekre meghívni, a <strong>Ticketing</strong> pedig jegy/QR beléptetést kapcsol.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-switches\" alt=\"Ki találja meg, ki kit lát?\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/event-editor/event-editor-switches"
+          "/media/public?key=seeded-help/10e1f26d14144d3a96d54f7d.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1565,7 +1647,7 @@
         "blurb": "Itt állítod: mikor van, van-e ár, milyen szabály van, és hol lesz.",
         "contentHtml": "<p>A <strong>Date</strong> lehet egyszeri vagy ismétlődő. Ismétlődő eseménynél a <strong>Slot Setup</strong> állítja a normál időablakokat és a külön dátumos kivételeket.</p><p>A <strong>Pricing</strong> maradhat OFF, vagy adhatsz árat. Az <strong>Event Policies</strong> olyan szabály, amit csatlakozás/foglalás előtt el kell fogadni. A helyszín sor és a térkép gomb állítja be a helyet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-schedule\" alt=\"Idő, ár, szabályok\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/event-editor/event-editor-schedule"
+          "/media/public?key=seeded-help/6af8f567513ef0c9a3e5cfd2.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1577,7 +1659,7 @@
         "blurb": "A Sub Events kisebb részekre bontja a fő eseményt.",
         "contentHtml": "<p>A <strong>Sub Events</strong> jó szakaszra, körre, mellékprogramra, csoportblokkra vagy opcionális részre. A <strong>Mandatory</strong> a fő esemény része. Az <strong>Optional</strong> külön választható, gyakran saját létszámmal vagy árral.</p><p>A <strong>Casual</strong> sima lista. A <strong>Tournament</strong> szakaszokat, csoportokat, pontokat, státuszváltásokat és ranglistát ad. A szerkesztő az időket a fő eseményen belül tartja; ismétlődő eseménynél ugyanaz az alesemény-idő minden slotban újra megjelenik.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-subevents\" alt=\"Részek és bajnokság\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/event-editor/event-editor-subevents"
+          "/media/public?key=seeded-help/bde02285cc279161184341c8.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1589,7 +1671,7 @@
         "blurb": "Ez az a popup, ahol a szervező embereket kezel.",
         "contentHtml": "<p>Az <strong>Admin</strong> a fő szervező. A <strong>Manager</strong> Admin alatti segítő: kezelhet tagokat és erőforrásokat, és akkor is megjelenhet, ha valaki egy hozzárendelt autó, szállás vagy kellék felelőse. A <strong>Member</strong> sima résztvevő.</p><p>A <strong>Invite</strong> meghív. A <strong>Pending only</strong> csak a várakozó kéréseket/meghívásokat mutatja. A jelvény mutatja: Admin, Manager, Member, függő kérés, kiküldött meghívó vagy kizárt. A szem profilra visz; a hárompontos menü szereptől és állapottól függően jóváhagyást, elutasítást/törlést, eltávolítást, kizárást, visszaállítást vagy jelentést ad.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-members\" alt=\"Tagok és szerepek\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/event-editor/event-editor-members"
+          "/media/public?key=seeded-help/a4946ca10b5959fe13f925ce.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1601,7 +1683,7 @@
         "blurb": "Erőforrás az ember vagy dolog, amit egy részhez hozzárendelsz.",
         "contentHtml": "<p>Egy alesemény vagy csoport menüjéből nyitható: <strong>Members</strong>, <strong>Car</strong>, <strong>Accommodation</strong> és <strong>Supplies</strong>. Az <strong>Assign</strong> olyat tesz hozzá, amit már kezelsz. Az <strong>Explore</strong> elérhető eszközt keres, és kérés/foglalás folyamatot indíthat.</p><p>A számok az elfogadott és függő hozzárendeléseket mutatják. A kapacitásból látod, elég ember, ülés, szálláshely vagy kellék van-e ahhoz a részhez. Ha egy erőforrásnak saját felelőse van, ő Managerként is megjelenhet az esemény környezetében.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-assets\" alt=\"Erőforrások\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/event-editor/event-editor-assets"
+          "/media/public?key=seeded-help/c3d541e0fd49b60934e0719e.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1632,7 +1714,7 @@
         "blurb": "Pick which pile of events you want to see.",
         "contentHtml": "<p>Open <strong>Events</strong> when you want invitations, events you joined, events you host, drafts, or old/deleted items. The red bubbles are counts, so you know where something waits for you.</p><p><strong>Upcoming</strong>/<strong>Past</strong> and <strong>Month</strong>/<strong>Week</strong>/<strong>Day</strong>/<strong>Distance</strong> only change how the same cards are sorted. <strong>Explore</strong> finds public events. The plus button starts a new one.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevents%2Factivity-event-entry\" alt=\"Event lists\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/events/activity-event-entry"
+          "/media/public?key=seeded-help/c77cacb4e5294f4ac5eb5402.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1644,7 +1726,7 @@
         "blurb": "The card gives the basic story: picture, title, time, place, and seats.",
         "contentHtml": "<p>The image is the event preview. The small avatar is the host or inviter. The title tells you the event name, the date line tells you when it happens, and the place line tells you where it is and how far away it is.</p><p>A badge like <strong>1 / 5</strong> means 1 accepted person out of 5 seats. A small red number on that badge means there are pending people, invitations, or requests to check.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevents%2Factivity-event-card\" alt=\"Reading a card\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/events/activity-event-card"
+          "/media/public?key=seeded-help/b6aeb50a07766cd2364b022b.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1656,7 +1738,7 @@
         "blurb": "The seats badge opens people. The three dots open actions.",
         "contentHtml": "<p>Tap the <strong>1 / 5</strong> seats badge to see who is in, who is waiting, and who needs approval. If you host the event, this is where you can manage people.</p><p>Tap the three-dot menu for your available actions: view, edit, publish a draft, accept or reject an invite, contact the organizer, notify participants, share, report, leave, delete, or restore.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevents%2Factivity-event-actions\" alt=\"What you can tap\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/events/activity-event-actions"
+          "/media/public?key=seeded-help/6d1406893e4735c29be87e5e.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1668,7 +1750,7 @@
         "blurb": "Some events are instant. Some ask for approval, tickets, or choices first.",
         "contentHtml": "<p>If you were invited, the card can let you accept or reject the invite. If the event has approval, a waitlist, tickets, rules, or optional parts, the app asks for those details before your spot is final.</p><p>After the event, you may also see feedback screens. Those deeper screens can have their own explanation because checkout, members, resources, and feedback have more buttons.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevents%2Factivity-event-join\" alt=\"Joining an event\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/events/activity-event-join"
+          "/media/public?key=seeded-help/ccbcc7501ccecad62e955f00.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1680,7 +1762,7 @@
         "blurb": "You can make a small meetup or a bigger tournament-style event.",
         "contentHtml": "<p><strong>Create Event</strong> starts a normal event. From there you can keep it simple, or build a bigger setup with stages, groups, optional parts, resources, tickets, prices, and seat limits.</p><p>If you host, you can also use auto invite. It can pull from the priority/relevance list, so better matched people can be suggested or invited first instead of adding everyone by hand.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevents%2Factivity-event-hosting\" alt=\"Making events\"></figure>",
         "imageUrls": [
-          "help-seeded-image:en/events/activity-event-hosting"
+          "/media/public?key=seeded-help/b08bf54e1678609da4d516f5.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1711,7 +1793,7 @@
         "blurb": "Itt választod ki, melyik eseménykupacot nézed.",
         "contentHtml": "<p>Az <strong>Események</strong> nézetben látod a meghívásokat, csatlakozott eseményeket, saját eseményeket, piszkozatokat és régi/törölt elemeket. A piros buborékok darabszámok, így látod, hol vár rád valami.</p><p>A <strong>Közelgő</strong>/<strong>Korábbi</strong> és a <strong>Hónap</strong>/<strong>Hét</strong>/<strong>Nap</strong>/<strong>Távolság</strong> csak ugyanazokat a kártyákat rendezi át. A <strong>Felfedezés</strong> nyilvános eseményeket keres. A plusz gomb új eseményt indít.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevents%2Factivity-event-entry\" alt=\"Eseménylisták\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/events/activity-event-entry"
+          "/media/public?key=seeded-help/e6775fd484a9bf9c62f21af6.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1723,7 +1805,7 @@
         "blurb": "A kártya röviden megmutatja: kép, cím, idő, hely és férőhely.",
         "contentHtml": "<p>A kép az esemény előnézete. A kis avatar a szervezőt vagy meghívót jelzi. A cím az esemény neve, a dátumsor az időpont, a helyszín sor pedig a helyet és távolságot mutatja.</p><p>Az <strong>1 / 5</strong> jelvény azt jelenti, hogy 1 ember bent van az 5 helyből. A kis piros szám függő embereket, meghívásokat vagy kéréseket jelez.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevents%2Factivity-event-card\" alt=\"Egy kártya olvasása\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/events/activity-event-card"
+          "/media/public?key=seeded-help/b6aeb50a07766cd2364b022b.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1735,7 +1817,7 @@
         "blurb": "A férőhely jelvény embereket nyit. A három pont műveleteket nyit.",
         "contentHtml": "<p>Az <strong>1 / 5</strong> jelvényre koppintva látod, kik vannak bent, kik várnak, és kit kell jóváhagyni. Ha te vagy a szervező, itt tudod kezelni az embereket.</p><p>A hárompontos menüben a szereped szerinti műveletek jelennek meg: megtekintés, szerkesztés, piszkozat publikálása, meghívás elfogadása vagy elutasítása, szervező megkeresése, résztvevők értesítése, megosztás, jelentés, kilépés, törlés vagy visszaállítás.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevents%2Factivity-event-actions\" alt=\"Mire lehet koppintani\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/events/activity-event-actions"
+          "/media/public?key=seeded-help/4947b919c23be050ed964909.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1747,7 +1829,7 @@
         "blurb": "Van azonnali csatlakozás, és van ahol jóváhagyás, jegy vagy választás kell.",
         "contentHtml": "<p>Ha meghívtak, a kártyáról elfogadhatod vagy elutasíthatod a meghívást. Ha az esemény jóváhagyást, várólistát, jegyet, szabályokat vagy opcionális részeket használ, az app előbb bekéri ezeket.</p><p>Esemény után visszajelző képernyők is jöhetnek. A mélyebb képernyők, például fizetés, tagok, erőforrások és visszajelzés, saját részletesebb magyarázatot is kaphatnak.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevents%2Factivity-event-join\" alt=\"Csatlakozás eseményhez\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/events/activity-event-join"
+          "/media/public?key=seeded-help/c651f6cb18c1857a9019d8dc.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1759,7 +1841,7 @@
         "blurb": "Lehet egyszerű találkozó, vagy nagyobb bajnokság jellegű esemény.",
         "contentHtml": "<p>Az <strong>Új esemény</strong> normál eseményt indít. Maradhat egyszerű, vagy építhetsz belőle nagyobb rendszert szakaszokkal, csoportokkal, opcionális részekkel, erőforrásokkal, jegyekkel, árakkal és férőhelylimitekkel.</p><p>Szervezőként automatikus meghívást is használhatsz. Ez a prioritási/relevancia listából dolgozhat, így a jobban illő emberek kerülhetnek előre, nem kell mindenkit kézzel felvenni.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevents%2Factivity-event-hosting\" alt=\"Esemény készítése\"></figure>",
         "imageUrls": [
-          "help-seeded-image:hu/events/activity-event-hosting"
+          "/media/public?key=seeded-help/17fa95effed9942d9deffe96.svg"
         ],
         "optional": false,
         "panelSpan": "span-1"
@@ -1787,57 +1869,51 @@
         "id": "affinity",
         "icon": "tune",
         "title": "Affinity slider",
-        "blurb": "Choose how strong the card feels for you.",
-        "contentHtml": "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fhome-game%2Faffinity\" alt=\"Affinity slider\"></figure>",
+        "blurb": "Pick how much affinity you feel for the card.",
+        "contentHtml": "<p>Tap or drag the Affinity slider from 1 to 10. The Go button appears only after you pick a value.</p>",
         "imageUrls": [
-          "help-seeded-image:en/home-game/affinity"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/ea9beb0eac6b7872cbca2e3c.svg"
+        ]
       },
       {
         "id": "affinity-network",
         "icon": "hub",
         "title": "Affinity and group chats",
         "blurb": "Your answer helps find a small group where conversation is easier to start.",
-        "contentHtml": "<p>When you choose 1-10, you are saying how much you would like to talk with this person. That number is not used alone: it matters more when interest is mutual, recent, and stronger than the usual background noise.</p><p>If several people seem likely to enjoy meeting each other, MyScoutee can place them into a random group chat of 6-12 people. It is still a fresh group, but it is nudged toward people who already have enough shared interest to make the first message feel less awkward.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fhome-game%2Faffinity-network\" alt=\"Affinity and group chats\"></figure>",
+        "contentHtml": "<p>When you choose 1-10, you are saying how much you would like to talk with this person. That number is not used alone: it matters more when interest is mutual, recent, and stronger than the usual background noise.</p><p>If several people seem likely to enjoy meeting each other, MyScoutee can place them into a random group chat of 6-12 people. It is still a fresh group, but it is nudged toward people who already have enough shared interest to make the first message feel less awkward.</p>",
         "imageUrls": [
-          "help-seeded-image:en/home-game/affinity-network"
-        ],
-        "optional": false,
-        "panelSpan": "span-2"
+          "/media/public?key=seeded-help/4b922118af81e1d9cea6270b.svg"
+        ]
       },
       {
         "id": "profile",
         "icon": "visibility",
         "title": "Profile and photos",
         "blurb": "Cards can contain more photos and a profile detail view.",
-        "contentHtml": "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fhome-game%2Fprofile\" alt=\"Profile and photos\"></figure>",
+        "contentHtml": "<p>Tap the left or right image columns to browse photos. Use the eye icon to open profile details.</p>",
         "imageUrls": [
-          "help-seeded-image:en/home-game/profile"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/c00cddb3611da2aff481b1c9.svg"
+        ]
       },
       {
         "id": "filters",
         "icon": "filter_alt",
         "title": "Filters and modes",
         "blurb": "Use the top bar to narrow who appears.",
-        "contentHtml": "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fhome-game%2Ffilters\" alt=\"Filters and modes\"></figure>",
+        "contentHtml": "<p>The filter button opens profile filters. The number shows how many results match the selected filter condition.</p><p><strong>Preferences</strong>: normal preference-based cards. <strong>Friends in Common</strong>: people connected through someone or an event. <strong>Inside Network</strong>: pairs from your existing network. <strong>Outside Network</strong>: pairs outside it.</p>",
         "imageUrls": [
-          "help-seeded-image:en/home-game/filters"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/173073fe1931ec6383eb9d97.svg"
+        ]
       },
       {
         "id": "history",
         "icon": "history",
         "title": "History and edits",
         "blurb": "Your previous ratings stay available.",
-        "contentHtml": "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fhome-game%2Fhistory\" alt=\"History and edits\"></figure>",
+        "contentHtml": "<p>Open history from the header or menu. In Activity ratings, use the star icon to edit a value you already gave.</p>",
         "imageUrls": [
-          "help-seeded-image:en/home-game/history"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/8c45633290709d1f4ff97551.svg"
+        ]
       }
     ],
     "contextKey": "home.game"
@@ -1863,56 +1939,50 @@
         "icon": "tune",
         "title": "Szimpátia sáv",
         "blurb": "Állítsd be, mennyire szimpatikus a kártya.",
-        "contentHtml": "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fhome-game%2Faffinity\" alt=\"Szimpátia sáv\"></figure>",
+        "contentHtml": "<p>Tapints vagy húzd a Szimpátia sávot 1 és 10 között. A Mehet gomb csak akkor jelenik meg, amikor már választottál értéket.</p>",
         "imageUrls": [
-          "help-seeded-image:hu/home-game/affinity"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/dd8403de9832fe897b41aa27.svg"
+        ]
       },
       {
         "id": "affinity-network",
         "icon": "hub",
         "title": "Szimpátia és csoportchat",
         "blurb": "A válaszod segít olyan kis csoportot találni, ahol könnyebb elkezdeni beszélgetni.",
-        "contentHtml": "<p>Amikor 1 és 10 között választasz, azt jelzed, mennyire szívesen beszélgetnél ezzel az emberrel. Nem csak ez az egy szám dönt: többet ér, ha a szimpátia kölcsönös, friss, és a szokásos háttérzajhoz képest is erős.</p><p>Ha több embernél látszik, hogy jó eséllyel szívesen ismerkednének egymással, a MyScoutee kioszthat egy 6-12 fős véletlenszerű csoportos chatet. A csoport továbbra is új és laza, csak olyan irányba van terelve, ahol az első üzenet kevésbé kínos.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fhome-game%2Faffinity-network\" alt=\"Szimpátia és csoportchat\"></figure>",
+        "contentHtml": "<p>Amikor 1 és 10 között választasz, azt jelzed, mennyire szívesen beszélgetnél ezzel az emberrel. Nem csak ez az egy szám dönt: többet ér, ha a szimpátia kölcsönös, friss, és a szokásos háttérzajhoz képest is erős.</p><p>Ha több embernél látszik, hogy jó eséllyel szívesen ismerkednének egymással, a MyScoutee kioszthat egy 6-12 fős véletlenszerű csoportos chatet. A csoport továbbra is új és laza, csak olyan irányba van terelve, ahol az első üzenet kevésbé kínos.</p>",
         "imageUrls": [
-          "help-seeded-image:hu/home-game/affinity-network"
-        ],
-        "optional": false,
-        "panelSpan": "span-2"
+          "/media/public?key=seeded-help/75c7d628a34fa126937ec964.svg"
+        ]
       },
       {
         "id": "profile",
         "icon": "visibility",
         "title": "Profil és képek",
         "blurb": "A kártya több képet és részletes profilt is rejthet.",
-        "contentHtml": "<p>Tapints a kép bal vagy jobb oszlopára a fotók lapozásához. A szem ikon megnyitja a profil részleteit.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fhome-game%2Fprofile\" alt=\"Profil és képek\"></figure>",
+        "contentHtml": "<p>Tapints a kép bal vagy jobb oszlopára a fotók lapozásához. A szem ikon megnyitja a profil részleteit.</p>",
         "imageUrls": [
-          "help-seeded-image:hu/home-game/profile"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/c00cddb3611da2aff481b1c9.svg"
+        ]
       },
       {
         "id": "filters",
         "icon": "filter_alt",
         "title": "Szűrők és módok",
         "blurb": "A felső sávval szűkítheted, kik jelenjenek meg.",
-        "contentHtml": "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fhome-game%2Ffilters\" alt=\"Szűrők és módok\"></figure>",
+        "contentHtml": "<p>A tölcsér ikon nyitja a profilszűrőket. A szám azt mutatja, hogy az adott szűrőfeltétel mellett hány találat van.</p><p><strong>Preferenciák</strong>: normál, saját beállításaid szerinti kártyák. <strong>Közös ismerősök</strong>: valakin vagy eseményen keresztül kapcsolódó profilok. <strong>Hálózaton belül</strong>: párok a meglévő kapcsolati körből. <strong>Hálózaton kívül</strong>: párok azon kívül.</p>",
         "imageUrls": [
-          "help-seeded-image:hu/home-game/filters"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/1a3dca3cdc5ee878243b6156.svg"
+        ]
       },
       {
         "id": "history",
         "icon": "history",
         "title": "Előzmények",
         "blurb": "A korábbi értékelések később is elérhetők.",
-        "contentHtml": "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fhome-game%2Fhistory\" alt=\"Előzmények\"></figure>",
+        "contentHtml": "<p>Az előzményeket a history gombbal vagy a menüből nyithatod meg. Az Activity értékeléseknél a csillag ikonon keresztül módosíthatod a saját értékedet.</p>",
         "imageUrls": [
-          "help-seeded-image:hu/home-game/history"
-        ],
-        "optional": false
+          "/media/public?key=seeded-help/79f9d25d149632f89f960c31.svg"
+        ]
       }
     ],
     "contextKey": "home.game"

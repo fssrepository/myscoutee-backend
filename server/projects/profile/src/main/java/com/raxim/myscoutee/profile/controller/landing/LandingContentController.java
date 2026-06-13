@@ -39,6 +39,7 @@ public class LandingContentController {
                 : null;
         return new LandingContentDto(
                 helpCenterService.activeState("privacy", lang, acceptLanguage),
+                helpCenterService.activeState("terms", lang, acceptLanguage),
                 ideaPostsService.publicPosts(lang, acceptLanguage),
                 loginAvailability);
     }

@@ -6,7 +6,8 @@ REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-${REPO_ROOT}/server}"
 FRONTEND_DIR="${MYSCOUTEE_FRONTEND_DIR:-${REPO_ROOT}/frontend}"
 
-PRIVATE_SERVICES=(profilemanagement nginx)
+PRIVATE_BUILD_SERVICES=(profilemanagement nginx minio)
+PRIVATE_RELOAD_SERVICES=(profilemanagement nginx)
 BUILD_FRONTEND="${BUILD_FRONTEND:-true}"
 BUILD_BACKEND="${BUILD_BACKEND:-true}"
 BUILD_IMAGES="${BUILD_IMAGES:-true}"
@@ -24,12 +25,15 @@ keep running.
 This targets only project-owned production services:
   - profilemanagement
   - nginx
+  - minio
 
 It intentionally does not build or reload:
   - nginx base image
   - mongodb
   - redis
-  - minio
+
+It builds the layered MinIO image for packaging, but reload still recreates only
+profilemanagement and nginx so the running object store stays up.
 
 Usage:
   tools/docker/build-reload-compose-prod-private-images.sh [options]
@@ -51,6 +55,7 @@ Environment:
   NGINX_BASE_IMAGE           Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-base.
   NGINX_PRODUCTION_IMAGE     Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-prod.
   MYSCOUTEE_PRODUCTION_IMAGE Defaults to myscoutee-api:${MYSCOUTEE_VERSION}-prod.
+  MINIO_PRODUCTION_IMAGE     Defaults to myscoutee-minio:${MYSCOUTEE_VERSION}-prod.
   FRONTEND_BUILD_SCRIPT      Defaults to build:prod.
   BUILD_FRONTEND             Defaults to true.
   BUILD_BACKEND              Defaults to true.
@@ -118,6 +123,7 @@ export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
 export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
 export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
+export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
 
 if [[ ! -f "${SERVER_DIR}/docker-compose-prod.yml" ]]; then
   echo "Missing compose file: ${SERVER_DIR}/docker-compose-prod.yml" >&2
@@ -129,6 +135,7 @@ echo "Using nginx base image without rebuilding it: ${NGINX_BASE_IMAGE}"
 echo "Private production images:"
 echo "  ${NGINX_PRODUCTION_IMAGE}"
 echo "  ${MYSCOUTEE_PRODUCTION_IMAGE}"
+echo "  ${MINIO_PRODUCTION_IMAGE}"
 
 if [[ "${BUILD_FRONTEND}" == "true" ]]; then
   echo "Building frontend with npm script: ${FRONTEND_BUILD_SCRIPT}"
@@ -143,15 +150,15 @@ if [[ "${BUILD_BACKEND}" == "true" ]]; then
 fi
 
 if [[ "${BUILD_IMAGES}" == "true" ]]; then
-  echo "Building private docker-compose-prod.yml services: ${PRIVATE_SERVICES[*]}"
-  compose build "${build_args[@]}" "${PRIVATE_SERVICES[@]}"
+  echo "Building private docker-compose-prod.yml services: ${PRIVATE_BUILD_SERVICES[*]}"
+  compose build "${build_args[@]}" "${PRIVATE_BUILD_SERVICES[@]}"
 fi
 
 if [[ "${RELOAD_IMAGES}" == "true" ]]; then
-  echo "Recreating profilemanagement from the rebuilt image."
-  compose up -d --no-deps --force-recreate --no-build profilemanagement
-  echo "Recreating nginx from the rebuilt image."
-  compose up -d --no-deps --force-recreate --no-build nginx
+  for service in "${PRIVATE_RELOAD_SERVICES[@]}"; do
+    echo "Recreating ${service} from the rebuilt image."
+    compose up -d --no-deps --force-recreate --no-build "${service}"
+  done
 fi
 
 echo "Done."

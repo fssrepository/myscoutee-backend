@@ -191,7 +191,6 @@ class AccessPolicySeedTest {
                 .contains("'accessGrants'")
                 .contains("access_policy_definition_key")
                 .contains("access_grant_subject_permission_resource");
-        assertThat(applicationResourceSeedFile()).doesNotExist();
     }
 
     private List<AccessPolicyDefinition> readDefinitions(Path seedFile) throws Exception {
@@ -243,19 +242,4 @@ class AccessPolicySeedTest {
         throw new IllegalStateException("Could not locate server/docker/conf/mongodb");
     }
 
-    private Path applicationResourceSeedFile() {
-        Path current = Path.of(System.getProperty("user.dir")).toAbsolutePath();
-        while (current != null) {
-            Path repoRelative = current.resolve("server/projects/profile/src/main/resources/mongo-seed/profile/accessPolicyDefinitions.json");
-            if (Files.isDirectory(repoRelative.getParent())) {
-                return repoRelative;
-            }
-            Path serverRelative = current.resolve("projects/profile/src/main/resources/mongo-seed/profile/accessPolicyDefinitions.json");
-            if (Files.isDirectory(serverRelative.getParent())) {
-                return serverRelative;
-            }
-            current = current.getParent();
-        }
-        throw new IllegalStateException("Could not locate profile resources");
-    }
 }

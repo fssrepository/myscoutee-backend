@@ -162,20 +162,35 @@ services:
     networks:
       - myscoutee
   minio:
-    image: ${MINIO_IMAGE}
+    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.0.0-dev}
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: docker/images/minio/Dockerfile
+      args:
+        MINIO_BASE_IMAGE: ${MINIO_BASE_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}
     container_name: minio
     hostname: minio
     env_file:
       - .env.secrets
     command: server /data --console-address ":9001"
     environment:
+      MEDIA_BUCKET: "${MEDIA_BUCKET}"
+      MINIO_ENDPOINT: "http://127.0.0.1:9000"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./data/minio:/data
+      - ./docker/conf/minio:/seed:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/myscoutee-minio-seeded && curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
   profilemanagement:
     image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.0.0-dev}
     pull_policy: build
@@ -228,9 +243,12 @@ services:
     networks:
       - myscoutee
     depends_on:
-      - mongodb
-      - redis
-      - minio
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      minio:
+        condition: service_healthy
   frontend-sync:
     image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.0.0-dev}
     pull_policy: build

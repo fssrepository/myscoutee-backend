@@ -15,6 +15,10 @@ const requiredCollections = [
   'ideaPosts',
   'appSettings',
   'notificationRuleConfigs',
+  'emailTemplates',
+  'emailCampaignRules',
+  'notificationTemplates',
+  'scheduledMessageTasks',
   'affinityConfigs',
   'adminStats',
   'adminMonitoring',
@@ -106,6 +110,46 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.notificationRuleConfigs.createIndex(
     { ruleKey: 1 },
     { name: 'notification_rule_config_rule_key', unique: true }
+  );
+  portalDb.emailTemplates.createIndex(
+    { syncKey: 1 },
+    { name: 'email_template_sync_key', unique: true, sparse: true }
+  );
+  portalDb.emailTemplates.createIndex(
+    { templateKey: 1 },
+    { name: 'email_template_key', unique: true }
+  );
+  portalDb.emailCampaignRules.createIndex(
+    { syncKey: 1 },
+    { name: 'email_campaign_rule_sync_key', unique: true, sparse: true }
+  );
+  portalDb.emailCampaignRules.createIndex(
+    { ruleKey: 1 },
+    { name: 'email_campaign_rule_key', unique: true }
+  );
+  portalDb.emailCampaignRules.createIndex(
+    { enabled: 1, priority: -1 },
+    { name: 'email_campaign_rule_enabled_priority' }
+  );
+  portalDb.notificationTemplates.createIndex(
+    { syncKey: 1 },
+    { name: 'notification_template_sync_key', unique: true, sparse: true }
+  );
+  portalDb.notificationTemplates.createIndex(
+    { templateKey: 1 },
+    { name: 'notification_template_key', unique: true }
+  );
+  portalDb.scheduledMessageTasks.createIndex(
+    { syncKey: 1 },
+    { name: 'scheduled_message_task_sync_key', unique: true, sparse: true }
+  );
+  portalDb.scheduledMessageTasks.createIndex(
+    { taskKey: 1 },
+    { name: 'scheduled_message_task_key', unique: true }
+  );
+  portalDb.scheduledMessageTasks.createIndex(
+    { status: 1, dueAtIso: 1 },
+    { name: 'scheduled_message_task_status_due' }
   );
   portalDb.affinityConfigs.createIndex(
     { active: 1, version: -1 },

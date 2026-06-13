@@ -88,7 +88,7 @@ services:
       start_period: 10s
 
   minio:
-    image: ${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}
+    image: ${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:1.0.0-prod}
     container_name: minio
     hostname: minio
     restart: unless-stopped
@@ -96,6 +96,8 @@ services:
       - .env.secrets
     command: server /data --console-address ":9001"
     environment:
+      MEDIA_BUCKET: "${MEDIA_BUCKET:-myscoutee-media}"
+      MINIO_ENDPOINT: "http://127.0.0.1:9000"
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./data/minio:/data
@@ -103,7 +105,7 @@ services:
     networks:
       - myscoutee
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "test -f /tmp/myscoutee-minio-seeded && curl -fsS http://localhost:9000/minio/health/live >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5

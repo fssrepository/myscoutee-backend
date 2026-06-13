@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -196,6 +196,64 @@ db.getCollection('appSettings').createIndex({ settingsKey: 1 }, { name: 'app_set
         --eval "
 db.getCollection('notificationRuleConfigs').createIndex({ syncKey: 1 }, { name: 'notification_rule_config_sync_key', unique: true, sparse: true });
 db.getCollection('notificationRuleConfigs').createIndex({ ruleKey: 1 }, { name: 'notification_rule_config_rule_key', unique: true });
+" >/dev/null
+      ;;
+    emailTemplates)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('emailTemplates').createIndex({ syncKey: 1 }, { name: 'email_template_sync_key', unique: true, sparse: true });
+db.getCollection('emailTemplates').createIndex({ templateKey: 1 }, { name: 'email_template_key', unique: true });
+" >/dev/null
+      ;;
+    emailCampaignRules)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('emailCampaignRules').createIndex({ syncKey: 1 }, { name: 'email_campaign_rule_sync_key', unique: true, sparse: true });
+db.getCollection('emailCampaignRules').createIndex({ ruleKey: 1 }, { name: 'email_campaign_rule_key', unique: true });
+db.getCollection('emailCampaignRules').createIndex({ enabled: 1, priority: -1 }, { name: 'email_campaign_rule_enabled_priority' });
+" >/dev/null
+      ;;
+    notificationTemplates)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('notificationTemplates').createIndex({ syncKey: 1 }, { name: 'notification_template_sync_key', unique: true, sparse: true });
+db.getCollection('notificationTemplates').createIndex({ templateKey: 1 }, { name: 'notification_template_key', unique: true });
+" >/dev/null
+      ;;
+    scheduledMessageTasks)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('scheduledMessageTasks').createIndex({ syncKey: 1 }, { name: 'scheduled_message_task_sync_key', unique: true, sparse: true });
+db.getCollection('scheduledMessageTasks').createIndex({ taskKey: 1 }, { name: 'scheduled_message_task_key', unique: true });
+db.getCollection('scheduledMessageTasks').createIndex({ status: 1, dueAtIso: 1 }, { name: 'scheduled_message_task_status_due' });
 " >/dev/null
       ;;
     affinityConfigs)

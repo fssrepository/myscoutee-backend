@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.controller.auth;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,5 +23,11 @@ public class FacebookDataDeletionController {
     public FacebookDataDeletionResponseDto deleteFacebookUserData(
             @RequestParam("signed_request") String signedRequest) {
         return facebookDataDeletionService.handleSignedRequest(signedRequest);
+    }
+
+    @GetMapping(value = "/data-deletion/status", produces = MediaType.TEXT_HTML_VALUE)
+    public String facebookUserDataDeletionStatus(
+            @RequestParam(value = "code", required = false) String confirmationCode) {
+        return facebookDataDeletionService.renderStatusPage(confirmationCode);
     }
 }

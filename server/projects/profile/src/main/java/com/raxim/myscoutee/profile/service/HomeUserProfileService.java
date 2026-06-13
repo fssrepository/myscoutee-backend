@@ -872,13 +872,18 @@ public class HomeUserProfileService {
 
     @Cacheable(value = "demo_users", key = "'all'")
     public List<DemoUserListItemDto> queryDemoUserListItems() {
-        return queryDemoUserListItems(null);
+        return queryDemoUserListItems(null, "member");
     }
 
-    @Cacheable(value = "demo_users", key = "#limit == null ? 'all' : #limit")
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit) {
+        return queryDemoUserListItems(limit, "member");
+    }
+
+    @Cacheable(value = "demo_users", key = "(#role == null ? 'member' : #role) + ':' + (#limit == null ? 'all' : #limit)")
+    public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
+        String selectorRole = normalizeDemoSelectorRole(role);
         return usersRepository.findAll().stream()
-                .filter(this::isSelectableDemoUserDocument)
+                .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .sorted(userComparator())
                 .limit(resolveDemoUserListLimit(limit))
                 .map(this::toDemoUserListItemDto)
@@ -1293,8 +1298,23 @@ public class HomeUserProfileService {
     }
 
     private boolean isSelectableDemoUserDocument(Users user) {
+        return isSelectableDemoUserDocument(user, "member");
+    }
+
+    private boolean isSelectableDemoUserDocument(Users user, String selectorRole) {
         return isUsableUserDocument(user)
-                && !PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user));
+                && !PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))
+                && ("admin".equals(selectorRole) == isDemoAdminUserDocument(user));
+    }
+
+    private boolean isDemoAdminUserDocument(Users user) {
+        return user != null
+                && (normalizeId(user.getId()).startsWith("admin-demo-")
+                        || "admin".equalsIgnoreCase(safeText(user.getHostTier())));
+    }
+
+    private String normalizeDemoSelectorRole(String role) {
+        return "admin".equalsIgnoreCase(safeText(role)) ? "admin" : "member";
     }
 
     boolean isPublicGameUser(Users user) {

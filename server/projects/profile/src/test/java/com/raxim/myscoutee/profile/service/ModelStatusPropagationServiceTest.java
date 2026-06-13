@@ -227,7 +227,7 @@ class ModelStatusPropagationServiceTest {
         event.setSourceId(sourceId);
         event.setCreatorUserId(creatorUserId);
         event.setStatus(status);
-        event.setStartAtIso("2026-06-10T10:00:00Z");
+        event.setStartAtIso("2099-06-10T10:00:00Z");
         event.setUpdatedDate(updatedDate);
         return event;
     }
