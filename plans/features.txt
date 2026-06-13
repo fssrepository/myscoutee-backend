@@ -11,8 +11,6 @@ admin ui services merge to admin page component - models should be moving to sha
 
 desktop
 -------
-0) refactor ui services and move back to components (split components if they are too large to addtional components)
-1) some ui services still exist, and member popups are empty on local repositories
 2) button ring delay has been removed from the save policy
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
 4) Jelentesek -> can't login as the user

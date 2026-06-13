@@ -285,6 +285,21 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void demoUserListItemsFilterBySelectorRole() {
+        Users member = user("member", 30d);
+        Users admin = user("admin-demo-ava", 20d);
+        admin.setHostTier("Admin");
+        when(usersRepository.findAll()).thenReturn(List.of(admin, member));
+
+        assertThat(service.queryDemoUserListItems(null, "member"))
+                .extracting(item -> item.id())
+                .containsExactly("member");
+        assertThat(service.queryDemoUserListItems(null, "admin"))
+                .extracting(item -> item.id())
+                .containsExactly("admin-demo-ava");
+    }
+
+    @Test
     void demoUserListItemsIncludeLifecycleStatuses() {
         Users active = user("active", 30d);
         Users blocked = user("blocked", 20d);
