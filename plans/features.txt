@@ -7,11 +7,8 @@ https://developers.facebook.com/ -> business verfication is needed
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
-admin ui services merge to admin page component - models should be moving to shared package
-
 desktop
 -------
-2) button ring delay has been removed from the save policy
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
 4) Jelentesek -> can't login as the user
 8) text translate to emoji on chat
@@ -34,7 +31,6 @@ desktop
 25) image ring delay is not what i have expected
 26) admin / member distroying each others db
 27) parameters screen is not that wide
-28) remove demo menu counter fake increase emulator
 29) leaderboard redesign - too small rows
 30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
 31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
