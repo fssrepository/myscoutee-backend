@@ -354,7 +354,12 @@ class BackendNotificationDeliveryE2ETest {
         user.setCompletion(100);
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(48.1486d, 17.1077d));
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
     }
 

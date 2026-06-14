@@ -59,6 +59,8 @@ class ActivitiesInviteCandidatesServiceTest {
                         List.of(),
                         List.of(),
                         List.of(),
+                        List.of(),
+                        List.of(),
                         Set.of(),
                         10));
         when(navigatorContactsProfilesRepository.findByUserId("active")).thenReturn(Optional.of(contactProfile(

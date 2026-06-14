@@ -417,7 +417,6 @@ class ActivitiesMembersServiceTest {
         event.setSourceId(sourceId);
         event.setOwnerUserId(creatorUserId);
         event.setCreatorUserId(creatorUserId);
-        event.setType("events");
         event.setStatus("A");
         event.setAdmins(List.of(adminUserId));
         event.setCapacityTotal(10);

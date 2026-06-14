@@ -424,11 +424,8 @@ class BackendContentMediaE2ETest {
         event.setSourceId(SHARE_EVENT_ID);
         event.setOwnerUserId(MEDIA_USER_ID);
         event.setCreatorUserId(MEDIA_USER_ID);
-        event.setType("events");
         event.setStatus("A");
-        event.setPublished(true);
-        event.setIsHosting(false);
-        event.setIsTrashed(false);
+        event.setStatus("A");
         event.setTitle("Shareable Backend Picnic");
         event.setTimeframe("Saturday afternoon");
         event.setSubtitle("Backend share token e2e");
@@ -456,11 +453,8 @@ class BackendContentMediaE2ETest {
         event.setSourceId(REPORT_EVENT_ID);
         event.setOwnerUserId(REPORTER_ID);
         event.setCreatorUserId(REPORTER_ID);
-        event.setType("events");
         event.setStatus("A");
-        event.setPublished(true);
-        event.setIsHosting(false);
-        event.setIsTrashed(false);
+        event.setStatus("A");
         event.setTitle("Reportable Backend Dinner");
         event.setTimeframe("Friday evening");
         event.setStartAtIso(BASE_TIME.plus(Duration.ofDays(2)).toString());

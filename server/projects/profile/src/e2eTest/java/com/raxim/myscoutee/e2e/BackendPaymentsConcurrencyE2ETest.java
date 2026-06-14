@@ -395,7 +395,12 @@ class BackendPaymentsConcurrencyE2ETest {
         user.setCompletion(100);
         user.setPartitionKey("country:hu");
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
     }
 

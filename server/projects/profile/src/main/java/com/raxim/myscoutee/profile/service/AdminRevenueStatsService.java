@@ -26,7 +26,6 @@ import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 @Service
 public class AdminRevenueStatsService {
     private static final int TIMELINE_DAYS = 14;
-    private static final String TYPE_EVENTS = "events";
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String REQUEST_KIND_BORROW = "borrow";
 
@@ -158,7 +157,6 @@ public class AdminRevenueStatsService {
 
     private boolean isCanonicalEvent(ActivityEvent event) {
         return event != null
-                && TYPE_EVENTS.equals(safeText(event.getType()).toLowerCase(Locale.ROOT))
                 && !Boolean.TRUE.equals(event.getGenerated())
                 && StringUtils.hasText(safeText(event.getSourceId()));
     }

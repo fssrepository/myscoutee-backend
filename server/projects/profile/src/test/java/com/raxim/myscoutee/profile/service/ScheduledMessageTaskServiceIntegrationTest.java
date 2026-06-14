@@ -223,11 +223,10 @@ class ScheduledMessageTaskServiceIntegrationTest {
         event.setId(new ObjectId().toHexString());
         event.setSyncKey(UUID.randomUUID().toString());
         event.setSourceId(sourceId);
-        event.setType("hosting");
         event.setStatus("hosting");
         event.setTitle("Tournament Night");
         event.setStartAtIso(stageStartAt.toString());
-        event.setPublished(Boolean.TRUE);
+        event.setStatus("A");
         event.setSubEvents(List.of(stage("stage-one", "Stage One", stageStartAt)));
         return event;
     }

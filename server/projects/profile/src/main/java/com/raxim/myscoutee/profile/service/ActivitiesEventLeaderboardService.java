@@ -427,10 +427,6 @@ public class ActivitiesEventLeaderboardService {
                 preferred = record;
                 continue;
             }
-            if (Boolean.TRUE.equals(record.getIsHosting()) && !Boolean.TRUE.equals(preferred.getIsHosting())) {
-                preferred = record;
-                continue;
-            }
             if (!Objects.equals(Boolean.TRUE.equals(record.getPublished()), Boolean.TRUE.equals(preferred.getPublished()))
                     && Boolean.TRUE.equals(record.getPublished())) {
                 preferred = record;

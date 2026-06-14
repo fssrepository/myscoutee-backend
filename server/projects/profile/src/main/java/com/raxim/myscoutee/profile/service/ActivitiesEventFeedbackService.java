@@ -87,13 +87,8 @@ public class ActivitiesEventFeedbackService {
         }
 
         Set<String> ownedEventIds = new LinkedHashSet<>();
-        for (ActivityEvent record : activityEventsRepository.findByOwnerUserId(userId)) {
-            if (record == null || Boolean.TRUE.equals(record.getIsInvitation()) || Boolean.TRUE.equals(record.getIsTrashed())) {
-                continue;
-            }
-            boolean viewerIsAdmin = Boolean.TRUE.equals(record.getIsAdmin())
-                    || Objects.equals(userId, normalizeId(record.getCreatorUserId()));
-            if (!viewerIsAdmin) {
+        for (ActivityEvent record : activityEventsRepository.findAdminVisibleEvents(userId)) {
+            if (record == null || Boolean.TRUE.equals(record.getIsTrashed())) {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());

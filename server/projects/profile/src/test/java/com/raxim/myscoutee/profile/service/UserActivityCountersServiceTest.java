@@ -170,7 +170,6 @@ class UserActivityCountersServiceTest {
         event.setSourceId(sourceId);
         event.setCreatorUserId(creatorUserId);
         event.setStatus(status);
-        event.setIsTrashed(false);
         return event;
     }
 

@@ -409,7 +409,7 @@ public class ModelStatusPropagationService {
             body = eventTitle(event) + " is no longer available.";
             type = "event-unavailable";
             scope = "event-members";
-        } else if (STATUS_ACTIVE.equals(normalizedNextStatus) || "H".equals(normalizedNextStatus)) {
+        } else if (STATUS_ACTIVE.equals(normalizedNextStatus)) {
             recipients = activeEventAdminUserIds(event);
             title = "Event restored";
             body = eventTitle(event) + " is available again.";

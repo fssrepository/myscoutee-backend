@@ -158,25 +158,23 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void publishCreatesExploreOverlayAndEnqueuesEventRecomputeForSavedLifecycleState() {
+    void publishActivatesCanonicalEventAndEnqueuesEventRecomputeForSavedLifecycleState() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
         ActivityEvent event = event("event-1", "host", 0d);
-        event.setType("hosting");
-        event.setStatus("DR");
-        event.setPublished(false);
+        event.setStatus(ActivityEvent.STATUS_DRAFT);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "events", "event-1"))
-                .thenReturn(Optional.empty());
-        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "event-1"))
-                .thenReturn(Optional.of(event));
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(event));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         service.publish(new EventActionRequestDto(
                 "host",
-                "hosting",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -188,19 +186,12 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
-        verify(activityEventsRepository, times(2)).saveAll(savedCaptor.capture());
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
         assertThat(savedCaptor.getAllValues().get(0)).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("event-1");
-            assertThat(record.getType()).isEqualTo("hosting");
-            assertThat(record.getStatus()).isEqualTo("H");
+            assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_ACTIVE);
             assertThat(record.getPublished()).isTrue();
-        });
-        assertThat(savedCaptor.getAllValues().get(1)).singleElement().satisfies(record -> {
-            assertThat(record.getSourceId()).isEqualTo("event-1");
-            assertThat(record.getType()).isEqualTo("events");
-            assertThat(record.getStatus()).isEqualTo("A");
-            assertThat(record.getPublished()).isTrue();
-            assertThat(record.getIsHosting()).isFalse();
+            assertThat(record.getAdmins()).contains("host");
         });
         verify(affinityRecomputeTaskService).enqueueEventChanged("event-1", "host");
     }
@@ -211,7 +202,7 @@ class ActivitiesEventsServiceTest {
 
         service.publish(new EventActionRequestDto(
                 "host",
-                "hosting",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -232,7 +223,7 @@ class ActivitiesEventsServiceTest {
 
         service.unpublish(new EventActionRequestDto(
                 "host",
-                "hosting",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -253,7 +244,7 @@ class ActivitiesEventsServiceTest {
 
         service.trash(new EventActionRequestDto(
                 "host",
-                "hosting",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -274,7 +265,7 @@ class ActivitiesEventsServiceTest {
 
         service.restore(new EventActionRequestDto(
                 "host",
-                "hosting",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -298,7 +289,7 @@ class ActivitiesEventsServiceTest {
 
         service.takeOver(new EventActionRequestDto(
                 "host",
-                "hosting",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -325,7 +316,7 @@ class ActivitiesEventsServiceTest {
 
         EventRecordDto result = service.requestJoin(new EventActionRequestDto(
                 "viewer",
-                "events",
+                null,
                 "event-1",
                 null,
                 List.of(),
@@ -368,11 +359,11 @@ class ActivitiesEventsServiceTest {
         host.setName("Host User");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "draft-1"))
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorCreateEvent("host", "draft-1")).thenReturn(false);
 
-        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "hosting", "host", false));
+        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", null, "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -385,14 +376,13 @@ class ActivitiesEventsServiceTest {
         host.setId("host");
         host.setName("Host User");
         ActivityEvent existing = event("draft-1", "host", 0d);
-        existing.setType("hosting");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "draft-1"))
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
                 .thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorEditEvent("draft-1")).thenReturn(false);
 
-        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "hosting", "host", false));
+        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", null, "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -400,25 +390,25 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void syncHostingDraftDoesNotCreateMemberEventOverlay() {
+    void syncDraftSavesCanonicalDraftEvent() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId("host", "hosting", "draft-1"))
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
                 .thenReturn(Optional.empty());
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
         service.sync(new ActivitiesEventSyncPayloadDto(
                 "sync-draft-1",
                 "draft-1",
-                "hosting",
+                null,
+                ActivityEvent.STATUS_DRAFT,
                 "Draft Event",
                 "Draft short description",
                 "May 24, 3:28 AM - 4:28 AM",
                 0,
-                true,
                 "2026-05-24T03:28:00Z",
                 "2026-05-24T04:28:00Z",
                 0d,
@@ -443,7 +433,6 @@ class ActivitiesEventsServiceTest {
                 null,
                 "Public",
                 "Open Event",
-                false,
                 "host",
                 "Host User",
                 "HU",
@@ -462,31 +451,22 @@ class ActivitiesEventsServiceTest {
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("draft-1");
-            assertThat(record.getType()).isEqualTo("hosting");
-            assertThat(record.getStatus()).isEqualTo("DR");
+            assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
             assertThat(record.getPublished()).isFalse();
         });
     }
 
     @Test
-    void ownerEventFiltersPreferDraftHostingRecordOverEventOverlay() {
+    void ownerEventFiltersUseCanonicalDraftRecord() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
 
-        ActivityEvent hostingDraft = event("draft-1", "host", 0d);
-        hostingDraft.setType("hosting");
-        hostingDraft.setStatus("DR");
-        hostingDraft.setPublished(false);
-
-        ActivityEvent staleEventsOverlay = event("draft-1", "host", 0d);
-        staleEventsOverlay.setId("draft-1-events-overlay");
-        staleEventsOverlay.setType("events");
-        staleEventsOverlay.setStatus("A");
-        staleEventsOverlay.setPublished(true);
+        ActivityEvent draft = event("draft-1", "host", 0d);
+        draft.setStatus(ActivityEvent.STATUS_DRAFT);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(hostingDraft, staleEventsOverlay));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(draft));
 
         EventListPageDto myEvents = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "host", "my-events", "all", null, null, null, null, null, null, null, null));
@@ -495,32 +475,27 @@ class ActivitiesEventsServiceTest {
 
         assertThat(myEvents.records()).singleElement().satisfies(record -> {
             assertThat(record.id()).isEqualTo("draft-1");
-            assertThat(record.type()).isEqualTo("hosting");
-            assertThat(record.status()).isEqualTo("DR");
-            assertThat(record.published()).isFalse();
+            assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_DRAFT);
         });
         assertThat(allEvents.records()).extracting(record -> record.id()).containsExactly("draft-1");
     }
 
     @Test
-    void directOwnerScopesUseBatchedMemberSnapshots() {
+    void directOwnerBucketsUseAdminAndInvitationProjections() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
 
-        ActivityEvent hosting = event("hosting-1", "host", 0d);
-        hosting.setType("hosting");
-        hosting.setStatus("H");
-        hosting.setIsHosting(true);
+        ActivityEvent ownedEvent = event("hosting-1", "host", 0d);
+        ownedEvent.setStatus(ActivityEvent.STATUS_ACTIVE);
 
         ActivityEvent invitation = event("invite-1", "other-host", 0d);
-        invitation.setOwnerUserId("host");
-        invitation.setType("invitations");
-        invitation.setStatus("INV");
-        invitation.setIsInvitation(true);
+        invitation.setStatus(ActivityEvent.STATUS_ACTIVE);
+        invitation.setInvitedMemberUserIds(List.of("host"));
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
-        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("host")).thenReturn(List.of(hosting, invitation));
+        when(activityEventsRepository.findAdminVisibleEvents("host")).thenReturn(List.of(ownedEvent));
+        when(activityEventsRepository.findActiveInvitationEvents("host")).thenReturn(List.of(invitation));
         when(activitiesMembersService.findTrackedEventSourceIdsForUser("host")).thenReturn(Set.of());
         when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
 
@@ -587,24 +562,20 @@ class ActivitiesEventsServiceTest {
         host.setName("Host User");
 
         ActivityEvent hosting = event("hosting-1", "host", 0d);
-        hosting.setType("hosting");
-        hosting.setStatus("H");
-        hosting.setIsHosting(true);
+        hosting.setStatus(ActivityEvent.STATUS_ACTIVE);
 
         ActivityEvent invitation = event("invite-1", "other-host", 0d);
-        invitation.setOwnerUserId("host");
-        invitation.setType("invitations");
-        invitation.setStatus("INV");
-        invitation.setIsInvitation(true);
+        invitation.setStatus(ActivityEvent.STATUS_ACTIVE);
+        invitation.setInvitedMemberUserIds(List.of("host"));
 
         ActivityEvent trashed = event("trash-1", "host", 0d);
-        trashed.setType("hosting");
-        trashed.setStatus("T");
-        trashed.setIsTrashed(true);
+        trashed.setStatus(ActivityEvent.STATUS_TRASHED);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
-                .thenReturn(List.of(hosting, invitation, trashed));
+                .thenReturn(List.of(hosting, trashed));
+        when(activityEventsRepository.findActiveInvitationEvents("host"))
+                .thenReturn(List.of(invitation));
         when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(hosting, invitation, trashed));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
@@ -627,14 +598,8 @@ class ActivitiesEventsServiceTest {
         host.setName("Host User");
 
         ActivityEvent first = event("event-1", "host", 0d);
-        first.setType("hosting");
-        first.setIsHosting(true);
         ActivityEvent second = event("event-2", "host", 0d);
-        second.setType("hosting");
-        second.setIsHosting(true);
         ActivityEvent third = event("event-3", "host", 0d);
-        third.setType("hosting");
-        third.setIsHosting(true);
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
@@ -645,7 +610,7 @@ class ActivitiesEventsServiceTest {
 
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(record -> record.id()).containsExactly("event-1", "event-2");
-        assertThat(page.records()).allSatisfy(record -> assertThat(record.type()).isEqualTo("hosting"));
+        assertThat(page.records()).allSatisfy(record -> assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE));
         assertThat(page.nextCursor()).contains("event-2");
     }
 
@@ -732,11 +697,7 @@ class ActivitiesEventsServiceTest {
         event.setId(sourceId + "-document");
         event.setSourceId(sourceId);
         event.setOwnerUserId(creatorUserId);
-        event.setType("events");
-        event.setStatus("active");
-        event.setPublished(true);
-        event.setIsTrashed(false);
-        event.setIsInvitation(false);
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setGenerated(false);
         event.setCreatorUserId(creatorUserId);
         event.setCreatorName(creatorUserId);
@@ -761,11 +722,11 @@ class ActivitiesEventsServiceTest {
                 syncKey,
                 id,
                 target,
+                Boolean.TRUE.equals(published) ? ActivityEvent.STATUS_ACTIVE : ActivityEvent.STATUS_DRAFT,
                 "Draft Event",
                 "Draft short description",
                 "May 24, 3:28 AM - 4:28 AM",
                 0,
-                true,
                 "2026-05-24T03:28:00Z",
                 "2026-05-24T04:28:00Z",
                 0d,
@@ -790,7 +751,6 @@ class ActivitiesEventsServiceTest {
                 null,
                 "Public",
                 "Open Event",
-                published,
                 creatorUserId,
                 "Host User",
                 "HU",

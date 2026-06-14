@@ -90,8 +90,6 @@ public class HomeUserProfileService {
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_HOSTING = "hosting";
-    private static final String TYPE_INVITATIONS = "invitations";
     private static final String ASSET_TYPE_CAR = "Car";
     private static final String ASSET_TYPE_ACCOMMODATION = "Accommodation";
     private static final String ASSET_TYPE_SUPPLIES = "Supplies";
@@ -1982,17 +1980,10 @@ public class HomeUserProfileService {
     }
 
     private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
-        if (Boolean.TRUE.equals(next.getIsInvitation()) && !Boolean.TRUE.equals(current.getIsInvitation())) {
-            return false;
-        }
-        if (!Boolean.TRUE.equals(next.getIsInvitation()) && Boolean.TRUE.equals(current.getIsInvitation())) {
-            return true;
-        }
-        if (Boolean.TRUE.equals(next.getIsHosting()) && !Boolean.TRUE.equals(current.getIsHosting())) {
-            return true;
-        }
-        if (!Boolean.TRUE.equals(next.getIsHosting()) && Boolean.TRUE.equals(current.getIsHosting())) {
-            return false;
+        boolean nextActive = "A".equals(safeText(next == null ? null : next.getStatus()));
+        boolean currentActive = "A".equals(safeText(current == null ? null : current.getStatus()));
+        if (nextActive != currentActive) {
+            return nextActive;
         }
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
     }
@@ -2000,9 +1991,6 @@ public class HomeUserProfileService {
     private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
         if (record == null || !StringUtils.hasText(userId) || Boolean.TRUE.equals(record.getIsTrashed())) {
             return false;
-        }
-        if (Boolean.TRUE.equals(record.getIsHosting()) || TYPE_HOSTING.equals(safeText(record.getType()))) {
-            return true;
         }
         if (userId.equals(normalizeId(record.getCreatorUserId()))) {
             return true;

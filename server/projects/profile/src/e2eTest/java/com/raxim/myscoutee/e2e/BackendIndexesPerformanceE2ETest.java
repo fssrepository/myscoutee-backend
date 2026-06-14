@@ -255,9 +255,7 @@ class BackendIndexesPerformanceE2ETest {
             event.setOwnerUserId(ownerUserId);
             event.setCreatorUserId(ownerUserId);
             event.setAdmins(List.of(ownerUserId));
-            event.setType(index % 4 == 0 ? "hosting" : "events");
-            event.setStatus("A");
-            event.setPublished(true);
+            event.setStatus(ActivityEvent.STATUS_ACTIVE);
             event.setGenerated(false);
             event.setVisibility("public");
             event.setTitle("Performance Event " + index);

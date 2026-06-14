@@ -657,7 +657,12 @@ class BackendAlgorithmsE2ETest {
             user.setImages(List.of("https://example.test/avatar/" + index + ".png"));
             user.setStatus("A");
             user.setProfileStatus("public");
-            user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+            user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
             users.add(user);
         }
         mongoTemplate.insert(users, Users.class);
@@ -738,13 +743,7 @@ class BackendAlgorithmsE2ETest {
         event.setSyncKey("e2e-event-" + sourceId + "-" + UUID.randomUUID());
         event.setSourceId(sourceId);
         event.setOwnerUserId(ownerUserId);
-        event.setType("hosting");
-        event.setStatus(published ? "H" : "DR");
-        event.setPublished(published);
-        event.setIsAdmin(true);
-        event.setIsHosting(true);
-        event.setIsInvitation(false);
-        event.setIsTrashed(false);
+        event.setStatus(published ? ActivityEvent.STATUS_ACTIVE : ActivityEvent.STATUS_DRAFT);
         event.setCreatorUserId(ownerUserId);
         event.setCreatorName("Host " + ownerUserId);
         event.setCreatorInitials("EH");

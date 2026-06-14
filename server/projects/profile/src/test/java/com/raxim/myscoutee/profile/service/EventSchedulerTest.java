@@ -91,7 +91,7 @@ class EventSchedulerTest {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
         event.setAutoInviter(true);
-        event.setPublished(true);
+        event.setStatus("A");
         event.setCapacityTotal(3);
         event.setCreatorUserId("creator-1");
         event.setTitle("Board Game Night");
@@ -116,6 +116,8 @@ class EventSchedulerTest {
                         List.of(),
                         List.of("locked-1"),
                         List.of("pending-1", "pending-2"),
+                        List.of(),
+                        List.of(),
                         Set.of("creator-1"),
                         3));
         when(activitiesMembersService.inviteUsers("event-1", "creator-1", List.of("u1", "u2"), event))
@@ -138,7 +140,7 @@ class EventSchedulerTest {
 
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
-        event.setPublished(true);
+        event.setStatus("A");
         event.setCreatorUserId("creator-1");
         event.setSubEvents(List.of(subEvent("sub-1", 2, 2, 2)));
 
@@ -156,6 +158,8 @@ class EventSchedulerTest {
                 "event-1",
                 List.of(),
                 List.of("u1", "u2", "u3", "u4"),
+                List.of(),
+                List.of(),
                 List.of(),
                 Set.of("creator-1"),
                 4);
@@ -196,7 +200,7 @@ class EventSchedulerTest {
 
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
-        event.setPublished(true);
+        event.setStatus("A");
         event.setSubEvents(List.of(subEvent("sub-1", 2, 2, 2)));
 
         EventLeaderboardStateDto state = new EventLeaderboardStateDto(
@@ -232,7 +236,7 @@ class EventSchedulerTest {
 
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-2");
-        event.setPublished(true);
+        event.setStatus("A");
         event.setCreatorUserId("creator-1");
         event.setSubEvents(List.of(explicitSubEvent("sub-2")));
 
@@ -251,6 +255,8 @@ class EventSchedulerTest {
                 List.of(),
                 List.of("u1", "u2", "u3", "u4"),
                 List.of(),
+                List.of(),
+                List.of(),
                 Set.of("creator-1"),
                 4);
         ActivitiesMembersService.OwnerMembersSnapshot groupASnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -259,6 +265,8 @@ class EventSchedulerTest {
                 List.of(),
                 List.of("u1"),
                 List.of(),
+                List.of(),
+                List.of(),
                 Set.of(),
                 2);
         ActivitiesMembersService.OwnerMembersSnapshot groupBSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
@@ -266,6 +274,8 @@ class EventSchedulerTest {
                 "group-b",
                 List.of(),
                 List.of("u3"),
+                List.of(),
+                List.of(),
                 List.of(),
                 Set.of(),
                 2);
@@ -295,7 +305,7 @@ class EventSchedulerTest {
 
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-3");
-        event.setPublished(true);
+        event.setStatus("A");
         event.setCreatorUserId("creator-1");
         event.setSubEvents(List.of(
                 withStageStatus(explicitSubEvent("sub-1"), "F"),
@@ -337,6 +347,8 @@ class EventSchedulerTest {
                         List.of(),
                         List.of("u1", "u2", "u3"),
                         List.of(),
+                        List.of(),
+                        List.of(),
                         Set.of("creator-1"),
                         3));
         when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
@@ -363,7 +375,7 @@ class EventSchedulerTest {
 
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-4");
-        event.setPublished(true);
+        event.setStatus("A");
         event.setCreatorUserId("creator-1");
         event.setSubEvents(List.of(subEvent("sub-4", 1, 2, 2)));
 
@@ -379,6 +391,8 @@ class EventSchedulerTest {
                 List.of(),
                 List.of("u1", "u2"),
                 List.of(),
+                List.of(),
+                List.of(),
                 Set.of("creator-1"),
                 2);
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
@@ -391,6 +405,8 @@ class EventSchedulerTest {
                 "sub-4:group:1",
                 List.of(),
                 List.of("u1", "u2"),
+                List.of(),
+                List.of(),
                 List.of(),
                 Set.of(),
                 2);
@@ -410,8 +426,7 @@ class EventSchedulerTest {
         EventScheduler scheduler = createScheduler();
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
-        event.setStatus("H");
-        event.setPublished(true);
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setSubEventsDisplayMode("Tournament");
         event.setSubEvents(List.of(
                 subEventWithStatus("stage-ended", "2026-05-12T10:00:00Z", null),

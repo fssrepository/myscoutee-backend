@@ -268,7 +268,6 @@ class ActivitiesResourcesServiceTest {
         event.setSourceId(sourceId);
         event.setCreatorUserId(creatorUserId);
         event.setAdmins(List.of(adminUserId));
-        event.setType("events");
         event.setStatus("A");
         return event;
     }

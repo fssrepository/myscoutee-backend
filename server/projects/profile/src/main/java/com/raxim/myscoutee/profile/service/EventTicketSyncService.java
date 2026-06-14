@@ -23,7 +23,6 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 @Service
 public class EventTicketSyncService {
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_EVENTS = "events";
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
@@ -51,7 +50,7 @@ public class EventTicketSyncService {
                 sourceIds.add(sourceId);
             }
         }
-        for (ActivityEvent record : activityEventsRepository.findByOwnerUserId(normalizedUserId)) {
+        for (ActivityEvent record : activityEventsRepository.findAdminVisibleEvents(normalizedUserId)) {
             String sourceId = normalizeId(record == null ? null : record.getSourceId());
             if (StringUtils.hasText(sourceId)) {
                 sourceIds.add(sourceId);
@@ -67,7 +66,7 @@ public class EventTicketSyncService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
-        return activityEventsRepository.findByOwnerUserId(normalizedUserId).stream()
+        return activityEventsRepository.findAcceptedMembershipEvents(normalizedUserId).stream()
                 .filter(Objects::nonNull)
                 .filter(this::isVisibleTicketRecord)
                 .toList();
@@ -142,7 +141,7 @@ public class EventTicketSyncService {
     private ActivityEvent resolveCanonicalRecord(List<ActivityEvent> sourceRecords) {
         ActivityEvent preferred = null;
         for (ActivityEvent record : sourceRecords) {
-            if (record == null || Boolean.TRUE.equals(record.getIsInvitation())) {
+            if (record == null) {
                 continue;
             }
             if (!isCreatorOwnedRecord(record) && preferred != null && isCreatorOwnedRecord(preferred)) {
@@ -165,9 +164,6 @@ public class EventTicketSyncService {
         if (nextCreatorOwned != currentCreatorOwned) {
             return nextCreatorOwned;
         }
-        if (Boolean.TRUE.equals(next.getIsHosting()) != Boolean.TRUE.equals(current.getIsHosting())) {
-            return Boolean.TRUE.equals(next.getIsHosting());
-        }
         if (!Objects.equals(Boolean.TRUE.equals(next.getPublished()), Boolean.TRUE.equals(current.getPublished()))) {
             return Boolean.TRUE.equals(next.getPublished());
         }
@@ -181,15 +177,11 @@ public class EventTicketSyncService {
 
     private boolean isCreatorOwnedRecord(ActivityEvent record) {
         return record != null
-                && !Boolean.TRUE.equals(record.getIsInvitation())
                 && normalizeId(record.getOwnerUserId()).equals(normalizeId(record.getCreatorUserId()));
     }
 
     private boolean isParticipantDirectRecord(ActivityEvent record) {
-        if (record == null || Boolean.TRUE.equals(record.getIsInvitation())) {
-            return false;
-        }
-        if (!TYPE_EVENTS.equals(normalizeType(record.getType()))) {
+        if (record == null) {
             return false;
         }
         String ownerUserId = normalizeId(record.getOwnerUserId());
@@ -218,14 +210,12 @@ public class EventTicketSyncService {
     private boolean isTicketEligible(ActivityEvent canonical) {
         return canonical != null
                 && Boolean.TRUE.equals(canonical.getTicketing())
-                && !Boolean.TRUE.equals(canonical.getIsInvitation())
                 && !Boolean.TRUE.equals(canonical.getIsTrashed())
                 && !Boolean.FALSE.equals(canonical.getPublished());
     }
 
     private boolean isVisibleTicketRecord(ActivityEvent record) {
         return record != null
-                && !Boolean.TRUE.equals(record.getIsInvitation())
                 && !Boolean.TRUE.equals(record.getIsTrashed())
                 && Boolean.TRUE.equals(record.getTicketing());
     }
@@ -242,10 +232,6 @@ public class EventTicketSyncService {
         next.setId(existing != null && StringUtils.hasText(existing.getId()) ? existing.getId() : new ObjectId().toHexString());
         next.setSyncKey(existing != null && StringUtils.hasText(existing.getSyncKey()) ? existing.getSyncKey().trim() : UUID.randomUUID().toString());
         next.setOwnerUserId(normalizedOwnerUserId);
-        next.setType(TYPE_EVENTS);
-        next.setIsAdmin(false);
-        next.setIsInvitation(false);
-        next.setIsHosting(false);
         next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
         next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
 
@@ -256,7 +242,9 @@ public class EventTicketSyncService {
             next.setSubtitle(safeText(canonical.getSubtitle()));
             next.setTimeframe(safeText(canonical.getTimeframe()));
             next.setInviter(existing == null ? null : existing.getInviter());
-            next.setPublished(Boolean.FALSE.equals(canonical.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
+            boolean existingTrashed = existing != null && Boolean.TRUE.equals(existing.getIsTrashed());
+            boolean canonicalTrashed = Boolean.TRUE.equals(canonical.getIsTrashed());
+            next.setStatus(existingTrashed || canonicalTrashed ? "T" : Boolean.FALSE.equals(canonical.getPublished()) ? "DR" : "A");
             next.setCreatorUserId(normalizeId(canonical.getCreatorUserId()));
             next.setCreatorName(safeText(canonical.getCreatorName()));
             next.setCreatorInitials(safeText(canonical.getCreatorInitials()));
@@ -282,6 +270,10 @@ public class EventTicketSyncService {
             next.setPricing(canonical.getPricing());
             next.setAcceptedMembers(normalizeCount(canonical.getAcceptedMembers()));
             next.setPendingMembers(normalizeCount(canonical.getPendingMembers()));
+            next.setAcceptedMemberUserIds(canonical.getAcceptedMemberUserIds());
+            next.setPendingMemberUserIds(canonical.getPendingMemberUserIds());
+            next.setInvitedMemberUserIds(canonical.getInvitedMemberUserIds());
+            next.setPendingRequestMemberUserIds(canonical.getPendingRequestMemberUserIds());
             next.setTopics(canonical.getTopics() == null ? List.of() : new ArrayList<>(canonical.getTopics()));
             next.setSubEvents(canonical.getSubEvents() == null ? List.of() : new ArrayList<>(canonical.getSubEvents()));
             next.setSubEventsDisplayMode(safeText(canonical.getSubEventsDisplayMode()));
@@ -289,9 +281,7 @@ public class EventTicketSyncService {
             next.setBoost(safeDouble(canonical.getBoost()));
             next.setAffinity(safeDouble(canonical.getAffinity()));
             next.setTicketing(ticketingEnabled);
-            boolean existingTrashed = existing != null && Boolean.TRUE.equals(existing.getIsTrashed());
             String existingTrashedAtIso = existing == null ? null : existing.getTrashedAtIso();
-            next.setIsTrashed(existingTrashed || Boolean.TRUE.equals(canonical.getIsTrashed()));
             next.setTrashedAtIso(existingTrashed
                     ? firstNonBlank(existingTrashedAtIso, canonical.getTrashedAtIso())
                     : safeNullableText(canonical.getTrashedAtIso()));
@@ -321,27 +311,22 @@ public class EventTicketSyncService {
         clone.setSyncKey(source.getSyncKey());
         clone.setSourceId(source.getSourceId());
         clone.setOwnerUserId(source.getOwnerUserId());
-        clone.setType(source.getType());
         clone.setStatus(source.getStatus());
         clone.setAvatar(source.getAvatar());
         clone.setTitle(source.getTitle());
         clone.setSubtitle(source.getSubtitle());
         clone.setTimeframe(source.getTimeframe());
-        clone.setAdmins(source.getAdmins() == null ? List.of() : new ArrayList<>(source.getAdmins()));
         clone.setInviter(source.getInviter());
         clone.setUnread(source.getUnread());
         clone.setActivity(source.getActivity());
-        clone.setIsAdmin(source.getIsAdmin());
-        clone.setIsInvitation(source.getIsInvitation());
-        clone.setIsHosting(source.getIsHosting());
-        clone.setIsTrashed(source.getIsTrashed());
-        clone.setPublished(source.getPublished());
+        clone.setStatus(source.getStatus());
         clone.setTrashedAtIso(source.getTrashedAtIso());
         clone.setCreatorUserId(source.getCreatorUserId());
         clone.setCreatorName(source.getCreatorName());
         clone.setCreatorInitials(source.getCreatorInitials());
         clone.setCreatorGender(source.getCreatorGender());
         clone.setCreatorCity(source.getCreatorCity());
+        clone.setAdmins(source.getAdmins() == null ? List.of() : new ArrayList<>(source.getAdmins()));
         clone.setVisibility(source.getVisibility());
         clone.setBlindMode(source.getBlindMode());
         clone.setStartAtIso(source.getStartAtIso());
@@ -361,6 +346,10 @@ public class EventTicketSyncService {
         clone.setPricing(source.getPricing());
         clone.setAcceptedMembers(source.getAcceptedMembers());
         clone.setPendingMembers(source.getPendingMembers());
+        clone.setAcceptedMemberUserIds(source.getAcceptedMemberUserIds());
+        clone.setPendingMemberUserIds(source.getPendingMemberUserIds());
+        clone.setInvitedMemberUserIds(source.getInvitedMemberUserIds());
+        clone.setPendingRequestMemberUserIds(source.getPendingRequestMemberUserIds());
         clone.setTopics(source.getTopics() == null ? List.of() : new ArrayList<>(source.getTopics()));
         clone.setSubEvents(source.getSubEvents() == null ? List.of() : new ArrayList<>(source.getSubEvents()));
         clone.setSubEventsDisplayMode(source.getSubEventsDisplayMode());
@@ -383,16 +372,12 @@ public class EventTicketSyncService {
         }
         return Objects.equals(normalizeId(left.getSourceId()), normalizeId(right.getSourceId()))
                 && Objects.equals(normalizeId(left.getOwnerUserId()), normalizeId(right.getOwnerUserId()))
-                && Objects.equals(normalizeType(left.getType()), normalizeType(right.getType()))
                 && Objects.equals(safeText(left.getAvatar()), safeText(right.getAvatar()))
                 && Objects.equals(safeText(left.getTitle()), safeText(right.getTitle()))
                 && Objects.equals(safeText(left.getSubtitle()), safeText(right.getSubtitle()))
                 && Objects.equals(safeText(left.getTimeframe()), safeText(right.getTimeframe()))
                 && normalizeCount(left.getUnread()) == normalizeCount(right.getUnread())
                 && normalizeCount(left.getActivity()) == normalizeCount(right.getActivity())
-                && Boolean.TRUE.equals(left.getIsAdmin()) == Boolean.TRUE.equals(right.getIsAdmin())
-                && Boolean.TRUE.equals(left.getIsInvitation()) == Boolean.TRUE.equals(right.getIsInvitation())
-                && Boolean.TRUE.equals(left.getIsHosting()) == Boolean.TRUE.equals(right.getIsHosting())
                 && Boolean.TRUE.equals(left.getIsTrashed()) == Boolean.TRUE.equals(right.getIsTrashed())
                 && Objects.equals(safeNullableText(left.getTrashedAtIso()), safeNullableText(right.getTrashedAtIso()))
                 && Boolean.TRUE.equals(left.getPublished()) == Boolean.TRUE.equals(right.getPublished())
@@ -434,10 +419,6 @@ public class EventTicketSyncService {
 
     private int normalizeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
-    }
-
-    private String normalizeType(String value) {
-        return safeText(value);
     }
 
     private String normalizeStatus(String value) {

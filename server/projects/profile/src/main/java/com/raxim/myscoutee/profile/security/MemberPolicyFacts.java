@@ -199,21 +199,7 @@ public class MemberPolicyFacts {
     }
 
     private boolean preferEventRecord(ActivityEvent next, ActivityEvent current) {
-        int nextRank = eventTypeRank(next == null ? null : next.getType());
-        int currentRank = eventTypeRank(current == null ? null : current.getType());
-        if (nextRank != currentRank) {
-            return nextRank > currentRank;
-        }
         return toSortableDate(next == null ? null : next.getUpdatedDate()) >= toSortableDate(current == null ? null : current.getUpdatedDate());
-    }
-
-    private int eventTypeRank(String type) {
-        return switch (safeText(type)) {
-            case "hosting" -> 3;
-            case "events" -> 2;
-            case "invitations" -> 1;
-            default -> 0;
-        };
     }
 
     private boolean isAssetOwner(String assetId, String userId) {

@@ -335,7 +335,7 @@ public class DeletedAccountPurgeService {
             }
             String key = safeText(event.getId());
             if (!StringUtils.hasText(key)) {
-                key = safeText(event.getOwnerUserId()) + ":" + safeText(event.getType()) + ":" + safeText(event.getSourceId());
+                key = safeText(event.getOwnerUserId()) + ":" + safeText(event.getSourceId());
             }
             if (StringUtils.hasText(key)) {
                 eventsByKey.putIfAbsent(key, event);
