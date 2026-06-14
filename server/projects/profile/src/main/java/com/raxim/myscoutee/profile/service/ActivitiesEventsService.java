@@ -224,9 +224,8 @@ public class ActivitiesEventsService {
         List<ActivityEvent> attendingRecords = withEventQueryContext(snapshotContext, () -> preferredRecords.stream()
                 .filter(record -> !viewer.userId().equals(normalizeId(record.getCreatorUserId())))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> trackedSourceIds.contains(normalizeId(record.getSourceId())))
+                .filter(record -> isTrackedAttendingMembershipStatus(trackedStatusesBySourceId.get(normalizeId(record.getSourceId()))))
                 .map(record -> buildMembershipProjection(viewer.userId(), record))
-                .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
                 .toList());
         return new EventQueryContext(
                 attendingRecords,
@@ -298,9 +297,8 @@ public class ActivitiesEventsService {
         List<ActivityEvent> attendingRecords = withEventQueryContext(context, () -> preferredRecords.stream()
                 .filter(record -> !viewer.userId().equals(normalizeId(record.getCreatorUserId())))
                 .filter(record -> !Boolean.TRUE.equals(record.getIsTrashed()))
-                .filter(record -> trackedStatusesBySourceId.containsKey(normalizeId(record.getSourceId())))
+                .filter(record -> isTrackedAttendingMembershipStatus(trackedStatusesBySourceId.get(normalizeId(record.getSourceId()))))
                 .map(record -> buildMembershipProjection(viewer.userId(), record))
-                .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
                 .toList());
         return new EventQueryContext(
                 attendingRecords,
@@ -383,6 +381,11 @@ public class ActivitiesEventsService {
             }
         }
         return statusesBySourceId;
+    }
+
+    private boolean isTrackedAttendingMembershipStatus(String status) {
+        String normalized = safeText(status);
+        return MEMBER_STATUS_ACCEPTED.equals(normalized) || MEMBER_STATUS_PENDING.equals(normalized);
     }
 
     private Map<String, Double> queryEventOwnerEdgeWeights(ViewerContext viewer, Collection<ActivityEvent> records) {
@@ -543,7 +546,6 @@ public class ActivitiesEventsService {
         }
         return withEventQueryContext(buildAttendingQueryContext(viewer), () ->
                 allEventDocuments(viewer).stream()
-                        .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
                         .map(record -> toEventRecordDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
@@ -560,7 +562,6 @@ public class ActivitiesEventsService {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = sortEventRecordsByStart(allEventDocuments(viewer).stream()
                     .filter(Objects::nonNull)
-                    .filter(record -> hasAcceptedParticipation(record, viewer.userId()) || isPendingParticipation(record, viewer.userId()))
                     .toList());
             int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);

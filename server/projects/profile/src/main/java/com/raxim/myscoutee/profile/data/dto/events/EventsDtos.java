@@ -42,7 +42,6 @@ public final class EventsDtos {
 
     public record EventActionRequestDto(
             String userId,
-            String type,
             String sourceId,
             String slotSourceId,
             List<String> optionalSubEventIds,
@@ -233,7 +232,6 @@ public final class EventsDtos {
     public record ActivitiesEventSyncPayloadDto(
             String syncKey,
             String id,
-            String target,
             String status,
             String title,
             String shortDescription,

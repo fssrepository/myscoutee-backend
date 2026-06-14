@@ -149,22 +149,18 @@ class BackendLifecycleE2ETest {
         JsonNode draft = postJson("/activities/events/sync", eventSyncPayload(false));
         assertThat(draft.path("id").asString()).isEqualTo(EVENT_ID);
         assertThat(draft.path("status").asString()).isEqualTo("DR");
-        assertThat(draft.path("published").asBoolean()).isFalse();
         assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
                 .doesNotContain(EVENT_ID);
 
         postOk("/activities/events/publish", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", EVENT_ID));
         assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
                 .contains(EVENT_ID);
 
-        ActivityEvent hostingRecord = findEvent(HOST_ID, "hosting", EVENT_ID);
-        ActivityEvent ownerEventOverlay = findEvent(HOST_ID, "events", EVENT_ID);
-        assertThat(hostingRecord.getStatus()).isEqualTo("H");
-        assertThat(ownerEventOverlay.getStatus()).isEqualTo("A");
-        assertThat(ownerEventOverlay.getPublished()).isTrue();
+        ActivityEvent ownerEvent = findEvent(HOST_ID, EVENT_ID);
+        assertThat(ownerEvent.getStatus()).isEqualTo("A");
+        assertThat(ownerEvent.getPublished()).isTrue();
 
         JsonNode checkout = postJson("/activities/events/checkout", checkoutPayload(PAID_MEMBER_ID));
         String paymentSessionId = checkout.path("id").asString();
@@ -178,7 +174,6 @@ class BackendLifecycleE2ETest {
 
         JsonNode joined = postJson("/activities/events/join", joinPayload(PAID_MEMBER_ID, paymentSessionId, true, null));
         assertThat(joined.path("id").asString()).isEqualTo(EVENT_ID);
-        assertThat(joined.path("isHosting").asBoolean()).isFalse();
 
         ActivityMember paidMember = findMember("event", EVENT_ID, PAID_MEMBER_ID);
         assertThat(paidMember.getStatus()).isEqualTo("accepted");
@@ -237,10 +232,9 @@ class BackendLifecycleE2ETest {
 
         postOk("/activities/events/trash", Map.of(
                 "userId", PAID_MEMBER_ID,
-                "type", "events",
                 "sourceId", EVENT_ID));
 
-        ActivityEvent paidOverlay = findEvent(PAID_MEMBER_ID, "events", EVENT_ID);
+        ActivityEvent paidOverlay = findEvent(PAID_MEMBER_ID, EVENT_ID);
         assertThat(paidOverlay.getStatus()).isEqualTo("T");
         assertThat(paidOverlay.getIsTrashed()).isTrue();
         assertThat(getJson("/assets/tickets?userId=" + PAID_MEMBER_ID).path("total").asInt()).isZero();
@@ -340,7 +334,6 @@ class BackendLifecycleE2ETest {
         String partialSessionId = checkoutPayAndJoinEdgeEvent(partialEventId, userId(7), null);
         postOk("/activities/events/trash", Map.of(
                 "userId", userId(7),
-                "type", "events",
                 "sourceId", partialEventId));
         Payment partialPayment = findPayment(partialSessionId);
         assertThat(partialPayment.getBookingStatus()).isEqualTo("cancelled");
@@ -355,7 +348,6 @@ class BackendLifecycleE2ETest {
         String noRefundSessionId = checkoutPayAndJoinEdgeEvent(noRefundEventId, userId(8), null);
         postOk("/activities/events/trash", Map.of(
                 "userId", userId(8),
-                "type", "events",
                 "sourceId", noRefundEventId));
         Payment noRefundPayment = findPayment(noRefundSessionId);
         assertThat(noRefundPayment.getBookingStatus()).isEqualTo("cancelled");
@@ -478,7 +470,6 @@ class BackendLifecycleE2ETest {
         postOk("/activities/events/sync", eventSyncPayload(false));
         postOk("/activities/events/publish", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", EVENT_ID));
 
         assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
@@ -486,18 +477,16 @@ class BackendLifecycleE2ETest {
 
         postOk("/activities/events/trash", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", EVENT_ID));
-        assertThat(findEvent(HOST_ID, "hosting", EVENT_ID).getStatus()).isEqualTo("T");
+        assertThat(findEvent(HOST_ID, EVENT_ID).getStatus()).isEqualTo("T");
         assertThat(ids(getJson("/activities/events/trash?userId=" + HOST_ID), "id")).contains(EVENT_ID);
         assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
                 .doesNotContain(EVENT_ID);
 
         postOk("/activities/events/restore", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", EVENT_ID));
-        assertThat(findEvent(HOST_ID, "hosting", EVENT_ID).getStatus()).isEqualTo("H");
+        assertThat(findEvent(HOST_ID, EVENT_ID).getStatus()).isEqualTo("A");
         assertThat(ids(getJson("/activities/events/hosting?userId=" + HOST_ID), "id")).contains(EVENT_ID);
         assertThat(ids(postJson("/activities/events/explore", Map.of("userId", OUTSIDER_ID)), "id"))
                 .contains(EVENT_ID);
@@ -532,7 +521,6 @@ class BackendLifecycleE2ETest {
         postOk("/activities/events/sync", eventSyncPayload(false));
         postOk("/activities/events/publish", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", EVENT_ID));
         JsonNode checkout = postJson("/activities/events/checkout", checkoutPayload(PAID_MEMBER_ID));
         String paymentSessionId = checkout.path("id").asString();
@@ -551,7 +539,6 @@ class BackendLifecycleE2ETest {
         postOk("/activities/events/sync", eventSyncPayload(false));
         postOk("/activities/events/publish", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", EVENT_ID));
         JsonNode checkout = postJson("/activities/events/checkout", checkoutPayload(PAID_MEMBER_ID));
         String paymentSessionId = checkout.path("id").asString();
@@ -640,7 +627,7 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> eventSyncPayload(boolean published) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("id", EVENT_ID);
-        payload.put("target", "hosting");
+        payload.put("status", published ? "A" : "DR");
         payload.put("title", "Lifecycle Paid Camp");
         payload.put("shortDescription", "Backend e2e lifecycle camp");
         payload.put("timeframe", "Mon 15 Jun, 12:00");
@@ -656,7 +643,6 @@ class BackendLifecycleE2ETest {
         payload.put("frequency", "One-time");
         payload.put("visibility", "Public");
         payload.put("blindMode", "Visible");
-        payload.put("published", published);
         payload.put("creatorUserId", HOST_ID);
         payload.put("creatorName", "Lifecycle User 01");
         payload.put("creatorInitials", "LU");
@@ -726,7 +712,6 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> joinPayload(String userId, String paymentSessionId, boolean bookingConfirmed, String pendingReason) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("userId", userId);
-        payload.put("type", "events");
         payload.put("sourceId", EVENT_ID);
         payload.put("optionalSubEventIds", List.of(SUB_EVENT_ID));
         payload.put("acceptedPolicyIds", List.of("policy-cancel-1d"));
@@ -740,7 +725,6 @@ class BackendLifecycleE2ETest {
         postOk("/activities/events/sync", paymentEdgeEventPayload(eventId, startAt, fullRefundRule));
         postOk("/activities/events/publish", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", eventId));
     }
 
@@ -759,7 +743,6 @@ class BackendLifecycleE2ETest {
         if (publish) {
             postOk("/activities/events/publish", Map.of(
                     "userId", HOST_ID,
-                    "type", "hosting",
                     "sourceId", eventId));
         }
     }
@@ -777,7 +760,7 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> paymentEdgeEventPayload(String eventId, Instant startAt, boolean fullRefundRule) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("id", eventId);
-        payload.put("target", "hosting");
+        payload.put("status", "DR");
         payload.put("title", "Payment Edge " + eventId);
         payload.put("shortDescription", "Backend e2e payment edge event");
         payload.put("timeframe", "Payment edge");
@@ -793,7 +776,6 @@ class BackendLifecycleE2ETest {
         payload.put("frequency", "One-time");
         payload.put("visibility", "Public");
         payload.put("blindMode", "Visible");
-        payload.put("published", false);
         payload.put("creatorUserId", HOST_ID);
         payload.put("creatorName", "Lifecycle User 01");
         payload.put("creatorInitials", "LU");
@@ -854,7 +836,6 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> edgeJoinPayload(String eventId, String userId, String paymentSessionId, String pendingReason) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("userId", userId);
-        payload.put("type", "events");
         payload.put("sourceId", eventId);
         payload.put("acceptedPolicyIds", List.of("edge-policy"));
         payload.put("paymentSessionId", paymentSessionId);
@@ -977,13 +958,12 @@ class BackendLifecycleE2ETest {
         return asset;
     }
 
-    private ActivityEvent findEvent(String ownerUserId, String type, String sourceId) {
+    private ActivityEvent findEvent(String ownerUserId, String sourceId) {
         ActivityEvent event = fromReal(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("ownerUserId").is(ownerUserId)
-                        .and("type").is(type)
                         .and("sourceId").is(sourceId)),
                 ActivityEvent.class));
-        assertThat(event).as("event %s/%s/%s", ownerUserId, type, sourceId).isNotNull();
+        assertThat(event).as("event %s/%s", ownerUserId, sourceId).isNotNull();
         return event;
     }
 

@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -135,7 +136,6 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(coldStartEvent, knownHostEvent));
-        when(activityEventsRepository.findByOwnerUserIdOrderByStartAtIsoAsc("viewer")).thenReturn(List.of());
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer")).thenReturn(Map.of());
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList()))
                 .thenReturn(List.of(edge("viewer", "known-host", 0.92d)));
@@ -174,7 +174,6 @@ class ActivitiesEventsServiceTest {
 
         service.publish(new EventActionRequestDto(
                 "host",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -202,7 +201,6 @@ class ActivitiesEventsServiceTest {
 
         service.publish(new EventActionRequestDto(
                 "host",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -223,7 +221,6 @@ class ActivitiesEventsServiceTest {
 
         service.unpublish(new EventActionRequestDto(
                 "host",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -240,11 +237,16 @@ class ActivitiesEventsServiceTest {
 
     @Test
     void organizerTrashStopsBeforeLeaveSideEffectsWhenPolicyDenies() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent event = event("event-1", "host", 0d);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
         when(accessControlService.canCurrentActorDeleteEvent("event-1")).thenReturn(false);
 
         service.trash(new EventActionRequestDto(
                 "host",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -261,11 +263,16 @@ class ActivitiesEventsServiceTest {
 
     @Test
     void organizerRestoreStopsBeforeSaveWhenPolicyDenies() {
+        Users host = new Users();
+        host.setId("host");
+        ActivityEvent event = event("event-1", "host", 0d);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
         when(accessControlService.canCurrentActorRestoreEvent("event-1")).thenReturn(false);
 
         service.restore(new EventActionRequestDto(
                 "host",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -289,7 +296,6 @@ class ActivitiesEventsServiceTest {
 
         service.takeOver(new EventActionRequestDto(
                 "host",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -316,7 +322,6 @@ class ActivitiesEventsServiceTest {
 
         EventRecordDto result = service.requestJoin(new EventActionRequestDto(
                 "viewer",
-                null,
                 "event-1",
                 null,
                 List.of(),
@@ -363,7 +368,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorCreateEvent("host", "draft-1")).thenReturn(false);
 
-        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", null, "host", false));
+        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -382,7 +387,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorEditEvent("draft-1")).thenReturn(false);
 
-        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", null, "host", false));
+        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -403,7 +408,6 @@ class ActivitiesEventsServiceTest {
         service.sync(new ActivitiesEventSyncPayloadDto(
                 "sync-draft-1",
                 "draft-1",
-                null,
                 ActivityEvent.STATUS_DRAFT,
                 "Draft Event",
                 "Draft short description",
@@ -515,11 +519,12 @@ class ActivitiesEventsServiceTest {
         viewer.setName("Viewer User");
 
         ActivityEvent attending = event("event-1", "host", 0d);
+        attending.setAcceptedMemberUserIds(List.of("viewer"));
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
                 .thenReturn(acceptedStatuses("event-1"));
-        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(attending));
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(attending));
         when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
 
         List<EventRecordDto> records = service.queryAttending("viewer");
@@ -537,13 +542,15 @@ class ActivitiesEventsServiceTest {
         ActivityEvent first = event("event-1", "host", 0d);
         ActivityEvent second = event("event-2", "host", 0d);
         ActivityEvent third = event("event-3", "host", 0d);
+        first.setAcceptedMemberUserIds(List.of("viewer"));
+        second.setAcceptedMemberUserIds(List.of("viewer"));
+        third.setAcceptedMemberUserIds(List.of("viewer"));
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
-        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(first, second, third));
 
         EventsExplorePageDto page = service.queryAttendingPage("viewer", 2, null);
 
@@ -576,7 +583,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(List.of(hosting, trashed));
         when(activityEventsRepository.findActiveInvitationEvents("host"))
                 .thenReturn(List.of(invitation));
-        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(hosting, invitation, trashed));
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(hosting, invitation, trashed));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
         EventsExplorePageDto hostingResponse = service.queryHostingPage("host", 2, null);
@@ -670,7 +677,7 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
-        when(activityEventsRepository.findBySourceIdIn(anyList())).thenReturn(List.of(first, second, third));
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(first, second, third));
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
 
         EventsExplorePageDto page = service.queryItemsByUserPage("host", 2, null);
@@ -700,6 +707,7 @@ class ActivitiesEventsServiceTest {
         event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setGenerated(false);
         event.setCreatorUserId(creatorUserId);
+        event.setAdmins(List.of(creatorUserId));
         event.setCreatorName(creatorUserId);
         event.setTitle(sourceId);
         event.setStartAtIso("2099-06-01T10:00:00Z");
@@ -715,13 +723,11 @@ class ActivitiesEventsServiceTest {
     private ActivitiesEventSyncPayloadDto eventPayload(
             String syncKey,
             String id,
-            String target,
             String creatorUserId,
             Boolean published) {
         return new ActivitiesEventSyncPayloadDto(
                 syncKey,
                 id,
-                target,
                 Boolean.TRUE.equals(published) ? ActivityEvent.STATUS_ACTIVE : ActivityEvent.STATUS_DRAFT,
                 "Draft Event",
                 "Draft short description",
