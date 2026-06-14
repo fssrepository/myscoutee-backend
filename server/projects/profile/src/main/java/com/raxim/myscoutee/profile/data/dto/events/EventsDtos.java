@@ -130,6 +130,87 @@ public final class EventsDtos {
             String eventId) {
     }
 
+    public record EventFeedbackPageQueryDto(
+            String userId,
+            String filter,
+            Integer page,
+            Integer pageSize) {
+    }
+
+    public record EventFeedbackDeckQueryDto(
+            String userId,
+            String eventId) {
+    }
+
+    public record EventFeedbackPageCountsDto(
+            Integer ownEvents,
+            Integer pending,
+            Integer feedbacked,
+            Integer removed) {
+    }
+
+    public record EventFeedbackPageStateSnapshotDto(
+            Map<String, Boolean> submittedCardsById,
+            Map<String, EventFeedbackAnswerDto> submittedAnswersByCardId,
+            Map<String, String> submittedEventsById,
+            Map<String, Boolean> removedEventsById,
+            Map<String, String> removedEventDatesById,
+            Map<String, String> organizerNotesByEventId) {
+    }
+
+    public record EventFeedbackPageItemDto(
+            String eventId,
+            String title,
+            String subtitle,
+            String timeframe,
+            String imageUrl,
+            Long startAtMs,
+            Integer pendingCards,
+            Integer totalCards,
+            Boolean isRemoved,
+            Boolean isFeedbacked,
+            Long feedbackedAtMs,
+            Long removedAtMs,
+            Boolean isOwnEvent) {
+    }
+
+    public record EventFeedbackCardSourceDto(
+            String id,
+            String eventId,
+            String kind,
+            String attendeeUserId,
+            String targetUserId,
+            String targetRole,
+            String eventTitle,
+            String eventSubtitle,
+            String eventImageUrl,
+            String eventTimeframe,
+            String eventStartAtIso,
+            String eventLabel,
+            String targetName,
+            Integer targetAge,
+            String targetCity,
+            String targetGender,
+            String targetTraitLabel,
+            String targetImageUrl) {
+    }
+
+    public record EventFeedbackPageResultDto(
+            List<EventFeedbackPageItemDto> items,
+            Integer total,
+            List<EventFeedbackPageItemDto> allItems,
+            List<EventFeedbackPageItemDto> organizerItems,
+            List<EventFeedbackReceivedEventDto> receivedEvents,
+            EventFeedbackPageStateSnapshotDto state,
+            EventFeedbackPageCountsDto counts) {
+    }
+
+    public record EventFeedbackDeckResultDto(
+            String eventId,
+            String title,
+            List<EventFeedbackCardSourceDto> cards) {
+    }
+
     public record EventRecordDto(
             String id,
             String userId,
