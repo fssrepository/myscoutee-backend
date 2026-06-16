@@ -277,14 +277,22 @@ class HomeUserProfileServiceTest {
 
     @Test
     void demoUserListItemsHonorsRequestedLimit() {
-        Users high = user("high", 30d);
-        Users medium = user("medium", 20d);
-        Users low = user("low", 10d);
-        when(usersRepository.findAll()).thenReturn(List.of(low, high, medium));
+        Users setup = user("u-onboarding", 990_000d);
+        setup.setName("");
+        setup.setStatusText("New");
+        setup.setCompletion(0);
+        setup.setProfileFormVersion(0);
+        setup.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2672d, -97.7431d));
+        Users ava = user("ava", 10d);
+        Users mia = user("mia", 20d);
+        Users zoe = user("zoe", 30d);
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(setup, ava, mia, zoe));
 
         assertThat(service.queryDemoUserListItems(2))
                 .extracting(item -> item.id())
-                .containsExactly("high", "medium");
+                .containsExactly("u-onboarding", "ava");
+        verify(usersRepository, times(1)).findAllByOrderByNameAscUserIdAsc();
+        verify(usersRepository, never()).findAll();
     }
 
     @Test
@@ -292,7 +300,7 @@ class HomeUserProfileServiceTest {
         Users member = user("member", 30d);
         Users admin = user("admin-demo-ava", 20d);
         admin.setHostTier("Admin");
-        when(usersRepository.findAll()).thenReturn(List.of(admin, member));
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(admin, member));
 
         assertThat(service.queryDemoUserListItems(null, "member"))
                 .extracting(item -> item.id())
@@ -315,11 +323,12 @@ class HomeUserProfileServiceTest {
         deleted.setDeletedAtIso("2026-01-02T03:04:05Z");
         Users onboarding = user("onboarding", 40d);
         onboarding.setProfileStatus("onboarding");
-        when(usersRepository.findAll()).thenReturn(List.of(onboarding, deleted, inactive, blocked, active));
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc())
+                .thenReturn(List.of(active, blocked, deleted, inactive, onboarding));
 
         assertThat(service.queryDemoUserListItems())
                 .extracting(item -> item.id())
-                .containsExactly("active", "blocked", "inactive", "deleted");
+                .containsExactly("active", "blocked", "deleted", "inactive");
         assertThat(service.queryDemoUserListItems())
                 .filteredOn(item -> "deleted".equals(item.id()))
                 .extracting(item -> item.profileStatus(), item -> item.deletedAtIso())

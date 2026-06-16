@@ -35,3 +35,4 @@ desktop
 30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
 31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
 32) all the popups should be the same size
+33) save draft event hides the draft event from the own event which shouldn't be the case

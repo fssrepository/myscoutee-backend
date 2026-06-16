@@ -953,9 +953,8 @@ public class HomeUserProfileService {
     @Cacheable(value = "demo_users", key = "(#role == null ? 'member' : #role) + ':' + (#limit == null ? 'all' : #limit)")
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
-        return usersRepository.findAll().stream()
+        return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
-                .sorted(userComparator())
                 .limit(resolveDemoUserListLimit(limit))
                 .map(this::toDemoUserListItemDto)
                 .filter(Objects::nonNull)

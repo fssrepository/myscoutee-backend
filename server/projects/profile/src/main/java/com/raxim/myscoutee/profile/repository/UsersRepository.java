@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import com.raxim.myscoutee.profile.data.document.Users;
 
 public interface UsersRepository extends MongoRepository<Users, String> {
+    @Query(value = "{}", sort = "{ 'name': 1, 'userId': 1 }", collation = "{ 'locale': 'en', 'strength': 2 }")
+    List<Users> findAllByOrderByNameAscUserIdAsc();
+
     Optional<Users> findByUserId(String userId);
 
     Optional<Users> findFirstByEmail(String email);
