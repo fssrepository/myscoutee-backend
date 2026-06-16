@@ -26,6 +26,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -40,11 +43,9 @@ import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
-import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.UserRate;
-import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
@@ -219,9 +220,11 @@ class HomeUserProfileServiceTest {
 
         when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
                 .thenReturn(List.of(active, bridge, socialCandidate, outsideCandidate));
-        when(userRatesRepository.findAll()).thenReturn(List.of(
-                metRate("active", "bridge"),
-                metRate("bridge", "social-candidate")));
+        when(activityMembersRepository.findAll()).thenReturn(List.of(
+                acceptedMember("active-bridge", "active"),
+                acceptedMember("active-bridge", "bridge"),
+                acceptedMember("bridge-candidate", "bridge"),
+                acceptedMember("bridge-candidate", "social-candidate")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
 
         List<Users> cards = service.queryGameStackUserRecords("active");
@@ -266,8 +269,8 @@ class HomeUserProfileServiceTest {
         assertThat(firstCards).extracting(Users::getId).containsExactly("candidate");
         assertThat(secondCards).extracting(Users::getId).containsExactly("candidate");
         verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
-        verify(userRatesRepository, times(2)).findAll();
-        verify(activityMembersRepository, times(1)).findAll();
+        verify(userRatesRepository, times(1)).findAll();
+        verify(activityMembersRepository, times(2)).findAll();
         verify(userRatesRepository, times(2)).findByOwnerUserId("active");
         verify(userAffinityEdgesRepository, times(1)).findRelevantByUserIds(List.of("active"));
     }
@@ -512,13 +515,15 @@ class HomeUserProfileServiceTest {
         assertThat(eventFeedback.removed()).isEqualTo(2);
     }
 
-    private UserRate metRate(String ownerUserId, String relatedUserId) {
-        UserRate record = new UserRate();
-        record.setOwnerUserId(ownerUserId);
-        record.setRelatedUserId(relatedUserId);
-        record.setMet(true);
-        record.setEventName("Coffee Social");
-        return record;
+    private ActivityMember acceptedMember(String ownerId, String userId) {
+        ActivityMember member = new ActivityMember();
+        member.setOwnerType("event");
+        member.setOwnerId(ownerId);
+        member.setUserId(userId);
+        member.setStatus("accepted");
+        member.setMetWhere("Coffee Social");
+        member.setActionAtIso("2026-03-22T18:30:00Z");
+        return member;
     }
 
     private UserRate activityRate(String ownerUserId, String relatedUserId, String updatedDate) {
