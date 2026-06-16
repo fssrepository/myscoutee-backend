@@ -1503,31 +1503,6 @@
   },
   {
     "_id": {
-      "$oid": "abcdee2c6102ba347cffba87"
-    },
-    "syncKey": "bae6cce4-abd8-5c47-bcee-e3da9ebbf3bf",
-    "mode": "single",
-    "ownerUserId": "f4b2ebd8f56628ab7df58221",
-    "relatedUserId": "u-onboarding",
-    "scoreGiven": 9,
-    "scoreReceived": 0,
-    "met": false,
-    "affinityScore": 0.6059,
-    "ownerLocation": {
-      "latitude": 25.7773,
-      "longitude": -80.1966
-    },
-    "createdDate": "2026-02-25T20:00:00Z",
-    "createdUser": "f4b2ebd8f56628ab7df58221",
-    "updatedDate": "2026-02-25T20:00:00Z",
-    "updatedUser": "f4b2ebd8f56628ab7df58221",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "eac11b0685f9799953a40dd4",
-    "bridgeCount": 2
-  },
-  {
-    "_id": {
       "$oid": "950e1daeaad1c9eb86db5a36"
     },
     "syncKey": "8de765a8-db9f-5714-8973-7b4b8dad0060",
@@ -2842,31 +2817,6 @@
   },
   {
     "_id": {
-      "$oid": "2f4b4cf23e86319a03662ac7"
-    },
-    "syncKey": "4d8a7acb-cf99-5102-975a-76cd15849d8d",
-    "mode": "single",
-    "ownerUserId": "u-onboarding",
-    "relatedUserId": "4da20eb049179e73d4757808",
-    "scoreGiven": 7,
-    "scoreReceived": 0,
-    "met": false,
-    "affinityScore": 0.5568,
-    "ownerLocation": {
-      "latitude": 30.2672,
-      "longitude": -97.7431
-    },
-    "createdDate": "2026-02-20T20:00:00Z",
-    "createdUser": "u-onboarding",
-    "updatedDate": "2026-02-20T20:00:00Z",
-    "updatedUser": "u-onboarding",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "4a008502646a200488911f45",
-    "bridgeCount": 2
-  },
-  {
-    "_id": {
       "$oid": "c7b32a8df047c97fa59a7fcb"
     },
     "syncKey": "e3d725eb-2bda-51cc-bf2b-73bea1ecb7e1",
@@ -4128,31 +4078,6 @@
   },
   {
     "_id": {
-      "$oid": "847bfb2dcc2e6c9b46245ead"
-    },
-    "syncKey": "67293c3d-6bfb-5556-a048-7fa260027787",
-    "mode": "single",
-    "ownerUserId": "0c3ab5da9af33d4e688e809c",
-    "relatedUserId": "u-onboarding",
-    "scoreGiven": 9,
-    "scoreReceived": 0,
-    "met": false,
-    "affinityScore": 0.6574,
-    "ownerLocation": {
-      "latitude": 30.284,
-      "longitude": -97.7479
-    },
-    "createdDate": "2026-02-14T20:00:00Z",
-    "createdUser": "0c3ab5da9af33d4e688e809c",
-    "updatedDate": "2026-02-14T20:00:00Z",
-    "updatedUser": "0c3ab5da9af33d4e688e809c",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "af0436815ab38f4864dd1e24",
-    "bridgeCount": 1
-  },
-  {
-    "_id": {
       "$oid": "314191585269a538bb6acc61"
     },
     "syncKey": "60da3b51-3ca8-56da-b368-c7905820d7b1",
@@ -5082,31 +5007,6 @@
     "socialContext": "friends-in-common",
     "bridgeUserId": "23820c1e76d3bd843f61c799",
     "bridgeCount": 3
-  },
-  {
-    "_id": {
-      "$oid": "55f9ccbb17c58e941b9a226d"
-    },
-    "syncKey": "5848062c-04fe-5066-9a91-2b2cd33e7534",
-    "mode": "single",
-    "ownerUserId": "9184901a15076d32ea8b626f",
-    "relatedUserId": "u-onboarding",
-    "scoreGiven": 9,
-    "scoreReceived": 0,
-    "met": false,
-    "affinityScore": 0.7573,
-    "ownerLocation": {
-      "latitude": 36.1759,
-      "longitude": -86.7984
-    },
-    "createdDate": "2026-02-10T20:00:00Z",
-    "createdUser": "9184901a15076d32ea8b626f",
-    "updatedDate": "2026-02-10T20:00:00Z",
-    "updatedUser": "9184901a15076d32ea8b626f",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "0c3ab5da9af33d4e688e809c",
-    "bridgeCount": 1
   },
   {
     "_id": {
@@ -6481,31 +6381,6 @@
   },
   {
     "_id": {
-      "$oid": "0301692df406364960e61c78"
-    },
-    "syncKey": "20163312-4e14-52fb-bbc0-37eac4a449b7",
-    "mode": "single",
-    "ownerUserId": "e1dccfc3443239865c6ac69a",
-    "relatedUserId": "u-onboarding",
-    "scoreGiven": 9,
-    "scoreReceived": 0,
-    "met": false,
-    "affinityScore": 0.6388,
-    "ownerLocation": {
-      "latitude": 33.4628,
-      "longitude": -112.0908
-    },
-    "createdDate": "2026-02-09T20:00:00Z",
-    "createdUser": "e1dccfc3443239865c6ac69a",
-    "updatedDate": "2026-02-09T20:00:00Z",
-    "updatedUser": "e1dccfc3443239865c6ac69a",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "904ee3c526298f6921cde3f3",
-    "bridgeCount": 2
-  },
-  {
-    "_id": {
       "$oid": "51f1b63b8e546dc805573971"
     },
     "syncKey": "2067b699-fa4d-5523-bb9e-2b2fd1190a08",
@@ -6556,31 +6431,6 @@
   },
   {
     "_id": {
-      "$oid": "49ef91dc8ca5046a9c207243"
-    },
-    "syncKey": "4256d1c6-0070-5507-8d01-a84ccc3d9739",
-    "mode": "single",
-    "ownerUserId": "u-onboarding",
-    "relatedUserId": "23820c1e76d3bd843f61c799",
-    "scoreGiven": 0,
-    "scoreReceived": 0,
-    "met": true,
-    "affinityScore": 0.7108,
-    "ownerLocation": {
-      "latitude": 30.2672,
-      "longitude": -97.7431
-    },
-    "createdDate": "2026-02-07T20:00:00Z",
-    "createdUser": "u-onboarding",
-    "updatedDate": "2026-02-07T20:00:00Z",
-    "updatedUser": "u-onboarding",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "1b1c70be2349b3359a8f6f94",
-    "bridgeCount": 3
-  },
-  {
-    "_id": {
       "$oid": "d3af1ee98643a587483b612f"
     },
     "syncKey": "a958deb2-c64a-519d-be95-717a8c4b98ff",
@@ -6603,31 +6453,6 @@
     "socialContext": "friends-in-common",
     "bridgeUserId": "af70e41dbe826cbd7d8b3500",
     "bridgeCount": 2
-  },
-  {
-    "_id": {
-      "$oid": "b9e18c08a7ed4bd7ad35e151"
-    },
-    "syncKey": "1c1bc1e8-57b7-531f-9e23-ec60b015f461",
-    "mode": "single",
-    "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
-    "relatedUserId": "u-onboarding",
-    "scoreGiven": 9,
-    "scoreReceived": 0,
-    "met": false,
-    "affinityScore": 0.6602,
-    "ownerLocation": {
-      "latitude": 32.7289,
-      "longitude": -117.1659
-    },
-    "createdDate": "2026-02-05T20:00:00Z",
-    "createdUser": "0f9350e50f1ffc3cf002b7ed",
-    "updatedDate": "2026-02-05T20:00:00Z",
-    "updatedUser": "0f9350e50f1ffc3cf002b7ed",
-    "mutuallyRated": false,
-    "socialContext": "friends-in-common",
-    "bridgeUserId": "af0436815ab38f4864dd1e24",
-    "bridgeCount": 1
   },
   {
     "_id": {

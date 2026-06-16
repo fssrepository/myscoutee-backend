@@ -71,7 +71,7 @@ class EventCounterExpiryServiceTest {
         Instant now = Instant.now();
         String pastStart = now.minusSeconds(172_800L).toString();
         String pastEnd = now.minusSeconds(86_400L).toString();
-        ActivityEvent pastTicket = event("past-ticket", "member", "events", pastStart, pastEnd, false);
+        ActivityEvent pastTicket = event("past-ticket", "member", "ticket", pastStart, pastEnd, false);
         pastTicket.setTicketing(true);
 
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
@@ -99,12 +99,17 @@ class EventCounterExpiryServiceTest {
         String futureStart = now.plusSeconds(86_400L).toString();
         String futureEnd = now.plusSeconds(172_800L).toString();
 
-        ActivityEvent dueEvent = event("past-event", "host", "hosting", pastStart, pastEnd, false);
-        ActivityEvent pastMemberOverlay = event("past-event", "member", "events", pastStart, pastEnd, false);
-        ActivityEvent liveMemberOverlay = event("live-event", "member", "events", futureStart, futureEnd, false);
-        ActivityEvent liveInvitation = event("invite-event", "member", "invitations", futureStart, futureEnd, false);
-        ActivityEvent pastInvitation = event("past-invite", "member", "invitations", pastStart, pastEnd, false);
-        ActivityEvent liveCanonical = event("live-event", "host", "hosting", futureStart, futureEnd, false);
+        ActivityEvent dueEvent = event("past-event", "host", "due", pastStart, pastEnd, false);
+        ActivityEvent pastMemberEvent = event("past-event", "host", "past-member", pastStart, pastEnd, false);
+        pastMemberEvent.setAcceptedMemberUserIds(List.of("member"));
+        ActivityEvent liveMemberEvent = event("live-event", "host", "live-member", futureStart, futureEnd, false);
+        liveMemberEvent.setAcceptedMemberUserIds(List.of("member"));
+        ActivityEvent liveInvitation = event("invite-event", "host", "live-invite", futureStart, futureEnd, false);
+        liveInvitation.setInvitedMemberUserIds(List.of("member"));
+        ActivityEvent pastInvitation = event("past-invite", "host", "past-invite", pastStart, pastEnd, false);
+        pastInvitation.setInvitedMemberUserIds(List.of("member"));
+        ActivityEvent liveCanonical = event("live-event", "host", "canonical", futureStart, futureEnd, false);
+        liveCanonical.setAcceptedMemberUserIds(List.of("member"));
 
         ActivityMember sourceMember = member("past-event", "member", "accepted");
         ActivityMember pastMembership = member("past-event", "member", "accepted");
@@ -113,8 +118,8 @@ class EventCounterExpiryServiceTest {
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(dueEvent))
                 .thenReturn(List.of())
-                .thenReturn(List.of(dueEvent, pastMemberOverlay))
-                .thenReturn(List.of(pastMemberOverlay, liveMemberOverlay, liveInvitation, pastInvitation))
+                .thenReturn(List.of(dueEvent, pastMemberEvent))
+                .thenReturn(List.of(pastMemberEvent, liveMemberEvent, liveInvitation, pastInvitation))
                 .thenReturn(List.of(dueEvent, liveCanonical));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("event"), any()))
                 .thenReturn(List.of(sourceMember));
@@ -161,16 +166,14 @@ class EventCounterExpiryServiceTest {
         verify(mongoTemplate).updateMulti(any(Query.class), any(Update.class), eq(ActivityEvent.class));
     }
 
-    private ActivityEvent event(String sourceId, String ownerUserId, String type, String startAtIso, String endAtIso, boolean expired) {
+    private ActivityEvent event(String sourceId, String ownerUserId, String suffix, String startAtIso, String endAtIso, boolean expired) {
         ActivityEvent event = new ActivityEvent();
-        event.setId(sourceId + ":" + ownerUserId + ":" + type);
+        event.setId(sourceId + ":" + ownerUserId + ":" + suffix);
         event.setSourceId(sourceId);
         event.setOwnerUserId(ownerUserId);
         event.setCreatorUserId("host");
-        event.setType(type);
-        event.setStatus("hosting".equals(type) ? "H" : "A");
-        event.setPublished(true);
-        event.setIsTrashed(false);
+        event.setAdmins(List.of("host"));
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setStartAtIso(startAtIso);
         event.setEndAtIso(endAtIso);
         event.setIsExpired(expired);

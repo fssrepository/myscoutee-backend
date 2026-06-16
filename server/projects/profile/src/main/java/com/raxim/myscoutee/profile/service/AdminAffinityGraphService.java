@@ -883,7 +883,7 @@ public class AdminAffinityGraphService {
         if (user == null) {
             return true;
         }
-        if ("u-onboarding".equals(id) || id.startsWith("admin-demo-")) {
+        if (id.startsWith("admin-demo-")) {
             return true;
         }
         String profileStatus = normalizeText(user.getProfileStatus()).toLowerCase();

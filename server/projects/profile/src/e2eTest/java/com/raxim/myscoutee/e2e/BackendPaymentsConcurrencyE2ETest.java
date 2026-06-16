@@ -395,7 +395,12 @@ class BackendPaymentsConcurrencyE2ETest {
         user.setCompletion(100);
         user.setPartitionKey("country:hu");
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
     }
 
@@ -403,14 +408,13 @@ class BackendPaymentsConcurrencyE2ETest {
         postJson("/activities/events/sync", eventPayload(eventId, capacityTotal));
         postJson("/activities/events/publish", Map.of(
                 "userId", HOST_ID,
-                "type", "hosting",
                 "sourceId", eventId));
     }
 
     private Map<String, Object> eventPayload(String eventId, int capacityTotal) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("id", eventId);
-        payload.put("target", "hosting");
+        payload.put("status", "DR");
         payload.put("title", "Payment concurrency " + eventId);
         payload.put("shortDescription", "Backend e2e paid capacity event");
         payload.put("timeframe", "Paid event");
@@ -432,7 +436,6 @@ class BackendPaymentsConcurrencyE2ETest {
         payload.put("frequency", "One-time");
         payload.put("visibility", "Public");
         payload.put("blindMode", "Visible");
-        payload.put("published", false);
         payload.put("creatorUserId", HOST_ID);
         payload.put("creatorName", "Payment User 01");
         payload.put("creatorInitials", "PU");
@@ -464,7 +467,6 @@ class BackendPaymentsConcurrencyE2ETest {
     private Map<String, Object> joinPayload(String eventId, String userId, String paymentSessionId) {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("userId", userId);
-        payload.put("type", "events");
         payload.put("sourceId", eventId);
         payload.put("acceptedPolicyIds", List.of("pay-policy"));
         payload.put("paymentSessionId", paymentSessionId);

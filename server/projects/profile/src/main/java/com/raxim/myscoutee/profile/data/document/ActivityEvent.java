@@ -22,36 +22,32 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDt
 
 @Document(collection = "events")
 @CompoundIndexes({
-        @CompoundIndex(name = "event_owner_type_source", def = "{'ownerUserId': 1, 'type': 1, 'sourceId': 1}", unique = true),
-        @CompoundIndex(name = "event_owner_type", def = "{'ownerUserId': 1, 'type': 1, 'startAtIso': 1}"),
-        @CompoundIndex(name = "event_owner_type_status_start", def = "{'ownerUserId': 1, 'type': 1, 'status': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_owner_start_source", def = "{'ownerUserId': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_owner_source", def = "{'ownerUserId': 1, 'sourceId': 1}"),
-        @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1, 'type': 1}"),
-        @CompoundIndex(name = "event_source_start_lookup", def = "{'sourceId': 1, 'startAtIso': 1, 'type': 1}"),
+        @CompoundIndex(name = "event_source_lookup", def = "{'sourceId': 1}"),
+        @CompoundIndex(name = "event_source_start_lookup", def = "{'sourceId': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_creator_start", def = "{'creatorUserId': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_admins_lookup", def = "{'admins': 1, 'startAtIso': 1}"),
+        @CompoundIndex(name = "event_admins_source", def = "{'admins': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_accepted_member_start", def = "{'acceptedMemberUserIds': 1, 'status': 1, 'startAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_invited_member_start", def = "{'invitedMemberUserIds': 1, 'status': 1, 'startAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_pending_request_member_start", def = "{'pendingRequestMemberUserIds': 1, 'status': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_auto_inviter_start", def = "{'autoInviter': 1, 'startAtIso': 1}"),
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
-        @CompoundIndex(name = "event_explore_candidates_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
-        @CompoundIndex(name = "event_explore_feed_status", def = "{'type': 1, 'status': 1, 'generated': 1, 'published': 1, 'startAtIso': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_explore_candidates_status", def = "{'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
+        @CompoundIndex(name = "event_explore_feed_status", def = "{'status': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_slot_parent_start", def = "{'parentEventId': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_end", def = "{'expired': 1, 'endAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_start", def = "{'expired': 1, 'startAtIso': 1, 'sourceId': 1}")
 })
 public class ActivityEvent {
-    private static final String TYPE_EVENTS = "events";
-    private static final String TYPE_HOSTING = "hosting";
-    private static final String TYPE_INVITATIONS = "invitations";
-    private static final String STATUS_ACTIVE = "A";
-    private static final String STATUS_HOSTING = "H";
-    private static final String STATUS_INVITATION = "INV";
-    private static final String STATUS_DRAFT = "DR";
-    private static final String STATUS_TRASHED = "T";
-    private static final String STATUS_UNDER_REVIEW = "UR";
-    private static final String STATUS_BLOCKED = "B";
-    private static final String STATUS_DELETED = "D";
-    private static final String STATUS_INACTIVE = "I";
+    public static final String STATUS_ACTIVE = "A";
+    public static final String STATUS_DRAFT = "DR";
+    public static final String STATUS_TRASHED = "T";
+    public static final String STATUS_UNDER_REVIEW = "UR";
+    public static final String STATUS_BLOCKED = "B";
+    public static final String STATUS_DELETED = "D";
+    public static final String STATUS_INACTIVE = "I";
 
     @Id
     private String id;
@@ -59,7 +55,6 @@ public class ActivityEvent {
     private String syncKey;
     private String sourceId;
     private String ownerUserId;
-    private String type;
     private String status;
     private String statusBeforeSuppression;
     private List<String> admins = new ArrayList<>();
@@ -70,11 +65,6 @@ public class ActivityEvent {
     private String inviter;
     private Integer unread;
     private Integer activity;
-    private Boolean isAdmin;
-    private Boolean isInvitation;
-    private Boolean isHosting;
-    private Boolean isTrashed;
-    private Boolean published;
     @Field("expired")
     private Boolean expired;
     private String trashedAtIso;
@@ -111,6 +101,10 @@ public class ActivityEvent {
     private List<EventSlotOccurrenceDto> upcomingSlots = new ArrayList<>();
     private Integer acceptedMembers;
     private Integer pendingMembers;
+    private List<String> acceptedMemberUserIds = new ArrayList<>();
+    private List<String> pendingMemberUserIds = new ArrayList<>();
+    private List<String> invitedMemberUserIds = new ArrayList<>();
+    private List<String> pendingRequestMemberUserIds = new ArrayList<>();
     private List<String> topics = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String subEventsDisplayMode;
@@ -130,13 +124,6 @@ public class ActivityEvent {
     public void setSourceId(String sourceId) { this.sourceId = sourceId; }
     public String getOwnerUserId() { return ownerUserId; }
     public void setOwnerUserId(String ownerUserId) { this.ownerUserId = ownerUserId; }
-    public String getType() {
-        if (hasText(type)) {
-            return type;
-        }
-        return deriveTypeFromStatus(getStatus());
-    }
-    public void setType(String type) { this.type = type; }
     public String getStatus() {
         if (hasText(status)) {
             return normalizeStatusValue(status);
@@ -149,7 +136,7 @@ public class ActivityEvent {
         this.statusBeforeSuppression = hasText(statusBeforeSuppression) ? normalizeStatusValue(statusBeforeSuppression) : null;
     }
     public List<String> getAdmins() { return admins; }
-    public void setAdmins(List<String> admins) { this.admins = admins == null ? new ArrayList<>() : new ArrayList<>(admins); }
+    public void setAdmins(List<String> admins) { this.admins = normalizeAdminIds(admins); }
     public String getAvatar() { return avatar; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
     public String getTitle() { return title; }
@@ -162,7 +149,7 @@ public class ActivityEvent {
         if (inviter != null && !inviter.isBlank()) {
             return inviter;
         }
-        return Boolean.TRUE.equals(getIsInvitation()) ? creatorName : null;
+        return null;
     }
     public void setInviter(String inviter) { this.inviter = inviter; }
     public Integer getUnread() { return unread == null ? 0 : unread; }
@@ -170,43 +157,17 @@ public class ActivityEvent {
     public Integer getActivity() { return activity == null ? 0 : activity; }
     public void setActivity(Integer activity) { this.activity = activity; }
     public Boolean getIsAdmin() {
-        if (isAdmin != null) {
-            return isAdmin;
-        }
         if (hasText(ownerUserId) && admins != null && admins.contains(ownerUserId)) {
             return true;
         }
         return hasText(ownerUserId) && ownerUserId.equals(creatorUserId);
     }
-    public void setIsAdmin(Boolean admin) { isAdmin = admin; }
-    public Boolean getIsInvitation() {
-        if (isInvitation != null) {
-            return isInvitation;
-        }
-        return STATUS_INVITATION.equals(getStatus()) || TYPE_INVITATIONS.equals(type);
-    }
-    public void setIsInvitation(Boolean invitation) { isInvitation = invitation; }
-    public Boolean getIsHosting() {
-        if (isHosting != null) {
-            return isHosting;
-        }
-        return TYPE_HOSTING.equals(type) || STATUS_HOSTING.equals(getStatus());
-    }
-    public void setIsHosting(Boolean hosting) { isHosting = hosting; }
     public Boolean getIsTrashed() {
-        if (isTrashed != null) {
-            return isTrashed;
-        }
-        return STATUS_TRASHED.equals(getStatus()) || (trashedAtIso != null && !trashedAtIso.isBlank());
+        return STATUS_TRASHED.equals(getStatus());
     }
-    public void setIsTrashed(Boolean trashed) { isTrashed = trashed; }
     public Boolean getPublished() {
-        if (published != null) {
-            return published;
-        }
-        return !STATUS_DRAFT.equals(getStatus());
+        return STATUS_ACTIVE.equals(getStatus());
     }
-    public void setPublished(Boolean published) { this.published = published; }
     public Boolean getIsExpired() { return expired; }
     public void setIsExpired(Boolean expired) { this.expired = expired; }
     public String getTrashedAtIso() { return trashedAtIso; }
@@ -281,6 +242,22 @@ public class ActivityEvent {
     public void setAcceptedMembers(Integer acceptedMembers) { this.acceptedMembers = acceptedMembers; }
     public Integer getPendingMembers() { return pendingMembers; }
     public void setPendingMembers(Integer pendingMembers) { this.pendingMembers = pendingMembers; }
+    public List<String> getAcceptedMemberUserIds() { return acceptedMemberUserIds; }
+    public void setAcceptedMemberUserIds(List<String> acceptedMemberUserIds) {
+        this.acceptedMemberUserIds = acceptedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(acceptedMemberUserIds);
+    }
+    public List<String> getPendingMemberUserIds() { return pendingMemberUserIds; }
+    public void setPendingMemberUserIds(List<String> pendingMemberUserIds) {
+        this.pendingMemberUserIds = pendingMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingMemberUserIds);
+    }
+    public List<String> getInvitedMemberUserIds() { return invitedMemberUserIds; }
+    public void setInvitedMemberUserIds(List<String> invitedMemberUserIds) {
+        this.invitedMemberUserIds = invitedMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(invitedMemberUserIds);
+    }
+    public List<String> getPendingRequestMemberUserIds() { return pendingRequestMemberUserIds; }
+    public void setPendingRequestMemberUserIds(List<String> pendingRequestMemberUserIds) {
+        this.pendingRequestMemberUserIds = pendingRequestMemberUserIds == null ? new ArrayList<>() : new ArrayList<>(pendingRequestMemberUserIds);
+    }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }
@@ -304,53 +281,42 @@ public class ActivityEvent {
 
     public void normalizeLifecycleState() {
         status = getStatus();
-        isAdmin = null;
-        isInvitation = null;
-        isHosting = null;
-        isTrashed = null;
-        published = null;
     }
 
     private String deriveStatusFromLegacy() {
-        if (Boolean.TRUE.equals(isTrashed) || hasText(trashedAtIso)) {
-            return STATUS_TRASHED;
-        }
-        if (Boolean.TRUE.equals(isInvitation) || TYPE_INVITATIONS.equals(type)) {
-            return STATUS_INVITATION;
-        }
-        if (Boolean.FALSE.equals(published)) {
-            return STATUS_DRAFT;
-        }
-        if (Boolean.TRUE.equals(isHosting) || TYPE_HOSTING.equals(type)) {
-            return STATUS_HOSTING;
-        }
         return STATUS_ACTIVE;
-    }
-
-    private static String deriveTypeFromStatus(String status) {
-        return switch (normalizeStatusValue(status)) {
-            case STATUS_INVITATION -> TYPE_INVITATIONS;
-            case STATUS_HOSTING -> TYPE_HOSTING;
-            default -> TYPE_EVENTS;
-        };
     }
 
     private static String normalizeStatusValue(String value) {
         String normalized = value == null ? "" : value.trim();
         return switch (normalized) {
-            case STATUS_ACTIVE, STATUS_HOSTING, STATUS_INVITATION, STATUS_DRAFT, STATUS_TRASHED, STATUS_UNDER_REVIEW,
+            case STATUS_ACTIVE, STATUS_DRAFT, STATUS_TRASHED, STATUS_UNDER_REVIEW,
                     STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE -> normalized;
-            case "active" -> STATUS_ACTIVE;
-            case "hosting" -> STATUS_HOSTING;
-            case "invitation" -> STATUS_INVITATION;
-            case "draft" -> STATUS_DRAFT;
-            case "trashed", "trash" -> STATUS_TRASHED;
-            case "deleted" -> STATUS_DELETED;
             default -> STATUS_ACTIVE;
         };
     }
 
     private static boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private List<String> normalizeAdminIds(List<String> values) {
+        ArrayList<String> normalized = new ArrayList<>();
+        addAdminId(normalized, ownerUserId);
+        addAdminId(normalized, creatorUserId);
+        for (String value : values == null ? List.<String>of() : values) {
+            addAdminId(normalized, value);
+        }
+        return normalized;
+    }
+
+    private static void addAdminId(List<String> values, String value) {
+        if (!hasText(value)) {
+            return;
+        }
+        String normalized = value.trim();
+        if (!values.contains(normalized)) {
+            values.add(normalized);
+        }
     }
 }

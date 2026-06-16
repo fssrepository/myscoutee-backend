@@ -26,6 +26,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.UserRate;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -40,11 +43,9 @@ import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
-import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.UserRate;
-import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
@@ -219,9 +220,11 @@ class HomeUserProfileServiceTest {
 
         when(usersRepository.findByProfileStatusIn(List.of("public", "friends only")))
                 .thenReturn(List.of(active, bridge, socialCandidate, outsideCandidate));
-        when(userRatesRepository.findAll()).thenReturn(List.of(
-                metRate("active", "bridge"),
-                metRate("bridge", "social-candidate")));
+        when(activityMembersRepository.findAll()).thenReturn(List.of(
+                acceptedMember("active-bridge", "active"),
+                acceptedMember("active-bridge", "bridge"),
+                acceptedMember("bridge-candidate", "bridge"),
+                acceptedMember("bridge-candidate", "social-candidate")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(List.of("active"))).thenReturn(List.of());
 
         List<Users> cards = service.queryGameStackUserRecords("active");
@@ -266,22 +269,30 @@ class HomeUserProfileServiceTest {
         assertThat(firstCards).extracting(Users::getId).containsExactly("candidate");
         assertThat(secondCards).extracting(Users::getId).containsExactly("candidate");
         verify(usersRepository, times(1)).findByProfileStatusIn(List.of("public", "friends only"));
-        verify(userRatesRepository, times(2)).findAll();
-        verify(activityMembersRepository, times(1)).findAll();
+        verify(userRatesRepository, times(1)).findAll();
+        verify(activityMembersRepository, times(2)).findAll();
         verify(userRatesRepository, times(2)).findByOwnerUserId("active");
         verify(userAffinityEdgesRepository, times(1)).findRelevantByUserIds(List.of("active"));
     }
 
     @Test
     void demoUserListItemsHonorsRequestedLimit() {
-        Users high = user("high", 30d);
-        Users medium = user("medium", 20d);
-        Users low = user("low", 10d);
-        when(usersRepository.findAll()).thenReturn(List.of(low, high, medium));
+        Users setup = user("u-onboarding", 990_000d);
+        setup.setName("");
+        setup.setStatusText("New");
+        setup.setCompletion(0);
+        setup.setProfileFormVersion(0);
+        setup.setLocationCoordinates(new Users.LocationCoordinatesRecord(30.2672d, -97.7431d));
+        Users ava = user("ava", 10d);
+        Users mia = user("mia", 20d);
+        Users zoe = user("zoe", 30d);
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(setup, ava, mia, zoe));
 
         assertThat(service.queryDemoUserListItems(2))
                 .extracting(item -> item.id())
-                .containsExactly("high", "medium");
+                .containsExactly("u-onboarding", "ava");
+        verify(usersRepository, times(1)).findAllByOrderByNameAscUserIdAsc();
+        verify(usersRepository, never()).findAll();
     }
 
     @Test
@@ -289,7 +300,7 @@ class HomeUserProfileServiceTest {
         Users member = user("member", 30d);
         Users admin = user("admin-demo-ava", 20d);
         admin.setHostTier("Admin");
-        when(usersRepository.findAll()).thenReturn(List.of(admin, member));
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc()).thenReturn(List.of(admin, member));
 
         assertThat(service.queryDemoUserListItems(null, "member"))
                 .extracting(item -> item.id())
@@ -312,11 +323,12 @@ class HomeUserProfileServiceTest {
         deleted.setDeletedAtIso("2026-01-02T03:04:05Z");
         Users onboarding = user("onboarding", 40d);
         onboarding.setProfileStatus("onboarding");
-        when(usersRepository.findAll()).thenReturn(List.of(onboarding, deleted, inactive, blocked, active));
+        when(usersRepository.findAllByOrderByNameAscUserIdAsc())
+                .thenReturn(List.of(active, blocked, deleted, inactive, onboarding));
 
         assertThat(service.queryDemoUserListItems())
                 .extracting(item -> item.id())
-                .containsExactly("active", "blocked", "inactive", "deleted");
+                .containsExactly("active", "blocked", "deleted", "inactive");
         assertThat(service.queryDemoUserListItems())
                 .filteredOn(item -> "deleted".equals(item.id()))
                 .extracting(item -> item.profileStatus(), item -> item.deletedAtIso())
@@ -512,13 +524,15 @@ class HomeUserProfileServiceTest {
         assertThat(eventFeedback.removed()).isEqualTo(2);
     }
 
-    private UserRate metRate(String ownerUserId, String relatedUserId) {
-        UserRate record = new UserRate();
-        record.setOwnerUserId(ownerUserId);
-        record.setRelatedUserId(relatedUserId);
-        record.setMet(true);
-        record.setEventName("Coffee Social");
-        return record;
+    private ActivityMember acceptedMember(String ownerId, String userId) {
+        ActivityMember member = new ActivityMember();
+        member.setOwnerType("event");
+        member.setOwnerId(ownerId);
+        member.setUserId(userId);
+        member.setStatus("accepted");
+        member.setMetWhere("Coffee Social");
+        member.setActionAtIso("2026-03-22T18:30:00Z");
+        return member;
     }
 
     private UserRate activityRate(String ownerUserId, String relatedUserId, String updatedDate) {

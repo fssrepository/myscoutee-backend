@@ -1337,9 +1337,6 @@ public class EventScheduler {
     }
 
     private boolean prefer(ActivityEvent next, ActivityEvent current) {
-        if (Boolean.TRUE.equals(next.getIsHosting()) != Boolean.TRUE.equals(current.getIsHosting())) {
-            return Boolean.TRUE.equals(next.getIsHosting());
-        }
         if (Boolean.TRUE.equals(next.getPublished()) != Boolean.TRUE.equals(current.getPublished())) {
             return Boolean.TRUE.equals(next.getPublished());
         }

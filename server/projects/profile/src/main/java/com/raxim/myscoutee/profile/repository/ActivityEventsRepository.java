@@ -12,13 +12,11 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 public interface ActivityEventsRepository extends MongoRepository<ActivityEvent, String> {
     Optional<ActivityEvent> findBySyncKey(String syncKey);
 
-    Optional<ActivityEvent> findByOwnerUserIdAndTypeAndSourceId(String ownerUserId, String type, String sourceId);
+    Optional<ActivityEvent> findByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 
     List<ActivityEvent> findByOwnerUserId(String ownerUserId);
 
     List<ActivityEvent> findByOwnerUserIdOrderByStartAtIsoAsc(String ownerUserId);
-
-    List<ActivityEvent> findByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 
     List<ActivityEvent> findBySourceId(String sourceId);
 
@@ -30,8 +28,20 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
 
     List<ActivityEvent> findByAdminsContaining(String adminUserId);
 
-    @Query("{ 'type': ?0, 'status': { $in: ['A', 'active'] }, 'generated': { $ne: true }, 'published': { $ne: false }, 'sourceId': { $exists: true, $ne: '' } }")
-    List<ActivityEvent> findCanonicalExploreCandidates(String type);
+    @Query("{ 'admins': ?0, 'sourceId': { $exists: true, $ne: '' } }")
+    List<ActivityEvent> findAdminVisibleEvents(String userId);
+
+    @Query("{ 'acceptedMemberUserIds': ?0, 'sourceId': { $exists: true, $ne: '' } }")
+    List<ActivityEvent> findAcceptedMembershipEvents(String userId);
+
+    @Query("{ 'invitedMemberUserIds': ?0, 'status': 'A', 'sourceId': { $exists: true, $ne: '' } }")
+    List<ActivityEvent> findActiveInvitationEvents(String userId);
+
+    @Query("{ 'pendingRequestMemberUserIds': ?0, 'sourceId': { $exists: true, $ne: '' } }")
+    List<ActivityEvent> findPendingRequestEvents(String userId);
+
+    @Query("{ 'status': 'A', 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
+    List<ActivityEvent> findCanonicalExploreCandidates();
 
     boolean existsByOwnerUserIdAndSourceId(String ownerUserId, String sourceId);
 

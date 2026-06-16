@@ -297,10 +297,7 @@ class BackendEmailAccountSchedulersE2ETest {
         event.setSourceId(PURGED_EVENT_ID);
         event.setOwnerUserId(PURGED_USER_ID);
         event.setCreatorUserId(PURGED_USER_ID);
-        event.setType("hosting");
-        event.setStatus("H");
-        event.setPublished(true);
-        event.setIsHosting(true);
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setTitle("Owned event to purge");
         event.setImageUrl("event/purge-event.webp");
         event.setLocation("Purge Arena");
@@ -505,7 +502,12 @@ class BackendEmailAccountSchedulersE2ETest {
         user.setCompletion(100);
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(48.1486d, 17.1077d));
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
     }
 

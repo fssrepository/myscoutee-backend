@@ -13,8 +13,12 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDeckQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDeckResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
@@ -175,6 +179,16 @@ public class ActivitiesEventsController {
     @GetMapping("/feedback/received")
     public List<EventFeedbackReceivedEventDto> queryReceivedFeedback(@RequestParam("userId") String userId) {
         return activitiesEventFeedbackService.queryReceivedEvents(userId);
+    }
+
+    @PostMapping("/feedback/page")
+    public EventFeedbackPageResultDto loadFeedbackPage(@RequestBody EventFeedbackPageQueryDto request) {
+        return activitiesEventFeedbackService.loadPage(request);
+    }
+
+    @PostMapping("/feedback/deck")
+    public EventFeedbackDeckResultDto loadFeedbackDeck(@RequestBody EventFeedbackDeckQueryDto request) {
+        return activitiesEventFeedbackService.loadDeck(request);
     }
 
     @PostMapping("/feedback/submit")

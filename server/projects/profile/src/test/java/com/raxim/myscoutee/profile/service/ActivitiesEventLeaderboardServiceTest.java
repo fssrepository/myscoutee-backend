@@ -44,9 +44,9 @@ class ActivitiesEventLeaderboardServiceTest {
                 activitiesMembersService,
                 accessControlService);
 
-        ActivityEvent hostingRecord = eventRecord("event-1", true);
-        ActivityEvent eventsRecord = eventRecord("event-1", false);
-        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(hostingRecord, eventsRecord));
+        ActivityEvent firstRecord = eventRecord("event-1", "first");
+        ActivityEvent secondRecord = eventRecord("event-1", "second");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(firstRecord, secondRecord));
 
         List<SubEventGroupItemDto> groups = service.materializeGeneratedGroups("event-1", "sub-1");
 
@@ -91,11 +91,11 @@ class ActivitiesEventLeaderboardServiceTest {
         verify(eventLeaderboardEntriesRepository, never()).save(any(EventLeaderboardEntry.class));
     }
 
-    private ActivityEvent eventRecord(String sourceId, boolean hosting) {
+    private ActivityEvent eventRecord(String sourceId, String suffix) {
         ActivityEvent record = new ActivityEvent();
+        record.setId(sourceId + ":" + suffix);
         record.setSourceId(sourceId);
-        record.setPublished(true);
-        record.setIsHosting(hosting);
+        record.setStatus(ActivityEvent.STATUS_ACTIVE);
         record.setSubEvents(List.of(subEvent("sub-1", 2, 3, 4)));
         return record;
     }

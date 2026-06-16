@@ -13,7 +13,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @CompoundIndexes({
         @CompoundIndex(name = "users_profile_status", def = "{'profileStatus': 1}"),
         @CompoundIndex(name = "users_profile_status_deleted", def = "{'profileStatus': 1, 'deletedAtIso': 1}"),
-        @CompoundIndex(name = "users_host_tier", def = "{'hostTier': 1}")
+        @CompoundIndex(name = "users_host_tier", def = "{'hostTier': 1}"),
+        @CompoundIndex(
+                name = "users_name_user_id",
+                def = "{'name': 1, 'userId': 1}",
+                collation = "{ 'locale': 'en', 'strength': 2 }")
 })
 public class Users {
     @Id

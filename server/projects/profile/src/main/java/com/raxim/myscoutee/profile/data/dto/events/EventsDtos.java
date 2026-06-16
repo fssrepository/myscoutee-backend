@@ -42,7 +42,6 @@ public final class EventsDtos {
 
     public record EventActionRequestDto(
             String userId,
-            String type,
             String sourceId,
             String slotSourceId,
             List<String> optionalSubEventIds,
@@ -131,11 +130,92 @@ public final class EventsDtos {
             String eventId) {
     }
 
+    public record EventFeedbackPageQueryDto(
+            String userId,
+            String filter,
+            Integer page,
+            Integer pageSize) {
+    }
+
+    public record EventFeedbackDeckQueryDto(
+            String userId,
+            String eventId) {
+    }
+
+    public record EventFeedbackPageCountsDto(
+            Integer ownEvents,
+            Integer pending,
+            Integer feedbacked,
+            Integer removed) {
+    }
+
+    public record EventFeedbackPageStateSnapshotDto(
+            Map<String, Boolean> submittedCardsById,
+            Map<String, EventFeedbackAnswerDto> submittedAnswersByCardId,
+            Map<String, String> submittedEventsById,
+            Map<String, Boolean> removedEventsById,
+            Map<String, String> removedEventDatesById,
+            Map<String, String> organizerNotesByEventId) {
+    }
+
+    public record EventFeedbackPageItemDto(
+            String eventId,
+            String title,
+            String subtitle,
+            String timeframe,
+            String imageUrl,
+            Long startAtMs,
+            Integer pendingCards,
+            Integer totalCards,
+            Boolean isRemoved,
+            Boolean isFeedbacked,
+            Long feedbackedAtMs,
+            Long removedAtMs,
+            Boolean isOwnEvent) {
+    }
+
+    public record EventFeedbackCardSourceDto(
+            String id,
+            String eventId,
+            String kind,
+            String attendeeUserId,
+            String targetUserId,
+            String targetRole,
+            String eventTitle,
+            String eventSubtitle,
+            String eventImageUrl,
+            String eventTimeframe,
+            String eventStartAtIso,
+            String eventLabel,
+            String targetName,
+            Integer targetAge,
+            String targetCity,
+            String targetGender,
+            String targetTraitLabel,
+            String targetImageUrl) {
+    }
+
+    public record EventFeedbackPageResultDto(
+            List<EventFeedbackPageItemDto> items,
+            Integer total,
+            List<EventFeedbackPageItemDto> allItems,
+            List<EventFeedbackPageItemDto> organizerItems,
+            List<EventFeedbackReceivedEventDto> receivedEvents,
+            EventFeedbackPageStateSnapshotDto state,
+            EventFeedbackPageCountsDto counts) {
+    }
+
+    public record EventFeedbackDeckResultDto(
+            String eventId,
+            String title,
+            List<EventFeedbackCardSourceDto> cards) {
+    }
+
     public record EventRecordDto(
             String id,
             String userId,
-            String type,
             String status,
+            List<String> adminIds,
             String avatar,
             String title,
             String subtitle,
@@ -143,11 +223,6 @@ public final class EventsDtos {
             String inviter,
             Integer unread,
             Integer activity,
-            Boolean isAdmin,
-            Boolean isInvitation,
-            Boolean isHosting,
-            Boolean isTrashed,
-            Boolean published,
             String trashedAtIso,
             String creatorUserId,
             String creatorName,
@@ -192,19 +267,14 @@ public final class EventsDtos {
     public record EventListItemDto(
             String id,
             String userId,
-            String type,
             String status,
+            List<String> adminIds,
             String avatar,
             String title,
             String subtitle,
             String timeframe,
             Integer unread,
             Integer activity,
-            Boolean isAdmin,
-            Boolean isInvitation,
-            Boolean isHosting,
-            Boolean isTrashed,
-            Boolean published,
             String creatorUserId,
             String creatorName,
             String creatorInitials,
@@ -237,18 +307,21 @@ public final class EventsDtos {
     public record EventListPageDto(
             List<EventListItemDto> records,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            List<EventRecordDto> items) {
+        public EventListPageDto(List<EventListItemDto> records, Integer total, String nextCursor) {
+            this(records, total, nextCursor, List.of());
+        }
     }
 
     public record ActivitiesEventSyncPayloadDto(
             String syncKey,
             String id,
-            String target,
+            String status,
             String title,
             String shortDescription,
             String timeframe,
             Integer activity,
-            Boolean isAdmin,
             String startAt,
             String endAt,
             Double distanceKm,
@@ -273,7 +346,6 @@ public final class EventsDtos {
             EventSlotOccurrenceDto nextSlot,
             String visibility,
             String blindMode,
-            Boolean published,
             String creatorUserId,
             String creatorName,
             String creatorInitials,

@@ -35,15 +35,9 @@ public class EventCounterExpiryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCounterExpiryService.class);
     private static final String SYSTEM_USER = "event-counter-expiry";
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_EVENTS = "events";
-    private static final String TYPE_HOSTING = "hosting";
-    private static final String TYPE_INVITATIONS = "invitations";
-    private static final String STATUS_DRAFT = "DR";
-    private static final String STATUS_TRASHED = "T";
-    private static final String STATUS_DELETED = "D";
-    private static final String STATUS_INACTIVE = "I";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
+    private static final String MEMBER_STATUS_INVITED = "I";
     private static final String MEMBER_STATUS_DELETED = "deleted";
     private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
     private static final String REQUEST_KIND_INVITE = "invite";
@@ -161,9 +155,7 @@ public class EventCounterExpiryService {
         Query query = new Query(new Criteria().andOperator(
                 Criteria.where("expired").ne(true),
                 Criteria.where("sourceId").exists(true).nin("", null),
-                Criteria.where("published").ne(false),
-                Criteria.where("isTrashed").ne(true),
-                Criteria.where("status").nin(STATUS_DRAFT, STATUS_TRASHED, STATUS_DELETED, STATUS_INACTIVE),
+                Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE),
                 dueBoundary(nowIso)));
         query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("startAtIso"), Sort.Order.asc("sourceId")));
         query.limit(batchSize);
@@ -175,8 +167,7 @@ public class EventCounterExpiryService {
                 Criteria.where("expired").ne(true),
                 Criteria.where("ticketing").is(true),
                 Criteria.where("sourceId").exists(true).nin("", null),
-                Criteria.where("isInvitation").ne(true),
-                Criteria.where("isTrashed").ne(true),
+                Criteria.where("status").ne(ActivityEvent.STATUS_TRASHED),
                 dueBoundary(nowIso)));
         query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("startAtIso"), Sort.Order.asc("_id")));
         query.limit(batchSize);
@@ -206,8 +197,7 @@ public class EventCounterExpiryService {
                 Criteria.where("_id").in(ticketRecordIds),
                 Criteria.where("expired").ne(true),
                 Criteria.where("ticketing").is(true),
-                Criteria.where("isInvitation").ne(true),
-                Criteria.where("isTrashed").ne(true),
+                Criteria.where("status").ne(ActivityEvent.STATUS_TRASHED),
                 dueBoundary(nowIso)));
         Update update = expiryUpdate(nowIso);
         UpdateResult result = mongoTemplate.updateMulti(query, update, ActivityEvent.class);
@@ -295,11 +285,9 @@ public class EventCounterExpiryService {
             if (!StringUtils.hasText(sourceId) || !isActiveForCounters(record, nowIso)) {
                 continue;
             }
-            if (isInvitationRecord(record)) {
-                invitationSourceIds.add(sourceId);
-            } else if (isHostingRecordForUser(record, userId)) {
+            if (isHostingRecordForUser(record, userId)) {
                 hostingSourceIds.add(sourceId);
-            } else if (TYPE_EVENTS.equals(normalizeType(record.getType()))) {
+            } else {
                 eventSourceIds.add(sourceId);
             }
         }
@@ -314,7 +302,9 @@ public class EventCounterExpiryService {
                 continue;
             }
             String status = normalizeMemberStatus(member.getStatus());
-            if (MEMBER_STATUS_ACCEPTED.equals(status)) {
+            if (MEMBER_STATUS_INVITED.equals(status)) {
+                invitationSourceIds.add(sourceId);
+            } else if (MEMBER_STATUS_ACCEPTED.equals(status)) {
                 eventSourceIds.add(sourceId);
             } else if (MEMBER_STATUS_PENDING.equals(status) && isPendingInvitation(member)) {
                 invitationSourceIds.add(sourceId);
@@ -334,10 +324,10 @@ public class EventCounterExpiryService {
             return false;
         }
         String status = safeText(record.getStatus());
-        return !STATUS_DRAFT.equals(status)
-                && !STATUS_TRASHED.equals(status)
-                && !STATUS_DELETED.equals(status)
-                && !STATUS_INACTIVE.equals(status);
+        return !ActivityEvent.STATUS_DRAFT.equals(status)
+                && !ActivityEvent.STATUS_TRASHED.equals(status)
+                && !ActivityEvent.STATUS_DELETED.equals(status)
+                && !ActivityEvent.STATUS_INACTIVE.equals(status);
     }
 
     private boolean eventPast(ActivityEvent record, String nowIso) {
@@ -345,17 +335,9 @@ public class EventCounterExpiryService {
         return StringUtils.hasText(boundary) && boundary.compareTo(safeText(nowIso)) <= 0;
     }
 
-    private boolean isInvitationRecord(ActivityEvent record) {
-        return record != null
-                && (Boolean.TRUE.equals(record.getIsInvitation()) || TYPE_INVITATIONS.equals(normalizeType(record.getType())));
-    }
-
     private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
         if (record == null || !StringUtils.hasText(userId)) {
             return false;
-        }
-        if (Boolean.TRUE.equals(record.getIsHosting()) || TYPE_HOSTING.equals(normalizeType(record.getType()))) {
-            return true;
         }
         if (userId.equals(normalizeId(record.getCreatorUserId()))) {
             return true;
@@ -548,22 +530,10 @@ public class EventCounterExpiryService {
     }
 
     private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
-        if (isInvitationRecord(next) && !isInvitationRecord(current)) {
-            return false;
-        }
-        if (!isInvitationRecord(next) && isInvitationRecord(current)) {
-            return true;
-        }
         if (Boolean.TRUE.equals(next.getPublished()) && !Boolean.TRUE.equals(current.getPublished())) {
             return true;
         }
         if (!Boolean.TRUE.equals(next.getPublished()) && Boolean.TRUE.equals(current.getPublished())) {
-            return false;
-        }
-        if (Boolean.TRUE.equals(next.getIsHosting()) && !Boolean.TRUE.equals(current.getIsHosting())) {
-            return true;
-        }
-        if (!Boolean.TRUE.equals(next.getIsHosting()) && Boolean.TRUE.equals(current.getIsHosting())) {
             return false;
         }
         return count(next.getAcceptedMembers()) >= count(current.getAcceptedMembers());
@@ -585,16 +555,11 @@ public class EventCounterExpiryService {
         return StringUtils.hasText(normalized) ? normalized : null;
     }
 
-    private String normalizeType(String value) {
-        String normalized = safeText(value);
-        return switch (normalized) {
-            case TYPE_EVENTS, TYPE_HOSTING, TYPE_INVITATIONS -> normalized;
-            default -> TYPE_EVENTS;
-        };
-    }
-
     private String normalizeMemberStatus(String value) {
         String normalized = safeText(value);
+        if (MEMBER_STATUS_INVITED.equals(normalized)) {
+            return MEMBER_STATUS_INVITED;
+        }
         if (MEMBER_STATUS_PENDING.equals(normalized)) {
             return MEMBER_STATUS_PENDING;
         }

@@ -404,7 +404,12 @@ class BackendChatMediaE2ETest {
         user.setCompletion(100);
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(48.1486d, 17.1077d));
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
     }
 
@@ -444,22 +449,16 @@ class BackendChatMediaE2ETest {
     }
 
     private void seedSharedEvent() {
-        mongoTemplate.save(eventDocument("hosting", "H"));
-        mongoTemplate.save(eventDocument("events", "A"));
+        mongoTemplate.save(eventDocument());
     }
 
-    private ActivityEvent eventDocument(String type, String status) {
+    private ActivityEvent eventDocument() {
         ActivityEvent event = new ActivityEvent();
         event.setId(new ObjectId().toHexString());
-        event.setSyncKey("e2e-chat-event-" + type + "-" + UUID.randomUUID());
+        event.setSyncKey("e2e-chat-event-" + UUID.randomUUID());
         event.setSourceId(EVENT_ID);
         event.setOwnerUserId(SENDER_ID);
-        event.setType(type);
-        event.setStatus(status);
-        event.setPublished(true);
-        event.setIsTrashed(false);
-        event.setIsHosting("hosting".equals(type));
-        event.setIsAdmin(true);
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setAdmins(List.of(SENDER_ID));
         event.setAvatar("https://example.test/events/chat-media.png");
         event.setTitle("Shared Chat Event");

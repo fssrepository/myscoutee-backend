@@ -27,9 +27,6 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 @Service
 public class EventParticipationTicketService {
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_EVENTS = "events";
-    private static final String TYPE_HOSTING = "hosting";
-    private static final String TYPE_INVITATIONS = "invitations";
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
@@ -47,10 +44,9 @@ public class EventParticipationTicketService {
             return List.of();
         }
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : activityEventsRepository.findByOwnerUserId(normalizedUserId)) {
+        for (ActivityEvent record : activityEventsRepository.findAcceptedMembershipEvents(normalizedUserId)) {
             if (record == null
                     || !Boolean.TRUE.equals(record.getTicketing())
-                    || Boolean.TRUE.equals(record.getIsInvitation())
                     || Boolean.TRUE.equals(record.getIsTrashed())) {
                 continue;
             }
@@ -172,7 +168,7 @@ public class EventParticipationTicketService {
         boolean acceptedParticipant = snapshot.acceptedMemberUserIds().contains(normalizedOwnerUserId)
                 && !normalizedOwnerUserId.equals(snapshot.creatorUserId());
 
-        if (preferred == null || !acceptedParticipant || Boolean.TRUE.equals(preferred.getIsInvitation())) {
+        if (preferred == null || !acceptedParticipant) {
             if (existing != null) {
                 ActivityEvent next = buildInactiveParticipationOverlay(snapshot, normalizedOwnerUserId, existing);
                 if (!equivalentOverlay(existing, next)) {
@@ -219,8 +215,11 @@ public class EventParticipationTicketService {
                 ? cloneDocument(existing)
                 : buildParticipationOverlay(snapshot, ownerUserId, existing);
         next.setTicketing(false);
-        next.setIsTrashed(preferred != null && Boolean.TRUE.equals(preferred.getIsTrashed()));
-        next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, Boolean.TRUE.equals(next.getIsTrashed())));
+        boolean globallyTrashed = preferred != null && Boolean.TRUE.equals(preferred.getIsTrashed());
+        if (globallyTrashed) {
+            next.setStatus("T");
+        }
+        next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, globallyTrashed));
         next.setUpdatedDate(Instant.now().toString());
         next.setUpdatedUser(resolveUpdatedUser(preferred, existing, ownerUserId));
         next.normalizeLifecycleState();
@@ -239,7 +238,6 @@ public class EventParticipationTicketService {
         next.setSyncKey(existing != null && StringUtils.hasText(existing.getSyncKey()) ? existing.getSyncKey().trim() : UUID.randomUUID().toString());
         next.setSourceId(normalizeId(preferred.getSourceId()));
         next.setOwnerUserId(ownerUserId);
-        next.setType(TYPE_EVENTS);
         next.setAvatar(safeText(preferred.getAvatar()));
         next.setTitle(safeText(preferred.getTitle()));
         next.setSubtitle(safeText(preferred.getSubtitle()));
@@ -247,12 +245,8 @@ public class EventParticipationTicketService {
         next.setInviter(StringUtils.hasText(preferred.getInviter()) ? preferred.getInviter().trim() : null);
         next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
         next.setActivity(normalizeCount(preferred.getActivity()));
-        next.setIsAdmin(false);
-        next.setIsInvitation(false);
-        next.setIsHosting(false);
         boolean globallyTrashed = Boolean.TRUE.equals(preferred.getIsTrashed());
-        next.setIsTrashed(globallyTrashed);
-        next.setPublished(Boolean.FALSE.equals(preferred.getPublished()) ? Boolean.FALSE : Boolean.TRUE);
+        next.setStatus(globallyTrashed ? "T" : Boolean.FALSE.equals(preferred.getPublished()) ? "DR" : "A");
         next.setTrashedAtIso(resolveTrashedAtIso(preferred, existing, globallyTrashed));
         next.setCreatorUserId(normalizeId(preferred.getCreatorUserId()));
         next.setCreatorName(safeText(preferred.getCreatorName()));
@@ -315,12 +309,11 @@ public class EventParticipationTicketService {
 
     private ActivityEvent reuseExistingIdentity(ActivityEvent record) {
         String ownerUserId = normalizeId(record.getOwnerUserId());
-        String type = normalizeType(record.getType());
         String sourceId = normalizeId(record.getSourceId());
-        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type) || !StringUtils.hasText(sourceId)) {
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(sourceId)) {
             return record;
         }
-        ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndTypeAndSourceId(ownerUserId, type, sourceId)
+        ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndSourceId(ownerUserId, sourceId)
                 .orElse(null);
         if (existing == null || Objects.equals(existing.getId(), record.getId())) {
             return record;
@@ -337,18 +330,17 @@ public class EventParticipationTicketService {
 
     private String ownerTypeSourceKey(ActivityEvent record) {
         String ownerUserId = normalizeId(record.getOwnerUserId());
-        String type = normalizeType(record.getType());
         String sourceId = normalizeId(record.getSourceId());
-        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type) || !StringUtils.hasText(sourceId)) {
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(sourceId)) {
             return null;
         }
-        return ownerUserId + "|" + type + "|" + sourceId;
+        return ownerUserId + "|" + sourceId;
     }
 
     private ActivityEvent resolvePreferredSourceRecord(List<ActivityEvent> sourceDocuments) {
         ActivityEvent preferred = null;
         for (ActivityEvent document : sourceDocuments) {
-            if (document == null || Boolean.TRUE.equals(document.getIsInvitation())) {
+            if (document == null) {
                 continue;
             }
             if (preferred == null || preferSourceRecord(document, preferred)) {
@@ -359,35 +351,11 @@ public class EventParticipationTicketService {
     }
 
     private boolean preferSourceRecord(ActivityEvent next, ActivityEvent current) {
-        int nextRank = sourceRecordRank(next);
-        int currentRank = sourceRecordRank(current);
-        if (nextRank != currentRank) {
-            return nextRank > currentRank;
-        }
         return toSortableDate(next == null ? null : next.getUpdatedDate()) >= toSortableDate(current == null ? null : current.getUpdatedDate());
     }
 
-    private int sourceRecordRank(ActivityEvent record) {
-        if (record == null) {
-            return 0;
-        }
-        if (Boolean.TRUE.equals(record.getIsHosting()) || TYPE_HOSTING.equals(normalizeType(record.getType()))) {
-            return 3;
-        }
-        if (TYPE_EVENTS.equals(normalizeType(record.getType()))) {
-            return 2;
-        }
-        if (TYPE_INVITATIONS.equals(normalizeType(record.getType())) || Boolean.TRUE.equals(record.getIsInvitation())) {
-            return 1;
-        }
-        return 0;
-    }
-
     private boolean isManagedParticipationOverlay(ActivityEvent record, String creatorUserId) {
-        if (record == null || !TYPE_EVENTS.equals(normalizeType(record.getType()))) {
-            return false;
-        }
-        if (Boolean.TRUE.equals(record.getIsInvitation()) || Boolean.TRUE.equals(record.getIsHosting())) {
+        if (record == null) {
             return false;
         }
         String ownerUserId = normalizeId(record.getOwnerUserId());
@@ -412,7 +380,6 @@ public class EventParticipationTicketService {
                 && Objects.equals(left.getSyncKey(), right.getSyncKey())
                 && Objects.equals(left.getSourceId(), right.getSourceId())
                 && Objects.equals(left.getOwnerUserId(), right.getOwnerUserId())
-                && Objects.equals(left.getType(), right.getType())
                 && Objects.equals(left.getAvatar(), right.getAvatar())
                 && Objects.equals(left.getTitle(), right.getTitle())
                 && Objects.equals(left.getSubtitle(), right.getSubtitle())
@@ -420,9 +387,6 @@ public class EventParticipationTicketService {
                 && Objects.equals(left.getInviter(), right.getInviter())
                 && Objects.equals(left.getUnread(), right.getUnread())
                 && Objects.equals(left.getActivity(), right.getActivity())
-                && Objects.equals(left.getIsAdmin(), right.getIsAdmin())
-                && Objects.equals(left.getIsInvitation(), right.getIsInvitation())
-                && Objects.equals(left.getIsHosting(), right.getIsHosting())
                 && Objects.equals(left.getIsTrashed(), right.getIsTrashed())
                 && Objects.equals(left.getPublished(), right.getPublished())
                 && Objects.equals(left.getTrashedAtIso(), right.getTrashedAtIso())
@@ -542,14 +506,6 @@ public class EventParticipationTicketService {
             return "disqualified";
         }
         return "accepted";
-    }
-
-    private String normalizeType(String value) {
-        String normalized = safeText(value);
-        return switch (normalized) {
-            case TYPE_EVENTS, TYPE_HOSTING, TYPE_INVITATIONS -> normalized;
-            default -> TYPE_EVENTS;
-        };
     }
 
     private String normalizeId(String value) {

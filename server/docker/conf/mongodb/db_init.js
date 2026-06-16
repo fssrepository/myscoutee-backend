@@ -98,6 +98,10 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { hostTier: 1 },
     { name: 'users_host_tier' }
   );
+  portalDb.users.createIndex(
+    { name: 1, userId: 1 },
+    { name: 'users_name_user_id', collation: { locale: 'en', strength: 2 } }
+  );
 
   portalDb.appSettings.createIndex(
     { settingsKey: 1 },

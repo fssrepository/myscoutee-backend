@@ -26,20 +26,6 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 @Service
 public class UserActivityCountersService {
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_EVENTS = "events";
-    private static final String TYPE_HOSTING = "hosting";
-    private static final String TYPE_INVITATIONS = "invitations";
-    private static final String STATUS_ACTIVE = "A";
-    private static final String STATUS_HOSTING = "H";
-    private static final String STATUS_INVITATION = "INV";
-    private static final String STATUS_DRAFT = "DR";
-    private static final String STATUS_TRASHED = "T";
-    private static final String STATUS_UNDER_REVIEW = "UR";
-    private static final String STATUS_BLOCKED = "B";
-    private static final String STATUS_DELETED = "D";
-    private static final String STATUS_INACTIVE = "I";
-    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
-    private static final String MEMBER_STATUS_PENDING = "pending";
 
     private final UsersRepository usersRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -145,7 +131,7 @@ public class UserActivityCountersService {
         }
         Set<String> ownerUserIds = new LinkedHashSet<>();
         for (ActivityEvent event : activityEventsRepository.findBySourceId(normalizedEventId)) {
-            if (event == null || Boolean.TRUE.equals(event.getIsInvitation()) || isTrashScopeStatus(event)) {
+            if (event == null || isTrashScopeStatus(event)) {
                 continue;
             }
             String creatorUserId = normalizeId(event.getCreatorUserId());
@@ -181,27 +167,12 @@ public class UserActivityCountersService {
     }
 
     private EventCounters resolveEventCounters(String userId) {
-        List<ActivityEvent> directRecords = activityEventsRepository.findByOwnerUserId(userId).stream()
-                .filter(Objects::nonNull)
-                .toList();
-        Map<String, String> memberStatusBySourceId = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId)) {
-            String sourceId = normalizeId(member == null ? null : member.getOwnerId());
-            String status = safeText(member == null ? null : member.getStatus());
-            if (StringUtils.hasText(sourceId)
-                    && (MEMBER_STATUS_ACCEPTED.equals(status) || MEMBER_STATUS_PENDING.equals(status))) {
-                memberStatusBySourceId.put(sourceId, status);
-            }
-        }
-
-        Set<String> sourceIds = new LinkedHashSet<>(memberStatusBySourceId.keySet());
-        directRecords.stream()
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .forEach(sourceIds::add);
-        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(
-                sourceIds.isEmpty() ? directRecords : activityEventsRepository.findBySourceIdIn(sourceIds));
+        Set<String> sourceIds = new LinkedHashSet<>();
+        collectSourceIds(sourceIds, activityEventsRepository.findAdminVisibleEvents(userId));
+        collectSourceIds(sourceIds, activityEventsRepository.findAcceptedMembershipEvents(userId));
+        collectSourceIds(sourceIds, activityEventsRepository.findActiveInvitationEvents(userId));
+        collectSourceIds(sourceIds, activityEventsRepository.findPendingRequestEvents(userId));
+        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(activityEventsRepository.findBySourceIdIn(sourceIds));
 
         int active = 0;
         int pending = 0;
@@ -219,7 +190,7 @@ public class UserActivityCountersService {
                 trash += 1;
                 continue;
             }
-            if (isInvitationRecord(event)) {
+            if (isInvitationForUser(event, userId)) {
                 invitations += 1;
                 continue;
             }
@@ -234,12 +205,11 @@ public class UserActivityCountersService {
                 }
                 continue;
             }
-            String memberStatus = memberStatusBySourceId.get(sourceId);
-            if (MEMBER_STATUS_PENDING.equals(memberStatus) || isPendingReviewStatus(event)) {
+            if (isPendingRequestForUser(event, userId) || isPendingReviewStatus(event)) {
                 pending += 1;
                 continue;
             }
-            if (MEMBER_STATUS_ACCEPTED.equals(memberStatus) || isActiveEventStatus(event)) {
+            if (isAcceptedMemberForUser(event, userId) || isActiveEventStatus(event)) {
                 active += 1;
             }
         }
@@ -269,13 +239,13 @@ public class UserActivityCountersService {
         Set<String> eventIds = new LinkedHashSet<>();
         for (ActivityEvent event : activityEventsRepository.findByCreatorUserId(userId)) {
             String sourceId = normalizeId(event == null ? null : event.getSourceId());
-            if (StringUtils.hasText(sourceId) && !Boolean.TRUE.equals(event.getIsInvitation()) && !isTrashScopeStatus(event)) {
+            if (StringUtils.hasText(sourceId) && !isTrashScopeStatus(event)) {
                 eventIds.add(sourceId);
             }
         }
         for (ActivityEvent event : activityEventsRepository.findByAdminsContaining(userId)) {
             String sourceId = normalizeId(event == null ? null : event.getSourceId());
-            if (StringUtils.hasText(sourceId) && !Boolean.TRUE.equals(event.getIsInvitation()) && !isTrashScopeStatus(event)) {
+            if (StringUtils.hasText(sourceId) && !isTrashScopeStatus(event)) {
                 eventIds.add(sourceId);
             }
         }
@@ -430,25 +400,28 @@ public class UserActivityCountersService {
         return preferred;
     }
 
+    private void collectSourceIds(Set<String> sourceIds, Collection<ActivityEvent> events) {
+        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                sourceIds.add(sourceId);
+            }
+        }
+    }
+
     private int eventPreferenceScore(ActivityEvent event) {
         if (event == null) {
             return 0;
         }
         return (isTrashScopeStatus(event) ? 0 : 16)
                 + (isHostingRecordForUser(event, normalizeId(event.getCreatorUserId())) ? 8 : 0)
-                + (isInvitationRecord(event) ? 0 : 4)
                 + (isActiveEventStatus(event) ? 2 : 0)
-                + (Boolean.TRUE.equals(event.getIsAdmin()) ? 1 : 0);
+                + (!safeStrings(event.getAdmins()).isEmpty() ? 1 : 0);
     }
 
     private boolean isHostingRecordForUser(ActivityEvent event, String userId) {
         if (event == null) {
             return false;
-        }
-        if (TYPE_HOSTING.equals(normalizeType(event.getType()))
-                || Boolean.TRUE.equals(event.getIsHosting())
-                || Boolean.TRUE.equals(event.getIsAdmin())) {
-            return true;
         }
         String normalizedUserId = normalizeId(userId);
         return StringUtils.hasText(normalizedUserId)
@@ -456,26 +429,31 @@ public class UserActivityCountersService {
                         || safeStrings(event.getAdmins()).contains(normalizedUserId));
     }
 
-    private boolean isInvitationRecord(ActivityEvent event) {
-        return event != null
-                && (TYPE_INVITATIONS.equals(normalizeType(event.getType()))
-                        || Boolean.TRUE.equals(event.getIsInvitation())
-                        || STATUS_INVITATION.equals(normalizeStatus(event.getStatus())));
+    private boolean isInvitationForUser(ActivityEvent event, String userId) {
+        return event != null && safeStrings(event.getInvitedMemberUserIds()).contains(normalizeId(userId));
+    }
+
+    private boolean isPendingRequestForUser(ActivityEvent event, String userId) {
+        return event != null && safeStrings(event.getPendingRequestMemberUserIds()).contains(normalizeId(userId));
+    }
+
+    private boolean isAcceptedMemberForUser(ActivityEvent event, String userId) {
+        return event != null && safeStrings(event.getAcceptedMemberUserIds()).contains(normalizeId(userId));
     }
 
     private boolean isDraftStatus(ActivityEvent event) {
         return event != null
-                && (Boolean.FALSE.equals(event.getPublished()) || STATUS_DRAFT.equals(normalizeStatus(event.getStatus())));
+                && (Boolean.FALSE.equals(event.getPublished()) || ActivityEvent.STATUS_DRAFT.equals(normalizeStatus(event.getStatus())));
     }
 
     private boolean isPendingReviewStatus(ActivityEvent event) {
         String status = normalizeStatus(event == null ? null : event.getStatus());
-        return STATUS_UNDER_REVIEW.equals(status) || STATUS_BLOCKED.equals(status);
+        return ActivityEvent.STATUS_UNDER_REVIEW.equals(status) || ActivityEvent.STATUS_BLOCKED.equals(status);
     }
 
     private boolean isActiveEventStatus(ActivityEvent event) {
         String status = normalizeStatus(event == null ? null : event.getStatus());
-        return STATUS_ACTIVE.equals(status) || STATUS_HOSTING.equals(status) || !StringUtils.hasText(status);
+        return ActivityEvent.STATUS_ACTIVE.equals(status) || !StringUtils.hasText(status);
     }
 
     private boolean isTrashScopeStatus(ActivityEvent event) {
@@ -483,18 +461,16 @@ public class UserActivityCountersService {
             return true;
         }
         String status = normalizeStatus(event.getStatus());
-        return STATUS_TRASHED.equals(status)
-                || STATUS_DELETED.equals(status)
-                || STATUS_INACTIVE.equals(status);
+        return ActivityEvent.STATUS_TRASHED.equals(status);
     }
 
     private boolean isSuppressedAssetStatus(String status) {
         String normalized = normalizeStatus(status);
-        return STATUS_UNDER_REVIEW.equals(normalized)
-                || STATUS_BLOCKED.equals(normalized)
-                || STATUS_DELETED.equals(normalized)
-                || STATUS_INACTIVE.equals(normalized)
-                || STATUS_TRASHED.equals(normalized);
+        return ActivityEvent.STATUS_UNDER_REVIEW.equals(normalized)
+                || ActivityEvent.STATUS_BLOCKED.equals(normalized)
+                || ActivityEvent.STATUS_DELETED.equals(normalized)
+                || ActivityEvent.STATUS_INACTIVE.equals(normalized)
+                || ActivityEvent.STATUS_TRASHED.equals(normalized);
     }
 
     private List<String> normalizeIds(Collection<String> values) {
@@ -517,22 +493,16 @@ public class UserActivityCountersService {
                         .toList();
     }
 
-    private String normalizeType(String value) {
-        return safeText(value).toLowerCase();
-    }
-
     private String normalizeStatus(String value) {
         String normalized = safeText(value);
         return switch (normalized) {
-            case "active" -> STATUS_ACTIVE;
-            case "hosting" -> STATUS_HOSTING;
-            case "invitation" -> STATUS_INVITATION;
-            case "draft" -> STATUS_DRAFT;
-            case "trashed", "trash" -> STATUS_TRASHED;
-            case "under-review", "under review" -> STATUS_UNDER_REVIEW;
-            case "blocked" -> STATUS_BLOCKED;
-            case "deleted" -> STATUS_DELETED;
-            case "inactive" -> STATUS_INACTIVE;
+            case "active" -> ActivityEvent.STATUS_ACTIVE;
+            case "draft" -> ActivityEvent.STATUS_DRAFT;
+            case "trashed", "trash" -> ActivityEvent.STATUS_TRASHED;
+            case "under-review", "under review" -> ActivityEvent.STATUS_UNDER_REVIEW;
+            case "blocked" -> ActivityEvent.STATUS_BLOCKED;
+            case "deleted" -> ActivityEvent.STATUS_DELETED;
+            case "inactive" -> ActivityEvent.STATUS_INACTIVE;
             default -> normalized.toUpperCase();
         };
     }

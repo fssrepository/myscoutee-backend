@@ -1013,7 +1013,6 @@ class AccessControlServiceTest {
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId(sourceId);
-        event.setType("events");
         event.setStatus("A");
         event.setCreatorUserId(creatorUserId);
         event.setAdmins(List.of(adminUserId));

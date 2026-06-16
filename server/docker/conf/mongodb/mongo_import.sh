@@ -150,6 +150,7 @@ db.getCollection('users').createIndex({ partitionKey: 1 }, { name: 'users_partit
 db.getCollection('users').createIndex({ profileStatus: 1 }, { name: 'users_profile_status' });
 db.getCollection('users').createIndex({ profileStatus: 1, deletedAtIso: 1 }, { name: 'users_profile_status_deleted' });
 db.getCollection('users').createIndex({ hostTier: 1 }, { name: 'users_host_tier' });
+db.getCollection('users').createIndex({ name: 1, userId: 1 }, { name: 'users_name_user_id', collation: { locale: 'en', strength: 2 } });
 " >/dev/null
       ;;
     userRates)

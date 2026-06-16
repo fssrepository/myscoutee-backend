@@ -90,8 +90,6 @@ public class HomeUserProfileService {
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String TYPE_HOSTING = "hosting";
-    private static final String TYPE_INVITATIONS = "invitations";
     private static final String ASSET_TYPE_CAR = "Car";
     private static final String ASSET_TYPE_ACCOMMODATION = "Accommodation";
     private static final String ASSET_TYPE_SUPPLIES = "Supplies";
@@ -623,6 +621,7 @@ public class HomeUserProfileService {
         }
 
         Set<String> ratedUserIds = queryRatedUserIds(normalizedUserId);
+        Set<String> metUserIds = snapshot.socialGraph().neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
         Set<String> friendsInCommonCandidateIds = queryFriendsInCommonCandidateIds(
                 normalizedUserId,
                 snapshot.visibleGameUsers(),
@@ -637,6 +636,7 @@ public class HomeUserProfileService {
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
+                .filter(user -> !metUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !friendsInCommonCandidateIds.contains(normalizeId(user.getId())))
                 .sorted(homeUserComparator(normalizedUserId, edgeWeightsByPairKey, rankingContext))
@@ -720,6 +720,11 @@ public class HomeUserProfileService {
     public List<GameSocialCardCandidate> queryFriendsInCommonCards(String activeUserId) {
         List<Users> users = orderedUsers();
         return queryFriendsInCommonCards(activeUserId, users, buildActivitySocialGraph(), queryAffinityEdgeWeights(userIds(users)));
+    }
+
+    public List<GameSocialCardCandidate> queryOutsideNetworkCards(String activeUserId) {
+        List<Users> users = orderedUsers();
+        return queryOutsideNetworkCards(activeUserId, users, buildActivitySocialGraph());
     }
 
     List<GameSocialCardCandidate> queryFriendsInCommonCards(
@@ -812,6 +817,72 @@ public class HomeUserProfileService {
                 .toList();
     }
 
+    List<GameSocialCardCandidate> queryOutsideNetworkCards(
+            String activeUserId,
+            List<Users> users,
+            ActivitySocialGraph graph) {
+        String normalizedUserId = normalizeId(activeUserId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+
+        Map<String, Users> usersById = indexUsersById(users);
+        if (!isPublicGameUser(usersById.get(normalizedUserId))) {
+            return List.of();
+        }
+
+        Set<String> activeNeighbors = graph.neighborsByUserId().getOrDefault(normalizedUserId, Set.of());
+        Set<String> ratedPairKeys = queryRatedPairKeys(normalizedUserId);
+        List<String> publicUserIds = (users == null ? List.<Users>of() : users).stream()
+                .map(user -> normalizeId(user == null ? null : user.getId()))
+                .filter(StringUtils::hasText)
+                .filter(userId -> !normalizedUserId.equals(userId))
+                .filter(userId -> !activeNeighbors.contains(userId))
+                .filter(userId -> isPublicGameUser(usersById.get(userId)))
+                .distinct()
+                .sorted((left, right) -> compareUsersForSuggestions(usersById.get(left), usersById.get(right)))
+                .toList();
+
+        List<GameSocialCardCandidate> candidates = new ArrayList<>();
+        for (int leftIndex = 0; leftIndex < publicUserIds.size(); leftIndex += 1) {
+            String leftUserId = publicUserIds.get(leftIndex);
+            for (int rightIndex = leftIndex + 1; rightIndex < publicUserIds.size(); rightIndex += 1) {
+                String rightUserId = publicUserIds.get(rightIndex);
+                if (!StringUtils.hasText(leftUserId)
+                        || !StringUtils.hasText(rightUserId)
+                        || leftUserId.equals(rightUserId)
+                        || graph.hasDirectEdge(leftUserId, rightUserId)
+                        || ratedPairKeys.contains(pairKey(leftUserId, rightUserId))) {
+                    continue;
+                }
+                OrderedPair orderedPair = orderedPairUserIds(leftUserId, rightUserId, usersById);
+                String orderedPairKey = pairKey(orderedPair.leftUserId(), orderedPair.rightUserId());
+                double score = homePairDistanceScore(
+                        normalizedUserId,
+                        orderedPair.leftUserId(),
+                        orderedPair.rightUserId(),
+                        usersById)
+                        + resolveUserAffinity(usersById.get(orderedPair.leftUserId()))
+                        + resolveUserAffinity(usersById.get(orderedPair.rightUserId()));
+                candidates.add(new GameSocialCardCandidate(
+                        "outside-network:" + normalizedUserId + ":" + orderedPairKey,
+                        orderedPair.leftUserId(),
+                        orderedPair.rightUserId(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        score));
+            }
+        }
+
+        return candidates.stream()
+                .sorted(Comparator
+                        .comparingDouble(GameSocialCardCandidate::score).reversed()
+                        .thenComparing(GameSocialCardCandidate::id))
+                .toList();
+    }
+
     private Set<String> queryFriendsInCommonCandidateIds(
             String activeUserId,
             List<Users> users,
@@ -882,9 +953,8 @@ public class HomeUserProfileService {
     @Cacheable(value = "demo_users", key = "(#role == null ? 'member' : #role) + ':' + (#limit == null ? 'all' : #limit)")
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
-        return usersRepository.findAll().stream()
+        return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
-                .sorted(userComparator())
                 .limit(resolveDemoUserListLimit(limit))
                 .map(this::toDemoUserListItemDto)
                 .filter(Objects::nonNull)
@@ -1404,24 +1474,48 @@ public class HomeUserProfileService {
         Map<String, Set<String>> neighborsByUserId = new LinkedHashMap<>();
         Map<String, String> latestEventNameByEdgeKey = new LinkedHashMap<>();
         Map<String, Long> latestTimestampByEdgeKey = new LinkedHashMap<>();
+        Map<String, List<ActivityMember>> acceptedMembersByOwnerKey = new LinkedHashMap<>();
 
-        for (UserRate record : userRatesRepository.findAll()) {
-            if (!Boolean.TRUE.equals(record.getMet())
-                    && !StringUtils.hasText(normalizeOptionalText(record.getEventName()))) {
+        for (ActivityMember member : activityMembersRepository.findAll()) {
+            if (member == null
+                    || !isSocialGraphMemberOwner(member.getOwnerType())
+                    || !STATUS_ACCEPTED.equals(safeText(member.getStatus()))) {
                 continue;
             }
-            String ownerUserId = normalizeId(record.getOwnerUserId());
-            String relatedUserId = normalizeId(record.getRelatedUserId());
-            String secondaryRelatedUserId = normalizeId(record.getSecondaryRelatedUserId());
-            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(relatedUserId) && !ownerUserId.equals(relatedUserId)) {
-                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, ownerUserId, relatedUserId, record);
+            String ownerId = normalizeId(member.getOwnerId());
+            String userId = normalizeId(member.getUserId());
+            if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(userId)) {
+                continue;
             }
-            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(secondaryRelatedUserId) && !ownerUserId.equals(secondaryRelatedUserId)) {
-                registerSocialEdge(neighborsByUserId, latestEventNameByEdgeKey, latestTimestampByEdgeKey, ownerUserId, secondaryRelatedUserId, record);
+            String ownerKey = safeText(member.getOwnerType()) + ":" + ownerId;
+            acceptedMembersByOwnerKey.computeIfAbsent(ownerKey, ignored -> new ArrayList<>()).add(member);
+        }
+
+        for (List<ActivityMember> members : acceptedMembersByOwnerKey.values()) {
+            for (int leftIndex = 0; leftIndex < members.size(); leftIndex += 1) {
+                ActivityMember left = members.get(leftIndex);
+                for (int rightIndex = leftIndex + 1; rightIndex < members.size(); rightIndex += 1) {
+                    ActivityMember right = members.get(rightIndex);
+                    registerSocialEdge(
+                            neighborsByUserId,
+                            latestEventNameByEdgeKey,
+                            latestTimestampByEdgeKey,
+                            normalizeId(left.getUserId()),
+                            normalizeId(right.getUserId()),
+                            firstNonBlank(left.getMetWhere(), right.getMetWhere()),
+                            Math.max(resolveMemberRecordTimestampMs(left), resolveMemberRecordTimestampMs(right)));
+                }
             }
         }
 
         return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
+    }
+
+    private boolean isSocialGraphMemberOwner(String ownerType) {
+        String normalizedOwnerType = safeText(ownerType);
+        return OWNER_TYPE_EVENT.equals(normalizedOwnerType)
+                || "subEvent".equals(normalizedOwnerType)
+                || "group".equals(normalizedOwnerType);
     }
 
     private GameStackSnapshot resolveGameStackSnapshot() {
@@ -1457,26 +1551,36 @@ public class HomeUserProfileService {
             Map<String, Long> latestTimestampByEdgeKey,
             String leftUserId,
             String rightUserId,
-            UserRate record) {
+            String eventName,
+            long happenedAtMs) {
+        if (!StringUtils.hasText(leftUserId)
+                || !StringUtils.hasText(rightUserId)
+                || leftUserId.equals(rightUserId)) {
+            return;
+        }
         neighborsByUserId.computeIfAbsent(leftUserId, ignored -> new LinkedHashSet<>()).add(rightUserId);
         neighborsByUserId.computeIfAbsent(rightUserId, ignored -> new LinkedHashSet<>()).add(leftUserId);
 
-        String edgeKey = pairKey(leftUserId, rightUserId);
-        String eventName = normalizeOptionalText(record.getEventName());
-        if (!StringUtils.hasText(eventName)) {
+        String normalizedEventName = normalizeOptionalText(eventName);
+        if (!StringUtils.hasText(normalizedEventName)) {
             return;
         }
-        long happenedAtMs = resolveRateRecordTimestampMs(record);
+        String edgeKey = pairKey(leftUserId, rightUserId);
         Long currentMs = latestTimestampByEdgeKey.get(edgeKey);
         if (currentMs == null || happenedAtMs >= currentMs.longValue()) {
             latestTimestampByEdgeKey.put(edgeKey, happenedAtMs);
-            latestEventNameByEdgeKey.put(edgeKey, eventName);
+            latestEventNameByEdgeKey.put(edgeKey, normalizedEventName);
         }
     }
 
-    private long resolveRateRecordTimestampMs(UserRate record) {
+    private long resolveMemberRecordTimestampMs(ActivityMember member) {
         try {
-            return Instant.parse(firstNonBlank(record.getUpdatedDate(), record.getCreatedDate(), Instant.EPOCH.toString())).toEpochMilli();
+            return Instant.parse(firstNonBlank(
+                    member == null ? null : member.getActionAtIso(),
+                    member == null ? null : member.getMetAtIso(),
+                    member == null ? null : member.getUpdatedDate(),
+                    member == null ? null : member.getCreatedDate(),
+                    Instant.EPOCH.toString())).toEpochMilli();
         } catch (Exception exception) {
             return 0L;
         }
@@ -1574,6 +1678,25 @@ public class HomeUserProfileService {
         return Math.max(0d, user.getAffinity());
     }
 
+    private OrderedPair orderedPairUserIds(
+            String leftUserId,
+            String rightUserId,
+            Map<String, Users> usersById) {
+        Users leftUser = usersById.get(normalizeId(leftUserId));
+        Users rightUser = usersById.get(normalizeId(rightUserId));
+        if ("woman".equals(safeText(leftUser == null ? null : leftUser.getGender()))
+                && !"woman".equals(safeText(rightUser == null ? null : rightUser.getGender()))) {
+            return new OrderedPair(leftUserId, rightUserId);
+        }
+        if ("woman".equals(safeText(rightUser == null ? null : rightUser.getGender()))
+                && !"woman".equals(safeText(leftUser == null ? null : leftUser.getGender()))) {
+            return new OrderedPair(rightUserId, leftUserId);
+        }
+        return normalizeId(leftUserId).compareTo(normalizeId(rightUserId)) <= 0
+                ? new OrderedPair(leftUserId, rightUserId)
+                : new OrderedPair(rightUserId, leftUserId);
+    }
+
     private String pairKey(String leftUserId, String rightUserId) {
         String normalizedLeft = normalizeId(leftUserId);
         String normalizedRight = normalizeId(rightUserId);
@@ -1594,17 +1717,11 @@ public class HomeUserProfileService {
     }
 
     private UserGameFilterPreferencesDto buildDefaultFilterPreferences(Users user) {
-        int baseAge = normalizeCount(user.getAge());
-        if (baseAge <= 0) {
-            baseAge = 30;
-        }
-        Integer heightCm = parseHeightCm(user.getHeight());
-        int baseHeightCm = heightCm == null ? 170 : heightCm;
         return new UserGameFilterPreferencesDto(
-                Math.max(18, baseAge - 5),
-                Math.min(120, baseAge + 5),
-                Math.max(40, baseHeightCm - 10),
-                Math.min(250, baseHeightCm + 10),
+                18,
+                120,
+                40,
+                250,
                 List.of(),
                 List.of(),
                 List.of(),
@@ -1622,15 +1739,6 @@ public class HomeUserProfileService {
                 List.of(),
                 List.of(),
                 List.of());
-    }
-
-    private Integer parseHeightCm(String value) {
-        try {
-            int parsed = Integer.parseInt(nullToEmpty(value).replaceAll("[^0-9]", ""));
-            return Math.max(40, Math.min(250, parsed));
-        } catch (NumberFormatException exception) {
-            return null;
-        }
     }
 
     private UserMenuCountersDto buildMenuCounters(Users user) {
@@ -1982,17 +2090,10 @@ public class HomeUserProfileService {
     }
 
     private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
-        if (Boolean.TRUE.equals(next.getIsInvitation()) && !Boolean.TRUE.equals(current.getIsInvitation())) {
-            return false;
-        }
-        if (!Boolean.TRUE.equals(next.getIsInvitation()) && Boolean.TRUE.equals(current.getIsInvitation())) {
-            return true;
-        }
-        if (Boolean.TRUE.equals(next.getIsHosting()) && !Boolean.TRUE.equals(current.getIsHosting())) {
-            return true;
-        }
-        if (!Boolean.TRUE.equals(next.getIsHosting()) && Boolean.TRUE.equals(current.getIsHosting())) {
-            return false;
+        boolean nextActive = "A".equals(safeText(next == null ? null : next.getStatus()));
+        boolean currentActive = "A".equals(safeText(current == null ? null : current.getStatus()));
+        if (nextActive != currentActive) {
+            return nextActive;
         }
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
     }
@@ -2000,9 +2101,6 @@ public class HomeUserProfileService {
     private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
         if (record == null || !StringUtils.hasText(userId) || Boolean.TRUE.equals(record.getIsTrashed())) {
             return false;
-        }
-        if (Boolean.TRUE.equals(record.getIsHosting()) || TYPE_HOSTING.equals(safeText(record.getType()))) {
-            return true;
         }
         if (userId.equals(normalizeId(record.getCreatorUserId()))) {
             return true;
@@ -2958,6 +3056,11 @@ public class HomeUserProfileService {
             Users activeUser,
             Map<String, Long> latestActivityMsByUserId,
             long nowMs) {
+    }
+
+    private record OrderedPair(
+            String leftUserId,
+            String rightUserId) {
     }
 
     private record GameStackSnapshot(

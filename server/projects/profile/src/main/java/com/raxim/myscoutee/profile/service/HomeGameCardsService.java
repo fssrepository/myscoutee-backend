@@ -38,6 +38,7 @@ public class HomeGameCardsService {
             return querySocialPage(
                     resolvedUserId,
                     mode,
+                    request == null ? null : request.filterPreferences(),
                     request == null ? null : request.leftQuery(),
                     request == null ? null : request.rightQuery(),
                     request == null ? null : request.cursor(),
@@ -177,6 +178,7 @@ public class HomeGameCardsService {
     private UserGameCardsQueryResponseDto querySocialPage(
             String userId,
             String mode,
+            UserGameFilterPreferencesDto filterPreferences,
             String leftQuery,
             String rightQuery,
             String cursor,
@@ -186,10 +188,13 @@ public class HomeGameCardsService {
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeUserId(user.getId()), user), Map::putAll);
         HomeUserProfileService.ActivitySocialGraph socialGraph = homeUserProfileService.queryActivitySocialGraph();
-        List<HomeUserProfileService.GameSocialCardCandidate> filteredCards = ("separated-friends".equals(mode)
-                ? homeUserProfileService.querySeparatedFriendCards(userId, allUserRecords, socialGraph)
-                : homeUserProfileService.queryFriendsInCommonCards(userId, allUserRecords, socialGraph))
+        List<HomeUserProfileService.GameSocialCardCandidate> filteredCards = querySocialCardsForMode(
+                userId,
+                mode,
+                allUserRecords,
+                socialGraph)
                 .stream()
+                .filter(card -> matchesSocialFilterPreferences(usersById, card, filterPreferences))
                 .filter(card -> matchesSocialQuery(usersById, card, leftQuery, rightQuery))
                 .toList();
 
@@ -227,6 +232,49 @@ public class HomeGameCardsService {
                 nextCursor,
                 users,
                 socialCards);
+    }
+
+    private List<HomeUserProfileService.GameSocialCardCandidate> querySocialCardsForMode(
+            String userId,
+            String mode,
+            List<Users> allUserRecords,
+            HomeUserProfileService.ActivitySocialGraph socialGraph) {
+        if ("outside-network".equals(mode)) {
+            return homeUserProfileService.queryOutsideNetworkCards(userId, allUserRecords, socialGraph);
+        }
+        if ("separated-friends".equals(mode)) {
+            return homeUserProfileService.querySeparatedFriendCards(userId, allUserRecords, socialGraph);
+        }
+        return homeUserProfileService.queryFriendsInCommonCards(userId, allUserRecords, socialGraph);
+    }
+
+    private boolean matchesSocialFilterPreferences(
+            Map<String, Users> usersById,
+            HomeUserProfileService.GameSocialCardCandidate card,
+            UserGameFilterPreferencesDto preferences) {
+        if (preferences == null) {
+            return true;
+        }
+        if (card == null) {
+            return false;
+        }
+        List<String> participantIds = "friends-in-common".equals(card.socialContext())
+                ? List.of(card.userId())
+                : Stream.of(card.userId(), card.secondaryUserId(), card.bridgeUserId())
+                        .filter(StringUtils::hasText)
+                        .map(this::normalizeUserId)
+                        .distinct()
+                        .toList();
+        if (participantIds.isEmpty()) {
+            return false;
+        }
+        for (String participantId : participantIds) {
+            Users user = usersById.get(participantId);
+            if (user == null || !matchesFilterPreferences(user, preferences)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean matchesSocialQuery(
@@ -272,13 +320,13 @@ public class HomeGameCardsService {
 
     private String normalizeMode(String value) {
         String normalized = normalize(value);
-        if ("pair".equals(normalized) || "separated-friends".equals(normalized) || "friends-in-common".equals(normalized)) {
+        if ("outside-network".equals(normalized) || "separated-friends".equals(normalized) || "friends-in-common".equals(normalized)) {
             return normalized;
         }
         return "single";
     }
 
     private boolean isSocialMode(String value) {
-        return "separated-friends".equals(value) || "friends-in-common".equals(value);
+        return "outside-network".equals(value) || "separated-friends".equals(value) || "friends-in-common".equals(value);
     }
 }

@@ -229,7 +229,12 @@ class BackendSchedulersE2ETest {
         user.setProfileStatus("public");
         user.setCompletion(100);
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(48.1486d, 17.1077d));
-        user.setActivities(new Users.UserActivitiesRecord(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        user.setActivities(new Users.UserActivitiesRecord(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
+                new Users.UserAssetCountersRecord(0, 0, 0, 0),
+                new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
+                0, 0));
         return user;
     }
 
@@ -240,12 +245,7 @@ class BackendSchedulersE2ETest {
         event.setSourceId(STAGE_EVENT_ID);
         event.setOwnerUserId("e2e-scheduler-member");
         event.setCreatorUserId("e2e-scheduler-member");
-        event.setType("hosting");
-        event.setStatus("H");
-        event.setPublished(true);
-        event.setIsAdmin(true);
-        event.setIsHosting(true);
-        event.setIsTrashed(false);
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setTitle("Scheduler Stage Cup");
         event.setStartAtIso(BASE_TIME.plus(Duration.ofDays(3)).toString());
         event.setEndAtIso(BASE_TIME.plus(Duration.ofDays(3)).plus(Duration.ofHours(2)).toString());

@@ -32,13 +32,13 @@ class EventSlotReadModelServiceTest {
 
     @Test
     void refreshParentUpcomingSlotsStoresSortedSlotSummariesOnParentDocuments() {
-        ActivityEvent hostingParent = parent("event-1", "hosting");
-        ActivityEvent eventsParent = parent("event-1", "events");
+        ActivityEvent firstParent = parent("event-1", "first");
+        ActivityEvent secondParent = parent("event-1", "second");
         ActivityEvent laterSlot = slot("slot-2", "event-1", "2099-06-02T12:00:00Z", 1, 0);
         ActivityEvent earlierSlot = slot("slot-1", "event-1", "2099-06-02T10:00:00Z", 2, 1);
 
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
-                .thenReturn(List.of(hostingParent, eventsParent));
+                .thenReturn(List.of(firstParent, secondParent));
         when(activityEventsRepository.findByParentEventIdIn(List.of("event-1")))
                 .thenReturn(List.of(laterSlot, earlierSlot));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -72,12 +72,11 @@ class EventSlotReadModelServiceTest {
                 assertThat(savedParent.getUpcomingSlots()).extracting(slot -> slot.id()).containsExactly("slot-1"));
     }
 
-    private ActivityEvent parent(String sourceId, String type) {
+    private ActivityEvent parent(String sourceId, String suffix) {
         ActivityEvent event = new ActivityEvent();
-        event.setId(sourceId + "-" + type);
+        event.setId(sourceId + "-" + suffix);
         event.setSourceId(sourceId);
-        event.setType(type);
-        event.setStatus("A");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setSlotsEnabled(true);
         event.setSlotTemplates(List.of(new EventSlotTemplateDto("template-1", "2099-06-02T10:00:00Z", "2099-06-02T11:00:00Z", null, false)));
         event.setGenerated(false);

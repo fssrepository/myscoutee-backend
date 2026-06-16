@@ -4230,6 +4230,12 @@
     "value": "Friends"
   },
   {
+    "_id": "i18n-message-en-friends-in-common",
+    "key": "friends.in.common",
+    "lang": "en",
+    "value": "Friends in Common"
+  },
+  {
     "_id": "i18n-message-en-friends-only",
     "key": "friends.only",
     "lang": "en",
@@ -4612,6 +4618,12 @@
     "key": "independent.lifestyle",
     "lang": "en",
     "value": "Independent lifestyle"
+  },
+  {
+    "_id": "i18n-message-en-inside-network",
+    "key": "inside.network",
+    "lang": "en",
+    "value": "Inside Network"
   },
   {
     "_id": "i18n-message-en-instagram",
@@ -13332,6 +13344,12 @@
     "value": "Barátok"
   },
   {
+    "_id": "i18n-message-hu-friends-in-common",
+    "key": "friends.in.common",
+    "lang": "hu",
+    "value": "Közös ismerősök"
+  },
+  {
     "_id": "i18n-message-hu-friends-only",
     "key": "friends.only",
     "lang": "hu",
@@ -13714,6 +13732,12 @@
     "key": "independent.lifestyle",
     "lang": "hu",
     "value": "Független életmód"
+  },
+  {
+    "_id": "i18n-message-hu-inside-network",
+    "key": "inside.network",
+    "lang": "hu",
+    "value": "Hálózaton belül"
   },
   {
     "_id": "i18n-message-hu-instagram",
