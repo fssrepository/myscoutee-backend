@@ -307,7 +307,11 @@ public final class EventsDtos {
     public record EventListPageDto(
             List<EventListItemDto> records,
             Integer total,
-            String nextCursor) {
+            String nextCursor,
+            List<EventRecordDto> items) {
+        public EventListPageDto(List<EventListItemDto> records, Integer total, String nextCursor) {
+            this(records, total, nextCursor, List.of());
+        }
     }
 
     public record ActivitiesEventSyncPayloadDto(

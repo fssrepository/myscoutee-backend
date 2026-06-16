@@ -44,6 +44,7 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventDtoMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,6 +90,7 @@ class ActivitiesEventsServiceTest {
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
+    private final ActivityEventDtoMapper activityEventDtoMapper = new ActivityEventDtoMapper();
 
     @BeforeEach
     void setUp() {
@@ -112,7 +114,8 @@ class ActivitiesEventsServiceTest {
                 activitiesEventLeaderboardService,
                 eventSlotReadModelService,
                 accessControlService,
-                userActivityCountersService);
+                userActivityCountersService,
+                activityEventDtoMapper);
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);
@@ -617,6 +620,7 @@ class ActivitiesEventsServiceTest {
 
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(record -> record.id()).containsExactly("event-1", "event-2");
+        assertThat(page.items()).extracting(EventRecordDto::id).containsExactly("event-1", "event-2");
         assertThat(page.records()).allSatisfy(record -> assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE));
         assertThat(page.nextCursor()).contains("event-2");
     }
@@ -646,11 +650,59 @@ class ActivitiesEventsServiceTest {
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(record -> record.id())
                 .containsExactly("event-1", "event-2");
+        assertThat(page.items()).extracting(EventRecordDto::id)
+                .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findAll();
         verify(activityEventsRepository, never()).saveAll(anyList());
-        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
+        verify(activitiesMembersService).buildBatchEventSnapshots(anyMap());
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
+    }
+
+    @Test
+    void activeFilterUsesMemberSnapshotWhenProjectionLooksLikeViewerAdmin() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setName("Viewer User");
+
+        ActivityEvent staleProjection = event("event-1", "host", 0d);
+        staleProjection.setOwnerUserId("viewer");
+        staleProjection.setAdmins(List.of("viewer", "host"));
+        staleProjection.setAcceptedMemberUserIds(List.of("host", "viewer"));
+
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
+                "event",
+                "event-1",
+                List.of(),
+                List.of("host", "viewer"),
+                List.of(),
+                List.of(),
+                List.of(),
+                Set.of("host"),
+                10);
+
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
+                .thenReturn(acceptedStatuses("event-1"));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
+                .thenReturn(List.of(staleProjection));
+        when(activitiesMembersService.buildBatchEventSnapshots(anyMap()))
+                .thenReturn(Map.of("event-1", snapshot));
+
+        EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
+                "viewer", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
+
+        assertThat(page.total()).isEqualTo(1);
+        assertThat(page.records()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("event-1");
+            assertThat(record.userId()).isEqualTo("viewer");
+            assertThat(record.adminIds()).containsExactly("host");
+        });
+        assertThat(page.items()).singleElement().satisfies(record -> {
+            assertThat(record.id()).isEqualTo("event-1");
+            assertThat(record.userId()).isEqualTo("viewer");
+            assertThat(record.adminIds()).containsExactly("host");
+        });
     }
 
     @Test
