@@ -199,17 +199,46 @@ watch_frontend_source_changes() {
   done
 }
 
+list_child_pids() {
+  local parent_pid="$1"
+  local children_file="/proc/${parent_pid}/task/${parent_pid}/children"
+
+  if [[ -r "${children_file}" ]]; then
+    tr ' ' '\n' < "${children_file}" 2>/dev/null | sed '/^$/d' || true
+    return 0
+  fi
+
+  if command -v pgrep >/dev/null 2>&1; then
+    pgrep -P "${parent_pid}" 2>/dev/null || true
+  fi
+}
+
+kill_process_tree() {
+  local target_pid="$1"
+  local child_pid
+
+  if [[ -z "${target_pid}" ]] || ! kill -0 "${target_pid}" >/dev/null 2>&1; then
+    return 0
+  fi
+
+  for child_pid in $(list_child_pids "${target_pid}"); do
+    kill_process_tree "${child_pid}"
+  done
+
+  kill "${target_pid}" >/dev/null 2>&1 || true
+}
+
 cleanup() {
   if [[ -n "${build_pid:-}" ]]; then
-    kill "${build_pid}" >/dev/null 2>&1 || true
+    kill_process_tree "${build_pid}"
     wait "${build_pid}" 2>/dev/null || true
   fi
   if [[ -n "${sync_pid:-}" ]]; then
-    kill "${sync_pid}" >/dev/null 2>&1 || true
+    kill_process_tree "${sync_pid}"
     wait "${sync_pid}" 2>/dev/null || true
   fi
   if [[ -n "${source_sync_pid:-}" ]]; then
-    kill "${source_sync_pid}" >/dev/null 2>&1 || true
+    kill_process_tree "${source_sync_pid}"
     wait "${source_sync_pid}" 2>/dev/null || true
   fi
   if [[ -n "${BUILD_LOG_FILE:-}" && -f "${BUILD_LOG_FILE}" ]]; then
@@ -238,6 +267,10 @@ fi
 cd "${BUILD_FRONTEND_ROOT}"
 
 echo "Starting Angular watch build in temp workspace ${BUILD_FRONTEND_ROOT} using ${BUILD_CONFIGURATION}..."
+WATCHPACK_POLLING="${WATCHPACK_POLLING:-true}" \
+WATCHPACK_POLLING_INTERVAL="${WATCHPACK_POLLING_INTERVAL:-1000}" \
+CHOKIDAR_USEPOLLING="${CHOKIDAR_USEPOLLING:-true}" \
+CHOKIDAR_INTERVAL="${CHOKIDAR_INTERVAL:-1000}" \
 NG_BUILD_MAX_WORKERS="${NG_BUILD_MAX_WORKERS:-12}" \
   ./node_modules/.bin/ng build --watch --configuration "${BUILD_CONFIGURATION}" \
   > >(tee -a "${BUILD_LOG_FILE}") 2>&1 &
