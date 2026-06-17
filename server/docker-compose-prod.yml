@@ -1,6 +1,6 @@
 # Production stack.
-# Build the frontend with the production configuration, sync it into
-# docker/conf/nginx/app/myscoutee, then run this compose file.
+# Build the frontend production bundle before building this stack. The nginx
+# image bakes frontend/prod into /usr/share/nginx/html.
 
 networks:
   myscoutee:
@@ -34,6 +34,8 @@ services:
     build:
       context: docker
       dockerfile: images/nginx/prod/Dockerfile
+      additional_contexts:
+        frontend-prod: ../frontend/prod
       args:
         NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}

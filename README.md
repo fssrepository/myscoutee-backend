@@ -25,7 +25,7 @@ Dependencies
 * `export MYSCOUTEE_VERSION=1.0.0`
 * Base nginx image: `docker build -f ./server/docker/images/nginx/base/Dockerfile -t myscoutee-nginx:${MYSCOUTEE_VERSION}-base ./server/docker`
 * Dev nginx image: `docker build -f ./server/docker/images/nginx/dev/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-dev ./server/docker`
-* Production nginx image: `docker build -f ./server/docker/images/nginx/prod/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION} ./server/docker`
+* Production nginx image: `cd frontend && npm run build:prod && cd .. && docker build --build-context frontend-prod=./frontend/prod -f ./server/docker/images/nginx/prod/Dockerfile --build-arg NGINX_BASE_IMAGE=myscoutee-nginx:${MYSCOUTEE_VERSION}-base -t myscoutee-nginx:${MYSCOUTEE_VERSION}-prod ./server/docker`
 * Dev backend image: `docker build -f ./server/docker/images/profilemanagement/dev/Dockerfile -t myscoutee-api:${MYSCOUTEE_VERSION}-dev ./server`
 * Production backend image: `docker build -f ./server/docker/images/profilemanagement/prod/Dockerfile -t myscoutee-api:${MYSCOUTEE_VERSION} ./server`
 
@@ -37,17 +37,23 @@ Frontend Runtime Sync (optional)
 * `./server/docker/scripts/sync_frontend_assets.sh dev`
 * Dev auto-sync (watch mode):
 * `./server/docker/scripts/sync_frontend_assets.sh dev watch`
-* Prod one-time sync (from frontend docs build):
-* `./server/docker/scripts/sync_frontend_assets.sh prod`
 
 Production Compose
 ------------------
-* Build frontend production assets in the frontend submodule:
-* `cd frontend && npm run build:prod`
-* Sync assets into backend nginx app folder:
-* `cd .. && ./server/docker/scripts/sync_frontend_assets.sh prod`
-* Run dockerized production stack:
-* `cd server && docker compose -f docker-compose-prod.yml up --build`
+* Standalone production compose uses the prebuilt `frontend/prod` folder as the nginx image build context.
+* Build the frontend production bundle first:
+* `(cd frontend && npm run build:prod)`
+* Run standalone production compose:
+* `(cd server && docker compose -f docker-compose-prod.yml up --build)`
+* Build standalone production images only:
+* `(cd server && docker compose -f docker-compose-prod.yml build)`
+
+Production Packaging
+--------------------
+* Build production artifacts/images for packaging:
+* `bash packaging/scripts/build-production.sh`
+* Run the packaged-style production stack:
+* `bash packaging/scripts/start-production.sh`
 
 Full Integration E2E Collections
 --------------------------------
