@@ -87,13 +87,7 @@ resolve_build_output_dir() {
 
 initialize_build_workspace() {
   if [[ -z "${BUILD_FRONTEND_ROOT}" ]]; then
-    BUILD_FRONTEND_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/myscoutee-frontend-sync.XXXXXX")"
-    TEMP_BUILD_ROOT_CREATED="true"
-  fi
-
-  if [[ "${BUILD_FRONTEND_ROOT}" == "${SOURCE_FRONTEND_ROOT}" ]]; then
-    echo "Error: BUILD_FRONTEND_ROOT must be different from FRONTEND_ROOT." >&2
-    exit 1
+    BUILD_FRONTEND_ROOT="${SOURCE_FRONTEND_ROOT}"
   fi
 
   mkdir -p "${BUILD_FRONTEND_ROOT}"
@@ -101,6 +95,10 @@ initialize_build_workspace() {
 }
 
 sync_source_frontend_into_build_workspace() {
+  if [[ "${BUILD_FRONTEND_ROOT}" == "${SOURCE_FRONTEND_ROOT}" ]]; then
+    return 0
+  fi
+
   rsync -a --delete \
     --exclude '/node_modules' \
     --exclude '/dev' \
@@ -266,7 +264,7 @@ fi
 
 cd "${BUILD_FRONTEND_ROOT}"
 
-echo "Starting Angular watch build in temp workspace ${BUILD_FRONTEND_ROOT} using ${BUILD_CONFIGURATION}..."
+echo "Starting Angular watch build in ${BUILD_FRONTEND_ROOT} using ${BUILD_CONFIGURATION}..."
 WATCHPACK_POLLING="${WATCHPACK_POLLING:-true}" \
 WATCHPACK_POLLING_INTERVAL="${WATCHPACK_POLLING_INTERVAL:-1000}" \
 CHOKIDAR_USEPOLLING="${CHOKIDAR_USEPOLLING:-true}" \
@@ -276,8 +274,10 @@ NG_BUILD_MAX_WORKERS="${NG_BUILD_MAX_WORKERS:-12}" \
   > >(tee -a "${BUILD_LOG_FILE}") 2>&1 &
 build_pid=$!
 
-watch_frontend_source_changes &
-source_sync_pid=$!
+if [[ "${BUILD_FRONTEND_ROOT}" != "${SOURCE_FRONTEND_ROOT}" ]]; then
+  watch_frontend_source_changes &
+  source_sync_pid=$!
+fi
 
 echo "Waiting for the first fresh dev build output..."
 wait_for_initial_build_output
@@ -303,4 +303,8 @@ echo "Starting nginx asset sync watcher..."
 ) &
 sync_pid=$!
 
-wait -n "${build_pid}" "${source_sync_pid}"
+if [[ -n "${source_sync_pid:-}" ]]; then
+  wait -n "${build_pid}" "${source_sync_pid}"
+else
+  wait "${build_pid}"
+fi
