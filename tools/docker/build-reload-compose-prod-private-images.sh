@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+if [ -z "${BASH_VERSION:-}" ]; then
+  exec bash "$0" "$@"
+fi
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -7,7 +11,7 @@ SERVER_DIR="${MYSCOUTEE_SERVER_DIR:-${REPO_ROOT}/server}"
 FRONTEND_DIR="${MYSCOUTEE_FRONTEND_DIR:-${REPO_ROOT}/frontend}"
 
 PRIVATE_BUILD_SERVICES=(profilemanagement nginx minio)
-PRIVATE_RELOAD_SERVICES=(profilemanagement nginx)
+PRIVATE_RELOAD_SERVICES=(profilemanagement nginx minio)
 BUILD_FRONTEND="${BUILD_FRONTEND:-true}"
 BUILD_BACKEND="${BUILD_BACKEND:-true}"
 BUILD_IMAGES="${BUILD_IMAGES:-true}"
@@ -19,8 +23,8 @@ usage() {
 Build and reload docker-compose-prod.yml private MyScoutee images.
 
 Safe to run while docker-compose-prod.yml is already up: images are built first,
-then only profilemanagement and nginx are recreated. MongoDB, Redis, and MinIO
-keep running.
+then only the rebuilt private services are recreated. MongoDB and Redis keep
+running.
 
 This targets only project-owned production services:
   - profilemanagement
@@ -32,8 +36,8 @@ It intentionally does not build or reload:
   - mongodb
   - redis
 
-It builds the layered MinIO image for packaging, but reload still recreates only
-profilemanagement and nginx so the running object store stays up.
+It builds and reloads the layered MinIO image alongside profilemanagement and
+nginx. MongoDB and Redis are not touched.
 
 Usage:
   tools/docker/build-reload-compose-prod-private-images.sh [options]
@@ -42,7 +46,7 @@ Options:
   --build-only       Build artifacts/images but do not recreate containers.
   --reload-only      Recreate containers from already-built images.
   --no-artifacts     Skip frontend and backend artifact builds.
-  --no-frontend      Skip frontend build and nginx asset sync.
+  --no-frontend      Skip frontend build.
   --no-backend       Skip backend bootJar build.
   --no-cache         Pass --no-cache to docker compose build.
   --pull             Pass --pull to docker compose build.
@@ -140,8 +144,7 @@ echo "  ${MINIO_PRODUCTION_IMAGE}"
 if [[ "${BUILD_FRONTEND}" == "true" ]]; then
   echo "Building frontend with npm script: ${FRONTEND_BUILD_SCRIPT}"
   (cd "${FRONTEND_DIR}" && npm run "${FRONTEND_BUILD_SCRIPT}")
-  echo "Syncing frontend assets into production nginx context."
-  (cd "${REPO_ROOT}" && bash server/docker/scripts/sync_frontend_assets.sh prod)
+  echo "Frontend production output is available for nginx at: ${FRONTEND_DIR}/prod"
 fi
 
 if [[ "${BUILD_BACKEND}" == "true" ]]; then
@@ -155,10 +158,8 @@ if [[ "${BUILD_IMAGES}" == "true" ]]; then
 fi
 
 if [[ "${RELOAD_IMAGES}" == "true" ]]; then
-  for service in "${PRIVATE_RELOAD_SERVICES[@]}"; do
-    echo "Recreating ${service} from the rebuilt image."
-    compose up -d --no-deps --force-recreate --no-build "${service}"
-  done
+  echo "Recreating rebuilt services from the rebuilt images: ${PRIVATE_RELOAD_SERVICES[*]}"
+  compose up -d --no-deps --force-recreate --no-build "${PRIVATE_RELOAD_SERVICES[@]}"
 fi
 
 echo "Done."
