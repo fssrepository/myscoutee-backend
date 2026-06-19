@@ -12,6 +12,10 @@ values, languages and filter values (onbaorading should get it also) --- it's no
 emoji also has some sort of popup like this on chat
 image card
 
+image resize on upload to read thumbnails where needed like chat
+event feedback corousel / trounament craousel + on boarding tab transform to carousel -- they are external carousel templates -- so we need to make a readable carousel as different component
+we have warped image carousel -> we need to make that kind also to unify
+
 desktop
 -------
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
