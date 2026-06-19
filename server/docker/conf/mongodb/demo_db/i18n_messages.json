@@ -5316,6 +5316,18 @@
     "value": "Education"
   },
   {
+    "_id": "i18n-message-en-profile-experience-openschool",
+    "key": "profile.experience.openSchool",
+    "lang": "en",
+    "value": "Open school experience"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-openworkplace",
+    "key": "profile.experience.openWorkplace",
+    "lang": "en",
+    "value": "Open workplace experience"
+  },
+  {
     "_id": "i18n-message-en-profile-experience-profession",
     "key": "profile.experience.profession",
     "lang": "en",
@@ -5326,6 +5338,18 @@
     "key": "profile.experience.school",
     "lang": "en",
     "value": "School"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-selectschool",
+    "key": "profile.experience.selectSchool",
+    "lang": "en",
+    "value": "Select school"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-selectworkplace",
+    "key": "profile.experience.selectWorkplace",
+    "lang": "en",
+    "value": "Select workplace"
   },
   {
     "_id": "i18n-message-en-profile-experience-workplace",
@@ -15552,6 +15576,18 @@
     "value": "Tanulmány"
   },
   {
+    "_id": "i18n-message-hu-profile-experience-openschool",
+    "key": "profile.experience.openSchool",
+    "lang": "hu",
+    "value": "Iskolai tapasztalatok megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-openworkplace",
+    "key": "profile.experience.openWorkplace",
+    "lang": "hu",
+    "value": "Munkahelyi tapasztalatok megnyitása"
+  },
+  {
     "_id": "i18n-message-hu-profile-experience-profession",
     "key": "profile.experience.profession",
     "lang": "hu",
@@ -15562,6 +15598,18 @@
     "key": "profile.experience.school",
     "lang": "hu",
     "value": "Iskola"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-selectschool",
+    "key": "profile.experience.selectSchool",
+    "lang": "hu",
+    "value": "Iskola választása"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-selectworkplace",
+    "key": "profile.experience.selectWorkplace",
+    "lang": "hu",
+    "value": "Munkahely választása"
   },
   {
     "_id": "i18n-message-hu-profile-experience-workplace",
