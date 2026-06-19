@@ -5598,6 +5598,12 @@
     "value": "Select languages"
   },
   {
+    "_id": "i18n-message-en-select-option",
+    "key": "select.option",
+    "lang": "en",
+    "value": "Please select"
+  },
+  {
     "_id": "i18n-message-en-select-values",
     "key": "select.values",
     "lang": "en",
@@ -15826,6 +15832,12 @@
     "key": "select.languages",
     "lang": "hu",
     "value": "Nyelvek választása"
+  },
+  {
+    "_id": "i18n-message-hu-select-option",
+    "key": "select.option",
+    "lang": "hu",
+    "value": "Válassz"
   },
   {
     "_id": "i18n-message-hu-select-values",
