@@ -25,6 +25,8 @@ flexible form carousel (global form - editor feedback - onboarding)
 big menu row - event editor - value accessor included
 
 flexible form -- you can create a form, where you can set stepts, and which steps contain what, if you don't make steps, then you can show in one page
+kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben - a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
+a policy view is single-rownak tunik (valszeg memory, nem local)
 
 desktop
 -------
