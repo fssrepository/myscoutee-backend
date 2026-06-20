@@ -18,6 +18,11 @@ we have warped image carousel -> we need to make that kind also to unify
 
 onbaording saves something, so the profileeditor shows default empty label fallback on non-set values
 
+accrodion componens - support-help/term-policy/policy-policy
+leaderboard-ot talan fel lehet fuzni ra ---
+
+flexible form carousel (global form - editor feedback - onboarding)
+
 desktop
 -------
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
