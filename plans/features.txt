@@ -22,6 +22,9 @@ accrodion componens - support-help/term-policy/policy-policy
 leaderboard-ot talan fel lehet fuzni ra ---
 
 flexible form carousel (global form - editor feedback - onboarding)
+big menu row - event editor - value accessor included
+
+flexible form -- you can create a form, where you can set stepts, and which steps contain what, if you don't make steps, then you can show in one page
 
 desktop
 -------
