@@ -20,6 +20,7 @@ kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-
 a policy view is single-rownak tunik (valszeg memory, nem local)
 
 shared folder  - home filter -> ui converter probably
+az admin-ban meg van egy profile szerkeszto, nem tudni mi az a profile-popup
 
 desktop
 -------
