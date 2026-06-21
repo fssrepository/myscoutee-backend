@@ -21,6 +21,8 @@ a policy view is single-rownak tunik (valszeg memory, nem local)
 
 shared folder  - home filter -> ui converter probably
 az admin-ban meg van egy profile szerkeszto, nem tudni mi az a profile-popup
+review host interfaces (direct calls should be eliminated -> appctx)
+ng:deep scss removal
 
 desktop
 -------
