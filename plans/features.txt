@@ -7,16 +7,11 @@ https://developers.facebook.com/ -> business verfication is needed
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
-crate a component for multi and single selection popup, like topic, category,
-values, languages and filter values (onbaorading should get it also) --- it's not menu it's a multi-select or so
 emoji also has some sort of popup like this on chat
-image card
 
 image resize on upload to read thumbnails where needed like chat
 event feedback corousel / trounament craousel + on boarding tab transform to carousel -- they are external carousel templates -- so we need to make a readable carousel as different component
 we have warped image carousel -> we need to make that kind also to unify
-
-onbaording saves something, so the profileeditor shows default empty label fallback on non-set values
 
 flexible form carousel (global form - editor feedback - onboarding)
 
