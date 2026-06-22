@@ -16,11 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
+import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageSetDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageUploadResponseDto;
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaUploadResponseDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
+import com.raxim.myscoutee.profile.service.MediaStorageService.StoredImageSet;
 import com.raxim.myscoutee.profile.service.MediaStorageService.StoredMediaObject;
 
 @RestController
@@ -42,11 +44,11 @@ public class MediaController {
             @RequestParam("ownerId") String ownerId,
             @RequestParam(value = "entityId", required = false) String entityId,
             @RequestParam("image") MultipartFile image) {
-        String imageUrl = mediaStorageService.storeImage(ownerId, entityId, image);
-        if (imageUrl == null) {
+        StoredImageSet imageSet = mediaStorageService.storeImageSet(ownerId, entityId, image);
+        if (imageSet == null || imageSet.imageUrl() == null) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Image upload unavailable.");
         }
-        return new MediaImageUploadResponseDto(true, imageUrl, imageUrl);
+        return imageUploadResponse(true, imageSet);
     }
 
     @PostMapping(path = "/images/import", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,11 +59,11 @@ public class MediaController {
             skipWhenAuthenticationOptional = true)
     public MediaImageUploadResponseDto importImage(@RequestBody MediaImageImportRequestDto request) {
         String ownerId = request == null ? null : request.ownerId();
-        String imageUrl = mediaStorageService.importImage(
+        StoredImageSet imageSet = mediaStorageService.importImageSet(
                 ownerId,
                 request == null ? null : request.entityId(),
                 request == null ? null : request.imageUrl());
-        return new MediaImageUploadResponseDto(imageUrl != null, imageUrl, imageUrl);
+        return imageUploadResponse(imageSet != null && imageSet.imageUrl() != null, imageSet);
     }
 
     @PostMapping(path = "/audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -100,5 +102,25 @@ public class MediaController {
         } catch (Exception ex) {
             return MediaType.APPLICATION_OCTET_STREAM;
         }
+    }
+
+    private MediaImageUploadResponseDto imageUploadResponse(boolean uploaded, StoredImageSet imageSet) {
+        if (!uploaded || imageSet == null) {
+            return new MediaImageUploadResponseDto(false, null, null);
+        }
+        MediaImageSetDto dto = new MediaImageSetDto(
+                imageSet.originalUrl(),
+                imageSet.smallUrl(),
+                imageSet.mediumUrl(),
+                imageSet.largeUrl());
+        return new MediaImageUploadResponseDto(
+                true,
+                imageSet.imageUrl(),
+                imageSet.imageUrl(),
+                dto,
+                imageSet.originalUrl(),
+                imageSet.smallUrl(),
+                imageSet.mediumUrl(),
+                imageSet.largeUrl());
     }
 }

@@ -2,7 +2,8 @@ FROM eclipse-temurin:25.0.2_10-jre-alpine
 
 EXPOSE 8080
 
-RUN mkdir /app
+RUN apk add --no-cache imagemagick && \
+    mkdir /app
 
 COPY projects/profile/build/libs/*.jar /app/spring-boot-application.jar
 

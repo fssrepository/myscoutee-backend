@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.controller.media;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.raxim.myscoutee.profile.data.dto.media.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.profile.service.MediaStorageService;
+import com.raxim.myscoutee.profile.service.MediaStorageService.StoredImageSet;
 
 @ExtendWith(MockitoExtension.class)
 class MediaControllerTest {
@@ -32,6 +35,25 @@ class MediaControllerTest {
 
         assertThatThrownBy(() -> controller.uploadAudio("owner-1", "message-1", multipartFile))
                 .hasMessageContaining("Audio upload unavailable");
+    }
+
+    @Test
+    void uploadImageReturnsImageSetVariants() {
+        MediaController controller = new MediaController(mediaStorageService);
+        when(mediaStorageService.storeImageSet("owner-1", "slot-0", multipartFile))
+                .thenReturn(new StoredImageSet(
+                        "/media/public?key=images/owner-1/slot-0/1/large.webp",
+                        "/media/public?key=images/owner-1/slot-0/1/original",
+                        "/media/public?key=images/owner-1/slot-0/1/small.webp",
+                        "/media/public?key=images/owner-1/slot-0/1/medium.webp",
+                        "/media/public?key=images/owner-1/slot-0/1/large.webp"));
+
+        var response = controller.uploadImage("owner-1", "slot-0", multipartFile);
+
+        assertThat(response.uploaded()).isTrue();
+        assertThat(response.imageUrl()).endsWith("/large.webp");
+        assertThat(response.imageSet().smallUrl()).endsWith("/small.webp");
+        assertThat(response.mediumUrl()).endsWith("/medium.webp");
     }
 
     @Test
