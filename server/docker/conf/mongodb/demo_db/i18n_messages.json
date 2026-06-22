@@ -5442,16 +5442,34 @@
     "value": "Profile save timed out"
   },
   {
+    "_id": "i18n-message-en-please-register",
+    "key": "please.register",
+    "lang": "en",
+    "value": "Please register"
+  },
+  {
     "_id": "i18n-message-en-profile-setup",
     "key": "profile.setup",
     "lang": "en",
     "value": "Profile setup"
   },
   {
+    "_id": "i18n-message-en-profile-setup-demo-message",
+    "key": "profile.setup.demo.message",
+    "lang": "en",
+    "value": "Complete your profile to create a demo profile."
+  },
+  {
     "_id": "i18n-message-en-profile-setup-progress",
     "key": "profile.setup.progress",
     "lang": "en",
     "value": "Profile setup progress"
+  },
+  {
+    "_id": "i18n-message-en-profile-setup-registration-message",
+    "key": "profile.setup.registration.message",
+    "lang": "en",
+    "value": "Complete your profile to finish registration."
   },
   {
     "_id": "i18n-message-en-profile-setup-steps",
@@ -15762,16 +15780,34 @@
     "value": "A profil mentése időtúllépés miatt megszakadt"
   },
   {
+    "_id": "i18n-message-hu-please-register",
+    "key": "please.register",
+    "lang": "hu",
+    "value": "Regisztráció"
+  },
+  {
     "_id": "i18n-message-hu-profile-setup",
     "key": "profile.setup",
     "lang": "hu",
     "value": "Profilbeállítás"
   },
   {
+    "_id": "i18n-message-hu-profile-setup-demo-message",
+    "key": "profile.setup.demo.message",
+    "lang": "hu",
+    "value": "Töltsd ki a profilod egy demo profil létrehozásához."
+  },
+  {
     "_id": "i18n-message-hu-profile-setup-progress",
     "key": "profile.setup.progress",
     "lang": "hu",
     "value": "Profilbeállítás állapota"
+  },
+  {
+    "_id": "i18n-message-hu-profile-setup-registration-message",
+    "key": "profile.setup.registration.message",
+    "lang": "hu",
+    "value": "Töltsd ki a profilod a regisztráció befejezéséhez."
   },
   {
     "_id": "i18n-message-hu-profile-setup-steps",
