@@ -13,14 +13,13 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDeckQueryDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDeckResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
@@ -186,18 +185,18 @@ public class ActivitiesEventsController {
         return activitiesEventFeedbackService.loadPage(request);
     }
 
-    @PostMapping("/feedback/deck")
-    public EventFeedbackDeckResultDto loadFeedbackDeck(@RequestBody EventFeedbackDeckQueryDto request) {
-        return activitiesEventFeedbackService.loadDeck(request);
+    @PostMapping("/feedback/detail")
+    public EventFeedbackDetailDto loadFeedbackDetail(@RequestBody EventFeedbackQueryDto request) {
+        return activitiesEventFeedbackService.loadDetail(request);
     }
 
     @PostMapping("/feedback/submit")
     @RequiresPolicy(
             key = AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
-            subject = "#request?.userId() ?: #actorUserId",
+            subject = "#actorUserId",
             resourceId = "#request?.eventId()",
             skipWhenAuthenticationOptional = true)
-    public void submitFeedback(@RequestBody EventFeedbackSubmitRequestDto request) {
+    public void submitFeedback(@RequestBody EventFeedbackDetailDto request) {
         activitiesEventFeedbackService.submit(request);
     }
 

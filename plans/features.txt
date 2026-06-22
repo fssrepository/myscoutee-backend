@@ -10,17 +10,16 @@ mobil/desktop view switch like on base44
 emoji also has some sort of popup like this on chat
 
 image resize on upload to read thumbnails where needed like chat
-event feedback corousel / trounament craousel + on boarding tab transform to carousel -- they are external carousel templates -- so we need to make a readable carousel as different component
 we have warped image carousel -> we need to make that kind also to unify
 
+event feedback corousel / trounament craousel + on boarding tab transform to carousel -- they are external carousel templates -- so we need to make a readable carousel as different component
 flexible form carousel (global form - editor feedback - onboarding)
-
 flexible form -- you can create a form, where you can set stepts, and which steps contain what, if you don't make steps, then you can show in one page
+
 kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben - a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
 a policy view is single-rownak tunik (valszeg memory, nem local)
 
 shared folder  - home filter -> ui converter probably
-az admin-ban meg van egy profile szerkeszto, nem tudni mi az a profile-popup
 review host interfaces (direct calls should be eliminated -> appctx)
 ng:deep scss removal
 

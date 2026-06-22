@@ -26,20 +26,18 @@ import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardSourceDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDeckQueryDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDeckResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEntryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageCountsDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageStateSnapshotDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
@@ -114,10 +112,10 @@ public class ActivitiesEventFeedbackService {
         EventFeedbackPageStateSnapshotDto state = pageStateSnapshot(queryStateDtos(userId));
         List<EventFeedbackReceivedEventDto> receivedEvents = queryReceivedEventsByOwnedEventIds(userId, eventSourceIds(organizerEvents));
         Map<String, List<EventFeedbackReceivedEntryDto>> receivedByEventId = receivedEntriesByEventId(receivedEvents);
-        Map<String, List<EventFeedbackCardSourceDto>> cardsByEventId = feedbackCardsByEventId(feedbackEvents, usersById, activeUser);
-        List<EventFeedbackPageItemDto> allItems = buildFeedbackPageItems(feedbackEvents, cardsByEventId, state, userId);
-        List<EventFeedbackPageItemDto> organizerItems = buildOrganizerPageItems(organizerEvents, receivedByEventId);
-        List<EventFeedbackPageItemDto> filteredItems = filterPageItems(filter, allItems, organizerItems);
+        Map<String, List<EventFeedbackCardDto>> cardsByEventId = feedbackCardsByEventId(feedbackEvents, usersById, activeUser);
+        List<EventFeedbackDto> allItems = buildFeedbackPageItems(feedbackEvents, cardsByEventId, state, userId);
+        List<EventFeedbackDto> organizerItems = buildOrganizerPageItems(organizerEvents, receivedByEventId);
+        List<EventFeedbackDto> filteredItems = filterPageItems(filter, allItems, organizerItems);
         int page = normalizePage(request == null ? null : request.page());
         int pageSize = normalizePageSize(request == null ? null : request.pageSize());
         int fromIndex = Math.min(filteredItems.size(), page * pageSize);
@@ -133,26 +131,27 @@ public class ActivitiesEventFeedbackService {
                 counts(allItems, organizerItems));
     }
 
-    public EventFeedbackDeckResultDto loadDeck(EventFeedbackDeckQueryDto request) {
+    public EventFeedbackDetailDto loadDetail(EventFeedbackQueryDto request) {
         Users activeUser = homeUserProfileService.resolveCurrentUser(request == null ? null : request.userId());
         String userId = normalizeId(activeUser == null ? null : activeUser.getUserId());
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || activeUser == null || !StringUtils.hasText(eventId)) {
-            return emptyDeckResult(eventId);
+            return emptyDetailResult(eventId);
         }
-        ActivityEvent record = findFeedbackEventForDeck(userId, eventId);
+        ActivityEvent record = findFeedbackEventForDetail(userId, eventId);
         if (record == null) {
-            return emptyDeckResult(eventId);
+            return emptyDetailResult(eventId);
         }
         Map<String, Users> usersById = buildFeedbackUsersById(activeUser, List.of(record), List.of());
-        return new EventFeedbackDeckResultDto(
+        return new EventFeedbackDetailDto(
                 eventId,
                 safeText(record.getTitle()),
-                List.copyOf(buildFeedbackCardSources(record, usersById, activeUser)));
+                "",
+                List.copyOf(buildFeedbackCards(record, usersById, activeUser)));
     }
 
-    public void submit(EventFeedbackSubmitRequestDto request) {
-        String userId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
+    public void submit(EventFeedbackDetailDto request) {
+        String userId = homeUserProfileService.resolveSelectedUserId(null);
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
             return;
@@ -161,7 +160,7 @@ public class ActivitiesEventFeedbackService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit feedback for this event.");
         }
 
-        String nowIso = firstNonBlank(firstAnswerSubmittedAt(request == null ? null : request.answers()), Instant.now().toString());
+        String nowIso = firstNonBlank(request == null ? null : request.submittedAtIso(), Instant.now().toString());
         EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
         boolean wasSubmitted = StringUtils.hasText(previousState == null ? null : previousState.getSubmittedAtIso());
         boolean wasRemoved = Boolean.TRUE.equals(previousState == null ? null : previousState.getRemoved());
@@ -174,24 +173,24 @@ public class ActivitiesEventFeedbackService {
         eventFeedbackStatesRepository.save(state);
 
         LinkedHashSet<String> changedTargetUserIds = new LinkedHashSet<>();
-        for (EventFeedbackAnswerSubmitDto answer : safeAnswers(request == null ? null : request.answers())) {
-            String cardId = normalizeId(answer.cardId());
+        for (EventFeedbackCardDto card : safeDetailCards(request == null ? null : request.cards())) {
+            String cardId = normalizeId(card.id());
             if (!StringUtils.hasText(cardId)) {
                 continue;
             }
             EventFeedbackAnswer document = eventFeedbackAnswersRepository
                     .findByViewerUserIdAndEventIdAndCardId(userId, eventId, cardId)
                     .orElseGet(() -> createAnswer(userId, eventId, cardId, nowIso));
-            document.setKind(safeText(answer.kind()));
-            document.setTargetUserId(normalizeId(answer.targetUserId()));
-            document.setTargetRole(safeText(answer.targetRole()));
-            document.setPrimaryValue(safeText(answer.primaryValue()));
-            document.setSecondaryValue(safeText(answer.secondaryValue()));
-            document.setPersonalityTraitIds(answer.personalityTraitIds() == null
+            document.setKind(safeText(card.kind()));
+            document.setTargetUserId(normalizeId(card.targetUserId()));
+            document.setTargetRole(safeText(card.targetRole()));
+            document.setPrimaryValue(safeText(card.answerPrimary()));
+            document.setSecondaryValue(safeText(card.answerSecondary()));
+            document.setPersonalityTraitIds(card.selectedTraitIds() == null
                     ? List.of()
-                    : answer.personalityTraitIds().stream().map(this::safeText).filter(StringUtils::hasText).toList());
-            document.setTags(answer.tags() == null ? List.of() : answer.tags().stream().map(this::safeText).filter(StringUtils::hasText).toList());
-            document.setSubmittedAtIso(firstNonBlank(answer.submittedAtIso(), nowIso));
+                    : card.selectedTraitIds().stream().map(this::safeText).filter(StringUtils::hasText).toList());
+            document.setTags(List.of());
+            document.setSubmittedAtIso(nowIso);
             document.setUpdatedDate(nowIso);
             document.setUpdatedUser(userId);
             eventFeedbackAnswersRepository.save(document);
@@ -354,7 +353,7 @@ public class ActivitiesEventFeedbackService {
                 .toList();
     }
 
-    private ActivityEvent findFeedbackEventForDeck(String userId, String eventId) {
+    private ActivityEvent findFeedbackEventForDetail(String userId, String eventId) {
         return uniqueFeedbackEvents(activityEventsRepository.findBySourceId(eventId)).stream()
                 .filter(record -> canUserFeedbackEvent(userId, record))
                 .filter(this::isFeedbackUnlocked)
@@ -444,20 +443,20 @@ public class ActivitiesEventFeedbackService {
         }
     }
 
-    private Map<String, List<EventFeedbackCardSourceDto>> feedbackCardsByEventId(
+    private Map<String, List<EventFeedbackCardDto>> feedbackCardsByEventId(
             Collection<ActivityEvent> records,
             Map<String, Users> usersById,
             Users activeUser) {
-        Map<String, List<EventFeedbackCardSourceDto>> cardsByEventId = new LinkedHashMap<>();
+        Map<String, List<EventFeedbackCardDto>> cardsByEventId = new LinkedHashMap<>();
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
-            for (EventFeedbackCardSourceDto card : buildFeedbackCardSources(record, usersById, activeUser)) {
+            for (EventFeedbackCardDto card : buildFeedbackCards(record, usersById, activeUser)) {
                 cardsByEventId.computeIfAbsent(card.eventId(), ignored -> new ArrayList<>()).add(card);
             }
         }
         return cardsByEventId;
     }
 
-    private List<EventFeedbackCardSourceDto> buildFeedbackCardSources(
+    private List<EventFeedbackCardDto> buildFeedbackCards(
             ActivityEvent record,
             Map<String, Users> usersById,
             Users activeUser) {
@@ -472,8 +471,8 @@ public class ActivitiesEventFeedbackService {
             return List.of();
         }
 
-        List<EventFeedbackCardSourceDto> cards = new ArrayList<>();
-        cards.add(new EventFeedbackCardSourceDto(
+        List<EventFeedbackCardDto> cards = new ArrayList<>();
+        cards.add(new EventFeedbackCardDto(
                 "feedback-event-" + eventId,
                 eventId,
                 "event",
@@ -491,14 +490,17 @@ public class ActivitiesEventFeedbackService {
                 safeText(host.getCity()),
                 normalizeGender(host.getGender()),
                 safeText(host.getTraitLabel()),
-                firstImageUrl(host)));
+                firstImageUrl(host),
+                "",
+                "",
+                List.of()));
 
         for (Users attendee : feedbackAttendeesForEvent(record, usersById, activeUserId, hostId)) {
             String attendeeUserId = normalizeId(attendee.getUserId());
             if (!StringUtils.hasText(attendeeUserId)) {
                 continue;
             }
-            cards.add(new EventFeedbackCardSourceDto(
+            cards.add(new EventFeedbackCardDto(
                     "feedback-attendee-" + eventId + "-" + attendeeUserId,
                     eventId,
                     "attendee",
@@ -516,7 +518,10 @@ public class ActivitiesEventFeedbackService {
                     safeText(attendee.getCity()),
                     normalizeGender(attendee.getGender()),
                     safeText(attendee.getTraitLabel()),
-                    firstImageUrl(attendee)));
+                    firstImageUrl(attendee),
+                    "",
+                    "",
+                    List.of()));
         }
         return cards;
     }
@@ -560,18 +565,18 @@ public class ActivitiesEventFeedbackService {
         return attendees;
     }
 
-    private List<EventFeedbackPageItemDto> buildFeedbackPageItems(
+    private List<EventFeedbackDto> buildFeedbackPageItems(
             Collection<ActivityEvent> records,
-            Map<String, List<EventFeedbackCardSourceDto>> cardsByEventId,
+            Map<String, List<EventFeedbackCardDto>> cardsByEventId,
             EventFeedbackPageStateSnapshotDto state,
             String activeUserId) {
-        List<EventFeedbackPageItemDto> items = new ArrayList<>();
+        List<EventFeedbackDto> items = new ArrayList<>();
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
             String eventId = normalizeId(record == null ? null : record.getSourceId());
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
-            List<EventFeedbackCardSourceDto> cards = cardsByEventId.getOrDefault(eventId, List.of()).stream()
+            List<EventFeedbackCardDto> cards = cardsByEventId.getOrDefault(eventId, List.of()).stream()
                     .filter(card -> !("attendee".equals(card.kind()) && Objects.equals(activeUserId, card.attendeeUserId())))
                     .toList();
             if (cards.isEmpty()) {
@@ -583,7 +588,7 @@ public class ActivitiesEventFeedbackService {
                     : (int) cards.stream().filter(card -> !state.submittedCardsById().containsKey(card.id())).count();
             boolean isRemoved = state.removedEventsById().containsKey(eventId);
             Long startAtMs = eventStartAtMs(record);
-            items.add(new EventFeedbackPageItemDto(
+            items.add(new EventFeedbackDto(
                     eventId,
                     safeText(record.getTitle()),
                     safeText(record.getSubtitle()),
@@ -601,10 +606,10 @@ public class ActivitiesEventFeedbackService {
         return sortPendingItems(items);
     }
 
-    private List<EventFeedbackPageItemDto> buildOrganizerPageItems(
+    private List<EventFeedbackDto> buildOrganizerPageItems(
             Collection<ActivityEvent> records,
             Map<String, List<EventFeedbackReceivedEntryDto>> receivedByEventId) {
-        List<EventFeedbackPageItemDto> items = new ArrayList<>();
+        List<EventFeedbackDto> items = new ArrayList<>();
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
             String eventId = normalizeId(record == null ? null : record.getSourceId());
             if (!StringUtils.hasText(eventId)) {
@@ -615,7 +620,7 @@ public class ActivitiesEventFeedbackService {
                 continue;
             }
             Long startAtMs = eventStartAtMs(record);
-            items.add(new EventFeedbackPageItemDto(
+            items.add(new EventFeedbackDto(
                     eventId,
                     safeText(record.getTitle()),
                     safeText(record.getSubtitle()),
@@ -635,10 +640,10 @@ public class ActivitiesEventFeedbackService {
                 .toList();
     }
 
-    private List<EventFeedbackPageItemDto> filterPageItems(
+    private List<EventFeedbackDto> filterPageItems(
             String filter,
-            List<EventFeedbackPageItemDto> allItems,
-            List<EventFeedbackPageItemDto> organizerItems) {
+            List<EventFeedbackDto> allItems,
+            List<EventFeedbackDto> organizerItems) {
         return switch (filter) {
             case "own-events" -> List.copyOf(organizerItems);
             case "feedbacked" -> allItems.stream()
@@ -658,13 +663,13 @@ public class ActivitiesEventFeedbackService {
         };
     }
 
-    private List<EventFeedbackPageItemDto> sortPendingItems(Collection<EventFeedbackPageItemDto> items) {
-        return (items == null ? List.<EventFeedbackPageItemDto>of() : items).stream()
+    private List<EventFeedbackDto> sortPendingItems(Collection<EventFeedbackDto> items) {
+        return (items == null ? List.<EventFeedbackDto>of() : items).stream()
                 .sorted(this::comparePendingItems)
                 .toList();
     }
 
-    private int comparePendingItems(EventFeedbackPageItemDto left, EventFeedbackPageItemDto right) {
+    private int comparePendingItems(EventFeedbackDto left, EventFeedbackDto right) {
         int delta = compareDates(left.startAtMs(), right.startAtMs(), true);
         if (delta != 0) {
             return delta;
@@ -672,7 +677,7 @@ public class ActivitiesEventFeedbackService {
         return safeText(left.title()).compareTo(safeText(right.title()));
     }
 
-    private int compareOrganizerItems(EventFeedbackPageItemDto left, EventFeedbackPageItemDto right) {
+    private int compareOrganizerItems(EventFeedbackDto left, EventFeedbackDto right) {
         int delta = comparePendingItems(left, right);
         if (delta != 0) {
             return delta;
@@ -684,7 +689,7 @@ public class ActivitiesEventFeedbackService {
         return compareDates(left.feedbackedAtMs(), right.feedbackedAtMs(), false);
     }
 
-    private int compareFeedbackedItems(EventFeedbackPageItemDto left, EventFeedbackPageItemDto right) {
+    private int compareFeedbackedItems(EventFeedbackDto left, EventFeedbackDto right) {
         int delta = compareDates(
                 firstPositive(left.feedbackedAtMs(), left.startAtMs()),
                 firstPositive(right.feedbackedAtMs(), right.startAtMs()),
@@ -695,7 +700,7 @@ public class ActivitiesEventFeedbackService {
         return safeText(right.title()).compareTo(safeText(left.title()));
     }
 
-    private int compareRemovedItems(EventFeedbackPageItemDto left, EventFeedbackPageItemDto right) {
+    private int compareRemovedItems(EventFeedbackDto left, EventFeedbackDto right) {
         int delta = compareDates(
                 firstPositive(left.removedAtMs(), left.feedbackedAtMs(), left.startAtMs()),
                 firstPositive(right.removedAtMs(), right.feedbackedAtMs(), right.startAtMs()),
@@ -722,8 +727,8 @@ public class ActivitiesEventFeedbackService {
     }
 
     private EventFeedbackPageCountsDto counts(
-            List<EventFeedbackPageItemDto> allItems,
-            List<EventFeedbackPageItemDto> organizerItems) {
+            List<EventFeedbackDto> allItems,
+            List<EventFeedbackDto> organizerItems) {
         return new EventFeedbackPageCountsDto(
                 organizerItems.size(),
                 (int) allItems.stream().filter(item -> !Boolean.TRUE.equals(item.isRemoved()) && positiveCount(item.pendingCards()) > 0).count(),
@@ -795,8 +800,8 @@ public class ActivitiesEventFeedbackService {
                 new EventFeedbackPageCountsDto(0, 0, 0, 0));
     }
 
-    private EventFeedbackDeckResultDto emptyDeckResult(String eventId) {
-        return new EventFeedbackDeckResultDto(safeText(eventId), "", List.of());
+    private EventFeedbackDetailDto emptyDetailResult(String eventId) {
+        return new EventFeedbackDetailDto(safeText(eventId), "", "", List.of());
     }
 
     private Map<String, List<EventFeedbackReceivedEntryDto>> receivedEntriesByEventId(
@@ -995,18 +1000,8 @@ public class ActivitiesEventFeedbackService {
         return answer;
     }
 
-    private String firstAnswerSubmittedAt(List<EventFeedbackAnswerSubmitDto> answers) {
-        for (EventFeedbackAnswerSubmitDto answer : safeAnswers(answers)) {
-            String submittedAtIso = safeText(answer.submittedAtIso());
-            if (StringUtils.hasText(submittedAtIso)) {
-                return submittedAtIso;
-            }
-        }
-        return null;
-    }
-
-    private List<EventFeedbackAnswerSubmitDto> safeAnswers(List<EventFeedbackAnswerSubmitDto> answers) {
-        return answers == null ? List.of() : answers;
+    private List<EventFeedbackCardDto> safeDetailCards(List<EventFeedbackCardDto> cards) {
+        return cards == null ? List.of() : cards;
     }
 
     private Map<String, Map<String, EventFeedbackAnswerDto>> buildAnswersByEventId(String userId) {

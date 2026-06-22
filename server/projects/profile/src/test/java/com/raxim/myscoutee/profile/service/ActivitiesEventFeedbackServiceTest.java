@@ -12,9 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackAnswerSubmitDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
@@ -57,26 +57,39 @@ class ActivitiesEventFeedbackServiceTest {
                 adminTelemetryService,
                 accessControlService,
                 userActivityCountersService);
-        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
     }
 
     @Test
     void submitRejectsDeniedUserBeforeSavingFeedback() {
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("u1");
         when(accessControlService.canCurrentActorSubmitEventFeedback("u1", "event-1")).thenReturn(false);
 
-        assertThatThrownBy(() -> service.submit(new EventFeedbackSubmitRequestDto(
-                "u1",
+        assertThatThrownBy(() -> service.submit(new EventFeedbackDetailDto(
                 "event-1",
-                List.of(new EventFeedbackAnswerSubmitDto(
+                "Event",
+                "2026-06-02T00:00:00Z",
+                List.of(new EventFeedbackCardDto(
                         "card-1",
+                        "event-1",
                         "event",
+                        null,
                         "host",
                         "Admin",
+                        "Event",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "Host",
+                        null,
+                        "",
+                        "",
+                        "",
+                        "",
                         "great",
                         "clear",
-                        List.of("reliable-one"),
-                        List.of("organized"),
-                        "2026-06-02T00:00:00Z")))))
+                        List.of("reliable-one"))))))
                 .hasMessageContaining("submit feedback");
 
         verifyNoInteractions(eventFeedbackStatesRepository, eventFeedbackAnswersRepository, affinityRecomputeTaskService, adminTelemetryService);
@@ -84,6 +97,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void saveNoteRejectsDeniedUserBeforeSavingState() {
+        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorSaveEventFeedbackNote("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.saveNote(new EventFeedbackNoteRequestDto("u1", "event-1", "Needs better timing.")))
@@ -94,6 +108,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void removeRejectsDeniedUserBeforeSavingState() {
+        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorRemoveEventFeedback("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.markRemoved(new EventFeedbackToggleRequestDto("u1", "event-1"), true))
@@ -104,6 +119,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void restoreRejectsDeniedUserBeforeSavingState() {
+        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorRestoreEventFeedback("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.markRemoved(new EventFeedbackToggleRequestDto("u1", "event-1"), false))
