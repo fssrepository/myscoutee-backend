@@ -14,6 +14,8 @@ shared folder  - home filter -> ui converter probably
 review host interfaces (direct calls should be eliminated -> appctx)
 ng:deep scss removal
 
+date input with horoscop (separate component) + value accessor
+
 desktop
 -------
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
