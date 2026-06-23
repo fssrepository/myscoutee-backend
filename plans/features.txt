@@ -15,6 +15,8 @@ review host interfaces (direct calls should be eliminated -> appctx)
 ng:deep scss removal
 
 date input with horoscop (separate component) + value accessor
+tournament to smart-list transform
+leaderboard maybe we could make accordion like like help/terms
 
 desktop
 -------
