@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
@@ -30,7 +29,7 @@ public class ActivityEventDtoMapper {
         }
     }
 
-    public EventRecordDto toRecord(ActivityEvent record, MappingContext context) {
+    public EventRecordDto toDto(ActivityEvent record, MappingContext context) {
         if (record == null) {
             return null;
         }
@@ -97,58 +96,6 @@ public class ActivityEventDtoMapper {
                 normalizeStrings(record.getTopics()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getSubEventsDisplayMode()),
-                safeDouble(record.getRating()),
-                safeDouble(record.getBoost()),
-                safeDouble(record.getAffinity()));
-    }
-
-    public EventListItemDto toListItem(ActivityEvent record, MappingContext context) {
-        if (record == null) {
-            return null;
-        }
-        Integer distanceMetersExact = resolveDistanceMetersExact(context == null ? null : context.viewerCoordinates(), record);
-        ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot = resolveMembersSnapshot(record, context);
-        int capacityTotal = membersSnapshot == null || membersSnapshot.capacityTotal() == null
-                ? normalizeCount(record.getCapacityTotal())
-                : Math.max(0, membersSnapshot.capacityTotal());
-        int acceptedMembers = membersSnapshot == null
-                ? Math.max(normalizeCount(record.getAcceptedMembers()), fallbackAcceptedMemberUserIds(record).size())
-                : membersSnapshot.acceptedMembers();
-        int pendingMembers = membersSnapshot == null
-                ? normalizeCount(record.getPendingMembers())
-                : membersSnapshot.pendingMembers();
-        List<String> adminUserIds = resolveDtoAdminUserIds(record, membersSnapshot);
-        return new EventListItemDto(
-                normalizeId(record.getSourceId()),
-                normalizeId(record.getOwnerUserId()),
-                safeText(record.getStatus()),
-                adminUserIds,
-                safeText(record.getAvatar()),
-                safeText(record.getTitle()),
-                safeText(record.getSubtitle()),
-                safeText(record.getTimeframe()),
-                normalizeCount(record.getUnread()),
-                normalizeCount(record.getActivity()),
-                normalizeId(record.getCreatorUserId()),
-                safeText(record.getCreatorName()),
-                safeText(record.getCreatorInitials()),
-                safeText(record.getCreatorCity()),
-                safeText(record.getVisibility()),
-                StringUtils.hasText(record.getStartAtIso()) ? record.getStartAtIso().trim() : null,
-                StringUtils.hasText(record.getEndAtIso()) ? record.getEndAtIso().trim() : null,
-                distanceMetersExact == null
-                        ? Math.max(0d, safeDouble(record.getDistanceKm()))
-                        : distanceMetersExact.doubleValue() / 1000d,
-                safeText(record.getImageUrl()),
-                safeText(record.getLocation()),
-                nullableCount(record.getCapacityMin()),
-                nullableCount(record.getCapacityMax()),
-                Math.max(acceptedMembers, capacityTotal),
-                Boolean.TRUE.equals(record.getTicketing()),
-                isGeneratedSlotRecord(record) ? "slot" : "main",
-                acceptedMembers,
-                pendingMembers,
-                normalizeStrings(record.getTopics()),
                 safeDouble(record.getRating()),
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()));

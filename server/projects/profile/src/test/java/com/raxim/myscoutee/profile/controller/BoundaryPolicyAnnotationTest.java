@@ -25,8 +25,8 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSaveRequestDto;
@@ -132,9 +132,9 @@ class BoundaryPolicyAnnotationTest {
         assertMethodPolicy(
                 ActivitiesEventsController.class,
                 "submitFeedback",
-                new Class<?>[] { EventFeedbackSubmitRequestDto.class },
+                new Class<?>[] { EventFeedbackDetailDto.class },
                 AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
-                "#request?.userId() ?: #actorUserId",
+                "#actorUserId",
                 "#request?.eventId()");
         assertMethodPolicy(
                 ActivitiesEventsController.class,

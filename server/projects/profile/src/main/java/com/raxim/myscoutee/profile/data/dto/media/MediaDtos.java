@@ -7,7 +7,22 @@ public final class MediaDtos {
     public record MediaImageUploadResponseDto(
             Boolean uploaded,
             String imageUrl,
-            String url) {
+            String url,
+            MediaImageSetDto imageSet,
+            String originalUrl,
+            String smallUrl,
+            String mediumUrl,
+            String largeUrl) {
+        public MediaImageUploadResponseDto(Boolean uploaded, String imageUrl, String url) {
+            this(uploaded, imageUrl, url, null, null, null, null, null);
+        }
+    }
+
+    public record MediaImageSetDto(
+            String originalUrl,
+            String smallUrl,
+            String mediumUrl,
+            String largeUrl) {
     }
 
     public record MediaImageImportRequestDto(

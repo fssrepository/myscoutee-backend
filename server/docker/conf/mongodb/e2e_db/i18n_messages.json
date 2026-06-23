@@ -1086,6 +1086,48 @@
     "value": "Feedback submitted from the app."
   },
   {
+    "_id": "i18n-message-en-event-feedback-confirm-remove-failure",
+    "key": "event.feedback.confirm.remove.failure",
+    "lang": "en",
+    "value": "Unable to remove this feedback item."
+  },
+  {
+    "_id": "i18n-message-en-event-feedback-confirm-remove-message",
+    "key": "event.feedback.confirm.remove.message",
+    "lang": "en",
+    "value": "This event feedback item will be moved to Removed without feedback."
+  },
+  {
+    "_id": "i18n-message-en-event-feedback-confirm-remove-title",
+    "key": "event.feedback.confirm.remove.title",
+    "lang": "en",
+    "value": "Remove feedback?"
+  },
+  {
+    "_id": "i18n-message-en-event-feedback-confirm-remove-warning",
+    "key": "event.feedback.confirm.remove.warning",
+    "lang": "en",
+    "value": "You can restore it later from the Removed filter."
+  },
+  {
+    "_id": "i18n-message-en-event-feedback-confirm-restore-failure",
+    "key": "event.feedback.confirm.restore.failure",
+    "lang": "en",
+    "value": "Unable to restore this feedback item."
+  },
+  {
+    "_id": "i18n-message-en-event-feedback-confirm-restore-message",
+    "key": "event.feedback.confirm.restore.message",
+    "lang": "en",
+    "value": "This event feedback item will move back to Pending."
+  },
+  {
+    "_id": "i18n-message-en-event-feedback-confirm-restore-title",
+    "key": "event.feedback.confirm.restore.title",
+    "lang": "en",
+    "value": "Restore feedback?"
+  },
+  {
     "_id": "i18n-message-en-featured",
     "key": "featured",
     "lang": "en",
@@ -5316,6 +5358,18 @@
     "value": "Education"
   },
   {
+    "_id": "i18n-message-en-profile-experience-openschool",
+    "key": "profile.experience.openSchool",
+    "lang": "en",
+    "value": "Open school experience"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-openworkplace",
+    "key": "profile.experience.openWorkplace",
+    "lang": "en",
+    "value": "Open workplace experience"
+  },
+  {
     "_id": "i18n-message-en-profile-experience-profession",
     "key": "profile.experience.profession",
     "lang": "en",
@@ -5326,6 +5380,18 @@
     "key": "profile.experience.school",
     "lang": "en",
     "value": "School"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-selectschool",
+    "key": "profile.experience.selectSchool",
+    "lang": "en",
+    "value": "Select school"
+  },
+  {
+    "_id": "i18n-message-en-profile-experience-selectworkplace",
+    "key": "profile.experience.selectWorkplace",
+    "lang": "en",
+    "value": "Select workplace"
   },
   {
     "_id": "i18n-message-en-profile-experience-workplace",
@@ -5376,16 +5442,34 @@
     "value": "Profile save timed out"
   },
   {
+    "_id": "i18n-message-en-please-register",
+    "key": "please.register",
+    "lang": "en",
+    "value": "Please register"
+  },
+  {
     "_id": "i18n-message-en-profile-setup",
     "key": "profile.setup",
     "lang": "en",
     "value": "Profile setup"
   },
   {
+    "_id": "i18n-message-en-profile-setup-demo-message",
+    "key": "profile.setup.demo.message",
+    "lang": "en",
+    "value": "Complete your profile to create a demo profile."
+  },
+  {
     "_id": "i18n-message-en-profile-setup-progress",
     "key": "profile.setup.progress",
     "lang": "en",
     "value": "Profile setup progress"
+  },
+  {
+    "_id": "i18n-message-en-profile-setup-registration-message",
+    "key": "profile.setup.registration.message",
+    "lang": "en",
+    "value": "Complete your profile to finish registration."
   },
   {
     "_id": "i18n-message-en-profile-setup-steps",
@@ -5596,6 +5680,12 @@
     "key": "select.languages",
     "lang": "en",
     "value": "Select languages"
+  },
+  {
+    "_id": "i18n-message-en-select-option",
+    "key": "select.option",
+    "lang": "en",
+    "value": "Please select"
   },
   {
     "_id": "i18n-message-en-select-values",
@@ -8358,6 +8448,18 @@
     "value": "Remove"
   },
   {
+    "_id": "i18n-message-en-remove-feedback",
+    "key": "remove.feedback",
+    "lang": "en",
+    "value": "Remove feedback?"
+  },
+  {
+    "_id": "i18n-message-en-removing",
+    "key": "removing",
+    "lang": "en",
+    "value": "Removing..."
+  },
+  {
     "_id": "i18n-message-en-report-bugs",
     "key": "report.bugs",
     "lang": "en",
@@ -8410,6 +8512,12 @@
     "key": "restore.feedback",
     "lang": "en",
     "value": "Restore"
+  },
+  {
+    "_id": "i18n-message-en-restore-feedback-question",
+    "key": "restore.feedback.question",
+    "lang": "en",
+    "value": "Restore feedback?"
   },
   {
     "_id": "i18n-message-en-route",
@@ -11314,6 +11422,48 @@
     "key": "feedback.submitted.from.the.app",
     "lang": "hu",
     "value": "Az alkalmazásból beküldött visszajelzések."
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-remove-failure",
+    "key": "event.feedback.confirm.remove.failure",
+    "lang": "hu",
+    "value": "Nem sikerült eltávolítani ezt a visszajelzési elemet."
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-remove-message",
+    "key": "event.feedback.confirm.remove.message",
+    "lang": "hu",
+    "value": "Ez a visszajelzési elem visszajelzés nélkül az Eltávolítottak közé kerül."
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-remove-title",
+    "key": "event.feedback.confirm.remove.title",
+    "lang": "hu",
+    "value": "Visszajelzés eltávolítása?"
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-remove-warning",
+    "key": "event.feedback.confirm.remove.warning",
+    "lang": "hu",
+    "value": "Később visszaállíthatod az Eltávolítottak szűrőből."
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-restore-failure",
+    "key": "event.feedback.confirm.restore.failure",
+    "lang": "hu",
+    "value": "Nem sikerült visszaállítani ezt a visszajelzési elemet."
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-restore-message",
+    "key": "event.feedback.confirm.restore.message",
+    "lang": "hu",
+    "value": "Ez a visszajelzési elem visszakerül a Függő listába."
+  },
+  {
+    "_id": "i18n-message-hu-event-feedback-confirm-restore-title",
+    "key": "event.feedback.confirm.restore.title",
+    "lang": "hu",
+    "value": "Visszajelzés visszaállítása?"
   },
   {
     "_id": "i18n-message-hu-featured",
@@ -15546,6 +15696,18 @@
     "value": "Tanulmány"
   },
   {
+    "_id": "i18n-message-hu-profile-experience-openschool",
+    "key": "profile.experience.openSchool",
+    "lang": "hu",
+    "value": "Iskolai tapasztalatok megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-openworkplace",
+    "key": "profile.experience.openWorkplace",
+    "lang": "hu",
+    "value": "Munkahelyi tapasztalatok megnyitása"
+  },
+  {
     "_id": "i18n-message-hu-profile-experience-profession",
     "key": "profile.experience.profession",
     "lang": "hu",
@@ -15556,6 +15718,18 @@
     "key": "profile.experience.school",
     "lang": "hu",
     "value": "Iskola"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-selectschool",
+    "key": "profile.experience.selectSchool",
+    "lang": "hu",
+    "value": "Iskola választása"
+  },
+  {
+    "_id": "i18n-message-hu-profile-experience-selectworkplace",
+    "key": "profile.experience.selectWorkplace",
+    "lang": "hu",
+    "value": "Munkahely választása"
   },
   {
     "_id": "i18n-message-hu-profile-experience-workplace",
@@ -15606,16 +15780,34 @@
     "value": "A profil mentése időtúllépés miatt megszakadt"
   },
   {
+    "_id": "i18n-message-hu-please-register",
+    "key": "please.register",
+    "lang": "hu",
+    "value": "Regisztráció"
+  },
+  {
     "_id": "i18n-message-hu-profile-setup",
     "key": "profile.setup",
     "lang": "hu",
     "value": "Profilbeállítás"
   },
   {
+    "_id": "i18n-message-hu-profile-setup-demo-message",
+    "key": "profile.setup.demo.message",
+    "lang": "hu",
+    "value": "Töltsd ki a profilod egy demo profil létrehozásához."
+  },
+  {
     "_id": "i18n-message-hu-profile-setup-progress",
     "key": "profile.setup.progress",
     "lang": "hu",
     "value": "Profilbeállítás állapota"
+  },
+  {
+    "_id": "i18n-message-hu-profile-setup-registration-message",
+    "key": "profile.setup.registration.message",
+    "lang": "hu",
+    "value": "Töltsd ki a profilod a regisztráció befejezéséhez."
   },
   {
     "_id": "i18n-message-hu-profile-setup-steps",
@@ -15826,6 +16018,12 @@
     "key": "select.languages",
     "lang": "hu",
     "value": "Nyelvek választása"
+  },
+  {
+    "_id": "i18n-message-hu-select-option",
+    "key": "select.option",
+    "lang": "hu",
+    "value": "Válassz"
   },
   {
     "_id": "i18n-message-hu-select-values",
@@ -18544,6 +18742,12 @@
     "key": "remove",
     "lang": "hu",
     "value": "Eltávolítás"
+  },
+  {
+    "_id": "i18n-message-hu-removing",
+    "key": "removing",
+    "lang": "hu",
+    "value": "Eltávolítás..."
   },
   {
     "_id": "i18n-message-hu-report-bugs",

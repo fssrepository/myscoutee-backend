@@ -44,7 +44,6 @@ import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
@@ -498,7 +497,7 @@ public class ActivitiesEventsService {
         try {
             ACTIVE_CONTEXT.set(buildUserQueryContext(viewer));
             return queryUserRecords(viewer).stream()
-                    .map(record -> toEventRecordDto(record, viewer))
+                    .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .sorted(listItemComparator())
                     .toList();
@@ -534,7 +533,7 @@ public class ActivitiesEventsService {
         }
         return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
                 queryDirectFilteredRecords(viewer, "invitations", "all").stream()
-                        .map(record -> toEventRecordDto(record, viewer))
+                        .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
                         .toList());
@@ -551,7 +550,7 @@ public class ActivitiesEventsService {
         }
         return withEventQueryContext(buildAttendingQueryContext(viewer), () ->
                 allEventDocuments(viewer).stream()
-                        .map(record -> toEventRecordDto(record, viewer))
+                        .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
                         .toList());
@@ -585,7 +584,7 @@ public class ActivitiesEventsService {
         }
         return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
                 queryDirectFilteredRecords(viewer, "my-events", "all").stream()
-                        .map(record -> toEventRecordDto(record, viewer))
+                        .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
                         .toList());
@@ -602,7 +601,7 @@ public class ActivitiesEventsService {
         }
         return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
                 queryDirectFilteredRecords(viewer, "trash", "all").stream()
-                        .map(record -> toEventRecordDto(record, viewer))
+                        .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
                         .toList());
@@ -664,7 +663,7 @@ public class ActivitiesEventsService {
             ACTIVE_CONTEXT.set(buildExploreQueryContext(viewer));
             List<ActivityEvent> records = computeExploreRecords(viewer);
             return records.stream()
-                    .map(record -> toEventRecordDto(record, viewer))
+                    .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .sorted(Comparator
                             .comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
@@ -708,7 +707,7 @@ public class ActivitiesEventsService {
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
             List<EventRecordDto> records = pageProjections.stream()
-                    .map(projection -> toEventRecordDto(projection.record(), viewer))
+                    .map(projection -> toEventDto(projection.record(), viewer))
                     .filter(Objects::nonNull)
                     .toList();
             String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
@@ -850,17 +849,17 @@ public class ActivitiesEventsService {
                 .toList();
         ActivityEvent preferred = computePreferredEventRecords(documents).stream().findFirst().orElse(null);
         if (preferred == null || !isViewerAdmin(preferred, viewer.userId())) {
-            return preferred == null ? null : toEventRecordDto(preferred, viewer);
+            return preferred == null ? null : toEventDto(preferred, viewer);
         }
 
         List<SubEventFormItemDto> preferredSubEvents = cloneSubEvents(preferred.getSubEvents());
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
-            return toEventRecordDto(preferred, viewer);
+            return toEventDto(preferred, viewer);
         }
         SubEventFormItemDto preferredStage = preferredSubEvents.get(preferredStageIndex);
         if (!canApplyStageAction(actionTarget.action(), preferredStage, preferredSubEvents, preferredStageIndex)) {
-            return toEventRecordDto(preferred, viewer);
+            return toEventDto(preferred, viewer);
         }
 
         String nowIso = Instant.now().toString();
@@ -893,7 +892,7 @@ public class ActivitiesEventsService {
         }
 
         if (updated.isEmpty()) {
-            return toEventRecordDto(preferred, viewer);
+            return toEventDto(preferred, viewer);
         }
 
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
@@ -930,7 +929,7 @@ public class ActivitiesEventsService {
                 "stageStatus", actionTarget.nextStatus(),
                 "stageId", firstNonBlank(stageId, Integer.toString(preferredStageIndex))));
         userActivityCountersService.refreshEventCountersForDocuments(saved);
-        return toEventRecordDto(savedPreferred, viewer);
+        return toEventDto(savedPreferred, viewer);
     }
 
     public EventRecordDto requestJoin(EventActionRequestDto request) {
@@ -947,10 +946,10 @@ public class ActivitiesEventsService {
             return null;
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
-            return toEventRecordDto(preferred, viewer);
+            return toEventDto(preferred, viewer);
         }
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
-            return toEventRecordDto(preferred, viewer);
+            return toEventDto(preferred, viewer);
         }
         boolean approvalRequested = isApprovalRequested(request);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
@@ -979,7 +978,7 @@ public class ActivitiesEventsService {
                         .filter(this::isGeneratedSlotRecord)
                         .findFirst()
                         .orElse(slotRecord);
-                return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshedSlotRecord), viewer);
+                return toEventDto(buildMembershipProjection(viewer.userId(), refreshedSlotRecord), viewer);
             }
         }
 
@@ -992,7 +991,7 @@ public class ActivitiesEventsService {
             postMemberJoinedMessage(sourceId, viewer.user());
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
-        return toEventRecordDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
+        return toEventDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
     }
 
     private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {
@@ -1669,7 +1668,7 @@ public class ActivitiesEventsService {
                     bookingStartAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
-        return toEventRecordDto(selectSyncedResponseRecord(sourceId, savedDocuments, refreshedReadModelDocuments, baseRecord), actor);
+        return toEventDto(selectSyncedResponseRecord(sourceId, savedDocuments, refreshedReadModelDocuments, baseRecord), actor);
     }
 
     private ActivityEvent selectSyncedResponseRecord(
@@ -1828,7 +1827,7 @@ public class ActivitiesEventsService {
                 current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey());
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
-                .map(record -> toEventRecordDto(record, viewer))
+                .map(record -> toEventDto(record, viewer))
                 .filter(Objects::nonNull)
                 .toList());
     }
@@ -1919,8 +1918,8 @@ public class ActivitiesEventsService {
             List<ActivityEvent> pageSourceRecords = sorted.stream()
                     .map(EventProjection::record)
                     .toList();
-            List<EventListItemDto> pageRecords = pageSourceRecords.stream()
-                    .map(record -> toEventListItemDto(record, viewer))
+            List<EventRecordDto> pageRecords = pageSourceRecords.stream()
+                    .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .toList();
             return new EventListPageDto(
@@ -1937,8 +1936,8 @@ public class ActivitiesEventsService {
         List<ActivityEvent> pageSourceRecords = pageProjections.stream()
                 .map(EventProjection::record)
                 .toList();
-        List<EventListItemDto> pageRecords = pageSourceRecords.stream()
-                .map(record -> toEventListItemDto(record, viewer))
+        List<EventRecordDto> pageRecords = pageSourceRecords.stream()
+                .map(record -> toEventDto(record, viewer))
                 .filter(Objects::nonNull)
                 .toList();
         String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
@@ -2336,12 +2335,8 @@ public class ActivitiesEventsService {
         return endOfDay ? parsed + ChronoUnit.DAYS.getDuration().toMillis() - 1L : parsed;
     }
 
-    private EventRecordDto toEventRecordDto(ActivityEvent record, ViewerContext viewer) {
-        return activityEventDtoMapper.toRecord(record, eventDtoMappingContext(viewer, record));
-    }
-
-    private EventListItemDto toEventListItemDto(ActivityEvent record, ViewerContext viewer) {
-        return activityEventDtoMapper.toListItem(record, eventDtoMappingContext(viewer, record));
+    private EventRecordDto toEventDto(ActivityEvent record, ViewerContext viewer) {
+        return activityEventDtoMapper.toDto(record, eventDtoMappingContext(viewer, record));
     }
 
     private ActivityEventDtoMapper.MappingContext eventDtoMappingContext(

@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.data.dto.auth;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 
 public final class AuthDtos {
@@ -183,6 +184,11 @@ public final class AuthDtos {
             String deletedAtIso,
             Boolean admin,
             UserActivitiesDto activities) {
+    }
+
+    public record ProfileExtDto(
+            UserDto profile,
+            List<ExperienceEntryDto> experienceEntries) {
     }
 
     public record UserByIdResponseDto(

@@ -11,12 +11,18 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -31,6 +37,9 @@ import com.raxim.myscoutee.profile.service.media.MediaObjectStoreClient.StoredOb
 public class MediaStorageService {
     private static final String IMAGE_MEDIA_KIND = "images";
     private static final String AUDIO_MEDIA_KIND = "audio";
+    private static final String IMAGE_VARIANT_CONTENT_TYPE = "image/webp";
+    private static final String ORIGINAL_IMAGE_OBJECT_NAME = "original";
+    private static final List<String> IMAGE_MAGICK_COMMANDS = List.of("magick", "convert");
     private static final Set<String> ALLOWED_IMAGE_CONTENT_TYPES = Set.of("image/jpeg", "image/png", "image/webp", "image/gif");
     private static final Set<String> ALLOWED_AUDIO_CONTENT_TYPES = Set.of(
             "audio/mpeg",
@@ -42,6 +51,7 @@ public class MediaStorageService {
             "audio/x-wav");
     private static final Duration REMOTE_IMAGE_CONNECT_TIMEOUT = Duration.ofSeconds(5);
     private static final Duration REMOTE_IMAGE_REQUEST_TIMEOUT = Duration.ofSeconds(8);
+    private static final Duration IMAGE_VARIANT_TIMEOUT = Duration.ofSeconds(12);
     private static final int MAX_REMOTE_IMAGE_BYTES = 5 * 1024 * 1024;
     private static final int MAX_REMOTE_IMAGE_REDIRECTS = 3;
 
@@ -60,18 +70,21 @@ public class MediaStorageService {
     }
 
     public String storeImage(String ownerId, String entityId, MultipartFile image) {
+        StoredImageSet imageSet = storeImageSet(ownerId, entityId, image);
+        return imageSet == null ? null : imageSet.imageUrl();
+    }
+
+    public StoredImageSet storeImageSet(String ownerId, String entityId, MultipartFile image) {
         if (!isEnabled() || image == null || image.isEmpty()) {
             return null;
         }
         try {
-            return storeMediaBytes(
-                    IMAGE_MEDIA_KIND,
+            return storeImageBytesSet(
                     ownerId,
                     entityId,
                     image.getOriginalFilename(),
                     image.getContentType(),
-                    image.getBytes(),
-                    "image/");
+                    image.getBytes());
         } catch (IOException | RuntimeException ex) {
             return null;
         }
@@ -96,6 +109,11 @@ public class MediaStorageService {
     }
 
     public String importImage(String ownerId, String entityId, String imageUrl) {
+        StoredImageSet imageSet = importImageSet(ownerId, entityId, imageUrl);
+        return imageSet == null ? null : imageSet.imageUrl();
+    }
+
+    public StoredImageSet importImageSet(String ownerId, String entityId, String imageUrl) {
         if (!isEnabled()) {
             return null;
         }
@@ -107,7 +125,7 @@ public class MediaStorageService {
         if (importedImage == null) {
             return null;
         }
-        return storeImageBytes(
+        return storeImageBytesSet(
                 ownerId,
                 entityId,
                 importedImage.originalFilename(),
@@ -121,6 +139,16 @@ public class MediaStorageService {
             String originalFilename,
             String contentTypeValue,
             byte[] bytes) {
+        StoredImageSet imageSet = storeImageBytesSet(ownerId, entityId, originalFilename, contentTypeValue, bytes);
+        return imageSet == null ? null : imageSet.imageUrl();
+    }
+
+    public StoredImageSet storeImageBytesSet(
+            String ownerId,
+            String entityId,
+            String originalFilename,
+            String contentTypeValue,
+            byte[] bytes) {
         if (!isEnabled() || bytes == null || bytes.length == 0) {
             return null;
         }
@@ -128,7 +156,20 @@ public class MediaStorageService {
         if (!StringUtils.hasText(normalizedOwnerId)) {
             return null;
         }
-        return storeMediaBytes(IMAGE_MEDIA_KIND, ownerId, entityId, originalFilename, contentTypeValue, bytes, "image/");
+        String contentType = normalizeContentType(contentTypeValue);
+        if (!isAllowedImageContentType(contentType)) {
+            return null;
+        }
+        try {
+            return storeImageObjectSet(
+                    normalizedOwnerId,
+                    sanitizeSegment(entityId),
+                    originalFilename,
+                    contentType,
+                    bytes);
+        } catch (RuntimeException ex) {
+            return null;
+        }
     }
 
     private String storeMediaBytes(
@@ -152,7 +193,7 @@ public class MediaStorageService {
         if (!contentType.startsWith(safeText(requiredContentTypePrefix))) {
             return null;
         }
-        if ("image/".equals(requiredContentTypePrefix) && !ALLOWED_IMAGE_CONTENT_TYPES.contains(contentType)) {
+        if ("image/".equals(requiredContentTypePrefix) && !isAllowedImageContentType(contentType)) {
             return null;
         }
         if ("audio/".equals(requiredContentTypePrefix) && !ALLOWED_AUDIO_CONTENT_TYPES.contains(contentType)) {
@@ -165,7 +206,7 @@ public class MediaStorageService {
                     StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
                     Instant.now().toEpochMilli() + "-" + UUID.randomUUID() + resolveExtension(originalFilename, contentType));
             objectStoreClient.putObject(properties.getBucket(), objectKey, contentType, bytes);
-            return "/media/public?key=" + UriUtils.encodeQueryParam(objectKey, StandardCharsets.UTF_8);
+            return publicMediaUrl(objectKey);
         } catch (RuntimeException ex) {
             return null;
         }
@@ -201,6 +242,9 @@ public class MediaStorageService {
         if (!StringUtils.hasText(key)) {
             return;
         }
+        if (deleteManagedImageSetObjects(key)) {
+            return;
+        }
         objectStoreClient.deleteObject(properties.getBucket(), key);
     }
 
@@ -209,6 +253,169 @@ public class MediaStorageService {
                 && objectStoreClient != null
                 && objectStoreClient.isEnabled()
                 && StringUtils.hasText(safeText(properties.getBucket()));
+    }
+
+    private StoredImageSet storeImageObjectSet(
+            String normalizedOwnerId,
+            String normalizedEntityId,
+            String originalFilename,
+            String contentType,
+            byte[] bytes) {
+        String imageGroupKey = String.join("/",
+                IMAGE_MEDIA_KIND,
+                normalizedOwnerId,
+                StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
+                Instant.now().toEpochMilli() + "-" + UUID.randomUUID());
+        String originalKey = imageGroupKey + "/" + ORIGINAL_IMAGE_OBJECT_NAME;
+        objectStoreClient.putObject(properties.getBucket(), originalKey, contentType, bytes);
+        String originalUrl = publicMediaUrl(originalKey);
+
+        Map<ImageVariant, String> variantUrls = storeImageVariants(imageGroupKey, originalFilename, contentType, bytes);
+        String smallUrl = variantUrls.get(ImageVariant.SMALL);
+        String mediumUrl = variantUrls.get(ImageVariant.MEDIUM);
+        String largeUrl = variantUrls.get(ImageVariant.LARGE);
+        if (StringUtils.hasText(smallUrl) && StringUtils.hasText(mediumUrl) && StringUtils.hasText(largeUrl)) {
+            return new StoredImageSet(largeUrl, originalUrl, smallUrl, mediumUrl, largeUrl);
+        }
+        return new StoredImageSet(originalUrl, originalUrl, originalUrl, originalUrl, originalUrl);
+    }
+
+    private Map<ImageVariant, String> storeImageVariants(
+            String imageGroupKey,
+            String originalFilename,
+            String contentType,
+            byte[] bytes) {
+        EnumMap<ImageVariant, String> urls = new EnumMap<>(ImageVariant.class);
+        try {
+            for (ImageVariant variant : ImageVariant.values()) {
+                byte[] converted = convertImageVariant(originalFilename, contentType, bytes, variant);
+                if (converted == null || converted.length == 0) {
+                    return Map.of();
+                }
+                String objectKey = imageGroupKey + "/" + variant.objectName();
+                objectStoreClient.putObject(properties.getBucket(), objectKey, IMAGE_VARIANT_CONTENT_TYPE, converted);
+                urls.put(variant, publicMediaUrl(objectKey));
+            }
+            return urls;
+        } catch (RuntimeException ex) {
+            return Map.of();
+        }
+    }
+
+    private byte[] convertImageVariant(
+            String originalFilename,
+            String contentType,
+            byte[] bytes,
+            ImageVariant variant) {
+        for (String commandName : IMAGE_MAGICK_COMMANDS) {
+            byte[] converted = runImageMagickVariant(commandName, originalFilename, contentType, bytes, variant);
+            if (converted != null && converted.length > 0) {
+                return converted;
+            }
+        }
+        return null;
+    }
+
+    private byte[] runImageMagickVariant(
+            String commandName,
+            String originalFilename,
+            String contentType,
+            byte[] bytes,
+            ImageVariant variant) {
+        Path inputPath = null;
+        Path outputPath = null;
+        try {
+            inputPath = Files.createTempFile("myscoutee-image-source-", resolveTempExtension(originalFilename, contentType));
+            outputPath = Files.createTempFile("myscoutee-image-" + variant.key() + "-", ".webp");
+            Files.write(inputPath, bytes);
+            Files.deleteIfExists(outputPath);
+            Process process = new ProcessBuilder(
+                    commandName,
+                    inputPath.toString(),
+                    "-auto-orient",
+                    "-strip",
+                    "-resize",
+                    variant.geometry(),
+                    "-quality",
+                    Integer.toString(variant.quality()),
+                    outputPath.toString())
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .redirectError(ProcessBuilder.Redirect.DISCARD)
+                    .start();
+            if (!process.waitFor(IMAGE_VARIANT_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)) {
+                process.destroyForcibly();
+                return null;
+            }
+            if (process.exitValue() != 0 || !Files.isRegularFile(outputPath)) {
+                return null;
+            }
+            byte[] converted = Files.readAllBytes(outputPath);
+            return converted.length == 0 ? null : converted;
+        } catch (IOException | InterruptedException | IllegalArgumentException ex) {
+            if (ex instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return null;
+        } finally {
+            deleteTempFile(inputPath);
+            deleteTempFile(outputPath);
+        }
+    }
+
+    private void deleteTempFile(Path path) {
+        if (path == null) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException ignored) {
+        }
+    }
+
+    private String resolveTempExtension(String originalFilename, String contentType) {
+        String extension = resolveExtension(originalFilename, contentType);
+        return extension.matches("\\.[a-z0-9]{1,8}") ? extension : ".img";
+    }
+
+    private boolean isAllowedImageContentType(String contentType) {
+        return StringUtils.hasText(contentType) && ALLOWED_IMAGE_CONTENT_TYPES.contains(contentType);
+    }
+
+    private String publicMediaUrl(String objectKey) {
+        return "/media/public?key=" + UriUtils.encodeQueryParam(objectKey, StandardCharsets.UTF_8);
+    }
+
+    private boolean deleteManagedImageSetObjects(String key) {
+        String imageGroupKey = managedImageSetGroupKey(key);
+        if (!StringUtils.hasText(imageGroupKey)) {
+            return false;
+        }
+        objectStoreClient.deleteObject(properties.getBucket(), imageGroupKey + "/" + ORIGINAL_IMAGE_OBJECT_NAME);
+        for (ImageVariant variant : ImageVariant.values()) {
+            objectStoreClient.deleteObject(properties.getBucket(), imageGroupKey + "/" + variant.objectName());
+        }
+        return true;
+    }
+
+    private String managedImageSetGroupKey(String key) {
+        String normalized = safeText(key);
+        if (!normalized.startsWith(IMAGE_MEDIA_KIND + "/")) {
+            return "";
+        }
+        int slashIndex = normalized.lastIndexOf('/');
+        if (slashIndex <= 0 || slashIndex >= normalized.length() - 1) {
+            return "";
+        }
+        String objectName = normalized.substring(slashIndex + 1);
+        if (ORIGINAL_IMAGE_OBJECT_NAME.equals(objectName)) {
+            return normalized.substring(0, slashIndex);
+        }
+        for (ImageVariant variant : ImageVariant.values()) {
+            if (variant.objectName().equals(objectName)) {
+                return normalized.substring(0, slashIndex);
+            }
+        }
+        return "";
     }
 
     private String normalizeContentType(String value) {
@@ -421,9 +628,49 @@ public class MediaStorageService {
             String contentType) {
     }
 
+    public record StoredImageSet(
+            String imageUrl,
+            String originalUrl,
+            String smallUrl,
+            String mediumUrl,
+            String largeUrl) {
+    }
+
     private record ImportedImage(
             byte[] bytes,
             String contentType,
             String originalFilename) {
+    }
+
+    private enum ImageVariant {
+        SMALL("small", 128, 76),
+        MEDIUM("medium", 640, 82),
+        LARGE("large", 1280, 86);
+
+        private final String key;
+        private final int dimension;
+        private final int quality;
+
+        ImageVariant(String key, int dimension, int quality) {
+            this.key = key;
+            this.dimension = dimension;
+            this.quality = quality;
+        }
+
+        private String key() {
+            return key;
+        }
+
+        private int quality() {
+            return quality;
+        }
+
+        private String geometry() {
+            return dimension + "x" + dimension + ">";
+        }
+
+        private String objectName() {
+            return key + ".webp";
+        }
     }
 }

@@ -61,18 +61,6 @@ public final class EventsDtos {
             String reason) {
     }
 
-    public record EventFeedbackAnswerSubmitDto(
-            String cardId,
-            String kind,
-            String targetUserId,
-            String targetRole,
-            String primaryValue,
-            String secondaryValue,
-            List<String> personalityTraitIds,
-            List<String> tags,
-            String submittedAtIso) {
-    }
-
     public record EventFeedbackAnswerDto(
             String cardId,
             String eventId,
@@ -113,12 +101,6 @@ public final class EventsDtos {
             List<EventFeedbackReceivedEntryDto> entries) {
     }
 
-    public record EventFeedbackSubmitRequestDto(
-            String userId,
-            String eventId,
-            List<EventFeedbackAnswerSubmitDto> answers) {
-    }
-
     public record EventFeedbackNoteRequestDto(
             String userId,
             String eventId,
@@ -137,7 +119,7 @@ public final class EventsDtos {
             Integer pageSize) {
     }
 
-    public record EventFeedbackDeckQueryDto(
+    public record EventFeedbackQueryDto(
             String userId,
             String eventId) {
     }
@@ -158,7 +140,7 @@ public final class EventsDtos {
             Map<String, String> organizerNotesByEventId) {
     }
 
-    public record EventFeedbackPageItemDto(
+    public record EventFeedbackDto(
             String eventId,
             String title,
             String subtitle,
@@ -174,7 +156,7 @@ public final class EventsDtos {
             Boolean isOwnEvent) {
     }
 
-    public record EventFeedbackCardSourceDto(
+    public record EventFeedbackCardDto(
             String id,
             String eventId,
             String kind,
@@ -192,23 +174,27 @@ public final class EventsDtos {
             String targetCity,
             String targetGender,
             String targetTraitLabel,
-            String targetImageUrl) {
+            String targetImageUrl,
+            String answerPrimary,
+            String answerSecondary,
+            List<String> selectedTraitIds) {
     }
 
     public record EventFeedbackPageResultDto(
-            List<EventFeedbackPageItemDto> items,
+            List<EventFeedbackDto> items,
             Integer total,
-            List<EventFeedbackPageItemDto> allItems,
-            List<EventFeedbackPageItemDto> organizerItems,
+            List<EventFeedbackDto> allItems,
+            List<EventFeedbackDto> organizerItems,
             List<EventFeedbackReceivedEventDto> receivedEvents,
             EventFeedbackPageStateSnapshotDto state,
             EventFeedbackPageCountsDto counts) {
     }
 
-    public record EventFeedbackDeckResultDto(
+    public record EventFeedbackDetailDto(
             String eventId,
             String title,
-            List<EventFeedbackCardSourceDto> cards) {
+            String submittedAtIso,
+            List<EventFeedbackCardDto> cards) {
     }
 
     public record EventRecordDto(
@@ -264,40 +250,6 @@ public final class EventsDtos {
             Double affinity) {
     }
 
-    public record EventListItemDto(
-            String id,
-            String userId,
-            String status,
-            List<String> adminIds,
-            String avatar,
-            String title,
-            String subtitle,
-            String timeframe,
-            Integer unread,
-            Integer activity,
-            String creatorUserId,
-            String creatorName,
-            String creatorInitials,
-            String creatorCity,
-            String visibility,
-            String startAtIso,
-            String endAtIso,
-            Double distanceKm,
-            String imageUrl,
-            String location,
-            Integer capacityMin,
-            Integer capacityMax,
-            Integer capacityTotal,
-            Boolean ticketing,
-            String eventType,
-            Integer acceptedMembers,
-            Integer pendingMembers,
-            List<String> topics,
-            Double rating,
-            Double boost,
-            Double affinity) {
-    }
-
     public record EventsExplorePageDto(
             List<EventRecordDto> records,
             Integer total,
@@ -305,11 +257,11 @@ public final class EventsDtos {
     }
 
     public record EventListPageDto(
-            List<EventListItemDto> records,
+            List<EventRecordDto> records,
             Integer total,
             String nextCursor,
             List<EventRecordDto> items) {
-        public EventListPageDto(List<EventListItemDto> records, Integer total, String nextCursor) {
+        public EventListPageDto(List<EventRecordDto> records, Integer total, String nextCursor) {
             this(records, total, nextCursor, List.of());
         }
     }

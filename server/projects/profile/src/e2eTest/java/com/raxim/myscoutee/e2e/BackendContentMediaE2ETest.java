@@ -164,14 +164,22 @@ class BackendContentMediaE2ETest {
 
     @Test
     void mediaContentPrivacyLandingAndShareTokensWorkThroughHttp() {
-        String imageUrl = uploadImage("/media/images", "image", Map.of(
+        JsonNode imageUpload = uploadImage("/media/images", "image", Map.of(
                 "ownerId", MEDIA_USER_ID,
                 "entityId", "avatar"),
                 "avatar.png",
                 "image/png",
-                pngBytes()).path("url").asString();
+                pngBytes());
+        String imageUrl = imageUpload.path("url").asString();
         assertThat(imageUrl).startsWith("/media/public?key=images/");
-        assertPublicMedia(imageUrl, "image/png", pngBytes());
+        String originalImageUrl = mediaUploadUrl(imageUpload, "originalUrl", imageUrl);
+        assertPublicMedia(originalImageUrl, "image/png", pngBytes());
+        if (!imageUrl.equals(originalImageUrl)) {
+            assertPublicMediaContentType(imageUrl, "image/webp");
+            assertPublicMediaContentType(mediaUploadUrl(imageUpload, "smallUrl", imageUrl), "image/webp");
+            assertPublicMediaContentType(mediaUploadUrl(imageUpload, "mediumUrl", imageUrl), "image/webp");
+            assertPublicMediaContentType(mediaUploadUrl(imageUpload, "largeUrl", imageUrl), "image/webp");
+        }
 
         String profileImageUrl = uploadImage("/media/images", "image", Map.of(
                 "ownerId", MEDIA_USER_ID,
@@ -684,6 +692,30 @@ class BackendContentMediaE2ETest {
         assertThat(response.headers().firstValue("content-type")).contains(contentType);
         assertThat(response.body()).isEqualTo(bytes);
         assertThat(extractPublicKey(mediaUrl)).isNotBlank();
+    }
+
+    private void assertPublicMediaContentType(String mediaUrl, String contentType) {
+        HttpResponse<byte[]> response = sendBytes(HttpRequest.newBuilder(uri(mediaUrl))
+                .GET()
+                .build());
+        assertThat(response.statusCode()).as(mediaUrl).isEqualTo(200);
+        assertThat(response.headers().firstValue("content-type")).contains(contentType);
+        assertThat(response.body()).isNotEmpty();
+        assertThat(extractPublicKey(mediaUrl)).isNotBlank();
+    }
+
+    private String mediaUploadUrl(JsonNode upload, String fieldName, String fallback) {
+        String directValue = textOrNull(upload.path(fieldName));
+        if (directValue != null) {
+            return directValue;
+        }
+        String nestedValue = textOrNull(upload.path("imageSet").path(fieldName));
+        return nestedValue == null ? fallback : nestedValue;
+    }
+
+    private String textOrNull(JsonNode node) {
+        String value = node.asString();
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     private byte[] pngBytes() {

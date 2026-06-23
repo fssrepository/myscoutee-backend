@@ -7,18 +7,23 @@ https://developers.facebook.com/ -> business verfication is needed
 e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
 mobil/desktop view switch like on base44
 
-crate a component for multi and single selection popup, like topic, category,
-values, languages and filter values (onbaorading should get it also) --- it's not menu it's a multi-select or so
-emoji also has some sort of popup like this on chat
-image card
+kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben - a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
+a policy view is single-rownak tunik (valszeg memory, nem local)
+
+shared folder  - home filter -> ui converter probably
+review host interfaces (direct calls should be eliminated -> appctx)
+ng:deep scss removal
+
+date input with horoscop (separate component) + value accessor
+tournament to smart-list transform
+leaderboard maybe we could make accordion like like help/terms
+tournament-card / calendar-card (remove week/month from smart-list)
 
 desktop
 -------
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
 4) Jelentesek -> can't login as the user
-8) text translate to emoji on chat
 9) when delete activity - event, the record is being shown duplicated
-10) visszaallitas has no confirmation dialog
 11) the counters are not changin when this kind of thing happens
 12) there is some force redraw on sub events - not sure why - there is also a hated fallback on sub resource creation (like auto and so on)
 13) delete is not working, and when i click on sub menu, the red badge has been cut off
@@ -33,8 +38,6 @@ desktop
 22) visszajelzes/jelentesek is not lazy loaded (not really using even indexeddb probably)
 23) the popups not covering the other popups many times
 24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
-25) image ring delay is not what i have expected
-26) admin / member distroying each others db
 27) parameters screen is not that wide
 29) leaderboard redesign - too small rows
 30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))

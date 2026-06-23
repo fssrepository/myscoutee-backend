@@ -34,6 +34,7 @@ import com.raxim.myscoutee.profile.data.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserFilterPreferences;
+import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
@@ -43,6 +44,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
@@ -62,6 +64,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
+import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
@@ -72,6 +75,7 @@ import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserFilterPreferencesRepository;
+import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
@@ -180,6 +184,7 @@ public class HomeUserProfileService {
 
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
+    private final UserExperienceProfilesRepository userExperienceProfilesRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
     private final ActivityChatsRepository activityChatsRepository;
@@ -210,6 +215,7 @@ public class HomeUserProfileService {
     public HomeUserProfileService(
             UsersRepository usersRepository,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
+            UserExperienceProfilesRepository userExperienceProfilesRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
             ActivityChatsRepository activityChatsRepository,
@@ -233,6 +239,7 @@ public class HomeUserProfileService {
             AccessControlService accessControlService) {
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
+        this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityChatsRepository = activityChatsRepository;
@@ -453,6 +460,20 @@ public class HomeUserProfileService {
                 1L,
                 profileTelemetryTags(resolved));
         return toUserDto(resolved);
+    }
+
+    @CacheEvict(value = "demo_users", allEntries = true)
+    public UserDto saveUserProfileExt(ProfileExtDto request) {
+        if (request == null || request.profile() == null) {
+            return null;
+        }
+
+        UserDto savedUser = saveUserProfile(request.profile());
+        String resolvedUserId = normalizeId(savedUser == null ? null : savedUser.id());
+        if (StringUtils.hasText(resolvedUserId)) {
+            saveUserExperienceProfile(resolvedUserId, request.experienceEntries());
+        }
+        return savedUser;
     }
 
     public UserSubmitActionResponseDto submitFeedback(UserFeedbackSubmitRequestDto request) {
@@ -1866,6 +1887,57 @@ public class HomeUserProfileService {
         }
         document.setActivities(current == null ? toUserActivitiesRecord(user.activities()) : current.getActivities());
         return document;
+    }
+
+    private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
+        String resolvedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return;
+        }
+        UserExperienceProfile profile = userExperienceProfilesRepository.findByUserId(resolvedUserId)
+                .orElseGet(UserExperienceProfile::new);
+        profile.setUserId(resolvedUserId);
+        profile.setUpdatedAtIso(Instant.now().toString());
+        profile.setEntries(toExperienceItemRecords(entries));
+        userExperienceProfilesRepository.save(profile);
+        affinityRecomputeTaskService.enqueueUserChanged(resolvedUserId);
+    }
+
+    private List<UserExperienceProfile.ExperienceItemRecord> toExperienceItemRecords(List<ExperienceEntryDto> entries) {
+        if (entries == null || entries.isEmpty()) {
+            return List.of();
+        }
+        List<UserExperienceProfile.ExperienceItemRecord> records = new ArrayList<>();
+        for (ExperienceEntryDto entry : entries) {
+            if (entry == null) {
+                continue;
+            }
+            UserExperienceProfile.ExperienceItemRecord record = new UserExperienceProfile.ExperienceItemRecord();
+            String normalizedId = normalizeId(entry.id());
+            record.setId(StringUtils.hasText(normalizedId) ? normalizedId : "exp-" + UUID.randomUUID());
+            record.setType(normalizeExperienceType(entry.type()));
+            record.setTitle(safeText(entry.title()));
+            record.setOrg(safeText(entry.org()));
+            record.setCity(safeText(entry.city()));
+            record.setDateFrom(safeText(entry.dateFrom()));
+            record.setDateTo(normalizeExperienceDateTo(entry.dateTo()));
+            record.setDescription(safeText(entry.description()));
+            records.add(record);
+        }
+        return List.copyOf(records);
+    }
+
+    private String normalizeExperienceType(String value) {
+        String normalized = safeText(value);
+        return switch (normalized) {
+            case "School", "Online Session", "Additional Project" -> normalized;
+            default -> "Workspace";
+        };
+    }
+
+    private String normalizeExperienceDateTo(String value) {
+        String normalized = safeText(value);
+        return StringUtils.hasText(normalized) ? normalized : "Present";
     }
 
     private Users syncCurrentUserEmail(Users user) {

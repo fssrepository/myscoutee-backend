@@ -22,13 +22,16 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
 import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -37,6 +40,7 @@ import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
@@ -52,6 +56,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCount
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
+import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,6 +65,8 @@ class HomeUserProfileServiceTest {
     private UsersRepository usersRepository;
     @Mock
     private UserFilterPreferencesRepository userFilterPreferencesRepository;
+    @Mock
+    private UserExperienceProfilesRepository userExperienceProfilesRepository;
     @Mock
     private UserAffinityEdgesRepository userAffinityEdgesRepository;
     @Mock
@@ -116,6 +123,7 @@ class HomeUserProfileServiceTest {
         service = new HomeUserProfileService(
                 usersRepository,
                 userFilterPreferencesRepository,
+                userExperienceProfilesRepository,
                 userAffinityEdgesRepository,
                 userRatesRepository,
                 activityChatsRepository,
@@ -348,6 +356,40 @@ class HomeUserProfileServiceTest {
 
         assertThat(saved.profileStatus()).isEqualTo("onboarding");
         assertThat(saved.deletedAtIso()).isEqualTo("2026-05-01T00:00:00Z");
+    }
+
+    @Test
+    void profileExtSaveSplitsProfileAndExperienceEntries() {
+        Users active = user("active", 0d);
+        active.setStatus("A");
+        active.setProfileStatus("onboarding");
+        when(usersRepository.findByUserId("active")).thenReturn(Optional.of(active));
+        when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userExperienceProfilesRepository.findByUserId("active")).thenReturn(Optional.empty());
+        when(userExperienceProfilesRepository.save(any(UserExperienceProfile.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserDto saved = service.saveUserProfileExt(new ProfileExtDto(
+                onboardingDraftUser("active"),
+                List.of(new ExperienceEntryDto(
+                        "exp-work",
+                        "Workspace",
+                        "Engineer",
+                        "Acme",
+                        "Budapest",
+                        "2024-01",
+                        "",
+                        "Built products"))));
+
+        assertThat(saved.id()).isEqualTo("active");
+        ArgumentCaptor<UserExperienceProfile> experienceCaptor = ArgumentCaptor.forClass(UserExperienceProfile.class);
+        verify(userExperienceProfilesRepository).save(experienceCaptor.capture());
+        UserExperienceProfile experienceProfile = experienceCaptor.getValue();
+        assertThat(experienceProfile.getUserId()).isEqualTo("active");
+        assertThat(experienceProfile.getEntries()).hasSize(1);
+        assertThat(experienceProfile.getEntries().get(0).getType()).isEqualTo("Workspace");
+        assertThat(experienceProfile.getEntries().get(0).getTitle()).isEqualTo("Engineer");
+        assertThat(experienceProfile.getEntries().get(0).getOrg()).isEqualTo("Acme");
+        assertThat(experienceProfile.getEntries().get(0).getDateTo()).isEqualTo("Present");
     }
 
     @Test
