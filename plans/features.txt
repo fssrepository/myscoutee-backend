@@ -18,9 +18,7 @@ desktop
 -------
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
 4) Jelentesek -> can't login as the user
-8) text translate to emoji on chat
 9) when delete activity - event, the record is being shown duplicated
-10) visszaallitas has no confirmation dialog
 11) the counters are not changin when this kind of thing happens
 12) there is some force redraw on sub events - not sure why - there is also a hated fallback on sub resource creation (like auto and so on)
 13) delete is not working, and when i click on sub menu, the red badge has been cut off
