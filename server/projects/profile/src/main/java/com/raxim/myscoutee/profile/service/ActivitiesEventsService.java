@@ -2090,7 +2090,7 @@ public class ActivitiesEventsService {
                 .include("pricing")
                 .include("slotsEnabled")
                 .include("upcomingSlots")
-                .include("subEventsDisplayMode");
+                .include("mode");
     }
 
     private List<ActivityEvent> queryInvitationRecords(ViewerContext viewer) {
@@ -2756,9 +2756,9 @@ public class ActivitiesEventsService {
         document.setSubEvents(publishedManageMode
                 ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
                 : cloneSubEvents(request.subEvents()));
-        document.setSubEventsDisplayMode(publishedManageMode
-                ? safeText(existing == null ? null : existing.getSubEventsDisplayMode())
-                : safeText(request.subEventsDisplayMode()));
+        document.setMode(normalizeEventMode(publishedManageMode
+                ? safeText(existing == null ? null : existing.getMode())
+                : safeText(request.mode())));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
@@ -3973,7 +3973,7 @@ public class ActivitiesEventsService {
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
-        next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
+        next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
         next.setBoost(existing == null ? safeDouble(parent.getBoost()) : safeDouble(existing.getBoost()));
@@ -4213,6 +4213,10 @@ public class ActivitiesEventsService {
             case "yearly", "annual", "annually" -> "Yearly";
             default -> "One-time";
         };
+    }
+
+    private String normalizeEventMode(String value) {
+        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
     }
 
     private String resolveCreatorName(String requestedName, Users creator) {

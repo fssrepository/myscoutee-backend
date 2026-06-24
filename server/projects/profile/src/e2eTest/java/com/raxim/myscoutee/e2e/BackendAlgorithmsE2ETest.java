@@ -768,7 +768,7 @@ class BackendAlgorithmsE2ETest {
         event.setPendingMembers(0);
         event.setTopics(List.of("games", "e2e"));
         event.setSubEvents(subEvents);
-        event.setSubEventsDisplayMode(subEvents == null || subEvents.isEmpty() ? "" : "Tournament");
+        event.setMode(subEvents == null || subEvents.isEmpty() ? "Casual" : "Tournament");
         event.setRating(0d);
         event.setBoost(0d);
         event.setAffinity(0d);

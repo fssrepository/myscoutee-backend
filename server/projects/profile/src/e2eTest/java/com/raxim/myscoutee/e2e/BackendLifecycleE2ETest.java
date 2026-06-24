@@ -652,7 +652,7 @@ class BackendLifecycleE2ETest {
         payload.put("locationCoordinates", new LocationCoordinatesDto(48.1486d, 17.1077d));
         payload.put("topics", List.of("football", "cars"));
         payload.put("subEvents", List.of(subEvent()));
-        payload.put("subEventsDisplayMode", "list");
+        payload.put("mode", "Casual");
         return payload;
     }
 

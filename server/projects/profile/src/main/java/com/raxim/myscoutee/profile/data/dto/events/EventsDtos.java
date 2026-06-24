@@ -303,7 +303,7 @@ public final class EventsDtos {
             String pendingReason,
             List<String> topics,
             List<SubEventFormItemDto> subEvents,
-            String subEventsDisplayMode,
+            String mode,
             Double rating,
             Double boost,
             Double affinity,

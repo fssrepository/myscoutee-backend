@@ -85,7 +85,7 @@ public class ActivityEventDetailMapper {
                 null,
                 normalizeStrings(record.getTopics()),
                 cloneSubEvents(record.getSubEvents()),
-                safeText(record.getSubEventsDisplayMode()),
+                safeText(record.getMode()),
                 safeDouble(record.getRating()),
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()),

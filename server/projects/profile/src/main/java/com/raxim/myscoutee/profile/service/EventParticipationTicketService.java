@@ -276,7 +276,7 @@ public class EventParticipationTicketService {
         next.setPendingMembers(Math.max(normalizeCount(preferred.getPendingMembers()), snapshot.pendingMemberUserIds().size()));
         next.setTopics(new ArrayList<>(normalizeStrings(preferred.getTopics())));
         next.setSubEvents(cloneSubEvents(preferred.getSubEvents()));
-        next.setSubEventsDisplayMode(safeText(preferred.getSubEventsDisplayMode()));
+        next.setMode(safeText(preferred.getMode()));
         next.setRating(preferred.getRating());
         next.setBoost(preferred.getBoost());
         next.setAffinity(preferred.getAffinity());
@@ -416,7 +416,7 @@ public class EventParticipationTicketService {
                 && Objects.equals(left.getPendingMembers(), right.getPendingMembers())
                 && Objects.equals(normalizeStrings(left.getTopics()), normalizeStrings(right.getTopics()))
                 && Objects.equals(safeSubEvents(left.getSubEvents()), safeSubEvents(right.getSubEvents()))
-                && Objects.equals(left.getSubEventsDisplayMode(), right.getSubEventsDisplayMode())
+                && Objects.equals(left.getMode(), right.getMode())
                 && Objects.equals(left.getRating(), right.getRating())
                 && Objects.equals(left.getBoost(), right.getBoost())
                 && Objects.equals(left.getAffinity(), right.getAffinity())
