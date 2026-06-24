@@ -42,10 +42,10 @@ import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
@@ -65,7 +65,8 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
-import com.raxim.myscoutee.profile.service.mapper.ActivityEventDtoMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -113,7 +114,8 @@ public class ActivitiesEventsService {
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
-    private final ActivityEventDtoMapper activityEventDtoMapper;
+    private final ActivityEventDetailMapper activityEventDetailMapper;
+    private final ActivityEventMapper activityEventMapper;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -136,7 +138,8 @@ public class ActivitiesEventsService {
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
-            ActivityEventDtoMapper activityEventDtoMapper) {
+            ActivityEventDetailMapper activityEventDetailMapper,
+            ActivityEventMapper activityEventMapper) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -157,7 +160,8 @@ public class ActivitiesEventsService {
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
-        this.activityEventDtoMapper = activityEventDtoMapper;
+        this.activityEventDetailMapper = activityEventDetailMapper;
+        this.activityEventMapper = activityEventMapper;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -489,7 +493,7 @@ public class ActivitiesEventsService {
                         || (request.excludedSourceIds() != null && !request.excludedSourceIds().isEmpty()));
     }
 
-    public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
+    public List<EventDto> queryItemsByUser(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -522,11 +526,11 @@ public class ActivitiesEventsService {
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
 
-            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
-    public List<EventRecordDto> queryInvitations(String requestedUserId) {
+    public List<EventDto> queryInvitations(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -543,7 +547,7 @@ public class ActivitiesEventsService {
         return queryDirectFilterPage(requestedUserId, "invitations", "all", requestedLimit, cursor);
     }
 
-    public List<EventRecordDto> queryAttending(String requestedUserId) {
+    public List<EventDto> queryAttending(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -573,11 +577,11 @@ public class ActivitiesEventsService {
             String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
-            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
-    public List<EventRecordDto> queryHosting(String requestedUserId) {
+    public List<EventDto> queryHosting(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -594,7 +598,7 @@ public class ActivitiesEventsService {
         return queryDirectFilterPage(requestedUserId, "my-events", "all", requestedLimit, cursor);
     }
 
-    public List<EventRecordDto> queryTrash(String requestedUserId) {
+    public List<EventDto> queryTrash(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -654,7 +658,20 @@ public class ActivitiesEventsService {
                 pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
     }
 
-    public List<EventRecordDto> queryExploreItems(String requestedUserId) {
+    public EventDetailDto loadEventDetailById(String requestedUserId, String eventId) {
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        String sourceId = normalizeId(eventId);
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        return preferred == null
+                ? null
+                : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
+                        isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
+    }
+
+    public List<EventDto> queryExploreItems(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -666,7 +683,7 @@ public class ActivitiesEventsService {
                     .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .sorted(Comparator
-                            .comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
+                            .comparing((EventDto item) -> toSortableDate(item.startAtIso()))
                             .thenComparing(item -> safeText(item.id())))
                     .toList();
         } finally {
@@ -706,7 +723,7 @@ public class ActivitiesEventsService {
             int startIndex = resolveCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
-            List<EventRecordDto> records = pageProjections.stream()
+            List<EventDto> records = pageProjections.stream()
                     .map(projection -> toEventDto(projection.record(), viewer))
                     .filter(Objects::nonNull)
                     .toList();
@@ -827,7 +844,7 @@ public class ActivitiesEventsService {
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
-    public EventRecordDto applyStageAction(EventStageActionRequestDto request) {
+    public EventDto applyStageAction(EventStageActionRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -932,7 +949,7 @@ public class ActivitiesEventsService {
         return toEventDto(savedPreferred, viewer);
     }
 
-    public EventRecordDto requestJoin(EventActionRequestDto request) {
+    public EventDto requestJoin(EventActionRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());
@@ -1599,7 +1616,7 @@ public class ActivitiesEventsService {
         return preferred == null ? null : preferred.getStartAtIso();
     }
 
-    public EventRecordDto sync(ActivitiesEventSyncPayloadDto request) {
+    public EventDto sync(EventDetailDto request) {
         if (request == null) {
             return null;
         }
@@ -1659,7 +1676,7 @@ public class ActivitiesEventsService {
         if (StringUtils.hasText(paymentSessionId)) {
             String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
                     ? request.nextSlot().startAtIso()
-                    : request.startAt();
+                    : request.startAtIso();
             paymentService.recordEventJoin(
                     paymentSessionId,
                     null,
@@ -1795,7 +1812,7 @@ public class ActivitiesEventsService {
 
         if ("week".equals(view) || "month".equals(view)) {
             return new EventsExplorePageDto(
-                    toHydratedEventRecordDtos(viewer, sorted.stream().map(EventProjection::record).toList()),
+                    toHydratedEventDtos(viewer, sorted.stream().map(EventProjection::record).toList()),
                     sorted.size(),
                     null);
         }
@@ -1804,7 +1821,7 @@ public class ActivitiesEventsService {
         int startIndex = resolveCursorStartIndex(sorted, cursor);
         int endIndex = Math.min(sorted.size(), startIndex + limit);
         List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
-        List<EventRecordDto> records = toHydratedEventRecordDtos(viewer, pageProjections.stream()
+        List<EventDto> records = toHydratedEventDtos(viewer, pageProjections.stream()
                 .map(EventProjection::record)
                 .toList());
         String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
@@ -1813,7 +1830,7 @@ public class ActivitiesEventsService {
         return new EventsExplorePageDto(records, sorted.size(), nextCursor);
     }
 
-    private List<EventRecordDto> toHydratedEventRecordDtos(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
+    private List<EventDto> toHydratedEventDtos(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
         List<ActivityEvent> hydratedRecords = hydratePageRecords(viewer, projectedRecords);
         if (hydratedRecords.isEmpty()) {
             return List.of();
@@ -1918,7 +1935,7 @@ public class ActivitiesEventsService {
             List<ActivityEvent> pageSourceRecords = sorted.stream()
                     .map(EventProjection::record)
                     .toList();
-            List<EventRecordDto> pageRecords = pageSourceRecords.stream()
+            List<EventDto> pageRecords = pageSourceRecords.stream()
                     .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .toList();
@@ -1926,7 +1943,7 @@ public class ActivitiesEventsService {
                     pageRecords,
                     sorted.size(),
                     null,
-                    toHydratedEventRecordDtos(viewer, pageSourceRecords));
+                    toHydratedEventDtos(viewer, pageSourceRecords));
         }
 
         String cursor = request == null ? null : request.cursor();
@@ -1936,7 +1953,7 @@ public class ActivitiesEventsService {
         List<ActivityEvent> pageSourceRecords = pageProjections.stream()
                 .map(EventProjection::record)
                 .toList();
-        List<EventRecordDto> pageRecords = pageSourceRecords.stream()
+        List<EventDto> pageRecords = pageSourceRecords.stream()
                 .map(record -> toEventDto(record, viewer))
                 .filter(Objects::nonNull)
                 .toList();
@@ -1947,7 +1964,7 @@ public class ActivitiesEventsService {
                 pageRecords,
                 sorted.size(),
                 nextCursor,
-                toHydratedEventRecordDtos(viewer, pageSourceRecords));
+                toHydratedEventDtos(viewer, pageSourceRecords));
     }
 
     private boolean needsActivitiesAffinityEdges(EventsFilterRequestDto request) {
@@ -2335,17 +2352,17 @@ public class ActivitiesEventsService {
         return endOfDay ? parsed + ChronoUnit.DAYS.getDuration().toMillis() - 1L : parsed;
     }
 
-    private EventRecordDto toEventDto(ActivityEvent record, ViewerContext viewer) {
-        return activityEventDtoMapper.toDto(record, eventDtoMappingContext(viewer, record));
+    private EventDto toEventDto(ActivityEvent record, ViewerContext viewer) {
+        return activityEventMapper.toDto(record, eventDtoMappingContext(viewer, record));
     }
 
-    private ActivityEventDtoMapper.MappingContext eventDtoMappingContext(
+    private ActivityEventMapper.MappingContext eventDtoMappingContext(
             ViewerContext viewer,
             ActivityEvent record) {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
                 ctx == null ? singleRecordSnapshot(record) : ctx.snapshotsBySourceId();
-        return new ActivityEventDtoMapper.MappingContext(
+        return new ActivityEventMapper.MappingContext(
                 viewer == null ? null : viewer.locationCoordinates(),
                 snapshotsBySourceId);
     }
@@ -2447,7 +2464,7 @@ public class ActivitiesEventsService {
         if (projection == null) {
             return "";
         }
-        EventRecordDto item = projection.item();
+        EventDto item = projection.item();
         if (item != null && StringUtils.hasText(item.id())) {
             return item.id();
         }
@@ -2599,7 +2616,7 @@ public class ActivitiesEventsService {
     }
 
     private ActivityEvent buildSyncedRecord(
-            ActivitiesEventSyncPayloadDto request,
+            EventDetailDto request,
             Users creator,
             String actorUserId,
             String sourceId,
@@ -2660,7 +2677,7 @@ public class ActivitiesEventsService {
         document.setOwnerUserId(ownerUserId);
         document.setAvatar(resolveCreatorInitials(request.creatorInitials(), creator, request.creatorName()));
         document.setTitle(safeText(request.title()));
-        document.setSubtitle(safeText(request.shortDescription()));
+        document.setSubtitle(safeText(request.subtitle()));
         document.setTimeframe(safeText(request.timeframe()));
         document.setInviter(existing == null ? null : existing.getInviter());
         document.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
@@ -2681,10 +2698,10 @@ public class ActivitiesEventsService {
         document.setFrequency(normalizedFrequency);
         document.setStartAtIso(publishedManageMode
                 ? normalizeDateTime(existing == null ? null : existing.getStartAtIso(), nowIso)
-                : normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
+                : normalizeDateTime(request.startAtIso(), existing == null ? nowIso : existing.getStartAtIso()));
         document.setEndAtIso(publishedManageMode
                 ? normalizeDateTime(existing == null ? null : existing.getEndAtIso(), document.getStartAtIso())
-                : normalizeDateTime(request.endAt(), document.getStartAtIso()));
+                : normalizeDateTime(request.endAtIso(), document.getStartAtIso()));
         resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
@@ -2807,7 +2824,7 @@ public class ActivitiesEventsService {
     }
 
     private List<String> fallbackAcceptedMemberUserIds(
-            ActivitiesEventSyncPayloadDto request,
+            EventDetailDto request,
             ActivityEvent existing,
             String ownerUserId) {
         LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>();
@@ -2825,7 +2842,7 @@ public class ActivitiesEventsService {
     }
 
     private int resolveCapacityTotal(
-            ActivitiesEventSyncPayloadDto request,
+            EventDetailDto request,
             ActivityEvent existing,
             int acceptedMembers,
             ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
@@ -3290,7 +3307,7 @@ public class ActivitiesEventsService {
         return 0;
     }
 
-    private String serializeCursor(EventRecordDto item) {
+    private String serializeCursor(EventDto item) {
         if (item == null || !StringUtils.hasText(item.id())) {
             return null;
         }
@@ -3321,8 +3338,8 @@ public class ActivitiesEventsService {
         }
     }
 
-    private Comparator<EventRecordDto> listItemComparator() {
-        return Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
+    private Comparator<EventDto> listItemComparator() {
+        return Comparator.comparing((EventDto item) -> toSortableDate(item.startAtIso()))
                 .thenComparing(item -> safeText(item.id()));
     }
 
@@ -3475,7 +3492,7 @@ public class ActivitiesEventsService {
         return "";
     }
 
-    private String resolveTelemetryEventType(ActivitiesEventSyncPayloadDto request) {
+    private String resolveTelemetryEventType(EventDetailDto request) {
         if (request == null) {
             return "Organized";
         }
@@ -4300,7 +4317,7 @@ public class ActivitiesEventsService {
 
     private record EventProjection(
             ActivityEvent record,
-            EventRecordDto item,
+            EventDto item,
             int distanceMeters,
             double boostValue,
             long startAtMs,

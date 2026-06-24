@@ -416,11 +416,11 @@ class BackendPaymentsConcurrencyE2ETest {
         payload.put("id", eventId);
         payload.put("status", "DR");
         payload.put("title", "Payment concurrency " + eventId);
-        payload.put("shortDescription", "Backend e2e paid capacity event");
+        payload.put("subtitle", "Backend e2e paid capacity event");
         payload.put("timeframe", "Paid event");
         payload.put("activity", 3);
-        payload.put("startAt", BASE_TIME.plus(Duration.ofDays(7)).toString());
-        payload.put("endAt", BASE_TIME.plus(Duration.ofDays(7)).plus(Duration.ofHours(2)).toString());
+        payload.put("startAtIso", BASE_TIME.plus(Duration.ofDays(7)).toString());
+        payload.put("endAtIso", BASE_TIME.plus(Duration.ofDays(7)).plus(Duration.ofHours(2)).toString());
         payload.put("imageUrl", "https://example.test/payments/event.png");
         payload.put("capacityMin", 1);
         payload.put("capacityMax", capacityTotal);

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
@@ -21,7 +21,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQ
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
@@ -102,6 +102,13 @@ public class ActivitiesEventsController {
         return activitiesEventsService.queryActivitiesEventListPage(request);
     }
 
+    @GetMapping("/detail")
+    public EventDetailDto detail(
+            @RequestParam("userId") String userId,
+            @RequestParam("eventId") String eventId) {
+        return activitiesEventsService.loadEventDetailById(userId, eventId);
+    }
+
     @PostMapping("/explore")
     public Object explore(@RequestBody EventsExploreQueryDto request) {
         if (activitiesEventsService.isPagedExploreRequest(request)) {
@@ -156,7 +163,7 @@ public class ActivitiesEventsController {
             subject = "#request?.userId() ?: #actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public EventRecordDto requestJoin(@RequestBody EventActionRequestDto request) {
+    public EventDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
     }
 
@@ -166,7 +173,7 @@ public class ActivitiesEventsController {
             subject = "#actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public EventRecordDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
+    public EventDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
         return activitiesEventsService.applyStageAction(request);
     }
 
@@ -231,7 +238,7 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/sync")
-    public EventRecordDto sync(@RequestBody ActivitiesEventSyncPayloadDto request) {
+    public EventDto sync(@RequestBody EventDetailDto request) {
         return activitiesEventsService.sync(request);
     }
 }
