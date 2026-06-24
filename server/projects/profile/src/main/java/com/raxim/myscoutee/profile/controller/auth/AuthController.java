@@ -13,6 +13,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserFilterPreferencesRequestDto;
@@ -82,6 +83,11 @@ public class AuthController {
             skipWhenAuthenticationOptional = true)
     public UserDto saveProfileExt(@RequestBody ProfileExtDto request) {
         return homeUserProfileService.saveUserProfileExt(request);
+    }
+
+    @GetMapping("/me/profile-ext")
+    public ProfileExtByIdResponseDto loadProfileExt(@RequestParam(value = "userId", required = false) String userId) {
+        return homeUserProfileService.loadProfileExtById(userId);
     }
 
     @PostMapping("/me/feedback")

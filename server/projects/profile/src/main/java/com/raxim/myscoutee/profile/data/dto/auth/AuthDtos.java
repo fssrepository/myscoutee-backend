@@ -191,6 +191,13 @@ public final class AuthDtos {
             List<ExperienceEntryDto> experienceEntries) {
     }
 
+    public record ProfileExtByIdResponseDto(
+            ProfileExtDto profileExt,
+            Integer filterCount,
+            UserGameFilterPreferencesDto filterPreferences,
+            UserMenuCountersDto counterOverrides) {
+    }
+
     public record UserByIdResponseDto(
             String id,
             String name,

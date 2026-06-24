@@ -45,6 +45,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCountersDto;
@@ -317,6 +318,19 @@ public class HomeUserProfileService {
                 menuCounters);
     }
 
+    public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
+        UserByIdResponseDto response = queryUserById(requestedUserId);
+        if (response == null) {
+            return null;
+        }
+        UserDto profile = toUserDto(response);
+        return new ProfileExtByIdResponseDto(
+                new ProfileExtDto(profile, queryUserExperienceEntries(profile.id())),
+                response.filterCount(),
+                response.filterPreferences(),
+                response.counterOverrides());
+    }
+
     private UserByIdResponseDto buildCurrentAdminPrincipalResponse() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null
@@ -365,6 +379,68 @@ public class HomeUserProfileService {
                 0,
                 null,
                 menuCounters);
+    }
+
+    private UserDto toUserDto(UserByIdResponseDto response) {
+        return new UserDto(
+                response.id(),
+                response.name(),
+                response.age(),
+                response.birthday(),
+                response.city(),
+                response.height(),
+                response.physique(),
+                response.languages(),
+                response.horoscope(),
+                response.initials(),
+                response.gender(),
+                response.statusText(),
+                response.hostTier(),
+                response.traitLabel(),
+                response.completion(),
+                response.profileFormVersion(),
+                response.headline(),
+                response.about(),
+                response.affinity(),
+                response.locationCoordinates(),
+                response.partitionKey(),
+                response.images(),
+                response.profileDetails(),
+                response.impressions(),
+                response.profileStatus(),
+                response.previousProfileStatus(),
+                response.deletedAtIso(),
+                response.admin(),
+                response.activities());
+    }
+
+    private List<ExperienceEntryDto> queryUserExperienceEntries(String userId) {
+        String resolvedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(resolvedUserId)) {
+            return List.of();
+        }
+        return userExperienceProfilesRepository.findByUserId(resolvedUserId)
+                .map(UserExperienceProfile::getEntries)
+                .map(this::toExperienceEntryDtos)
+                .orElseGet(List::of);
+    }
+
+    private List<ExperienceEntryDto> toExperienceEntryDtos(List<UserExperienceProfile.ExperienceItemRecord> entries) {
+        if (entries == null || entries.isEmpty()) {
+            return List.of();
+        }
+        return entries.stream()
+                .filter(Objects::nonNull)
+                .map(entry -> new ExperienceEntryDto(
+                        safeText(entry.getId()),
+                        normalizeExperienceType(entry.getType()),
+                        safeText(entry.getTitle()),
+                        safeText(entry.getOrg()),
+                        safeText(entry.getCity()),
+                        safeText(entry.getDateFrom()),
+                        normalizeExperienceDateTo(entry.getDateTo()),
+                        safeText(entry.getDescription())))
+                .toList();
     }
 
     public UserRealtimeLongPollResponseDto queryRealtimeSnapshot(UserRealtimeLongPollRequestDto request) {
