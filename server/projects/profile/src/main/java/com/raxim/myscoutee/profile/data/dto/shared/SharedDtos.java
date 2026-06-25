@@ -16,6 +16,12 @@ public final class SharedDtos {
             Double longitude) {
     }
 
+    public record DateRangeDto(
+            String startAt,
+            String endAt,
+            String precision) {
+    }
+
     public record PricingActionDto(
             String kind,
             Double value) {
@@ -105,6 +111,28 @@ public final class SharedDtos {
             Integer capacityMin,
             Integer capacityMax,
             String source) {
+    }
+
+    public record SubEventDefinitionDto(
+            @Field("id")
+            String id,
+            String name,
+            String description,
+            String timing,
+            Integer offsetMinutes,
+            Integer durationMinutes,
+            String location,
+            List<SubEventGroupItemDto> groups,
+            Integer tournamentGroupCount,
+            Integer tournamentGroupCapacityMin,
+            Integer tournamentGroupCapacityMax,
+            String tournamentLeaderboardType,
+            Integer tournamentAdvancePerGroup,
+            Boolean optional,
+            PricingConfigDto pricing,
+            Integer capacityMin,
+            Integer capacityMax,
+            String icon) {
     }
 
     public record SubEventFormItemDto(
@@ -226,9 +254,9 @@ public final class SharedDtos {
     public record EventSlotTemplateDto(
             String id,
             String startAt,
-            String endAt,
             String overrideDate,
-            Boolean closed) {
+            Boolean closed,
+            List<SubEventDefinitionDto> subEventDefinitions) {
     }
 
     public record EventSlotOccurrenceDto(

@@ -32,19 +32,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
-import com.raxim.myscoutee.profile.service.mapper.ActivityEventDtoMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 
 @ExtendWith(MockitoExtension.class)
@@ -90,7 +91,8 @@ class ActivitiesEventsServiceTest {
 
     private ActivitiesEventsService service;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
-    private final ActivityEventDtoMapper activityEventDtoMapper = new ActivityEventDtoMapper();
+    private final ActivityEventDetailMapper activityEventDetailMapper = new ActivityEventDetailMapper();
+    private final ActivityEventMapper activityEventMapper = new ActivityEventMapper();
 
     @BeforeEach
     void setUp() {
@@ -115,7 +117,8 @@ class ActivitiesEventsServiceTest {
                 eventSlotReadModelService,
                 accessControlService,
                 userActivityCountersService,
-                activityEventDtoMapper);
+                activityEventDetailMapper,
+                activityEventMapper);
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);
@@ -323,7 +326,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
         when(accessControlService.canCurrentActorJoinEvent("viewer", "event-1")).thenReturn(false);
 
-        EventRecordDto result = service.requestJoin(new EventActionRequestDto(
+        EventDto result = service.requestJoin(new EventActionRequestDto(
                 "viewer",
                 "event-1",
                 null,
@@ -347,7 +350,7 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(accessControlService.canCurrentActorApplyEventStageAction("event-1")).thenReturn(false);
 
-        EventRecordDto result = service.applyStageAction(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+        EventDto result = service.applyStageAction(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
                 "host",
                 "event-1",
                 "stage-1",
@@ -371,7 +374,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorCreateEvent("host", "draft-1")).thenReturn(false);
 
-        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -390,7 +393,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorEditEvent("draft-1")).thenReturn(false);
 
-        EventRecordDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -408,50 +411,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.empty());
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.sync(new ActivitiesEventSyncPayloadDto(
-                "sync-draft-1",
-                "draft-1",
-                ActivityEvent.STATUS_DRAFT,
-                "Draft Event",
-                "Draft short description",
-                "May 24, 3:28 AM - 4:28 AM",
-                0,
-                "2026-05-24T03:28:00Z",
-                "2026-05-24T04:28:00Z",
-                0d,
-                "",
-                0,
-                0,
-                1,
-                null,
-                1,
-                null,
-                false,
-                "One-time",
-                false,
-                null,
-                List.of(),
-                false,
-                List.of(),
-                null,
-                null,
-                false,
-                "main",
-                null,
-                "Public",
-                "Open Event",
-                "host",
-                "Host User",
-                "HU",
-                "man",
-                "",
-                "",
-                null,
-                "",
-                List.of(),
-                List.of(),
-                "",
-                null));
+        service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
@@ -506,11 +466,11 @@ class ActivitiesEventsServiceTest {
         when(activitiesMembersService.findTrackedEventSourceIdsForUser("host")).thenReturn(Set.of());
         when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
 
-        List<EventRecordDto> hostingRecords = service.queryHosting("host");
-        List<EventRecordDto> invitationRecords = service.queryInvitations("host");
+        List<EventDto> hostingRecords = service.queryHosting("host");
+        List<EventDto> invitationRecords = service.queryInvitations("host");
 
-        assertThat(hostingRecords).extracting(EventRecordDto::id).containsExactly("hosting-1");
-        assertThat(invitationRecords).extracting(EventRecordDto::id).containsExactly("invite-1");
+        assertThat(hostingRecords).extracting(EventDto::id).containsExactly("hosting-1");
+        assertThat(invitationRecords).extracting(EventDto::id).containsExactly("invite-1");
         verify(activitiesMembersService, times(2)).buildBatchEventSnapshots(anyMap());
         verify(activitiesMembersService, never()).queryOwnerSnapshot(anyString(), anyString());
     }
@@ -530,9 +490,9 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(attending));
         when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
 
-        List<EventRecordDto> records = service.queryAttending("viewer");
+        List<EventDto> records = service.queryAttending("viewer");
 
-        assertThat(records).extracting(EventRecordDto::id).containsExactly("event-1");
+        assertThat(records).extracting(EventDto::id).containsExactly("event-1");
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
     }
 
@@ -558,7 +518,7 @@ class ActivitiesEventsServiceTest {
         EventsExplorePageDto page = service.queryAttendingPage("viewer", 2, null);
 
         assertThat(page.total()).isEqualTo(3);
-        assertThat(page.records()).extracting(EventRecordDto::id)
+        assertThat(page.records()).extracting(EventDto::id)
                 .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findByOwnerUserIdOrderByStartAtIsoAsc(anyString());
@@ -593,11 +553,11 @@ class ActivitiesEventsServiceTest {
         EventsExplorePageDto invitationResponse = service.queryInvitationsPage("host", 2, null);
         EventsExplorePageDto trashResponse = service.queryTrashPage("host", 2, null);
 
-        assertThat(hostingResponse.records()).extracting(EventRecordDto::id)
+        assertThat(hostingResponse.records()).extracting(EventDto::id)
                 .containsExactly("hosting-1");
-        assertThat(invitationResponse.records()).extracting(EventRecordDto::id)
+        assertThat(invitationResponse.records()).extracting(EventDto::id)
                 .containsExactly("invite-1");
-        assertThat(trashResponse.records()).extracting(EventRecordDto::id)
+        assertThat(trashResponse.records()).extracting(EventDto::id)
                 .containsExactly("trash-1");
     }
 
@@ -620,7 +580,7 @@ class ActivitiesEventsServiceTest {
 
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(record -> record.id()).containsExactly("event-1", "event-2");
-        assertThat(page.items()).extracting(EventRecordDto::id).containsExactly("event-1", "event-2");
+        assertThat(page.items()).extracting(EventDto::id).containsExactly("event-1", "event-2");
         assertThat(page.records()).allSatisfy(record -> assertThat(record.status()).isEqualTo(ActivityEvent.STATUS_ACTIVE));
         assertThat(page.nextCursor()).contains("event-2");
     }
@@ -650,7 +610,7 @@ class ActivitiesEventsServiceTest {
         assertThat(page.total()).isEqualTo(3);
         assertThat(page.records()).extracting(record -> record.id())
                 .containsExactly("event-1", "event-2");
-        assertThat(page.items()).extracting(EventRecordDto::id)
+        assertThat(page.items()).extracting(EventDto::id)
                 .containsExactly("event-1", "event-2");
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findAll();
@@ -735,10 +695,8 @@ class ActivitiesEventsServiceTest {
         EventsExplorePageDto page = service.queryItemsByUserPage("host", 2, null);
 
         assertThat(page.total()).isEqualTo(3);
-        assertThat(page.records()).extracting(EventRecordDto::id)
+        assertThat(page.records()).extracting(EventDto::id)
                 .containsExactly("event-1", "event-2");
-        assertThat(page.records().get(0).upcomingSlots()).extracting(EventSlotOccurrenceDto::id)
-                .containsExactly("slot-1");
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
     }
@@ -772,29 +730,45 @@ class ActivitiesEventsServiceTest {
         return event;
     }
 
-    private ActivitiesEventSyncPayloadDto eventPayload(
+    private EventDetailDto eventPayload(
             String syncKey,
             String id,
             String creatorUserId,
             Boolean published) {
-        return new ActivitiesEventSyncPayloadDto(
+        return new EventDetailDto(
                 syncKey,
                 id,
+                creatorUserId,
+                "hosting",
                 Boolean.TRUE.equals(published) ? ActivityEvent.STATUS_ACTIVE : ActivityEvent.STATUS_DRAFT,
+                null,
+                List.of(creatorUserId),
+                "HU",
                 "Draft Event",
                 "Draft short description",
                 "May 24, 3:28 AM - 4:28 AM",
+                null,
                 0,
+                0,
+                null,
+                creatorUserId,
+                "Host User",
+                "HU",
+                "man",
+                "",
+                "Public",
+                "Open Event",
                 "2026-05-24T03:28:00Z",
                 "2026-05-24T04:28:00Z",
                 0d,
                 "",
-                0,
-                0,
-                1,
+                "",
+                "",
                 null,
                 1,
                 null,
+                1,
+                1,
                 false,
                 "One-time",
                 false,
@@ -807,19 +781,22 @@ class ActivitiesEventsServiceTest {
                 false,
                 "main",
                 null,
-                "Public",
-                "Open Event",
-                creatorUserId,
-                "Host User",
-                "HU",
-                "man",
-                "",
-                "",
+                List.of(),
+                0,
+                0,
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(),
                 null,
-                "",
+                List.of(),
+                true,
                 List.of(),
                 List.of(),
                 "",
+                0d,
+                0d,
+                0d,
                 null);
     }
 

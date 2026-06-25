@@ -46,7 +46,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefresh
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
@@ -169,14 +169,14 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<EventRecordDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
+        List<EventDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .map(this::toTicketEventRecordDto)
+                .map(this::toTicketEventDto)
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso())))
+                .sorted(Comparator.comparing((EventDto item) -> toSortableDate(item.startAtIso())))
                 .toList();
 
-        List<EventRecordDto> visible = new ArrayList<>(ordered.stream()
+        List<EventDto> visible = new ArrayList<>(ordered.stream()
                 .filter(item -> matchesTicketOrder(item, upcoming))
                 .toList());
         if (!upcoming) {
@@ -927,63 +927,44 @@ public class AssetsService {
         return clone;
     }
 
-    private EventRecordDto toTicketEventRecordDto(ActivityEvent event) {
+    private EventDto toTicketEventDto(ActivityEvent event) {
         String sourceId = normalizeId(event.getSourceId());
         if (!StringUtils.hasText(sourceId)) {
             return null;
         }
         EventMemberSnapshot memberSnapshot = resolveEventMemberSnapshot(event);
-        return new EventRecordDto(
+        return new EventDto(
                 sourceId,
                 normalizeId(event.getOwnerUserId()),
                 safeText(event.getStatus()),
                 normalizeStrings(event.getAdmins()),
-                safeText(event.getAvatar()),
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),
                 safeText(event.getTimeframe()),
                 StringUtils.hasText(event.getInviter()) ? event.getInviter().trim() : null,
-                normalizeCount(event.getUnread()),
                 normalizeCount(event.getActivity()),
-                safeNullableText(event.getTrashedAtIso()),
                 normalizeId(event.getCreatorUserId()),
                 safeText(event.getCreatorName()),
                 safeText(event.getCreatorInitials()),
-                safeText(event.getCreatorGender()),
                 safeText(event.getCreatorCity()),
                 safeText(event.getVisibility()),
-                safeText(event.getBlindMode()),
                 safeNullableText(event.getStartAtIso()),
                 safeNullableText(event.getEndAtIso()),
                 safeDouble(event.getDistanceKm()),
                 safeText(event.getImageUrl()),
-                safeText(event.getSourceLink()),
                 safeText(event.getLocation()),
-                event.getLocationCoordinates(),
                 nullableCount(event.getCapacityMin()),
                 nullableCount(event.getCapacityMax()),
                 normalizeCount(event.getCapacityTotal()),
-                Boolean.TRUE.equals(event.getAutoInviter()),
-                safeText(event.getFrequency()),
-                Boolean.TRUE.equals(event.getTicketing()),
-                clonePricing(event.getPricing()),
-                event.getPolicies() == null ? List.of() : new ArrayList<>(event.getPolicies()),
-                Boolean.TRUE.equals(event.getSlotsEnabled()),
-                event.getSlotTemplates() == null ? List.of() : new ArrayList<>(event.getSlotTemplates()),
-                safeNullableText(event.getParentEventId()),
-                safeNullableText(event.getSlotTemplateId()),
-                Boolean.TRUE.equals(event.getGenerated()),
                 safeText(event.getEventType()),
-                null,
-                List.of(),
                 memberSnapshot.acceptedUserIds().size(),
                 memberSnapshot.pendingUserIds().size(),
-                normalizeStrings(event.getTopics()),
-                event.getSubEvents() == null ? List.of() : new ArrayList<>(event.getSubEvents()),
-                safeText(event.getSubEventsDisplayMode()),
-                safeDouble(event.getRating()),
-                safeDouble(event.getBoost()),
-                safeDouble(event.getAffinity()));
+                memberSnapshot.acceptedUserIds(),
+                memberSnapshot.pendingUserIds(),
+                normalizeStrings(event.getInvitedMemberUserIds()),
+                normalizeStrings(event.getPendingRequestMemberUserIds()),
+                null,
+                safeDouble(event.getBoost()));
     }
 
     private EventMemberSnapshot resolveEventMemberSnapshot(ActivityEvent event) {
@@ -2052,13 +2033,13 @@ public class AssetsService {
         return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
     }
 
-    private boolean matchesTicketOrder(EventRecordDto item, boolean upcoming) {
+    private boolean matchesTicketOrder(EventDto item, boolean upcoming) {
         long endAtMs = resolveTicketEndAtMs(item);
         boolean past = endAtMs < System.currentTimeMillis();
         return upcoming ? !past : past;
     }
 
-    private long resolveTicketEndAtMs(EventRecordDto item) {
+    private long resolveTicketEndAtMs(EventDto item) {
         if (item == null) {
             return Long.MIN_VALUE;
         }

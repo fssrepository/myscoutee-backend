@@ -276,7 +276,7 @@ public class EventTicketSyncService {
             next.setPendingRequestMemberUserIds(canonical.getPendingRequestMemberUserIds());
             next.setTopics(canonical.getTopics() == null ? List.of() : new ArrayList<>(canonical.getTopics()));
             next.setSubEvents(canonical.getSubEvents() == null ? List.of() : new ArrayList<>(canonical.getSubEvents()));
-            next.setSubEventsDisplayMode(safeText(canonical.getSubEventsDisplayMode()));
+            next.setMode(safeText(canonical.getMode()));
             next.setRating(safeDouble(canonical.getRating()));
             next.setBoost(safeDouble(canonical.getBoost()));
             next.setAffinity(safeDouble(canonical.getAffinity()));
@@ -352,7 +352,7 @@ public class EventTicketSyncService {
         clone.setPendingRequestMemberUserIds(source.getPendingRequestMemberUserIds());
         clone.setTopics(source.getTopics() == null ? List.of() : new ArrayList<>(source.getTopics()));
         clone.setSubEvents(source.getSubEvents() == null ? List.of() : new ArrayList<>(source.getSubEvents()));
-        clone.setSubEventsDisplayMode(source.getSubEventsDisplayMode());
+        clone.setMode(source.getMode());
         clone.setRating(source.getRating());
         clone.setBoost(source.getBoost());
         clone.setAffinity(source.getAffinity());
@@ -407,7 +407,7 @@ public class EventTicketSyncService {
                 && normalizeCount(left.getPendingMembers()) == normalizeCount(right.getPendingMembers())
                 && Objects.equals(left.getTopics() == null ? List.of() : left.getTopics(), right.getTopics() == null ? List.of() : right.getTopics())
                 && Objects.equals(left.getSubEvents() == null ? List.of() : left.getSubEvents(), right.getSubEvents() == null ? List.of() : right.getSubEvents())
-                && Objects.equals(safeText(left.getSubEventsDisplayMode()), safeText(right.getSubEventsDisplayMode()))
+                && Objects.equals(safeText(left.getMode()), safeText(right.getMode()))
                 && Double.compare(safeDouble(left.getRating()), safeDouble(right.getRating())) == 0
                 && Double.compare(safeDouble(left.getBoost()), safeDouble(right.getBoost())) == 0
                 && Double.compare(safeDouble(left.getAffinity()), safeDouble(right.getAffinity())) == 0;

@@ -78,7 +78,7 @@ class EventSlotReadModelServiceTest {
         event.setSourceId(sourceId);
         event.setStatus(ActivityEvent.STATUS_ACTIVE);
         event.setSlotsEnabled(true);
-        event.setSlotTemplates(List.of(new EventSlotTemplateDto("template-1", "2099-06-02T10:00:00Z", "2099-06-02T11:00:00Z", null, false)));
+        event.setSlotTemplates(List.of(new EventSlotTemplateDto("template-1", "2099-06-02T10:00:00Z", null, false, List.of())));
         event.setGenerated(false);
         event.setEventType("main");
         return event;

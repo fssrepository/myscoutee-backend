@@ -10,17 +10,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
 
 @Component
-public class ActivityEventDtoMapper {
+public class ActivityEventMapper {
     public record MappingContext(
             LocationCoordinatesDto viewerCoordinates,
             Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId) {
@@ -29,76 +24,60 @@ public class ActivityEventDtoMapper {
         }
     }
 
-    public EventRecordDto toDto(ActivityEvent record, MappingContext context) {
+    public EventDto toDto(ActivityEvent record, MappingContext context) {
         if (record == null) {
             return null;
         }
         Integer distanceMetersExact = resolveDistanceMetersExact(context == null ? null : context.viewerCoordinates(), record);
         ActivitiesMembersService.OwnerMembersSnapshot membersSnapshot = resolveMembersSnapshot(record, context);
+        List<String> acceptedMemberUserIds = resolveAcceptedMemberUserIds(record, membersSnapshot);
+        List<String> pendingMemberUserIds = resolvePendingMemberUserIds(record, membersSnapshot);
+        List<String> invitedMemberUserIds = resolveInvitedMemberUserIds(record, membersSnapshot);
+        List<String> pendingRequestMemberUserIds = resolvePendingRequestMemberUserIds(record, membersSnapshot);
         int capacityTotal = membersSnapshot == null || membersSnapshot.capacityTotal() == null
                 ? normalizeCount(record.getCapacityTotal())
                 : Math.max(0, membersSnapshot.capacityTotal());
         int acceptedMembers = membersSnapshot == null
-                ? Math.max(normalizeCount(record.getAcceptedMembers()), fallbackAcceptedMemberUserIds(record).size())
+                ? Math.max(normalizeCount(record.getAcceptedMembers()), acceptedMemberUserIds.size())
                 : membersSnapshot.acceptedMembers();
         int pendingMembers = membersSnapshot == null
-                ? normalizeCount(record.getPendingMembers())
+                ? Math.max(normalizeCount(record.getPendingMembers()), pendingMemberUserIds.size())
                 : membersSnapshot.pendingMembers();
-        List<EventSlotOccurrenceDto> upcomingSlots = cloneSlotOccurrences(record.getUpcomingSlots());
         List<String> adminUserIds = resolveDtoAdminUserIds(record, membersSnapshot);
-        return new EventRecordDto(
+        return new EventDto(
                 normalizeId(record.getSourceId()),
                 normalizeId(record.getOwnerUserId()),
                 safeText(record.getStatus()),
                 adminUserIds,
-                safeText(record.getAvatar()),
                 safeText(record.getTitle()),
                 safeText(record.getSubtitle()),
                 safeText(record.getTimeframe()),
                 StringUtils.hasText(record.getInviter()) ? record.getInviter().trim() : null,
-                normalizeCount(record.getUnread()),
                 normalizeCount(record.getActivity()),
-                StringUtils.hasText(record.getTrashedAtIso()) ? record.getTrashedAtIso().trim() : null,
                 normalizeId(record.getCreatorUserId()),
                 safeText(record.getCreatorName()),
                 safeText(record.getCreatorInitials()),
-                safeText(record.getCreatorGender()),
                 safeText(record.getCreatorCity()),
                 safeText(record.getVisibility()),
-                safeText(record.getBlindMode()),
                 StringUtils.hasText(record.getStartAtIso()) ? record.getStartAtIso().trim() : null,
                 StringUtils.hasText(record.getEndAtIso()) ? record.getEndAtIso().trim() : null,
                 distanceMetersExact == null
                         ? Math.max(0d, safeDouble(record.getDistanceKm()))
                         : distanceMetersExact.doubleValue() / 1000d,
                 safeText(record.getImageUrl()),
-                safeText(record.getSourceLink()),
                 safeText(record.getLocation()),
-                cloneLocation(record.getLocationCoordinates()),
                 nullableCount(record.getCapacityMin()),
                 nullableCount(record.getCapacityMax()),
                 Math.max(acceptedMembers, capacityTotal),
-                Boolean.TRUE.equals(record.getAutoInviter()),
-                safeText(record.getFrequency()),
-                Boolean.TRUE.equals(record.getTicketing()),
-                clonePricing(record.getPricing()),
-                clonePolicies(record.getPolicies()),
-                Boolean.TRUE.equals(record.getSlotsEnabled()),
-                cloneSlotTemplates(record.getSlotTemplates()),
-                safeText(record.getParentEventId()),
-                safeText(record.getSlotTemplateId()),
-                Boolean.TRUE.equals(record.getGenerated()),
-                isGeneratedSlotRecord(record) ? "slot" : "main",
-                upcomingSlots.isEmpty() ? null : upcomingSlots.get(0),
-                upcomingSlots,
+                resolveEventType(record),
                 acceptedMembers,
                 pendingMembers,
-                normalizeStrings(record.getTopics()),
-                cloneSubEvents(record.getSubEvents()),
-                safeText(record.getSubEventsDisplayMode()),
-                safeDouble(record.getRating()),
-                safeDouble(record.getBoost()),
-                safeDouble(record.getAffinity()));
+                acceptedMemberUserIds,
+                pendingMemberUserIds,
+                invitedMemberUserIds,
+                pendingRequestMemberUserIds,
+                null,
+                safeDouble(record.getBoost()));
     }
 
     private ActivitiesMembersService.OwnerMembersSnapshot resolveMembersSnapshot(
@@ -137,6 +116,36 @@ public class ActivityEventDtoMapper {
         return StringUtils.hasText(creatorUserId) ? List.of(creatorUserId) : List.of();
     }
 
+    private List<String> resolveAcceptedMemberUserIds(
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return snapshot == null ? fallbackAcceptedMemberUserIds(record) : normalizeIds(snapshot.acceptedMemberUserIds());
+    }
+
+    private List<String> resolvePendingMemberUserIds(
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return snapshot == null
+                ? normalizeIds(record == null ? null : record.getPendingMemberUserIds())
+                : normalizeIds(snapshot.pendingMemberUserIds());
+    }
+
+    private List<String> resolveInvitedMemberUserIds(
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return snapshot == null
+                ? normalizeIds(record == null ? null : record.getInvitedMemberUserIds())
+                : normalizeIds(snapshot.invitedMemberUserIds());
+    }
+
+    private List<String> resolvePendingRequestMemberUserIds(
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return snapshot == null
+                ? normalizeIds(record == null ? null : record.getPendingRequestMemberUserIds())
+                : normalizeIds(snapshot.pendingRequestMemberUserIds());
+    }
+
     private Integer resolveDistanceMetersExact(LocationCoordinatesDto viewerCoordinates, ActivityEvent record) {
         LocationCoordinatesDto eventCoordinates = record == null ? null : cloneLocation(record.getLocationCoordinates());
         if (viewerCoordinates == null || eventCoordinates == null) {
@@ -170,55 +179,19 @@ public class ActivityEventDtoMapper {
         return new LocationCoordinatesDto(value.latitude(), value.longitude());
     }
 
-    private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
-    }
-
-    private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
-    }
-
-    private PricingConfigDto clonePricing(PricingConfigDto pricing) {
-        return pricing;
-    }
-
-    private List<PolicyItemDto> clonePolicies(List<PolicyItemDto> policies) {
-        if (policies == null) {
-            return new ArrayList<>();
-        }
-        List<PolicyItemDto> normalized = new ArrayList<>();
-        for (int index = 0; index < policies.size(); index += 1) {
-            PolicyItemDto policy = policies.get(index);
-            if (policy == null) {
-                continue;
-            }
-            String title = safeText(policy.title());
-            String description = safeText(policy.description());
-            if (!StringUtils.hasText(title) && !StringUtils.hasText(description)) {
-                continue;
-            }
-            String id = safeText(policy.id());
-            if (!StringUtils.hasText(id)) {
-                id = "policy-" + (index + 1);
-            }
-            normalized.add(new PolicyItemDto(
-                    id,
-                    StringUtils.hasText(title) ? title : "Policy " + (index + 1),
-                    description,
-                    !Boolean.FALSE.equals(policy.required())));
-        }
-        return normalized;
-    }
-
-    private List<SubEventFormItemDto> cloneSubEvents(List<SubEventFormItemDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
-    }
-
     private boolean isGeneratedSlotRecord(ActivityEvent record) {
         return record != null
                 && (Boolean.TRUE.equals(record.getGenerated())
                         || "slot".equalsIgnoreCase(safeText(record.getEventType()))
                         || StringUtils.hasText(normalizeId(record.getParentEventId())));
+    }
+
+    private String resolveEventType(ActivityEvent record) {
+        String eventType = safeText(record == null ? null : record.getEventType());
+        if (StringUtils.hasText(eventType)) {
+            return eventType;
+        }
+        return isGeneratedSlotRecord(record) ? "slot" : "main";
     }
 
     private List<String> normalizeStrings(Collection<String> values) {

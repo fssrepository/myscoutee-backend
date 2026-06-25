@@ -304,7 +304,7 @@ public class EventScheduler {
         if ("T".equals(status) || "B".equals(status) || "D".equals(status) || "I".equals(status)) {
             return false;
         }
-        if ("TOURNAMENT".equalsIgnoreCase(safeText(event.getSubEventsDisplayMode()))) {
+        if ("TOURNAMENT".equalsIgnoreCase(safeText(event.getMode()))) {
             return true;
         }
         return safeSubEvents(event).stream().anyMatch(this::isTournamentStage);

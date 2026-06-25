@@ -2,7 +2,7 @@ package com.raxim.myscoutee.profile.data.dto.assets;
 
 import java.util.List;
 
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 
 public final class AssetsDtos {
@@ -51,7 +51,7 @@ public final class AssetsDtos {
     }
 
     public record AssetTicketsPageDto(
-            List<EventRecordDto> records,
+            List<EventDto> records,
             Integer total) {
     }
 }

@@ -18,6 +18,8 @@ date input with horoscop (separate component) + value accessor
 tournament to smart-list transform
 leaderboard maybe we could make accordion like like help/terms
 tournament-card / calendar-card (remove week/month from smart-list)
+sub event (stage/casual) fix - most of the button not working
+calendar-card to finish
 
 desktop
 -------

@@ -24,20 +24,22 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
 
     List<ActivityEvent> findByParentEventIdIn(Collection<String> parentEventIds);
 
+    @Query("{ 'creatorUserId': ?0, 'generated': { $ne: true } }")
     List<ActivityEvent> findByCreatorUserId(String creatorUserId);
 
+    @Query("{ 'admins': ?0, 'generated': { $ne: true } }")
     List<ActivityEvent> findByAdminsContaining(String adminUserId);
 
-    @Query("{ 'admins': ?0, 'sourceId': { $exists: true, $ne: '' } }")
+    @Query("{ 'admins': ?0, 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findAdminVisibleEvents(String userId);
 
-    @Query("{ 'acceptedMemberUserIds': ?0, 'sourceId': { $exists: true, $ne: '' } }")
+    @Query("{ 'acceptedMemberUserIds': ?0, 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findAcceptedMembershipEvents(String userId);
 
-    @Query("{ 'invitedMemberUserIds': ?0, 'status': 'A', 'sourceId': { $exists: true, $ne: '' } }")
+    @Query("{ 'invitedMemberUserIds': ?0, 'status': 'A', 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findActiveInvitationEvents(String userId);
 
-    @Query("{ 'pendingRequestMemberUserIds': ?0, 'sourceId': { $exists: true, $ne: '' } }")
+    @Query("{ 'pendingRequestMemberUserIds': ?0, 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")
     List<ActivityEvent> findPendingRequestEvents(String userId);
 
     @Query("{ 'status': 'A', 'generated': { $ne: true }, 'sourceId': { $exists: true, $ne: '' } }")

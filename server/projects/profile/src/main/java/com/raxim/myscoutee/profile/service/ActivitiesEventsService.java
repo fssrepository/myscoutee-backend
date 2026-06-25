@@ -42,11 +42,14 @@ import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.ActivitiesEventSyncPayloadDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventRecordDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventRuntimeDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
@@ -60,12 +63,14 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
-import com.raxim.myscoutee.profile.service.mapper.ActivityEventDtoMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -74,6 +79,7 @@ public class ActivitiesEventsService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final String SLOT_READ_MODEL_USER_ID = "__slot_read_model__";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String MEMBER_STATUS_INVITED = "I";
@@ -113,7 +119,8 @@ public class ActivitiesEventsService {
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
-    private final ActivityEventDtoMapper activityEventDtoMapper;
+    private final ActivityEventDetailMapper activityEventDetailMapper;
+    private final ActivityEventMapper activityEventMapper;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
@@ -136,7 +143,8 @@ public class ActivitiesEventsService {
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
-            ActivityEventDtoMapper activityEventDtoMapper) {
+            ActivityEventDetailMapper activityEventDetailMapper,
+            ActivityEventMapper activityEventMapper) {
         this.activityEventsRepository = activityEventsRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -157,7 +165,8 @@ public class ActivitiesEventsService {
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
-        this.activityEventDtoMapper = activityEventDtoMapper;
+        this.activityEventDetailMapper = activityEventDetailMapper;
+        this.activityEventMapper = activityEventMapper;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -489,7 +498,7 @@ public class ActivitiesEventsService {
                         || (request.excludedSourceIds() != null && !request.excludedSourceIds().isEmpty()));
     }
 
-    public List<EventRecordDto> queryItemsByUser(String requestedUserId) {
+    public List<EventDto> queryItemsByUser(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -522,11 +531,11 @@ public class ActivitiesEventsService {
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
 
-            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
-    public List<EventRecordDto> queryInvitations(String requestedUserId) {
+    public List<EventDto> queryInvitations(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -543,7 +552,7 @@ public class ActivitiesEventsService {
         return queryDirectFilterPage(requestedUserId, "invitations", "all", requestedLimit, cursor);
     }
 
-    public List<EventRecordDto> queryAttending(String requestedUserId) {
+    public List<EventDto> queryAttending(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -573,11 +582,11 @@ public class ActivitiesEventsService {
             String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
                     ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
                     : null;
-            return new EventsExplorePageDto(toHydratedEventRecordDtos(viewer, pageRecords), sorted.size(), nextCursor);
+            return new EventsExplorePageDto(toHydratedEventDtos(viewer, pageRecords), sorted.size(), nextCursor);
         });
     }
 
-    public List<EventRecordDto> queryHosting(String requestedUserId) {
+    public List<EventDto> queryHosting(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -594,7 +603,7 @@ public class ActivitiesEventsService {
         return queryDirectFilterPage(requestedUserId, "my-events", "all", requestedLimit, cursor);
     }
 
-    public List<EventRecordDto> queryTrash(String requestedUserId) {
+    public List<EventDto> queryTrash(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -654,7 +663,196 @@ public class ActivitiesEventsService {
                 pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
     }
 
-    public List<EventRecordDto> queryExploreItems(String requestedUserId) {
+    public EventDetailDto loadEventDetailById(String requestedUserId, String eventId) {
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        String sourceId = normalizeId(eventId);
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        return preferred == null
+                ? null
+                : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
+                        isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
+    }
+
+    public EventSubEventsResultDto loadSubEventsById(EventSubEventsQueryDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = normalizeId(request == null ? null : request.eventId());
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent selected = findPreferredEventRecord(sourceId);
+        if (selected == null) {
+            return null;
+        }
+        String parentEventId = isGeneratedSlotRecord(selected)
+                ? firstNonBlank(selected.getParentEventId(), selected.getSourceId())
+                : selected.getSourceId();
+        ActivityEvent parent = findPreferredEventRecord(parentEventId);
+        if (parent == null) {
+            parent = selected;
+        }
+        ActivityEvent parentRecord = parent;
+        EventDetailDto event = activityEventDetailMapper.toDto(parentRecord, new ActivityEventDetailMapper.MappingContext(
+                isViewerAdmin(parentRecord, viewer.userId()) ? "hosting" : "events"));
+
+        List<ActivityEvent> generatedSlots = activityEventsRepository.findByParentEventIdIn(List.of(parentEventId)).stream()
+                .filter(Objects::nonNull)
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .filter(this::isGeneratedSlotRecord)
+                .filter(record -> !isTrashStatus(record))
+                .filter(record -> generatedSlotFitsParentRange(record, parentRecord))
+                .sorted(Comparator.comparingLong(record -> toSortableDate(record.getStartAtIso())))
+                .toList();
+        long nowMs = System.currentTimeMillis();
+        List<ActivityEvent> rangedGeneratedSlots = generatedSlots.stream()
+                .filter(record -> recordMatchesSubEventsOrder(record, request, nowMs))
+                .filter(record -> recordOverlapsSubEventsQueryRange(record, request))
+                .toList();
+        List<ActivityEvent> fallbackRecords = generatedSlots.isEmpty()
+                && !isGeneratedSlotRecord(selected)
+                && generatedSlotFitsParentRange(selected, parent)
+                && recordMatchesSubEventsOrder(selected, request, nowMs)
+                && recordOverlapsSubEventsQueryRange(selected, request)
+                        ? List.of(selected)
+                        : List.of();
+        List<ActivityEvent> sourceRecords = generatedSlots.isEmpty() ? fallbackRecords : rangedGeneratedSlots;
+        int direction = "past".equalsIgnoreCase(safeText(request == null ? null : request.order())) ? -1 : 1;
+        List<EventSubEventRuntimeDto> items = sourceRecords.stream()
+                .flatMap(record -> runtimeSubEventsForRecord(parentEventId, record).stream())
+                .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
+                .toList();
+        return new EventSubEventsResultDto(event, items);
+    }
+
+    private List<EventSubEventRuntimeDto> runtimeSubEventsForRecord(String parentEventId, ActivityEvent record) {
+        List<SubEventFormItemDto> subEvents = cloneSubEvents(record == null ? null : record.getSubEvents());
+        List<EventSubEventRuntimeDto> items = new ArrayList<>();
+        for (int index = 0; index < subEvents.size(); index++) {
+            SubEventFormItemDto item = subEvents.get(index);
+            if (item == null) {
+                continue;
+            }
+            items.add(toRuntimeSubEventDto(parentEventId, record, item, index));
+        }
+        return items;
+    }
+
+    private EventSubEventRuntimeDto toRuntimeSubEventDto(
+            String parentEventId,
+            ActivityEvent record,
+            SubEventFormItemDto item,
+            int index) {
+        return new EventSubEventRuntimeDto(
+                item.id(),
+                item.name(),
+                item.description(),
+                item.startAt(),
+                item.endAt(),
+                item.location(),
+                item.createdByUserId(),
+                item.groups() == null ? List.of() : new ArrayList<>(item.groups()),
+                item.tournamentGroupCount(),
+                item.tournamentGroupCapacityMin(),
+                item.tournamentGroupCapacityMax(),
+                item.tournamentLeaderboardType(),
+                item.tournamentAdvancePerGroup(),
+                item.optional(),
+                item.pricing(),
+                item.capacityMin(),
+                item.capacityMax(),
+                item.membersAccepted(),
+                item.membersPending(),
+                item.carsPending(),
+                item.accommodationPending(),
+                item.suppliesPending(),
+                item.carsAccepted(),
+                item.accommodationAccepted(),
+                item.suppliesAccepted(),
+                item.carsCapacityMin(),
+                item.carsCapacityMax(),
+                item.accommodationCapacityMin(),
+                item.accommodationCapacityMax(),
+                item.suppliesCapacityMin(),
+                item.suppliesCapacityMax(),
+                item.slotStartOffsetMinutes(),
+                item.slotDurationMinutes(),
+                item.stageStatus(),
+                item.stageStatusReason(),
+                item.stageStatusUpdatedAt(),
+                item.stageFinalizedAt(),
+                item.stageFinalizedByUserId(),
+                runtimeSubEventId(record, item, index),
+                parentEventId,
+                isGeneratedSlotRecord(record) ? normalizeId(record.getSourceId()) : null,
+                safeText(record == null ? null : record.getSlotTemplateId()),
+                isGeneratedSlotRecord(record) ? safeText(record.getTitle()) : null,
+                isGeneratedSlotRecord(record) ? safeText(record.getTimeframe()) : null);
+    }
+
+    private String runtimeSubEventId(ActivityEvent record, SubEventFormItemDto item, int index) {
+        String recordId = firstNonBlank(record == null ? null : record.getSourceId(), "event");
+        String subEventId = firstNonBlank(item == null ? null : item.id(), "subevent-" + (index + 1));
+        return recordId + ":" + subEventId;
+    }
+
+    private boolean generatedSlotFitsParentRange(ActivityEvent record, ActivityEvent parent) {
+        long parentStart = toSortableDate(parent == null ? null : parent.getStartAtIso());
+        long parentEnd = toSortableDate(parent == null ? null : parent.getEndAtIso());
+        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
+        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (parentStart <= 0L || parentEnd <= 0L || recordStart <= 0L || recordEnd <= 0L) {
+            return false;
+        }
+        return recordStart >= parentStart && recordEnd <= parentEnd;
+    }
+
+    private boolean recordMatchesSubEventsOrder(ActivityEvent record, EventSubEventsQueryDto request, long nowMs) {
+        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
+        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (recordEnd <= 0L) {
+            recordEnd = recordStart;
+        }
+        if (recordEnd <= 0L) {
+            return false;
+        }
+        boolean past = recordEnd < nowMs;
+        return "past".equalsIgnoreCase(safeText(request == null ? null : request.order())) ? past : !past;
+    }
+
+    private boolean recordOverlapsSubEventsQueryRange(ActivityEvent record, EventSubEventsQueryDto request) {
+        Long rangeStart = subEventsQueryRangeStartMs(request);
+        Long rangeEnd = subEventsQueryRangeEndMs(request);
+        if (rangeStart == null && rangeEnd == null) {
+            return true;
+        }
+        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
+        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (recordEnd <= 0L) {
+            recordEnd = recordStart;
+        }
+        if (rangeStart != null && recordEnd < rangeStart) {
+            return false;
+        }
+        if (rangeEnd != null && recordStart > rangeEnd) {
+            return false;
+        }
+        return true;
+    }
+
+    private Long subEventsQueryRangeStartMs(EventSubEventsQueryDto request) {
+        long parsed = toSortableDate(request == null ? null : request.rangeStart());
+        return parsed <= 0L ? null : dateOnly(parsed);
+    }
+
+    private Long subEventsQueryRangeEndMs(EventSubEventsQueryDto request) {
+        long parsed = toSortableDate(request == null ? null : request.rangeEnd());
+        return parsed <= 0L ? null : dateOnly(parsed) + (24L * 60L * 60L * 1000L) - 1L;
+    }
+
+    public List<EventDto> queryExploreItems(String requestedUserId) {
         ViewerContext viewer = resolveViewer(requestedUserId);
         if (viewer == null) {
             return List.of();
@@ -666,7 +864,7 @@ public class ActivitiesEventsService {
                     .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .sorted(Comparator
-                            .comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
+                            .comparing((EventDto item) -> toSortableDate(item.startAtIso()))
                             .thenComparing(item -> safeText(item.id())))
                     .toList();
         } finally {
@@ -706,7 +904,7 @@ public class ActivitiesEventsService {
             int startIndex = resolveCursorStartIndex(sorted, cursor);
             int endIndex = Math.min(sorted.size(), startIndex + limit);
             List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
-            List<EventRecordDto> records = pageProjections.stream()
+            List<EventDto> records = pageProjections.stream()
                     .map(projection -> toEventDto(projection.record(), viewer))
                     .filter(Objects::nonNull)
                     .toList();
@@ -827,7 +1025,7 @@ public class ActivitiesEventsService {
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
-    public EventRecordDto applyStageAction(EventStageActionRequestDto request) {
+    public EventDto applyStageAction(EventStageActionRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -932,7 +1130,7 @@ public class ActivitiesEventsService {
         return toEventDto(savedPreferred, viewer);
     }
 
-    public EventRecordDto requestJoin(EventActionRequestDto request) {
+    public EventDto requestJoin(EventActionRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());
@@ -1599,7 +1797,7 @@ public class ActivitiesEventsService {
         return preferred == null ? null : preferred.getStartAtIso();
     }
 
-    public EventRecordDto sync(ActivitiesEventSyncPayloadDto request) {
+    public EventDto sync(EventDetailDto request) {
         if (request == null) {
             return null;
         }
@@ -1659,7 +1857,7 @@ public class ActivitiesEventsService {
         if (StringUtils.hasText(paymentSessionId)) {
             String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
                     ? request.nextSlot().startAtIso()
-                    : request.startAt();
+                    : request.startAtIso();
             paymentService.recordEventJoin(
                     paymentSessionId,
                     null,
@@ -1795,7 +1993,7 @@ public class ActivitiesEventsService {
 
         if ("week".equals(view) || "month".equals(view)) {
             return new EventsExplorePageDto(
-                    toHydratedEventRecordDtos(viewer, sorted.stream().map(EventProjection::record).toList()),
+                    toHydratedEventDtos(viewer, sorted.stream().map(EventProjection::record).toList()),
                     sorted.size(),
                     null);
         }
@@ -1804,7 +2002,7 @@ public class ActivitiesEventsService {
         int startIndex = resolveCursorStartIndex(sorted, cursor);
         int endIndex = Math.min(sorted.size(), startIndex + limit);
         List<EventProjection> pageProjections = sorted.subList(startIndex, endIndex);
-        List<EventRecordDto> records = toHydratedEventRecordDtos(viewer, pageProjections.stream()
+        List<EventDto> records = toHydratedEventDtos(viewer, pageProjections.stream()
                 .map(EventProjection::record)
                 .toList());
         String nextCursor = endIndex < sorted.size() && !pageProjections.isEmpty()
@@ -1813,7 +2011,7 @@ public class ActivitiesEventsService {
         return new EventsExplorePageDto(records, sorted.size(), nextCursor);
     }
 
-    private List<EventRecordDto> toHydratedEventRecordDtos(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
+    private List<EventDto> toHydratedEventDtos(ViewerContext viewer, List<ActivityEvent> projectedRecords) {
         List<ActivityEvent> hydratedRecords = hydratePageRecords(viewer, projectedRecords);
         if (hydratedRecords.isEmpty()) {
             return List.of();
@@ -1918,7 +2116,7 @@ public class ActivitiesEventsService {
             List<ActivityEvent> pageSourceRecords = sorted.stream()
                     .map(EventProjection::record)
                     .toList();
-            List<EventRecordDto> pageRecords = pageSourceRecords.stream()
+            List<EventDto> pageRecords = pageSourceRecords.stream()
                     .map(record -> toEventDto(record, viewer))
                     .filter(Objects::nonNull)
                     .toList();
@@ -1926,7 +2124,7 @@ public class ActivitiesEventsService {
                     pageRecords,
                     sorted.size(),
                     null,
-                    toHydratedEventRecordDtos(viewer, pageSourceRecords));
+                    toHydratedEventDtos(viewer, pageSourceRecords));
         }
 
         String cursor = request == null ? null : request.cursor();
@@ -1936,7 +2134,7 @@ public class ActivitiesEventsService {
         List<ActivityEvent> pageSourceRecords = pageProjections.stream()
                 .map(EventProjection::record)
                 .toList();
-        List<EventRecordDto> pageRecords = pageSourceRecords.stream()
+        List<EventDto> pageRecords = pageSourceRecords.stream()
                 .map(record -> toEventDto(record, viewer))
                 .filter(Objects::nonNull)
                 .toList();
@@ -1947,7 +2145,7 @@ public class ActivitiesEventsService {
                 pageRecords,
                 sorted.size(),
                 nextCursor,
-                toHydratedEventRecordDtos(viewer, pageSourceRecords));
+                toHydratedEventDtos(viewer, pageSourceRecords));
     }
 
     private boolean needsActivitiesAffinityEdges(EventsFilterRequestDto request) {
@@ -2011,6 +2209,7 @@ public class ActivitiesEventsService {
                 Criteria.where("ownerUserId").is(normalizedOwnerUserId),
                 Criteria.where("admins").is(normalizedOwnerUserId)));
         query.addCriteria(Criteria.where("sourceId").exists(true).ne(""));
+        query.addCriteria(Criteria.where("generated").ne(true));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventListCardFields(query);
         return mongoTemplate.find(query, ActivityEvent.class).stream()
@@ -2072,8 +2271,9 @@ public class ActivitiesEventsService {
                 .include("frequency")
                 .include("pricing")
                 .include("slotsEnabled")
+                .include("subEventsEnabled")
                 .include("upcomingSlots")
-                .include("subEventsDisplayMode");
+                .include("mode");
     }
 
     private List<ActivityEvent> queryInvitationRecords(ViewerContext viewer) {
@@ -2335,17 +2535,17 @@ public class ActivitiesEventsService {
         return endOfDay ? parsed + ChronoUnit.DAYS.getDuration().toMillis() - 1L : parsed;
     }
 
-    private EventRecordDto toEventDto(ActivityEvent record, ViewerContext viewer) {
-        return activityEventDtoMapper.toDto(record, eventDtoMappingContext(viewer, record));
+    private EventDto toEventDto(ActivityEvent record, ViewerContext viewer) {
+        return activityEventMapper.toDto(record, eventDtoMappingContext(viewer, record));
     }
 
-    private ActivityEventDtoMapper.MappingContext eventDtoMappingContext(
+    private ActivityEventMapper.MappingContext eventDtoMappingContext(
             ViewerContext viewer,
             ActivityEvent record) {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
                 ctx == null ? singleRecordSnapshot(record) : ctx.snapshotsBySourceId();
-        return new ActivityEventDtoMapper.MappingContext(
+        return new ActivityEventMapper.MappingContext(
                 viewer == null ? null : viewer.locationCoordinates(),
                 snapshotsBySourceId);
     }
@@ -2447,7 +2647,7 @@ public class ActivitiesEventsService {
         if (projection == null) {
             return "";
         }
-        EventRecordDto item = projection.item();
+        EventDto item = projection.item();
         if (item != null && StringUtils.hasText(item.id())) {
             return item.id();
         }
@@ -2599,7 +2799,7 @@ public class ActivitiesEventsService {
     }
 
     private ActivityEvent buildSyncedRecord(
-            ActivitiesEventSyncPayloadDto request,
+            EventDetailDto request,
             Users creator,
             String actorUserId,
             String sourceId,
@@ -2660,7 +2860,7 @@ public class ActivitiesEventsService {
         document.setOwnerUserId(ownerUserId);
         document.setAvatar(resolveCreatorInitials(request.creatorInitials(), creator, request.creatorName()));
         document.setTitle(safeText(request.title()));
-        document.setSubtitle(safeText(request.shortDescription()));
+        document.setSubtitle(safeText(request.subtitle()));
         document.setTimeframe(safeText(request.timeframe()));
         document.setInviter(existing == null ? null : existing.getInviter());
         document.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
@@ -2681,10 +2881,10 @@ public class ActivitiesEventsService {
         document.setFrequency(normalizedFrequency);
         document.setStartAtIso(publishedManageMode
                 ? normalizeDateTime(existing == null ? null : existing.getStartAtIso(), nowIso)
-                : normalizeDateTime(request.startAt(), existing == null ? nowIso : existing.getStartAtIso()));
+                : normalizeDateTime(request.startAtIso(), existing == null ? nowIso : existing.getStartAtIso()));
         document.setEndAtIso(publishedManageMode
                 ? normalizeDateTime(existing == null ? null : existing.getEndAtIso(), document.getStartAtIso())
-                : normalizeDateTime(request.endAt(), document.getStartAtIso()));
+                : normalizeDateTime(request.endAtIso(), document.getStartAtIso()));
         resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
         document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
@@ -2719,7 +2919,7 @@ public class ActivitiesEventsService {
                 : clonePolicies(request.policies()));
         boolean slotsEnabled = publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
-                : !slotEvent && !"One-time".equals(normalizedFrequency);
+                : !slotEvent && Boolean.TRUE.equals(request.slotsEnabled());
         document.setSlotsEnabled(slotsEnabled);
         document.setSlotTemplates(publishedManageMode
                 ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
@@ -2736,12 +2936,19 @@ public class ActivitiesEventsService {
         document.setInvitedMemberUserIds(invitedMemberUserIds);
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setTopics(normalizeStrings(request.topics()));
+        boolean subEventsEnabled = publishedManageMode
+                ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
+                : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
+        document.setSubEventsEnabled(subEventsEnabled);
+        document.setSubEventDefinitions(publishedManageMode
+                ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
+                : cloneSubEventDefinitions(request.subEventDefinitions()));
         document.setSubEvents(publishedManageMode
                 ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
                 : cloneSubEvents(request.subEvents()));
-        document.setSubEventsDisplayMode(publishedManageMode
-                ? safeText(existing == null ? null : existing.getSubEventsDisplayMode())
-                : safeText(request.subEventsDisplayMode()));
+        document.setMode(normalizeEventMode(publishedManageMode
+                ? safeText(existing == null ? null : existing.getMode())
+                : safeText(request.mode())));
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
         document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
         document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
@@ -2807,7 +3014,7 @@ public class ActivitiesEventsService {
     }
 
     private List<String> fallbackAcceptedMemberUserIds(
-            ActivitiesEventSyncPayloadDto request,
+            EventDetailDto request,
             ActivityEvent existing,
             String ownerUserId) {
         LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>();
@@ -2825,7 +3032,7 @@ public class ActivitiesEventsService {
     }
 
     private int resolveCapacityTotal(
-            ActivitiesEventSyncPayloadDto request,
+            EventDetailDto request,
             ActivityEvent existing,
             int acceptedMembers,
             ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
@@ -3290,7 +3497,7 @@ public class ActivitiesEventsService {
         return 0;
     }
 
-    private String serializeCursor(EventRecordDto item) {
+    private String serializeCursor(EventDto item) {
         if (item == null || !StringUtils.hasText(item.id())) {
             return null;
         }
@@ -3321,8 +3528,8 @@ public class ActivitiesEventsService {
         }
     }
 
-    private Comparator<EventRecordDto> listItemComparator() {
-        return Comparator.comparing((EventRecordDto item) -> toSortableDate(item.startAtIso()))
+    private Comparator<EventDto> listItemComparator() {
+        return Comparator.comparing((EventDto item) -> toSortableDate(item.startAtIso()))
                 .thenComparing(item -> safeText(item.id()));
     }
 
@@ -3351,6 +3558,7 @@ public class ActivitiesEventsService {
         clone.setInvitedMemberUserIds(new ArrayList<>(normalizeIds(source.getInvitedMemberUserIds())));
         clone.setPendingRequestMemberUserIds(new ArrayList<>(normalizeIds(source.getPendingRequestMemberUserIds())));
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
+        clone.setSubEventDefinitions(cloneSubEventDefinitions(source.getSubEventDefinitions()));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));
         clone.setSlotTemplates(cloneSlotTemplates(source.getSlotTemplates()));
         clone.setUpcomingSlots(cloneSlotOccurrences(source.getUpcomingSlots()));
@@ -3475,7 +3683,7 @@ public class ActivitiesEventsService {
         return "";
     }
 
-    private String resolveTelemetryEventType(ActivitiesEventSyncPayloadDto request) {
+    private String resolveTelemetryEventType(EventDetailDto request) {
         if (request == null) {
             return "Organized";
         }
@@ -3561,6 +3769,38 @@ public class ActivitiesEventsService {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
+    private List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
+        if (items == null) {
+            return new ArrayList<>();
+        }
+        List<SubEventDefinitionDto> cloned = new ArrayList<>();
+        for (SubEventDefinitionDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            cloned.add(new SubEventDefinitionDto(
+                    item.id(),
+                    item.name(),
+                    item.description(),
+                    item.timing(),
+                    item.offsetMinutes(),
+                    item.durationMinutes(),
+                    item.location(),
+                    item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
+                    item.tournamentGroupCount(),
+                    item.tournamentGroupCapacityMin(),
+                    item.tournamentGroupCapacityMax(),
+                    item.tournamentLeaderboardType(),
+                    item.tournamentAdvancePerGroup(),
+                    item.optional(),
+                    clonePricing(item.pricing()),
+                    item.capacityMin(),
+                    item.capacityMax(),
+                    item.icon()));
+        }
+        return cloned;
+    }
+
     private List<SubEventFormItemDto> ensureTournamentStartReviewStage(List<SubEventFormItemDto> items, String nowIso) {
         List<SubEventFormItemDto> subEvents = cloneSubEvents(items);
         if (subEvents.isEmpty()) {
@@ -3606,6 +3846,128 @@ public class ActivitiesEventsService {
         }
         return (item.tournamentGroupCount() != null && item.tournamentGroupCount() > 0)
                 || (item.groups() != null && !item.groups().isEmpty());
+    }
+
+    private String normalizeSubEventDefinitionTiming(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        if ("before".equals(normalized)) {
+            return "Before";
+        }
+        if ("during".equals(normalized)) {
+            return "During";
+        }
+        if ("after".equals(normalized)) {
+            return "After";
+        }
+        return "During";
+    }
+
+    private List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventDefinitionTimelineEntry> timeline = new ArrayList<>();
+        int previousStartOffsetMinutes = 0;
+        int previousEndOffsetMinutes = 0;
+        boolean hasPrevious = false;
+        for (SubEventDefinitionDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            int durationMinutes = Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
+            int offsetMinutes = Math.max(0, item.offsetMinutes() == null ? 0 : item.offsetMinutes());
+            String timing = normalizeSubEventDefinitionTiming(item.timing());
+            int startOffsetMinutes = !hasPrevious
+                    ? offsetMinutes
+                    : "During".equals(timing)
+                            ? previousStartOffsetMinutes + offsetMinutes
+                            : previousEndOffsetMinutes + offsetMinutes;
+            previousStartOffsetMinutes = startOffsetMinutes;
+            previousEndOffsetMinutes = startOffsetMinutes + durationMinutes;
+            hasPrevious = true;
+            timeline.add(new SubEventDefinitionTimelineEntry(item, startOffsetMinutes, durationMinutes));
+        }
+        return timeline;
+    }
+
+    private long subEventDefinitionsDurationMinutes(List<SubEventDefinitionDto> items) {
+        long maxEndOffset = 0L;
+        for (SubEventDefinitionTimelineEntry entry : subEventDefinitionTimeline(items)) {
+            maxEndOffset = Math.max(maxEndOffset, (long) entry.startOffsetMinutes() + entry.durationMinutes());
+        }
+        return maxEndOffset;
+    }
+
+    private List<SubEventDefinitionDto> slotTemplateSubEventDefinitions(ActivityEvent parent, EventSlotTemplateDto template) {
+        if (!Boolean.TRUE.equals(parent.getSubEventsEnabled())) {
+            return List.of();
+        }
+        List<SubEventDefinitionDto> overrideDefinitions = cloneSubEventDefinitions(template == null ? null : template.subEventDefinitions());
+        return overrideDefinitions.isEmpty()
+                ? cloneSubEventDefinitions(parent.getSubEventDefinitions())
+                : overrideDefinitions;
+    }
+
+    private List<SubEventFormItemDto> materializeSubEventDefinitionsForSlotOccurrence(
+            List<SubEventDefinitionDto> items,
+            LocalDateTime occurrenceStart) {
+        List<SubEventDefinitionTimelineEntry> source = subEventDefinitionTimeline(cloneSubEventDefinitions(items));
+        if (source.isEmpty() || occurrenceStart == null) {
+            return List.of();
+        }
+
+        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        for (SubEventDefinitionTimelineEntry entry : source) {
+            SubEventDefinitionDto item = entry.item();
+            if (item == null) {
+                continue;
+            }
+            int durationMinutes = entry.durationMinutes();
+            int startOffsetMinutes = entry.startOffsetMinutes();
+            LocalDateTime subEventStart = occurrenceStart.plusMinutes(startOffsetMinutes);
+            LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
+            materialized.add(new SubEventFormItemDto(
+                    item.id(),
+                    item.name(),
+                    item.description(),
+                    subEventStart.toString(),
+                    subEventEnd.toString(),
+                    item.location(),
+                    null,
+                    item.groups(),
+                    item.tournamentGroupCount(),
+                    item.tournamentGroupCapacityMin(),
+                    item.tournamentGroupCapacityMax(),
+                    item.tournamentLeaderboardType(),
+                    item.tournamentAdvancePerGroup(),
+                    item.optional(),
+                    item.pricing(),
+                    item.capacityMin(),
+                    item.capacityMax(),
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    startOffsetMinutes,
+                    durationMinutes));
+        }
+        return materialized;
+    }
+
+    private record SubEventDefinitionTimelineEntry(
+            SubEventDefinitionDto item,
+            int startOffsetMinutes,
+            int durationMinutes) {
     }
 
     private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(
@@ -3702,7 +4064,22 @@ public class ActivitiesEventsService {
     }
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+        if (items == null) {
+            return new ArrayList<>();
+        }
+        List<EventSlotTemplateDto> cloned = new ArrayList<>();
+        for (EventSlotTemplateDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            cloned.add(new EventSlotTemplateDto(
+                    item.id(),
+                    item.startAt(),
+                    item.overrideDate(),
+                    item.closed(),
+                    cloneSubEventDefinitions(item.subEventDefinitions())));
+        }
+        return cloned;
     }
 
     private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {
@@ -3774,6 +4151,7 @@ public class ActivitiesEventsService {
                 .toList();
 
         List<ActivityEvent> toSave = new ArrayList<>();
+        List<ActivityEvent> toDelete = new ArrayList<>();
         for (ActivityEvent parent : parents) {
             Map<String, ActivityEvent> existingBySourceId = new LinkedHashMap<>();
             for (ActivityEvent record : slotDocuments) {
@@ -3782,12 +4160,23 @@ public class ActivitiesEventsService {
                     existingBySourceId.put(normalizeId(record.getSourceId()), record);
                 }
             }
-            for (ActivityEvent generated : buildGeneratedSlotRecordsForParent(parent, existingBySourceId)) {
-                ActivityEvent existing = existingBySourceId.get(normalizeId(generated.getSourceId()));
-                if (existing == null) {
-                    toSave.add(generated);
+            List<ActivityEvent> generatedRecords = buildGeneratedSlotRecordsForParent(parent, existingBySourceId);
+            Set<String> generatedSourceIds = generatedRecords.stream()
+                    .map(ActivityEvent::getSourceId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .collect(LinkedHashSet::new, Set::add, Set::addAll);
+            for (ActivityEvent record : slotDocuments) {
+                if (isGeneratedSlotRecord(record)
+                        && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))
+                        && !generatedSourceIds.contains(normalizeId(record.getSourceId()))) {
+                    toDelete.add(record);
                 }
             }
+            toSave.addAll(generatedRecords);
+        }
+        if (!toDelete.isEmpty()) {
+            activityEventsRepository.deleteAll(toDelete);
         }
         if (!toSave.isEmpty()) {
             activityEventsRepository.saveAll(toSave);
@@ -3848,11 +4237,12 @@ public class ActivitiesEventsService {
                 continue;
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
-            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
-            if (templateStart == null || templateEnd == null) {
+            if (templateStart == null) {
                 continue;
             }
-            long durationMinutes = Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
+            long definitionDurationMinutes = subEventDefinitionsDurationMinutes(definitions);
+            long durationMinutes = Math.max(0L, definitionDurationMinutes);
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
                 if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
                     continue;
@@ -3861,7 +4251,7 @@ public class ActivitiesEventsService {
                 if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
                     continue;
                 }
-                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId);
+                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId, definitions);
             }
         }
         for (EventSlotTemplateDto template : templates) {
@@ -3872,20 +4262,20 @@ public class ActivitiesEventsService {
                 continue;
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
-            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
-            if (templateStart == null || templateEnd == null) {
+            if (templateStart == null) {
                 continue;
             }
-            if (templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart)) {
-                templateEnd = templateStart.plusMinutes(60L);
-            }
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
+            long definitionDurationMinutes = subEventDefinitionsDurationMinutes(definitions);
+            long durationMinutes = Math.max(0L, definitionDurationMinutes);
+            LocalDateTime templateEnd = templateStart.plusMinutes(durationMinutes);
             if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
                 continue;
             }
             if (templateStart.isBefore(parentStart) || templateEnd.isAfter(parentEnd)) {
                 continue;
             }
-            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId);
+            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId, definitions);
         }
         return records;
     }
@@ -3898,18 +4288,16 @@ public class ActivitiesEventsService {
             LocalDateTime occurrenceStart,
             LocalDateTime occurrenceEnd,
             String parentSourceId,
-            String creatorUserId) {
+            String creatorUserId,
+            List<SubEventDefinitionDto> definitions) {
         String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
         ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
-        if (existing != null) {
-            return;
-        }
         ActivityEvent next = new ActivityEvent();
         String nowIso = Instant.now().toString();
-        next.setId(resolveExistingId(creatorUserId, sourceId, existing));
-        next.setSyncKey(resolveExistingSyncKey(creatorUserId, sourceId, existing == null ? null : existing.getSyncKey()));
+        next.setId(resolveExistingId(SLOT_READ_MODEL_USER_ID, sourceId, existing));
+        next.setSyncKey(resolveExistingSyncKey(SLOT_READ_MODEL_USER_ID, sourceId, existing == null ? null : existing.getSyncKey()));
         next.setSourceId(sourceId);
-        next.setOwnerUserId(creatorUserId);
+        next.setOwnerUserId(SLOT_READ_MODEL_USER_ID);
         next.setAvatar(parent.getAvatar());
         next.setTitle(parent.getTitle());
         next.setSubtitle(parent.getSubtitle());
@@ -3955,8 +4343,11 @@ public class ActivitiesEventsService {
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
-        next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
-        next.setSubEventsDisplayMode(parent.getSubEventsDisplayMode());
+        next.setSubEventsEnabled(false);
+        next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && definitions != null && !definitions.isEmpty()
+                ? materializeSubEventDefinitionsForSlotOccurrence(definitions, occurrenceStart)
+                : materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
+        next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
         next.setBoost(existing == null ? safeDouble(parent.getBoost()) : safeDouble(existing.getBoost()));
@@ -3964,7 +4355,7 @@ public class ActivitiesEventsService {
         next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(creatorUserId);
-        next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
+        next.setAdmins(List.of());
         next.normalizeLifecycleState();
         records.add(next);
     }
@@ -3986,7 +4377,7 @@ public class ActivitiesEventsService {
             LocalDateTime horizonStart,
             LocalDateTime horizonEnd) {
         String normalizedFrequency = safeText(frequency).toLowerCase();
-        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency)) {
+        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency) || "custom".equals(normalizedFrequency)) {
             return !templateStart.isBefore(horizonStart) && !templateStart.isAfter(horizonEnd)
                     ? List.of(templateStart)
                     : List.of();
@@ -4189,6 +4580,7 @@ public class ActivitiesEventsService {
     private String normalizeEventFrequency(String value) {
         String normalized = safeText(value).toLowerCase();
         return switch (normalized) {
+            case "custom" -> "Custom";
             case "daily" -> "Daily";
             case "weekly" -> "Weekly";
             case "bi-weekly", "biweekly" -> "Bi-weekly";
@@ -4196,6 +4588,10 @@ public class ActivitiesEventsService {
             case "yearly", "annual", "annually" -> "Yearly";
             default -> "One-time";
         };
+    }
+
+    private String normalizeEventMode(String value) {
+        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
     }
 
     private String resolveCreatorName(String requestedName, Users creator) {
@@ -4300,7 +4696,7 @@ public class ActivitiesEventsService {
 
     private record EventProjection(
             ActivityEvent record,
-            EventRecordDto item,
+            EventDto item,
             int distanceMeters,
             double boostValue,
             long startAtMs,

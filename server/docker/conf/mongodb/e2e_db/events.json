@@ -129,7 +129,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.4,
     "boost": 18755,
     "affinity": 1182837,
@@ -329,7 +329,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.1,
     "boost": 22225.75,
     "affinity": 1074403,
@@ -480,7 +480,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19035.5,
     "affinity": 1343599,
@@ -631,7 +631,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.5,
     "boost": 20383.75,
     "affinity": 946438,
@@ -778,7 +778,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.3,
     "boost": 20027.75,
     "affinity": 1008003,
@@ -912,7 +912,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.9,
     "boost": 23507,
     "affinity": 2179133,
@@ -1068,7 +1068,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19600.25,
     "affinity": 2104389,
@@ -1211,7 +1211,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.1,
     "boost": 25646.75,
     "affinity": 1749741,
@@ -1352,7 +1352,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.3,
     "boost": 24743,
     "affinity": 2087029,
@@ -1508,7 +1508,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.3,
     "boost": 25532.5,
     "affinity": 2161676,
@@ -1668,7 +1668,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.3,
     "boost": 24534,
     "affinity": 1623623,
@@ -1872,7 +1872,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.3,
     "boost": 24705,
     "affinity": 1778091,
@@ -2081,7 +2081,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9.1,
     "boost": 28422.5,
     "affinity": 1957302,
@@ -2221,7 +2221,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 23056.25,
     "affinity": 1567382,
@@ -2382,7 +2382,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.5,
     "boost": 20892.5,
     "affinity": 1837312,
@@ -2589,7 +2589,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.5,
     "boost": 19970,
     "affinity": 1823709,
@@ -2746,7 +2746,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.1,
     "boost": 18810,
     "affinity": 1897812,
@@ -2901,7 +2901,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.3,
     "boost": 20778.75,
     "affinity": 2208203,
@@ -3043,7 +3043,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.5,
     "boost": 19970,
     "affinity": 2074196,
@@ -3198,7 +3198,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.9,
     "boost": 25091.25,
     "affinity": 1967407,
@@ -3405,7 +3405,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.3,
     "boost": 22934.75,
     "affinity": 2074232,
@@ -3613,7 +3613,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.2,
     "boost": 25243.5,
     "affinity": 2103255,
@@ -3752,7 +3752,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24283,
     "affinity": 2214114,
@@ -3958,7 +3958,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.2,
     "boost": 24435,
     "affinity": 1476364,
@@ -4161,7 +4161,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.9,
     "boost": 20627,
     "affinity": 1806842,
@@ -4302,7 +4302,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.1,
     "boost": 19292.25,
     "affinity": 1560319,
@@ -4441,7 +4441,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 25414.75,
     "affinity": 2255918,
@@ -4650,7 +4650,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.1,
     "boost": 19491.75,
     "affinity": 2102574,
@@ -4860,7 +4860,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.4,
     "boost": 19700,
     "affinity": 1612851,
@@ -5014,7 +5014,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.4,
     "boost": 19700,
     "affinity": 1776944,
@@ -5219,7 +5219,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.4,
     "boost": 20622.5,
     "affinity": 1763858,
@@ -5428,7 +5428,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9.2,
     "boost": 29208.75,
     "affinity": 1809610,
@@ -5565,7 +5565,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.6,
     "boost": 26080,
     "affinity": 1712912,
@@ -5723,7 +5723,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 24821.25,
     "affinity": 1863637,
@@ -5882,7 +5882,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9,
     "boost": 26745,
     "affinity": 2003450,
@@ -6026,7 +6026,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 25690.75,
     "affinity": 1810295,
@@ -6162,7 +6162,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6,
     "boost": 19022.25,
     "affinity": 1810589,
@@ -6316,7 +6316,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9,
     "boost": 28315.75,
     "affinity": 1772095,
@@ -6455,7 +6455,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20357,
     "affinity": 1636818,
@@ -6661,7 +6661,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.1,
     "boost": 24992.5,
     "affinity": 1765028,
@@ -6801,7 +6801,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.1,
     "boost": 23994,
     "affinity": 1974808,
@@ -6938,7 +6938,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.1,
     "boost": 24127,
     "affinity": 2181255,
@@ -7077,7 +7077,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20880,
     "affinity": 1874817,
@@ -7285,7 +7285,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.3,
     "boost": 19430,
     "affinity": 1798998,
@@ -7439,7 +7439,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 20224.75,
     "affinity": 2105620,
@@ -7578,7 +7578,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.7,
     "boost": 24551.25,
     "affinity": 1802071,
@@ -7711,7 +7711,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.3,
     "boost": 19430,
     "affinity": 1779024,
@@ -7917,7 +7917,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.5,
     "boost": 25810,
     "affinity": 2077324,
@@ -8074,7 +8074,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.3,
     "boost": 20352.5,
     "affinity": 1910222,
@@ -8278,7 +8278,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.1,
     "boost": 20243.75,
     "affinity": 1741761,
@@ -8436,7 +8436,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23726,
     "affinity": 1681275,
@@ -8636,7 +8636,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7,
     "boost": 21841.5,
     "affinity": 1899540,
@@ -8837,7 +8837,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.9,
     "boost": 22226.75,
     "affinity": 1671511,
@@ -8987,7 +8987,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.7,
     "boost": 20106,
     "affinity": 1905270,
@@ -9141,7 +9141,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23838,
     "affinity": 1830830,
@@ -9274,7 +9274,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.4,
     "boost": 28940.25,
     "affinity": 1931928,
@@ -9426,7 +9426,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.4,
     "boost": 28440,
     "affinity": 1528358,
@@ -9561,7 +9561,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19160,
     "affinity": 2419301,
@@ -9717,7 +9717,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19160,
     "affinity": 2151717,
@@ -9851,7 +9851,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.7,
     "boost": 21998.75,
     "affinity": 2048388,
@@ -10001,7 +10001,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 23121.25,
     "affinity": 1645104,
@@ -10201,7 +10201,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.8,
     "boost": 21822.5,
     "affinity": 1894359,
@@ -10335,7 +10335,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.9,
     "boost": 24579.25,
     "affinity": 1620165,
@@ -10537,7 +10537,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.4,
     "boost": 23734.75,
     "affinity": 2064213,
@@ -10671,7 +10671,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.5,
     "boost": 23291.5,
     "affinity": 1948124,
@@ -10808,7 +10808,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.3,
     "boost": 24641,
     "affinity": 1725010,
@@ -10944,7 +10944,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.7,
     "boost": 22988,
     "affinity": 1790231,
@@ -11079,7 +11079,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.6,
     "boost": 19855,
     "affinity": 1944445,
@@ -11234,7 +11234,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 25018,
     "affinity": 2025821,
@@ -11375,7 +11375,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 25875.5,
     "affinity": 2233717,
@@ -11513,7 +11513,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 25984.25,
     "affinity": 2031535,
@@ -11663,7 +11663,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.3,
     "boost": 21876,
     "affinity": 1745718,
@@ -11800,7 +11800,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.5,
     "boost": 22950,
     "affinity": 2107138,
@@ -12003,7 +12003,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.1,
     "boost": 26078.75,
     "affinity": 1635088,
@@ -12203,7 +12203,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.6,
     "boost": 26614.25,
     "affinity": 1779104,
@@ -12335,7 +12335,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9,
     "boost": 27300,
     "affinity": 1728052,
@@ -12534,7 +12534,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.2,
     "boost": 25902.5,
     "affinity": 2018595,
@@ -12672,7 +12672,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.7,
     "boost": 27123.75,
     "affinity": 1926019,
@@ -12813,7 +12813,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.9,
     "boost": 24115,
     "affinity": 1950957,
@@ -12965,7 +12965,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 18562,
     "affinity": 1892981,
@@ -13165,7 +13165,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.8,
     "boost": 27795.75,
     "affinity": 1663253,
@@ -13316,7 +13316,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.9,
     "boost": 27373.5,
     "affinity": 1962127,
@@ -13453,7 +13453,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.1,
     "boost": 21325,
     "affinity": 1976220,
@@ -13654,7 +13654,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.2,
     "boost": 24477,
     "affinity": 2340303,
@@ -13854,7 +13854,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.4,
     "boost": 26051.25,
     "affinity": 1592896,
@@ -14005,7 +14005,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19376.5,
     "affinity": 1729679,
@@ -14205,7 +14205,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.2,
     "boost": 22100,
     "affinity": 2206804,
@@ -14406,7 +14406,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.7,
     "boost": 27372.5,
     "affinity": 2113992,
@@ -14611,7 +14611,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.8,
     "boost": 23840,
     "affinity": 2027510,
@@ -14812,7 +14812,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.9,
     "boost": 27030,
     "affinity": 1786613,
@@ -14962,7 +14962,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.6,
     "boost": 27548.75,
     "affinity": 1731472,
@@ -15164,7 +15164,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6,
     "boost": 18620,
     "affinity": 2026230,
@@ -15314,7 +15314,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.1,
     "boost": 28671.25,
     "affinity": 1962512,
@@ -15466,7 +15466,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.6,
     "boost": 21075.75,
     "affinity": 1859691,
@@ -15667,7 +15667,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.7,
     "boost": 20046,
     "affinity": 2115282,
@@ -15817,7 +15817,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.3,
     "boost": 29246.75,
     "affinity": 1834444,
@@ -15967,7 +15967,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.7,
     "boost": 25954,
     "affinity": 1929655,
@@ -16167,7 +16167,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9.4,
     "boost": 28857.5,
     "affinity": 2438628,
@@ -16324,7 +16324,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.5,
     "boost": 25405,
     "affinity": 1783313,
@@ -16523,7 +16523,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.3,
     "boost": 19995.25,
     "affinity": 1612551,
@@ -16672,7 +16672,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.2,
     "boost": 27214,
     "affinity": 2187329,
@@ -16874,7 +16874,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9.4,
     "boost": 28500,
     "affinity": 2407420,
@@ -17026,7 +17026,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 22601.25,
     "affinity": 1798703,
@@ -17160,7 +17160,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.8,
     "boost": 28148.75,
     "affinity": 1808776,
@@ -17360,7 +17360,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.6,
     "boost": 21302.5,
     "affinity": 1917219,
@@ -17497,7 +17497,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.3,
     "boost": 25310,
     "affinity": 2000730,
@@ -17698,7 +17698,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.4,
     "boost": 22700,
     "affinity": 1815167,
@@ -17899,7 +17899,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6,
     "boost": 18003,
     "affinity": 2563846,
@@ -18055,7 +18055,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9,
     "boost": 26913,
     "affinity": 1846533,
@@ -18191,7 +18191,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.6,
     "boost": 19898,
     "affinity": 1636167,
@@ -18342,7 +18342,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 21515.25,
     "affinity": 2228041,
@@ -18543,7 +18543,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.1,
     "boost": 24176,
     "affinity": 2056984,
@@ -18696,7 +18696,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.4,
     "boost": 20191.5,
     "affinity": 1953540,
@@ -18900,7 +18900,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.6,
     "boost": 27179.75,
     "affinity": 2188283,
@@ -19052,7 +19052,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.3,
     "boost": 22430,
     "affinity": 1754924,
@@ -19203,7 +19203,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.5,
     "boost": 24071.25,
     "affinity": 1726127,
@@ -19402,7 +19402,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.9,
     "boost": 24170,
     "affinity": 1809731,
@@ -19601,7 +19601,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9.3,
     "boost": 29618.75,
     "affinity": 1761857,
@@ -19801,7 +19801,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.1,
     "boost": 22772.5,
     "affinity": 2177436,
@@ -19939,7 +19939,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19240,
     "affinity": 1734288,
@@ -20088,7 +20088,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.5,
     "boost": 21109.75,
     "affinity": 2179636,
@@ -20222,7 +20222,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 25597.25,
     "affinity": 1875477,
@@ -20373,7 +20373,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.1,
     "boost": 21418,
     "affinity": 1977221,
@@ -20508,7 +20508,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.9,
     "boost": 20838,
     "affinity": 1582901,
@@ -20647,7 +20647,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.6,
     "boost": 20829.5,
     "affinity": 1674932,
@@ -20784,7 +20784,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.6,
     "boost": 25648,
     "affinity": 1688043,
@@ -20986,7 +20986,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.3,
     "boost": 23372.5,
     "affinity": 1976001,
@@ -21191,7 +21191,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9,
     "boost": 27380,
     "affinity": 2096035,
@@ -21394,7 +21394,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.7,
     "boost": 24671.25,
     "affinity": 2126654,
@@ -21545,7 +21545,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 23548.75,
     "affinity": 2093209,
@@ -21681,7 +21681,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.3,
     "boost": 28250,
     "affinity": 1922896,
@@ -21882,7 +21882,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.8,
     "boost": 23900,
     "affinity": 1801167,
@@ -22015,7 +22015,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 22579.75,
     "affinity": 1803430,
@@ -22214,7 +22214,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.1,
     "boost": 22251.5,
     "affinity": 2063112,
@@ -22365,7 +22365,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.3,
     "boost": 22004,
     "affinity": 2007469,
@@ -22516,7 +22516,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.9,
     "boost": 23478,
     "affinity": 1646897,
@@ -22716,7 +22716,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.2,
     "boost": 18776,
     "affinity": 1908228,
@@ -22916,7 +22916,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.5,
     "boost": 23512.25,
     "affinity": 1515920,
@@ -23066,7 +23066,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 26141.25,
     "affinity": 2061071,
@@ -23216,7 +23216,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.1,
     "boost": 21890,
     "affinity": 2114254,
@@ -23351,7 +23351,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.7,
     "boost": 25018.75,
     "affinity": 2229283,
@@ -23552,7 +23552,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.9,
     "boost": 21310,
     "affinity": 1931888,
@@ -23702,7 +23702,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 24842.5,
     "affinity": 1761088,
@@ -23836,7 +23836,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.6,
     "boost": 26240,
     "affinity": 1963077,
@@ -23969,7 +23969,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.7,
     "boost": 20284,
     "affinity": 1889621,
@@ -24171,7 +24171,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9.3,
     "boost": 27584,
     "affinity": 1959911,
@@ -24324,7 +24324,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.5,
     "boost": 26312.5,
     "affinity": 1896433,
@@ -24476,7 +24476,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 26697.75,
     "affinity": 1789183,
@@ -24678,7 +24678,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.9,
     "boost": 27592.25,
     "affinity": 1897007,
@@ -24879,7 +24879,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.8,
     "boost": 23455,
     "affinity": 1900689,
@@ -25011,7 +25011,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22780,
     "affinity": 1584323,
@@ -25162,7 +25162,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 26488.75,
     "affinity": 1659618,
@@ -25295,7 +25295,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.3,
     "boost": 26312.5,
     "affinity": 2351079,
@@ -25429,7 +25429,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.7,
     "boost": 27611.25,
     "affinity": 1715621,
@@ -25629,7 +25629,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.5,
     "boost": 25970,
     "affinity": 1738852,
@@ -25830,7 +25830,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.5,
     "boost": 20170,
     "affinity": 1616413,
@@ -26030,7 +26030,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9,
     "boost": 27782.5,
     "affinity": 1667697,
@@ -26163,7 +26163,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.2,
     "boost": 27573,
     "affinity": 2195642,
@@ -26298,7 +26298,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.9,
     "boost": 28186.75,
     "affinity": 1810030,
@@ -26498,7 +26498,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.1,
     "boost": 24345,
     "affinity": 1889485,
@@ -26699,7 +26699,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.3,
     "boost": 18918,
     "affinity": 1716989,
@@ -26833,7 +26833,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.4,
     "boost": 29043.25,
     "affinity": 1921181,
@@ -27033,7 +27033,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.4,
     "boost": 27088.75,
     "affinity": 2072165,
@@ -27168,7 +27168,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 20242.5,
     "affinity": 1544448,
@@ -27368,7 +27368,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 9,
     "boost": 27440,
     "affinity": 1948108,
@@ -27567,7 +27567,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.6,
     "boost": 21541.25,
     "affinity": 1802773,
@@ -27723,7 +27723,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 21640,
     "affinity": 1862932,
@@ -27925,7 +27925,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.8,
     "boost": 26860,
     "affinity": 1843756,
@@ -28127,7 +28127,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.3,
     "boost": 22961.25,
     "affinity": 1745059,
@@ -28260,7 +28260,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.9,
     "boost": 21769.5,
     "affinity": 2113609,
@@ -28394,7 +28394,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.7,
     "boost": 23012,
     "affinity": 1602122,
@@ -28543,7 +28543,7 @@
         "suppliesPending": 0
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 18874,
     "affinity": 1996690,
@@ -28694,7 +28694,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.6,
     "boost": 25815,
     "affinity": 1864398,
@@ -28827,7 +28827,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 9.3,
     "boost": 28330,
     "affinity": 2101468,
@@ -29028,7 +29028,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.7,
     "boost": 21712.5,
     "affinity": 1609054,
@@ -29227,7 +29227,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 7.1,
     "boost": 23011.25,
     "affinity": 1598900,
@@ -29381,7 +29381,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.5,
     "boost": 23110,
     "affinity": 1859237,
@@ -29516,7 +29516,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.9,
     "boost": 21370,
     "affinity": 2345827,
@@ -29667,7 +29667,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24532,
     "affinity": 2219667,
@@ -29869,7 +29869,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.5,
     "boost": 19726,
     "affinity": 2391358,
@@ -30072,7 +30072,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.7,
     "boost": 20325,
     "affinity": 1565016,
@@ -30221,7 +30221,7 @@
         "suppliesPending": 3
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.2,
     "boost": 19721.5,
     "affinity": 1982400,
@@ -30372,7 +30372,7 @@
         "suppliesPending": 2
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 24467.25,
     "affinity": 2121383,
@@ -30580,7 +30580,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6,
     "boost": 18780,
     "affinity": 1921127,
@@ -30713,7 +30713,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.3,
     "boost": 23611.25,
     "affinity": 1874851,
@@ -30863,7 +30863,7 @@
         "suppliesPending": 1
       }
     ],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22840,
     "affinity": 2062206,
@@ -31065,7 +31065,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.9,
     "boost": 27190,
     "affinity": 1512755,
@@ -31265,7 +31265,7 @@
         "tournamentLeaderboardType": "Fifa"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 8.4,
     "boost": 25146,
     "affinity": 1672890,
@@ -31467,7 +31467,7 @@
         "tournamentLeaderboardType": "Score"
       }
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "rating": 6.9,
     "boost": 20925,
     "affinity": 2031151,
@@ -31550,7 +31550,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24935,
     "affinity": 432507,
@@ -31628,7 +31628,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24355,
     "affinity": 432507,
@@ -31706,7 +31706,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20293,
     "affinity": 499225,
@@ -31788,7 +31788,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20300,
     "affinity": 499225,
@@ -31870,7 +31870,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22627,
     "affinity": 499225,
@@ -31948,7 +31948,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24947,
     "affinity": 499225,
@@ -32026,7 +32026,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23219,
     "affinity": 581523,
@@ -32104,7 +32104,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 22273.75,
     "affinity": 432507,
@@ -32186,7 +32186,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20857,
     "affinity": 581523,
@@ -32268,7 +32268,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23811,
     "affinity": 440843,
@@ -32346,7 +32346,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 25452.25,
     "affinity": 440843,
@@ -32424,7 +32424,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21449,
     "affinity": 440843,
@@ -32506,7 +32506,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22048,
     "affinity": 444724,
@@ -32588,7 +32588,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22041,
     "affinity": 444724,
@@ -32670,7 +32670,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24983,
     "affinity": 444724,
@@ -32748,7 +32748,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24403,
     "affinity": 444724,
@@ -32826,7 +32826,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20320,
     "affinity": 620130,
@@ -32908,7 +32908,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20313,
     "affinity": 620130,
@@ -32990,7 +32990,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22675,
     "affinity": 620130,
@@ -33068,7 +33068,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24995,
     "affinity": 620130,
@@ -33146,7 +33146,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22645,
     "affinity": 305793,
@@ -33224,7 +33224,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23225,
     "affinity": 305793,
@@ -33302,7 +33302,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20905,
     "affinity": 305793,
@@ -33384,7 +33384,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20877,
     "affinity": 305793,
@@ -33466,7 +33466,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21469,
     "affinity": 443988,
@@ -33548,7 +33548,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21462,
     "affinity": 443988,
@@ -33630,7 +33630,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23817,
     "affinity": 443988,
@@ -33708,7 +33708,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23237,
     "affinity": 443988,
@@ -33786,7 +33786,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24404,
     "affinity": 227821,
@@ -33864,7 +33864,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23824,
     "affinity": 227821,
@@ -33942,7 +33942,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22056,
     "affinity": 227821,
@@ -34024,7 +34024,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22049,
     "affinity": 227821,
@@ -34106,7 +34106,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24986,
     "affinity": 522709,
@@ -34184,7 +34184,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24406,
     "affinity": 522709,
@@ -34262,7 +34262,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20318,
     "affinity": 522709,
@@ -34344,7 +34344,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20311,
     "affinity": 522709,
@@ -34426,7 +34426,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20900,
     "affinity": 398080,
@@ -34508,7 +34508,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20893,
     "affinity": 398080,
@@ -34590,7 +34590,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22668,
     "affinity": 398080,
@@ -34668,7 +34668,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24988,
     "affinity": 398080,
@@ -34746,7 +34746,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21447,
     "affinity": 329173,
@@ -34828,7 +34828,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21475,
     "affinity": 329173,
@@ -34910,7 +34910,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23250,
     "affinity": 329173,
@@ -34988,7 +34988,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22670,
     "affinity": 329173,
@@ -35066,7 +35066,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23790,
     "affinity": 432507,
@@ -35144,7 +35144,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23210,
     "affinity": 432507,
@@ -35222,7 +35222,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22029,
     "affinity": 432507,
@@ -35304,7 +35304,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22022,
     "affinity": 432507,
@@ -35386,7 +35386,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20291,
     "affinity": 499225,
@@ -35468,7 +35468,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20284,
     "affinity": 499225,
@@ -35550,7 +35550,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23792,
     "affinity": 499225,
@@ -35628,7 +35628,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24372,
     "affinity": 499225,
@@ -35706,7 +35706,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24954,
     "affinity": 581523,
@@ -35784,7 +35784,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24374,
     "affinity": 581523,
@@ -35862,7 +35862,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20866,
     "affinity": 581523,
@@ -35944,7 +35944,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20873,
     "affinity": 581523,
@@ -36026,7 +36026,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24956,
     "affinity": 440843,
@@ -36104,7 +36104,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22636,
     "affinity": 440843,
@@ -36182,7 +36182,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21455,
     "affinity": 440843,
@@ -36264,7 +36264,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21448,
     "affinity": 440843,
@@ -36346,7 +36346,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22030,
     "affinity": 444724,
@@ -36428,7 +36428,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22002,
     "affinity": 444724,
@@ -36510,7 +36510,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22638,
     "affinity": 444724,
@@ -36588,7 +36588,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23218,
     "affinity": 444724,
@@ -36666,7 +36666,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20264,
     "affinity": 620130,
@@ -36748,7 +36748,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20257,
     "affinity": 620130,
@@ -36830,7 +36830,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23800,
     "affinity": 620130,
@@ -36908,7 +36908,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23220,
     "affinity": 620130,
@@ -36986,7 +36986,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23760,
     "affinity": 305793,
@@ -37064,7 +37064,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24340,
     "affinity": 305793,
@@ -37142,7 +37142,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20839,
     "affinity": 305793,
@@ -37224,7 +37224,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20846,
     "affinity": 305793,
@@ -37306,7 +37306,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21421,
     "affinity": 443988,
@@ -37388,7 +37388,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21428,
     "affinity": 443988,
@@ -37470,7 +37470,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24922,
     "affinity": 443988,
@@ -37548,7 +37548,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24342,
     "affinity": 443988,
@@ -37626,7 +37626,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.4,
     "boost": 24924,
     "affinity": 227821,
@@ -37704,7 +37704,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22604,
     "affinity": 227821,
@@ -37782,7 +37782,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22003,
     "affinity": 227821,
@@ -37864,7 +37864,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 22010,
     "affinity": 227821,
@@ -37946,7 +37946,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23186,
     "affinity": 522709,
@@ -38024,7 +38024,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.6,
     "boost": 22606,
     "affinity": 522709,
@@ -38102,7 +38102,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20237,
     "affinity": 522709,
@@ -38184,7 +38184,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 6.8,
     "boost": 20265,
     "affinity": 522709,
@@ -38266,7 +38266,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20819,
     "affinity": 398080,
@@ -38348,7 +38348,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7,
     "boost": 20812,
     "affinity": 398080,
@@ -38430,7 +38430,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23768,
     "affinity": 398080,
@@ -38508,7 +38508,7 @@
       "#Wellness"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.8,
     "boost": 23188,
     "affinity": 398080,
@@ -38586,7 +38586,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21401,
     "affinity": 329173,
@@ -38668,7 +38668,7 @@
       "#CoffeeMeetup"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.2,
     "boost": 21394,
     "affinity": 329173,
@@ -38750,7 +38750,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8,
     "boost": 23770,
     "affinity": 329173,
@@ -38828,7 +38828,7 @@
       "#Networking"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 8.2,
     "boost": 24350,
     "affinity": 329173,
@@ -38906,7 +38906,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 21976,
     "affinity": 432507,
@@ -38988,7 +38988,7 @@
       "#Culture"
     ],
     "subEvents": [],
-    "subEventsDisplayMode": "Casual",
+    "mode": "Casual",
     "rating": 7.4,
     "boost": 21983,
     "affinity": 432507,
@@ -39031,7 +39031,7 @@
     "admins": [
       "admin-demo-ava"
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "subEvents": [
       {
         "id": "demo-results-stage-1",
@@ -39136,7 +39136,7 @@
     "admins": [
       "admin-demo-ava"
     ],
-    "subEventsDisplayMode": "Tournament",
+    "mode": "Tournament",
     "subEvents": [
       {
         "id": "demo-review-stage-1",

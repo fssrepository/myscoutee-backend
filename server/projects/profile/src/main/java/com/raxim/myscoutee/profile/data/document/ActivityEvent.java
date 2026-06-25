@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenc
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
 @Document(collection = "events")
@@ -106,8 +107,10 @@ public class ActivityEvent {
     private List<String> invitedMemberUserIds = new ArrayList<>();
     private List<String> pendingRequestMemberUserIds = new ArrayList<>();
     private List<String> topics = new ArrayList<>();
+    private Boolean subEventsEnabled = true;
+    private List<SubEventDefinitionDto> subEventDefinitions = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
-    private String subEventsDisplayMode;
+    private String mode = "Casual";
     private Double rating;
     private Double boost;
     private Double affinity;
@@ -260,10 +263,16 @@ public class ActivityEvent {
     }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
+    public Boolean getSubEventsEnabled() { return subEventsEnabled; }
+    public void setSubEventsEnabled(Boolean subEventsEnabled) { this.subEventsEnabled = subEventsEnabled; }
+    public List<SubEventDefinitionDto> getSubEventDefinitions() { return subEventDefinitions; }
+    public void setSubEventDefinitions(List<SubEventDefinitionDto> subEventDefinitions) {
+        this.subEventDefinitions = subEventDefinitions == null ? new ArrayList<>() : new ArrayList<>(subEventDefinitions);
+    }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }
     public void setSubEvents(List<SubEventFormItemDto> subEvents) { this.subEvents = subEvents; }
-    public String getSubEventsDisplayMode() { return subEventsDisplayMode; }
-    public void setSubEventsDisplayMode(String subEventsDisplayMode) { this.subEventsDisplayMode = subEventsDisplayMode; }
+    public String getMode() { return normalizeMode(mode); }
+    public void setMode(String mode) { this.mode = normalizeMode(mode); }
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
     public Double getBoost() { return boost; }
@@ -298,6 +307,10 @@ public class ActivityEvent {
 
     private static boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private static String normalizeMode(String value) {
+        return hasText(value) && "Tournament".equalsIgnoreCase(value.trim()) ? "Tournament" : "Casual";
     }
 
     private List<String> normalizeAdminIds(List<String> values) {

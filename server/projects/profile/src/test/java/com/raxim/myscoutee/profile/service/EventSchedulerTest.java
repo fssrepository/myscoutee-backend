@@ -427,7 +427,7 @@ class EventSchedulerTest {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");
         event.setStatus(ActivityEvent.STATUS_ACTIVE);
-        event.setSubEventsDisplayMode("Tournament");
+        event.setMode("Tournament");
         event.setSubEvents(List.of(
                 subEventWithStatus("stage-ended", "2026-05-12T10:00:00Z", null),
                 subEventWithStatus("stage-review", "2026-05-12T10:30:00Z", "SR"),

@@ -8,7 +8,9 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 
 public final class EventsDtos {
     private EventsDtos() {
@@ -197,10 +199,63 @@ public final class EventsDtos {
             List<EventFeedbackCardDto> cards) {
     }
 
-    public record EventRecordDto(
+    public record EventDto(
             String id,
             String userId,
             String status,
+            List<String> adminIds,
+            String title,
+            String subtitle,
+            String timeframe,
+            String inviter,
+            Integer activity,
+            String creatorUserId,
+            String creatorName,
+            String creatorInitials,
+            String creatorCity,
+            String visibility,
+            String startAtIso,
+            String endAtIso,
+            Double distanceKm,
+            String imageUrl,
+            String location,
+            Integer capacityMin,
+            Integer capacityMax,
+            Integer capacityTotal,
+            String eventType,
+            Integer acceptedMembers,
+            Integer pendingMembers,
+            List<String> acceptedMemberUserIds,
+            List<String> pendingMemberUserIds,
+            List<String> invitedMemberUserIds,
+            List<String> pendingRequestMemberUserIds,
+            String pendingReason,
+            Double boost) {
+    }
+
+    public record EventsExplorePageDto(
+            List<EventDto> records,
+            Integer total,
+            String nextCursor) {
+    }
+
+    public record EventListPageDto(
+            List<EventDto> records,
+            Integer total,
+            String nextCursor,
+            List<EventDto> items) {
+        public EventListPageDto(List<EventDto> records, Integer total, String nextCursor) {
+            this(records, total, nextCursor, List.of());
+        }
+    }
+
+    public record EventDetailDto(
+            String syncKey,
+            String id,
+            String userId,
+            String type,
+            String status,
+            String statusBeforeSuppression,
             List<String> adminIds,
             String avatar,
             String title,
@@ -227,6 +282,7 @@ public final class EventsDtos {
             Integer capacityMin,
             Integer capacityMax,
             Integer capacityTotal,
+            Integer capacityTotalActual,
             Boolean autoInviter,
             String frequency,
             Boolean ticketing,
@@ -242,74 +298,82 @@ public final class EventsDtos {
             List<EventSlotOccurrenceDto> upcomingSlots,
             Integer acceptedMembers,
             Integer pendingMembers,
+            List<String> acceptedMemberUserIds,
+            List<String> pendingMemberUserIds,
+            List<String> invitedMemberUserIds,
+            List<String> pendingRequestMemberUserIds,
+            String pendingReason,
             List<String> topics,
+            Boolean subEventsEnabled,
+            List<SubEventDefinitionDto> subEventDefinitions,
             List<SubEventFormItemDto> subEvents,
-            String subEventsDisplayMode,
+            String mode,
             Double rating,
             Double boost,
-            Double affinity) {
+            Double affinity,
+            String paymentSessionId) {
     }
 
-    public record EventsExplorePageDto(
-            List<EventRecordDto> records,
-            Integer total,
-            String nextCursor) {
+    public record EventSubEventsQueryDto(
+            String userId,
+            String eventId,
+            String order,
+            String view,
+            String anchorDate,
+            String rangeStart,
+            String rangeEnd) {
     }
 
-    public record EventListPageDto(
-            List<EventRecordDto> records,
-            Integer total,
-            String nextCursor,
-            List<EventRecordDto> items) {
-        public EventListPageDto(List<EventRecordDto> records, Integer total, String nextCursor) {
-            this(records, total, nextCursor, List.of());
-        }
-    }
-
-    public record ActivitiesEventSyncPayloadDto(
-            String syncKey,
+    public record EventSubEventRuntimeDto(
             String id,
-            String status,
-            String title,
-            String shortDescription,
-            String timeframe,
-            Integer activity,
+            String name,
+            String description,
             String startAt,
             String endAt,
-            Double distanceKm,
-            String imageUrl,
-            Integer acceptedMembers,
-            Integer pendingMembers,
-            Integer capacityTotal,
+            String location,
+            String createdByUserId,
+            List<SubEventGroupItemDto> groups,
+            Integer tournamentGroupCount,
+            Integer tournamentGroupCapacityMin,
+            Integer tournamentGroupCapacityMax,
+            String tournamentLeaderboardType,
+            Integer tournamentAdvancePerGroup,
+            Boolean optional,
+            PricingConfigDto pricing,
             Integer capacityMin,
             Integer capacityMax,
-            Integer capacityTotalActual,
-            Boolean autoInviter,
-            String frequency,
-            Boolean ticketing,
-            PricingConfigDto pricing,
-            List<PolicyItemDto> policies,
-            Boolean slotsEnabled,
-            List<EventSlotTemplateDto> slotTemplates,
+            Integer membersAccepted,
+            Integer membersPending,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending,
+            Integer carsAccepted,
+            Integer accommodationAccepted,
+            Integer suppliesAccepted,
+            Integer carsCapacityMin,
+            Integer carsCapacityMax,
+            Integer accommodationCapacityMin,
+            Integer accommodationCapacityMax,
+            Integer suppliesCapacityMin,
+            Integer suppliesCapacityMax,
+            Integer slotStartOffsetMinutes,
+            Integer slotDurationMinutes,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            String runtimeId,
             String parentEventId,
+            String slotSourceId,
             String slotTemplateId,
-            Boolean generated,
-            String eventType,
-            EventSlotOccurrenceDto nextSlot,
-            String visibility,
-            String blindMode,
-            String creatorUserId,
-            String creatorName,
-            String creatorInitials,
-            String creatorGender,
-            String creatorCity,
-            String location,
-            LocationCoordinatesDto locationCoordinates,
-            String sourceLink,
-            List<String> topics,
-            List<SubEventFormItemDto> subEvents,
-            String subEventsDisplayMode,
-            String paymentSessionId) {
+            String slotTitle,
+            String slotTimeframe) {
+    }
+
+    public record EventSubEventsResultDto(
+            EventDetailDto event,
+            List<EventSubEventRuntimeDto> items) {
     }
 
     public record EventCheckoutRequestDto(
