@@ -2737,7 +2737,7 @@ public class ActivitiesEventsService {
                 : clonePolicies(request.policies()));
         boolean slotsEnabled = publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getSlotsEnabled())
-                : !slotEvent && !"One-time".equals(normalizedFrequency);
+                : !slotEvent && Boolean.TRUE.equals(request.slotsEnabled());
         document.setSlotsEnabled(slotsEnabled);
         document.setSlotTemplates(publishedManageMode
                 ? cloneSlotTemplates(existing == null ? null : existing.getSlotTemplates())
@@ -4152,7 +4152,7 @@ public class ActivitiesEventsService {
             LocalDateTime horizonStart,
             LocalDateTime horizonEnd) {
         String normalizedFrequency = safeText(frequency).toLowerCase();
-        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency)) {
+        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency) || "custom".equals(normalizedFrequency)) {
             return !templateStart.isBefore(horizonStart) && !templateStart.isAfter(horizonEnd)
                     ? List.of(templateStart)
                     : List.of();
@@ -4355,6 +4355,7 @@ public class ActivitiesEventsService {
     private String normalizeEventFrequency(String value) {
         String normalized = safeText(value).toLowerCase();
         return switch (normalized) {
+            case "custom" -> "Custom";
             case "daily" -> "Daily";
             case "weekly" -> "Weekly";
             case "bi-weekly", "biweekly" -> "Bi-weekly";
