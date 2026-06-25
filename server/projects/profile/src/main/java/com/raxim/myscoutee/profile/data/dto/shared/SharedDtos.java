@@ -255,7 +255,8 @@ public final class SharedDtos {
             String id,
             String startAt,
             String overrideDate,
-            Boolean closed) {
+            Boolean closed,
+            List<SubEventDefinitionDto> subEventDefinitions) {
     }
 
     public record EventSlotOccurrenceDto(

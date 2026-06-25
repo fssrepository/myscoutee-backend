@@ -111,7 +111,22 @@ public class ActivityEventDetailMapper {
     }
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+        if (items == null) {
+            return new ArrayList<>();
+        }
+        List<EventSlotTemplateDto> cloned = new ArrayList<>();
+        for (EventSlotTemplateDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            cloned.add(new EventSlotTemplateDto(
+                    item.id(),
+                    item.startAt(),
+                    item.overrideDate(),
+                    item.closed(),
+                    cloneSubEventDefinitions(item.subEventDefinitions())));
+        }
+        return cloned;
     }
 
     private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {

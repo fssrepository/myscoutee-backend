@@ -3717,6 +3717,16 @@ public class ActivitiesEventsService {
         return maxEndOffset;
     }
 
+    private List<SubEventDefinitionDto> slotTemplateSubEventDefinitions(ActivityEvent parent, EventSlotTemplateDto template) {
+        if (!Boolean.TRUE.equals(parent.getSubEventsEnabled())) {
+            return List.of();
+        }
+        List<SubEventDefinitionDto> overrideDefinitions = cloneSubEventDefinitions(template == null ? null : template.subEventDefinitions());
+        return overrideDefinitions.isEmpty()
+                ? cloneSubEventDefinitions(parent.getSubEventDefinitions())
+                : overrideDefinitions;
+    }
+
     private List<SubEventFormItemDto> materializeSubEventDefinitionsForSlotOccurrence(
             List<SubEventDefinitionDto> items,
             LocalDateTime occurrenceStart) {
@@ -3873,7 +3883,22 @@ public class ActivitiesEventsService {
     }
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+        if (items == null) {
+            return new ArrayList<>();
+        }
+        List<EventSlotTemplateDto> cloned = new ArrayList<>();
+        for (EventSlotTemplateDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            cloned.add(new EventSlotTemplateDto(
+                    item.id(),
+                    item.startAt(),
+                    item.overrideDate(),
+                    item.closed(),
+                    cloneSubEventDefinitions(item.subEventDefinitions())));
+        }
+        return cloned;
     }
 
     private List<EventSlotOccurrenceDto> cloneSlotOccurrences(List<EventSlotOccurrenceDto> items) {
@@ -4005,9 +4030,6 @@ public class ActivitiesEventsService {
         String parentSourceId = normalizeId(parent.getSourceId());
         String creatorUserId = normalizeId(parent.getCreatorUserId());
         List<EventSlotTemplateDto> templates = cloneSlotTemplates(parent.getSlotTemplates());
-        long definitionDurationMinutes = Boolean.TRUE.equals(parent.getSubEventsEnabled())
-                ? subEventDefinitionsDurationMinutes(parent.getSubEventDefinitions())
-                : 0L;
         Set<LocalDate> overrideDates = templates.stream()
                 .filter(Objects::nonNull)
                 .map(EventSlotTemplateDto::overrideDate)
@@ -4025,6 +4047,8 @@ public class ActivitiesEventsService {
             if (templateStart == null) {
                 continue;
             }
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
+            long definitionDurationMinutes = subEventDefinitionsDurationMinutes(definitions);
             long durationMinutes = Math.max(0L, definitionDurationMinutes);
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
                 if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
@@ -4034,7 +4058,7 @@ public class ActivitiesEventsService {
                 if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
                     continue;
                 }
-                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId);
+                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId, definitions);
             }
         }
         for (EventSlotTemplateDto template : templates) {
@@ -4048,6 +4072,8 @@ public class ActivitiesEventsService {
             if (templateStart == null) {
                 continue;
             }
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
+            long definitionDurationMinutes = subEventDefinitionsDurationMinutes(definitions);
             long durationMinutes = Math.max(0L, definitionDurationMinutes);
             LocalDateTime templateEnd = templateStart.plusMinutes(durationMinutes);
             if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
@@ -4056,7 +4082,7 @@ public class ActivitiesEventsService {
             if (templateStart.isBefore(parentStart) || templateEnd.isAfter(parentEnd)) {
                 continue;
             }
-            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId);
+            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId, definitions);
         }
         return records;
     }
@@ -4069,7 +4095,8 @@ public class ActivitiesEventsService {
             LocalDateTime occurrenceStart,
             LocalDateTime occurrenceEnd,
             String parentSourceId,
-            String creatorUserId) {
+            String creatorUserId,
+            List<SubEventDefinitionDto> definitions) {
         String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
         ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
         if (existing != null) {
@@ -4127,8 +4154,8 @@ public class ActivitiesEventsService {
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
-        next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && parent.getSubEventDefinitions() != null && !parent.getSubEventDefinitions().isEmpty()
-                ? materializeSubEventDefinitionsForSlotOccurrence(parent.getSubEventDefinitions(), occurrenceStart)
+        next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && definitions != null && !definitions.isEmpty()
+                ? materializeSubEventDefinitionsForSlotOccurrence(definitions, occurrenceStart)
                 : materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
