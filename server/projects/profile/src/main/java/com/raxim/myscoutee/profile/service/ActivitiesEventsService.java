@@ -2090,6 +2090,7 @@ public class ActivitiesEventsService {
                 .include("frequency")
                 .include("pricing")
                 .include("slotsEnabled")
+                .include("subEventsEnabled")
                 .include("upcomingSlots")
                 .include("mode");
     }
@@ -2754,6 +2755,10 @@ public class ActivitiesEventsService {
         document.setInvitedMemberUserIds(invitedMemberUserIds);
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setTopics(normalizeStrings(request.topics()));
+        boolean subEventsEnabled = publishedManageMode
+                ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
+                : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
+        document.setSubEventsEnabled(subEventsEnabled);
         document.setSubEventDefinitions(publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
                 : cloneSubEventDefinitions(request.subEventDefinitions()));
@@ -4000,7 +4005,9 @@ public class ActivitiesEventsService {
         String parentSourceId = normalizeId(parent.getSourceId());
         String creatorUserId = normalizeId(parent.getCreatorUserId());
         List<EventSlotTemplateDto> templates = cloneSlotTemplates(parent.getSlotTemplates());
-        long definitionDurationMinutes = subEventDefinitionsDurationMinutes(parent.getSubEventDefinitions());
+        long definitionDurationMinutes = Boolean.TRUE.equals(parent.getSubEventsEnabled())
+                ? subEventDefinitionsDurationMinutes(parent.getSubEventDefinitions())
+                : 0L;
         Set<LocalDate> overrideDates = templates.stream()
                 .filter(Objects::nonNull)
                 .map(EventSlotTemplateDto::overrideDate)
@@ -4119,7 +4126,8 @@ public class ActivitiesEventsService {
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
-        next.setSubEvents(parent.getSubEventDefinitions() != null && !parent.getSubEventDefinitions().isEmpty()
+        next.setSubEventsEnabled(false);
+        next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && parent.getSubEventDefinitions() != null && !parent.getSubEventDefinitions().isEmpty()
                 ? materializeSubEventDefinitionsForSlotOccurrence(parent.getSubEventDefinitions(), occurrenceStart)
                 : materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setMode(normalizeEventMode(parent.getMode()));

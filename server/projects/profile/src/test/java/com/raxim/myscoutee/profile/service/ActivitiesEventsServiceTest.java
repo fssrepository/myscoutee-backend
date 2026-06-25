@@ -790,6 +790,8 @@ class ActivitiesEventsServiceTest {
                 List.of(),
                 null,
                 List.of(),
+                true,
+                List.of(),
                 List.of(),
                 "",
                 0d,

@@ -85,6 +85,7 @@ public class ActivityEventDetailMapper {
                 normalizeIds(record.getPendingRequestMemberUserIds()),
                 null,
                 normalizeStrings(record.getTopics()),
+                record.getSubEventsEnabled() == null || Boolean.TRUE.equals(record.getSubEventsEnabled()),
                 cloneSubEventDefinitions(record.getSubEventDefinitions()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getMode()),

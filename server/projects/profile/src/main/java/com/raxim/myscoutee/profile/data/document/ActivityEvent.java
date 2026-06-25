@@ -107,6 +107,7 @@ public class ActivityEvent {
     private List<String> invitedMemberUserIds = new ArrayList<>();
     private List<String> pendingRequestMemberUserIds = new ArrayList<>();
     private List<String> topics = new ArrayList<>();
+    private Boolean subEventsEnabled = true;
     private List<SubEventDefinitionDto> subEventDefinitions = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String mode = "Casual";
@@ -262,6 +263,8 @@ public class ActivityEvent {
     }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
+    public Boolean getSubEventsEnabled() { return subEventsEnabled; }
+    public void setSubEventsEnabled(Boolean subEventsEnabled) { this.subEventsEnabled = subEventsEnabled; }
     public List<SubEventDefinitionDto> getSubEventDefinitions() { return subEventDefinitions; }
     public void setSubEventDefinitions(List<SubEventDefinitionDto> subEventDefinitions) {
         this.subEventDefinitions = subEventDefinitions == null ? new ArrayList<>() : new ArrayList<>(subEventDefinitions);

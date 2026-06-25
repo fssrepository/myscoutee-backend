@@ -303,6 +303,7 @@ public final class EventsDtos {
             List<String> pendingRequestMemberUserIds,
             String pendingReason,
             List<String> topics,
+            Boolean subEventsEnabled,
             List<SubEventDefinitionDto> subEventDefinitions,
             List<SubEventFormItemDto> subEvents,
             String mode,
