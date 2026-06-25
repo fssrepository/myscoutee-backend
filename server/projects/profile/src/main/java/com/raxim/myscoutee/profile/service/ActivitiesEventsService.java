@@ -2939,13 +2939,16 @@ public class ActivitiesEventsService {
         boolean subEventsEnabled = publishedManageMode
                 ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
                 : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
-        document.setSubEventsEnabled(subEventsEnabled);
-        document.setSubEventDefinitions(publishedManageMode
+        List<SubEventDefinitionDto> nextSubEventDefinitions = publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
-                : cloneSubEventDefinitions(request.subEventDefinitions()));
+                : cloneSubEventDefinitions(request.subEventDefinitions());
+        document.setSubEventsEnabled(subEventsEnabled);
+        document.setSubEventDefinitions(nextSubEventDefinitions);
         document.setSubEvents(publishedManageMode
                 ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
-                : cloneSubEvents(request.subEvents()));
+                : subEventsEnabled
+                        ? buildStoredSubEventsFromDefinitions(nextSubEventDefinitions, document.getStartAtIso())
+                        : List.of());
         document.setMode(normalizeEventMode(publishedManageMode
                 ? safeText(existing == null ? null : existing.getMode())
                 : safeText(request.mode())));
@@ -3908,7 +3911,13 @@ public class ActivitiesEventsService {
                 : overrideDefinitions;
     }
 
-    private List<SubEventFormItemDto> materializeSubEventDefinitionsForSlotOccurrence(
+    private List<SubEventFormItemDto> buildStoredSubEventsFromDefinitions(
+            List<SubEventDefinitionDto> definitions,
+            String eventStartAtIso) {
+        return buildSlotOccurrenceSubEventsFromDefinitions(definitions, toLocalDateTime(eventStartAtIso));
+    }
+
+    private List<SubEventFormItemDto> buildSlotOccurrenceSubEventsFromDefinitions(
             List<SubEventDefinitionDto> items,
             LocalDateTime occurrenceStart) {
         List<SubEventDefinitionTimelineEntry> source = subEventDefinitionTimeline(cloneSubEventDefinitions(items));
@@ -3916,7 +3925,7 @@ public class ActivitiesEventsService {
             return List.of();
         }
 
-        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        List<SubEventFormItemDto> subEvents = new ArrayList<>(source.size());
         for (SubEventDefinitionTimelineEntry entry : source) {
             SubEventDefinitionDto item = entry.item();
             if (item == null) {
@@ -3926,7 +3935,7 @@ public class ActivitiesEventsService {
             int startOffsetMinutes = entry.startOffsetMinutes();
             LocalDateTime subEventStart = occurrenceStart.plusMinutes(startOffsetMinutes);
             LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
-            materialized.add(new SubEventFormItemDto(
+            subEvents.add(new SubEventFormItemDto(
                     item.id(),
                     item.name(),
                     item.description(),
@@ -3961,7 +3970,7 @@ public class ActivitiesEventsService {
                     startOffsetMinutes,
                     durationMinutes));
         }
-        return materialized;
+        return subEvents;
     }
 
     private record SubEventDefinitionTimelineEntry(
@@ -3970,7 +3979,7 @@ public class ActivitiesEventsService {
             int durationMinutes) {
     }
 
-    private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(
+    private List<SubEventFormItemDto> rebaseStoredSubEventsForSlotOccurrence(
             List<SubEventFormItemDto> items,
             LocalDateTime occurrenceStart,
             LocalDateTime occurrenceEnd) {
@@ -3980,7 +3989,7 @@ public class ActivitiesEventsService {
         }
 
         int slotDurationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(occurrenceStart, occurrenceEnd));
-        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        List<SubEventFormItemDto> subEvents = new ArrayList<>(source.size());
         for (SubEventFormItemDto item : source) {
             if (item == null) {
                 continue;
@@ -4020,7 +4029,7 @@ public class ActivitiesEventsService {
                 subEventEnd = occurrenceEnd;
             }
 
-            materialized.add(new SubEventFormItemDto(
+            subEvents.add(new SubEventFormItemDto(
                     item.id(),
                     item.name(),
                     item.description(),
@@ -4060,7 +4069,7 @@ public class ActivitiesEventsService {
                     item.stageFinalizedAt(),
                     item.stageFinalizedByUserId()));
         }
-        return materialized;
+        return subEvents;
     }
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
@@ -4345,8 +4354,8 @@ public class ActivitiesEventsService {
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
         next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && definitions != null && !definitions.isEmpty()
-                ? materializeSubEventDefinitionsForSlotOccurrence(definitions, occurrenceStart)
-                : materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
+                ? buildSlotOccurrenceSubEventsFromDefinitions(definitions, occurrenceStart)
+                : rebaseStoredSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
