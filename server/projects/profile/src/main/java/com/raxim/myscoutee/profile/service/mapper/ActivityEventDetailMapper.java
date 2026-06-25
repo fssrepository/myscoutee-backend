@@ -14,7 +14,6 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.DateRangeDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
@@ -143,7 +142,7 @@ public class ActivityEventDetailMapper {
                     item.id(),
                     item.name(),
                     item.description(),
-                    cloneDateRange(item.dateRange()),
+                    item.durationMinutes(),
                     item.location(),
                     item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
                     item.tournamentGroupCount(),
@@ -158,10 +157,6 @@ public class ActivityEventDetailMapper {
                     item.icon()));
         }
         return cloned;
-    }
-
-    private DateRangeDto cloneDateRange(DateRangeDto range) {
-        return range == null ? new DateRangeDto("", "", "minute") : new DateRangeDto(range.startAt(), range.endAt(), range.precision());
     }
 
     private List<String> normalizeStrings(Collection<String> values) {

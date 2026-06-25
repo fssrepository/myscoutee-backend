@@ -60,7 +60,6 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.DateRangeDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -3597,7 +3596,7 @@ public class ActivitiesEventsService {
                     item.id(),
                     item.name(),
                     item.description(),
-                    cloneDateRange(item.dateRange()),
+                    item.durationMinutes(),
                     item.location(),
                     item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
                     item.tournamentGroupCount(),
@@ -3612,10 +3611,6 @@ public class ActivitiesEventsService {
                     item.icon()));
         }
         return cloned;
-    }
-
-    private DateRangeDto cloneDateRange(DateRangeDto range) {
-        return range == null ? new DateRangeDto("", "", "minute") : new DateRangeDto(range.startAt(), range.endAt(), range.precision());
     }
 
     private List<SubEventFormItemDto> ensureTournamentStartReviewStage(List<SubEventFormItemDto> items, String nowIso) {
@@ -3663,6 +3658,76 @@ public class ActivitiesEventsService {
         }
         return (item.tournamentGroupCount() != null && item.tournamentGroupCount() > 0)
                 || (item.groups() != null && !item.groups().isEmpty());
+    }
+
+    private long subEventDefinitionsDurationMinutes(List<SubEventDefinitionDto> items) {
+        if (items == null || items.isEmpty()) {
+            return 0L;
+        }
+        long total = 0L;
+        for (SubEventDefinitionDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            total += Math.max(1, item.durationMinutes() == null ? 60 : item.durationMinutes());
+        }
+        return total;
+    }
+
+    private List<SubEventFormItemDto> materializeSubEventDefinitionsForSlotOccurrence(
+            List<SubEventDefinitionDto> items,
+            LocalDateTime occurrenceStart) {
+        List<SubEventDefinitionDto> source = cloneSubEventDefinitions(items);
+        if (source.isEmpty() || occurrenceStart == null) {
+            return List.of();
+        }
+
+        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        int offsetMinutes = 0;
+        for (SubEventDefinitionDto item : source) {
+            if (item == null) {
+                continue;
+            }
+            int durationMinutes = Math.max(1, item.durationMinutes() == null ? 60 : item.durationMinutes());
+            LocalDateTime subEventStart = occurrenceStart.plusMinutes(offsetMinutes);
+            LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
+            materialized.add(new SubEventFormItemDto(
+                    item.id(),
+                    item.name(),
+                    item.description(),
+                    subEventStart.toString(),
+                    subEventEnd.toString(),
+                    item.location(),
+                    null,
+                    item.groups(),
+                    item.tournamentGroupCount(),
+                    item.tournamentGroupCapacityMin(),
+                    item.tournamentGroupCapacityMax(),
+                    item.tournamentLeaderboardType(),
+                    item.tournamentAdvancePerGroup(),
+                    item.optional(),
+                    item.pricing(),
+                    item.capacityMin(),
+                    item.capacityMax(),
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    offsetMinutes,
+                    durationMinutes));
+            offsetMinutes += durationMinutes;
+        }
+        return materialized;
     }
 
     private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(
@@ -3891,6 +3956,7 @@ public class ActivitiesEventsService {
         String parentSourceId = normalizeId(parent.getSourceId());
         String creatorUserId = normalizeId(parent.getCreatorUserId());
         List<EventSlotTemplateDto> templates = cloneSlotTemplates(parent.getSlotTemplates());
+        long definitionDurationMinutes = subEventDefinitionsDurationMinutes(parent.getSubEventDefinitions());
         Set<LocalDate> overrideDates = templates.stream()
                 .filter(Objects::nonNull)
                 .map(EventSlotTemplateDto::overrideDate)
@@ -3906,10 +3972,12 @@ public class ActivitiesEventsService {
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
             LocalDateTime templateEnd = toLocalDateTime(template.endAt());
-            if (templateStart == null || templateEnd == null) {
+            if (templateStart == null) {
                 continue;
             }
-            long durationMinutes = Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
+            long durationMinutes = definitionDurationMinutes > 0L
+                    ? definitionDurationMinutes
+                    : templateEnd == null ? 60L : Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
                 if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
                     continue;
@@ -3930,11 +3998,14 @@ public class ActivitiesEventsService {
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
             LocalDateTime templateEnd = toLocalDateTime(template.endAt());
-            if (templateStart == null || templateEnd == null) {
+            if (templateStart == null) {
                 continue;
             }
-            if (templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart)) {
-                templateEnd = templateStart.plusMinutes(60L);
+            long durationMinutes = definitionDurationMinutes > 0L
+                    ? definitionDurationMinutes
+                    : templateEnd == null ? 60L : Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
+            if (templateEnd == null || templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart) || definitionDurationMinutes > 0L) {
+                templateEnd = templateStart.plusMinutes(durationMinutes);
             }
             if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
                 continue;
@@ -4012,7 +4083,9 @@ public class ActivitiesEventsService {
         next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
-        next.setSubEvents(materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
+        next.setSubEvents(parent.getSubEventDefinitions() != null && !parent.getSubEventDefinitions().isEmpty()
+                ? materializeSubEventDefinitionsForSlotOccurrence(parent.getSubEventDefinitions(), occurrenceStart)
+                : materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));

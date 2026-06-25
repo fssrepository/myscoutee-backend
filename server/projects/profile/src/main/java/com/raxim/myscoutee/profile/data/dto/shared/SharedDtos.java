@@ -118,7 +118,7 @@ public final class SharedDtos {
             String id,
             String name,
             String description,
-            DateRangeDto dateRange,
+            Integer durationMinutes,
             String location,
             List<SubEventGroupItemDto> groups,
             Integer tournamentGroupCount,
