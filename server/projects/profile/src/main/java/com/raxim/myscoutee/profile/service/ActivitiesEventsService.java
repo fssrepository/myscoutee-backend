@@ -2914,6 +2914,9 @@ public class ActivitiesEventsService {
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
+        document.setPoliciesEnabled(publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getPoliciesEnabled())
+                : Boolean.TRUE.equals(request.policiesEnabled()));
         document.setPolicies(publishedManageMode
                 ? clonePolicies(existing == null ? null : existing.getPolicies())
                 : clonePolicies(request.policies()));

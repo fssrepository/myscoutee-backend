@@ -287,6 +287,7 @@ public final class EventsDtos {
             String frequency,
             Boolean ticketing,
             PricingConfigDto pricing,
+            Boolean policiesEnabled,
             List<PolicyItemDto> policies,
             Boolean slotsEnabled,
             List<EventSlotTemplateDto> slotTemplates,

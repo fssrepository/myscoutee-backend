@@ -214,7 +214,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -532,7 +533,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -750,7 +752,8 @@
         "capacityMax": 5,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -964,7 +967,8 @@
         "capacityMax": 4,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -1182,7 +1186,8 @@
         "capacityMax": 20,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -1372,7 +1377,8 @@
         "capacityMax": 14,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -1599,7 +1605,8 @@
         "capacityMax": 14,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -1792,7 +1799,8 @@
         "capacityMax": 14,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -1982,7 +1990,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -2208,7 +2217,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -2430,7 +2440,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -2756,7 +2767,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -3082,7 +3094,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -3276,7 +3289,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -3501,7 +3515,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -3825,7 +3840,8 @@
         "capacityMax": 5,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -4048,7 +4064,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -4273,7 +4290,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -4462,7 +4480,8 @@
         "capacityMax": 9,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -4687,7 +4706,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -5012,7 +5032,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -5337,7 +5358,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -5526,7 +5548,8 @@
         "capacityMax": 18,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -5848,7 +5871,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -6174,7 +6198,8 @@
         "capacityMax": 12,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -6364,7 +6389,8 @@
         "capacityMax": 18,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -6556,7 +6582,8 @@
         "capacityMax": 7,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -6885,7 +6912,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -7206,7 +7234,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -7428,7 +7457,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -7756,7 +7786,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -8077,7 +8108,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -8269,7 +8301,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -8496,7 +8529,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -8724,7 +8758,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -8911,7 +8946,8 @@
         "capacityMax": 18,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -9098,7 +9134,8 @@
         "capacityMax": 24,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -9321,7 +9358,8 @@
         "capacityMax": 26,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -9512,7 +9550,8 @@
         "capacityMax": 21,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -9836,7 +9875,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -10025,7 +10065,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -10214,7 +10255,8 @@
         "capacityMax": 18,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -10406,7 +10448,8 @@
         "capacityMax": 23,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -10728,7 +10771,8 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -10952,7 +10996,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -11136,7 +11181,8 @@
         "capacityMax": 8,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -11325,7 +11371,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -11650,7 +11697,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -11872,7 +11920,8 @@
         "capacityMax": 22,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -12197,7 +12246,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -12415,7 +12465,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -12734,7 +12785,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -13052,7 +13104,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -13273,7 +13326,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -13489,7 +13543,8 @@
         "capacityMax": 7,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -13676,7 +13731,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -13894,7 +13950,8 @@
         "capacityMax": 9,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -14084,7 +14141,8 @@
         "capacityMax": 26,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -14303,7 +14361,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -14487,7 +14546,8 @@
         "capacityMax": 20,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -14704,7 +14764,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -15022,7 +15083,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -15208,7 +15270,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -15528,7 +15591,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -15716,7 +15780,8 @@
         "capacityMax": 14,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -15903,7 +15968,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -16089,7 +16155,8 @@
         "capacityMax": 9,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -16278,7 +16345,8 @@
         "capacityMax": 20,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -16503,7 +16571,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -16692,7 +16761,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -16876,7 +16946,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -17096,7 +17167,8 @@
         "capacityMax": 22,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -17284,7 +17356,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -17601,7 +17674,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -17919,7 +17993,8 @@
         "capacityMax": 12,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -18101,7 +18176,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -18425,7 +18501,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -18617,7 +18694,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -18803,7 +18881,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -19019,7 +19098,8 @@
         "capacityMax": 6,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -19338,7 +19418,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -19559,7 +19640,8 @@
         "capacityMax": 8,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -19744,7 +19826,8 @@
         "capacityMax": 22,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -20063,7 +20146,8 @@
         "capacityMax": 4,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -20382,7 +20466,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -20598,7 +20683,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -20918,7 +21004,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -21240,7 +21327,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -21560,7 +21648,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -21877,7 +21966,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -22096,7 +22186,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -22415,7 +22506,8 @@
         "capacityMax": 5,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -22633,7 +22725,8 @@
         "capacityMax": 8,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -22851,7 +22944,8 @@
         "capacityMax": 21,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -23169,7 +23263,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -23386,7 +23481,8 @@
         "capacityMax": 6,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -23604,7 +23700,8 @@
         "capacityMax": 7,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -23928,7 +24025,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -24145,7 +24243,8 @@
         "capacityMax": 7,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -24462,7 +24561,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -24680,7 +24780,8 @@
         "capacityMax": 21,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -25000,7 +25101,8 @@
         "capacityMax": 12,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -25218,7 +25320,8 @@
         "capacityMax": 16,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -25403,7 +25506,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -25724,7 +25828,8 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -25909,7 +26014,8 @@
         "capacityMax": 7,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -26229,7 +26335,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -26553,7 +26660,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -26772,7 +26880,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -26957,7 +27066,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -27176,7 +27286,8 @@
         "capacityMax": 9,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -27496,7 +27607,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -27718,7 +27830,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -28037,7 +28150,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -28255,7 +28369,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -28472,7 +28587,8 @@
         "capacityMax": 23,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -28789,7 +28905,8 @@
         "capacityMax": 4,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -29106,7 +29223,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -29430,7 +29548,8 @@
         "capacityMax": 4,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -29613,7 +29732,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -29830,7 +29950,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -30016,7 +30137,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -30234,7 +30356,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -30424,7 +30547,8 @@
         "capacityMax": 8,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -30613,7 +30737,8 @@
         "capacityMax": 6,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -30798,7 +30923,8 @@
         "capacityMax": 9,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -31121,7 +31247,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -31442,7 +31569,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -31762,7 +31890,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -31981,7 +32110,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -32167,7 +32297,8 @@
         "capacityMax": 9,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -32484,7 +32615,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -32668,7 +32800,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -32987,7 +33120,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -33204,7 +33338,8 @@
         "capacityMax": 14,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -33421,7 +33556,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -33740,7 +33876,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -34057,7 +34194,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -34275,7 +34413,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -34493,7 +34632,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -34679,7 +34819,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -34997,7 +35138,8 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -35214,7 +35356,8 @@
         "capacityMax": 8,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -35399,7 +35542,8 @@
         "capacityMax": 24,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -35585,7 +35729,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -35905,7 +36050,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -36124,7 +36270,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -36343,7 +36490,8 @@
         "capacityMax": 6,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -36663,7 +36811,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -36980,7 +37129,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -37164,7 +37314,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -37381,7 +37532,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -37567,7 +37719,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -37751,7 +37904,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -38069,7 +38223,8 @@
         "capacityMax": 4,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -38387,7 +38542,8 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -38705,7 +38861,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -38891,7 +39048,8 @@
         "capacityMax": 25,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -39076,7 +39234,8 @@
         "capacityMax": 8,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -39394,7 +39553,8 @@
         "capacityMax": 7,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -39714,7 +39874,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -39898,7 +40059,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -40217,7 +40379,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -40402,7 +40565,8 @@
         "capacityMax": 13,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -40719,7 +40883,8 @@
         "capacityMax": 6,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -41042,7 +41207,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -41262,7 +41428,8 @@
         "capacityMax": 12,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -41581,7 +41748,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -41899,7 +42067,8 @@
         "capacityMax": 10,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -42085,7 +42254,8 @@
         "capacityMax": 10,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -42268,7 +42438,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -42485,7 +42656,8 @@
         "capacityMax": 20,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -42703,7 +42875,8 @@
         "capacityMax": 22,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -42888,7 +43061,8 @@
         "capacityMax": 19,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -43205,7 +43379,8 @@
         "capacityMax": 9,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -43526,7 +43701,8 @@
         "capacityMax": 4,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -43745,7 +43921,8 @@
         "capacityMax": 7,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -43931,7 +44108,8 @@
         "capacityMax": 21,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -44149,7 +44327,8 @@
         "capacityMax": 11,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -44470,7 +44649,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -44788,7 +44968,8 @@
         "capacityMax": 5,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -45006,7 +45187,8 @@
         "capacityMax": 15,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -45230,7 +45412,8 @@
         "capacityMax": 14,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -45548,7 +45731,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -45732,7 +45916,8 @@
         "capacityMax": 22,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -45951,7 +46136,8 @@
         "capacityMax": 17,
         "icon": null
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -46269,7 +46455,8 @@
         "capacityMax": 11,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -46589,7 +46776,8 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -46909,7 +47097,8 @@
         "capacityMax": 12,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -46987,7 +47176,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47065,7 +47255,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47147,7 +47338,8 @@
     "invitedMemberUserIds": [
       "f7bcd28c65ea349b4ee7aed2"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47229,7 +47421,8 @@
     "invitedMemberUserIds": [
       "4b5bad1292fb6db05dc0e455"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47307,7 +47500,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47385,7 +47579,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47463,7 +47658,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47545,7 +47741,8 @@
     "invitedMemberUserIds": [
       "b5e2db6882d989d8532af12c"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47627,7 +47824,8 @@
     "invitedMemberUserIds": [
       "ed4924c22a5240a54e48c0b5"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47705,7 +47903,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47783,7 +47982,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47865,7 +48065,8 @@
     "invitedMemberUserIds": [
       "a0fb804ad6f347d6a9dab526"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -47947,7 +48148,8 @@
     "invitedMemberUserIds": [
       "1b1c70be2349b3359a8f6f94"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48029,7 +48231,8 @@
     "invitedMemberUserIds": [
       "0f9350e50f1ffc3cf002b7ed"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48107,7 +48310,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48185,7 +48389,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48267,7 +48472,8 @@
     "invitedMemberUserIds": [
       "178e8d0cbe164fa3fede5884"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48349,7 +48555,8 @@
     "invitedMemberUserIds": [
       "9d3ba3d74edabe4695e6d3f9"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48427,7 +48634,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48505,7 +48713,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48583,7 +48792,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48661,7 +48871,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48743,7 +48954,8 @@
     "invitedMemberUserIds": [
       "8f6ff3752a1f0912cd63e912"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48825,7 +49037,8 @@
     "invitedMemberUserIds": [
       "f4b2ebd8f56628ab7df58221"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48907,7 +49120,8 @@
     "invitedMemberUserIds": [
       "cdd937e0adcbd1a5e38f3ceb"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -48989,7 +49203,8 @@
     "invitedMemberUserIds": [
       "b0971e779dbdb71f9327eabb"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49067,7 +49282,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49145,7 +49361,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49223,7 +49440,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49301,7 +49519,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49383,7 +49602,8 @@
     "invitedMemberUserIds": [
       "1d7d3545ba5e0f1d63918589"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49465,7 +49685,8 @@
     "invitedMemberUserIds": [
       "af0436815ab38f4864dd1e24"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49543,7 +49764,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49621,7 +49843,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49703,7 +49926,8 @@
     "invitedMemberUserIds": [
       "7822c5f99eff99d63abe8933"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49785,7 +50009,8 @@
     "invitedMemberUserIds": [
       "d94ebcdf7bf9c8f33bb3f32c"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49867,7 +50092,8 @@
     "invitedMemberUserIds": [
       "d182041b8a54132d5168034f"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -49949,7 +50175,8 @@
     "invitedMemberUserIds": [
       "904ee3c526298f6921cde3f3"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50027,7 +50254,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50105,7 +50333,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50187,7 +50416,8 @@
     "invitedMemberUserIds": [
       "d04cd419e735549e3f312977"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50269,7 +50499,8 @@
     "invitedMemberUserIds": [
       "4a008502646a200488911f45"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50347,7 +50578,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50425,7 +50657,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50503,7 +50736,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50581,7 +50815,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50663,7 +50898,8 @@
     "invitedMemberUserIds": [
       "eb1ca0b761885bb0763e2929"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50745,7 +50981,8 @@
     "invitedMemberUserIds": [
       "e904dad402b47dd2cdaa8bec"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50827,7 +51064,8 @@
     "invitedMemberUserIds": [
       "fcad6954169063f106a7a240"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50909,7 +51147,8 @@
     "invitedMemberUserIds": [
       "25f4744ead36d038064d62c3"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -50987,7 +51226,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51065,7 +51305,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51143,7 +51384,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51221,7 +51463,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51303,7 +51546,8 @@
     "invitedMemberUserIds": [
       "c100132b3ae88b47890def59"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51385,7 +51629,8 @@
     "invitedMemberUserIds": [
       "2d520f3c98b0440c1556f4af"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51463,7 +51708,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51541,7 +51787,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51623,7 +51870,8 @@
     "invitedMemberUserIds": [
       "0216b1ceb256d6f2c89073b8"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51705,7 +51953,8 @@
     "invitedMemberUserIds": [
       "c033e546ef7c928fb8cf073b"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51787,7 +52036,8 @@
     "invitedMemberUserIds": [
       "ec342d9af3f2cfd6adfd4ee5"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51869,7 +52119,8 @@
     "invitedMemberUserIds": [
       "eac11b0685f9799953a40dd4"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -51947,7 +52198,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52025,7 +52277,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52107,7 +52360,8 @@
     "invitedMemberUserIds": [
       "7313a9379f60200cba7b9f71"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52189,7 +52443,8 @@
     "invitedMemberUserIds": [
       "931a01221376d8e28a068fe8"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52267,7 +52522,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52345,7 +52601,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52423,7 +52680,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52501,7 +52759,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52583,7 +52842,8 @@
     "invitedMemberUserIds": [
       "23820c1e76d3bd843f61c799"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52665,7 +52925,8 @@
     "invitedMemberUserIds": [
       "f6f22ba0a6f14cfcf4585d47"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52747,7 +53008,8 @@
     "invitedMemberUserIds": [
       "63bae8417bd352e5013c2e93"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52829,7 +53091,8 @@
     "invitedMemberUserIds": [
       "0c3ab5da9af33d4e688e809c"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52907,7 +53170,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -52985,7 +53249,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53063,7 +53328,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53141,7 +53407,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53223,7 +53490,8 @@
     "invitedMemberUserIds": [
       "41f4659dbd75a03abc20cd6d"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53305,7 +53573,8 @@
     "invitedMemberUserIds": [
       "76da95a9109da485555c0d25"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53383,7 +53652,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53461,7 +53731,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53543,7 +53814,8 @@
     "invitedMemberUserIds": [
       "0b8e5df4ec85d858c304a350"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53625,7 +53897,8 @@
     "invitedMemberUserIds": [
       "af70e41dbe826cbd7d8b3500"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53707,7 +53980,8 @@
     "invitedMemberUserIds": [
       "4da20eb049179e73d4757808"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53789,7 +54063,8 @@
     "invitedMemberUserIds": [
       "0cc9990d08304ab26ee67784"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53867,7 +54142,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -53945,7 +54221,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -54027,7 +54304,8 @@
     "invitedMemberUserIds": [
       "9184901a15076d32ea8b626f"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -54109,7 +54387,8 @@
     "invitedMemberUserIds": [
       "e76d63199eff33a6945cb797"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -54187,7 +54466,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -54265,7 +54545,8 @@
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -54347,7 +54628,8 @@
     "invitedMemberUserIds": [
       "f01086c19a00a6f46b6d41a7"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": {
@@ -54429,7 +54711,8 @@
     "invitedMemberUserIds": [
       "e1dccfc3443239865c6ac69a"
     ],
-    "pendingRequestMemberUserIds": []
+    "pendingRequestMemberUserIds": [],
+    "policiesEnabled": false
   },
   {
     "_id": "demo-tournament-results",
@@ -54592,7 +54875,8 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   },
   {
     "_id": "demo-tournament-start-review",
@@ -54750,6 +55034,7 @@
         "capacityMax": 8,
         "icon": "emoji_events"
       }
-    ]
+    ],
+    "policiesEnabled": false
   }
 ]
