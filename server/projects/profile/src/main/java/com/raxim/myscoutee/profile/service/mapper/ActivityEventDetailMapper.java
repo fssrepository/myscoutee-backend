@@ -142,6 +142,8 @@ public class ActivityEventDetailMapper {
                     item.id(),
                     item.name(),
                     item.description(),
+                    item.timing(),
+                    item.offsetMinutes(),
                     item.durationMinutes(),
                     item.location(),
                     item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),

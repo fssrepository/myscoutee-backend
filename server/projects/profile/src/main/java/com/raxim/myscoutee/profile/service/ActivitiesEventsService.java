@@ -3596,6 +3596,8 @@ public class ActivitiesEventsService {
                     item.id(),
                     item.name(),
                     item.description(),
+                    item.timing(),
+                    item.offsetMinutes(),
                     item.durationMinutes(),
                     item.location(),
                     item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
@@ -3660,36 +3662,73 @@ public class ActivitiesEventsService {
                 || (item.groups() != null && !item.groups().isEmpty());
     }
 
-    private long subEventDefinitionsDurationMinutes(List<SubEventDefinitionDto> items) {
-        if (items == null || items.isEmpty()) {
-            return 0L;
+    private String normalizeSubEventDefinitionTiming(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        if ("before".equals(normalized)) {
+            return "Before";
         }
-        long total = 0L;
+        if ("during".equals(normalized)) {
+            return "During";
+        }
+        if ("after".equals(normalized)) {
+            return "After";
+        }
+        return "During";
+    }
+
+    private List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {
+        if (items == null || items.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventDefinitionTimelineEntry> timeline = new ArrayList<>();
+        int previousStartOffsetMinutes = 0;
+        int previousEndOffsetMinutes = 0;
+        boolean hasPrevious = false;
         for (SubEventDefinitionDto item : items) {
             if (item == null) {
                 continue;
             }
-            total += Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
+            int durationMinutes = Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
+            int offsetMinutes = Math.max(0, item.offsetMinutes() == null ? 0 : item.offsetMinutes());
+            String timing = normalizeSubEventDefinitionTiming(item.timing());
+            int startOffsetMinutes = !hasPrevious
+                    ? offsetMinutes
+                    : "During".equals(timing)
+                            ? previousStartOffsetMinutes + offsetMinutes
+                            : previousEndOffsetMinutes + offsetMinutes;
+            previousStartOffsetMinutes = startOffsetMinutes;
+            previousEndOffsetMinutes = startOffsetMinutes + durationMinutes;
+            hasPrevious = true;
+            timeline.add(new SubEventDefinitionTimelineEntry(item, startOffsetMinutes, durationMinutes));
         }
-        return total;
+        return timeline;
+    }
+
+    private long subEventDefinitionsDurationMinutes(List<SubEventDefinitionDto> items) {
+        long maxEndOffset = 0L;
+        for (SubEventDefinitionTimelineEntry entry : subEventDefinitionTimeline(items)) {
+            maxEndOffset = Math.max(maxEndOffset, (long) entry.startOffsetMinutes() + entry.durationMinutes());
+        }
+        return maxEndOffset;
     }
 
     private List<SubEventFormItemDto> materializeSubEventDefinitionsForSlotOccurrence(
             List<SubEventDefinitionDto> items,
             LocalDateTime occurrenceStart) {
-        List<SubEventDefinitionDto> source = cloneSubEventDefinitions(items);
+        List<SubEventDefinitionTimelineEntry> source = subEventDefinitionTimeline(cloneSubEventDefinitions(items));
         if (source.isEmpty() || occurrenceStart == null) {
             return List.of();
         }
 
         List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
-        int offsetMinutes = 0;
-        for (SubEventDefinitionDto item : source) {
+        for (SubEventDefinitionTimelineEntry entry : source) {
+            SubEventDefinitionDto item = entry.item();
             if (item == null) {
                 continue;
             }
-            int durationMinutes = Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
-            LocalDateTime subEventStart = occurrenceStart.plusMinutes(offsetMinutes);
+            int durationMinutes = entry.durationMinutes();
+            int startOffsetMinutes = entry.startOffsetMinutes();
+            LocalDateTime subEventStart = occurrenceStart.plusMinutes(startOffsetMinutes);
             LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
             materialized.add(new SubEventFormItemDto(
                     item.id(),
@@ -3723,11 +3762,16 @@ public class ActivitiesEventsService {
                     null,
                     null,
                     null,
-                    offsetMinutes,
+                    startOffsetMinutes,
                     durationMinutes));
-            offsetMinutes += durationMinutes;
         }
         return materialized;
+    }
+
+    private record SubEventDefinitionTimelineEntry(
+            SubEventDefinitionDto item,
+            int startOffsetMinutes,
+            int durationMinutes) {
     }
 
     private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(

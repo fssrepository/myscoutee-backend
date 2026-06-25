@@ -118,6 +118,8 @@ public final class SharedDtos {
             String id,
             String name,
             String description,
+            String timing,
+            Integer offsetMinutes,
             Integer durationMinutes,
             String location,
             List<SubEventGroupItemDto> groups,
