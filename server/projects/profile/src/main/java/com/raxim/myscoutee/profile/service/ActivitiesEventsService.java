@@ -3669,7 +3669,7 @@ public class ActivitiesEventsService {
             if (item == null) {
                 continue;
             }
-            total += Math.max(1, item.durationMinutes() == null ? 60 : item.durationMinutes());
+            total += Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
         }
         return total;
     }
@@ -3688,7 +3688,7 @@ public class ActivitiesEventsService {
             if (item == null) {
                 continue;
             }
-            int durationMinutes = Math.max(1, item.durationMinutes() == null ? 60 : item.durationMinutes());
+            int durationMinutes = Math.max(0, item.durationMinutes() == null ? 0 : item.durationMinutes());
             LocalDateTime subEventStart = occurrenceStart.plusMinutes(offsetMinutes);
             LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
             materialized.add(new SubEventFormItemDto(
@@ -3971,13 +3971,10 @@ public class ActivitiesEventsService {
                 continue;
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
-            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
             if (templateStart == null) {
                 continue;
             }
-            long durationMinutes = definitionDurationMinutes > 0L
-                    ? definitionDurationMinutes
-                    : templateEnd == null ? 60L : Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
+            long durationMinutes = Math.max(0L, definitionDurationMinutes);
             for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
                 if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
                     continue;
@@ -3997,16 +3994,11 @@ public class ActivitiesEventsService {
                 continue;
             }
             LocalDateTime templateStart = toLocalDateTime(template.startAt());
-            LocalDateTime templateEnd = toLocalDateTime(template.endAt());
             if (templateStart == null) {
                 continue;
             }
-            long durationMinutes = definitionDurationMinutes > 0L
-                    ? definitionDurationMinutes
-                    : templateEnd == null ? 60L : Math.max(60L, ChronoUnit.MINUTES.between(templateStart, templateEnd));
-            if (templateEnd == null || templateEnd.isBefore(templateStart) || templateEnd.equals(templateStart) || definitionDurationMinutes > 0L) {
-                templateEnd = templateStart.plusMinutes(durationMinutes);
-            }
+            long durationMinutes = Math.max(0L, definitionDurationMinutes);
+            LocalDateTime templateEnd = templateStart.plusMinutes(durationMinutes);
             if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
                 continue;
             }
