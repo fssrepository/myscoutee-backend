@@ -47,6 +47,9 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequest
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventRuntimeDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
@@ -671,6 +674,166 @@ public class ActivitiesEventsService {
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
                         isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
+    }
+
+    public EventSubEventsResultDto loadSubEventsById(EventSubEventsQueryDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = normalizeId(request == null ? null : request.eventId());
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent selected = findPreferredEventRecord(sourceId);
+        if (selected == null) {
+            return null;
+        }
+        String parentEventId = isGeneratedSlotRecord(selected)
+                ? firstNonBlank(selected.getParentEventId(), selected.getSourceId())
+                : selected.getSourceId();
+        ActivityEvent parent = findPreferredEventRecord(parentEventId);
+        if (parent == null) {
+            parent = selected;
+        }
+        ActivityEvent parentRecord = parent;
+        EventDetailDto event = activityEventDetailMapper.toDto(parentRecord, new ActivityEventDetailMapper.MappingContext(
+                isViewerAdmin(parentRecord, viewer.userId()) ? "hosting" : "events"));
+
+        List<ActivityEvent> generatedSlots = activityEventsRepository.findByParentEventIdIn(List.of(parentEventId)).stream()
+                .filter(Objects::nonNull)
+                .map(this::cloneDocument)
+                .peek(ActivityEvent::normalizeLifecycleState)
+                .filter(this::isGeneratedSlotRecord)
+                .filter(record -> !isTrashStatus(record))
+                .filter(record -> generatedSlotFitsParentRange(record, parentRecord))
+                .sorted(Comparator.comparingLong(record -> toSortableDate(record.getStartAtIso())))
+                .toList();
+        List<ActivityEvent> rangedGeneratedSlots = generatedSlots.stream()
+                .filter(record -> recordOverlapsSubEventsQueryRange(record, request))
+                .toList();
+        List<ActivityEvent> fallbackRecords = generatedSlots.isEmpty()
+                && !isGeneratedSlotRecord(selected)
+                && generatedSlotFitsParentRange(selected, parent)
+                && recordOverlapsSubEventsQueryRange(selected, request)
+                        ? List.of(selected)
+                        : List.of();
+        List<ActivityEvent> sourceRecords = generatedSlots.isEmpty() ? fallbackRecords : rangedGeneratedSlots;
+        int direction = "past".equalsIgnoreCase(safeText(request == null ? null : request.order())) ? -1 : 1;
+        List<EventSubEventRuntimeDto> items = sourceRecords.stream()
+                .flatMap(record -> runtimeSubEventsForRecord(parentEventId, record).stream())
+                .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
+                .toList();
+        return new EventSubEventsResultDto(event, items);
+    }
+
+    private List<EventSubEventRuntimeDto> runtimeSubEventsForRecord(String parentEventId, ActivityEvent record) {
+        List<SubEventFormItemDto> subEvents = cloneSubEvents(record == null ? null : record.getSubEvents());
+        List<EventSubEventRuntimeDto> items = new ArrayList<>();
+        for (int index = 0; index < subEvents.size(); index++) {
+            SubEventFormItemDto item = subEvents.get(index);
+            if (item == null) {
+                continue;
+            }
+            items.add(toRuntimeSubEventDto(parentEventId, record, item, index));
+        }
+        return items;
+    }
+
+    private EventSubEventRuntimeDto toRuntimeSubEventDto(
+            String parentEventId,
+            ActivityEvent record,
+            SubEventFormItemDto item,
+            int index) {
+        return new EventSubEventRuntimeDto(
+                item.id(),
+                item.name(),
+                item.description(),
+                item.startAt(),
+                item.endAt(),
+                item.location(),
+                item.createdByUserId(),
+                item.groups() == null ? List.of() : new ArrayList<>(item.groups()),
+                item.tournamentGroupCount(),
+                item.tournamentGroupCapacityMin(),
+                item.tournamentGroupCapacityMax(),
+                item.tournamentLeaderboardType(),
+                item.tournamentAdvancePerGroup(),
+                item.optional(),
+                item.pricing(),
+                item.capacityMin(),
+                item.capacityMax(),
+                item.membersAccepted(),
+                item.membersPending(),
+                item.carsPending(),
+                item.accommodationPending(),
+                item.suppliesPending(),
+                item.carsAccepted(),
+                item.accommodationAccepted(),
+                item.suppliesAccepted(),
+                item.carsCapacityMin(),
+                item.carsCapacityMax(),
+                item.accommodationCapacityMin(),
+                item.accommodationCapacityMax(),
+                item.suppliesCapacityMin(),
+                item.suppliesCapacityMax(),
+                item.slotStartOffsetMinutes(),
+                item.slotDurationMinutes(),
+                item.stageStatus(),
+                item.stageStatusReason(),
+                item.stageStatusUpdatedAt(),
+                item.stageFinalizedAt(),
+                item.stageFinalizedByUserId(),
+                runtimeSubEventId(record, item, index),
+                parentEventId,
+                isGeneratedSlotRecord(record) ? normalizeId(record.getSourceId()) : null,
+                safeText(record == null ? null : record.getSlotTemplateId()),
+                isGeneratedSlotRecord(record) ? safeText(record.getTitle()) : null,
+                isGeneratedSlotRecord(record) ? safeText(record.getTimeframe()) : null);
+    }
+
+    private String runtimeSubEventId(ActivityEvent record, SubEventFormItemDto item, int index) {
+        String recordId = firstNonBlank(record == null ? null : record.getSourceId(), "event");
+        String subEventId = firstNonBlank(item == null ? null : item.id(), "subevent-" + (index + 1));
+        return recordId + ":" + subEventId;
+    }
+
+    private boolean generatedSlotFitsParentRange(ActivityEvent record, ActivityEvent parent) {
+        long parentStart = toSortableDate(parent == null ? null : parent.getStartAtIso());
+        long parentEnd = toSortableDate(parent == null ? null : parent.getEndAtIso());
+        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
+        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (parentStart <= 0L || parentEnd <= 0L || recordStart <= 0L || recordEnd <= 0L) {
+            return false;
+        }
+        return recordStart >= parentStart && recordEnd <= parentEnd;
+    }
+
+    private boolean recordOverlapsSubEventsQueryRange(ActivityEvent record, EventSubEventsQueryDto request) {
+        Long rangeStart = subEventsQueryRangeStartMs(request);
+        Long rangeEnd = subEventsQueryRangeEndMs(request);
+        if (rangeStart == null && rangeEnd == null) {
+            return true;
+        }
+        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
+        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (recordEnd <= 0L) {
+            recordEnd = recordStart;
+        }
+        if (rangeStart != null && recordEnd < rangeStart) {
+            return false;
+        }
+        if (rangeEnd != null && recordStart > rangeEnd) {
+            return false;
+        }
+        return true;
+    }
+
+    private Long subEventsQueryRangeStartMs(EventSubEventsQueryDto request) {
+        long parsed = toSortableDate(request == null ? null : request.rangeStart());
+        return parsed <= 0L ? null : dateOnly(parsed);
+    }
+
+    private Long subEventsQueryRangeEndMs(EventSubEventsQueryDto request) {
+        long parsed = toSortableDate(request == null ? null : request.rangeEnd());
+        return parsed <= 0L ? null : dateOnly(parsed) + (24L * 60L * 60L * 1000L) - 1L;
     }
 
     public List<EventDto> queryExploreItems(String requestedUserId) {

@@ -10,6 +10,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 
 public final class EventsDtos {
     private EventsDtos() {
@@ -311,6 +312,68 @@ public final class EventsDtos {
             Double boost,
             Double affinity,
             String paymentSessionId) {
+    }
+
+    public record EventSubEventsQueryDto(
+            String userId,
+            String eventId,
+            String order,
+            String view,
+            String anchorDate,
+            String rangeStart,
+            String rangeEnd) {
+    }
+
+    public record EventSubEventRuntimeDto(
+            String id,
+            String name,
+            String description,
+            String startAt,
+            String endAt,
+            String location,
+            String createdByUserId,
+            List<SubEventGroupItemDto> groups,
+            Integer tournamentGroupCount,
+            Integer tournamentGroupCapacityMin,
+            Integer tournamentGroupCapacityMax,
+            String tournamentLeaderboardType,
+            Integer tournamentAdvancePerGroup,
+            Boolean optional,
+            PricingConfigDto pricing,
+            Integer capacityMin,
+            Integer capacityMax,
+            Integer membersAccepted,
+            Integer membersPending,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending,
+            Integer carsAccepted,
+            Integer accommodationAccepted,
+            Integer suppliesAccepted,
+            Integer carsCapacityMin,
+            Integer carsCapacityMax,
+            Integer accommodationCapacityMin,
+            Integer accommodationCapacityMax,
+            Integer suppliesCapacityMin,
+            Integer suppliesCapacityMax,
+            Integer slotStartOffsetMinutes,
+            Integer slotDurationMinutes,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            String runtimeId,
+            String parentEventId,
+            String slotSourceId,
+            String slotTemplateId,
+            String slotTitle,
+            String slotTimeframe) {
+    }
+
+    public record EventSubEventsResultDto(
+            EventDetailDto event,
+            List<EventSubEventRuntimeDto> items) {
     }
 
     public record EventCheckoutRequestDto(

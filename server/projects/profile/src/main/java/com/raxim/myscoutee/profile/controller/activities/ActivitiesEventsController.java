@@ -22,6 +22,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageR
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
@@ -107,6 +109,11 @@ public class ActivitiesEventsController {
             @RequestParam("userId") String userId,
             @RequestParam("eventId") String eventId) {
         return activitiesEventsService.loadEventDetailById(userId, eventId);
+    }
+
+    @PostMapping("/sub-events")
+    public EventSubEventsResultDto subEvents(@RequestBody EventSubEventsQueryDto request) {
+        return activitiesEventsService.loadSubEventsById(request);
     }
 
     @PostMapping("/explore")
