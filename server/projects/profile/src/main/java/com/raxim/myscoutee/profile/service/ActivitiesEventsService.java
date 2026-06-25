@@ -706,12 +706,15 @@ public class ActivitiesEventsService {
                 .filter(record -> generatedSlotFitsParentRange(record, parentRecord))
                 .sorted(Comparator.comparingLong(record -> toSortableDate(record.getStartAtIso())))
                 .toList();
+        long nowMs = System.currentTimeMillis();
         List<ActivityEvent> rangedGeneratedSlots = generatedSlots.stream()
+                .filter(record -> recordMatchesSubEventsOrder(record, request, nowMs))
                 .filter(record -> recordOverlapsSubEventsQueryRange(record, request))
                 .toList();
         List<ActivityEvent> fallbackRecords = generatedSlots.isEmpty()
                 && !isGeneratedSlotRecord(selected)
                 && generatedSlotFitsParentRange(selected, parent)
+                && recordMatchesSubEventsOrder(selected, request, nowMs)
                 && recordOverlapsSubEventsQueryRange(selected, request)
                         ? List.of(selected)
                         : List.of();
@@ -804,6 +807,19 @@ public class ActivitiesEventsService {
             return false;
         }
         return recordStart >= parentStart && recordEnd <= parentEnd;
+    }
+
+    private boolean recordMatchesSubEventsOrder(ActivityEvent record, EventSubEventsQueryDto request, long nowMs) {
+        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
+        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
+        if (recordEnd <= 0L) {
+            recordEnd = recordStart;
+        }
+        if (recordEnd <= 0L) {
+            return false;
+        }
+        boolean past = recordEnd < nowMs;
+        return "past".equalsIgnoreCase(safeText(request == null ? null : request.order())) ? past : !past;
     }
 
     private boolean recordOverlapsSubEventsQueryRange(ActivityEvent record, EventSubEventsQueryDto request) {
