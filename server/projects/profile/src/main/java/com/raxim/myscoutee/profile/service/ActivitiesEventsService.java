@@ -76,6 +76,7 @@ public class ActivitiesEventsService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final String SLOT_READ_MODEL_USER_ID = "__slot_read_model__";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String MEMBER_STATUS_INVITED = "I";
@@ -2029,6 +2030,7 @@ public class ActivitiesEventsService {
                 Criteria.where("ownerUserId").is(normalizedOwnerUserId),
                 Criteria.where("admins").is(normalizedOwnerUserId)));
         query.addCriteria(Criteria.where("sourceId").exists(true).ne(""));
+        query.addCriteria(Criteria.where("generated").ne(true));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventListCardFields(query);
         return mongoTemplate.find(query, ActivityEvent.class).stream()
@@ -3970,6 +3972,7 @@ public class ActivitiesEventsService {
                 .toList();
 
         List<ActivityEvent> toSave = new ArrayList<>();
+        List<ActivityEvent> toDelete = new ArrayList<>();
         for (ActivityEvent parent : parents) {
             Map<String, ActivityEvent> existingBySourceId = new LinkedHashMap<>();
             for (ActivityEvent record : slotDocuments) {
@@ -3978,12 +3981,23 @@ public class ActivitiesEventsService {
                     existingBySourceId.put(normalizeId(record.getSourceId()), record);
                 }
             }
-            for (ActivityEvent generated : buildGeneratedSlotRecordsForParent(parent, existingBySourceId)) {
-                ActivityEvent existing = existingBySourceId.get(normalizeId(generated.getSourceId()));
-                if (existing == null) {
-                    toSave.add(generated);
+            List<ActivityEvent> generatedRecords = buildGeneratedSlotRecordsForParent(parent, existingBySourceId);
+            Set<String> generatedSourceIds = generatedRecords.stream()
+                    .map(ActivityEvent::getSourceId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .collect(LinkedHashSet::new, Set::add, Set::addAll);
+            for (ActivityEvent record : slotDocuments) {
+                if (isGeneratedSlotRecord(record)
+                        && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))
+                        && !generatedSourceIds.contains(normalizeId(record.getSourceId()))) {
+                    toDelete.add(record);
                 }
             }
+            toSave.addAll(generatedRecords);
+        }
+        if (!toDelete.isEmpty()) {
+            activityEventsRepository.deleteAll(toDelete);
         }
         if (!toSave.isEmpty()) {
             activityEventsRepository.saveAll(toSave);
@@ -4099,15 +4113,12 @@ public class ActivitiesEventsService {
             List<SubEventDefinitionDto> definitions) {
         String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
         ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
-        if (existing != null) {
-            return;
-        }
         ActivityEvent next = new ActivityEvent();
         String nowIso = Instant.now().toString();
-        next.setId(resolveExistingId(creatorUserId, sourceId, existing));
-        next.setSyncKey(resolveExistingSyncKey(creatorUserId, sourceId, existing == null ? null : existing.getSyncKey()));
+        next.setId(resolveExistingId(SLOT_READ_MODEL_USER_ID, sourceId, existing));
+        next.setSyncKey(resolveExistingSyncKey(SLOT_READ_MODEL_USER_ID, sourceId, existing == null ? null : existing.getSyncKey()));
         next.setSourceId(sourceId);
-        next.setOwnerUserId(creatorUserId);
+        next.setOwnerUserId(SLOT_READ_MODEL_USER_ID);
         next.setAvatar(parent.getAvatar());
         next.setTitle(parent.getTitle());
         next.setSubtitle(parent.getSubtitle());
@@ -4165,7 +4176,7 @@ public class ActivitiesEventsService {
         next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(creatorUserId);
-        next.setAdmins(resolveAdminUserIds(parentSourceId, creatorUserId));
+        next.setAdmins(List.of());
         next.normalizeLifecycleState();
         records.add(next);
     }
