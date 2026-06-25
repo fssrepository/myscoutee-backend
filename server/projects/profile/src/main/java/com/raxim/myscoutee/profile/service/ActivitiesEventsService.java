@@ -60,6 +60,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.DateRangeDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -3596,8 +3597,7 @@ public class ActivitiesEventsService {
                     item.id(),
                     item.name(),
                     item.description(),
-                    item.startAt(),
-                    item.endAt(),
+                    cloneDateRange(item.dateRange()),
                     item.location(),
                     item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
                     item.tournamentGroupCount(),
@@ -3612,6 +3612,10 @@ public class ActivitiesEventsService {
                     item.icon()));
         }
         return cloned;
+    }
+
+    private DateRangeDto cloneDateRange(DateRangeDto range) {
+        return range == null ? new DateRangeDto("", "", "minute") : new DateRangeDto(range.startAt(), range.endAt(), range.precision());
     }
 
     private List<SubEventFormItemDto> ensureTournamentStartReviewStage(List<SubEventFormItemDto> items, String nowIso) {

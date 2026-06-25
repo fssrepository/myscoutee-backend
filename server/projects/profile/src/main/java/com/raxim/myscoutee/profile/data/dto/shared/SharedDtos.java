@@ -16,6 +16,12 @@ public final class SharedDtos {
             Double longitude) {
     }
 
+    public record DateRangeDto(
+            String startAt,
+            String endAt,
+            String precision) {
+    }
+
     public record PricingActionDto(
             String kind,
             Double value) {
@@ -112,8 +118,7 @@ public final class SharedDtos {
             String id,
             String name,
             String description,
-            String startAt,
-            String endAt,
+            DateRangeDto dateRange,
             String location,
             List<SubEventGroupItemDto> groups,
             Integer tournamentGroupCount,
