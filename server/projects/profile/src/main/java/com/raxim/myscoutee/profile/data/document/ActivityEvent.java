@@ -18,6 +18,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenc
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
 @Document(collection = "events")
@@ -106,6 +107,7 @@ public class ActivityEvent {
     private List<String> invitedMemberUserIds = new ArrayList<>();
     private List<String> pendingRequestMemberUserIds = new ArrayList<>();
     private List<String> topics = new ArrayList<>();
+    private List<SubEventDefinitionDto> subEventDefinitions = new ArrayList<>();
     private List<SubEventFormItemDto> subEvents = new ArrayList<>();
     private String mode = "Casual";
     private Double rating;
@@ -260,6 +262,10 @@ public class ActivityEvent {
     }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> topics) { this.topics = topics; }
+    public List<SubEventDefinitionDto> getSubEventDefinitions() { return subEventDefinitions; }
+    public void setSubEventDefinitions(List<SubEventDefinitionDto> subEventDefinitions) {
+        this.subEventDefinitions = subEventDefinitions == null ? new ArrayList<>() : new ArrayList<>(subEventDefinitions);
+    }
     public List<SubEventFormItemDto> getSubEvents() { return subEvents; }
     public void setSubEvents(List<SubEventFormItemDto> subEvents) { this.subEvents = subEvents; }
     public String getMode() { return normalizeMode(mode); }

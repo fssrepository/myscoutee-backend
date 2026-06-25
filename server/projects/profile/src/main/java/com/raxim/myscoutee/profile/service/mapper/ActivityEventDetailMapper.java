@@ -14,6 +14,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
 @Component
@@ -84,6 +85,7 @@ public class ActivityEventDetailMapper {
                 normalizeIds(record.getPendingRequestMemberUserIds()),
                 null,
                 normalizeStrings(record.getTopics()),
+                cloneSubEventDefinitions(record.getSubEventDefinitions()),
                 cloneSubEvents(record.getSubEvents()),
                 safeText(record.getMode()),
                 safeDouble(record.getRating()),
@@ -125,6 +127,37 @@ public class ActivityEventDetailMapper {
 
     private List<SubEventFormItemDto> cloneSubEvents(List<SubEventFormItemDto> items) {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    private List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
+        if (items == null) {
+            return new ArrayList<>();
+        }
+        List<SubEventDefinitionDto> cloned = new ArrayList<>();
+        for (SubEventDefinitionDto item : items) {
+            if (item == null) {
+                continue;
+            }
+            cloned.add(new SubEventDefinitionDto(
+                    item.id(),
+                    item.name(),
+                    item.description(),
+                    item.startAt(),
+                    item.endAt(),
+                    item.location(),
+                    item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
+                    item.tournamentGroupCount(),
+                    item.tournamentGroupCapacityMin(),
+                    item.tournamentGroupCapacityMax(),
+                    item.tournamentLeaderboardType(),
+                    item.tournamentAdvancePerGroup(),
+                    item.optional(),
+                    clonePricing(item.pricing()),
+                    item.capacityMin(),
+                    item.capacityMax(),
+                    item.icon()));
+        }
+        return cloned;
     }
 
     private List<String> normalizeStrings(Collection<String> values) {

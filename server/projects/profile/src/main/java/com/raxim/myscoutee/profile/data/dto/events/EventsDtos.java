@@ -8,6 +8,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateD
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 
 public final class EventsDtos {
@@ -302,6 +303,7 @@ public final class EventsDtos {
             List<String> pendingRequestMemberUserIds,
             String pendingReason,
             List<String> topics,
+            List<SubEventDefinitionDto> subEventDefinitions,
             List<SubEventFormItemDto> subEvents,
             String mode,
             Double rating,

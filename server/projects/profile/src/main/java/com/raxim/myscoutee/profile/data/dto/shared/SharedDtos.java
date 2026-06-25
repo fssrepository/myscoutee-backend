@@ -107,6 +107,27 @@ public final class SharedDtos {
             String source) {
     }
 
+    public record SubEventDefinitionDto(
+            @Field("id")
+            String id,
+            String name,
+            String description,
+            String startAt,
+            String endAt,
+            String location,
+            List<SubEventGroupItemDto> groups,
+            Integer tournamentGroupCount,
+            Integer tournamentGroupCapacityMin,
+            Integer tournamentGroupCapacityMax,
+            String tournamentLeaderboardType,
+            Integer tournamentAdvancePerGroup,
+            Boolean optional,
+            PricingConfigDto pricing,
+            Integer capacityMin,
+            Integer capacityMax,
+            String icon) {
+    }
+
     public record SubEventFormItemDto(
             @Field("id")
             String id,
