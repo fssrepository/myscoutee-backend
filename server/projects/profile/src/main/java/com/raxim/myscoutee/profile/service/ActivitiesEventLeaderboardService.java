@@ -181,6 +181,22 @@ public class ActivitiesEventLeaderboardService {
                 tournamentStages(event));
     }
 
+    public List<EventTournamentGroupDto> queryTournamentStageGroups(String eventId, String slotId, String stageId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSlotId = normalizeId(slotId);
+        String normalizedStageId = normalizeId(stageId);
+        String ownerSourceId = StringUtils.hasText(normalizedSlotId) ? normalizedSlotId : normalizedEventId;
+        if (!StringUtils.hasText(ownerSourceId) || !StringUtils.hasText(normalizedStageId)) {
+            return List.of();
+        }
+        ActivityEvent event = resolveCanonicalEvent(ownerSourceId);
+        SubEventFormItemDto subEvent = resolveSubEvent(event, normalizedStageId);
+        if (subEvent == null && StringUtils.hasText(normalizedSlotId)) {
+            subEvent = resolveSubEvent(resolveCanonicalEvent(normalizedEventId), normalizedStageId);
+        }
+        return tournamentGroups(subEvent);
+    }
+
     public EventTournamentGroupsStateDto saveTournamentGroup(EventTournamentGroupUpsertRequestDto request) {
         if (request == null) {
             return new EventTournamentGroupsStateDto("", "", "", false, List.of());
