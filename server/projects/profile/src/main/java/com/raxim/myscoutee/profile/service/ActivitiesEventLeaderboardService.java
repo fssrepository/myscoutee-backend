@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,6 +28,11 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardScoreEntryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardScoreStandingRowDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentStageDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
@@ -158,6 +164,113 @@ public class ActivitiesEventLeaderboardService {
         return queryState(normalizedEventId, normalizedSubEventId);
     }
 
+    public EventTournamentGroupsStateDto queryTournamentGroups(String userId, String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return new EventTournamentGroupsStateDto("", "", "", false, List.of());
+        }
+        ActivityEvent event = resolveCanonicalEvent(normalizedEventId);
+        if (event == null) {
+            return new EventTournamentGroupsStateDto(normalizedEventId, "", "", false, List.of());
+        }
+        return new EventTournamentGroupsStateDto(
+                normalizedEventId,
+                safeText(event.getTitle()),
+                safeText(event.getSubtitle()),
+                canManageTournamentGroups(userId, event),
+                tournamentStages(event));
+    }
+
+    public EventTournamentGroupsStateDto saveTournamentGroup(EventTournamentGroupUpsertRequestDto request) {
+        if (request == null) {
+            return new EventTournamentGroupsStateDto("", "", "", false, List.of());
+        }
+        String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSubEventId = normalizeId(request.subEventId());
+        String actorUserId = effectiveActorUserId(request.actorUserId());
+        String groupName = safeText(request.name());
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(actorUserId)
+                || !StringUtils.hasText(groupName)) {
+            return queryTournamentGroups(actorUserId, normalizedEventId);
+        }
+
+        List<ActivityEvent> documents = loadEventDocuments(normalizedEventId);
+        ActivityEvent canonical = resolvePreferredEvent(documents);
+        if (!canManageTournamentGroups(actorUserId, canonical)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage tournament groups for this event.");
+        }
+
+        String groupId = normalizeId(request.groupId());
+        int capacityMin = Math.max(0, request.capacityMin() == null ? 0 : request.capacityMin());
+        int capacityMax = Math.max(capacityMin, request.capacityMax() == null ? capacityMin : request.capacityMax());
+        String nowIso = Instant.now().toString();
+        List<ActivityEvent> changed = new ArrayList<>();
+        for (ActivityEvent document : documents) {
+            List<SubEventFormItemDto> updatedSubEvents = upsertTournamentGroup(
+                    document.getSubEvents(),
+                    normalizedSubEventId,
+                    groupId,
+                    groupName,
+                    capacityMin,
+                    capacityMax);
+            if (updatedSubEvents.equals(document.getSubEvents())) {
+                continue;
+            }
+            document.setSubEvents(updatedSubEvents);
+            document.setUpdatedDate(nowIso);
+            document.setUpdatedUser(actorUserId);
+            changed.add(document);
+        }
+        if (!changed.isEmpty()) {
+            activityEventsRepository.saveAll(changed);
+        }
+        return queryTournamentGroups(actorUserId, normalizedEventId);
+    }
+
+    public EventTournamentGroupsStateDto deleteTournamentGroup(EventTournamentGroupDeleteRequestDto request) {
+        if (request == null) {
+            return new EventTournamentGroupsStateDto("", "", "", false, List.of());
+        }
+        String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSubEventId = normalizeId(request.subEventId());
+        String normalizedGroupId = normalizeId(request.groupId());
+        String actorUserId = effectiveActorUserId(request.actorUserId());
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedGroupId)
+                || !StringUtils.hasText(actorUserId)) {
+            return queryTournamentGroups(actorUserId, normalizedEventId);
+        }
+
+        List<ActivityEvent> documents = loadEventDocuments(normalizedEventId);
+        ActivityEvent canonical = resolvePreferredEvent(documents);
+        if (!canManageTournamentGroups(actorUserId, canonical)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage tournament groups for this event.");
+        }
+
+        String nowIso = Instant.now().toString();
+        List<ActivityEvent> changed = new ArrayList<>();
+        for (ActivityEvent document : documents) {
+            List<SubEventFormItemDto> updatedSubEvents = deleteTournamentGroup(
+                    document.getSubEvents(),
+                    normalizedSubEventId,
+                    normalizedGroupId);
+            if (updatedSubEvents.equals(document.getSubEvents())) {
+                continue;
+            }
+            document.setSubEvents(updatedSubEvents);
+            document.setUpdatedDate(nowIso);
+            document.setUpdatedUser(actorUserId);
+            changed.add(document);
+        }
+        if (!changed.isEmpty()) {
+            activityEventsRepository.saveAll(changed);
+        }
+        return queryTournamentGroups(actorUserId, normalizedEventId);
+    }
+
     public List<SubEventGroupItemDto> materializeGeneratedGroups(String eventId, String subEventId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -225,6 +338,156 @@ public class ActivitiesEventLeaderboardService {
             activityEventsRepository.saveAll(updatedDocuments);
         }
         return groups;
+    }
+
+    private List<EventTournamentStageDto> tournamentStages(ActivityEvent event) {
+        List<SubEventFormItemDto> subEvents = event == null || event.getSubEvents() == null
+                ? List.of()
+                : event.getSubEvents();
+        List<EventTournamentStageDto> stages = new ArrayList<>();
+        for (int index = 0; index < subEvents.size(); index += 1) {
+            SubEventFormItemDto subEvent = subEvents.get(index);
+            if (subEvent == null || !isTournamentStage(subEvent)) {
+                continue;
+            }
+            stages.add(new EventTournamentStageDto(
+                    normalizeId(subEvent.id()),
+                    safeText(subEvent.name()),
+                    safeText(subEvent.description()),
+                    safeText(subEvent.location()),
+                    safeText(subEvent.startAt()),
+                    safeText(subEvent.endAt()),
+                    index + 1,
+                    safeText(subEvent.stageStatus()),
+                    normalizeLeaderboardType(subEvent.tournamentLeaderboardType()),
+                    Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
+                    tournamentGroups(subEvent)));
+        }
+        return stages;
+    }
+
+    private List<EventTournamentGroupDto> tournamentGroups(SubEventFormItemDto subEvent) {
+        List<SubEventGroupItemDto> groups = resolveGroups(subEvent);
+        List<EventTournamentGroupDto> result = new ArrayList<>();
+        for (int index = 0; index < groups.size(); index += 1) {
+            SubEventGroupItemDto group = groups.get(index);
+            if (group == null) {
+                continue;
+            }
+            String groupId = normalizeId(group.id());
+            if (!StringUtils.hasText(groupId)) {
+                groupId = normalizeId(subEvent.id()) + ":group:" + (index + 1);
+            }
+            int capacityMin = Math.max(0, group.capacityMin() == null ? 0 : group.capacityMin());
+            int capacityMax = Math.max(capacityMin, group.capacityMax() == null ? capacityMin : group.capacityMax());
+            result.add(new EventTournamentGroupDto(
+                    groupId,
+                    safeText(group.name()),
+                    safeText(group.source()).isBlank() ? "manual" : safeText(group.source()),
+                    capacityMin,
+                    capacityMax,
+                    resolveMembers(groupId).size(),
+                    0));
+        }
+        return result;
+    }
+
+    private boolean isTournamentStage(SubEventFormItemDto subEvent) {
+        return subEvent != null
+                && !Boolean.TRUE.equals(subEvent.optional())
+                && ((subEvent.groups() != null && !subEvent.groups().isEmpty())
+                        || (subEvent.tournamentGroupCount() != null && subEvent.tournamentGroupCount() > 0)
+                        || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
+                        || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
+    }
+
+    private List<SubEventFormItemDto> upsertTournamentGroup(
+            List<SubEventFormItemDto> subEvents,
+            String subEventId,
+            String groupId,
+            String name,
+            int capacityMin,
+            int capacityMax) {
+        if (subEvents == null || subEvents.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventFormItemDto> updated = new ArrayList<>();
+        for (SubEventFormItemDto subEvent : subEvents) {
+            if (subEvent == null) {
+                continue;
+            }
+            if (!subEventId.equals(normalizeId(subEvent.id()))) {
+                updated.add(subEvent);
+                continue;
+            }
+            List<SubEventGroupItemDto> groups = new ArrayList<>(resolveGroups(subEvent));
+            int targetIndex = -1;
+            for (int index = 0; index < groups.size(); index += 1) {
+                if (normalizeId(groupId).equals(normalizeId(groups.get(index).id()))) {
+                    targetIndex = index;
+                    break;
+                }
+            }
+            String nextGroupId = StringUtils.hasText(groupId) ? groupId : nextTournamentGroupId(subEventId, groups);
+            SubEventGroupItemDto nextGroup = new SubEventGroupItemDto(
+                    nextGroupId,
+                    name,
+                    capacityMin,
+                    capacityMax,
+                    "manual");
+            if (targetIndex >= 0) {
+                groups.set(targetIndex, nextGroup);
+            } else {
+                groups.add(nextGroup);
+            }
+            updated.add(copySubEventWithGroups(subEvent, groups, null));
+        }
+        return updated;
+    }
+
+    private List<SubEventFormItemDto> deleteTournamentGroup(
+            List<SubEventFormItemDto> subEvents,
+            String subEventId,
+            String groupId) {
+        if (subEvents == null || subEvents.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventFormItemDto> updated = new ArrayList<>();
+        for (SubEventFormItemDto subEvent : subEvents) {
+            if (subEvent == null) {
+                continue;
+            }
+            if (!subEventId.equals(normalizeId(subEvent.id()))) {
+                updated.add(subEvent);
+                continue;
+            }
+            List<SubEventGroupItemDto> groups = resolveGroups(subEvent).stream()
+                    .filter(group -> group != null && !groupId.equals(normalizeId(group.id())))
+                    .toList();
+            updated.add(copySubEventWithGroups(subEvent, groups, groups.isEmpty() ? 0 : null));
+        }
+        return updated;
+    }
+
+    private String nextTournamentGroupId(String subEventId, List<SubEventGroupItemDto> groups) {
+        String prefix = normalizeId(subEventId) + ":group:";
+        int index = Math.max(1, groups == null ? 1 : groups.size() + 1);
+        while (containsGroupId(groups, prefix + index)) {
+            index += 1;
+        }
+        return prefix + index;
+    }
+
+    private boolean containsGroupId(List<SubEventGroupItemDto> groups, String groupId) {
+        if (groups == null) {
+            return false;
+        }
+        for (SubEventGroupItemDto group : groups) {
+            if (groupId.equals(normalizeId(group == null ? null : group.id()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private EventLeaderboardGroupDto toGroupDto(
@@ -380,8 +643,24 @@ public class ActivitiesEventLeaderboardService {
         return new ArrayList<>(membersById.values());
     }
 
+    private List<ActivityEvent> loadEventDocuments(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return List.of();
+        }
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedSourceId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (!documents.isEmpty()) {
+            return documents;
+        }
+        return activityEventsRepository.findById(normalizedSourceId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
     private ActivityEvent resolveCanonicalEvent(String sourceId) {
-        return resolvePreferredEvent(activityEventsRepository.findBySourceId(sourceId));
+        return resolvePreferredEvent(loadEventDocuments(sourceId));
     }
 
     private SubEventFormItemDto resolveSubEvent(ActivityEvent event, String subEventId) {
@@ -400,7 +679,7 @@ public class ActivitiesEventLeaderboardService {
         if (subEvent == null) {
             return List.of();
         }
-        if (subEvent.groups() != null && !subEvent.groups().isEmpty()) {
+        if (subEvent.groups() != null && (!subEvent.groups().isEmpty() || Integer.valueOf(0).equals(subEvent.tournamentGroupCount()))) {
             return subEvent.groups().stream().filter(Objects::nonNull).toList();
         }
         int groupCount = Math.max(0, subEvent.tournamentGroupCount() == null ? 0 : subEvent.tournamentGroupCount());
@@ -440,6 +719,34 @@ public class ActivitiesEventLeaderboardService {
         return preferred;
     }
 
+    private boolean canManageTournamentGroups(String requestedActorUserId, ActivityEvent event) {
+        return isEventOwnerOrAdmin(event, effectiveActorUserId(requestedActorUserId));
+    }
+
+    private String effectiveActorUserId(String requestedActorUserId) {
+        if (!accessControlService.requiresAuthenticatedActor()) {
+            return normalizeId(requestedActorUserId);
+        }
+        return normalizeId(accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication()));
+    }
+
+    private boolean isEventOwnerOrAdmin(ActivityEvent event, String actorUserId) {
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (event == null || !StringUtils.hasText(normalizedActorUserId)) {
+            return false;
+        }
+        if (normalizedActorUserId.equals(normalizeId(event.getOwnerUserId()))
+                || normalizedActorUserId.equals(normalizeId(event.getCreatorUserId()))) {
+            return true;
+        }
+        for (String adminUserId : event.getAdmins() == null ? List.<String>of() : event.getAdmins()) {
+            if (normalizedActorUserId.equals(normalizeId(adminUserId))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private List<SubEventFormItemDto> replaceSubEventGroups(
             List<SubEventFormItemDto> subEvents,
             String subEventId,
@@ -456,47 +763,54 @@ public class ActivitiesEventLeaderboardService {
                 updated.add(subEvent);
                 continue;
             }
-            updated.add(new SubEventFormItemDto(
-                    subEvent.id(),
-                    subEvent.name(),
-                    subEvent.description(),
-                    subEvent.startAt(),
-                    subEvent.endAt(),
-                    subEvent.location(),
-                    subEvent.createdByUserId(),
-                    groups,
-                    subEvent.tournamentGroupCount(),
-                    subEvent.tournamentGroupCapacityMin(),
-                    subEvent.tournamentGroupCapacityMax(),
-                    subEvent.tournamentLeaderboardType(),
-                    subEvent.tournamentAdvancePerGroup(),
-                    subEvent.optional(),
-                    subEvent.pricing(),
-                    subEvent.capacityMin(),
-                    subEvent.capacityMax(),
-                    subEvent.membersAccepted(),
-                    subEvent.membersPending(),
-                    subEvent.carsPending(),
-                    subEvent.accommodationPending(),
-                    subEvent.suppliesPending(),
-                    subEvent.carsAccepted(),
-                    subEvent.accommodationAccepted(),
-                    subEvent.suppliesAccepted(),
-                    subEvent.carsCapacityMin(),
-                    subEvent.carsCapacityMax(),
-                    subEvent.accommodationCapacityMin(),
-                    subEvent.accommodationCapacityMax(),
-                    subEvent.suppliesCapacityMin(),
-                    subEvent.suppliesCapacityMax(),
-                    subEvent.slotStartOffsetMinutes(),
-                    subEvent.slotDurationMinutes(),
-                    subEvent.stageStatus(),
-                    subEvent.stageStatusReason(),
-                    subEvent.stageStatusUpdatedAt(),
-                    subEvent.stageFinalizedAt(),
-                    subEvent.stageFinalizedByUserId()));
+            updated.add(copySubEventWithGroups(subEvent, groups, null));
         }
         return updated;
+    }
+
+    private SubEventFormItemDto copySubEventWithGroups(
+            SubEventFormItemDto subEvent,
+            List<SubEventGroupItemDto> groups,
+            Integer tournamentGroupCountOverride) {
+        return new SubEventFormItemDto(
+                subEvent.id(),
+                subEvent.name(),
+                subEvent.description(),
+                subEvent.startAt(),
+                subEvent.endAt(),
+                subEvent.location(),
+                subEvent.createdByUserId(),
+                groups,
+                tournamentGroupCountOverride == null ? subEvent.tournamentGroupCount() : tournamentGroupCountOverride,
+                subEvent.tournamentGroupCapacityMin(),
+                subEvent.tournamentGroupCapacityMax(),
+                subEvent.tournamentLeaderboardType(),
+                subEvent.tournamentAdvancePerGroup(),
+                subEvent.optional(),
+                subEvent.pricing(),
+                subEvent.capacityMin(),
+                subEvent.capacityMax(),
+                subEvent.membersAccepted(),
+                subEvent.membersPending(),
+                subEvent.carsPending(),
+                subEvent.accommodationPending(),
+                subEvent.suppliesPending(),
+                subEvent.carsAccepted(),
+                subEvent.accommodationAccepted(),
+                subEvent.suppliesAccepted(),
+                subEvent.carsCapacityMin(),
+                subEvent.carsCapacityMax(),
+                subEvent.accommodationCapacityMin(),
+                subEvent.accommodationCapacityMax(),
+                subEvent.suppliesCapacityMin(),
+                subEvent.suppliesCapacityMax(),
+                subEvent.slotStartOffsetMinutes(),
+                subEvent.slotDurationMinutes(),
+                subEvent.stageStatus(),
+                subEvent.stageStatusReason(),
+                subEvent.stageStatusUpdatedAt(),
+                subEvent.stageFinalizedAt(),
+                subEvent.stageFinalizedByUserId());
     }
 
     private String normalizeLeaderboardType(String value) {
