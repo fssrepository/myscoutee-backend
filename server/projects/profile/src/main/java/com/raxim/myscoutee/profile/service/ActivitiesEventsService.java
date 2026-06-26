@@ -47,6 +47,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequest
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventRuntimeDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
@@ -1025,7 +1026,7 @@ public class ActivitiesEventsService {
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
-    public EventDto applyStageAction(EventStageActionRequestDto request) {
+    public EventStageActionResultDto applyStageAction(EventStageActionRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -1047,17 +1048,17 @@ public class ActivitiesEventsService {
                 .toList();
         ActivityEvent preferred = computePreferredEventRecords(documents).stream().findFirst().orElse(null);
         if (preferred == null || !isViewerAdmin(preferred, viewer.userId())) {
-            return preferred == null ? null : toEventDto(preferred, viewer);
+            return null;
         }
 
         List<SubEventFormItemDto> preferredSubEvents = cloneSubEvents(preferred.getSubEvents());
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
-            return toEventDto(preferred, viewer);
+            return null;
         }
         SubEventFormItemDto preferredStage = preferredSubEvents.get(preferredStageIndex);
         if (!canApplyStageAction(actionTarget.action(), preferredStage, preferredSubEvents, preferredStageIndex)) {
-            return toEventDto(preferred, viewer);
+            return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
         }
 
         String nowIso = Instant.now().toString();
@@ -1090,7 +1091,7 @@ public class ActivitiesEventsService {
         }
 
         if (updated.isEmpty()) {
-            return toEventDto(preferred, viewer);
+            return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
         }
 
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
@@ -1127,7 +1128,12 @@ public class ActivitiesEventsService {
                 "stageStatus", actionTarget.nextStatus(),
                 "stageId", firstNonBlank(stageId, Integer.toString(preferredStageIndex))));
         userActivityCountersService.refreshEventCountersForDocuments(saved);
-        return toEventDto(savedPreferred, viewer);
+        return toStageActionResult(
+                sourceId,
+                savedStage,
+                savedStageIndex >= 0 ? savedStageIndex : preferredStageIndex,
+                actionTarget.action(),
+                savedPreferred.getAutoInviter());
     }
 
     public EventDto requestJoin(EventActionRequestDto request) {
@@ -1248,6 +1254,28 @@ public class ActivitiesEventsService {
         }
         long nextStartAtMs = toSortableDate(nextStage == null ? null : nextStage.startAt());
         return nextStartAtMs <= 0L || nextStartAtMs > System.currentTimeMillis();
+    }
+
+    private EventStageActionResultDto toStageActionResult(
+            String sourceId,
+            SubEventFormItemDto stage,
+            int stageIndex,
+            String action,
+            Boolean autoInviter) {
+        if (stage == null) {
+            return null;
+        }
+        return new EventStageActionResultDto(
+                normalizeId(sourceId),
+                normalizeId(stage.id()),
+                Math.max(0, stageIndex),
+                safeText(action),
+                firstNonBlank(stage.stageStatus(), STAGE_STATUS_START_REVIEW),
+                safeText(stage.stageStatusReason()),
+                safeText(stage.stageStatusUpdatedAt()),
+                safeText(stage.stageFinalizedAt()),
+                safeText(stage.stageFinalizedByUserId()),
+                autoInviter);
     }
 
     private int resolveStageIndex(List<SubEventFormItemDto> stages, String subEventId, Integer fallbackIndex) {

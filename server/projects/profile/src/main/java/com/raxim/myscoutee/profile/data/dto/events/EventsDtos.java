@@ -63,6 +63,19 @@ public final class EventsDtos {
             String reason) {
     }
 
+    public record EventStageActionResultDto(
+            String sourceId,
+            String subEventId,
+            Integer subEventIndex,
+            String action,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            Boolean autoInviter) {
+    }
+
     public record EventFeedbackAnswerDto(
             String cardId,
             String eventId,

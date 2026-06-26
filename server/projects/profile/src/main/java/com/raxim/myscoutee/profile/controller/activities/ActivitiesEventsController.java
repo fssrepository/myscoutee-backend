@@ -25,6 +25,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
@@ -180,7 +181,7 @@ public class ActivitiesEventsController {
             subject = "#actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public EventDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
+    public EventStageActionResultDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
         return activitiesEventsService.applyStageAction(request);
     }
 
