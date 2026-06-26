@@ -16,6 +16,43 @@ ng:deep scss removal
 
 calendar-card to finish
 
+signaling - appctx - maybe routing
+the popup registers for variables and the appctx picks up when a signal gets back and reroute
+
+apctx domain split up -- signalstore
+
+e.g.:
+
+AppRuntimeStore
+- connectivityState
+- isOnline
+- loadingState / setStatus
+
+UserStore
+- activeUserId
+- userProfilesByUserId
+- profileExtByUserId
+- activeUserProfile
+- activeAdminUser
+
+UserPreferencesStore
+- filterPreferences
+- filterCountOverride
+- impressions
+- impressionChangeFlags
+
+ActivityCountersStore
+- activity counters / overrides
+
+ActivitySignalStore
+- activity.members.changed
+- activity.resources.changed
+- activity.feedback.submitted
+
+HelpCenterStore
+- privacyState
+- activePrivacyRevision
+
 desktop
 -------
 3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
