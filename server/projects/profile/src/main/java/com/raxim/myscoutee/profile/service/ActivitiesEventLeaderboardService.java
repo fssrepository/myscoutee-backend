@@ -202,18 +202,23 @@ public class ActivitiesEventLeaderboardService {
             return new EventTournamentGroupsStateDto("", "", "", false, List.of());
         }
         String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSlotId = normalizeId(request.slotId());
+        String ownerSourceId = StringUtils.hasText(normalizedSlotId) ? normalizedSlotId : normalizedEventId;
         String normalizedSubEventId = normalizeId(request.subEventId());
         String actorUserId = effectiveActorUserId(request.actorUserId());
         String groupName = safeText(request.name());
-        if (!StringUtils.hasText(normalizedEventId)
+        if (!StringUtils.hasText(ownerSourceId)
                 || !StringUtils.hasText(normalizedSubEventId)
                 || !StringUtils.hasText(actorUserId)
                 || !StringUtils.hasText(groupName)) {
-            return queryTournamentGroups(actorUserId, normalizedEventId);
+            return queryTournamentGroups(actorUserId, ownerSourceId);
         }
 
-        List<ActivityEvent> documents = loadEventDocuments(normalizedEventId);
-        ActivityEvent canonical = resolvePreferredEvent(documents);
+        List<ActivityEvent> documents = loadEventDocuments(ownerSourceId);
+        List<ActivityEvent> permissionDocuments = StringUtils.hasText(normalizedEventId)
+                ? loadEventDocuments(normalizedEventId)
+                : documents;
+        ActivityEvent canonical = resolvePreferredEvent(permissionDocuments.isEmpty() ? documents : permissionDocuments);
         if (!canManageTournamentGroups(actorUserId, canonical)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage tournament groups for this event.");
         }
@@ -242,7 +247,7 @@ public class ActivitiesEventLeaderboardService {
         if (!changed.isEmpty()) {
             activityEventsRepository.saveAll(changed);
         }
-        return queryTournamentGroups(actorUserId, normalizedEventId);
+        return queryTournamentGroups(actorUserId, ownerSourceId);
     }
 
     public EventTournamentGroupsStateDto deleteTournamentGroup(EventTournamentGroupDeleteRequestDto request) {
@@ -250,18 +255,23 @@ public class ActivitiesEventLeaderboardService {
             return new EventTournamentGroupsStateDto("", "", "", false, List.of());
         }
         String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSlotId = normalizeId(request.slotId());
+        String ownerSourceId = StringUtils.hasText(normalizedSlotId) ? normalizedSlotId : normalizedEventId;
         String normalizedSubEventId = normalizeId(request.subEventId());
         String normalizedGroupId = normalizeId(request.groupId());
         String actorUserId = effectiveActorUserId(request.actorUserId());
-        if (!StringUtils.hasText(normalizedEventId)
+        if (!StringUtils.hasText(ownerSourceId)
                 || !StringUtils.hasText(normalizedSubEventId)
                 || !StringUtils.hasText(normalizedGroupId)
                 || !StringUtils.hasText(actorUserId)) {
-            return queryTournamentGroups(actorUserId, normalizedEventId);
+            return queryTournamentGroups(actorUserId, ownerSourceId);
         }
 
-        List<ActivityEvent> documents = loadEventDocuments(normalizedEventId);
-        ActivityEvent canonical = resolvePreferredEvent(documents);
+        List<ActivityEvent> documents = loadEventDocuments(ownerSourceId);
+        List<ActivityEvent> permissionDocuments = StringUtils.hasText(normalizedEventId)
+                ? loadEventDocuments(normalizedEventId)
+                : documents;
+        ActivityEvent canonical = resolvePreferredEvent(permissionDocuments.isEmpty() ? documents : permissionDocuments);
         if (!canManageTournamentGroups(actorUserId, canonical)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage tournament groups for this event.");
         }
@@ -284,7 +294,7 @@ public class ActivitiesEventLeaderboardService {
         if (!changed.isEmpty()) {
             activityEventsRepository.saveAll(changed);
         }
-        return queryTournamentGroups(actorUserId, normalizedEventId);
+        return queryTournamentGroups(actorUserId, ownerSourceId);
     }
 
     public List<SubEventGroupItemDto> materializeGeneratedGroups(String eventId, String subEventId) {

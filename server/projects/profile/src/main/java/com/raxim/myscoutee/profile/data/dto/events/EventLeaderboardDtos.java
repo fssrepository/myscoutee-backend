@@ -56,6 +56,7 @@ public final class EventLeaderboardDtos {
     public record EventTournamentGroupUpsertRequestDto(
             String actorUserId,
             String eventId,
+            String slotId,
             String subEventId,
             String groupId,
             String name,
@@ -66,6 +67,7 @@ public final class EventLeaderboardDtos {
     public record EventTournamentGroupDeleteRequestDto(
             String actorUserId,
             String eventId,
+            String slotId,
             String subEventId,
             String groupId) {
     }
