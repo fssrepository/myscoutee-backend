@@ -24,13 +24,13 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
@@ -455,7 +455,7 @@ class AssetsServiceTest {
                 accessControlService,
                 mock(UserActivityCountersService.class));
 
-        service.replace(new AssetReplaceRequestDto("u1", List.of(new AssetDto(assetCard("asset-1")))));
+        service.replace(new AssetReplaceRequestDto("u1", List.of(assetCard("asset-1").toAssetDto())));
 
         verify(assetsRepository).saveAll(any());
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
@@ -975,16 +975,16 @@ class AssetsServiceTest {
         return asset;
     }
 
-    private AssetCardDto assetCard(String assetId) {
+    private AssetDetailDto assetCard(String assetId) {
         return assetCard(assetId, "Camp Kit", 2, List.of());
     }
 
-    private AssetCardDto assetCard(
+    private AssetDetailDto assetCard(
             String assetId,
             String title,
             Integer quantity,
             List<AssetMemberRequestDto> requests) {
-        return new AssetCardDto(
+        return new AssetDetailDto(
                 assetId,
                 "Supplies",
                 title,

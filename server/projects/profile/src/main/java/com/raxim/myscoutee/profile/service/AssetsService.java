@@ -51,7 +51,6 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDt
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
@@ -207,8 +206,8 @@ public class AssetsService {
         if (request == null || request.asset() == null) {
             return null;
         }
-        AssetCardDto saved = saveOwnedAsset(normalizeId(request.userId()), request.asset().toCardDto());
-        return saved == null ? null : new AssetDto(saved);
+        Asset saved = saveOwnedAsset(normalizeId(request.userId()), request.asset());
+        return saved == null ? null : toAssetDto(saved, resolveOwnerNamesByUserId(List.of(saved)), normalizeId(request.userId()));
     }
 
     public void replace(AssetReplaceRequestDto request) {
@@ -235,7 +234,7 @@ public class AssetsService {
         List<Asset> nextDocuments = new ArrayList<>();
         Set<String> retainedIds = new LinkedHashSet<>();
         for (AssetDto assetDto : safeAssets(request.assets())) {
-            Asset next = toDocument(assetDto.toCardDto(), normalizedUserId, existingByAssetId.get(normalizeId(assetDto.id())));
+            Asset next = toDocument(assetDto, normalizedUserId, existingByAssetId.get(normalizeId(assetDto.id())));
             if (next == null) {
                 continue;
             }
@@ -639,7 +638,7 @@ public class AssetsService {
         adminTelemetryService.record("asset.requests.changed", "assets", normalizeId(next.getAssetId()), ownerUserId);
     }
 
-    private AssetCardDto saveOwnedAsset(String ownerUserId, AssetCardDto assetDto) {
+    private Asset saveOwnedAsset(String ownerUserId, AssetDetailDto assetDto) {
         if (!StringUtils.hasText(ownerUserId)) {
             return null;
         }
@@ -676,7 +675,7 @@ public class AssetsService {
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         userActivityCountersService.refreshAssetCountersForUser(ownerUserId);
-        return toDto(saved);
+        return saved;
     }
 
     private boolean canApplyAssetRequestPolicies(Asset existing, Asset proposed, boolean fullAssetWriteAllowed) {
@@ -864,7 +863,7 @@ public class AssetsService {
         }
     }
 
-    private Asset toDocument(AssetCardDto dto, String ownerUserId, Asset current) {
+    private Asset toDocument(AssetDetailDto dto, String ownerUserId, Asset current) {
         String assetId = normalizeId(dto == null ? null : dto.id());
         String type = normalizeAssetType(dto == null ? null : dto.type());
         if (dto == null || !StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
@@ -890,6 +889,52 @@ public class AssetsService {
         next.setRoutes(normalizeStrings(dto.routes()));
         next.setPolicies(normalizePolicies(dto.policies()));
         next.setPricing(clonePricing(dto.pricing()));
+        next.setRequests(normalizeRequests(dto.requests()));
+        String nextVisibility = normalizeVisibility(dto.visibility());
+        if (!StringUtils.hasText(nextVisibility)) {
+            nextVisibility = normalizeVisibility(current == null ? null : current.getVisibility());
+        }
+        next.setVisibility(StringUtils.hasText(nextVisibility) ? nextVisibility : "Public");
+        if (current == null) {
+            next.setStatus(STATUS_ACTIVE);
+            next.setStatusBeforeSuppression(null);
+            next.setTrashedAtIso(null);
+        }
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
+        next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
+        next.setCreatedUser(current == null ? ownerUserId : safeText(current.getCreatedUser()));
+        next.setUpdatedDate(nowIso);
+        next.setUpdatedUser(ownerUserId);
+        return next;
+    }
+
+    private Asset toDocument(AssetDto dto, String ownerUserId, Asset current) {
+        String assetId = normalizeId(dto == null ? null : dto.id());
+        String type = normalizeAssetType(dto == null ? null : dto.type());
+        if (dto == null || !StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId) || !StringUtils.hasText(type)) {
+            return null;
+        }
+
+        String nowIso = Instant.now().toString();
+        Asset next = current == null ? new Asset() : cloneAsset(current);
+        next.setId(current == null ? new ObjectId().toHexString() : current.getId());
+        next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
+        next.setAssetId(assetId);
+        next.setOwnerUserId(ownerUserId);
+        next.setType(type);
+        next.setTitle(safeText(dto.title()));
+        next.setSubtitle(safeText(dto.subtitle()));
+        next.setCategory(safeText(dto.category()));
+        next.setCity(safeText(dto.city()));
+        next.setCapacityTotal(Math.max(1, normalizeCount(dto.capacityTotal())));
+        next.setQuantity(normalizeAssetQuantity(type, dto.quantity(), dto.capacityTotal()));
+        next.setDetails(current == null ? safeText(dto.description()) : safeText(current.getDetails()));
+        next.setImageUrl(safeText(dto.imageUrl()));
+        next.setSourceLink(current == null ? "" : safeText(current.getSourceLink()));
+        next.setRoutes(current == null ? List.of() : normalizeStrings(current.getRoutes()));
+        next.setPolicies(current == null ? List.of() : new ArrayList<>(safePolicies(current.getPolicies())));
+        next.setPricing(current == null ? null : clonePricing(current.getPricing()));
         next.setRequests(normalizeRequests(dto.requests()));
         String nextVisibility = normalizeVisibility(dto.visibility());
         if (!StringUtils.hasText(nextVisibility)) {
@@ -1105,37 +1150,51 @@ public class AssetsService {
     }
 
     private AssetDto toAssetDto(Asset asset) {
-        AssetCardDto dto = toDto(asset, Map.of(), null);
-        return dto == null ? null : new AssetDto(dto);
+        return toAssetDto(asset, Map.of(), null);
     }
 
     private AssetDto toAssetDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
-        AssetCardDto dto = toDto(asset, ownerNamesByUserId, viewerUserId);
-        return dto == null ? null : new AssetDto(dto);
-    }
-
-    private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
-        AssetCardDto dto = toDto(asset, ownerNamesByUserId, viewerUserId);
-        return dto == null ? null : new AssetDetailDto(dto);
-    }
-
-    private AssetCardDto toDto(Asset asset) {
-        return toDto(asset, Map.of(), null);
-    }
-
-    private AssetCardDto toDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
-        return new AssetCardDto(
+        String type = normalizeAssetType(asset.getType());
+        List<AssetPolicyRecord> policies = safePolicies(asset.getPolicies());
+        return new AssetDto(
                 normalizeId(asset.getAssetId()),
-                normalizeAssetType(asset.getType()),
+                type,
                 safeText(asset.getTitle()),
                 safeText(asset.getSubtitle()),
                 safeText(asset.getCategory()),
                 safeText(asset.getCity()),
                 Math.max(1, normalizeCount(asset.getCapacityTotal())),
-                normalizeAssetQuantity(normalizeAssetType(asset.getType()), asset.getQuantity(), asset.getCapacityTotal()),
+                normalizeAssetQuantity(type, asset.getQuantity(), asset.getCapacityTotal()),
+                safeText(asset.getDetails()),
+                safeText(asset.getImageUrl()),
+                assetLocationLabel(asset, type),
+                assetPriceLabel(asset),
+                policies.size(),
+                normalizeVisibility(asset.getVisibility()),
+                safeText(asset.getStatus()),
+                normalizeId(asset.getOwnerUserId()),
+                resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
+                toAssetRequestDtos(asset, viewerUserId),
+                resolveAssetMenuActions(asset, viewerUserId));
+    }
+
+    private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
+            return null;
+        }
+        String type = normalizeAssetType(asset.getType());
+        return new AssetDetailDto(
+                normalizeId(asset.getAssetId()),
+                type,
+                safeText(asset.getTitle()),
+                safeText(asset.getSubtitle()),
+                safeText(asset.getCategory()),
+                safeText(asset.getCity()),
+                Math.max(1, normalizeCount(asset.getCapacityTotal())),
+                normalizeAssetQuantity(type, asset.getQuantity(), asset.getCapacityTotal()),
                 safeText(asset.getDetails()),
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()),
@@ -1154,6 +1213,38 @@ public class AssetsService {
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
                 resolveAssetMenuActions(asset, viewerUserId));
+    }
+
+    private String assetLocationLabel(Asset asset, String type) {
+        if (!"Accommodation".equals(type)) {
+            return safeText(asset == null ? null : asset.getCity());
+        }
+        return normalizeStrings(asset == null ? null : asset.getRoutes()).stream()
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse(safeText(asset == null ? null : asset.getCity()));
+    }
+
+    private String assetPriceLabel(Asset asset) {
+        PricingConfigDto pricing = asset == null ? null : asset.getPricing();
+        if (pricing == null) {
+            return null;
+        }
+        double amount = pricing.basePrice() == null || !Double.isFinite(pricing.basePrice())
+                ? 0d
+                : Math.max(0d, pricing.basePrice());
+        if (amount <= 0d) {
+            return "Free borrow";
+        }
+        String currency = StringUtils.hasText(pricing.currency()) ? pricing.currency().trim() : "USD";
+        try {
+            java.text.NumberFormat format = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+            format.setCurrency(java.util.Currency.getInstance(currency));
+            format.setMaximumFractionDigits(0);
+            return format.format(amount);
+        } catch (RuntimeException ex) {
+            return currency + " " + String.format(Locale.US, "%.0f", amount);
+        }
     }
 
     private AssetRequestRecord toAssetRequest(ActivityMember member, AssetRequestRecord existing) {
