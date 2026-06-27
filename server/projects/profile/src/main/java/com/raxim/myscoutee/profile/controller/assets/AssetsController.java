@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.controller.assets;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetCardDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
 import com.raxim.myscoutee.profile.service.AssetsService;
@@ -31,13 +33,18 @@ public class AssetsController {
     }
 
     @GetMapping
-    public List<AssetCardDto> queryAssets(@RequestParam("userId") String userId) {
+    public List<AssetDto> queryAssets(@RequestParam(value = "userId", required = false) String userId) {
         return assetsService.queryAssets(userId);
     }
 
+    @GetMapping("/{assetId}")
+    public AssetDetailDto queryAssetDetail(@PathVariable("assetId") String assetId) {
+        return assetsService.queryAssetDetail(assetId);
+    }
+
     @GetMapping("/explore")
-    public List<AssetCardDto> queryVisibleAssets(
-            @RequestParam("userId") String userId,
+    public List<AssetDto> queryVisibleAssets(
+            @RequestParam(value = "userId", required = false) String userId,
             @RequestParam("type") String type,
             @RequestParam(value = "category", required = false) String category) {
         return assetsService.queryVisibleAssets(userId, type, category);
@@ -45,7 +52,7 @@ public class AssetsController {
 
     @GetMapping("/tickets")
     public AssetTicketsPageDto queryTickets(
-            @RequestParam("userId") String userId,
+            @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "upcoming") String order) {
@@ -53,8 +60,8 @@ public class AssetsController {
     }
 
     @PostMapping("/upsert")
-    public void upsert(@RequestBody AssetUpsertRequestDto request) {
-        assetsService.upsert(request);
+    public AssetDto upsert(@RequestBody AssetUpsertRequestDto request) {
+        return assetsService.upsert(request);
     }
 
     @PostMapping("/replace")
@@ -83,7 +90,7 @@ public class AssetsController {
             subject = "#request?.userId()",
             resourceId = "#request?.assetId()",
             skipWhenAuthenticationOptional = true)
-    public AssetCardDto restore(@RequestBody AssetDeleteRequestDto request) {
+    public AssetDto restore(@RequestBody AssetDeleteRequestDto request) {
         return assetsService.restore(request);
     }
 
@@ -93,7 +100,7 @@ public class AssetsController {
             subject = "#request?.userId()",
             resourceId = "#request?.assetId()",
             skipWhenAuthenticationOptional = true)
-    public AssetCardDto takeOver(@RequestBody AssetDeleteRequestDto request) {
+    public AssetDto takeOver(@RequestBody AssetDeleteRequestDto request) {
         return assetsService.takeOver(request);
     }
 
@@ -103,7 +110,7 @@ public class AssetsController {
             subject = "#request?.userId()",
             resourceId = "#request?.assetId()",
             skipWhenAuthenticationOptional = true)
-    public AssetCardDto makeManager(@RequestBody AssetMakeManagerRequestDto request) {
+    public AssetDto makeManager(@RequestBody AssetMakeManagerRequestDto request) {
         return assetsService.makeManager(request);
     }
 

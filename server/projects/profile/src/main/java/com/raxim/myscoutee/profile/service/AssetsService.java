@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,6 +41,8 @@ import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
@@ -122,8 +125,8 @@ public class AssetsService {
         this.userActivityCountersService = userActivityCountersService;
     }
 
-    public List<AssetCardDto> queryAssets(String userId) {
-        String normalizedUserId = normalizeId(userId);
+    public List<AssetDto> queryAssets(String userId) {
+        String normalizedUserId = effectiveActorUserId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
@@ -133,13 +136,25 @@ public class AssetsService {
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
         return assets.stream()
-                .map(asset -> toDto(asset, ownerNamesByUserId, normalizedUserId))
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
                 .filter(Objects::nonNull)
                 .toList();
     }
 
-    public List<AssetCardDto> queryVisibleAssets(String userId, String type, String category) {
-        String normalizedUserId = normalizeId(userId);
+    public AssetDetailDto queryAssetDetail(String assetId) {
+        String normalizedUserId = currentActorUserId();
+        String normalizedAssetId = normalizeId(assetId);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
+            return null;
+        }
+        return assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
+                .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
+                .map(asset -> toAssetDetailDto(asset, resolveOwnerNamesByUserId(List.of(asset)), normalizedUserId))
+                .orElse(null);
+    }
+
+    public List<AssetDto> queryVisibleAssets(String userId, String type, String category) {
+        String normalizedUserId = effectiveActorUserId(userId);
         String normalizedType = normalizeAssetType(type);
         String normalizedCategory = safeText(category);
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedType)) {
@@ -154,13 +169,13 @@ public class AssetsService {
                 .filter(asset -> !StringUtils.hasText(normalizedCategory) || normalizedCategory.equals(safeText(asset.getCategory())))
                 .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
                 .sorted(visibleAssetComparator(viewerAffinity))
-                .map(this::toDto)
+                .map(this::toAssetDto)
                 .filter(Objects::nonNull)
                 .toList();
     }
 
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
-        String normalizedUserId = normalizeId(userId);
+        String normalizedUserId = effectiveActorUserId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return new AssetTicketsPageDto(List.of(), 0);
         }
@@ -188,11 +203,12 @@ public class AssetsService {
         return new AssetTicketsPageDto(visible.subList(startIndex, endIndex), visible.size());
     }
 
-    public void upsert(AssetUpsertRequestDto request) {
+    public AssetDto upsert(AssetUpsertRequestDto request) {
         if (request == null || request.asset() == null) {
-            return;
+            return null;
         }
-        saveOwnedAsset(normalizeId(request.userId()), request.asset());
+        AssetCardDto saved = saveOwnedAsset(normalizeId(request.userId()), request.asset().toCardDto());
+        return saved == null ? null : new AssetDto(saved);
     }
 
     public void replace(AssetReplaceRequestDto request) {
@@ -218,8 +234,8 @@ public class AssetsService {
 
         List<Asset> nextDocuments = new ArrayList<>();
         Set<String> retainedIds = new LinkedHashSet<>();
-        for (AssetCardDto assetDto : safeAssets(request.assets())) {
-            Asset next = toDocument(assetDto, normalizedUserId, existingByAssetId.get(normalizeId(assetDto.id())));
+        for (AssetDto assetDto : safeAssets(request.assets())) {
+            Asset next = toDocument(assetDto.toCardDto(), normalizedUserId, existingByAssetId.get(normalizeId(assetDto.id())));
             if (next == null) {
                 continue;
             }
@@ -271,7 +287,7 @@ public class AssetsService {
                 });
     }
 
-    public AssetCardDto restore(AssetDeleteRequestDto request) {
+    public AssetDto restore(AssetDeleteRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -301,10 +317,10 @@ public class AssetsService {
         markAssetAttachmentAvailable(normalizedAssetId);
         enqueueAssetRestoredNotification(next, normalizedUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
-        return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
-    public AssetCardDto takeOver(AssetDeleteRequestDto request) {
+    public AssetDto takeOver(AssetDeleteRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -343,10 +359,10 @@ public class AssetsService {
         enqueueAssetTakeOverNotification(current, next, normalizedUserId);
         userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
         userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
-        return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
-    public AssetCardDto makeManager(AssetMakeManagerRequestDto request) {
+    public AssetDto makeManager(AssetMakeManagerRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -415,7 +431,7 @@ public class AssetsService {
         }
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         enqueueAssetManagerPromotedNotification(next, normalizedUserId, normalizedTargetUserId);
-        return toDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
     }
 
     private boolean updateAssetTakeOverIfSnapshotCurrent(Asset current, Asset next) {
@@ -1088,6 +1104,21 @@ public class AssetsService {
                 : Math.max(0d, user.getAffinity());
     }
 
+    private AssetDto toAssetDto(Asset asset) {
+        AssetCardDto dto = toDto(asset, Map.of(), null);
+        return dto == null ? null : new AssetDto(dto);
+    }
+
+    private AssetDto toAssetDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        AssetCardDto dto = toDto(asset, ownerNamesByUserId, viewerUserId);
+        return dto == null ? null : new AssetDto(dto);
+    }
+
+    private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        AssetCardDto dto = toDto(asset, ownerNamesByUserId, viewerUserId);
+        return dto == null ? null : new AssetDetailDto(dto);
+    }
+
     private AssetCardDto toDto(Asset asset) {
         return toDto(asset, Map.of(), null);
     }
@@ -1727,7 +1758,7 @@ public class AssetsService {
         return "";
     }
 
-    private List<AssetCardDto> safeAssets(List<AssetCardDto> assets) {
+    private List<AssetDto> safeAssets(List<AssetDto> assets) {
         return assets == null ? List.of() : assets;
     }
 
@@ -2005,6 +2036,15 @@ public class AssetsService {
     private String normalizeId(String value) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
+    }
+
+    private String currentActorUserId() {
+        return normalizeId(accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication()));
+    }
+
+    private String effectiveActorUserId(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        return StringUtils.hasText(normalizedUserId) ? normalizedUserId : currentActorUserId();
     }
 
     private String normalizeHost(String value) {
