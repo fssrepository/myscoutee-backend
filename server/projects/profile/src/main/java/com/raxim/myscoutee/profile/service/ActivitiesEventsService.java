@@ -44,6 +44,7 @@ import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
@@ -1136,7 +1137,7 @@ public class ActivitiesEventsService {
                 savedPreferred.getAutoInviter());
     }
 
-    public EventDto requestJoin(EventActionRequestDto request) {
+    public EventParticipationActionResultDto requestJoin(EventActionRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());
@@ -1150,10 +1151,10 @@ public class ActivitiesEventsService {
             return null;
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
-            return toEventDto(preferred, viewer);
+            return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
-            return toEventDto(preferred, viewer);
+            return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
         boolean approvalRequested = isApprovalRequested(request);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
@@ -1182,7 +1183,14 @@ public class ActivitiesEventsService {
                         .filter(this::isGeneratedSlotRecord)
                         .findFirst()
                         .orElse(slotRecord);
-                return toEventDto(buildMembershipProjection(viewer.userId(), refreshedSlotRecord), viewer);
+                return toParticipationActionResult(
+                        sourceId,
+                        slotSourceId,
+                        joinedSlot ? "accepted" : "pending",
+                        joinedSlot ? null : pendingReasonForAction(waitingList, approvalRequested),
+                        refreshedSlotRecord,
+                        slotSnapshot,
+                        request);
             }
         }
 
@@ -1195,7 +1203,68 @@ public class ActivitiesEventsService {
             postMemberJoinedMessage(sourceId, viewer.user());
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
-        return toEventDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
+        return toParticipationActionResult(
+                sourceId,
+                null,
+                joined ? "accepted" : "pending",
+                joined ? null : pendingReasonForAction(waitingList, approvalRequested),
+                refreshed == null ? preferred : refreshed,
+                snapshot,
+                request);
+    }
+
+    private EventParticipationActionResultDto toParticipationActionResult(
+            String sourceId,
+            String slotSourceId,
+            String membershipStatus,
+            String pendingReason,
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            EventActionRequestDto request) {
+        ActivitiesMembersService.OwnerMembersSnapshot resolvedSnapshot = snapshot == null
+                ? resolveSnapshot(normalizeId(record == null ? sourceId : record.getSourceId()))
+                : snapshot;
+        int acceptedMembers = resolvedSnapshot == null
+                ? normalizeCount(record == null ? null : record.getAcceptedMembers())
+                : resolvedSnapshot.acceptedMembers();
+        int pendingMembers = resolvedSnapshot == null
+                ? normalizeCount(record == null ? null : record.getPendingMembers())
+                : resolvedSnapshot.pendingMembers();
+        int capacityTotal = resolvedSnapshot == null || resolvedSnapshot.capacityTotal() == null
+                ? normalizeCount(record == null ? null : record.getCapacityTotal())
+                : Math.max(0, resolvedSnapshot.capacityTotal());
+        return new EventParticipationActionResultDto(
+                normalizeId(sourceId),
+                StringUtils.hasText(slotSourceId) ? normalizeId(slotSourceId) : null,
+                "join",
+                safeText(membershipStatus),
+                pendingReasonForDto(pendingReason),
+                acceptedMembers,
+                pendingMembers,
+                Math.max(acceptedMembers, capacityTotal),
+                capacityTotal > 0 && acceptedMembers >= capacityTotal,
+                normalizeId(request == null ? null : request.paymentSessionId()));
+    }
+
+    private String pendingReasonForAction(boolean waitingList, boolean approvalRequested) {
+        if (waitingList) {
+            return "waitlist";
+        }
+        if (approvalRequested) {
+            return "approval";
+        }
+        return null;
+    }
+
+    private String pendingReasonForDto(String pendingReason) {
+        String normalized = safeText(pendingReason);
+        if ("waitlist".equals(normalized)) {
+            return "waitlist";
+        }
+        if ("approval".equals(normalized)) {
+            return "approval";
+        }
+        return null;
     }
 
     private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {

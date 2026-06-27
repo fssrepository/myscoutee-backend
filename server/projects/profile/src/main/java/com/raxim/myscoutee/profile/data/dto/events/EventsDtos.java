@@ -54,6 +54,19 @@ public final class EventsDtos {
             String pendingReason) {
     }
 
+    public record EventParticipationActionResultDto(
+            String sourceId,
+            String slotSourceId,
+            String action,
+            String membershipStatus,
+            String pendingReason,
+            Integer acceptedMembers,
+            Integer pendingMembers,
+            Integer capacityTotal,
+            Boolean full,
+            String paymentSessionId) {
+    }
+
     public record EventStageActionRequestDto(
             String userId,
             String sourceId,

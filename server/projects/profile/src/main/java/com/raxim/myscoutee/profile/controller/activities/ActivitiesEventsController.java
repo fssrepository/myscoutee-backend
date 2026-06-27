@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEventDto;
@@ -171,7 +172,7 @@ public class ActivitiesEventsController {
             subject = "#request?.userId() ?: #actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public EventDto requestJoin(@RequestBody EventActionRequestDto request) {
+    public EventParticipationActionResultDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
     }
 
