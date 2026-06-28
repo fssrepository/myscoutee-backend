@@ -14,6 +14,13 @@ shared folder  - home filter -> ui converter probably
 review host interfaces (direct calls should be eliminated -> appctx)
 ng:deep scss removal
 
+header comment similar to app menu, so we have the same styling, like info card
+(no mixin)
+
+asset explore - signal to open, it seems embedded now - 1,8M resource module
+
+5M eager load, maybe even the resource popup is eagerly loaded
+
 calendar-card to finish
 
 signaling - appctx - maybe routing
