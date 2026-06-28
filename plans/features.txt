@@ -1,87 +1,39 @@
+e-kozig
+-------
+onya form editor and display on view (indexeddb save and grid layout+form editor)
+mobil/desktop view switch like on base44
+
+myscoutee
+---------
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
-mobil/desktop view switch like on base44
+desktop
+-------
+3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
+9) when delete activity - event, the record is being shown duplicated
+the counters are not changin when this kind of thing happens
+20) counter badges on asset popup drop down boxes are not visible
+22) visszajelzes/jelentesek is not lazy loaded (not really using even indexeddb probably)
+23) the popups not covering the other popups many times
+24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
+30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
+31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
+33) save draft event hides the draft event from the own event which shouldn't be the case
 
 kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben - a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
 a policy view is single-rownak tunik (valszeg memory, nem local)
 
 shared folder  - home filter -> ui converter probably
-review host interfaces (direct calls should be eliminated -> appctx)
 ng:deep scss removal
 
-header comment similar to app menu, so we have the same styling, like info card
-(no mixin)
-
-asset explore - signal to open, it seems embedded now - 1,8M resource module
-
+asset explore - signal to open, it seems embedded now - 1MB resource module
 5M eager load, maybe even the resource popup is eagerly loaded
 
+there is a popup, where there is date badge in the header, that should be removed and should be shown as a subtitle and the title should be the name of the event
+so the header will be always max. two rows.
+
 calendar-card to finish
-
-signaling - appctx - maybe routing
-the popup registers for variables and the appctx picks up when a signal gets back and reroute
-
-apctx domain split up -- signalstore
-
-e.g.:
-
-AppRuntimeStore
-- connectivityState
-- isOnline
-- loadingState / setStatus
-
-UserStore
-- activeUserId
-- userProfilesByUserId
-- profileExtByUserId
-- activeUserProfile
-- activeAdminUser
-
-UserPreferencesStore
-- filterPreferences
-- filterCountOverride
-- impressions
-- impressionChangeFlags
-
-ActivityCountersStore
-- activity counters / overrides
-
-ActivitySignalStore
-- activity.members.changed
-- activity.resources.changed
-- activity.feedback.submitted
-
-HelpCenterStore
-- privacyState
-- activePrivacyRevision
-
-desktop
--------
-3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
-4) Jelentesek -> can't login as the user
-9) when delete activity - event, the record is being shown duplicated
-11) the counters are not changin when this kind of thing happens
-12) there is some force redraw on sub events - not sure why - there is also a hated fallback on sub resource creation (like auto and so on)
-13) delete is not working, and when i click on sub menu, the red badge has been cut off
-14) can't delete a group
-15) even stage one is review to start, if stage one is closed
-16) leaderboard shouldn't seed data on-demand, clicking on + button
-17) switching between tournament and normal even -> generates too many groups (shouldn1t even generate  a single group)
-18) some of the action, like stage delete is indexedb hit, some of them are not on staged events
-19) profile betoltese shouldn't be customized (progress indicator and time out)
-20) counter badges on asset popup drop down boxes are not visible
-21) the artificial menu red badge counter increase disappeared (has been only customized to Nagy Eszter)
-22) visszajelzes/jelentesek is not lazy loaded (not really using even indexeddb probably)
-23) the popups not covering the other popups many times
-24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
-27) parameters screen is not that wide
-29) leaderboard redesign - too small rows
-30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
-31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
-32) all the popups should be the same size
-33) save draft event hides the draft event from the own event which shouldn't be the case
