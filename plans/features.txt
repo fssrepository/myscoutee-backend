@@ -32,8 +32,3 @@ ng:deep scss removal
 
 asset explore - signal to open, it seems embedded now - 1MB resource module
 5M eager load, maybe even the resource popup is eagerly loaded
-
-there is a popup, where there is date badge in the header, that should be removed and should be shown as a subtitle and the title should be the name of the event
-so the header will be always max. two rows.
-
-calendar-card to finish
