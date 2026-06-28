@@ -13,22 +13,24 @@ https://developers.facebook.com/ -> business verfication is needed
 
 desktop
 -------
-3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
-9) when delete activity - event, the record is being shown duplicated
-the counters are not changin when this kind of thing happens
-20) counter badges on asset popup drop down boxes are not visible
-22) visszajelzes/jelentesek is not lazy loaded (not really using even indexeddb probably)
-23) the popups not covering the other popups many times
-24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
-30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
-31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
-33) save draft event hides the draft event from the own event which shouldn't be the case
+1) activity event popup: save draft on own event tab or draft event tab should be inserted on the fly nd counter value of the menu should be increased by 1
+moving one bucket to another, like deleting or anything else, should remove on the fly and change the menu counter -1 on existing and +1 for the target (when it will be displayed)
+at the moment only on smartlist reload i see thoise items
+2) maybe it's seed data fix, or query but the activity event menu counters should not include korabbi in the red badge counter
+3) activity popup is over 4K, split into separate components and wire up through store
 
-kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben - a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
-a policy view is single-rownak tunik (valszeg memory, nem local)
 
-shared folder  - home filter -> ui converter probably
-ng:deep scss removal
+kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben
+a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
+(lehet ra lehetne kattintani a grafikon egyes reszeire es vmi statisztikat csinal)
+lehet ket tab van a bejovoknek es a mar elfogadottaknak - ezt meg at kell gondolni
+
+a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
 
 asset explore - signal to open, it seems embedded now - 1MB resource module
 5M eager load, maybe even the resource popup is eagerly loaded
+
+common in case when saw
+-----------------------
+the popups not covering the other popups many times
+popup-component introduction
