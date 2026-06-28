@@ -44,9 +44,11 @@ import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventRuntimeDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
@@ -1025,7 +1027,7 @@ public class ActivitiesEventsService {
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
-    public EventDto applyStageAction(EventStageActionRequestDto request) {
+    public EventStageActionResultDto applyStageAction(EventStageActionRequestDto request) {
         if (request == null) {
             return null;
         }
@@ -1047,17 +1049,17 @@ public class ActivitiesEventsService {
                 .toList();
         ActivityEvent preferred = computePreferredEventRecords(documents).stream().findFirst().orElse(null);
         if (preferred == null || !isViewerAdmin(preferred, viewer.userId())) {
-            return preferred == null ? null : toEventDto(preferred, viewer);
+            return null;
         }
 
         List<SubEventFormItemDto> preferredSubEvents = cloneSubEvents(preferred.getSubEvents());
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
-            return toEventDto(preferred, viewer);
+            return null;
         }
         SubEventFormItemDto preferredStage = preferredSubEvents.get(preferredStageIndex);
         if (!canApplyStageAction(actionTarget.action(), preferredStage, preferredSubEvents, preferredStageIndex)) {
-            return toEventDto(preferred, viewer);
+            return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
         }
 
         String nowIso = Instant.now().toString();
@@ -1090,7 +1092,7 @@ public class ActivitiesEventsService {
         }
 
         if (updated.isEmpty()) {
-            return toEventDto(preferred, viewer);
+            return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
         }
 
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
@@ -1127,10 +1129,15 @@ public class ActivitiesEventsService {
                 "stageStatus", actionTarget.nextStatus(),
                 "stageId", firstNonBlank(stageId, Integer.toString(preferredStageIndex))));
         userActivityCountersService.refreshEventCountersForDocuments(saved);
-        return toEventDto(savedPreferred, viewer);
+        return toStageActionResult(
+                sourceId,
+                savedStage,
+                savedStageIndex >= 0 ? savedStageIndex : preferredStageIndex,
+                actionTarget.action(),
+                savedPreferred.getAutoInviter());
     }
 
-    public EventDto requestJoin(EventActionRequestDto request) {
+    public EventParticipationActionResultDto requestJoin(EventActionRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         String slotSourceId = request == null ? null : normalizeId(request.slotSourceId());
@@ -1144,10 +1151,10 @@ public class ActivitiesEventsService {
             return null;
         }
         if (viewer.userId().equals(normalizeId(preferred.getCreatorUserId()))) {
-            return toEventDto(preferred, viewer);
+            return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
-            return toEventDto(preferred, viewer);
+            return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
         boolean approvalRequested = isApprovalRequested(request);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
@@ -1176,7 +1183,14 @@ public class ActivitiesEventsService {
                         .filter(this::isGeneratedSlotRecord)
                         .findFirst()
                         .orElse(slotRecord);
-                return toEventDto(buildMembershipProjection(viewer.userId(), refreshedSlotRecord), viewer);
+                return toParticipationActionResult(
+                        sourceId,
+                        slotSourceId,
+                        joinedSlot ? "accepted" : "pending",
+                        joinedSlot ? null : pendingReasonForAction(waitingList, approvalRequested),
+                        refreshedSlotRecord,
+                        slotSnapshot,
+                        request);
             }
         }
 
@@ -1189,7 +1203,68 @@ public class ActivitiesEventsService {
             postMemberJoinedMessage(sourceId, viewer.user());
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
-        return toEventDto(buildMembershipProjection(viewer.userId(), refreshed == null ? preferred : refreshed), viewer);
+        return toParticipationActionResult(
+                sourceId,
+                null,
+                joined ? "accepted" : "pending",
+                joined ? null : pendingReasonForAction(waitingList, approvalRequested),
+                refreshed == null ? preferred : refreshed,
+                snapshot,
+                request);
+    }
+
+    private EventParticipationActionResultDto toParticipationActionResult(
+            String sourceId,
+            String slotSourceId,
+            String membershipStatus,
+            String pendingReason,
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            EventActionRequestDto request) {
+        ActivitiesMembersService.OwnerMembersSnapshot resolvedSnapshot = snapshot == null
+                ? resolveSnapshot(normalizeId(record == null ? sourceId : record.getSourceId()))
+                : snapshot;
+        int acceptedMembers = resolvedSnapshot == null
+                ? normalizeCount(record == null ? null : record.getAcceptedMembers())
+                : resolvedSnapshot.acceptedMembers();
+        int pendingMembers = resolvedSnapshot == null
+                ? normalizeCount(record == null ? null : record.getPendingMembers())
+                : resolvedSnapshot.pendingMembers();
+        int capacityTotal = resolvedSnapshot == null || resolvedSnapshot.capacityTotal() == null
+                ? normalizeCount(record == null ? null : record.getCapacityTotal())
+                : Math.max(0, resolvedSnapshot.capacityTotal());
+        return new EventParticipationActionResultDto(
+                normalizeId(sourceId),
+                StringUtils.hasText(slotSourceId) ? normalizeId(slotSourceId) : null,
+                "join",
+                safeText(membershipStatus),
+                pendingReasonForDto(pendingReason),
+                acceptedMembers,
+                pendingMembers,
+                Math.max(acceptedMembers, capacityTotal),
+                capacityTotal > 0 && acceptedMembers >= capacityTotal,
+                normalizeId(request == null ? null : request.paymentSessionId()));
+    }
+
+    private String pendingReasonForAction(boolean waitingList, boolean approvalRequested) {
+        if (waitingList) {
+            return "waitlist";
+        }
+        if (approvalRequested) {
+            return "approval";
+        }
+        return null;
+    }
+
+    private String pendingReasonForDto(String pendingReason) {
+        String normalized = safeText(pendingReason);
+        if ("waitlist".equals(normalized)) {
+            return "waitlist";
+        }
+        if ("approval".equals(normalized)) {
+            return "approval";
+        }
+        return null;
     }
 
     private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {
@@ -1248,6 +1323,28 @@ public class ActivitiesEventsService {
         }
         long nextStartAtMs = toSortableDate(nextStage == null ? null : nextStage.startAt());
         return nextStartAtMs <= 0L || nextStartAtMs > System.currentTimeMillis();
+    }
+
+    private EventStageActionResultDto toStageActionResult(
+            String sourceId,
+            SubEventFormItemDto stage,
+            int stageIndex,
+            String action,
+            Boolean autoInviter) {
+        if (stage == null) {
+            return null;
+        }
+        return new EventStageActionResultDto(
+                normalizeId(sourceId),
+                normalizeId(stage.id()),
+                Math.max(0, stageIndex),
+                safeText(action),
+                firstNonBlank(stage.stageStatus(), STAGE_STATUS_START_REVIEW),
+                safeText(stage.stageStatusReason()),
+                safeText(stage.stageStatusUpdatedAt()),
+                safeText(stage.stageFinalizedAt()),
+                safeText(stage.stageFinalizedByUserId()),
+                autoInviter);
     }
 
     private int resolveStageIndex(List<SubEventFormItemDto> stages, String subEventId, Integer fallbackIndex) {
@@ -2914,6 +3011,9 @@ public class ActivitiesEventsService {
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
+        document.setPoliciesEnabled(publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getPoliciesEnabled())
+                : Boolean.TRUE.equals(request.policiesEnabled()));
         document.setPolicies(publishedManageMode
                 ? clonePolicies(existing == null ? null : existing.getPolicies())
                 : clonePolicies(request.policies()));
@@ -2939,13 +3039,16 @@ public class ActivitiesEventsService {
         boolean subEventsEnabled = publishedManageMode
                 ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
                 : request.subEventsEnabled() == null || Boolean.TRUE.equals(request.subEventsEnabled());
-        document.setSubEventsEnabled(subEventsEnabled);
-        document.setSubEventDefinitions(publishedManageMode
+        List<SubEventDefinitionDto> nextSubEventDefinitions = publishedManageMode
                 ? cloneSubEventDefinitions(existing == null ? null : existing.getSubEventDefinitions())
-                : cloneSubEventDefinitions(request.subEventDefinitions()));
+                : cloneSubEventDefinitions(request.subEventDefinitions());
+        document.setSubEventsEnabled(subEventsEnabled);
+        document.setSubEventDefinitions(nextSubEventDefinitions);
         document.setSubEvents(publishedManageMode
                 ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
-                : cloneSubEvents(request.subEvents()));
+                : subEventsEnabled
+                        ? buildStoredSubEventsFromDefinitions(nextSubEventDefinitions, document.getStartAtIso())
+                        : List.of());
         document.setMode(normalizeEventMode(publishedManageMode
                 ? safeText(existing == null ? null : existing.getMode())
                 : safeText(request.mode())));
@@ -3908,7 +4011,13 @@ public class ActivitiesEventsService {
                 : overrideDefinitions;
     }
 
-    private List<SubEventFormItemDto> materializeSubEventDefinitionsForSlotOccurrence(
+    private List<SubEventFormItemDto> buildStoredSubEventsFromDefinitions(
+            List<SubEventDefinitionDto> definitions,
+            String eventStartAtIso) {
+        return buildSlotOccurrenceSubEventsFromDefinitions(definitions, toLocalDateTime(eventStartAtIso));
+    }
+
+    private List<SubEventFormItemDto> buildSlotOccurrenceSubEventsFromDefinitions(
             List<SubEventDefinitionDto> items,
             LocalDateTime occurrenceStart) {
         List<SubEventDefinitionTimelineEntry> source = subEventDefinitionTimeline(cloneSubEventDefinitions(items));
@@ -3916,7 +4025,7 @@ public class ActivitiesEventsService {
             return List.of();
         }
 
-        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        List<SubEventFormItemDto> subEvents = new ArrayList<>(source.size());
         for (SubEventDefinitionTimelineEntry entry : source) {
             SubEventDefinitionDto item = entry.item();
             if (item == null) {
@@ -3926,7 +4035,7 @@ public class ActivitiesEventsService {
             int startOffsetMinutes = entry.startOffsetMinutes();
             LocalDateTime subEventStart = occurrenceStart.plusMinutes(startOffsetMinutes);
             LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
-            materialized.add(new SubEventFormItemDto(
+            subEvents.add(new SubEventFormItemDto(
                     item.id(),
                     item.name(),
                     item.description(),
@@ -3961,7 +4070,7 @@ public class ActivitiesEventsService {
                     startOffsetMinutes,
                     durationMinutes));
         }
-        return materialized;
+        return subEvents;
     }
 
     private record SubEventDefinitionTimelineEntry(
@@ -3970,7 +4079,7 @@ public class ActivitiesEventsService {
             int durationMinutes) {
     }
 
-    private List<SubEventFormItemDto> materializeSubEventsForSlotOccurrence(
+    private List<SubEventFormItemDto> rebaseStoredSubEventsForSlotOccurrence(
             List<SubEventFormItemDto> items,
             LocalDateTime occurrenceStart,
             LocalDateTime occurrenceEnd) {
@@ -3980,7 +4089,7 @@ public class ActivitiesEventsService {
         }
 
         int slotDurationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(occurrenceStart, occurrenceEnd));
-        List<SubEventFormItemDto> materialized = new ArrayList<>(source.size());
+        List<SubEventFormItemDto> subEvents = new ArrayList<>(source.size());
         for (SubEventFormItemDto item : source) {
             if (item == null) {
                 continue;
@@ -4020,7 +4129,7 @@ public class ActivitiesEventsService {
                 subEventEnd = occurrenceEnd;
             }
 
-            materialized.add(new SubEventFormItemDto(
+            subEvents.add(new SubEventFormItemDto(
                     item.id(),
                     item.name(),
                     item.description(),
@@ -4060,7 +4169,7 @@ public class ActivitiesEventsService {
                     item.stageFinalizedAt(),
                     item.stageFinalizedByUserId()));
         }
-        return materialized;
+        return subEvents;
     }
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
@@ -4345,8 +4454,8 @@ public class ActivitiesEventsService {
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
         next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && definitions != null && !definitions.isEmpty()
-                ? materializeSubEventDefinitionsForSlotOccurrence(definitions, occurrenceStart)
-                : materializeSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
+                ? buildSlotOccurrenceSubEventsFromDefinitions(definitions, occurrenceStart)
+                : rebaseStoredSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
         next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));

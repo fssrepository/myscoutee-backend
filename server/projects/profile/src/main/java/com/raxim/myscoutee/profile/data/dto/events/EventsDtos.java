@@ -54,6 +54,19 @@ public final class EventsDtos {
             String pendingReason) {
     }
 
+    public record EventParticipationActionResultDto(
+            String sourceId,
+            String slotSourceId,
+            String action,
+            String membershipStatus,
+            String pendingReason,
+            Integer acceptedMembers,
+            Integer pendingMembers,
+            Integer capacityTotal,
+            Boolean full,
+            String paymentSessionId) {
+    }
+
     public record EventStageActionRequestDto(
             String userId,
             String sourceId,
@@ -61,6 +74,19 @@ public final class EventsDtos {
             Integer subEventIndex,
             String action,
             String reason) {
+    }
+
+    public record EventStageActionResultDto(
+            String sourceId,
+            String subEventId,
+            Integer subEventIndex,
+            String action,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            Boolean autoInviter) {
     }
 
     public record EventFeedbackAnswerDto(
@@ -287,6 +313,7 @@ public final class EventsDtos {
             String frequency,
             Boolean ticketing,
             PricingConfigDto pricing,
+            Boolean policiesEnabled,
             List<PolicyItemDto> policies,
             Boolean slotsEnabled,
             List<EventSlotTemplateDto> slotTemplates,

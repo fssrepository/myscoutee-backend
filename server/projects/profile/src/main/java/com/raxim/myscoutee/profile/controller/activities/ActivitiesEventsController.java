@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackReceivedEventDto;
@@ -25,6 +26,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
@@ -170,7 +172,7 @@ public class ActivitiesEventsController {
             subject = "#request?.userId() ?: #actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public EventDto requestJoin(@RequestBody EventActionRequestDto request) {
+    public EventParticipationActionResultDto requestJoin(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.requestJoin(request);
     }
 
@@ -180,7 +182,7 @@ public class ActivitiesEventsController {
             subject = "#actorUserId",
             resourceId = "#request?.sourceId()",
             skipWhenAuthenticationOptional = true)
-    public EventDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
+    public EventStageActionResultDto applyStageAction(@RequestBody EventStageActionRequestDto request) {
         return activitiesEventsService.applyStageAction(request);
     }
 

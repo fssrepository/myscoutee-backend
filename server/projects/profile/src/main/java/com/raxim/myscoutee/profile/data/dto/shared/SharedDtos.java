@@ -370,26 +370,4 @@ public final class SharedDtos {
             List<String> menuActions) {
     }
 
-    public record AssetCardDto(
-            String id,
-            String type,
-            String title,
-            String subtitle,
-            String category,
-            String city,
-            Integer capacityTotal,
-            Integer quantity,
-            String details,
-            String imageUrl,
-            String sourceLink,
-            List<String> routes,
-            List<PolicyItemDto> policies,
-            PricingConfigDto pricing,
-            String visibility,
-            String status,
-            String ownerUserId,
-            String ownerName,
-            List<AssetMemberRequestDto> requests,
-            List<String> menuActions) {
-    }
 }

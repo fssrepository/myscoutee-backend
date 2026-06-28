@@ -1,48 +1,36 @@
+e-kozig
+-------
+onya form editor and display on view (indexeddb save and grid layout+form editor)
+mobil/desktop view switch like on base44
+
+myscoutee
+---------
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-e-kozig onya form editor and display on view (indexeddb save and grid layout+form editor)
-mobil/desktop view switch like on base44
-
-kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben - a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
-a policy view is single-rownak tunik (valszeg memory, nem local)
-
-shared folder  - home filter -> ui converter probably
-review host interfaces (direct calls should be eliminated -> appctx)
-ng:deep scss removal
-
-date input with horoscop (separate component) + value accessor
-tournament to smart-list transform
-leaderboard maybe we could make accordion like like help/terms
-tournament-card / calendar-card (remove week/month from smart-list)
-sub event (stage/casual) fix - most of the button not working
-calendar-card to finish
-
 desktop
 -------
-3) affinity graph nodes too large, but i think should be less densely positioned (less nodes needs to be shown, if there is no room)
-4) Jelentesek -> can't login as the user
-9) when delete activity - event, the record is being shown duplicated
-11) the counters are not changin when this kind of thing happens
-12) there is some force redraw on sub events - not sure why - there is also a hated fallback on sub resource creation (like auto and so on)
-13) delete is not working, and when i click on sub menu, the red badge has been cut off
-14) can't delete a group
-15) even stage one is review to start, if stage one is closed
-16) leaderboard shouldn't seed data on-demand, clicking on + button
-17) switching between tournament and normal even -> generates too many groups (shouldn1t even generate  a single group)
-18) some of the action, like stage delete is indexedb hit, some of them are not on staged events
-19) profile betoltese shouldn't be customized (progress indicator and time out)
-20) counter badges on asset popup drop down boxes are not visible
-21) the artificial menu red badge counter increase disappeared (has been only customized to Nagy Eszter)
-22) visszajelzes/jelentesek is not lazy loaded (not really using even indexeddb probably)
-23) the popups not covering the other popups many times
-24) on poll of admin support chat, it's kept reloading the smart list - instead of updating in the background
-27) parameters screen is not that wide
-29) leaderboard redesign - too small rows
-30) categorize shared ui component (core (e.g.: smart-list) and common (e.g.: popups))
-31) switching from week to month on activity the month button is freezing for a while (shouldn't be -- i think it should retrigger the lazy load as the week also, not like a cache)
-32) all the popups should be the same size
-33) save draft event hides the draft event from the own event which shouldn't be the case
+1) activity event popup: save draft on own event tab or draft event tab should be inserted on the fly nd counter value of the menu should be increased by 1
+moving one bucket to another, like deleting or anything else, should remove on the fly and change the menu counter -1 on existing and +1 for the target (when it will be displayed)
+at the moment only on smartlist reload i see thoise items
+2) maybe it's seed data fix, or query but the activity event menu counters should not include korabbi in the red badge counter
+3) activity popup is over 4K, split into separate components and wire up through store
+there is a host like controller inside which should be removed (store should be used instead)
+
+kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben
+a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
+(lehet ra lehetne kattintani a grafikon egyes reszeire es vmi statisztikat csinal)
+lehet ket tab van a bejovoknek es a mar elfogadottaknak - ezt meg at kell gondolni
+
+a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
+
+asset explore - signal to open, it seems embedded now - 1MB resource module
+5M eager load, maybe even the resource popup is eagerly loaded
+
+common in case when saw
+-----------------------
+the popups not covering the other popups many times
+popup-component introduction

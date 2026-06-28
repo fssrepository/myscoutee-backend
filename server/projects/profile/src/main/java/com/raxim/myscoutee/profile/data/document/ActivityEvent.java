@@ -92,6 +92,7 @@ public class ActivityEvent {
     private String frequency;
     private Boolean ticketing;
     private PricingConfigDto pricing;
+    private Boolean policiesEnabled;
     private List<PolicyItemDto> policies = new ArrayList<>();
     private Boolean slotsEnabled;
     private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
@@ -219,6 +220,8 @@ public class ActivityEvent {
     public void setTicketing(Boolean ticketing) { this.ticketing = ticketing; }
     public PricingConfigDto getPricing() { return pricing; }
     public void setPricing(PricingConfigDto pricing) { this.pricing = pricing; }
+    public Boolean getPoliciesEnabled() { return policiesEnabled; }
+    public void setPoliciesEnabled(Boolean policiesEnabled) { this.policiesEnabled = policiesEnabled; }
     public List<PolicyItemDto> getPolicies() { return policies; }
     public void setPolicies(List<PolicyItemDto> policies) {
         this.policies = policies == null ? new ArrayList<>() : new ArrayList<>(policies);
