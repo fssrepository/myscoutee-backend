@@ -711,37 +711,21 @@ public class ActivitiesEventsService {
         if (viewer == null || !StringUtils.hasText(sourceId)) {
             return null;
         }
-        ActivityEvent selected = findPreferredEventRecord(sourceId);
+        ActivityEvent selected = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(sourceId)), viewer.userId());
         if (selected == null) {
             return null;
         }
         String parentEventId = isGeneratedSlotRecord(selected)
                 ? firstNonBlank(selected.getParentEventId(), selected.getSourceId())
                 : selected.getSourceId();
-        ActivityEvent parent = findPreferredEventRecord(parentEventId);
+        ActivityEvent parent = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(parentEventId)), viewer.userId());
         if (parent == null) {
             parent = selected;
         }
-        ActivityEvent parentRecord = parent;
-
-        List<ActivityEvent> generatedSlots = activityEventsRepository.findByParentEventIdIn(List.of(parentEventId)).stream()
-                .filter(Objects::nonNull)
-                .map(this::cloneDocument)
-                .peek(ActivityEvent::normalizeLifecycleState)
-                .filter(this::isGeneratedSlotRecord)
-                .filter(record -> !isTrashStatus(record))
-                .filter(record -> generatedSlotFitsParentRange(record, parentRecord))
-                .sorted(Comparator.comparingLong(record -> toSortableDate(record.getStartAtIso())))
-                .toList();
-        long nowMs = System.currentTimeMillis();
-        List<ActivityEvent> rangedGeneratedSlots = generatedSlots.stream()
-                .filter(record -> recordMatchesSubEventsOrder(record, request, nowMs))
-                .filter(record -> recordOverlapsSubEventsQueryRange(record, request))
-                .toList();
         List<EventSubEventsSlotDto> baseSlots = activityEventSubEventsMapper.toSlotDtos(
                 parentEventId,
-                rangedGeneratedSlots,
-                request == null ? null : request.order());
+                parent,
+                request);
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
         Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey = subEventResourceRecordsByKey(lookups.resourceLookups());
         Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(lookups.stageRuntimeLookups());
@@ -751,6 +735,41 @@ public class ActivitiesEventsService {
                 stageRuntimeByKey,
                 viewer.userId());
         return new EventSubEventsResultDto(slots);
+    }
+
+    private ActivityEvent preferredSubEventsDefinitionRecord(List<ActivityEvent> records, String viewerUserId) {
+        ActivityEvent best = null;
+        int bestScore = Integer.MIN_VALUE;
+        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+            int score = subEventsDefinitionRecordScore(record, viewerUserId);
+            if (best == null || score > bestScore) {
+                best = record;
+                bestScore = score;
+            }
+        }
+        return best;
+    }
+
+    private int subEventsDefinitionRecordScore(ActivityEvent record, String viewerUserId) {
+        if (record == null) {
+            return Integer.MIN_VALUE;
+        }
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        int slotTemplateCount = record.getSlotTemplates() == null ? 0 : record.getSlotTemplates().size();
+        int definitionCount = record.getSubEventDefinitions() == null ? 0 : record.getSubEventDefinitions().size();
+        int runtimeItemCount = record.getSubEvents() == null ? 0 : record.getSubEvents().size();
+        int score = 0;
+        score += isGeneratedSlotRecord(record) ? -10_000 : 0;
+        score += normalizedViewerUserId.equals(normalizeId(record.getOwnerUserId())) ? 2_000 : 0;
+        score += normalizedViewerUserId.equals(normalizeId(record.getCreatorUserId())) ? 1_000 : 0;
+        score += normalizeIds(record.getAdmins()).contains(normalizedViewerUserId) ? 400 : 0;
+        score += Boolean.FALSE.equals(record.getSubEventsEnabled()) ? -500 : 100;
+        score += Boolean.TRUE.equals(record.getSlotsEnabled()) ? 500 : 0;
+        score += slotTemplateCount * 100;
+        score += definitionCount * 40;
+        score += runtimeItemCount * 10;
+        score += ActivityEvent.STATUS_ACTIVE.equals(safeText(record.getStatus())) ? 5 : 0;
+        return score;
     }
 
     private Map<String, ActivitySubEventResourceStateDto> subEventResourceRecordsByKey(
@@ -821,60 +840,6 @@ public class ActivitiesEventsService {
             }
         }
         return recordsByKey;
-    }
-
-    private boolean generatedSlotFitsParentRange(ActivityEvent record, ActivityEvent parent) {
-        long parentStart = toSortableDate(parent == null ? null : parent.getStartAtIso());
-        long parentEnd = toSortableDate(parent == null ? null : parent.getEndAtIso());
-        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
-        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
-        if (parentStart <= 0L || parentEnd <= 0L || recordStart <= 0L || recordEnd <= 0L) {
-            return false;
-        }
-        return recordStart >= parentStart && recordEnd <= parentEnd;
-    }
-
-    private boolean recordMatchesSubEventsOrder(ActivityEvent record, EventSubEventsQueryDto request, long nowMs) {
-        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
-        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
-        if (recordEnd <= 0L) {
-            recordEnd = recordStart;
-        }
-        if (recordEnd <= 0L) {
-            return false;
-        }
-        boolean past = recordEnd < nowMs;
-        return "past".equalsIgnoreCase(safeText(request == null ? null : request.order())) ? past : !past;
-    }
-
-    private boolean recordOverlapsSubEventsQueryRange(ActivityEvent record, EventSubEventsQueryDto request) {
-        Long rangeStart = subEventsQueryRangeStartMs(request);
-        Long rangeEnd = subEventsQueryRangeEndMs(request);
-        if (rangeStart == null && rangeEnd == null) {
-            return true;
-        }
-        long recordStart = toSortableDate(record == null ? null : record.getStartAtIso());
-        long recordEnd = toSortableDate(record == null ? null : record.getEndAtIso());
-        if (recordEnd <= 0L) {
-            recordEnd = recordStart;
-        }
-        if (rangeStart != null && recordEnd < rangeStart) {
-            return false;
-        }
-        if (rangeEnd != null && recordStart > rangeEnd) {
-            return false;
-        }
-        return true;
-    }
-
-    private Long subEventsQueryRangeStartMs(EventSubEventsQueryDto request) {
-        long parsed = toSortableDate(request == null ? null : request.rangeStart());
-        return parsed <= 0L ? null : dateOnly(parsed);
-    }
-
-    private Long subEventsQueryRangeEndMs(EventSubEventsQueryDto request) {
-        long parsed = toSortableDate(request == null ? null : request.rangeEnd());
-        return parsed <= 0L ? null : dateOnly(parsed) + (24L * 60L * 60L * 1000L) - 1L;
     }
 
     public List<EventDto> queryExploreItems(String requestedUserId) {

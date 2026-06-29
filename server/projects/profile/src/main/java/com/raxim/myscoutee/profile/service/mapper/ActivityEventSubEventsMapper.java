@@ -5,16 +5,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
@@ -26,26 +30,26 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyCont
 public class ActivityEventSubEventsMapper {
     public List<EventSubEventsSlotDto> toSlotDtos(
             String parentEventId,
-            List<ActivityEvent> records,
-            String order) {
+            ActivityEvent parentRecord,
+            EventSubEventsQueryDto query) {
         String normalizedParentEventId = normalizeId(parentEventId);
-        int direction = "past".equalsIgnoreCase(safeText(order)) ? -1 : 1;
-        return (records == null ? List.<ActivityEvent>of() : records).stream()
-                .map(record -> toSlotDto(normalizedParentEventId, record))
-                .sorted(Comparator.comparingLong((EventSubEventsSlotDto item) -> toSortableDate(item.startAt()))
-                        .thenComparing(item -> safeText(item.id())))
+        int direction = "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? -1 : 1;
+        long nowMs = System.currentTimeMillis();
+        return subEventsSlotSources(normalizedParentEventId, parentRecord, query).stream()
+                .filter(source -> source.definitions() != null && !source.definitions().isEmpty())
+                .filter(source -> slotSourceMatchesOrder(source, query, nowMs))
+                .filter(source -> slotSourceOverlapsRange(source, query))
                 .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
+                .map(this::toSlotDto)
                 .toList();
     }
 
-    public EventSubEventsSlotDto toSlotDto(
-            String parentEventId,
-            ActivityEvent record) {
+    private EventSubEventsSlotDto toSlotDto(SubEventsSlotSource source) {
         List<SubEventItemDto> items = new ArrayList<>();
-        List<SubEventDefinitionDto> definitions = record == null || record.getSubEventDefinitions() == null
+        List<SubEventDefinitionDto> definitions = source == null || source.definitions() == null
                 ? List.of()
-                : new ArrayList<>(record.getSubEventDefinitions());
-        long slotStartMs = toSortableDate(record == null ? null : record.getStartAtIso());
+                : source.definitions();
+        long slotStartMs = toSortableDate(source == null ? null : source.startAt());
         if (slotStartMs == Long.MAX_VALUE) {
             slotStartMs = Instant.now().toEpochMilli();
         }
@@ -59,14 +63,14 @@ public class ActivityEventSubEventsMapper {
             items.add(toSubEventItemDto(item, index, slotStartMs, entry.startOffsetMinutes(), entry.durationMinutes()));
         }
         return new EventSubEventsSlotDto(
-                subEventsSlotId(parentEventId, record),
-                normalizeId(parentEventId),
-                isGeneratedSlotRecord(record) ? normalizeId(record == null ? null : record.getSourceId()) : null,
-                safeText(record == null ? null : record.getSlotTemplateId()),
-                isGeneratedSlotRecord(record) ? safeText(record.getTitle()) : null,
-                isGeneratedSlotRecord(record) ? safeText(record.getTimeframe()) : null,
-                safeText(record == null ? null : record.getStartAtIso()),
-                safeText(record == null ? null : record.getEndAtIso()),
+                source == null ? "" : source.id(),
+                source == null ? "" : source.parentEventId(),
+                source == null ? null : source.slotSourceId(),
+                source == null ? null : source.slotTemplateId(),
+                source == null ? null : source.title(),
+                source == null ? null : source.timeframe(),
+                source == null ? null : source.startAt(),
+                source == null ? null : source.endAt(),
                 items);
     }
 
@@ -153,14 +157,11 @@ public class ActivityEventSubEventsMapper {
                 items);
     }
 
-    public String subEventResourceOwnerId(String parentEventId, ActivityEvent record) {
-        return isGeneratedSlotRecord(record)
-                ? normalizeId(record == null ? null : record.getSourceId())
-                : normalizeId(parentEventId);
-    }
-
     private String subEventResourceOwnerId(EventSubEventsSlotDto slot) {
-        return firstNonBlank(slot == null ? null : slot.slotSourceId(), slot == null ? null : slot.id());
+        return firstNonBlank(
+                slot == null ? null : slot.slotSourceId(),
+                slot == null ? null : slot.parentEventId(),
+                slot == null ? null : slot.id());
     }
 
     public String subEventResourceRecordKey(String ownerId, String subEventId, String assetOwnerUserId) {
@@ -180,6 +181,341 @@ public class ActivityEventSubEventsMapper {
         return StringUtils.hasText(normalizedOwnerId) && StringUtils.hasText(normalizedSubEventId)
                 ? normalizedOwnerId + ":" + normalizedSubEventId
                 : "";
+    }
+
+    private List<SubEventsSlotSource> subEventsSlotSources(
+            String parentEventId,
+            ActivityEvent parentRecord,
+            EventSubEventsQueryDto query) {
+        if (parentRecord == null || Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
+            return List.of();
+        }
+        if (isGeneratedSlotRecord(parentRecord)) {
+            return List.of(recordSlotSource(parentEventId, parentRecord));
+        }
+        List<EventSlotTemplateDto> templates = Boolean.TRUE.equals(parentRecord.getSlotsEnabled())
+                ? parentRecord.getSlotTemplates()
+                : List.of();
+        if (templates != null && !templates.isEmpty()) {
+            return templateSlotSources(parentEventId, parentRecord, templates, query);
+        }
+        List<SubEventDefinitionDto> definitions = cloneSubEventDefinitions(parentRecord.getSubEventDefinitions());
+        if (definitions.isEmpty()) {
+            return List.of();
+        }
+        return List.of(new SubEventsSlotSource(
+                parentEventId + ":default",
+                parentEventId,
+                null,
+                null,
+                null,
+                null,
+                safeText(parentRecord.getStartAtIso()),
+                safeText(parentRecord.getEndAtIso()),
+                definitions));
+    }
+
+    private SubEventsSlotSource recordSlotSource(String parentEventId, ActivityEvent record) {
+        String sourceId = firstNonBlank(record == null ? null : record.getSourceId(), record == null ? null : record.getId());
+        return new SubEventsSlotSource(
+                firstNonBlank(sourceId, parentEventId + ":slot"),
+                parentEventId,
+                StringUtils.hasText(sourceId) ? sourceId : null,
+                safeText(record == null ? null : record.getSlotTemplateId()),
+                safeText(record == null ? null : record.getTitle()),
+                safeText(record == null ? null : record.getTimeframe()),
+                safeText(record == null ? null : record.getStartAtIso()),
+                safeText(record == null ? null : record.getEndAtIso()),
+                cloneSubEventDefinitions(record == null ? null : record.getSubEventDefinitions()));
+    }
+
+    private List<SubEventsSlotSource> templateSlotSources(
+            String parentEventId,
+            ActivityEvent parentRecord,
+            List<EventSlotTemplateDto> templates,
+            EventSubEventsQueryDto query) {
+        LocalDateTime parentStart = toLocalDateTime(parentRecord.getStartAtIso());
+        LocalDateTime parentEnd = toLocalDateTime(parentRecord.getEndAtIso());
+        if (parentStart == null || parentEnd == null || parentEnd.isBefore(parentStart)) {
+            return List.of();
+        }
+        SlotGenerationHorizon horizon = slotGenerationHorizon(parentStart, parentEnd, query);
+        if (horizon == null) {
+            return List.of();
+        }
+        List<SubEventsSlotSource> sources = new ArrayList<>();
+        Set<LocalDate> overrideDates = (templates == null ? List.<EventSlotTemplateDto>of() : templates).stream()
+                .map(template -> slotOverrideDateKey(template == null ? null : template.overrideDate()))
+                .filter(date -> date != null)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+
+        for (EventSlotTemplateDto template : templates == null ? List.<EventSlotTemplateDto>of() : templates) {
+            if (template == null || Boolean.TRUE.equals(template.closed()) || slotOverrideDateKey(template.overrideDate()) != null) {
+                continue;
+            }
+            LocalDateTime templateStart = toLocalDateTime(template.startAt());
+            if (templateStart == null) {
+                continue;
+            }
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parentRecord, template);
+            long durationMinutes = subEventDefinitionsDurationMinutes(definitions);
+            for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parentRecord.getFrequency(), templateStart, horizon.start(), horizon.end())) {
+                LocalDate occurrenceDateKey = slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart);
+                if (occurrenceDateKey != null && overrideDates.contains(occurrenceDateKey)) {
+                    continue;
+                }
+                LocalDateTime occurrenceEnd = occurrenceStart.plusMinutes(durationMinutes);
+                if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
+                    continue;
+                }
+                sources.add(templateSlotSource(parentEventId, parentRecord, template, definitions, occurrenceStart, occurrenceEnd));
+            }
+        }
+
+        for (EventSlotTemplateDto template : templates == null ? List.<EventSlotTemplateDto>of() : templates) {
+            if (template == null || Boolean.TRUE.equals(template.closed()) || slotOverrideDateKey(template.overrideDate()) == null) {
+                continue;
+            }
+            LocalDateTime templateStart = toLocalDateTime(template.startAt());
+            if (templateStart == null) {
+                continue;
+            }
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parentRecord, template);
+            LocalDateTime templateEnd = templateStart.plusMinutes(subEventDefinitionsDurationMinutes(definitions));
+            if (templateStart.isBefore(horizon.start()) || templateStart.isAfter(horizon.end())) {
+                continue;
+            }
+            if (templateStart.isBefore(parentStart) || templateEnd.isAfter(parentEnd)) {
+                continue;
+            }
+            sources.add(templateSlotSource(parentEventId, parentRecord, template, definitions, templateStart, templateEnd));
+        }
+        return sources;
+    }
+
+    private SubEventsSlotSource templateSlotSource(
+            String parentEventId,
+            ActivityEvent parentRecord,
+            EventSlotTemplateDto template,
+            List<SubEventDefinitionDto> definitions,
+            LocalDateTime startAt,
+            LocalDateTime endAt) {
+        String slotTemplateId = safeText(template == null ? null : template.id());
+        String sourceId = generatedSlotSourceId(parentEventId, slotTemplateId, startAt);
+        return new SubEventsSlotSource(
+                sourceId,
+                parentEventId,
+                sourceId,
+                slotTemplateId,
+                safeText(parentRecord == null ? null : parentRecord.getTitle()),
+                generatedSlotTimeframe(startAt, endAt),
+                startAt.toInstant(ZoneOffset.UTC).toString(),
+                endAt.toInstant(ZoneOffset.UTC).toString(),
+                cloneSubEventDefinitions(definitions));
+    }
+
+    private List<SubEventDefinitionDto> slotTemplateSubEventDefinitions(ActivityEvent parentRecord, EventSlotTemplateDto template) {
+        if (parentRecord == null || Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
+            return List.of();
+        }
+        List<SubEventDefinitionDto> overrideDefinitions = cloneSubEventDefinitions(template == null ? null : template.subEventDefinitions());
+        return overrideDefinitions.isEmpty()
+                ? cloneSubEventDefinitions(parentRecord.getSubEventDefinitions())
+                : overrideDefinitions;
+    }
+
+    private SlotGenerationHorizon slotGenerationHorizon(
+            LocalDateTime parentStart,
+            LocalDateTime parentEnd,
+            EventSubEventsQueryDto query) {
+        LocalDateTime rangeStart = queryRangeStart(query);
+        LocalDateTime rangeEnd = queryRangeEnd(query);
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        boolean isPast = "past".equalsIgnoreCase(safeText(query == null ? null : query.order()));
+        LocalDateTime defaultStart = now.minusDays(isPast ? 45 : 1);
+        LocalDateTime defaultEnd = now.plusDays(isPast ? 1 : 45);
+        LocalDateTime start = maxDateTime(parentStart, rangeStart == null ? defaultStart : rangeStart);
+        LocalDateTime end = minDateTime(parentEnd, rangeEnd == null ? defaultEnd : rangeEnd);
+        return end.isBefore(start) ? null : new SlotGenerationHorizon(start, end);
+    }
+
+    private boolean slotSourceMatchesOrder(SubEventsSlotSource source, EventSubEventsQueryDto query, long nowMs) {
+        long start = toSortableDate(source == null ? null : source.startAt());
+        long end = toSortableDate(source == null ? null : source.endAt());
+        if (end == Long.MAX_VALUE || end <= 0L) {
+            end = start;
+        }
+        if (end == Long.MAX_VALUE || end <= 0L) {
+            return false;
+        }
+        boolean past = end < nowMs;
+        return "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? past : !past;
+    }
+
+    private boolean slotSourceOverlapsRange(SubEventsSlotSource source, EventSubEventsQueryDto query) {
+        LocalDateTime rangeStart = queryRangeStart(query);
+        LocalDateTime rangeEnd = queryRangeEnd(query);
+        if (rangeStart == null && rangeEnd == null) {
+            return true;
+        }
+        long start = toSortableDate(source == null ? null : source.startAt());
+        long end = toSortableDate(source == null ? null : source.endAt());
+        if (end == Long.MAX_VALUE || end <= 0L) {
+            end = start;
+        }
+        if (rangeStart != null && end < rangeStart.toInstant(ZoneOffset.UTC).toEpochMilli()) {
+            return false;
+        }
+        if (rangeEnd != null && start > rangeEnd.toInstant(ZoneOffset.UTC).toEpochMilli()) {
+            return false;
+        }
+        return true;
+    }
+
+    private long subEventDefinitionsDurationMinutes(List<SubEventDefinitionDto> items) {
+        long maxEndOffset = 0L;
+        for (SubEventDefinitionTimelineEntry entry : subEventDefinitionTimeline(items)) {
+            maxEndOffset = Math.max(maxEndOffset, (long) entry.startOffsetMinutes() + entry.durationMinutes());
+        }
+        return maxEndOffset;
+    }
+
+    private List<LocalDateTime> generateSlotOccurrenceStarts(
+            String frequency,
+            LocalDateTime templateStart,
+            LocalDateTime horizonStart,
+            LocalDateTime horizonEnd) {
+        String normalizedFrequency = safeText(frequency).toLowerCase();
+        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency) || "custom".equals(normalizedFrequency)) {
+            return !templateStart.isBefore(horizonStart) && !templateStart.isAfter(horizonEnd)
+                    ? List.of(templateStart)
+                    : List.of();
+        }
+        List<LocalDateTime> starts = new ArrayList<>();
+        LocalDate cursor = horizonStart.toLocalDate();
+        LocalDate endDate = horizonEnd.toLocalDate();
+        while (!cursor.isAfter(endDate)) {
+            if (matchesSlotFrequency(cursor, templateStart, normalizedFrequency)) {
+                LocalDateTime candidate = cursor.atTime(templateStart.toLocalTime());
+                if (!candidate.isBefore(horizonStart) && !candidate.isAfter(horizonEnd)) {
+                    starts.add(candidate);
+                }
+            }
+            cursor = cursor.plusDays(1);
+        }
+        return starts;
+    }
+
+    private boolean matchesSlotFrequency(LocalDate date, LocalDateTime templateStart, String frequency) {
+        if ("daily".equals(frequency)) {
+            return true;
+        }
+        if ("weekly".equals(frequency)) {
+            return date.getDayOfWeek() == templateStart.getDayOfWeek();
+        }
+        if ("bi-weekly".equals(frequency) || "biweekly".equals(frequency)) {
+            if (date.getDayOfWeek() != templateStart.getDayOfWeek()) {
+                return false;
+            }
+            long weeksBetween = ChronoUnit.WEEKS.between(templateStart.toLocalDate(), date);
+            return weeksBetween >= 0L && weeksBetween % 2L == 0L;
+        }
+        if ("monthly".equals(frequency)) {
+            return date.getDayOfMonth() == Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
+        }
+        if ("yearly".equals(frequency) || "annual".equals(frequency) || "annually".equals(frequency)) {
+            return date.getMonthValue() == templateStart.getMonthValue()
+                    && date.getDayOfMonth() == Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
+        }
+        return false;
+    }
+
+    private LocalDateTime queryRangeStart(EventSubEventsQueryDto query) {
+        LocalDate date = queryDate(query == null ? null : query.rangeStart());
+        return date == null ? null : date.atStartOfDay();
+    }
+
+    private LocalDateTime queryRangeEnd(EventSubEventsQueryDto query) {
+        LocalDate date = queryDate(query == null ? null : query.rangeEnd());
+        return date == null ? null : date.atTime(23, 59, 59, 999_000_000);
+    }
+
+    private LocalDate queryDate(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(text);
+        } catch (DateTimeParseException ignored) {
+            try {
+                return Instant.parse(text).atOffset(ZoneOffset.UTC).toLocalDate();
+            } catch (DateTimeParseException ignoredInstant) {
+                try {
+                    return LocalDateTime.parse(text).toLocalDate();
+                } catch (DateTimeParseException ignoredLocalDateTime) {
+                    return null;
+                }
+            }
+        }
+    }
+
+    private LocalDateTime toLocalDateTime(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return null;
+        }
+        try {
+            return Instant.parse(text).atOffset(ZoneOffset.UTC).toLocalDateTime();
+        } catch (DateTimeParseException ignored) {
+            try {
+                return LocalDateTime.parse(text);
+            } catch (DateTimeParseException ignoredLocalDateTime) {
+                try {
+                    return LocalDate.parse(text).atStartOfDay();
+                } catch (DateTimeParseException ignoredDate) {
+                    return null;
+                }
+            }
+        }
+    }
+
+    private LocalDate slotOverrideDateKey(String value) {
+        return queryDate(value);
+    }
+
+    private LocalDate slotOccurrenceAnchorDateKey(
+            LocalDateTime occurrenceStart,
+            LocalDateTime templateStart,
+            LocalDateTime parentStart) {
+        if (occurrenceStart == null || templateStart == null || parentStart == null) {
+            return null;
+        }
+        long templateOffsetMinutes = ChronoUnit.MINUTES.between(parentStart, templateStart);
+        return occurrenceStart.minusMinutes(templateOffsetMinutes).toLocalDate();
+    }
+
+    private String generatedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime startAt) {
+        return parentEventId + ":slot:" + slotTemplateId + ":" + startAt.toInstant(ZoneOffset.UTC);
+    }
+
+    private String generatedSlotTimeframe(LocalDateTime startAt, LocalDateTime endAt) {
+        return startAt.toLocalDate() + " · "
+                + String.format("%02d:%02d", startAt.getHour(), startAt.getMinute())
+                + " - "
+                + String.format("%02d:%02d", endAt.getHour(), endAt.getMinute());
+    }
+
+    private LocalDateTime maxDateTime(LocalDateTime left, LocalDateTime right) {
+        return left.isAfter(right) ? left : right;
+    }
+
+    private LocalDateTime minDateTime(LocalDateTime left, LocalDateTime right) {
+        return left.isBefore(right) ? left : right;
+    }
+
+    private List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
+        return items == null ? List.of() : new ArrayList<>(items);
     }
 
     private SubEventItemDto toSubEventItemDto(
@@ -439,12 +775,6 @@ public class ActivityEventSubEventsMapper {
                 .sum();
     }
 
-    private String subEventsSlotId(String parentEventId, ActivityEvent record) {
-        return isGeneratedSlotRecord(record)
-                ? normalizeId(record == null ? null : record.getSourceId())
-                : normalizeId(parentEventId) + ":default";
-    }
-
     private String fallbackSubEventId(int index) {
         return "subevent-" + (index + 1);
     }
@@ -528,5 +858,22 @@ public class ActivityEventSubEventsMapper {
             SubEventDefinitionDto item,
             int startOffsetMinutes,
             int durationMinutes) {
+    }
+
+    private record SlotGenerationHorizon(
+            LocalDateTime start,
+            LocalDateTime end) {
+    }
+
+    private record SubEventsSlotSource(
+            String id,
+            String parentEventId,
+            String slotSourceId,
+            String slotTemplateId,
+            String title,
+            String timeframe,
+            String startAt,
+            String endAt,
+            List<SubEventDefinitionDto> definitions) {
     }
 }
