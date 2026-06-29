@@ -34,7 +34,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTou
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentStageDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
@@ -67,7 +67,7 @@ public class ActivitiesEventLeaderboardService {
         }
 
         ActivityEvent event = resolveCanonicalEvent(normalizedEventId);
-        SubEventFormItemDto subEvent = resolveSubEvent(event, normalizedSubEventId);
+        SubEventItem subEvent = resolveSubEvent(event, normalizedSubEventId);
         if (event == null || subEvent == null) {
             return new EventLeaderboardStateDto(normalizedEventId, normalizedSubEventId, "", "Score", List.of());
         }
@@ -190,7 +190,7 @@ public class ActivitiesEventLeaderboardService {
             return List.of();
         }
         ActivityEvent event = resolveCanonicalEvent(ownerSourceId);
-        SubEventFormItemDto subEvent = resolveSubEvent(event, normalizedStageId);
+        SubEventItem subEvent = resolveSubEvent(event, normalizedStageId);
         if (subEvent == null && StringUtils.hasText(normalizedSlotId)) {
             subEvent = resolveSubEvent(resolveCanonicalEvent(normalizedEventId), normalizedStageId);
         }
@@ -229,7 +229,7 @@ public class ActivitiesEventLeaderboardService {
         String nowIso = Instant.now().toString();
         List<ActivityEvent> changed = new ArrayList<>();
         for (ActivityEvent document : documents) {
-            List<SubEventFormItemDto> updatedSubEvents = upsertTournamentGroup(
+            List<SubEventItem> updatedSubEvents = upsertTournamentGroup(
                     document.getSubEvents(),
                     normalizedSubEventId,
                     groupId,
@@ -279,7 +279,7 @@ public class ActivitiesEventLeaderboardService {
         String nowIso = Instant.now().toString();
         List<ActivityEvent> changed = new ArrayList<>();
         for (ActivityEvent document : documents) {
-            List<SubEventFormItemDto> updatedSubEvents = deleteTournamentGroup(
+            List<SubEventItem> updatedSubEvents = deleteTournamentGroup(
                     document.getSubEvents(),
                     normalizedSubEventId,
                     normalizedGroupId);
@@ -330,7 +330,7 @@ public class ActivitiesEventLeaderboardService {
         }
 
         ActivityEvent canonical = resolvePreferredEvent(documents);
-        SubEventFormItemDto subEvent = resolveSubEvent(canonical, normalizedSubEventId);
+        SubEventItem subEvent = resolveSubEvent(canonical, normalizedSubEventId);
         if (subEvent == null) {
             return List.of();
         }
@@ -346,7 +346,7 @@ public class ActivitiesEventLeaderboardService {
         String nowIso = Instant.now().toString();
         List<ActivityEvent> updatedDocuments = new ArrayList<>();
         for (ActivityEvent document : documents) {
-            List<SubEventFormItemDto> updatedSubEvents = replaceSubEventGroups(document.getSubEvents(), normalizedSubEventId, groups);
+            List<SubEventItem> updatedSubEvents = replaceSubEventGroups(document.getSubEvents(), normalizedSubEventId, groups);
             if (updatedSubEvents.equals(document.getSubEvents())) {
                 continue;
             }
@@ -367,12 +367,12 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private List<EventTournamentStageDto> tournamentStages(ActivityEvent event) {
-        List<SubEventFormItemDto> subEvents = event == null || event.getSubEvents() == null
+        List<SubEventItem> subEvents = event == null || event.getSubEvents() == null
                 ? List.of()
                 : event.getSubEvents();
         List<EventTournamentStageDto> stages = new ArrayList<>();
         for (int index = 0; index < subEvents.size(); index += 1) {
-            SubEventFormItemDto subEvent = subEvents.get(index);
+            SubEventItem subEvent = subEvents.get(index);
             if (subEvent == null || !isTournamentStage(subEvent)) {
                 continue;
             }
@@ -392,7 +392,7 @@ public class ActivitiesEventLeaderboardService {
         return stages;
     }
 
-    private List<EventTournamentGroupDto> tournamentGroups(SubEventFormItemDto subEvent) {
+    private List<EventTournamentGroupDto> tournamentGroups(SubEventItem subEvent) {
         List<SubEventGroupItemDto> groups = resolveGroups(subEvent);
         List<EventTournamentGroupDto> result = new ArrayList<>();
         for (int index = 0; index < groups.size(); index += 1) {
@@ -418,7 +418,7 @@ public class ActivitiesEventLeaderboardService {
         return result;
     }
 
-    private boolean isTournamentStage(SubEventFormItemDto subEvent) {
+    private boolean isTournamentStage(SubEventItem subEvent) {
         return subEvent != null
                 && !Boolean.TRUE.equals(subEvent.optional())
                 && ((subEvent.groups() != null && !subEvent.groups().isEmpty())
@@ -427,8 +427,8 @@ public class ActivitiesEventLeaderboardService {
                         || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
     }
 
-    private List<SubEventFormItemDto> upsertTournamentGroup(
-            List<SubEventFormItemDto> subEvents,
+    private List<SubEventItem> upsertTournamentGroup(
+            List<SubEventItem> subEvents,
             String subEventId,
             String groupId,
             String name,
@@ -437,8 +437,8 @@ public class ActivitiesEventLeaderboardService {
         if (subEvents == null || subEvents.isEmpty()) {
             return List.of();
         }
-        List<SubEventFormItemDto> updated = new ArrayList<>();
-        for (SubEventFormItemDto subEvent : subEvents) {
+        List<SubEventItem> updated = new ArrayList<>();
+        for (SubEventItem subEvent : subEvents) {
             if (subEvent == null) {
                 continue;
             }
@@ -471,15 +471,15 @@ public class ActivitiesEventLeaderboardService {
         return updated;
     }
 
-    private List<SubEventFormItemDto> deleteTournamentGroup(
-            List<SubEventFormItemDto> subEvents,
+    private List<SubEventItem> deleteTournamentGroup(
+            List<SubEventItem> subEvents,
             String subEventId,
             String groupId) {
         if (subEvents == null || subEvents.isEmpty()) {
             return List.of();
         }
-        List<SubEventFormItemDto> updated = new ArrayList<>();
-        for (SubEventFormItemDto subEvent : subEvents) {
+        List<SubEventItem> updated = new ArrayList<>();
+        for (SubEventItem subEvent : subEvents) {
             if (subEvent == null) {
                 continue;
             }
@@ -520,7 +520,7 @@ public class ActivitiesEventLeaderboardService {
             String eventId,
             String subEventId,
             String leaderboardType,
-            SubEventFormItemDto subEvent,
+            SubEventItem subEvent,
             SubEventGroupItemDto group,
             List<EventLeaderboardEntry> entries,
             GeneratorModels.ScoreGeneratorResult result) {
@@ -598,7 +598,7 @@ public class ActivitiesEventLeaderboardService {
             String eventId,
             String subEventId,
             String leaderboardType,
-            SubEventFormItemDto subEvent,
+            SubEventItem subEvent,
             SubEventGroupItemDto group,
             List<EventLeaderboardEntry> entries) {
         String groupId = normalizeId(group.id());
@@ -689,11 +689,11 @@ public class ActivitiesEventLeaderboardService {
         return resolvePreferredEvent(loadEventDocuments(sourceId));
     }
 
-    private SubEventFormItemDto resolveSubEvent(ActivityEvent event, String subEventId) {
+    private SubEventItem resolveSubEvent(ActivityEvent event, String subEventId) {
         if (event == null || event.getSubEvents() == null) {
             return null;
         }
-        for (SubEventFormItemDto item : event.getSubEvents()) {
+        for (SubEventItem item : event.getSubEvents()) {
             if (item != null && subEventId.equals(normalizeId(item.id()))) {
                 return item;
             }
@@ -701,7 +701,7 @@ public class ActivitiesEventLeaderboardService {
         return null;
     }
 
-    private List<SubEventGroupItemDto> resolveGroups(SubEventFormItemDto subEvent) {
+    private List<SubEventGroupItemDto> resolveGroups(SubEventItem subEvent) {
         if (subEvent == null) {
             return List.of();
         }
@@ -773,15 +773,15 @@ public class ActivitiesEventLeaderboardService {
         return false;
     }
 
-    private List<SubEventFormItemDto> replaceSubEventGroups(
-            List<SubEventFormItemDto> subEvents,
+    private List<SubEventItem> replaceSubEventGroups(
+            List<SubEventItem> subEvents,
             String subEventId,
             List<SubEventGroupItemDto> groups) {
         if (subEvents == null || subEvents.isEmpty()) {
             return List.of();
         }
-        List<SubEventFormItemDto> updated = new ArrayList<>();
-        for (SubEventFormItemDto subEvent : subEvents) {
+        List<SubEventItem> updated = new ArrayList<>();
+        for (SubEventItem subEvent : subEvents) {
             if (subEvent == null) {
                 continue;
             }
@@ -794,11 +794,11 @@ public class ActivitiesEventLeaderboardService {
         return updated;
     }
 
-    private SubEventFormItemDto copySubEventWithGroups(
-            SubEventFormItemDto subEvent,
+    private SubEventItem copySubEventWithGroups(
+            SubEventItem subEvent,
             List<SubEventGroupItemDto> groups,
             Integer tournamentGroupCountOverride) {
-        return new SubEventFormItemDto(
+        return new SubEventItem(
                 subEvent.id(),
                 subEvent.name(),
                 subEvent.description(),

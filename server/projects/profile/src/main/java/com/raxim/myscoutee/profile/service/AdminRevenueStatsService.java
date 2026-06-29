@@ -18,7 +18,7 @@ import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
@@ -166,7 +166,7 @@ public class AdminRevenueStatsService {
             return 0L;
         }
         long total = pricingUnitCents(event.getPricing());
-        for (SubEventFormItemDto subEvent : event.getSubEvents() == null ? java.util.List.<SubEventFormItemDto>of() : event.getSubEvents()) {
+        for (SubEventItem subEvent : event.getSubEvents() == null ? java.util.List.<SubEventItem>of() : event.getSubEvents()) {
             if (subEvent == null) {
                 continue;
             }

@@ -135,7 +135,7 @@ public final class SharedDtos {
             String icon) {
     }
 
-    public record SubEventFormItemDto(
+    public record SubEventItemDto(
             @Field("id")
             String id,
             String name,
@@ -175,7 +175,8 @@ public final class SharedDtos {
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId) {
-        public SubEventFormItemDto(
+
+        public SubEventItemDto(
                 String id,
                 String name,
                 String description,
@@ -329,6 +330,16 @@ public final class SharedDtos {
             Map<String, List<String>> assetAssignmentIds,
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
             Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId) {
+    }
+
+    public record ActivitySubEventStageRuntimeStateDto(
+            String ownerId,
+            String subEventId,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId) {
     }
 
     public record PolicyItemDto(

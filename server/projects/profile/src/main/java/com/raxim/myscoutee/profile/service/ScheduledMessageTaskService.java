@@ -40,7 +40,7 @@ import com.raxim.myscoutee.profile.data.document.NotificationTemplate;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.profile.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.profile.repository.NotificationTemplatesRepository;
@@ -235,7 +235,7 @@ public class ScheduledMessageTaskService {
         List<ScheduledMessageTask> savedTasks = new ArrayList<>();
         Set<String> activeTaskKeys = new LinkedHashSet<>();
         int index = 0;
-        for (SubEventFormItemDto subEvent : safeSubEvents(event)) {
+        for (SubEventItem subEvent : safeSubEvents(event)) {
             String subEventId = stageReminderSubEventId(subEvent, index);
             Instant stageStartAt = resolveStageStartAt(event, subEvent);
             index++;
@@ -628,14 +628,14 @@ public class ScheduledMessageTaskService {
         return saved;
     }
 
-    private List<SubEventFormItemDto> safeSubEvents(ActivityEvent event) {
+    private List<SubEventItem> safeSubEvents(ActivityEvent event) {
         if (event == null || event.getSubEvents() == null) {
             return List.of();
         }
         return event.getSubEvents();
     }
 
-    private String stageReminderSubEventId(SubEventFormItemDto subEvent, int index) {
+    private String stageReminderSubEventId(SubEventItem subEvent, int index) {
         String id = normalizeId(subEvent == null ? null : subEvent.id());
         if (StringUtils.hasText(id)) {
             return id;
@@ -650,7 +650,7 @@ public class ScheduledMessageTaskService {
         return "stage-" + Math.max(0, index + 1);
     }
 
-    private Instant resolveStageStartAt(ActivityEvent event, SubEventFormItemDto subEvent) {
+    private Instant resolveStageStartAt(ActivityEvent event, SubEventItem subEvent) {
         Instant subEventStartAt = parseInstant(subEvent == null ? null : subEvent.startAt());
         if (subEventStartAt != null) {
             return subEventStartAt;
@@ -663,7 +663,7 @@ public class ScheduledMessageTaskService {
         return eventStartAt;
     }
 
-    private Map<String, String> stageReminderPayload(ActivityEvent event, SubEventFormItemDto subEvent, Instant stageStartAt) {
+    private Map<String, String> stageReminderPayload(ActivityEvent event, SubEventItem subEvent, Instant stageStartAt) {
         Map<String, String> payload = new LinkedHashMap<>();
         putPayload(payload, "eventTitle", event == null ? null : event.getTitle());
         putPayload(payload, "stageName", subEvent == null ? null : subEvent.name());

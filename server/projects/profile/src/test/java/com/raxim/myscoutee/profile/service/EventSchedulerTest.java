@@ -31,7 +31,7 @@ import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardGroupDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
@@ -476,8 +476,8 @@ class EventSchedulerTest {
         return edge;
     }
 
-    private SubEventFormItemDto subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
-        return new SubEventFormItemDto(
+    private SubEventItem subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
+        return new SubEventItem(
                 id,
                 "Round 1",
                 null,
@@ -513,8 +513,8 @@ class EventSchedulerTest {
                 null);
     }
 
-    private SubEventFormItemDto subEventWithStatus(String id, String endAt, String stageStatus) {
-        return new SubEventFormItemDto(
+    private SubEventItem subEventWithStatus(String id, String endAt, String stageStatus) {
+        return new SubEventItem(
                 id,
                 "Stage",
                 null,
@@ -559,8 +559,8 @@ class EventSchedulerTest {
         return new SubEventGroupItemDto(id, name, 2, 2, "generated");
     }
 
-    private SubEventFormItemDto explicitSubEvent(String id) {
-        return new SubEventFormItemDto(
+    private SubEventItem explicitSubEvent(String id) {
+        return new SubEventItem(
                 id,
                 "Round 2",
                 null,
@@ -598,8 +598,8 @@ class EventSchedulerTest {
                 null);
     }
 
-    private SubEventFormItemDto singleGroupSubEvent(String id, String groupId) {
-        return new SubEventFormItemDto(
+    private SubEventItem singleGroupSubEvent(String id, String groupId) {
+        return new SubEventItem(
                 id,
                 "Final",
                 null,
@@ -635,8 +635,8 @@ class EventSchedulerTest {
                 null);
     }
 
-    private SubEventFormItemDto withStageStatus(SubEventFormItemDto item, String stageStatus) {
-        return new SubEventFormItemDto(
+    private SubEventItem withStageStatus(SubEventItem item, String stageStatus) {
+        return new SubEventItem(
                 item.id(),
                 item.name(),
                 item.description(),

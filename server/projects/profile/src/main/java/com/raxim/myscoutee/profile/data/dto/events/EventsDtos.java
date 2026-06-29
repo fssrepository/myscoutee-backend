@@ -9,7 +9,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinate
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 
 public final class EventsDtos {
@@ -249,6 +249,7 @@ public final class EventsDtos {
             Integer capacityMax,
             Integer capacityTotal,
             String eventType,
+            String mode,
             Integer acceptedMembers,
             Integer pendingMembers,
             List<String> acceptedMemberUserIds,
@@ -333,7 +334,7 @@ public final class EventsDtos {
             List<String> topics,
             Boolean subEventsEnabled,
             List<SubEventDefinitionDto> subEventDefinitions,
-            List<SubEventFormItemDto> subEvents,
+            List<SubEventItemDto> subEvents,
             String mode,
             Double rating,
             Double boost,
@@ -351,56 +352,20 @@ public final class EventsDtos {
             String rangeEnd) {
     }
 
-    public record EventSubEventRuntimeDto(
+    public record EventSubEventsSlotDto(
             String id,
-            String name,
-            String description,
-            String startAt,
-            String endAt,
-            String location,
-            String createdByUserId,
-            List<SubEventGroupItemDto> groups,
-            Integer tournamentGroupCount,
-            Integer tournamentGroupCapacityMin,
-            Integer tournamentGroupCapacityMax,
-            String tournamentLeaderboardType,
-            Integer tournamentAdvancePerGroup,
-            Boolean optional,
-            PricingConfigDto pricing,
-            Integer capacityMin,
-            Integer capacityMax,
-            Integer membersAccepted,
-            Integer membersPending,
-            Integer carsPending,
-            Integer accommodationPending,
-            Integer suppliesPending,
-            Integer carsAccepted,
-            Integer accommodationAccepted,
-            Integer suppliesAccepted,
-            Integer carsCapacityMin,
-            Integer carsCapacityMax,
-            Integer accommodationCapacityMin,
-            Integer accommodationCapacityMax,
-            Integer suppliesCapacityMin,
-            Integer suppliesCapacityMax,
-            Integer slotStartOffsetMinutes,
-            Integer slotDurationMinutes,
-            String stageStatus,
-            String stageStatusReason,
-            String stageStatusUpdatedAt,
-            String stageFinalizedAt,
-            String stageFinalizedByUserId,
-            String runtimeId,
             String parentEventId,
             String slotSourceId,
             String slotTemplateId,
-            String slotTitle,
-            String slotTimeframe) {
+            String title,
+            String timeframe,
+            String startAt,
+            String endAt,
+            List<SubEventItemDto> subEventItems) {
     }
 
     public record EventSubEventsResultDto(
-            EventDetailDto event,
-            List<EventSubEventRuntimeDto> items) {
+            List<EventSubEventsSlotDto> slots) {
     }
 
     public record EventCheckoutRequestDto(

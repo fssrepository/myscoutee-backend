@@ -40,6 +40,8 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
@@ -49,9 +51,9 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventRuntimeDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
@@ -62,17 +64,27 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper.SubEventResourceLookup;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper.SubEventStageRuntimeLookup;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper.SubEventStateLookups;
+import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -102,6 +114,8 @@ public class ActivitiesEventsService {
     private static final ThreadLocal<EventQueryContext> ACTIVE_CONTEXT = new ThreadLocal<>();
 
     private final ActivityEventsRepository activityEventsRepository;
+    private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
+    private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
@@ -123,9 +137,14 @@ public class ActivitiesEventsService {
     private final UserActivityCountersService userActivityCountersService;
     private final ActivityEventDetailMapper activityEventDetailMapper;
     private final ActivityEventMapper activityEventMapper;
+    private final ActivityEventSubEventsMapper activityEventSubEventsMapper;
+    private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
+    private final ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper;
 
     public ActivitiesEventsService(
             ActivityEventsRepository activityEventsRepository,
+            ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
+            ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
@@ -146,8 +165,13 @@ public class ActivitiesEventsService {
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
             ActivityEventDetailMapper activityEventDetailMapper,
-            ActivityEventMapper activityEventMapper) {
+            ActivityEventMapper activityEventMapper,
+            ActivityEventSubEventsMapper activityEventSubEventsMapper,
+            ActivitySubEventResourceMapper activitySubEventResourceMapper,
+            ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper) {
         this.activityEventsRepository = activityEventsRepository;
+        this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
+        this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -169,6 +193,9 @@ public class ActivitiesEventsService {
         this.userActivityCountersService = userActivityCountersService;
         this.activityEventDetailMapper = activityEventDetailMapper;
         this.activityEventMapper = activityEventMapper;
+        this.activityEventSubEventsMapper = activityEventSubEventsMapper;
+        this.activitySubEventResourceMapper = activitySubEventResourceMapper;
+        this.activitySubEventStageRuntimeMapper = activitySubEventStageRuntimeMapper;
     }
 
     private EventQueryContext buildUserQueryContext(ViewerContext viewer) {
@@ -696,8 +723,6 @@ public class ActivitiesEventsService {
             parent = selected;
         }
         ActivityEvent parentRecord = parent;
-        EventDetailDto event = activityEventDetailMapper.toDto(parentRecord, new ActivityEventDetailMapper.MappingContext(
-                isViewerAdmin(parentRecord, viewer.userId()) ? "hosting" : "events"));
 
         List<ActivityEvent> generatedSlots = activityEventsRepository.findByParentEventIdIn(List.of(parentEventId)).stream()
                 .filter(Objects::nonNull)
@@ -713,91 +738,89 @@ public class ActivitiesEventsService {
                 .filter(record -> recordMatchesSubEventsOrder(record, request, nowMs))
                 .filter(record -> recordOverlapsSubEventsQueryRange(record, request))
                 .toList();
-        List<ActivityEvent> fallbackRecords = generatedSlots.isEmpty()
-                && !isGeneratedSlotRecord(selected)
-                && generatedSlotFitsParentRange(selected, parent)
-                && recordMatchesSubEventsOrder(selected, request, nowMs)
-                && recordOverlapsSubEventsQueryRange(selected, request)
-                        ? List.of(selected)
-                        : List.of();
-        List<ActivityEvent> sourceRecords = generatedSlots.isEmpty() ? fallbackRecords : rangedGeneratedSlots;
-        int direction = "past".equalsIgnoreCase(safeText(request == null ? null : request.order())) ? -1 : 1;
-        List<EventSubEventRuntimeDto> items = sourceRecords.stream()
-                .flatMap(record -> runtimeSubEventsForRecord(parentEventId, record).stream())
-                .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
-                .toList();
-        return new EventSubEventsResultDto(event, items);
+        List<EventSubEventsSlotDto> baseSlots = activityEventSubEventsMapper.toSlotDtos(
+                parentEventId,
+                rangedGeneratedSlots,
+                request == null ? null : request.order());
+        SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
+        Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey = subEventResourceRecordsByKey(lookups.resourceLookups());
+        Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(lookups.stageRuntimeLookups());
+        List<EventSubEventsSlotDto> slots = activityEventSubEventsMapper.withSubEventStates(
+                baseSlots,
+                resourceRecordsByKey,
+                stageRuntimeByKey,
+                viewer.userId());
+        return new EventSubEventsResultDto(slots);
     }
 
-    private List<EventSubEventRuntimeDto> runtimeSubEventsForRecord(String parentEventId, ActivityEvent record) {
-        List<SubEventFormItemDto> subEvents = cloneSubEvents(record == null ? null : record.getSubEvents());
-        List<EventSubEventRuntimeDto> items = new ArrayList<>();
-        for (int index = 0; index < subEvents.size(); index++) {
-            SubEventFormItemDto item = subEvents.get(index);
-            if (item == null) {
+    private Map<String, ActivitySubEventResourceStateDto> subEventResourceRecordsByKey(
+            Collection<SubEventResourceLookup> refs) {
+        if (refs == null || refs.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> ownerIds = refs.stream()
+                .map(SubEventResourceLookup::ownerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> requestedKeys = refs.stream()
+                .map(ref -> activityEventSubEventsMapper.subEventResourceRecordKey(ref.ownerId(), ref.subEventId(), ref.assetOwnerUserId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (ownerIds.isEmpty() || requestedKeys.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, ActivitySubEventResourceStateDto> recordsByKey = new LinkedHashMap<>();
+        List<ActivitySubEventResource> records = activitySubEventResourcesRepository.findByOwnerIdIn(ownerIds);
+        for (ActivitySubEventResource record : records == null ? List.<ActivitySubEventResource>of() : records) {
+            if (record == null) {
                 continue;
             }
-            items.add(toRuntimeSubEventDto(parentEventId, record, item, index));
+            ActivitySubEventResourceStateDto dto = activitySubEventResourceMapper.toDto(record);
+            if (dto == null) {
+                continue;
+            }
+            String key = activityEventSubEventsMapper.subEventResourceRecordKey(
+                    dto.ownerId(),
+                    dto.subEventId(),
+                    dto.assetOwnerUserId());
+            if (requestedKeys.contains(key)) {
+                recordsByKey.put(key, dto);
+            }
         }
-        return items;
+        return recordsByKey;
     }
 
-    private EventSubEventRuntimeDto toRuntimeSubEventDto(
-            String parentEventId,
-            ActivityEvent record,
-            SubEventFormItemDto item,
-            int index) {
-        return new EventSubEventRuntimeDto(
-                item.id(),
-                item.name(),
-                item.description(),
-                item.startAt(),
-                item.endAt(),
-                item.location(),
-                item.createdByUserId(),
-                item.groups() == null ? List.of() : new ArrayList<>(item.groups()),
-                item.tournamentGroupCount(),
-                item.tournamentGroupCapacityMin(),
-                item.tournamentGroupCapacityMax(),
-                item.tournamentLeaderboardType(),
-                item.tournamentAdvancePerGroup(),
-                item.optional(),
-                item.pricing(),
-                item.capacityMin(),
-                item.capacityMax(),
-                item.membersAccepted(),
-                item.membersPending(),
-                item.carsPending(),
-                item.accommodationPending(),
-                item.suppliesPending(),
-                item.carsAccepted(),
-                item.accommodationAccepted(),
-                item.suppliesAccepted(),
-                item.carsCapacityMin(),
-                item.carsCapacityMax(),
-                item.accommodationCapacityMin(),
-                item.accommodationCapacityMax(),
-                item.suppliesCapacityMin(),
-                item.suppliesCapacityMax(),
-                item.slotStartOffsetMinutes(),
-                item.slotDurationMinutes(),
-                item.stageStatus(),
-                item.stageStatusReason(),
-                item.stageStatusUpdatedAt(),
-                item.stageFinalizedAt(),
-                item.stageFinalizedByUserId(),
-                runtimeSubEventId(record, item, index),
-                parentEventId,
-                isGeneratedSlotRecord(record) ? normalizeId(record.getSourceId()) : null,
-                safeText(record == null ? null : record.getSlotTemplateId()),
-                isGeneratedSlotRecord(record) ? safeText(record.getTitle()) : null,
-                isGeneratedSlotRecord(record) ? safeText(record.getTimeframe()) : null);
-    }
-
-    private String runtimeSubEventId(ActivityEvent record, SubEventFormItemDto item, int index) {
-        String recordId = firstNonBlank(record == null ? null : record.getSourceId(), "event");
-        String subEventId = firstNonBlank(item == null ? null : item.id(), "subevent-" + (index + 1));
-        return recordId + ":" + subEventId;
+    private Map<String, ActivitySubEventStageRuntimeStateDto> subEventStageRuntimeRecordsByKey(
+            Collection<SubEventStageRuntimeLookup> refs) {
+        if (refs == null || refs.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> ownerIds = refs.stream()
+                .map(SubEventStageRuntimeLookup::ownerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> requestedKeys = refs.stream()
+                .map(ref -> activityEventSubEventsMapper.subEventStageRuntimeRecordKey(ref.ownerId(), ref.subEventId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (ownerIds.isEmpty() || requestedKeys.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, ActivitySubEventStageRuntimeStateDto> recordsByKey = new LinkedHashMap<>();
+        List<ActivitySubEventStageRuntime> records = activitySubEventStageRuntimeRepository.findByOwnerIdIn(ownerIds);
+        for (ActivitySubEventStageRuntime record : records == null ? List.<ActivitySubEventStageRuntime>of() : records) {
+            ActivitySubEventStageRuntimeStateDto dto = activitySubEventStageRuntimeMapper.toDto(record);
+            if (dto == null) {
+                continue;
+            }
+            String key = activityEventSubEventsMapper.subEventStageRuntimeRecordKey(dto.ownerId(), dto.subEventId());
+            if (requestedKeys.contains(key)) {
+                recordsByKey.put(key, dto);
+            }
+        }
+        return recordsByKey;
     }
 
     private boolean generatedSlotFitsParentRange(ActivityEvent record, ActivityEvent parent) {
@@ -1052,12 +1075,12 @@ public class ActivitiesEventsService {
             return null;
         }
 
-        List<SubEventFormItemDto> preferredSubEvents = cloneSubEvents(preferred.getSubEvents());
+        List<SubEventItem> preferredSubEvents = cloneSubEvents(preferred.getSubEvents());
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
             return null;
         }
-        SubEventFormItemDto preferredStage = preferredSubEvents.get(preferredStageIndex);
+        SubEventItem preferredStage = preferredSubEvents.get(preferredStageIndex);
         if (!canApplyStageAction(actionTarget.action(), preferredStage, preferredSubEvents, preferredStageIndex)) {
             return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
         }
@@ -1066,13 +1089,13 @@ public class ActivitiesEventsService {
         String stageId = normalizeId(preferredStage.id());
         List<ActivityEvent> updated = new ArrayList<>();
         for (ActivityEvent document : documents) {
-            List<SubEventFormItemDto> subEvents = cloneSubEvents(document.getSubEvents());
+            List<SubEventItem> subEvents = cloneSubEvents(document.getSubEvents());
             int stageIndex = resolveStageIndex(subEvents, stageId, preferredStageIndex);
             if (stageIndex < 0 || stageIndex >= subEvents.size()) {
                 continue;
             }
             ActivityEvent next = cloneDocument(document);
-            List<SubEventFormItemDto> nextSubEvents = new ArrayList<>(subEvents);
+            List<SubEventItem> nextSubEvents = new ArrayList<>(subEvents);
             nextSubEvents.set(stageIndex, copySubEventWithStageStatus(
                     subEvents.get(stageIndex),
                     actionTarget.nextStatus(),
@@ -1115,13 +1138,14 @@ public class ActivitiesEventsService {
         }
 
         ActivityEvent savedPreferred = computePreferredEventRecords(saved).stream().findFirst().orElse(saved.get(0));
-        List<SubEventFormItemDto> savedSubEvents = cloneSubEvents(savedPreferred.getSubEvents());
+        List<SubEventItem> savedSubEvents = cloneSubEvents(savedPreferred.getSubEvents());
         int savedStageIndex = resolveStageIndex(savedSubEvents, stageId, preferredStageIndex);
-        SubEventFormItemDto savedStage = savedStageIndex >= 0 && savedStageIndex < savedSubEvents.size()
+        SubEventItem savedStage = savedStageIndex >= 0 && savedStageIndex < savedSubEvents.size()
                 ? savedSubEvents.get(savedStageIndex)
                 : preferredStage;
         boolean finalStage = savedStageIndex >= 0 && savedStageIndex == savedSubEvents.size() - 1;
         TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferred, savedStage, finalStage);
+        saveSubEventStageRuntime(sourceId, savedStage, viewer.userId());
         enqueueStageStatusNotifications(savedPreferred, savedStage, actionTarget.action(), actionTarget.nextStatus(), viewer.userId(), finalStage, resultSummary);
         postStageChatMessage(savedPreferred, savedStage, actionTarget.action(), actionTarget.nextStatus(), finalStage, resultSummary);
         adminTelemetryService.record("event.stage.action", "events", sourceId, viewer.userId(), 1L, Map.of(
@@ -1135,6 +1159,31 @@ public class ActivitiesEventsService {
                 savedStageIndex >= 0 ? savedStageIndex : preferredStageIndex,
                 actionTarget.action(),
                 savedPreferred.getAutoInviter());
+    }
+
+    private void saveSubEventStageRuntime(String ownerId, SubEventItem stage, String actorUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(stage == null ? null : stage.id());
+        if (!StringUtils.hasText(normalizedOwnerId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+        ActivitySubEventStageRuntime existing = activitySubEventStageRuntimeRepository
+                .findByOwnerIdAndSubEventId(normalizedOwnerId, normalizedSubEventId)
+                .orElse(null);
+        ActivitySubEventStageRuntime next = activitySubEventStageRuntimeMapper.toRecord(
+                new ActivitySubEventStageRuntimeStateDto(
+                        normalizedOwnerId,
+                        normalizedSubEventId,
+                        stage.stageStatus(),
+                        stage.stageStatusReason(),
+                        stage.stageStatusUpdatedAt(),
+                        stage.stageFinalizedAt(),
+                        stage.stageFinalizedByUserId()),
+                existing,
+                actorUserId);
+        if (next != null) {
+            activitySubEventStageRuntimeRepository.save(next);
+        }
     }
 
     public EventParticipationActionResultDto requestJoin(EventActionRequestDto request) {
@@ -1295,8 +1344,8 @@ public class ActivitiesEventsService {
 
     private boolean canApplyStageAction(
             String action,
-            SubEventFormItemDto stage,
-            List<SubEventFormItemDto> stages,
+            SubEventItem stage,
+            List<SubEventItem> stages,
             int stageIndex) {
         String status = normalizeStageStatus(stage == null ? null : stage.stageStatus());
         return switch (safeText(action)) {
@@ -1310,14 +1359,14 @@ public class ActivitiesEventsService {
         };
     }
 
-    private boolean canReopenScores(List<SubEventFormItemDto> stages, int stageIndex) {
+    private boolean canReopenScores(List<SubEventItem> stages, int stageIndex) {
         if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
             return false;
         }
         if (stageIndex + 1 >= stages.size()) {
             return true;
         }
-        SubEventFormItemDto nextStage = stages.get(stageIndex + 1);
+        SubEventItem nextStage = stages.get(stageIndex + 1);
         if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(nextStage == null ? null : nextStage.stageStatus()))) {
             return false;
         }
@@ -1327,7 +1376,7 @@ public class ActivitiesEventsService {
 
     private EventStageActionResultDto toStageActionResult(
             String sourceId,
-            SubEventFormItemDto stage,
+            SubEventItem stage,
             int stageIndex,
             String action,
             Boolean autoInviter) {
@@ -1347,14 +1396,14 @@ public class ActivitiesEventsService {
                 autoInviter);
     }
 
-    private int resolveStageIndex(List<SubEventFormItemDto> stages, String subEventId, Integer fallbackIndex) {
+    private int resolveStageIndex(List<SubEventItem> stages, String subEventId, Integer fallbackIndex) {
         if (stages == null || stages.isEmpty()) {
             return -1;
         }
         String normalizedSubEventId = normalizeId(subEventId);
         if (StringUtils.hasText(normalizedSubEventId)) {
             for (int index = 0; index < stages.size(); index += 1) {
-                SubEventFormItemDto candidate = stages.get(index);
+                SubEventItem candidate = stages.get(index);
                 if (candidate != null && normalizedSubEventId.equals(normalizeId(candidate.id()))) {
                     return index;
                 }
@@ -1388,14 +1437,14 @@ public class ActivitiesEventsService {
         };
     }
 
-    private SubEventFormItemDto copySubEventWithStageStatus(
-            SubEventFormItemDto subEvent,
+    private SubEventItem copySubEventWithStageStatus(
+            SubEventItem subEvent,
             String stageStatus,
             String stageStatusReason,
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId) {
-        return new SubEventFormItemDto(
+        return new SubEventItem(
                 subEvent.id(),
                 subEvent.name(),
                 subEvent.description(),
@@ -1461,7 +1510,7 @@ public class ActivitiesEventsService {
 
     private void enqueueStageStatusNotifications(
             ActivityEvent event,
-            SubEventFormItemDto stage,
+            SubEventItem stage,
             String action,
             String nextStatus,
             String actorUserId,
@@ -1544,7 +1593,7 @@ public class ActivitiesEventsService {
 
     private TournamentResultSummary resolveTournamentResultSummary(
             ActivityEvent event,
-            SubEventFormItemDto stage,
+            SubEventItem stage,
             boolean finalStage) {
         if (!finalStage || event == null || stage == null || activitiesEventLeaderboardService == null) {
             return TournamentResultSummary.empty();
@@ -1723,7 +1772,7 @@ public class ActivitiesEventsService {
             if (!StringUtils.hasText(eventId)) {
                 continue;
             }
-            SubEventFormItemDto firstStage = firstTournamentStage(event.getSubEvents());
+            SubEventItem firstStage = firstTournamentStage(event.getSubEvents());
             if (firstStage == null || !STAGE_STATUS_START_REVIEW.equals(normalizeStageStatus(firstStage.stageStatus()))) {
                 continue;
             }
@@ -1743,7 +1792,7 @@ public class ActivitiesEventsService {
 
     private void postStageChatMessage(
             ActivityEvent event,
-            SubEventFormItemDto stage,
+            SubEventItem stage,
             String action,
             String nextStatus,
             boolean finalStage,
@@ -1804,7 +1853,7 @@ public class ActivitiesEventsService {
                 "member-left");
     }
 
-    private String stageTitle(SubEventFormItemDto stage) {
+    private String stageTitle(SubEventItem stage) {
         return firstNonBlank(stage == null ? null : stage.name(), stage == null ? null : stage.id(), "Stage");
     }
 
@@ -3044,11 +3093,7 @@ public class ActivitiesEventsService {
                 : cloneSubEventDefinitions(request.subEventDefinitions());
         document.setSubEventsEnabled(subEventsEnabled);
         document.setSubEventDefinitions(nextSubEventDefinitions);
-        document.setSubEvents(publishedManageMode
-                ? cloneSubEvents(existing == null ? null : existing.getSubEvents())
-                : subEventsEnabled
-                        ? buildStoredSubEventsFromDefinitions(nextSubEventDefinitions, document.getStartAtIso())
-                        : List.of());
+        document.setSubEvents(List.of());
         document.setMode(normalizeEventMode(publishedManageMode
                 ? safeText(existing == null ? null : existing.getMode())
                 : safeText(request.mode())));
@@ -3868,7 +3913,7 @@ public class ActivitiesEventsService {
         return normalized;
     }
 
-    private List<SubEventFormItemDto> cloneSubEvents(List<SubEventFormItemDto> items) {
+    private List<SubEventItem> cloneSubEvents(List<SubEventItem> items) {
         return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
@@ -3904,8 +3949,8 @@ public class ActivitiesEventsService {
         return cloned;
     }
 
-    private List<SubEventFormItemDto> ensureTournamentStartReviewStage(List<SubEventFormItemDto> items, String nowIso) {
-        List<SubEventFormItemDto> subEvents = cloneSubEvents(items);
+    private List<SubEventItem> ensureTournamentStartReviewStage(List<SubEventItem> items, String nowIso) {
+        List<SubEventItem> subEvents = cloneSubEvents(items);
         if (subEvents.isEmpty()) {
             return subEvents;
         }
@@ -3920,7 +3965,7 @@ public class ActivitiesEventsService {
             return subEvents;
         }
 
-        SubEventFormItemDto firstStage = subEvents.get(0);
+        SubEventItem firstStage = subEvents.get(0);
         String currentStatus = normalizeStageStatus(firstStage.stageStatus());
         if (!STAGE_STATUS_ACTIVE.equals(currentStatus)) {
             return subEvents;
@@ -3935,15 +3980,15 @@ public class ActivitiesEventsService {
         return subEvents;
     }
 
-    private SubEventFormItemDto firstTournamentStage(List<SubEventFormItemDto> items) {
-        List<SubEventFormItemDto> subEvents = cloneSubEvents(items);
+    private SubEventItem firstTournamentStage(List<SubEventItem> items) {
+        List<SubEventItem> subEvents = cloneSubEvents(items);
         if (subEvents.isEmpty() || !isTournamentStage(subEvents.get(0))) {
             return null;
         }
         return subEvents.get(0);
     }
 
-    private boolean isTournamentStage(SubEventFormItemDto item) {
+    private boolean isTournamentStage(SubEventItem item) {
         if (item == null || Boolean.TRUE.equals(item.optional())) {
             return false;
         }
@@ -4011,165 +4056,10 @@ public class ActivitiesEventsService {
                 : overrideDefinitions;
     }
 
-    private List<SubEventFormItemDto> buildStoredSubEventsFromDefinitions(
-            List<SubEventDefinitionDto> definitions,
-            String eventStartAtIso) {
-        return buildSlotOccurrenceSubEventsFromDefinitions(definitions, toLocalDateTime(eventStartAtIso));
-    }
-
-    private List<SubEventFormItemDto> buildSlotOccurrenceSubEventsFromDefinitions(
-            List<SubEventDefinitionDto> items,
-            LocalDateTime occurrenceStart) {
-        List<SubEventDefinitionTimelineEntry> source = subEventDefinitionTimeline(cloneSubEventDefinitions(items));
-        if (source.isEmpty() || occurrenceStart == null) {
-            return List.of();
-        }
-
-        List<SubEventFormItemDto> subEvents = new ArrayList<>(source.size());
-        for (SubEventDefinitionTimelineEntry entry : source) {
-            SubEventDefinitionDto item = entry.item();
-            if (item == null) {
-                continue;
-            }
-            int durationMinutes = entry.durationMinutes();
-            int startOffsetMinutes = entry.startOffsetMinutes();
-            LocalDateTime subEventStart = occurrenceStart.plusMinutes(startOffsetMinutes);
-            LocalDateTime subEventEnd = subEventStart.plusMinutes(durationMinutes);
-            subEvents.add(new SubEventFormItemDto(
-                    item.id(),
-                    item.name(),
-                    item.description(),
-                    subEventStart.toString(),
-                    subEventEnd.toString(),
-                    item.location(),
-                    null,
-                    item.groups(),
-                    item.tournamentGroupCount(),
-                    item.tournamentGroupCapacityMin(),
-                    item.tournamentGroupCapacityMax(),
-                    item.tournamentLeaderboardType(),
-                    item.tournamentAdvancePerGroup(),
-                    item.optional(),
-                    item.pricing(),
-                    item.capacityMin(),
-                    item.capacityMax(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    startOffsetMinutes,
-                    durationMinutes));
-        }
-        return subEvents;
-    }
-
     private record SubEventDefinitionTimelineEntry(
             SubEventDefinitionDto item,
             int startOffsetMinutes,
             int durationMinutes) {
-    }
-
-    private List<SubEventFormItemDto> rebaseStoredSubEventsForSlotOccurrence(
-            List<SubEventFormItemDto> items,
-            LocalDateTime occurrenceStart,
-            LocalDateTime occurrenceEnd) {
-        List<SubEventFormItemDto> source = cloneSubEvents(items);
-        if (source.isEmpty() || occurrenceStart == null || occurrenceEnd == null || !occurrenceEnd.isAfter(occurrenceStart)) {
-            return source;
-        }
-
-        int slotDurationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(occurrenceStart, occurrenceEnd));
-        List<SubEventFormItemDto> subEvents = new ArrayList<>(source.size());
-        for (SubEventFormItemDto item : source) {
-            if (item == null) {
-                continue;
-            }
-
-            LocalDateTime rawStart = toLocalDateTime(item.startAt());
-            LocalDateTime rawEnd = toLocalDateTime(item.endAt());
-            Integer explicitOffset = item.slotStartOffsetMinutes();
-            Integer explicitDuration = item.slotDurationMinutes();
-
-            int offsetMinutes;
-            if (explicitOffset != null) {
-                offsetMinutes = Math.max(0, explicitOffset);
-            } else if (rawStart != null) {
-                offsetMinutes = Math.max(
-                        0,
-                        ((rawStart.getHour() * 60) + rawStart.getMinute())
-                                - ((occurrenceStart.getHour() * 60) + occurrenceStart.getMinute()));
-            } else {
-                offsetMinutes = 0;
-            }
-
-            int durationMinutes;
-            if (explicitDuration != null) {
-                durationMinutes = Math.max(1, explicitDuration);
-            } else if (rawStart != null && rawEnd != null && rawEnd.isAfter(rawStart)) {
-                durationMinutes = Math.max(1, (int) ChronoUnit.MINUTES.between(rawStart, rawEnd));
-            } else {
-                durationMinutes = slotDurationMinutes;
-            }
-
-            int safeOffsetMinutes = Math.min(Math.max(0, slotDurationMinutes - 1), offsetMinutes);
-            int safeDurationMinutes = Math.min(Math.max(1, slotDurationMinutes - safeOffsetMinutes), durationMinutes);
-            LocalDateTime subEventStart = occurrenceStart.plusMinutes(safeOffsetMinutes);
-            LocalDateTime subEventEnd = subEventStart.plusMinutes(safeDurationMinutes);
-            if (!subEventEnd.isAfter(subEventStart)) {
-                subEventEnd = occurrenceEnd;
-            }
-
-            subEvents.add(new SubEventFormItemDto(
-                    item.id(),
-                    item.name(),
-                    item.description(),
-                    subEventStart.toString(),
-                    subEventEnd.toString(),
-                    item.location(),
-                    item.createdByUserId(),
-                    item.groups(),
-                    item.tournamentGroupCount(),
-                    item.tournamentGroupCapacityMin(),
-                    item.tournamentGroupCapacityMax(),
-                    item.tournamentLeaderboardType(),
-                    item.tournamentAdvancePerGroup(),
-                    item.optional(),
-                    item.pricing(),
-                    item.capacityMin(),
-                    item.capacityMax(),
-                    item.membersAccepted(),
-                    item.membersPending(),
-                    item.carsPending(),
-                    item.accommodationPending(),
-                    item.suppliesPending(),
-                    item.carsAccepted(),
-                    item.accommodationAccepted(),
-                    item.suppliesAccepted(),
-                    item.carsCapacityMin(),
-                    item.carsCapacityMax(),
-                    item.accommodationCapacityMin(),
-                    item.accommodationCapacityMax(),
-                    item.suppliesCapacityMin(),
-                    item.suppliesCapacityMax(),
-                    safeOffsetMinutes,
-                    safeDurationMinutes,
-                    item.stageStatus(),
-                    item.stageStatusReason(),
-                    item.stageStatusUpdatedAt(),
-                    item.stageFinalizedAt(),
-                    item.stageFinalizedByUserId()));
-        }
-        return subEvents;
     }
 
     private List<EventSlotTemplateDto> cloneSlotTemplates(List<EventSlotTemplateDto> items) {
@@ -4453,9 +4343,8 @@ public class ActivitiesEventsService {
         next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
-        next.setSubEvents(Boolean.TRUE.equals(parent.getSubEventsEnabled()) && definitions != null && !definitions.isEmpty()
-                ? buildSlotOccurrenceSubEventsFromDefinitions(definitions, occurrenceStart)
-                : rebaseStoredSubEventsForSlotOccurrence(parent.getSubEvents(), occurrenceStart, occurrenceEnd));
+        next.setSubEventDefinitions(cloneSubEventDefinitions(definitions));
+        next.setSubEvents(List.of());
         next.setMode(normalizeEventMode(parent.getMode()));
         next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
         next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));

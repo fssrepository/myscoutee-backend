@@ -47,7 +47,7 @@ import com.raxim.myscoutee.profile.data.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
@@ -214,14 +214,14 @@ public class EventScheduler {
             if (!shouldReviewTournamentStages(event)) {
                 continue;
             }
-            List<SubEventFormItemDto> currentSubEvents = safeSubEvents(event);
+            List<SubEventItem> currentSubEvents = safeSubEvents(event);
             if (currentSubEvents.isEmpty()) {
                 continue;
             }
-            List<SubEventFormItemDto> updatedSubEvents = new ArrayList<>(currentSubEvents.size());
+            List<SubEventItem> updatedSubEvents = new ArrayList<>(currentSubEvents.size());
             boolean changed = false;
-            for (SubEventFormItemDto subEvent : currentSubEvents) {
-                SubEventFormItemDto updated = closeStageForReviewIfDue(subEvent, effectiveNow, nowIso);
+            for (SubEventItem subEvent : currentSubEvents) {
+                SubEventItem updated = closeStageForReviewIfDue(subEvent, effectiveNow, nowIso);
                 updatedSubEvents.add(updated);
                 if (updated != subEvent) {
                     changed = true;
@@ -252,15 +252,15 @@ public class EventScheduler {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !shouldReviewTournamentStages(event)) {
                 continue;
             }
-            List<SubEventFormItemDto> subEvents = safeSubEvents(event);
+            List<SubEventItem> subEvents = safeSubEvents(event);
             if (subEvents.isEmpty()) {
                 continue;
             }
-            SubEventFormItemDto firstStage = subEvents.get(0);
+            SubEventItem firstStage = subEvents.get(0);
             if (!shouldMoveFirstStageToStartReview(firstStage, effectiveNow)) {
                 continue;
             }
-            List<SubEventFormItemDto> updatedSubEvents = new ArrayList<>(subEvents);
+            List<SubEventItem> updatedSubEvents = new ArrayList<>(subEvents);
             updatedSubEvents.set(0, copySubEventWithStageStatus(
                     firstStage,
                     STAGE_STATUS_START_REVIEW,
@@ -281,7 +281,7 @@ public class EventScheduler {
         return changedStageKeys.size();
     }
 
-    private boolean shouldMoveFirstStageToStartReview(SubEventFormItemDto firstStage, Instant now) {
+    private boolean shouldMoveFirstStageToStartReview(SubEventItem firstStage, Instant now) {
         if (firstStage == null || !isTournamentStage(firstStage)) {
             return false;
         }
@@ -310,14 +310,14 @@ public class EventScheduler {
         return safeSubEvents(event).stream().anyMatch(this::isTournamentStage);
     }
 
-    private boolean isTournamentStage(SubEventFormItemDto subEvent) {
+    private boolean isTournamentStage(SubEventItem subEvent) {
         return subEvent != null
                 && ((subEvent.groups() != null && !subEvent.groups().isEmpty())
                         || safeCount(subEvent.tournamentGroupCount()) > 0);
     }
 
-    private SubEventFormItemDto closeStageForReviewIfDue(
-            SubEventFormItemDto subEvent,
+    private SubEventItem closeStageForReviewIfDue(
+            SubEventItem subEvent,
             Instant now,
             String nowIso) {
         if (subEvent == null || !isTournamentStage(subEvent)) {
@@ -339,14 +339,14 @@ public class EventScheduler {
                 null);
     }
 
-    private SubEventFormItemDto copySubEventWithStageStatus(
-            SubEventFormItemDto subEvent,
+    private SubEventItem copySubEventWithStageStatus(
+            SubEventItem subEvent,
             String stageStatus,
             String stageStatusReason,
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId) {
-        return new SubEventFormItemDto(
+        return new SubEventItem(
                 subEvent.id(),
                 subEvent.name(),
                 subEvent.description(),
@@ -492,9 +492,9 @@ public class EventScheduler {
             if (eventGraph.getNodes().isEmpty()) return;
 
             // Standard for-loop inside the lambda, so we use 'continue' here
-            List<SubEventFormItemDto> subEvents = safeSubEvents(event);
+            List<SubEventItem> subEvents = safeSubEvents(event);
             for (int subEventIndex = 0; subEventIndex < subEvents.size(); subEventIndex += 1) {
-                SubEventFormItemDto subEvent = subEvents.get(subEventIndex);
+                SubEventItem subEvent = subEvents.get(subEventIndex);
                 String subEventId = normalizeId(subEvent == null ? null : subEvent.id());
                 if (!StringUtils.hasText(subEventId)) continue; 
                 int currentSubEvent = processedSubEvents.get() + 1;
@@ -729,9 +729,9 @@ public class EventScheduler {
                     ? new FGraph()
                     : globalGraph.filter(new LinkedHashSet<>(snapshot.acceptedMemberUserIds()), Set.of(), 0d);
 
-            List<SubEventFormItemDto> subEvents = safeSubEvents(event);
+            List<SubEventItem> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
-                SubEventFormItemDto subEvent = subEvents.get(index);
+                SubEventItem subEvent = subEvents.get(index);
                 if (subEvent == null || !StringUtils.hasText(normalizeId(subEvent.id()))) continue; // We are inside a standard for-loop here, so continue is fine
                 String stageStatus = normalizeStageStatus(subEvent.stageStatus());
                 if (STAGE_STATUS_START_REVIEW.equals(stageStatus) || STAGE_STATUS_SUSPENDED.equals(stageStatus)) {
@@ -765,7 +765,7 @@ public class EventScheduler {
                     eventGraph = globalGraph.filter(advancingUserIds, Set.of(), 0d);
                 }
 
-                SubEventFormItemDto nextSubEvent = subEvents.get(index + 1);
+                SubEventItem nextSubEvent = subEvents.get(index + 1);
                 String nextSubEventId = normalizeId(nextSubEvent == null ? null : nextSubEvent.id());
                 if (!StringUtils.hasText(nextSubEventId)) {
                     logDiagnostic("score", eventId, subEventId, "Skipping next-stage materialization because the next subevent is missing an id.");
@@ -917,7 +917,7 @@ public class EventScheduler {
     private List<GroupAssignmentTarget> resolveGroupAssignmentTargets(
             String eventId,
             String subEventId,
-            SubEventFormItemDto subEvent,
+            SubEventItem subEvent,
             Collection<String> eligibleUserIds,
             boolean preserveAnchors,
             String wrapperType) {
@@ -927,7 +927,7 @@ public class EventScheduler {
     private List<GroupAssignmentTarget> resolveGroupAssignmentTargets(
             String eventId,
             String subEventId,
-            SubEventFormItemDto subEvent,
+            SubEventItem subEvent,
             Collection<String> eligibleUserIds,
             boolean preserveAnchors,
             String wrapperType,
@@ -938,7 +938,7 @@ public class EventScheduler {
     private List<GroupAssignmentTarget> resolveGroupAssignmentTargets(
             String eventId,
             String subEventId,
-            SubEventFormItemDto subEvent,
+            SubEventItem subEvent,
             Collection<String> eligibleUserIds,
             boolean preserveAnchors,
             String wrapperType,
@@ -995,7 +995,7 @@ public class EventScheduler {
         return targets;
     }
 
-    private Range resolveGroupRange(SubEventFormItemDto subEvent, SubEventGroupItemDto group) {
+    private Range resolveGroupRange(SubEventItem subEvent, SubEventGroupItemDto group) {
         int min = safeCount(group == null ? null : group.capacityMin());
         int max = safeCount(group == null ? null : group.capacityMax());
         if (min <= 0) {
@@ -1321,7 +1321,7 @@ public class EventScheduler {
         };
     }
 
-    private boolean isStageAssignmentOpen(List<SubEventFormItemDto> stages, int stageIndex) {
+    private boolean isStageAssignmentOpen(List<SubEventItem> stages, int stageIndex) {
         if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
             return false;
         }
@@ -1359,7 +1359,7 @@ public class EventScheduler {
         return value == null ? "" : value.trim();
     }
 
-    private List<SubEventFormItemDto> safeSubEvents(ActivityEvent event) {
+    private List<SubEventItem> safeSubEvents(ActivityEvent event) {
         return event == null || event.getSubEvents() == null ? List.of() : event.getSubEvents();
     }
 
