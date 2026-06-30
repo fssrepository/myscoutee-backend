@@ -1060,6 +1060,7 @@ public class ActivitiesEventsService {
         if (!canApplyStageAction(actionTarget.action(), preferredStage, preferredSubEvents, preferredStageIndex)) {
             return toStageActionResult(runtimeOwnerId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
         }
+        actionTarget = effectiveStageActionTarget(actionTarget, preferredStage);
 
         if (StringUtils.hasText(slotSourceId)) {
             return applyGeneratedSlotStageAction(
@@ -1228,14 +1229,14 @@ public class ActivitiesEventsService {
                 .orElse(null);
         List<SubEventItem> materializedStages = cloneSubEvents(slotRecord == null ? null : slotRecord.getSubEvents());
         if (!materializedStages.isEmpty()) {
-            return materializedStages;
+            return withStageRuntimeStates(slotSourceId, materializedStages);
         }
         if (slotRecord != null && activityEventSubEventsMapper != null) {
             EventSubEventsSlotDto slot = activityEventSubEventsMapper.toSlotDtos(parentEventId, slotRecord, null).stream()
                     .findFirst()
                     .orElse(null);
             if (slot != null) {
-                return SubEventItemMapper.toRecordList(slot.subEventItems());
+                return withStageRuntimeStates(slotSourceId, SubEventItemMapper.toRecordList(slot.subEventItems()));
             }
         }
         if (parent == null || activityEventSubEventsMapper == null) {
@@ -1256,10 +1257,41 @@ public class ActivitiesEventsService {
                     .findFirst()
                     .orElse(null);
             if (slot != null) {
-                return SubEventItemMapper.toRecordList(slot.subEventItems());
+                return withStageRuntimeStates(slotSourceId, SubEventItemMapper.toRecordList(slot.subEventItems()));
             }
         }
         return List.of();
+    }
+
+    private List<SubEventItem> withStageRuntimeStates(String ownerId, List<SubEventItem> stages) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerId) || stages == null || stages.isEmpty()) {
+            return stages == null ? List.of() : stages;
+        }
+        List<SubEventItem> updated = new ArrayList<>();
+        for (SubEventItem stage : stages) {
+            String subEventId = normalizeId(stage == null ? null : stage.id());
+            if (!StringUtils.hasText(subEventId)) {
+                updated.add(stage);
+                continue;
+            }
+            ActivitySubEventStageRuntimeStateDto runtime = activitySubEventStageRuntimeRepository
+                    .findByOwnerIdAndSubEventId(normalizedOwnerId, subEventId)
+                    .map(activitySubEventStageRuntimeMapper::toDto)
+                    .orElse(null);
+            if (runtime == null) {
+                updated.add(stage);
+                continue;
+            }
+            updated.add(copySubEventWithStageStatus(
+                    stage,
+                    firstNonBlank(runtime.stageStatus(), stage.stageStatus()),
+                    firstNonBlank(runtime.stageStatusReason(), stage.stageStatusReason()),
+                    firstNonBlank(runtime.stageStatusUpdatedAt(), stage.stageStatusUpdatedAt()),
+                    firstNonBlank(runtime.stageFinalizedAt(), stage.stageFinalizedAt()),
+                    firstNonBlank(runtime.stageFinalizedByUserId(), stage.stageFinalizedByUserId())));
+        }
+        return updated;
     }
 
     private String generatedSlotDateFromSourceId(String parentEventId, String slotSourceId) {
@@ -1469,18 +1501,26 @@ public class ActivitiesEventsService {
         String status = normalizeStageStatus(stage == null ? null : stage.stageStatus());
         return switch (safeText(action)) {
             case STAGE_ACTION_START -> STAGE_STATUS_ERROR.equals(status)
-                    || (STAGE_STATUS_START_REVIEW.equals(status) && !isStageDatePassed(stage == null ? null : stage.startAt()));
-            case STAGE_ACTION_CLOSE -> STAGE_STATUS_ACTIVE.equals(status)
-                    || STAGE_STATUS_ERROR.equals(status)
-                    || (STAGE_STATUS_START_REVIEW.equals(status) && isStageDatePassed(stage == null ? null : stage.endAt()));
+                    || (STAGE_STATUS_START_REVIEW.equals(status) && isStageDatePassed(stage == null ? null : stage.startAt()));
+            case STAGE_ACTION_CLOSE -> STAGE_STATUS_ERROR.equals(status)
+                    || ((STAGE_STATUS_ACTIVE.equals(status) || STAGE_STATUS_START_REVIEW.equals(status))
+                            && isStageDatePassed(stage == null ? null : stage.endAt()));
             case STAGE_ACTION_FINALIZE -> STAGE_STATUS_SCORE_REVIEW.equals(status);
             case STAGE_ACTION_REOPEN -> STAGE_STATUS_FINALIZED.equals(status) && canReopenScores(stages, stageIndex);
-            case STAGE_ACTION_SUSPEND -> STAGE_STATUS_SCORE_REVIEW.equals(status)
-                    || ((STAGE_STATUS_ACTIVE.equals(status) || STAGE_STATUS_START_REVIEW.equals(status))
-                            && isStageInScheduleWindow(stage));
+            case STAGE_ACTION_SUSPEND -> STAGE_STATUS_ACTIVE.equals(status) && isStageInScheduleWindow(stage);
             case STAGE_ACTION_RESUME -> STAGE_STATUS_SUSPENDED.equals(status);
             default -> false;
         };
+    }
+
+    private StageActionTarget effectiveStageActionTarget(StageActionTarget actionTarget, SubEventItem stage) {
+        if (actionTarget == null || !STAGE_ACTION_RESUME.equals(actionTarget.action())) {
+            return actionTarget;
+        }
+        String nextStatus = isStageDatePassed(stage == null ? null : stage.endAt())
+                ? STAGE_STATUS_SCORE_REVIEW
+                : STAGE_STATUS_ACTIVE;
+        return new StageActionTarget(actionTarget.action(), nextStatus, actionTarget.reason());
     }
 
     private boolean isStageStartAllowed(List<SubEventItem> stages, int stageIndex) {
