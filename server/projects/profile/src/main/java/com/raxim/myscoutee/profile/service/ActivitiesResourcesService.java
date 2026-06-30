@@ -28,28 +28,35 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAs
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 
 @Service
 public class ActivitiesResourcesService {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_DELETED = "D";
+
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final AssetsService assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     private final AccessControlService accessControlService;
+    private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             AssetsService assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
-            AccessControlService accessControlService) {
+            AccessControlService accessControlService,
+            ActivitySubEventResourceMapper activitySubEventResourceMapper) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.assetsService = assetsService;
         this.activitiesMembersServiceProvider = activitiesMembersServiceProvider;
         this.accessControlService = accessControlService;
+        this.activitySubEventResourceMapper = activitySubEventResourceMapper;
     }
 
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
         ActivitySubEventResource record = resolveRecord(ownerId, subEventId, assetOwnerUserId);
-        return record == null ? null : toDto(filterToOwnedAssets(record));
+        return record == null ? null : activitySubEventResourceMapper.toDto(filterToOwnedAssets(record));
     }
 
     public ActivitySubEventResourceStateDto replace(ActivitySubEventResourceStateDto request) {
@@ -80,6 +87,7 @@ public class ActivitiesResourcesService {
         next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
         next.setRecordId(recordId);
         next.setOwnerKey(ownerKey(ownerId, assetOwnerUserId));
+        next.setStatus(STATUS_ACTIVE);
         next.setOwnerId(ownerId);
         next.setSubEventId(subEventId);
         next.setAssetOwnerUserId(assetOwnerUserId);
@@ -93,7 +101,7 @@ public class ActivitiesResourcesService {
 
         ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
         refreshEventParticipationProjection(ownerId);
-        return toDto(filterToOwnedAssets(saved));
+        return activitySubEventResourceMapper.toDto(filterToOwnedAssets(saved));
     }
 
     public Set<String> removeManagedResourcesForRemovedEventMembers(
@@ -123,7 +131,7 @@ public class ActivitiesResourcesService {
         String effectiveNowIso = normalizeDateTime(nowIso, Instant.now().toString());
         List<ActivitySubEventResource> changedRecords = new ArrayList<>();
         Set<String> removedAssignedAssetIds = new LinkedHashSet<>();
-        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findByOwnerId(normalizedOwnerId)) {
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findByOwnerIdAndStatusNot(normalizedOwnerId, STATUS_DELETED)) {
             if (record == null) {
                 continue;
             }
@@ -158,7 +166,9 @@ public class ActivitiesResourcesService {
             return null;
         }
 
-        return activitySubEventResourcesRepository.findByRecordId(recordId(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId))
+        return activitySubEventResourcesRepository.findByRecordIdAndStatusNot(
+                        recordId(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId),
+                        STATUS_DELETED)
                 .orElse(null);
     }
 
@@ -177,6 +187,7 @@ public class ActivitiesResourcesService {
         clone.setSyncKey(source.getSyncKey());
         clone.setRecordId(source.getRecordId());
         clone.setOwnerKey(source.getOwnerKey());
+        clone.setStatus(source.getStatus());
         clone.setOwnerId(source.getOwnerId());
         clone.setSubEventId(source.getSubEventId());
         clone.setAssetOwnerUserId(source.getAssetOwnerUserId());
@@ -296,19 +307,6 @@ public class ActivitiesResourcesService {
                 nextSettingsByType,
                 nextSupplyEntriesByAssetId,
                 removedAssignedAssetIds);
-    }
-
-    private ActivitySubEventResourceStateDto toDto(ActivitySubEventResource record) {
-        if (record == null) {
-            return null;
-        }
-        return new ActivitySubEventResourceStateDto(
-                normalizeId(record.getOwnerId()),
-                normalizeId(record.getSubEventId()),
-                normalizeId(record.getAssetOwnerUserId()),
-                filterAssignmentIds(record.getAssetAssignmentIds(), null),
-                toSettingsDtoMap(record.getAssetSettingsByType()),
-                toSupplyContributionDtoMap(record.getSupplyContributionEntriesByAssetId()));
     }
 
     private Map<String, List<String>> filterAssetAssignmentIds(Map<String, List<String>> source, String assetOwnerUserId) {
@@ -459,55 +457,6 @@ public class ActivitiesResourcesService {
                 continue;
             }
             next.put(assetId, new ArrayList<>(entry.getValue()));
-        }
-        return next;
-    }
-
-    private Map<String, Map<String, SubEventAssignedAssetSettingsDto>> toSettingsDtoMap(
-            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> source) {
-        Map<String, Map<String, SubEventAssignedAssetSettingsDto>> next = new LinkedHashMap<>();
-        if (source == null) {
-            return next;
-        }
-        for (Map.Entry<String, Map<String, SubEventAssignedAssetSettingsRecord>> entry : source.entrySet()) {
-            Map<String, SubEventAssignedAssetSettingsDto> settings = new LinkedHashMap<>();
-            if (entry.getValue() != null) {
-                for (Map.Entry<String, SubEventAssignedAssetSettingsRecord> assetEntry : entry.getValue().entrySet()) {
-                    if (assetEntry.getValue() == null) {
-                        continue;
-                    }
-                    settings.put(assetEntry.getKey(), new SubEventAssignedAssetSettingsDto(
-                            assetEntry.getValue().capacityMin(),
-                            assetEntry.getValue().capacityMax(),
-                            assetEntry.getValue().addedByUserId(),
-                            assetEntry.getValue().routes() == null ? List.of() : new ArrayList<>(assetEntry.getValue().routes())));
-                }
-            }
-            if (!settings.isEmpty()) {
-                next.put(entry.getKey(), settings);
-            }
-        }
-        return next;
-    }
-
-    private Map<String, List<SubEventSupplyContributionEntryDto>> toSupplyContributionDtoMap(
-            Map<String, List<SubEventSupplyContributionEntryRecord>> source) {
-        Map<String, List<SubEventSupplyContributionEntryDto>> next = new LinkedHashMap<>();
-        if (source == null) {
-            return next;
-        }
-        for (Map.Entry<String, List<SubEventSupplyContributionEntryRecord>> entry : source.entrySet()) {
-            if (entry.getValue() == null || entry.getValue().isEmpty()) {
-                continue;
-            }
-            next.put(entry.getKey(), entry.getValue().stream()
-                    .filter(Objects::nonNull)
-                    .map(item -> new SubEventSupplyContributionEntryDto(
-                            item.id(),
-                            item.userId(),
-                            item.quantity(),
-                            item.addedAtIso()))
-                    .toList());
         }
         return next;
     }

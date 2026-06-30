@@ -70,6 +70,7 @@ public class ActivityEventMapper {
                 nullableCount(record.getCapacityMax()),
                 Math.max(acceptedMembers, capacityTotal),
                 resolveEventType(record),
+                normalizeMode(record.getMode()),
                 acceptedMembers,
                 pendingMembers,
                 acceptedMemberUserIds,
@@ -192,6 +193,10 @@ public class ActivityEventMapper {
             return eventType;
         }
         return isGeneratedSlotRecord(record) ? "slot" : "main";
+    }
+
+    private String normalizeMode(String value) {
+        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
     }
 
     private List<String> normalizeStrings(Collection<String> values) {

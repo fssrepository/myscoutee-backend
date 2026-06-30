@@ -31,8 +31,7 @@ import com.raxim.myscoutee.profile.data.document.ScheduledMessageRun;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ScheduledMessageDeliveriesRepository;
 import com.raxim.myscoutee.profile.repository.ScheduledMessageTasksRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -231,8 +230,8 @@ class ScheduledMessageTaskServiceIntegrationTest {
         return event;
     }
 
-    private SubEventFormItemDto stage(String id, String name, Instant startAt) {
-        return new SubEventFormItemDto(
+    private SubEventItem stage(String id, String name, Instant startAt) {
+        return new SubEventItem(
                 id,
                 name,
                 "",
@@ -240,8 +239,6 @@ class ScheduledMessageTaskServiceIntegrationTest {
                 startAt.plusSeconds(3600).toString(),
                 "",
                 "",
-                List.<SubEventGroupItemDto>of(),
-                null,
                 null,
                 null,
                 "",

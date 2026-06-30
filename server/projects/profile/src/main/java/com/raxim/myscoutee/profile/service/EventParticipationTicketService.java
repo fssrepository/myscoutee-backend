@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 
@@ -436,11 +436,11 @@ public class EventParticipationTicketService {
         return clone;
     }
 
-    private List<SubEventFormItemDto> cloneSubEvents(List<SubEventFormItemDto> source) {
+    private List<SubEventItem> cloneSubEvents(List<SubEventItem> source) {
         return source == null ? List.of() : new ArrayList<>(source);
     }
 
-    private List<SubEventFormItemDto> safeSubEvents(List<SubEventFormItemDto> value) {
+    private List<SubEventItem> safeSubEvents(List<SubEventItem> value) {
         return value == null ? List.of() : value;
     }
 

@@ -1018,6 +1018,7 @@ public class AssetsService {
                 nullableCount(event.getCapacityMax()),
                 normalizeCount(event.getCapacityTotal()),
                 safeText(event.getEventType()),
+                normalizeMode(event.getMode()),
                 memberSnapshot.acceptedUserIds().size(),
                 memberSnapshot.pendingUserIds().size(),
                 memberSnapshot.acceptedUserIds(),
@@ -2153,6 +2154,10 @@ public class AssetsService {
 
     private String normalizeRequestStatus(String status) {
         return "accepted".equals(safeText(status)) ? "accepted" : "pending";
+    }
+
+    private String normalizeMode(String value) {
+        return "tournament".equalsIgnoreCase(safeText(value)) ? "Tournament" : "Casual";
     }
 
     private String normalizeGender(String value) {

@@ -31,7 +31,7 @@ import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardGroupDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardStateDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.SchedulerPlanMarkersRepository;
@@ -283,6 +283,13 @@ class EventSchedulerTest {
                 .thenReturn(Map.of("event-2", eventSnapshot));
         when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("group"), anyCollection()))
                 .thenReturn(Map.of("group-a", groupASnapshot, "group-b", groupBSnapshot));
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups(
+                org.mockito.ArgumentMatchers.eq("event-2"),
+                org.mockito.ArgumentMatchers.eq("sub-2"),
+                anyList()))
+                .thenReturn(List.of(
+                        group("group-a", "Group A"),
+                        group("group-b", "Group B")));
         when(activitiesMembersService.syncGroupMembers("group-a", "creator-1", List.of("u1", "u2")))
                 .thenReturn(List.of("u1", "u2"));
         when(activitiesMembersService.syncGroupMembers("group-b", "creator-1", List.of("u3", "u4")))
@@ -358,7 +365,13 @@ class EventSchedulerTest {
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
                 rate("u1", "u2", 1.0d),
                 rate("u2", "u3", 0.2d)));
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups("event-3", "sub-1"))
+                .thenReturn(List.of(
+                        group("group-a", "Group A"),
+                        group("group-b", "Group B")));
         when(activitiesEventLeaderboardService.queryState("event-3", "sub-1")).thenReturn(currentState);
+        when(activitiesEventLeaderboardService.materializeGeneratedGroups("event-3", "sub-2"))
+                .thenReturn(List.of(group("next-group", "Final")));
         when(activitiesMembersService.syncGroupMembers("next-group", "creator-1", List.of("u1", "u2")))
                 .thenReturn(List.of("u1", "u2"));
 
@@ -476,8 +489,8 @@ class EventSchedulerTest {
         return edge;
     }
 
-    private SubEventFormItemDto subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
-        return new SubEventFormItemDto(
+    private SubEventItem subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
+        return new SubEventItem(
                 id,
                 "Round 1",
                 null,
@@ -485,8 +498,6 @@ class EventSchedulerTest {
                 null,
                 null,
                 null,
-                List.of(),
-                groupCount,
                 groupCapacityMin,
                 groupCapacityMax,
                 "Score",
@@ -494,7 +505,7 @@ class EventSchedulerTest {
                 false,
                 null,
                 null,
-                null,
+                groupCount == null || groupCapacityMax == null ? null : groupCount * groupCapacityMax,
                 null,
                 null,
                 null,
@@ -513,8 +524,8 @@ class EventSchedulerTest {
                 null);
     }
 
-    private SubEventFormItemDto subEventWithStatus(String id, String endAt, String stageStatus) {
-        return new SubEventFormItemDto(
+    private SubEventItem subEventWithStatus(String id, String endAt, String stageStatus) {
+        return new SubEventItem(
                 id,
                 "Stage",
                 null,
@@ -522,8 +533,6 @@ class EventSchedulerTest {
                 endAt,
                 null,
                 null,
-                List.of(group(id + ":group:1", "Group A")),
-                1,
                 2,
                 2,
                 "Score",
@@ -559,8 +568,8 @@ class EventSchedulerTest {
         return new SubEventGroupItemDto(id, name, 2, 2, "generated");
     }
 
-    private SubEventFormItemDto explicitSubEvent(String id) {
-        return new SubEventFormItemDto(
+    private SubEventItem explicitSubEvent(String id) {
+        return new SubEventItem(
                 id,
                 "Round 2",
                 null,
@@ -568,18 +577,14 @@ class EventSchedulerTest {
                 null,
                 null,
                 null,
-                List.of(
-                        new SubEventGroupItemDto("group-a", "Group A", 2, 2, "manual"),
-                        new SubEventGroupItemDto("group-b", "Group B", 2, 2, "manual")),
-                null,
-                null,
-                null,
+                2,
+                2,
                 "Score",
                 1,
                 false,
                 null,
                 null,
-                null,
+                4,
                 null,
                 null,
                 null,
@@ -598,8 +603,8 @@ class EventSchedulerTest {
                 null);
     }
 
-    private SubEventFormItemDto singleGroupSubEvent(String id, String groupId) {
-        return new SubEventFormItemDto(
+    private SubEventItem singleGroupSubEvent(String id, String groupId) {
+        return new SubEventItem(
                 id,
                 "Final",
                 null,
@@ -607,16 +612,14 @@ class EventSchedulerTest {
                 null,
                 null,
                 null,
-                List.of(new SubEventGroupItemDto(groupId, "Final", 2, 2, "manual")),
-                null,
-                null,
-                null,
+                2,
+                2,
                 "Score",
                 1,
                 false,
                 null,
                 null,
-                null,
+                2,
                 null,
                 null,
                 null,
@@ -635,8 +638,8 @@ class EventSchedulerTest {
                 null);
     }
 
-    private SubEventFormItemDto withStageStatus(SubEventFormItemDto item, String stageStatus) {
-        return new SubEventFormItemDto(
+    private SubEventItem withStageStatus(SubEventItem item, String stageStatus) {
+        return new SubEventItem(
                 item.id(),
                 item.name(),
                 item.description(),
@@ -644,8 +647,6 @@ class EventSchedulerTest {
                 item.endAt(),
                 item.location(),
                 item.createdByUserId(),
-                item.groups(),
-                item.tournamentGroupCount(),
                 item.tournamentGroupCapacityMin(),
                 item.tournamentGroupCapacityMax(),
                 item.tournamentLeaderboardType(),

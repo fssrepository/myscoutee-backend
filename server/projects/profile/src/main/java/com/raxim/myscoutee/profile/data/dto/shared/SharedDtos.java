@@ -122,8 +122,6 @@ public final class SharedDtos {
             Integer offsetMinutes,
             Integer durationMinutes,
             String location,
-            List<SubEventGroupItemDto> groups,
-            Integer tournamentGroupCount,
             Integer tournamentGroupCapacityMin,
             Integer tournamentGroupCapacityMax,
             String tournamentLeaderboardType,
@@ -135,7 +133,7 @@ public final class SharedDtos {
             String icon) {
     }
 
-    public record SubEventFormItemDto(
+    public record SubEventItemDto(
             @Field("id")
             String id,
             String name,
@@ -144,8 +142,6 @@ public final class SharedDtos {
             String endAt,
             String location,
             String createdByUserId,
-            List<SubEventGroupItemDto> groups,
-            Integer tournamentGroupCount,
             Integer tournamentGroupCapacityMin,
             Integer tournamentGroupCapacityMax,
             String tournamentLeaderboardType,
@@ -170,12 +166,14 @@ public final class SharedDtos {
             Integer suppliesCapacityMax,
             Integer slotStartOffsetMinutes,
             Integer slotDurationMinutes,
+            Integer groupsCount,
             String stageStatus,
             String stageStatusReason,
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
             String stageFinalizedByUserId) {
-        public SubEventFormItemDto(
+
+        public SubEventItemDto(
                 String id,
                 String name,
                 String description,
@@ -183,8 +181,6 @@ public final class SharedDtos {
                 String endAt,
                 String location,
                 String createdByUserId,
-                List<SubEventGroupItemDto> groups,
-                Integer tournamentGroupCount,
                 Integer tournamentGroupCapacityMin,
                 Integer tournamentGroupCapacityMax,
                 String tournamentLeaderboardType,
@@ -217,8 +213,6 @@ public final class SharedDtos {
                     endAt,
                     location,
                     createdByUserId,
-                    groups,
-                    tournamentGroupCount,
                     tournamentGroupCapacityMin,
                     tournamentGroupCapacityMax,
                     tournamentLeaderboardType,
@@ -243,6 +237,7 @@ public final class SharedDtos {
                     suppliesCapacityMax,
                     slotStartOffsetMinutes,
                     slotDurationMinutes,
+                    null,
                     null,
                     null,
                     null,
@@ -329,6 +324,17 @@ public final class SharedDtos {
             Map<String, List<String>> assetAssignmentIds,
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
             Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId) {
+    }
+
+    public record ActivitySubEventStageRuntimeStateDto(
+            String ownerId,
+            String subEventId,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId,
+            Integer groupsCount) {
     }
 
     public record PolicyItemDto(

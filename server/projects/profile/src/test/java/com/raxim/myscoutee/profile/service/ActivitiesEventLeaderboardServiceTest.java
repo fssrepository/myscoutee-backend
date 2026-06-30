@@ -8,20 +8,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
@@ -30,6 +30,10 @@ class ActivitiesEventLeaderboardServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
+    private ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
+    @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    @Mock
     private EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     @Mock
     private ActivitiesMembersService activitiesMembersService;
@@ -37,9 +41,11 @@ class ActivitiesEventLeaderboardServiceTest {
     private AccessControlService accessControlService;
 
     @Test
-    void materializeGeneratedGroupsPersistsGeneratedSubEventGroups() {
+    void materializeGeneratedGroupsReturnsGeneratedSubEventGroupsWithoutPersistingThem() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
                 eventLeaderboardEntriesRepository,
                 activitiesMembersService,
                 accessControlService);
@@ -53,21 +59,15 @@ class ActivitiesEventLeaderboardServiceTest {
         assertThat(groups).extracting(SubEventGroupItemDto::id)
                 .containsExactly("sub-1:group:1", "sub-1:group:2");
 
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<Iterable<ActivityEvent>> captor = ArgumentCaptor.forClass(Iterable.class);
-        verify(activityEventsRepository).saveAll(captor.capture());
-        List<ActivityEvent> saved = StreamSupport.stream(captor.getValue().spliterator(), false).toList();
-        assertThat(saved).hasSize(2);
-        assertThat(saved)
-                .allSatisfy(record -> assertThat(record.getSubEvents().get(0).groups())
-                        .extracting(SubEventGroupItemDto::id)
-                        .containsExactly("sub-1:group:1", "sub-1:group:2"));
+        verify(activityEventsRepository, never()).saveAll(any());
     }
 
     @Test
     void upsertEntryRejectsDeniedActorBeforeSavingEntry() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
                 eventLeaderboardEntriesRepository,
                 activitiesMembersService,
                 accessControlService);
@@ -100,8 +100,8 @@ class ActivitiesEventLeaderboardServiceTest {
         return record;
     }
 
-    private SubEventFormItemDto subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
-        return new SubEventFormItemDto(
+    private SubEventItem subEvent(String id, Integer groupCount, Integer groupCapacityMin, Integer groupCapacityMax) {
+        return new SubEventItem(
                 id,
                 "Tournament",
                 null,
@@ -109,8 +109,6 @@ class ActivitiesEventLeaderboardServiceTest {
                 null,
                 null,
                 null,
-                List.of(),
-                groupCount,
                 groupCapacityMin,
                 groupCapacityMax,
                 "Score",
@@ -118,7 +116,7 @@ class ActivitiesEventLeaderboardServiceTest {
                 false,
                 null,
                 null,
-                null,
+                groupCount == null || groupCapacityMax == null ? null : groupCount * groupCapacityMax,
                 null,
                 null,
                 null,

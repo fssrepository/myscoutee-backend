@@ -15,7 +15,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinate
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventFormItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 
 @Component
 public class ActivityEventDetailMapper {
@@ -142,8 +143,8 @@ public class ActivityEventDetailMapper {
         return policies == null ? new ArrayList<>() : new ArrayList<>(policies);
     }
 
-    private List<SubEventFormItemDto> cloneSubEvents(List<SubEventFormItemDto> items) {
-        return items == null ? new ArrayList<>() : new ArrayList<>(items);
+    private List<SubEventItemDto> cloneSubEvents(List<SubEventItem> items) {
+        return SubEventItemMapper.toDtoList(items);
     }
 
     private List<SubEventDefinitionDto> cloneSubEventDefinitions(List<SubEventDefinitionDto> items) {
@@ -163,8 +164,6 @@ public class ActivityEventDetailMapper {
                     item.offsetMinutes(),
                     item.durationMinutes(),
                     item.location(),
-                    item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
-                    item.tournamentGroupCount(),
                     item.tournamentGroupCapacityMin(),
                     item.tournamentGroupCapacityMax(),
                     item.tournamentLeaderboardType(),

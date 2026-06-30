@@ -35,23 +35,37 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
+import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventsServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
+    @Mock
+    private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
+    @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -93,11 +107,17 @@ class ActivitiesEventsServiceTest {
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
     private final ActivityEventDetailMapper activityEventDetailMapper = new ActivityEventDetailMapper();
     private final ActivityEventMapper activityEventMapper = new ActivityEventMapper();
+    private final ActivityEventSubEventsMapper activityEventSubEventsMapper = new ActivityEventSubEventsMapper();
+    private final ActivitySubEventResourceMapper activitySubEventResourceMapper = new ActivitySubEventResourceMapper();
+    private final ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper = new ActivitySubEventStageRuntimeMapper();
 
     @BeforeEach
     void setUp() {
         service = new ActivitiesEventsService(
                 activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository,
                 usersRepository,
                 userAffinityEdgesRepository,
                 homeUserProfileService,
@@ -118,7 +138,10 @@ class ActivitiesEventsServiceTest {
                 accessControlService,
                 userActivityCountersService,
                 activityEventDetailMapper,
-                activityEventMapper);
+                activityEventMapper,
+                activityEventSubEventsMapper,
+                activitySubEventResourceMapper,
+                activitySubEventStageRuntimeMapper);
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorPublishEvent(anyString())).thenReturn(true);
@@ -326,7 +349,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
         when(accessControlService.canCurrentActorJoinEvent("viewer", "event-1")).thenReturn(false);
 
-        EventDto result = service.requestJoin(new EventActionRequestDto(
+        EventParticipationActionResultDto result = service.requestJoin(new EventActionRequestDto(
                 "viewer",
                 "event-1",
                 null,
@@ -350,9 +373,10 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(accessControlService.canCurrentActorApplyEventStageAction("event-1")).thenReturn(false);
 
-        EventDto result = service.applyStageAction(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
+        EventStageActionResultDto result = service.applyStageAction(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
                 "host",
                 "event-1",
+                null,
                 "stage-1",
                 null,
                 "start-tournament",
@@ -773,6 +797,7 @@ class ActivitiesEventsServiceTest {
                 "One-time",
                 false,
                 null,
+                false,
                 List.of(),
                 false,
                 List.of(),

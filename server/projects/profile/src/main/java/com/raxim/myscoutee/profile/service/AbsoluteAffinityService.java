@@ -152,11 +152,6 @@ public class AbsoluteAffinityService {
                     .forEach(subEvent -> {
                         addToken(tokens, "event:sub:name", subEvent.name());
                         addToken(tokens, "event:sub:location", subEvent.location());
-                        if (subEvent.groups() != null) {
-                            subEvent.groups().stream()
-                                    .filter(Objects::nonNull)
-                                    .forEach(group -> addToken(tokens, "event:sub:group", group.name()));
-                        }
                     });
         }
 
