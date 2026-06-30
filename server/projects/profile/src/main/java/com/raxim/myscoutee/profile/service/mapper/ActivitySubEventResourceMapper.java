@@ -18,8 +18,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyCont
 
 @Component
 public class ActivitySubEventResourceMapper {
+    private static final String STATUS_DELETED = "D";
+
     public ActivitySubEventResourceStateDto toDto(ActivitySubEventResource record) {
-        if (record == null) {
+        if (record == null || STATUS_DELETED.equals(safeText(record.getStatus()))) {
             return null;
         }
         return new ActivitySubEventResourceStateDto(

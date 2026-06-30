@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -108,6 +109,7 @@ public class ActivitiesEventsService {
     private static final String STAGE_ACTION_REOPEN = "reopen-scores";
     private static final String STAGE_ACTION_SUSPEND = "suspend-tournament";
     private static final String STAGE_ACTION_RESUME = "resume-tournament";
+    private static final String RUNTIME_STATUS_DELETED = "D";
     private static final int MONGO_NO_QUERY_EXECUTION_PLANS_CODE = 291;
     private static final double AFFINITY_DISTANCE_BOOST_SCALE = 10_000d;
     private static final AtomicBoolean MISSING_EVENT_GEO_INDEX_WARNING_LOGGED = new AtomicBoolean(false);
@@ -790,7 +792,7 @@ public class ActivitiesEventsService {
             return Map.of();
         }
         Map<String, ActivitySubEventResourceStateDto> recordsByKey = new LinkedHashMap<>();
-        List<ActivitySubEventResource> records = activitySubEventResourcesRepository.findByOwnerIdIn(ownerIds);
+        List<ActivitySubEventResource> records = activitySubEventResourcesRepository.findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
         for (ActivitySubEventResource record : records == null ? List.<ActivitySubEventResource>of() : records) {
             if (record == null) {
                 continue;
@@ -828,7 +830,7 @@ public class ActivitiesEventsService {
             return Map.of();
         }
         Map<String, ActivitySubEventStageRuntimeStateDto> recordsByKey = new LinkedHashMap<>();
-        List<ActivitySubEventStageRuntime> records = activitySubEventStageRuntimeRepository.findByOwnerIdIn(ownerIds);
+        List<ActivitySubEventStageRuntime> records = activitySubEventStageRuntimeRepository.findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
         for (ActivitySubEventStageRuntime record : records == null ? List.<ActivitySubEventStageRuntime>of() : records) {
             ActivitySubEventStageRuntimeStateDto dto = activitySubEventStageRuntimeMapper.toDto(record);
             if (dto == null) {
@@ -917,6 +919,7 @@ public class ActivitiesEventsService {
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
         });
+        scheduleEventLifecycleChangedNotification(sourceId, updated, "deleted", request == null ? null : request.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsUnavailable(updated, "trashed");
         userActivityCountersService.refreshEventCountersForDocuments(updated);
@@ -940,12 +943,14 @@ public class ActivitiesEventsService {
     }
 
     public void unpublish(EventActionRequestDto request) {
-        if (!accessControlService.canCurrentActorUnpublishEvent(request == null ? null : request.sourceId())) {
+        String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (!accessControlService.canCurrentActorUnpublishEvent(sourceId)) {
             return;
         }
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_DRAFT);
         });
+        scheduleEventLifecycleChangedNotification(sourceId, updated, "unpublished", request == null ? null : request.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
         markEventAttachmentsUnavailable(updated, "unpublished");
         userActivityCountersService.refreshEventCountersForDocuments(updated);
@@ -1941,8 +1946,22 @@ public class ActivitiesEventsService {
             return null;
         }
         ActivityEvent baseRecord = buildSyncedRecord(request, creator, actorUserId, sourceId, syncedMembersSnapshot);
+        EventDefinitionChangeSummary definitionChange = eventDefinitionChangeSummary(existing, baseRecord);
+        Set<String> preChangeAssignedAudienceUserIds = definitionChange.changed()
+                ? activeSubEventResourceAudienceUserIds(sourceId)
+                : Set.of();
         List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(List.of(baseRecord));
         affinityRecomputeTaskService.enqueueEventChanged(sourceId, actorUserId);
+        Set<String> removedRuntimeAudienceUserIds = definitionChange.removedSubEventIds().isEmpty()
+                ? Set.of()
+                : markDeletedRuntimeStateForRemovedDefinitions(sourceId, definitionChange.removedSubEventIds(), actorUserId);
+        scheduleEventDefinitionChangedNotification(
+                sourceId,
+                baseRecord,
+                definitionChange,
+                preChangeAssignedAudienceUserIds,
+                removedRuntimeAudienceUserIds,
+                actorUserId);
         Map<String, String> telemetryTags = new LinkedHashMap<>();
         String city = safeText(request.creatorCity());
         if (!StringUtils.hasText(city)) {
@@ -1996,6 +2015,223 @@ public class ActivitiesEventsService {
             }
         }
         return fallback;
+    }
+
+    private EventDefinitionChangeSummary eventDefinitionChangeSummary(ActivityEvent previous, ActivityEvent next) {
+        if (previous == null || next == null) {
+            return new EventDefinitionChangeSummary(false, Set.of(), List.of());
+        }
+        Set<String> previousSubEventIds = subEventDefinitionIds(previous);
+        Set<String> nextSubEventIds = subEventDefinitionIds(next);
+        LinkedHashSet<String> removedSubEventIds = new LinkedHashSet<>(previousSubEventIds);
+        removedSubEventIds.removeAll(nextSubEventIds);
+
+        List<String> reasons = new ArrayList<>();
+        if (!Objects.equals(safeText(previous.getTitle()), safeText(next.getTitle()))
+                || !Objects.equals(safeText(previous.getLocation()), safeText(next.getLocation()))) {
+            reasons.add("details");
+        }
+        if (!Objects.equals(safeText(previous.getStartAtIso()), safeText(next.getStartAtIso()))
+                || !Objects.equals(safeText(previous.getEndAtIso()), safeText(next.getEndAtIso()))
+                || !Objects.equals(safeText(previous.getTimeframe()), safeText(next.getTimeframe()))
+                || !Objects.equals(safeText(previous.getFrequency()), safeText(next.getFrequency()))) {
+            reasons.add("schedule");
+        }
+        if (!Objects.equals(definitionSignature(previous), definitionSignature(next))) {
+            reasons.add("sub-events");
+        }
+
+        return new EventDefinitionChangeSummary(!reasons.isEmpty(), removedSubEventIds, reasons);
+    }
+
+    private Set<String> subEventDefinitionIds(ActivityEvent event) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        collectSubEventDefinitionIds(ids, event == null ? null : event.getSubEventDefinitions());
+        for (EventSlotTemplateDto template : event == null || event.getSlotTemplates() == null
+                ? List.<EventSlotTemplateDto>of()
+                : event.getSlotTemplates()) {
+            collectSubEventDefinitionIds(ids, template == null ? null : template.subEventDefinitions());
+        }
+        return ids;
+    }
+
+    private void collectSubEventDefinitionIds(Set<String> ids, List<SubEventDefinitionDto> definitions) {
+        int index = 0;
+        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
+            String id = firstNonBlank(definition == null ? null : definition.id(), fallbackSubEventId(index));
+            if (StringUtils.hasText(id)) {
+                ids.add(id);
+            }
+            index++;
+        }
+    }
+
+    private String definitionSignature(ActivityEvent event) {
+        if (event == null) {
+            return "";
+        }
+        Map<String, Object> signature = new LinkedHashMap<>();
+        signature.put("subEventsEnabled", event.getSubEventsEnabled());
+        signature.put("subEventDefinitions", event.getSubEventDefinitions() == null ? List.of() : event.getSubEventDefinitions());
+        signature.put("slotsEnabled", event.getSlotsEnabled());
+        signature.put("slotTemplates", event.getSlotTemplates() == null ? List.of() : event.getSlotTemplates());
+        signature.put("mode", safeText(event.getMode()));
+        try {
+            return OBJECT_MAPPER.writeValueAsString(signature);
+        } catch (Exception ignored) {
+            return signature.toString();
+        }
+    }
+
+    private Set<String> activeSubEventResourceAudienceUserIds(String parentEventId) {
+        String normalizedParentEventId = normalizeId(parentEventId);
+        if (!StringUtils.hasText(normalizedParentEventId)) {
+            return Set.of();
+        }
+        LinkedHashSet<String> userIds = new LinkedHashSet<>();
+        for (ActivitySubEventResource resource : mongoTemplate.find(runtimeOwnerQuery(normalizedParentEventId), ActivitySubEventResource.class)) {
+            collectSubEventResourceAudienceUserIds(userIds, resource);
+        }
+        return userIds;
+    }
+
+    private Set<String> markDeletedRuntimeStateForRemovedDefinitions(
+            String parentEventId,
+            Set<String> removedSubEventIds,
+            String actorUserId) {
+        String normalizedParentEventId = normalizeId(parentEventId);
+        LinkedHashSet<String> normalizedSubEventIds = removedSubEventIds == null
+                ? new LinkedHashSet<>()
+                : removedSubEventIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (!StringUtils.hasText(normalizedParentEventId) || normalizedSubEventIds.isEmpty()) {
+            return Set.of();
+        }
+
+        String nowIso = Instant.now().toString();
+        String updatedBy = StringUtils.hasText(normalizeId(actorUserId)) ? normalizeId(actorUserId) : "event-definition-sync";
+        Query resourceQuery = runtimeOwnerQuery(normalizedParentEventId)
+                .addCriteria(Criteria.where("subEventId").in(normalizedSubEventIds));
+        List<ActivitySubEventResource> resourceRecords = mongoTemplate.find(resourceQuery, ActivitySubEventResource.class);
+        LinkedHashSet<String> audienceUserIds = new LinkedHashSet<>();
+        for (ActivitySubEventResource record : resourceRecords == null ? List.<ActivitySubEventResource>of() : resourceRecords) {
+            collectSubEventResourceAudienceUserIds(audienceUserIds, record);
+            record.setStatus(RUNTIME_STATUS_DELETED);
+            record.setUpdatedDate(nowIso);
+            record.setUpdatedUser(updatedBy);
+        }
+        if (resourceRecords != null && !resourceRecords.isEmpty()) {
+            activitySubEventResourcesRepository.saveAll(resourceRecords);
+        }
+
+        Query stageRuntimeQuery = runtimeOwnerQuery(normalizedParentEventId)
+                .addCriteria(Criteria.where("subEventId").in(normalizedSubEventIds));
+        List<ActivitySubEventStageRuntime> stageRuntimeRecords = mongoTemplate.find(stageRuntimeQuery, ActivitySubEventStageRuntime.class);
+        for (ActivitySubEventStageRuntime record : stageRuntimeRecords == null ? List.<ActivitySubEventStageRuntime>of() : stageRuntimeRecords) {
+            record.setStatus(RUNTIME_STATUS_DELETED);
+            record.setUpdatedDate(nowIso);
+            record.setUpdatedUser(updatedBy);
+        }
+        if (stageRuntimeRecords != null && !stageRuntimeRecords.isEmpty()) {
+            activitySubEventStageRuntimeRepository.saveAll(stageRuntimeRecords);
+        }
+        return audienceUserIds;
+    }
+
+    private Query runtimeOwnerQuery(String parentEventId) {
+        String normalizedParentEventId = normalizeId(parentEventId);
+        String ownerRegex = "^" + Pattern.quote(normalizedParentEventId) + "($|:)";
+        return Query.query(Criteria.where("ownerId").regex(ownerRegex).and("status").ne(RUNTIME_STATUS_DELETED));
+    }
+
+    private void collectSubEventResourceAudienceUserIds(Set<String> userIds, ActivitySubEventResource resource) {
+        if (userIds == null || resource == null) {
+            return;
+        }
+        addUserId(userIds, resource.getAssetOwnerUserId());
+        if (resource.getAssetSettingsByType() != null) {
+            for (Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord> settingsByAssetId
+                    : resource.getAssetSettingsByType().values()) {
+                for (ActivitySubEventResource.SubEventAssignedAssetSettingsRecord settings
+                        : settingsByAssetId == null ? List.<ActivitySubEventResource.SubEventAssignedAssetSettingsRecord>of() : settingsByAssetId.values()) {
+                    addUserId(userIds, settings == null ? null : settings.addedByUserId());
+                }
+            }
+        }
+        if (resource.getSupplyContributionEntriesByAssetId() != null) {
+            for (List<ActivitySubEventResource.SubEventSupplyContributionEntryRecord> entries
+                    : resource.getSupplyContributionEntriesByAssetId().values()) {
+                for (ActivitySubEventResource.SubEventSupplyContributionEntryRecord entry
+                        : entries == null ? List.<ActivitySubEventResource.SubEventSupplyContributionEntryRecord>of() : entries) {
+                    addUserId(userIds, entry == null ? null : entry.userId());
+                }
+            }
+        }
+    }
+
+    private void scheduleEventDefinitionChangedNotification(
+            String sourceId,
+            ActivityEvent event,
+            EventDefinitionChangeSummary definitionChange,
+            Set<String> preChangeAssignedAudienceUserIds,
+            Set<String> removedRuntimeAudienceUserIds,
+            String actorUserId) {
+        if (definitionChange == null || !definitionChange.changed()) {
+            return;
+        }
+        LinkedHashSet<String> audienceUserIds = new LinkedHashSet<>();
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
+        if (snapshot != null) {
+            audienceUserIds.addAll(snapshot.acceptedMemberUserIds());
+            audienceUserIds.addAll(snapshot.pendingMemberUserIds());
+            audienceUserIds.addAll(snapshot.invitedMemberUserIds());
+            audienceUserIds.addAll(snapshot.pendingRequestMemberUserIds());
+        }
+        audienceUserIds.addAll(preChangeAssignedAudienceUserIds == null ? Set.of() : preChangeAssignedAudienceUserIds);
+        audienceUserIds.addAll(removedRuntimeAudienceUserIds == null ? Set.of() : removedRuntimeAudienceUserIds);
+        audienceUserIds.removeIf(userId -> !StringUtils.hasText(safeText(userId)));
+        scheduledMessageTaskService.scheduleEventDefinitionChanged(
+                sourceId,
+                event == null ? null : event.getTitle(),
+                audienceUserIds,
+                definitionChange.reasons(),
+                actorUserId);
+    }
+
+    private void scheduleEventLifecycleChangedNotification(
+            String sourceId,
+            List<ActivityEvent> updatedRecords,
+            String reason,
+            String actorUserId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return;
+        }
+        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
+                .stream()
+                .findFirst()
+                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
+        scheduleEventDefinitionChangedNotification(
+                normalizedSourceId,
+                event,
+                new EventDefinitionChangeSummary(true, Set.of(), List.of(safeText(reason))),
+                activeSubEventResourceAudienceUserIds(normalizedSourceId),
+                Set.of(),
+                actorUserId);
+    }
+
+    private void addUserId(Set<String> userIds, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (StringUtils.hasText(normalizedUserId)) {
+            userIds.add(normalizedUserId);
+        }
+    }
+
+    private String fallbackSubEventId(int index) {
+        return "subevent-" + Math.max(1, index + 1);
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {
@@ -4655,6 +4891,12 @@ public class ActivitiesEventsService {
             }
             return prefix + String.join(", ", names.subList(0, 3)) + " and " + (names.size() - 3) + " more";
         }
+    }
+
+    private record EventDefinitionChangeSummary(
+            boolean changed,
+            Set<String> removedSubEventIds,
+            List<String> reasons) {
     }
 
     private record EventProjection(

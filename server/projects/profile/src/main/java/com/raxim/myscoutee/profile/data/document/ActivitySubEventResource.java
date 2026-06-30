@@ -25,6 +25,7 @@ public class ActivitySubEventResource {
 
     private String recordId;
     private String ownerKey;
+    private String status;
     private String ownerId;
     private String subEventId;
     private String assetOwnerUserId;
@@ -66,6 +67,14 @@ public class ActivitySubEventResource {
 
     public void setOwnerKey(String ownerKey) {
         this.ownerKey = ownerKey;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getOwnerId() {

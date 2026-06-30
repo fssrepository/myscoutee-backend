@@ -13,5 +13,7 @@ public interface ActivitySubEventStageRuntimeRepository extends MongoRepository<
 
     List<ActivitySubEventStageRuntime> findByOwnerIdIn(Collection<String> ownerIds);
 
+    List<ActivitySubEventStageRuntime> findByOwnerIdInAndStatusNot(Collection<String> ownerIds, String status);
+
     Optional<ActivitySubEventStageRuntime> findByOwnerIdAndSubEventId(String ownerId, String subEventId);
 }

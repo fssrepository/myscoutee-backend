@@ -32,6 +32,9 @@ import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper
 
 @Service
 public class ActivitiesResourcesService {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_DELETED = "D";
+
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final AssetsService assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
@@ -84,6 +87,7 @@ public class ActivitiesResourcesService {
         next.setSyncKey(current != null && StringUtils.hasText(current.getSyncKey()) ? current.getSyncKey().trim() : UUID.randomUUID().toString());
         next.setRecordId(recordId);
         next.setOwnerKey(ownerKey(ownerId, assetOwnerUserId));
+        next.setStatus(STATUS_ACTIVE);
         next.setOwnerId(ownerId);
         next.setSubEventId(subEventId);
         next.setAssetOwnerUserId(assetOwnerUserId);
@@ -127,7 +131,7 @@ public class ActivitiesResourcesService {
         String effectiveNowIso = normalizeDateTime(nowIso, Instant.now().toString());
         List<ActivitySubEventResource> changedRecords = new ArrayList<>();
         Set<String> removedAssignedAssetIds = new LinkedHashSet<>();
-        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findByOwnerId(normalizedOwnerId)) {
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findByOwnerIdAndStatusNot(normalizedOwnerId, STATUS_DELETED)) {
             if (record == null) {
                 continue;
             }
@@ -162,7 +166,9 @@ public class ActivitiesResourcesService {
             return null;
         }
 
-        return activitySubEventResourcesRepository.findByRecordId(recordId(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId))
+        return activitySubEventResourcesRepository.findByRecordIdAndStatusNot(
+                        recordId(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId),
+                        STATUS_DELETED)
                 .orElse(null);
     }
 
@@ -181,6 +187,7 @@ public class ActivitiesResourcesService {
         clone.setSyncKey(source.getSyncKey());
         clone.setRecordId(source.getRecordId());
         clone.setOwnerKey(source.getOwnerKey());
+        clone.setStatus(source.getStatus());
         clone.setOwnerId(source.getOwnerId());
         clone.setSubEventId(source.getSubEventId());
         clone.setAssetOwnerUserId(source.getAssetOwnerUserId());

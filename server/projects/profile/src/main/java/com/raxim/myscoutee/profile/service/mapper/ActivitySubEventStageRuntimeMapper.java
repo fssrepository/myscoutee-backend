@@ -12,8 +12,11 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventSt
 
 @Component
 public class ActivitySubEventStageRuntimeMapper {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_DELETED = "D";
+
     public ActivitySubEventStageRuntimeStateDto toDto(ActivitySubEventStageRuntime record) {
-        if (record == null) {
+        if (record == null || STATUS_DELETED.equals(safeText(record.getStatus()))) {
             return null;
         }
         return new ActivitySubEventStageRuntimeStateDto(
@@ -43,6 +46,7 @@ public class ActivitySubEventStageRuntimeMapper {
         next.setId(existing == null ? new ObjectId().toHexString() : existing.getId());
         next.setSyncKey(StringUtils.hasText(next.getSyncKey()) ? next.getSyncKey().trim() : UUID.randomUUID().toString());
         next.setRecordId(recordId(ownerId, subEventId));
+        next.setStatus(STATUS_ACTIVE);
         next.setOwnerId(ownerId);
         next.setSubEventId(subEventId);
         next.setStageStatus(safeText(state.stageStatus()));
@@ -70,6 +74,7 @@ public class ActivitySubEventStageRuntimeMapper {
         clone.setId(source.getId());
         clone.setSyncKey(source.getSyncKey());
         clone.setRecordId(source.getRecordId());
+        clone.setStatus(source.getStatus());
         clone.setOwnerId(source.getOwnerId());
         clone.setSubEventId(source.getSubEventId());
         clone.setStageStatus(source.getStageStatus());

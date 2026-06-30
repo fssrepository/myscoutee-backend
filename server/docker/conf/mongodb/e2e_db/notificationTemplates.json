@@ -74,5 +74,24 @@
     "createdUser": "notification-seed",
     "updatedDate": "2026-05-05T00:00:00Z",
     "updatedUser": "notification-seed"
+  },
+  {
+    "_id": "notification-template-event-definition-changed-v1",
+    "syncKey": "notification-template-event-definition-changed-v1",
+    "templateKey": "event-definition-changed-v1",
+    "name": "Event Definition Changed",
+    "description": "Notification sent when an event definition, schedule, or lifecycle changes.",
+    "category": "event",
+    "locale": "en",
+    "enabled": true,
+    "titleTemplate": "@event_title changed",
+    "bodyTemplate": "@change_summary Open the event for the latest details.",
+    "iconUrl": "/assets/logo/heart.webp",
+    "badgeUrl": "/assets/logo/heart.webp",
+    "ctaPath": "/game",
+    "createdDate": "2026-06-30T00:00:00Z",
+    "createdUser": "notification-seed",
+    "updatedDate": "2026-06-30T00:00:00Z",
+    "updatedUser": "notification-seed"
   }
 ]

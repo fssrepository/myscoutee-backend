@@ -20,6 +20,7 @@ public class ActivitySubEventStageRuntime {
     private String syncKey;
 
     private String recordId;
+    private String status;
     private String ownerId;
     private String subEventId;
     private String stageStatus;
@@ -38,6 +39,8 @@ public class ActivitySubEventStageRuntime {
     public void setSyncKey(String syncKey) { this.syncKey = syncKey; }
     public String getRecordId() { return recordId; }
     public void setRecordId(String recordId) { this.recordId = recordId; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public String getOwnerId() { return ownerId; }
     public void setOwnerId(String ownerId) { this.ownerId = ownerId; }
     public String getSubEventId() { return subEventId; }

@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -59,6 +60,7 @@ import jakarta.annotation.PreDestroy;
 public class ScheduledMessageTaskService {
     public static final String ACTION_INACTIVATE_PROFILE_AFTER_INACTIVITY = "user.profile.inactivate-after-inactivity";
     public static final String ACTION_EVENT_STAGE_REMINDER = "event.stage.reminder";
+    public static final String ACTION_EVENT_DEFINITION_CHANGED = "event.definition.changed";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledMessageTaskService.class);
     private static final String STATUS_SCHEDULED = "scheduled";
@@ -73,6 +75,8 @@ public class ScheduledMessageTaskService {
     private static final int STAGE_REMINDER_LEAD_MINUTES = 120;
     private static final String STAGE_REMINDER_NOTIFICATION_TEMPLATE_KEY = "event-stage-reminder-v1";
     private static final String STAGE_REMINDER_EMAIL_TEMPLATE_KEY = "event-stage-reminder-v1";
+    private static final String EVENT_DEFINITION_CHANGED_NOTIFICATION_TEMPLATE_KEY = "event-definition-changed-v1";
+    private static final String EVENT_DEFINITION_CHANGED_EMAIL_TEMPLATE_KEY = "event-definition-changed-v1";
     private static final String OWNER_TYPE_EVENT = "event";
 
     private final MongoTemplate mongoTemplate;
@@ -302,6 +306,50 @@ public class ScheduledMessageTaskService {
         return savedTasks;
     }
 
+    public ScheduledMessageTask scheduleEventDefinitionChanged(
+            String eventId,
+            String eventTitle,
+            Collection<String> audienceUserIds,
+            Collection<String> reasons,
+            String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return null;
+        }
+        LinkedHashSet<String> normalizedAudience = normalizeIds(audienceUserIds);
+        if (normalizedAudience.isEmpty()) {
+            return null;
+        }
+        String nowIso = Instant.now().toString();
+        String updatedBy = updatedBy(actorUserId);
+        String taskKey = eventDefinitionChangedTaskKey(normalizedEventId);
+        ScheduledMessageTask task = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
+        if (!StringUtils.hasText(task.getId())) {
+            task.setId(new ObjectId().toHexString());
+        }
+        if (!StringUtils.hasText(task.getSyncKey())) {
+            task.setSyncKey(UUID.randomUUID().toString());
+        }
+        if (!StringUtils.hasText(task.getCreatedDate())) {
+            task.setCreatedDate(nowIso);
+            task.setCreatedUser(updatedBy);
+        }
+        task.setTaskKey(taskKey);
+        task.setActionKey(ACTION_EVENT_DEFINITION_CHANGED);
+        task.setEventId(normalizedEventId);
+        task.setNotificationTemplateKey(EVENT_DEFINITION_CHANGED_NOTIFICATION_TEMPLATE_KEY);
+        task.setEmailTemplateKey(EVENT_DEFINITION_CHANGED_EMAIL_TEMPLATE_KEY);
+        task.setDueAtIso(nowIso);
+        task.setStatus(STATUS_SCHEDULED);
+        task.setSuspended(Boolean.FALSE);
+        task.setPayload(eventDefinitionChangedPayload(eventTitle, normalizedAudience, reasons));
+        task.setUpdatedDate(nowIso);
+        task.setUpdatedUser(updatedBy);
+        ScheduledMessageTask saved = scheduledMessageTasksRepository.save(task);
+        scheduleLocalWorker(saved);
+        return saved;
+    }
+
     public void acceptTaskMetadata(ScheduledMessageTask task) {
         scheduleLocalWorker(task);
     }
@@ -386,6 +434,7 @@ public class ScheduledMessageTaskService {
             TaskResult result = switch (safeText(task.getActionKey())) {
                 case ACTION_INACTIVATE_PROFILE_AFTER_INACTIVITY -> inactivateProfileAfterInactivity(task, runId);
                 case ACTION_EVENT_STAGE_REMINDER -> markStageReminderDue(task, runId);
+                case ACTION_EVENT_DEFINITION_CHANGED -> notifyEventDefinitionChanged(task, runId);
                 default -> new TaskResult(STATUS_FAILED, 0, "Unknown scheduled action.");
             };
             finishTask(task, result.status(), result.count(), result.detail());
@@ -490,7 +539,7 @@ public class ScheduledMessageTaskService {
                 continue;
             }
 
-            EmailOutboxItem outboxItem = buildStageReminderOutboxItem(task, user, emailTemplate, emailTemplateRenderer, variables, nowIso);
+            EmailOutboxItem outboxItem = buildTemplateOutboxItem(task, user, emailTemplate, emailTemplateRenderer, variables, nowIso);
             if (outboxItem == null) {
                 failedCount += 1;
                 scheduledMessageAuditService.recordDelivery(runId, task, user, "email", STATUS_FAILED, "Email template rendered empty content.");
@@ -512,6 +561,71 @@ public class ScheduledMessageTaskService {
                 emailQueuedCount,
                 failedCount,
                 "Stage reminder delivered: notifications " + notificationCount
+                        + ", emails queued " + emailQueuedCount
+                        + ", skipped " + failedCount + ".");
+    }
+
+    private TaskResult notifyEventDefinitionChanged(ScheduledMessageTask task, String runId) {
+        if (task == null) {
+            return new TaskResult(STATUS_SKIPPED, 0, "No event change task available.");
+        }
+        Set<String> userIds = eventDefinitionChangedAudienceUserIds(task);
+        if (userIds.isEmpty()) {
+            return new TaskResult(STATUS_COMPLETED, 0, "Event change notification had no audience.");
+        }
+
+        NotificationTemplate notificationTemplate = resolveNotificationTemplate(task);
+        EmailTemplate emailTemplate = resolveEmailTemplate(task);
+        ScheduledNotificationDeliveryService notificationDeliveryService =
+                scheduledNotificationDeliveryServiceProvider.getIfAvailable();
+        EmailTemplateRenderer emailTemplateRenderer = emailTemplateRendererProvider.getIfAvailable();
+        List<EmailOutboxItem> outboxItems = new ArrayList<>();
+        int notificationCount = 0;
+        int emailQueuedCount = 0;
+        int failedCount = 0;
+        String nowIso = Instant.now().toString();
+
+        for (Users user : usersRepository.findByUserIdIn(userIds)) {
+            if (user == null || isDeleted(user)) {
+                continue;
+            }
+            Map<String, String> variables = eventDefinitionChangedVariables(task, user);
+            if (firebaseEnabled()
+                    && notificationTemplate != null
+                    && notificationDeliveryService != null
+                    && notificationDeliveryService.send(user, notificationTemplate, variables, safeText(task.getTaskKey()))) {
+                notificationCount += 1;
+                scheduledMessageAuditService.recordDelivery(runId, task, user, "notification", "sent", "Firebase notification accepted.");
+                continue;
+            }
+            if (!emailEnabled() || emailTemplate == null || emailTemplateRenderer == null || !StringUtils.hasText(safeText(user.getEmail()))) {
+                failedCount += 1;
+                scheduledMessageAuditService.recordDelivery(runId, task, user, "none", STATUS_SKIPPED, "No enabled delivery channel.");
+                continue;
+            }
+
+            EmailOutboxItem outboxItem = buildTemplateOutboxItem(task, user, emailTemplate, emailTemplateRenderer, variables, nowIso);
+            if (outboxItem == null) {
+                failedCount += 1;
+                scheduledMessageAuditService.recordDelivery(runId, task, user, "email", STATUS_FAILED, "Email template rendered empty content.");
+                continue;
+            }
+            outboxItems.add(outboxItem);
+            emailQueuedCount += 1;
+            scheduledMessageAuditService.recordDelivery(runId, task, user, "email", "queued", "Email fallback queued.");
+        }
+        if (!outboxItems.isEmpty()) {
+            emailOutboxRepository.saveAll(outboxItems);
+        }
+
+        int affectedCount = notificationCount + emailQueuedCount;
+        return new TaskResult(
+                STATUS_COMPLETED,
+                affectedCount,
+                notificationCount,
+                emailQueuedCount,
+                failedCount,
+                "Event change delivered: notifications " + notificationCount
                         + ", emails queued " + emailQueuedCount
                         + ", skipped " + failedCount + ".");
     }
@@ -672,6 +786,17 @@ public class ScheduledMessageTaskService {
         return payload;
     }
 
+    private Map<String, String> eventDefinitionChangedPayload(
+            String eventTitle,
+            Collection<String> audienceUserIds,
+            Collection<String> reasons) {
+        Map<String, String> payload = new LinkedHashMap<>();
+        putPayload(payload, "eventTitle", eventTitle);
+        putPayload(payload, "audienceUserIds", String.join(",", normalizeIds(audienceUserIds)));
+        putPayload(payload, "changeReasons", String.join(",", normalizeStrings(reasons)));
+        return payload;
+    }
+
     private void putPayload(Map<String, String> payload, String key, String value) {
         String normalized = safeText(value);
         if (payload != null && StringUtils.hasText(key) && StringUtils.hasText(normalized)) {
@@ -713,7 +838,19 @@ public class ScheduledMessageTaskService {
         return variables;
     }
 
-    private EmailOutboxItem buildStageReminderOutboxItem(
+    private Map<String, String> eventDefinitionChangedVariables(ScheduledMessageTask task, Users user) {
+        Map<String, String> payload = task == null ? Map.of() : task.getPayload();
+        Map<String, String> variables = new LinkedHashMap<>();
+        putPayload(variables, "user_name", user == null ? null : user.getName());
+        putPayload(variables, "user_first_name", firstName(user == null ? null : user.getName()));
+        putPayload(variables, "event_title", payload == null ? null : payload.get("eventTitle"));
+        putPayload(variables, "change_summary", eventDefinitionChangeSummary(payload == null ? null : payload.get("changeReasons")));
+        putPayload(variables, "cta_label", "Open event");
+        putPayload(variables, "cta_url", baseUrl() + "/game");
+        return variables;
+    }
+
+    private EmailOutboxItem buildTemplateOutboxItem(
             ScheduledMessageTask task,
             Users user,
             EmailTemplate template,
@@ -808,6 +945,84 @@ public class ScheduledMessageTaskService {
 
     private String eventStageReminderTaskKey(String eventId, String subEventId) {
         return "event-stage-reminder:" + normalizeId(eventId) + ":" + normalizeId(subEventId);
+    }
+
+    private String eventDefinitionChangedTaskKey(String eventId) {
+        return "event-definition-changed:" + normalizeId(eventId);
+    }
+
+    private Set<String> eventDefinitionChangedAudienceUserIds(ScheduledMessageTask task) {
+        Map<String, String> payload = task == null ? Map.of() : task.getPayload();
+        LinkedHashSet<String> userIds = normalizeCsv(payload == null ? null : payload.get("audienceUserIds"));
+        if (!userIds.isEmpty()) {
+            return userIds;
+        }
+        String eventId = normalizeId(task == null ? null : task.getEventId());
+        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
+        if (!StringUtils.hasText(eventId) || activitiesMembersService == null) {
+            return Set.of();
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        LinkedHashSet<String> fallback = new LinkedHashSet<>();
+        if (snapshot != null) {
+            fallback.addAll(snapshot.acceptedMemberUserIds());
+            fallback.addAll(snapshot.pendingMemberUserIds());
+            fallback.addAll(snapshot.invitedMemberUserIds());
+            fallback.addAll(snapshot.pendingRequestMemberUserIds());
+        }
+        fallback.removeIf(userId -> !StringUtils.hasText(safeText(userId)));
+        return fallback;
+    }
+
+    private String eventDefinitionChangeSummary(String value) {
+        LinkedHashSet<String> reasons = normalizeCsv(value);
+        if (reasons.isEmpty()) {
+            return "The event details changed.";
+        }
+        if (reasons.contains("deleted")) {
+            return "The event was deleted.";
+        }
+        if (reasons.contains("unpublished")) {
+            return "The event was unpublished.";
+        }
+        if (reasons.contains("schedule")) {
+            return "The event schedule changed.";
+        }
+        if (reasons.contains("sub-events")) {
+            return "The sub-event setup changed.";
+        }
+        return "The event details changed.";
+    }
+
+    private LinkedHashSet<String> normalizeIds(Collection<String> values) {
+        return normalizeStrings(values).stream()
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
+    private List<String> normalizeStrings(Collection<String> values) {
+        return values == null
+                ? List.of()
+                : values.stream()
+                        .map(this::safeText)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList();
+    }
+
+    private LinkedHashSet<String> normalizeCsv(String value) {
+        LinkedHashSet<String> result = new LinkedHashSet<>();
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return result;
+        }
+        for (String token : normalized.split(",")) {
+            String item = safeText(token);
+            if (StringUtils.hasText(item)) {
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     private String firstNonBlank(String first, String second) {

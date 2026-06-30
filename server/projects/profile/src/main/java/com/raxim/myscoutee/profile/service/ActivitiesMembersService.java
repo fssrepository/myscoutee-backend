@@ -47,6 +47,7 @@ public class ActivitiesMembersService {
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_INVITED = "I";
     private static final String STATUS_DELETED = "deleted";
+    private static final String RESOURCE_STATUS_DELETED = "D";
     private static final String STATUS_DISQUALIFIED = "disqualified";
     private static final String ACTION_ACCEPT = "accept";
     private static final String ACTION_REMOVE = "remove";
@@ -261,7 +262,7 @@ public class ActivitiesMembersService {
 
         // Bulk load all sub-event resources (one query)
         Map<String, List<ActivitySubEventResource>> resourcesByOwnerId = new LinkedHashMap<>();
-        for (ActivitySubEventResource resource : activitySubEventResourcesRepository.findByOwnerIdIn(allSourceIds)) {
+        for (ActivitySubEventResource resource : activitySubEventResourcesRepository.findByOwnerIdInAndStatusNot(allSourceIds, RESOURCE_STATUS_DELETED)) {
             if (resource == null) continue;
             String ownerId = normalizeId(resource.getOwnerId());
             if (StringUtils.hasText(ownerId)) {
@@ -926,7 +927,7 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedEventId)) {
             return List.of();
         }
-        return activitySubEventResourcesRepository.findByOwnerId(normalizedEventId).stream()
+        return activitySubEventResourcesRepository.findByOwnerIdAndStatusNot(normalizedEventId, RESOURCE_STATUS_DELETED).stream()
                 .filter(Objects::nonNull)
                 .toList();
     }

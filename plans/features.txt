@@ -34,9 +34,7 @@ stat icon (graph - mennyi a hatar, es aznap mennyi foglalas volt, esetleg rakkat
 
 a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
 
-5M eager load, maybe even the resource popup is eagerly loaded
-
 common in case when saw
 -----------------------
 the popups not covering the other popups many times
-popup-component introduction
+popup-component introduction (many popup still does not have)
