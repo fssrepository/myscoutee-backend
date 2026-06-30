@@ -1468,11 +1468,16 @@ public class ActivitiesEventsService {
             int stageIndex) {
         String status = normalizeStageStatus(stage == null ? null : stage.stageStatus());
         return switch (safeText(action)) {
-            case STAGE_ACTION_START -> (STAGE_STATUS_START_REVIEW.equals(status) || STAGE_STATUS_ERROR.equals(status)) && isStageStartAllowed(stages, stageIndex);
-            case STAGE_ACTION_CLOSE -> STAGE_STATUS_ACTIVE.equals(status) || STAGE_STATUS_ERROR.equals(status);
+            case STAGE_ACTION_START -> STAGE_STATUS_ERROR.equals(status)
+                    || (STAGE_STATUS_START_REVIEW.equals(status) && !isStageDatePassed(stage == null ? null : stage.startAt()));
+            case STAGE_ACTION_CLOSE -> STAGE_STATUS_ACTIVE.equals(status)
+                    || STAGE_STATUS_ERROR.equals(status)
+                    || (STAGE_STATUS_START_REVIEW.equals(status) && isStageDatePassed(stage == null ? null : stage.endAt()));
             case STAGE_ACTION_FINALIZE -> STAGE_STATUS_SCORE_REVIEW.equals(status);
             case STAGE_ACTION_REOPEN -> STAGE_STATUS_FINALIZED.equals(status) && canReopenScores(stages, stageIndex);
-            case STAGE_ACTION_SUSPEND -> STAGE_STATUS_ACTIVE.equals(status) || STAGE_STATUS_SCORE_REVIEW.equals(status);
+            case STAGE_ACTION_SUSPEND -> STAGE_STATUS_SCORE_REVIEW.equals(status)
+                    || ((STAGE_STATUS_ACTIVE.equals(status) || STAGE_STATUS_START_REVIEW.equals(status))
+                            && isStageInScheduleWindow(stage));
             case STAGE_ACTION_RESUME -> STAGE_STATUS_SUSPENDED.equals(status);
             default -> false;
         };
@@ -1490,18 +1495,19 @@ public class ActivitiesEventsService {
     }
 
     private boolean canReopenScores(List<SubEventItem> stages, int stageIndex) {
-        if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
-            return false;
-        }
-        if (stageIndex + 1 >= stages.size()) {
-            return true;
-        }
-        SubEventItem nextStage = stages.get(stageIndex + 1);
-        if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(nextStage == null ? null : nextStage.stageStatus()))) {
-            return false;
-        }
-        long nextStartAtMs = toSortableDate(nextStage == null ? null : nextStage.startAt());
-        return nextStartAtMs <= 0L || nextStartAtMs > System.currentTimeMillis();
+        return stages != null && stageIndex >= 0 && stageIndex < stages.size();
+    }
+
+    private boolean isStageInScheduleWindow(SubEventItem stage) {
+        long startMs = toSortableDate(stage == null ? null : stage.startAt());
+        long endMs = toSortableDate(stage == null ? null : stage.endAt());
+        long nowMs = System.currentTimeMillis();
+        return startMs > 0L && endMs > 0L && startMs <= nowMs && nowMs <= endMs;
+    }
+
+    private boolean isStageDatePassed(String value) {
+        long timestamp = toSortableDate(value);
+        return timestamp > 0L && timestamp <= System.currentTimeMillis();
     }
 
     private EventStageActionResultDto toStageActionResult(
