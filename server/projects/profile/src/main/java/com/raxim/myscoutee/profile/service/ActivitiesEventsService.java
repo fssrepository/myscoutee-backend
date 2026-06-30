@@ -104,6 +104,7 @@ public class ActivitiesEventsService {
     private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
     private static final String STAGE_STATUS_FINALIZED = "F";
     private static final String STAGE_STATUS_SUSPENDED = "S";
+    private static final String STAGE_STATUS_ERROR = "E";
     private static final String STAGE_ACTION_START = "start-tournament";
     private static final String STAGE_ACTION_CLOSE = "close-stage";
     private static final String STAGE_ACTION_FINALIZE = "finalize-stage";
@@ -1467,8 +1468,8 @@ public class ActivitiesEventsService {
             int stageIndex) {
         String status = normalizeStageStatus(stage == null ? null : stage.stageStatus());
         return switch (safeText(action)) {
-            case STAGE_ACTION_START -> STAGE_STATUS_START_REVIEW.equals(status) && isStageStartAllowed(stages, stageIndex);
-            case STAGE_ACTION_CLOSE -> STAGE_STATUS_ACTIVE.equals(status);
+            case STAGE_ACTION_START -> (STAGE_STATUS_START_REVIEW.equals(status) || STAGE_STATUS_ERROR.equals(status)) && isStageStartAllowed(stages, stageIndex);
+            case STAGE_ACTION_CLOSE -> STAGE_STATUS_ACTIVE.equals(status) || STAGE_STATUS_ERROR.equals(status);
             case STAGE_ACTION_FINALIZE -> STAGE_STATUS_SCORE_REVIEW.equals(status);
             case STAGE_ACTION_REOPEN -> STAGE_STATUS_FINALIZED.equals(status) && canReopenScores(stages, stageIndex);
             case STAGE_ACTION_SUSPEND -> !STAGE_STATUS_START_REVIEW.equals(status) && !STAGE_STATUS_SUSPENDED.equals(status) && !STAGE_STATUS_FINALIZED.equals(status);
@@ -1549,6 +1550,7 @@ public class ActivitiesEventsService {
             case STAGE_STATUS_SCORE_REVIEW -> STAGE_STATUS_SCORE_REVIEW;
             case STAGE_STATUS_FINALIZED -> STAGE_STATUS_FINALIZED;
             case STAGE_STATUS_SUSPENDED -> STAGE_STATUS_SUSPENDED;
+            case STAGE_STATUS_ERROR -> STAGE_STATUS_ERROR;
             default -> STAGE_STATUS_ACTIVE;
         };
     }

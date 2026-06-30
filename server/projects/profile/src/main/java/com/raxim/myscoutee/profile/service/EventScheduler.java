@@ -68,6 +68,7 @@ public class EventScheduler {
     private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
     private static final String STAGE_STATUS_FINALIZED = "F";
     private static final String STAGE_STATUS_SUSPENDED = "S";
+    private static final String STAGE_STATUS_ERROR = "E";
     private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
 
     private final UsersRepository usersRepository;
@@ -221,11 +222,21 @@ public class EventScheduler {
             List<SubEventItem> updatedSubEvents = new ArrayList<>(currentSubEvents.size());
             boolean changed = false;
             for (SubEventItem subEvent : currentSubEvents) {
-                SubEventItem updated = closeStageForReviewIfDue(subEvent, effectiveNow, nowIso);
+                SubEventItem updated;
+                try {
+                    updated = closeStageForReviewIfDue(subEvent, effectiveNow, nowIso);
+                } catch (RuntimeException exception) {
+                    LOGGER.error(
+                            "Failed to close tournament stage for event {} stage {}.",
+                            normalizeId(event.getSourceId()),
+                            normalizeId(subEvent == null ? null : subEvent.id()),
+                            exception);
+                    updated = copySubEventWithStageError(subEvent, "scheduler-close-stage-error", nowIso, exception);
+                }
                 updatedSubEvents.add(updated);
                 if (updated != subEvent) {
                     changed = true;
-                    changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(subEvent.id()));
+                    changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(subEvent == null ? null : subEvent.id()));
                 }
             }
             if (changed) {
@@ -260,18 +271,27 @@ public class EventScheduler {
             boolean changed = false;
             for (int index = 0; index < subEvents.size(); index += 1) {
                 SubEventItem stage = subEvents.get(index);
-                if (!isStageStartAllowed(subEvents, index) || !shouldMoveStageToStartReview(stage, effectiveNow)) {
-                    continue;
+                try {
+                    if (!isStageStartAllowed(subEvents, index) || !shouldMoveStageToStartReview(stage, effectiveNow)) {
+                        continue;
+                    }
+                    updatedSubEvents.set(index, copySubEventWithStageStatus(
+                            stage,
+                            STAGE_STATUS_START_REVIEW,
+                            "awaiting-tournament-start",
+                            nowIso,
+                            null,
+                            null));
+                } catch (RuntimeException exception) {
+                    LOGGER.error(
+                            "Failed to move tournament stage to start review for event {} stage {}.",
+                            normalizeId(event.getSourceId()),
+                            normalizeId(stage == null ? null : stage.id()),
+                            exception);
+                    updatedSubEvents.set(index, copySubEventWithStageError(stage, "scheduler-start-stage-error", nowIso, exception));
                 }
-                updatedSubEvents.set(index, copySubEventWithStageStatus(
-                        stage,
-                        STAGE_STATUS_START_REVIEW,
-                        "awaiting-tournament-start",
-                        nowIso,
-                        null,
-                        null));
                 changed = true;
-                changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(stage.id()));
+                changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(stage == null ? null : stage.id()));
             }
             if (changed) {
                 event.setSubEvents(updatedSubEvents);
@@ -391,6 +411,33 @@ public class EventScheduler {
                 stageStatusUpdatedAt,
                 stageFinalizedAt,
                 stageFinalizedByUserId);
+    }
+
+    private SubEventItem copySubEventWithStageError(
+            SubEventItem subEvent,
+            String reason,
+            String nowIso,
+            RuntimeException exception) {
+        if (subEvent == null) {
+            return null;
+        }
+        return copySubEventWithStageStatus(
+                subEvent,
+                STAGE_STATUS_ERROR,
+                schedulerStageErrorReason(reason, exception),
+                firstNonBlank(nowIso, Instant.now().toString()),
+                null,
+                null);
+    }
+
+    private String schedulerStageErrorReason(String reason, RuntimeException exception) {
+        String normalizedReason = firstNonBlank(reason, "scheduler-stage-error");
+        if (exception == null) {
+            return normalizedReason;
+        }
+        String detail = firstNonBlank(exception.getMessage(), exception.getClass().getSimpleName());
+        String value = normalizedReason + ":" + safeText(detail);
+        return value.length() <= 180 ? value : value.substring(0, 180);
     }
 
     public List<GeneratedEventPlan> generateRandomPlans() {
@@ -1322,7 +1369,7 @@ public class EventScheduler {
     private String normalizeStageStatus(String status) {
         String normalized = safeText(status).toUpperCase(Locale.ROOT);
         return switch (normalized) {
-            case STAGE_STATUS_START_REVIEW, STAGE_STATUS_SCORE_REVIEW, STAGE_STATUS_FINALIZED, STAGE_STATUS_SUSPENDED -> normalized;
+            case STAGE_STATUS_START_REVIEW, STAGE_STATUS_SCORE_REVIEW, STAGE_STATUS_FINALIZED, STAGE_STATUS_SUSPENDED, STAGE_STATUS_ERROR -> normalized;
             default -> STAGE_STATUS_ACTIVE;
         };
     }
@@ -1374,6 +1421,19 @@ public class EventScheduler {
 
     private String safeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return "";
+        }
+        for (String value : values) {
+            String text = safeText(value);
+            if (StringUtils.hasText(text)) {
+                return text;
+            }
+        }
+        return "";
     }
 
     private List<SubEventItem> safeSubEvents(ActivityEvent event) {
