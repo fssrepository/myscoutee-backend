@@ -798,6 +798,18 @@ public class ActivitiesEventLeaderboardService {
             SubEventItem subEvent,
             List<SubEventGroupItemDto> groups,
             Integer tournamentGroupCountOverride) {
+        List<SubEventGroupItemDto> normalizedGroups = groups == null
+                ? List.of()
+                : groups.stream().filter(Objects::nonNull).toList();
+        GroupCapacityTotals capacityTotals = tournamentGroupCapacityTotals(normalizedGroups);
+        Integer capacityMin = normalizedGroups.isEmpty() ? subEvent.capacityMin() : capacityTotals.min();
+        Integer capacityMax = normalizedGroups.isEmpty() ? subEvent.capacityMax() : capacityTotals.max();
+        Integer membersPending = normalizedGroups.isEmpty()
+                ? subEvent.membersPending()
+                : Math.max(0, capacityTotals.max() - Math.max(0, subEvent.membersAccepted() == null ? 0 : subEvent.membersAccepted()));
+        Integer tournamentGroupCount = tournamentGroupCountOverride != null
+                ? tournamentGroupCountOverride
+                : normalizedGroups.isEmpty() ? subEvent.tournamentGroupCount() : normalizedGroups.size();
         return new SubEventItem(
                 subEvent.id(),
                 subEvent.name(),
@@ -806,18 +818,18 @@ public class ActivitiesEventLeaderboardService {
                 subEvent.endAt(),
                 subEvent.location(),
                 subEvent.createdByUserId(),
-                groups,
-                tournamentGroupCountOverride == null ? subEvent.tournamentGroupCount() : tournamentGroupCountOverride,
+                normalizedGroups,
+                tournamentGroupCount,
                 subEvent.tournamentGroupCapacityMin(),
                 subEvent.tournamentGroupCapacityMax(),
                 subEvent.tournamentLeaderboardType(),
                 subEvent.tournamentAdvancePerGroup(),
                 subEvent.optional(),
                 subEvent.pricing(),
-                subEvent.capacityMin(),
-                subEvent.capacityMax(),
+                capacityMin,
+                capacityMax,
                 subEvent.membersAccepted(),
-                subEvent.membersPending(),
+                membersPending,
                 subEvent.carsPending(),
                 subEvent.accommodationPending(),
                 subEvent.suppliesPending(),
@@ -837,6 +849,24 @@ public class ActivitiesEventLeaderboardService {
                 subEvent.stageStatusUpdatedAt(),
                 subEvent.stageFinalizedAt(),
                 subEvent.stageFinalizedByUserId());
+    }
+
+    private GroupCapacityTotals tournamentGroupCapacityTotals(List<SubEventGroupItemDto> groups) {
+        int capacityMin = 0;
+        int capacityMax = 0;
+        for (SubEventGroupItemDto group : groups == null ? List.<SubEventGroupItemDto>of() : groups) {
+            if (group == null) {
+                continue;
+            }
+            int groupMin = Math.max(0, group.capacityMin() == null ? 0 : group.capacityMin());
+            int groupMax = Math.max(groupMin, group.capacityMax() == null ? groupMin : group.capacityMax());
+            capacityMin += groupMin;
+            capacityMax += groupMax;
+        }
+        return new GroupCapacityTotals(capacityMin, capacityMax);
+    }
+
+    private record GroupCapacityTotals(int min, int max) {
     }
 
     private String normalizeLeaderboardType(String value) {
