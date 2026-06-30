@@ -1,11 +1,8 @@
 package com.raxim.myscoutee.profile.data.document;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 
 public record SubEventItem(
         @Field("id")
@@ -16,8 +13,6 @@ public record SubEventItem(
         String endAt,
         String location,
         String createdByUserId,
-        List<SubEventGroupItemDto> groups,
-        Integer tournamentGroupCount,
         Integer tournamentGroupCapacityMin,
         Integer tournamentGroupCapacityMax,
         String tournamentLeaderboardType,
@@ -56,8 +51,6 @@ public record SubEventItem(
             String endAt,
             String location,
             String createdByUserId,
-            List<SubEventGroupItemDto> groups,
-            Integer tournamentGroupCount,
             Integer tournamentGroupCapacityMin,
             Integer tournamentGroupCapacityMax,
             String tournamentLeaderboardType,
@@ -90,8 +83,6 @@ public record SubEventItem(
                 endAt,
                 location,
                 createdByUserId,
-                groups,
-                tournamentGroupCount,
                 tournamentGroupCapacityMin,
                 tournamentGroupCapacityMax,
                 tournamentLeaderboardType,

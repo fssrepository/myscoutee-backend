@@ -347,21 +347,14 @@ public class EventScheduler {
         if (subEvent == null) {
             return 0;
         }
-        if (subEvent.groups() != null && !subEvent.groups().isEmpty()) {
-            return (int) subEvent.groups().stream().filter(Objects::nonNull).count();
-        }
-        int explicitCount = safeCount(subEvent.tournamentGroupCount());
-        if (explicitCount > 0) {
-            return explicitCount;
-        }
         int groupMin = safeCount(subEvent.tournamentGroupCapacityMin());
         int groupMax = Math.max(groupMin, safeCount(subEvent.tournamentGroupCapacityMax()));
-        if (groupMin <= 0 && groupMax <= 0) {
-            return 0;
+        if (groupMin > 0 || groupMax > 0) {
+            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
+            int stageMax = safeCount(subEvent.capacityMax());
+            return stageMax > 0 ? Math.max(1, (int) Math.ceil((double) stageMax / divisor)) : 0;
         }
-        int divisor = Math.max(1, groupMin > 0 ? groupMin : groupMax);
-        int stageMax = safeCount(subEvent.capacityMax());
-        return Math.max(1, (int) Math.ceil((double) stageMax / divisor));
+        return 0;
     }
 
     private SubEventItem closeStageForReviewIfDue(
@@ -402,8 +395,6 @@ public class EventScheduler {
                 subEvent.endAt(),
                 subEvent.location(),
                 subEvent.createdByUserId(),
-                subEvent.groups(),
-                subEvent.tournamentGroupCount(),
                 subEvent.tournamentGroupCapacityMin(),
                 subEvent.tournamentGroupCapacityMax(),
                 subEvent.tournamentLeaderboardType(),
@@ -1020,12 +1011,10 @@ public class EventScheduler {
             AtomicInteger observedQueries,
             Map<String, List<ActivityEvent>> eventDocumentsById) {
         List<ActivityEvent> eventDocuments = eventDocumentsById == null ? null : eventDocumentsById.get(normalizeId(eventId));
-        List<SubEventGroupItemDto> groups = subEvent != null && subEvent.groups() != null && !subEvent.groups().isEmpty()
-                ? subEvent.groups().stream().filter(Objects::nonNull).toList()
-                : eventDocuments == null
-                        ? activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId)
-                        : activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId, eventDocuments);
-        if ((subEvent == null || subEvent.groups() == null || subEvent.groups().isEmpty()) && eventDocuments == null) {
+        List<SubEventGroupItemDto> groups = eventDocuments == null
+                ? activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId)
+                : activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId, eventDocuments);
+        if (eventDocuments == null) {
             incrementObservedQueries(observedQueries);
         }
         if (groups.isEmpty()) {

@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,13 +55,22 @@ public class ActivityEventSubEventsMapper {
             slotStartMs = Instant.now().toEpochMilli();
         }
         List<SubEventDefinitionTimelineEntry> timeline = subEventDefinitionTimeline(definitions);
+        Map<String, Integer> groupCountsByStageId = tournamentGroupCountsByStageId(definitions, source == null ? null : source.capacityMax());
         for (int index = 0; index < timeline.size(); index++) {
             SubEventDefinitionTimelineEntry entry = timeline.get(index);
             if (entry == null || entry.item() == null) {
                 continue;
             }
             SubEventDefinitionDto item = entry.item();
-            items.add(toSubEventItemDto(item, index, slotStartMs, entry.startOffsetMinutes(), entry.durationMinutes()));
+            String itemId = firstNonBlank(item.id(), fallbackSubEventId(index));
+            items.add(toSubEventItemDto(
+                    item,
+                    itemId,
+                    index,
+                    slotStartMs,
+                    entry.startOffsetMinutes(),
+                    entry.durationMinutes(),
+                    groupCountsByStageId.get(itemId)));
         }
         return new EventSubEventsSlotDto(
                 source == null ? "" : source.id(),
@@ -216,6 +226,7 @@ public class ActivityEventSubEventsMapper {
                 null,
                 safeText(parentRecord.getStartAtIso()),
                 safeText(parentRecord.getEndAtIso()),
+                parentRecord.getCapacityMax(),
                 definitions));
     }
 
@@ -230,6 +241,7 @@ public class ActivityEventSubEventsMapper {
                 safeText(record == null ? null : record.getTimeframe()),
                 safeText(record == null ? null : record.getStartAtIso()),
                 safeText(record == null ? null : record.getEndAtIso()),
+                record == null ? null : record.getCapacityMax(),
                 cloneSubEventDefinitions(record == null ? null : record.getSubEventDefinitions()));
     }
 
@@ -338,6 +350,7 @@ public class ActivityEventSubEventsMapper {
                 generatedSlotTimeframe(startAt, endAt),
                 startAt.toInstant(ZoneOffset.UTC).toString(),
                 endAt.toInstant(ZoneOffset.UTC).toString(),
+                parentRecord == null ? null : parentRecord.getCapacityMax(),
                 cloneSubEventDefinitions(definitions));
     }
 
@@ -579,24 +592,24 @@ public class ActivityEventSubEventsMapper {
 
     private SubEventItemDto toSubEventItemDto(
             SubEventDefinitionDto item,
+            String itemId,
             int index,
             long slotStartMs,
             int startOffsetMinutes,
-            int durationMinutes) {
+            int durationMinutes,
+            Integer groupsCount) {
         long startMs = slotStartMs + (startOffsetMinutes * 60_000L);
         long endMs = startMs + (durationMinutes * 60_000L);
         boolean tournamentStage = isTournamentStageDefinition(item);
         String stageStatus = tournamentStage ? "RS" : null;
         return new SubEventItemDto(
-                firstNonBlank(item.id(), fallbackSubEventId(index)),
+                firstNonBlank(itemId, fallbackSubEventId(index)),
                 item.name(),
                 item.description(),
                 Instant.ofEpochMilli(startMs).toString(),
                 Instant.ofEpochMilli(endMs).toString(),
                 item.location(),
                 null,
-                item.groups() == null ? List.of() : new ArrayList<>(item.groups()),
-                item.tournamentGroupCount(),
                 item.tournamentGroupCapacityMin(),
                 item.tournamentGroupCapacityMax(),
                 item.tournamentLeaderboardType(),
@@ -621,7 +634,7 @@ public class ActivityEventSubEventsMapper {
                 null,
                 startOffsetMinutes,
                 durationMinutes,
-                null,
+                groupsCount,
                 stageStatus,
                 "RS".equals(stageStatus) ? "awaiting-tournament-start" : null,
                 null,
@@ -662,8 +675,6 @@ public class ActivityEventSubEventsMapper {
                 item.endAt(),
                 item.location(),
                 item.createdByUserId(),
-                item.groups() == null ? List.of() : new ArrayList<>(item.groups()),
-                item.tournamentGroupCount(),
                 item.tournamentGroupCapacityMin(),
                 item.tournamentGroupCapacityMax(),
                 item.tournamentLeaderboardType(),
@@ -708,8 +719,6 @@ public class ActivityEventSubEventsMapper {
                 item.endAt(),
                 item.location(),
                 item.createdByUserId(),
-                item.groups() == null ? List.of() : new ArrayList<>(item.groups()),
-                item.tournamentGroupCount(),
                 item.tournamentGroupCapacityMin(),
                 item.tournamentGroupCapacityMax(),
                 item.tournamentLeaderboardType(),
@@ -781,10 +790,45 @@ public class ActivityEventSubEventsMapper {
     private boolean isTournamentStageDefinition(SubEventDefinitionDto item) {
         return item != null
                 && !Boolean.TRUE.equals(item.optional())
-                && ((item.groups() != null && !item.groups().isEmpty())
-                        || (item.tournamentGroupCount() != null && item.tournamentGroupCount() > 0)
+                && ((item.tournamentGroupCapacityMin() != null && item.tournamentGroupCapacityMin() > 0)
+                        || (item.tournamentGroupCapacityMax() != null && item.tournamentGroupCapacityMax() > 0)
                         || "Score".equals(item.tournamentLeaderboardType())
                         || "Fifa".equals(item.tournamentLeaderboardType()));
+    }
+
+    private Map<String, Integer> tournamentGroupCountsByStageId(List<SubEventDefinitionDto> definitions, Integer eventCapacityMax) {
+        Map<String, Integer> counts = new LinkedHashMap<>();
+        int incomingCapacityMax = nonNegativeInteger(eventCapacityMax);
+        for (int index = 0; index < (definitions == null ? 0 : definitions.size()); index += 1) {
+            SubEventDefinitionDto definition = definitions.get(index);
+            if (definition == null) {
+                continue;
+            }
+            String stageId = firstNonBlank(definition.id(), fallbackSubEventId(index));
+            int groupCount = autoTournamentGroupCountForIncoming(definition, incomingCapacityMax);
+            if (StringUtils.hasText(stageId)) {
+                counts.put(stageId, groupCount);
+            }
+            if (isTournamentStageDefinition(definition) && groupCount > 0) {
+                int advancePerGroup = nonNegativeInteger(definition.tournamentAdvancePerGroup());
+                incomingCapacityMax = advancePerGroup > 0 ? groupCount * advancePerGroup : 0;
+            }
+        }
+        return counts;
+    }
+
+    private int autoTournamentGroupCountForIncoming(SubEventDefinitionDto item, int incomingCapacityMax) {
+        if (item == null) {
+            return 0;
+        }
+        int groupMin = nonNegativeInteger(item.tournamentGroupCapacityMin());
+        int groupMax = Math.max(groupMin, nonNegativeInteger(item.tournamentGroupCapacityMax()));
+        if (groupMin > 0 || groupMax > 0) {
+            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
+            int capacityMax = incomingCapacityMax > 0 ? incomingCapacityMax : nonNegativeInteger(item.capacityMax());
+            return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
+        }
+        return 0;
     }
 
     private ResourceMetric resourceMetric(
@@ -936,6 +980,7 @@ public class ActivityEventSubEventsMapper {
             String timeframe,
             String startAt,
             String endAt,
+            Integer capacityMax,
             List<SubEventDefinitionDto> definitions) {
     }
 }

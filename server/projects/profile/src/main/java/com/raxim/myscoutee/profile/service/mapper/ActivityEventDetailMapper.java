@@ -164,8 +164,6 @@ public class ActivityEventDetailMapper {
                     item.offsetMinutes(),
                     item.durationMinutes(),
                     item.location(),
-                    item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
-                    item.tournamentGroupCount(),
                     item.tournamentGroupCapacityMin(),
                     item.tournamentGroupCapacityMax(),
                     item.tournamentLeaderboardType(),

@@ -362,30 +362,6 @@ public class ActivitiesEventLeaderboardService {
         if (groups.isEmpty()) {
             return List.of();
         }
-        if (subEvent.groups() != null && !subEvent.groups().isEmpty()) {
-            return groups;
-        }
-
-        String nowIso = Instant.now().toString();
-        List<ActivityEvent> updatedDocuments = new ArrayList<>();
-        for (ActivityEvent document : documents) {
-            List<SubEventItem> updatedSubEvents = replaceSubEventGroups(document.getSubEvents(), normalizedSubEventId, groups);
-            if (updatedSubEvents.equals(document.getSubEvents())) {
-                continue;
-            }
-            document.setSubEvents(updatedSubEvents);
-            document.setUpdatedDate(nowIso);
-            document.setUpdatedUser(StringUtils.hasText(normalizeId(document.getUpdatedUser()))
-                    ? normalizeId(document.getUpdatedUser())
-                    : StringUtils.hasText(normalizeId(document.getCreatorUserId()))
-                            ? normalizeId(document.getCreatorUserId())
-                            : "scheduler");
-            updatedDocuments.add(document);
-        }
-
-        if (!updatedDocuments.isEmpty()) {
-            activityEventsRepository.saveAll(updatedDocuments);
-        }
         return groups;
     }
 
@@ -460,95 +436,6 @@ public class ActivitiesEventLeaderboardService {
                 && (autoTournamentGroupCount(subEvent) > 0
                         || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
                         || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
-    }
-
-    private List<SubEventItem> upsertTournamentGroup(
-            List<SubEventItem> subEvents,
-            String subEventId,
-            String groupId,
-            String name,
-            int capacityMin,
-            int capacityMax) {
-        if (subEvents == null || subEvents.isEmpty()) {
-            return List.of();
-        }
-        List<SubEventItem> updated = new ArrayList<>();
-        for (SubEventItem subEvent : subEvents) {
-            if (subEvent == null) {
-                continue;
-            }
-            if (!subEventId.equals(normalizeId(subEvent.id()))) {
-                updated.add(subEvent);
-                continue;
-            }
-            List<SubEventGroupItemDto> groups = new ArrayList<>(resolveGeneratedGroups(null, subEvent));
-            int targetIndex = -1;
-            for (int index = 0; index < groups.size(); index += 1) {
-                if (normalizeId(groupId).equals(normalizeId(groups.get(index).id()))) {
-                    targetIndex = index;
-                    break;
-                }
-            }
-            String nextGroupId = StringUtils.hasText(groupId) ? groupId : nextTournamentGroupId(subEventId, groups);
-            SubEventGroupItemDto nextGroup = new SubEventGroupItemDto(
-                    nextGroupId,
-                    name,
-                    capacityMin,
-                    capacityMax,
-                    "manual");
-            if (targetIndex >= 0) {
-                groups.set(targetIndex, nextGroup);
-            } else {
-                groups.add(nextGroup);
-            }
-            updated.add(copySubEventWithGroups(subEvent, groups, null));
-        }
-        return updated;
-    }
-
-    private List<SubEventItem> deleteTournamentGroup(
-            List<SubEventItem> subEvents,
-            String subEventId,
-            String groupId) {
-        if (subEvents == null || subEvents.isEmpty()) {
-            return List.of();
-        }
-        List<SubEventItem> updated = new ArrayList<>();
-        for (SubEventItem subEvent : subEvents) {
-            if (subEvent == null) {
-                continue;
-            }
-            if (!subEventId.equals(normalizeId(subEvent.id()))) {
-                updated.add(subEvent);
-                continue;
-            }
-            List<SubEventGroupItemDto> groups = resolveGeneratedGroups(null, subEvent).stream()
-                    .filter(group -> group != null && !groupId.equals(normalizeId(group.id())))
-                    .toList();
-            updated.add(copySubEventWithGroups(subEvent, groups, groups.isEmpty() ? 0 : null));
-        }
-        return updated;
-    }
-
-    private String nextTournamentGroupId(String subEventId, List<SubEventGroupItemDto> groups) {
-        String prefix = normalizeId(subEventId) + ":group:";
-        int index = Math.max(1, groups == null ? 1 : groups.size() + 1);
-        while (containsGroupId(groups, prefix + index)) {
-            index += 1;
-        }
-        return prefix + index;
-    }
-
-    private boolean containsGroupId(List<SubEventGroupItemDto> groups, String groupId) {
-        if (groups == null) {
-            return false;
-        }
-        for (SubEventGroupItemDto group : groups) {
-            if (groupId.equals(normalizeId(group == null ? null : group.id()))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private EventLeaderboardGroupDto toGroupDto(
@@ -757,17 +644,6 @@ public class ActivitiesEventLeaderboardService {
         if (subEvent == null) {
             return List.of();
         }
-        if (subEvent.groups() != null && (!subEvent.groups().isEmpty() || Integer.valueOf(0).equals(subEvent.tournamentGroupCount()))) {
-            return subEvent.groups().stream()
-                    .filter(Objects::nonNull)
-                    .map(group -> new SubEventGroupItemDto(
-                            normalizeId(group.id()),
-                            safeText(group.name()),
-                            group.capacityMin(),
-                            group.capacityMax(),
-                            StringUtils.hasText(safeText(group.source())) ? safeText(group.source()) : "generated"))
-                    .toList();
-        }
         int groupCount = autoTournamentGroupCount(event, subEvent);
         List<SubEventGroupItemDto> groups = new ArrayList<>();
         for (int index = 0; index < groupCount; index += 1) {
@@ -905,29 +781,25 @@ public class ActivitiesEventLeaderboardService {
         if (subEvent == null) {
             return 0;
         }
-        if (subEvent.groups() != null && !subEvent.groups().isEmpty()) {
-            return (int) subEvent.groups().stream().filter(Objects::nonNull).count();
-        }
-        int explicitCount = Math.max(0, subEvent.tournamentGroupCount() == null ? 0 : subEvent.tournamentGroupCount());
-        if (explicitCount > 0) {
-            return explicitCount;
-        }
         int groupMin = Math.max(0, subEvent.tournamentGroupCapacityMin() == null ? 0 : subEvent.tournamentGroupCapacityMin());
         int groupMax = Math.max(groupMin, subEvent.tournamentGroupCapacityMax() == null ? groupMin : subEvent.tournamentGroupCapacityMax());
-        if (groupMin <= 0 && groupMax <= 0) {
-            return 0;
+        if (groupMin > 0 || groupMax > 0) {
+            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
+            int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(subEvent.capacityMax()));
+            return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
         }
-        int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
-        int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(subEvent.capacityMax()));
-        return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
+        return 0;
+    }
+
+    private boolean hasTournamentGroupCapacityRule(SubEventItem subEvent) {
+        return safeCount(subEvent == null ? null : subEvent.tournamentGroupCapacityMin()) > 0
+                || safeCount(subEvent == null ? null : subEvent.tournamentGroupCapacityMax()) > 0;
     }
 
     private boolean hasTournamentStageConfig(SubEventItem subEvent) {
         return subEvent != null
                 && !Boolean.TRUE.equals(subEvent.optional())
-                && ((subEvent.groups() != null && !subEvent.groups().isEmpty())
-                        || safeCount(subEvent.tournamentGroupCount()) > 0
-                        || safeCount(subEvent.tournamentGroupCapacityMin()) > 0
+                && (safeCount(subEvent.tournamentGroupCapacityMin()) > 0
                         || safeCount(subEvent.tournamentGroupCapacityMax()) > 0
                         || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
                         || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
@@ -995,102 +867,6 @@ public class ActivitiesEventLeaderboardService {
             }
         }
         return false;
-    }
-
-    private List<SubEventItem> replaceSubEventGroups(
-            List<SubEventItem> subEvents,
-            String subEventId,
-            List<SubEventGroupItemDto> groups) {
-        if (subEvents == null || subEvents.isEmpty()) {
-            return List.of();
-        }
-        List<SubEventItem> updated = new ArrayList<>();
-        for (SubEventItem subEvent : subEvents) {
-            if (subEvent == null) {
-                continue;
-            }
-            if (!subEventId.equals(normalizeId(subEvent.id()))) {
-                updated.add(subEvent);
-                continue;
-            }
-            updated.add(copySubEventWithGroups(subEvent, groups, null));
-        }
-        return updated;
-    }
-
-    private SubEventItem copySubEventWithGroups(
-            SubEventItem subEvent,
-            List<SubEventGroupItemDto> groups,
-            Integer tournamentGroupCountOverride) {
-        List<SubEventGroupItemDto> normalizedGroups = groups == null
-                ? List.of()
-                : groups.stream().filter(Objects::nonNull).toList();
-        GroupCapacityTotals capacityTotals = tournamentGroupCapacityTotals(normalizedGroups);
-        Integer capacityMin = normalizedGroups.isEmpty() ? subEvent.capacityMin() : capacityTotals.min();
-        Integer capacityMax = normalizedGroups.isEmpty() ? subEvent.capacityMax() : capacityTotals.max();
-        Integer membersPending = normalizedGroups.isEmpty()
-                ? subEvent.membersPending()
-                : Math.max(0, capacityTotals.max() - Math.max(0, subEvent.membersAccepted() == null ? 0 : subEvent.membersAccepted()));
-        Integer tournamentGroupCount = tournamentGroupCountOverride != null
-                ? tournamentGroupCountOverride
-                : normalizedGroups.isEmpty() ? subEvent.tournamentGroupCount() : normalizedGroups.size();
-        return new SubEventItem(
-                subEvent.id(),
-                subEvent.name(),
-                subEvent.description(),
-                subEvent.startAt(),
-                subEvent.endAt(),
-                subEvent.location(),
-                subEvent.createdByUserId(),
-                normalizedGroups,
-                tournamentGroupCount,
-                subEvent.tournamentGroupCapacityMin(),
-                subEvent.tournamentGroupCapacityMax(),
-                subEvent.tournamentLeaderboardType(),
-                subEvent.tournamentAdvancePerGroup(),
-                subEvent.optional(),
-                subEvent.pricing(),
-                capacityMin,
-                capacityMax,
-                subEvent.membersAccepted(),
-                membersPending,
-                subEvent.carsPending(),
-                subEvent.accommodationPending(),
-                subEvent.suppliesPending(),
-                subEvent.carsAccepted(),
-                subEvent.accommodationAccepted(),
-                subEvent.suppliesAccepted(),
-                subEvent.carsCapacityMin(),
-                subEvent.carsCapacityMax(),
-                subEvent.accommodationCapacityMin(),
-                subEvent.accommodationCapacityMax(),
-                subEvent.suppliesCapacityMin(),
-                subEvent.suppliesCapacityMax(),
-                subEvent.slotStartOffsetMinutes(),
-                subEvent.slotDurationMinutes(),
-                subEvent.stageStatus(),
-                subEvent.stageStatusReason(),
-                subEvent.stageStatusUpdatedAt(),
-                subEvent.stageFinalizedAt(),
-                subEvent.stageFinalizedByUserId());
-    }
-
-    private GroupCapacityTotals tournamentGroupCapacityTotals(List<SubEventGroupItemDto> groups) {
-        int capacityMin = 0;
-        int capacityMax = 0;
-        for (SubEventGroupItemDto group : groups == null ? List.<SubEventGroupItemDto>of() : groups) {
-            if (group == null) {
-                continue;
-            }
-            int groupMin = Math.max(0, group.capacityMin() == null ? 0 : group.capacityMin());
-            int groupMax = Math.max(groupMin, group.capacityMax() == null ? groupMin : group.capacityMax());
-            capacityMin += groupMin;
-            capacityMax += groupMax;
-        }
-        return new GroupCapacityTotals(capacityMin, capacityMax);
-    }
-
-    private record GroupCapacityTotals(int min, int max) {
     }
 
     private String normalizeLeaderboardType(String value) {

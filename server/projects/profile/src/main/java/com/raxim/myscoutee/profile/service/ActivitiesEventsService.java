@@ -1647,8 +1647,6 @@ public class ActivitiesEventsService {
                 subEvent.endAt(),
                 subEvent.location(),
                 subEvent.createdByUserId(),
-                subEvent.groups(),
-                subEvent.tournamentGroupCount(),
                 subEvent.tournamentGroupCapacityMin(),
                 subEvent.tournamentGroupCapacityMax(),
                 subEvent.tournamentLeaderboardType(),
@@ -4463,8 +4461,6 @@ public class ActivitiesEventsService {
                     item.offsetMinutes(),
                     item.durationMinutes(),
                     item.location(),
-                    item.groups() == null ? new ArrayList<>() : new ArrayList<>(item.groups()),
-                    item.tournamentGroupCount(),
                     item.tournamentGroupCapacityMin(),
                     item.tournamentGroupCapacityMax(),
                     item.tournamentLeaderboardType(),
@@ -4558,29 +4554,20 @@ public class ActivitiesEventsService {
         if (item == null) {
             return 0;
         }
-        if (item.groups() != null && !item.groups().isEmpty()) {
-            return (int) item.groups().stream().filter(Objects::nonNull).count();
-        }
-        int explicitCount = Math.max(0, item.tournamentGroupCount() == null ? 0 : item.tournamentGroupCount());
-        if (explicitCount > 0) {
-            return explicitCount;
-        }
         int groupMin = Math.max(0, item.tournamentGroupCapacityMin() == null ? 0 : item.tournamentGroupCapacityMin());
         int groupMax = Math.max(groupMin, item.tournamentGroupCapacityMax() == null ? groupMin : item.tournamentGroupCapacityMax());
-        if (groupMin <= 0 && groupMax <= 0) {
-            return 0;
+        if (groupMin > 0 || groupMax > 0) {
+            int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
+            int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(item.capacityMax()));
+            return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
         }
-        int divisor = Math.max(1, groupMax > 0 ? groupMax : groupMin);
-        int capacityMax = Math.max(0, incomingCapacityMax > 0 ? incomingCapacityMax : safeCount(item.capacityMax()));
-        return capacityMax > 0 ? Math.max(1, (int) Math.ceil((double) capacityMax / divisor)) : 0;
+        return 0;
     }
 
     private boolean hasTournamentStageConfig(SubEventItem item) {
         return item != null
                 && !Boolean.TRUE.equals(item.optional())
-                && ((item.groups() != null && !item.groups().isEmpty())
-                        || safeCount(item.tournamentGroupCount()) > 0
-                        || safeCount(item.tournamentGroupCapacityMin()) > 0
+                && (safeCount(item.tournamentGroupCapacityMin()) > 0
                         || safeCount(item.tournamentGroupCapacityMax()) > 0
                         || "Score".equalsIgnoreCase(safeText(item.tournamentLeaderboardType()))
                         || "Fifa".equalsIgnoreCase(safeText(item.tournamentLeaderboardType())));
