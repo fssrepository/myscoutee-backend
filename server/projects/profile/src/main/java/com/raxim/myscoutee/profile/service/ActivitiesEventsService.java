@@ -1229,6 +1229,14 @@ public class ActivitiesEventsService {
         if (!materializedStages.isEmpty()) {
             return materializedStages;
         }
+        if (slotRecord != null && activityEventSubEventsMapper != null) {
+            EventSubEventsSlotDto slot = activityEventSubEventsMapper.toSlotDtos(parentEventId, slotRecord, null).stream()
+                    .findFirst()
+                    .orElse(null);
+            if (slot != null) {
+                return SubEventItemMapper.toRecordList(slot.subEventItems());
+            }
+        }
         if (parent == null || activityEventSubEventsMapper == null) {
             return List.of();
         }

@@ -187,11 +187,14 @@ public class ActivityEventSubEventsMapper {
             String parentEventId,
             ActivityEvent parentRecord,
             EventSubEventsQueryDto query) {
-        if (parentRecord == null || Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
+        if (parentRecord == null) {
             return List.of();
         }
         if (isGeneratedSlotRecord(parentRecord)) {
             return List.of(recordSlotSource(parentEventId, parentRecord));
+        }
+        if (Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())) {
+            return List.of();
         }
         List<EventSlotTemplateDto> templates = Boolean.TRUE.equals(parentRecord.getSlotsEnabled())
                 ? parentRecord.getSlotTemplates()
