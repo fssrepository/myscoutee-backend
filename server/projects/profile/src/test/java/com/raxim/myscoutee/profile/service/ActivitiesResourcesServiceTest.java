@@ -49,6 +49,7 @@ import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.AccessPolicyTestSupport;
 import com.raxim.myscoutee.profile.security.ChatPolicyFacts;
 import com.raxim.myscoutee.profile.security.MemberPolicyFacts;
+import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesResourcesServiceTest {
@@ -98,7 +99,8 @@ class ActivitiesResourcesServiceTest {
                 activitySubEventResourcesRepository,
                 assetsService,
                 activitiesMembersServiceProvider,
-                accessControlService);
+                accessControlService,
+                new ActivitySubEventResourceMapper());
     }
 
     @AfterEach
@@ -157,7 +159,7 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordId("u1:event-1:sub-1")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -178,7 +180,7 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.empty());
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordId("u1:event-1:sub-1")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -201,7 +203,7 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted", "Member")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordId("u1:event-1:sub-1")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -235,7 +237,7 @@ class ActivitiesResourcesServiceTest {
                 "2026-06-02T12:00:00Z");
 
         assertThat(removed).isEmpty();
-        verify(activitySubEventResourcesRepository, never()).findByOwnerId(anyString());
+        verify(activitySubEventResourcesRepository, never()).findByOwnerIdAndStatusNot(anyString(), anyString());
     }
 
     private void authenticateAs(String userId) {
