@@ -338,8 +338,30 @@ public class EventScheduler {
 
     private boolean isTournamentStage(SubEventItem subEvent) {
         return subEvent != null
-                && ((subEvent.groups() != null && !subEvent.groups().isEmpty())
-                        || safeCount(subEvent.tournamentGroupCount()) > 0);
+                && (autoTournamentGroupCount(subEvent) > 0
+                        || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
+                        || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
+    }
+
+    private int autoTournamentGroupCount(SubEventItem subEvent) {
+        if (subEvent == null) {
+            return 0;
+        }
+        if (subEvent.groups() != null && !subEvent.groups().isEmpty()) {
+            return (int) subEvent.groups().stream().filter(Objects::nonNull).count();
+        }
+        int explicitCount = safeCount(subEvent.tournamentGroupCount());
+        if (explicitCount > 0) {
+            return explicitCount;
+        }
+        int groupMin = safeCount(subEvent.tournamentGroupCapacityMin());
+        int groupMax = Math.max(groupMin, safeCount(subEvent.tournamentGroupCapacityMax()));
+        if (groupMin <= 0 && groupMax <= 0) {
+            return 0;
+        }
+        int divisor = Math.max(1, groupMin > 0 ? groupMin : groupMax);
+        int stageMax = safeCount(subEvent.capacityMax());
+        return Math.max(1, (int) Math.ceil((double) stageMax / divisor));
     }
 
     private SubEventItem closeStageForReviewIfDue(
@@ -790,7 +812,7 @@ public class EventScheduler {
                 if (STAGE_STATUS_START_REVIEW.equals(stageStatus) || STAGE_STATUS_SUSPENDED.equals(stageStatus)) {
                     continue;
                 }
-                if (!(subEvent.groups() != null && !subEvent.groups().isEmpty() || safeCount(subEvent.tournamentGroupCount()) > 0)) {
+                if (!isTournamentStage(subEvent)) {
                     continue;
                 }
 

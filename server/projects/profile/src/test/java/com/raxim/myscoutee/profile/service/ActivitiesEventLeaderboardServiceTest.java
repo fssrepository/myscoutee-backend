@@ -22,6 +22,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLea
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.EventLeaderboardEntriesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
@@ -29,6 +31,10 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 class ActivitiesEventLeaderboardServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
+    @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
     private EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     @Mock
@@ -40,6 +46,8 @@ class ActivitiesEventLeaderboardServiceTest {
     void materializeGeneratedGroupsPersistsGeneratedSubEventGroups() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
                 eventLeaderboardEntriesRepository,
                 activitiesMembersService,
                 accessControlService);
@@ -68,6 +76,8 @@ class ActivitiesEventLeaderboardServiceTest {
     void upsertEntryRejectsDeniedActorBeforeSavingEntry() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
                 eventLeaderboardEntriesRepository,
                 activitiesMembersService,
                 accessControlService);

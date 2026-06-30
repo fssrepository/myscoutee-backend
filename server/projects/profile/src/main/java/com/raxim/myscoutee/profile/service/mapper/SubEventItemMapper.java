@@ -61,6 +61,7 @@ public final class SubEventItemMapper {
                 item.suppliesCapacityMax(),
                 item.slotStartOffsetMinutes(),
                 item.slotDurationMinutes(),
+                null,
                 item.stageStatus(),
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),

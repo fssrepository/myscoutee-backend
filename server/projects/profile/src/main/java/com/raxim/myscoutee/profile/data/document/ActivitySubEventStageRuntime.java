@@ -28,6 +28,7 @@ public class ActivitySubEventStageRuntime {
     private String stageStatusUpdatedAt;
     private String stageFinalizedAt;
     private String stageFinalizedByUserId;
+    private Integer groupsCount;
     private String createdDate;
     private String createdUser;
     private String updatedDate;
@@ -55,6 +56,8 @@ public class ActivitySubEventStageRuntime {
     public void setStageFinalizedAt(String stageFinalizedAt) { this.stageFinalizedAt = stageFinalizedAt; }
     public String getStageFinalizedByUserId() { return stageFinalizedByUserId; }
     public void setStageFinalizedByUserId(String stageFinalizedByUserId) { this.stageFinalizedByUserId = stageFinalizedByUserId; }
+    public Integer getGroupsCount() { return groupsCount; }
+    public void setGroupsCount(Integer groupsCount) { this.groupsCount = groupsCount; }
     public String getCreatedDate() { return createdDate; }
     public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }
     public String getCreatedUser() { return createdUser; }

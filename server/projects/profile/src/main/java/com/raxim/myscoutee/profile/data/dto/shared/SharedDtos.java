@@ -170,6 +170,7 @@ public final class SharedDtos {
             Integer suppliesCapacityMax,
             Integer slotStartOffsetMinutes,
             Integer slotDurationMinutes,
+            Integer groupsCount,
             String stageStatus,
             String stageStatusReason,
             String stageStatusUpdatedAt,
@@ -244,6 +245,7 @@ public final class SharedDtos {
                     suppliesCapacityMax,
                     slotStartOffsetMinutes,
                     slotDurationMinutes,
+                    null,
                     null,
                     null,
                     null,
@@ -339,7 +341,8 @@ public final class SharedDtos {
             String stageStatusReason,
             String stageStatusUpdatedAt,
             String stageFinalizedAt,
-            String stageFinalizedByUserId) {
+            String stageFinalizedByUserId,
+            Integer groupsCount) {
     }
 
     public record PolicyItemDto(

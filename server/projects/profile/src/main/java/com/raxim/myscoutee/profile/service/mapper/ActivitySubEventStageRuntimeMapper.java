@@ -26,7 +26,8 @@ public class ActivitySubEventStageRuntimeMapper {
                 safeText(record.getStageStatusReason()),
                 safeText(record.getStageStatusUpdatedAt()),
                 safeText(record.getStageFinalizedAt()),
-                safeText(record.getStageFinalizedByUserId()));
+                safeText(record.getStageFinalizedByUserId()),
+                normalizeCount(record.getGroupsCount()));
     }
 
     public ActivitySubEventStageRuntime toRecord(
@@ -54,6 +55,9 @@ public class ActivitySubEventStageRuntimeMapper {
         next.setStageStatusUpdatedAt(safeText(state.stageStatusUpdatedAt()));
         next.setStageFinalizedAt(safeText(state.stageFinalizedAt()));
         next.setStageFinalizedByUserId(safeText(state.stageFinalizedByUserId()));
+        next.setGroupsCount(state.groupsCount() == null
+                ? existing == null ? null : normalizeCount(existing.getGroupsCount())
+                : normalizeCount(state.groupsCount()));
         next.setCreatedDate(existing == null ? nowIso : firstNonBlank(existing.getCreatedDate(), nowIso));
         next.setCreatedUser(existing == null ? normalizeId(actorUserId) : safeText(existing.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -82,6 +86,7 @@ public class ActivitySubEventStageRuntimeMapper {
         clone.setStageStatusUpdatedAt(source.getStageStatusUpdatedAt());
         clone.setStageFinalizedAt(source.getStageFinalizedAt());
         clone.setStageFinalizedByUserId(source.getStageFinalizedByUserId());
+        clone.setGroupsCount(source.getGroupsCount());
         clone.setCreatedDate(source.getCreatedDate());
         clone.setCreatedUser(source.getCreatedUser());
         clone.setUpdatedDate(source.getUpdatedDate());
@@ -104,6 +109,10 @@ public class ActivitySubEventStageRuntimeMapper {
 
     private String normalizeId(String value) {
         return safeText(value);
+    }
+
+    private Integer normalizeCount(Integer value) {
+        return value == null ? null : Math.max(0, value);
     }
 
     private String safeText(String value) {

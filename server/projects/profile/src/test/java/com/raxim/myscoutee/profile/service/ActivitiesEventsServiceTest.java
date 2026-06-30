@@ -43,6 +43,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.UserAffinityEdgesRepository;
@@ -59,6 +60,8 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 class ActivitiesEventsServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
+    @Mock
+    private ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
     @Mock
     private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     @Mock
@@ -112,6 +115,7 @@ class ActivitiesEventsServiceTest {
     void setUp() {
         service = new ActivitiesEventsService(
                 activityEventsRepository,
+                activitySubEventGroupsRepository,
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 usersRepository,
