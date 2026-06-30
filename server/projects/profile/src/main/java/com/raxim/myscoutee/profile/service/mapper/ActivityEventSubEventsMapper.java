@@ -55,7 +55,7 @@ public class ActivityEventSubEventsMapper {
             slotStartMs = Instant.now().toEpochMilli();
         }
         List<SubEventDefinitionTimelineEntry> timeline = subEventDefinitionTimeline(definitions);
-        Map<String, Integer> groupCountsByStageId = tournamentGroupCountsByStageId(definitions, source == null ? null : source.capacityMax());
+        Map<String, Integer> groupCountsByStageId = stageGroupCountsByStageId(definitions, source == null ? null : source.capacityMax());
         for (int index = 0; index < timeline.size(); index++) {
             SubEventDefinitionTimelineEntry entry = timeline.get(index);
             if (entry == null || entry.item() == null) {
@@ -796,7 +796,7 @@ public class ActivityEventSubEventsMapper {
                         || "Fifa".equals(item.tournamentLeaderboardType()));
     }
 
-    private Map<String, Integer> tournamentGroupCountsByStageId(List<SubEventDefinitionDto> definitions, Integer eventCapacityMax) {
+    private Map<String, Integer> stageGroupCountsByStageId(List<SubEventDefinitionDto> definitions, Integer eventCapacityMax) {
         Map<String, Integer> counts = new LinkedHashMap<>();
         int incomingCapacityMax = nonNegativeInteger(eventCapacityMax);
         for (int index = 0; index < (definitions == null ? 0 : definitions.size()); index += 1) {
