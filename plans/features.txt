@@ -14,7 +14,6 @@ https://developers.facebook.com/ -> business verfication is needed
 desktop
 -------
 badge in the title row, not sure what is 2 5 in the badge
-tournament editor save - takes time to regenerate the slots with new data
 
 1) activity event popup: save draft on own event tab or draft event tab should be inserted on the fly nd counter value of the menu should be increased by 1
 moving one bucket to another, like deleting or anything else, should remove on the fly and change the menu counter -1 on existing and +1 for the target (when it will be displayed)

@@ -372,6 +372,7 @@ class ActivitiesEventsServiceTest {
         EventStageActionResultDto result = service.applyStageAction(new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto(
                 "host",
                 "event-1",
+                null,
                 "stage-1",
                 null,
                 "start-tournament",

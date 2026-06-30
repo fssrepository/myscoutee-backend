@@ -86,6 +86,7 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper.S
 import com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper.SubEventStateLookups;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventStageRuntimeMapper;
+import com.raxim.myscoutee.profile.service.mapper.SubEventItemMapper;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
@@ -1026,6 +1027,8 @@ public class ActivitiesEventsService {
         }
         ViewerContext viewer = resolveViewer(request.userId());
         String sourceId = normalizeId(request.sourceId());
+        String slotSourceId = normalizeId(request.slotSourceId());
+        String runtimeOwnerId = StringUtils.hasText(slotSourceId) ? slotSourceId : sourceId;
         StageActionTarget actionTarget = resolveStageActionTarget(request);
         if (viewer == null || !StringUtils.hasText(sourceId) || actionTarget == null) {
             return null;
@@ -1045,14 +1048,28 @@ public class ActivitiesEventsService {
             return null;
         }
 
-        List<SubEventItem> preferredSubEvents = cloneSubEvents(preferred.getSubEvents());
+        List<SubEventItem> preferredSubEvents = StringUtils.hasText(slotSourceId)
+                ? stageActionSlotSubEvents(sourceId, slotSourceId, preferred, request)
+                : cloneSubEvents(preferred.getSubEvents());
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
             return null;
         }
         SubEventItem preferredStage = preferredSubEvents.get(preferredStageIndex);
         if (!canApplyStageAction(actionTarget.action(), preferredStage, preferredSubEvents, preferredStageIndex)) {
-            return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
+            return toStageActionResult(runtimeOwnerId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
+        }
+
+        if (StringUtils.hasText(slotSourceId)) {
+            return applyGeneratedSlotStageAction(
+                    sourceId,
+                    slotSourceId,
+                    documents,
+                    preferred,
+                    preferredSubEvents,
+                    preferredStageIndex,
+                    actionTarget,
+                    viewer.userId());
         }
 
         String nowIso = Instant.now().toString();
@@ -1129,6 +1146,129 @@ public class ActivitiesEventsService {
                 savedStageIndex >= 0 ? savedStageIndex : preferredStageIndex,
                 actionTarget.action(),
                 savedPreferred.getAutoInviter());
+    }
+
+    private EventStageActionResultDto applyGeneratedSlotStageAction(
+            String parentEventId,
+            String slotSourceId,
+            List<ActivityEvent> parentDocuments,
+            ActivityEvent preferredParent,
+            List<SubEventItem> slotStages,
+            int stageIndex,
+            StageActionTarget actionTarget,
+            String actorUserId) {
+        if (slotStages == null || stageIndex < 0 || stageIndex >= slotStages.size()) {
+            return null;
+        }
+        String nowIso = Instant.now().toString();
+        SubEventItem savedStage = copySubEventWithStageStatus(
+                slotStages.get(stageIndex),
+                actionTarget.nextStatus(),
+                actionTarget.reason(),
+                nowIso,
+                STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
+                STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? actorUserId : null);
+
+        List<ActivityEvent> savedParentDocuments = parentDocuments == null ? List.of() : parentDocuments;
+        ActivityEvent savedPreferredParent = preferredParent;
+        if (STAGE_ACTION_START.equals(actionTarget.action())) {
+            List<ActivityEvent> updatedParents = new ArrayList<>();
+            for (ActivityEvent document : savedParentDocuments) {
+                ActivityEvent next = cloneDocument(document);
+                next.setAutoInviter(false);
+                next.setUpdatedDate(nowIso);
+                next.setUpdatedUser(actorUserId);
+                next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
+                next.normalizeLifecycleState();
+                updatedParents.add(next);
+            }
+            if (!updatedParents.isEmpty()) {
+                savedParentDocuments = activityEventsRepository.saveAll(updatedParents);
+                savedPreferredParent = computePreferredEventRecords(savedParentDocuments).stream()
+                        .findFirst()
+                        .orElse(preferredParent);
+                affinityRecomputeTaskService.enqueueEventChanged(parentEventId, actorUserId);
+                syncStageReminderTasksForSavedEvents(savedParentDocuments, actorUserId);
+            }
+            EventScheduler scheduler = eventSchedulerProvider == null ? null : eventSchedulerProvider.getIfAvailable();
+            if (scheduler != null) {
+                scheduler.generateRandomPlansForEvents(List.of(parentEventId));
+            }
+        }
+
+        boolean finalStage = stageIndex == slotStages.size() - 1;
+        TournamentResultSummary resultSummary = resolveTournamentResultSummary(savedPreferredParent, savedStage, finalStage);
+        saveSubEventStageRuntime(slotSourceId, savedStage, actorUserId);
+        enqueueStageStatusNotifications(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), actorUserId, finalStage, resultSummary);
+        postStageChatMessage(savedPreferredParent, savedStage, actionTarget.action(), actionTarget.nextStatus(), finalStage, resultSummary);
+        adminTelemetryService.record("event.stage.action", "events", parentEventId, actorUserId, 1L, Map.of(
+                "action", actionTarget.action(),
+                "stageStatus", actionTarget.nextStatus(),
+                "stageId", firstNonBlank(normalizeId(savedStage.id()), Integer.toString(stageIndex))));
+        if (!savedParentDocuments.isEmpty()) {
+            userActivityCountersService.refreshEventCountersForDocuments(savedParentDocuments);
+        }
+        return toStageActionResult(
+                slotSourceId,
+                savedStage,
+                stageIndex,
+                actionTarget.action(),
+                STAGE_ACTION_START.equals(actionTarget.action()) ? Boolean.FALSE : savedPreferredParent.getAutoInviter());
+    }
+
+    private List<SubEventItem> stageActionSlotSubEvents(
+            String parentEventId,
+            String slotSourceId,
+            ActivityEvent parent,
+            EventStageActionRequestDto request) {
+        ActivityEvent slotRecord = loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
+                .filter(this::isGeneratedSlotRecord)
+                .findFirst()
+                .orElse(null);
+        List<SubEventItem> materializedStages = cloneSubEvents(slotRecord == null ? null : slotRecord.getSubEvents());
+        if (!materializedStages.isEmpty()) {
+            return materializedStages;
+        }
+        if (parent == null || activityEventSubEventsMapper == null) {
+            return List.of();
+        }
+        String slotDate = generatedSlotDateFromSourceId(parentEventId, slotSourceId);
+        List<EventSubEventsQueryDto> queries = StringUtils.hasText(slotDate)
+                ? List.of(
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "upcoming", "day", slotDate, slotDate, slotDate),
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "past", "day", slotDate, slotDate, slotDate))
+                : List.of(
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "upcoming", "day", null, null, null),
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "past", "day", null, null, null));
+        for (EventSubEventsQueryDto query : queries) {
+            EventSubEventsSlotDto slot = activityEventSubEventsMapper.toSlotDtos(parentEventId, parent, query).stream()
+                    .filter(candidate -> slotSourceId.equals(normalizeId(candidate == null ? null : candidate.slotSourceId()))
+                            || slotSourceId.equals(normalizeId(candidate == null ? null : candidate.id())))
+                    .findFirst()
+                    .orElse(null);
+            if (slot != null) {
+                return SubEventItemMapper.toRecordList(slot.subEventItems());
+            }
+        }
+        return List.of();
+    }
+
+    private String generatedSlotDateFromSourceId(String parentEventId, String slotSourceId) {
+        String prefix = normalizeId(parentEventId) + ":slot:";
+        String normalizedSlotSourceId = normalizeId(slotSourceId);
+        if (!StringUtils.hasText(prefix) || !normalizedSlotSourceId.startsWith(prefix)) {
+            return null;
+        }
+        String tail = normalizedSlotSourceId.substring(prefix.length());
+        int dateStart = tail.indexOf(':');
+        if (dateStart < 0 || dateStart + 1 >= tail.length()) {
+            return null;
+        }
+        try {
+            return Instant.parse(tail.substring(dateStart + 1)).atOffset(ZoneOffset.UTC).toLocalDate().toString();
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
     }
 
     private void saveSubEventStageRuntime(String ownerId, SubEventItem stage, String actorUserId) {

@@ -70,6 +70,7 @@ public final class EventsDtos {
     public record EventStageActionRequestDto(
             String userId,
             String sourceId,
+            String slotSourceId,
             String subEventId,
             Integer subEventIndex,
             String action,
