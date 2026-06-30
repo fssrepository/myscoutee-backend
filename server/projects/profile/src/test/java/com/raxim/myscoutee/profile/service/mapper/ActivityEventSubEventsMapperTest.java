@@ -91,8 +91,6 @@ class ActivityEventSubEventsMapperTest {
                 0,
                 durationMinutes,
                 "",
-                List.of(),
-                2,
                 1,
                 2,
                 "Score",

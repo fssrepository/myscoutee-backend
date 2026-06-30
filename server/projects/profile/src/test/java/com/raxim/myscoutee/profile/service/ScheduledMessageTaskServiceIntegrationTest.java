@@ -31,7 +31,6 @@ import com.raxim.myscoutee.profile.data.document.ScheduledMessageRun;
 import com.raxim.myscoutee.profile.data.document.ScheduledMessageTask;
 import com.raxim.myscoutee.profile.data.document.UserSessionAction;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.repository.ScheduledMessageDeliveriesRepository;
 import com.raxim.myscoutee.profile.repository.ScheduledMessageTasksRepository;
@@ -240,8 +239,6 @@ class ScheduledMessageTaskServiceIntegrationTest {
                 startAt.plusSeconds(3600).toString(),
                 "",
                 "",
-                List.<SubEventGroupItemDto>of(),
-                null,
                 null,
                 null,
                 "",

@@ -8,11 +8,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -43,7 +41,7 @@ class ActivitiesEventLeaderboardServiceTest {
     private AccessControlService accessControlService;
 
     @Test
-    void materializeGeneratedGroupsPersistsGeneratedSubEventGroups() {
+    void materializeGeneratedGroupsReturnsGeneratedSubEventGroupsWithoutPersistingThem() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
                 activitySubEventGroupsRepository,
@@ -61,15 +59,7 @@ class ActivitiesEventLeaderboardServiceTest {
         assertThat(groups).extracting(SubEventGroupItemDto::id)
                 .containsExactly("sub-1:group:1", "sub-1:group:2");
 
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<Iterable<ActivityEvent>> captor = ArgumentCaptor.forClass(Iterable.class);
-        verify(activityEventsRepository).saveAll(captor.capture());
-        List<ActivityEvent> saved = StreamSupport.stream(captor.getValue().spliterator(), false).toList();
-        assertThat(saved).hasSize(2);
-        assertThat(saved)
-                .allSatisfy(record -> assertThat(record.getSubEvents().get(0).groups())
-                        .extracting(SubEventGroupItemDto::id)
-                        .containsExactly("sub-1:group:1", "sub-1:group:2"));
+        verify(activityEventsRepository, never()).saveAll(any());
     }
 
     @Test
@@ -119,8 +109,6 @@ class ActivitiesEventLeaderboardServiceTest {
                 null,
                 null,
                 null,
-                List.of(),
-                groupCount,
                 groupCapacityMin,
                 groupCapacityMax,
                 "Score",
@@ -128,7 +116,7 @@ class ActivitiesEventLeaderboardServiceTest {
                 false,
                 null,
                 null,
-                null,
+                groupCount == null || groupCapacityMax == null ? null : groupCount * groupCapacityMax,
                 null,
                 null,
                 null,
