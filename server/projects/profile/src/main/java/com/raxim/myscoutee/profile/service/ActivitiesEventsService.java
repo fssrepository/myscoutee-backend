@@ -1467,7 +1467,7 @@ public class ActivitiesEventsService {
             int stageIndex) {
         String status = normalizeStageStatus(stage == null ? null : stage.stageStatus());
         return switch (safeText(action)) {
-            case STAGE_ACTION_START -> stageIndex == 0 && STAGE_STATUS_START_REVIEW.equals(status);
+            case STAGE_ACTION_START -> STAGE_STATUS_START_REVIEW.equals(status) && isStageStartAllowed(stages, stageIndex);
             case STAGE_ACTION_CLOSE -> STAGE_STATUS_ACTIVE.equals(status);
             case STAGE_ACTION_FINALIZE -> STAGE_STATUS_SCORE_REVIEW.equals(status);
             case STAGE_ACTION_REOPEN -> STAGE_STATUS_FINALIZED.equals(status) && canReopenScores(stages, stageIndex);
@@ -1475,6 +1475,17 @@ public class ActivitiesEventsService {
             case STAGE_ACTION_RESUME -> STAGE_STATUS_SUSPENDED.equals(status);
             default -> false;
         };
+    }
+
+    private boolean isStageStartAllowed(List<SubEventItem> stages, int stageIndex) {
+        if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
+            return false;
+        }
+        if (stageIndex == 0) {
+            return true;
+        }
+        SubEventItem previousStage = stages.get(stageIndex - 1);
+        return STAGE_STATUS_FINALIZED.equals(normalizeStageStatus(previousStage == null ? null : previousStage.stageStatus()));
     }
 
     private boolean canReopenScores(List<SubEventItem> stages, int stageIndex) {

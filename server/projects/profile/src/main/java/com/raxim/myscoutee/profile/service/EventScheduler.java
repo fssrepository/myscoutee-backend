@@ -249,30 +249,36 @@ public class EventScheduler {
         Set<String> changedStageKeys = new LinkedHashSet<>();
 
         for (ActivityEvent event : activityEventsRepository.findAll()) {
-            if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !shouldReviewTournamentStages(event)) {
+            if (event == null || !shouldReviewTournamentStages(event)) {
                 continue;
             }
             List<SubEventItem> subEvents = safeSubEvents(event);
             if (subEvents.isEmpty()) {
                 continue;
             }
-            SubEventItem firstStage = subEvents.get(0);
-            if (!shouldMoveFirstStageToStartReview(firstStage, effectiveNow)) {
-                continue;
-            }
             List<SubEventItem> updatedSubEvents = new ArrayList<>(subEvents);
-            updatedSubEvents.set(0, copySubEventWithStageStatus(
-                    firstStage,
-                    STAGE_STATUS_START_REVIEW,
-                    "awaiting-tournament-start",
-                    nowIso,
-                    null,
-                    null));
-            event.setSubEvents(updatedSubEvents);
-            event.setUpdatedDate(nowIso);
-            event.setUpdatedUser(MARKER_UPDATED_BY);
-            changedRecords.add(event);
-            changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(firstStage.id()));
+            boolean changed = false;
+            for (int index = 0; index < subEvents.size(); index += 1) {
+                SubEventItem stage = subEvents.get(index);
+                if (!isStageStartAllowed(subEvents, index) || !shouldMoveStageToStartReview(stage, effectiveNow)) {
+                    continue;
+                }
+                updatedSubEvents.set(index, copySubEventWithStageStatus(
+                        stage,
+                        STAGE_STATUS_START_REVIEW,
+                        "awaiting-tournament-start",
+                        nowIso,
+                        null,
+                        null));
+                changed = true;
+                changedStageKeys.add(normalizeId(event.getSourceId()) + ":" + normalizeId(stage.id()));
+            }
+            if (changed) {
+                event.setSubEvents(updatedSubEvents);
+                event.setUpdatedDate(nowIso);
+                event.setUpdatedUser(MARKER_UPDATED_BY);
+                changedRecords.add(event);
+            }
         }
 
         if (!changedRecords.isEmpty()) {
@@ -281,18 +287,18 @@ public class EventScheduler {
         return changedStageKeys.size();
     }
 
-    private boolean shouldMoveFirstStageToStartReview(SubEventItem firstStage, Instant now) {
-        if (firstStage == null || !isTournamentStage(firstStage)) {
+    private boolean shouldMoveStageToStartReview(SubEventItem stage, Instant now) {
+        if (stage == null || !isTournamentStage(stage)) {
             return false;
         }
-        if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(firstStage.stageStatus()))) {
+        if (!STAGE_STATUS_ACTIVE.equals(normalizeStageStatus(stage.stageStatus()))) {
             return false;
         }
-        if (StringUtils.hasText(safeText(firstStage.stageStatusUpdatedAt()))
-                || StringUtils.hasText(safeText(firstStage.stageFinalizedAt()))) {
+        if (StringUtils.hasText(safeText(stage.stageStatusUpdatedAt()))
+                || StringUtils.hasText(safeText(stage.stageFinalizedAt()))) {
             return false;
         }
-        Instant startAt = parseStageInstant(firstStage.startAt());
+        Instant startAt = parseStageInstant(stage.startAt());
         return startAt != null && startAt.isAfter(now);
     }
 
@@ -1327,6 +1333,17 @@ public class EventScheduler {
         }
         String status = normalizeStageStatus(stages.get(stageIndex) == null ? null : stages.get(stageIndex).stageStatus());
         if (!STAGE_STATUS_ACTIVE.equals(status)) {
+            return false;
+        }
+        if (stageIndex == 0) {
+            return true;
+        }
+        String previousStatus = normalizeStageStatus(stages.get(stageIndex - 1) == null ? null : stages.get(stageIndex - 1).stageStatus());
+        return STAGE_STATUS_FINALIZED.equals(previousStatus);
+    }
+
+    private boolean isStageStartAllowed(List<SubEventItem> stages, int stageIndex) {
+        if (stages == null || stageIndex < 0 || stageIndex >= stages.size()) {
             return false;
         }
         if (stageIndex == 0) {
