@@ -37,6 +37,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTou
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentStageDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
@@ -612,11 +613,12 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private SubEventItem resolveSubEvent(ActivityEvent event, String subEventId) {
-        if (event == null || event.getSubEvents() == null) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
             return null;
         }
-        for (SubEventItem item : event.getSubEvents()) {
-            if (item != null && subEventId.equals(normalizeId(item.id()))) {
+        for (SubEventItem item : runtimeStageSequence(event)) {
+            if (item != null && normalizedSubEventId.equals(normalizeId(item.id()))) {
                 return item;
             }
         }
@@ -757,9 +759,10 @@ public class ActivitiesEventLeaderboardService {
         if (targetStage == null) {
             return 0;
         }
-        List<SubEventItem> stages = event == null || event.getSubEvents() == null
-                ? List.of(targetStage)
-                : event.getSubEvents();
+        List<SubEventItem> stages = runtimeStageSequence(event);
+        if (stages.isEmpty()) {
+            stages = List.of(targetStage);
+        }
         int incomingCapacityMax = Math.max(safeCount(event == null ? null : event.getCapacityMax()), safeCount(targetStage.capacityMax()));
         for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
             if (stage == null) {
@@ -816,6 +819,69 @@ public class ActivitiesEventLeaderboardService {
 
     private int safeCount(Integer value) {
         return Math.max(0, value == null ? 0 : value);
+    }
+
+    private List<SubEventItem> runtimeStageSequence(ActivityEvent event) {
+        if (event == null) {
+            return List.of();
+        }
+        List<SubEventItem> subEvents = event.getSubEvents();
+        if (subEvents != null && !subEvents.isEmpty()) {
+            return subEvents;
+        }
+        List<SubEventDefinitionDto> definitions = event.getSubEventDefinitions();
+        if (definitions == null || definitions.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventItem> stages = new ArrayList<>();
+        for (int index = 0; index < definitions.size(); index += 1) {
+            SubEventDefinitionDto definition = definitions.get(index);
+            if (definition == null) {
+                continue;
+            }
+            stages.add(new SubEventItem(
+                    firstNonBlank(definition.id(), fallbackSubEventId(index)),
+                    firstNonBlank(definition.name(), "Sub Event " + (index + 1)),
+                    safeText(definition.description()),
+                    null,
+                    null,
+                    safeText(definition.location()),
+                    null,
+                    definition.tournamentGroupCapacityMin(),
+                    definition.tournamentGroupCapacityMax(),
+                    definition.tournamentLeaderboardType(),
+                    definition.tournamentAdvancePerGroup(),
+                    definition.optional(),
+                    null,
+                    definition.capacityMin(),
+                    definition.capacityMax(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    safeCount(definition.offsetMinutes()),
+                    safeCount(definition.durationMinutes())));
+        }
+        return stages;
+    }
+
+    private String fallbackSubEventId(int index) {
+        return "subevent-" + Math.max(1, index + 1);
+    }
+
+    private String firstNonBlank(String primary, String fallback) {
+        String normalized = safeText(primary);
+        return StringUtils.hasText(normalized) ? normalized : safeText(fallback);
     }
 
     private ActivityEvent resolvePreferredEvent(List<ActivityEvent> records) {

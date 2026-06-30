@@ -4530,9 +4530,10 @@ public class ActivitiesEventsService {
         if (targetStage == null) {
             return 0;
         }
-        List<SubEventItem> stages = event == null || event.getSubEvents() == null
-                ? List.of(targetStage)
-                : event.getSubEvents();
+        List<SubEventItem> stages = runtimeStageSequence(event);
+        if (stages.isEmpty()) {
+            stages = List.of(targetStage);
+        }
         int incomingCapacityMax = Math.max(safeCount(event == null ? null : event.getCapacityMax()), safeCount(targetStage.capacityMax()));
         for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
             if (stage == null) {
@@ -4591,12 +4592,66 @@ public class ActivitiesEventsService {
         if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
             return null;
         }
-        for (SubEventItem item : event.getSubEvents() == null ? List.<SubEventItem>of() : event.getSubEvents()) {
+        for (SubEventItem item : runtimeStageSequence(event)) {
             if (item != null && normalizedSubEventId.equals(normalizeId(item.id()))) {
                 return item;
             }
         }
         return null;
+    }
+
+    private List<SubEventItem> runtimeStageSequence(ActivityEvent event) {
+        if (event == null) {
+            return List.of();
+        }
+        List<SubEventItem> subEvents = event.getSubEvents();
+        if (subEvents != null && !subEvents.isEmpty()) {
+            return subEvents;
+        }
+        List<SubEventDefinitionDto> definitions = event.getSubEventDefinitions();
+        if (definitions == null || definitions.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventItem> stages = new ArrayList<>();
+        for (int index = 0; index < definitions.size(); index += 1) {
+            SubEventDefinitionDto definition = definitions.get(index);
+            if (definition == null) {
+                continue;
+            }
+            stages.add(new SubEventItem(
+                    firstNonBlank(definition.id(), fallbackSubEventId(index)),
+                    firstNonBlank(definition.name(), "Sub Event " + (index + 1)),
+                    safeText(definition.description()),
+                    null,
+                    null,
+                    safeText(definition.location()),
+                    null,
+                    definition.tournamentGroupCapacityMin(),
+                    definition.tournamentGroupCapacityMax(),
+                    definition.tournamentLeaderboardType(),
+                    definition.tournamentAdvancePerGroup(),
+                    definition.optional(),
+                    clonePricing(definition.pricing()),
+                    definition.capacityMin(),
+                    definition.capacityMax(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    Math.max(0, definition.offsetMinutes() == null ? 0 : definition.offsetMinutes()),
+                    Math.max(0, definition.durationMinutes() == null ? 0 : definition.durationMinutes())));
+        }
+        return stages;
     }
 
     private String normalizeSubEventDefinitionTiming(String value) {
