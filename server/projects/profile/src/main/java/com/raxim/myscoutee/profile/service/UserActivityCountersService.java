@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -32,18 +36,21 @@ public class UserActivityCountersService {
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private final MongoTemplate mongoTemplate;
 
     public UserActivityCountersService(
             UsersRepository usersRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
-            EventFeedbackStatesRepository eventFeedbackStatesRepository) {
+            EventFeedbackStatesRepository eventFeedbackStatesRepository,
+            MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public void refreshEventCountersForDocuments(Collection<ActivityEvent> events) {
@@ -76,10 +83,10 @@ public class UserActivityCountersService {
     public void refreshEventCountersForUsers(Collection<String> userIds) {
         for (String userId : normalizeIds(userIds)) {
             usersRepository.findByUserId(userId).ifPresent(user -> {
-                Users.UserActivitiesRecord next = withEventCounters(user.getActivities(), resolveEventCounters(userId));
-                if (!Objects.equals(user.getActivities(), next)) {
-                    user.setActivities(next);
-                    usersRepository.save(user);
+                Users.UserActivitiesRecord current = user.getActivities();
+                Users.UserActivitiesRecord next = withEventCounters(current, resolveEventCounters(userId));
+                if (!Objects.equals(current, next)) {
+                    updateEventCounters(userId, next);
                 }
             });
         }
@@ -91,10 +98,10 @@ public class UserActivityCountersService {
             return;
         }
         usersRepository.findByUserId(normalizedUserId).ifPresent(user -> {
-            Users.UserActivitiesRecord next = withAssetCounters(user.getActivities(), resolveAssetCounters(normalizedUserId));
-            if (!Objects.equals(user.getActivities(), next)) {
-                user.setActivities(next);
-                usersRepository.save(user);
+            Users.UserActivitiesRecord current = user.getActivities();
+            Users.UserActivitiesRecord next = withAssetCounters(current, resolveAssetCounters(normalizedUserId));
+            if (!Objects.equals(current, next)) {
+                updateAssetCounters(normalizedUserId, next);
             }
         });
     }
@@ -118,8 +125,7 @@ public class UserActivityCountersService {
             }
             Users.UserActivitiesRecord next = withFeedbackCounters(user.getActivities(), counters);
             if (!Objects.equals(user.getActivities(), next)) {
-                user.setActivities(next);
-                usersRepository.save(user);
+                updateFeedbackCounters(normalizedUserId, next);
             }
         });
     }
@@ -160,8 +166,7 @@ public class UserActivityCountersService {
                     counters.removed());
             Users.UserActivitiesRecord next = withFeedbackCounters(current, counters);
             if (!Objects.equals(current, next)) {
-                user.setActivities(next);
-                usersRepository.save(user);
+                updateFeedbackCounters(normalizedUserId, next);
             }
         });
     }
@@ -294,6 +299,26 @@ public class UserActivityCountersService {
                 count(safe.adminMetrics()));
     }
 
+    private void updateEventCounters(String userId, Users.UserActivitiesRecord next) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || next == null) {
+            return;
+        }
+        Users.UserEventCountersRecord event = next.event() == null ? emptyActivities().event() : next.event();
+        Update update = new Update()
+                .set("activities.invitations", count(next.invitations()))
+                .set("activities.events", count(next.events()))
+                .set("activities.hosting", count(next.hosting()))
+                .set("activities.event.all", count(event.all()))
+                .set("activities.event.active", count(event.active()))
+                .set("activities.event.pending", count(event.pending()))
+                .set("activities.event.invitations", count(event.invitations()))
+                .set("activities.event.hosting", count(event.hosting()))
+                .set("activities.event.drafts", count(event.drafts()))
+                .set("activities.event.trash", count(event.trash()));
+        updateUserActivityFields(normalizedUserId, update);
+    }
+
     private Users.UserActivitiesRecord withAssetCounters(Users.UserActivitiesRecord current, AssetCounters counters) {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
         return new Users.UserActivitiesRecord(
@@ -319,6 +344,23 @@ public class UserActivityCountersService {
                 count(safe.adminMetrics()));
     }
 
+    private void updateAssetCounters(String userId, Users.UserActivitiesRecord next) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || next == null) {
+            return;
+        }
+        Users.UserAssetCountersRecord asset = next.asset() == null ? emptyActivities().asset() : next.asset();
+        Update update = new Update()
+                .set("activities.cars", count(next.cars()))
+                .set("activities.accommodation", count(next.accommodation()))
+                .set("activities.supplies", count(next.supplies()))
+                .set("activities.asset.cars", count(asset.cars()))
+                .set("activities.asset.accommodation", count(asset.accommodation()))
+                .set("activities.asset.supplies", count(asset.supplies()))
+                .set("activities.asset.tickets", count(asset.tickets()));
+        updateUserActivityFields(normalizedUserId, update);
+    }
+
     private Users.UserActivitiesRecord withFeedbackCounters(Users.UserActivitiesRecord current, FeedbackCounters counters) {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
         return new Users.UserActivitiesRecord(
@@ -342,6 +384,30 @@ public class UserActivityCountersService {
                         counters.removed()),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()));
+    }
+
+    private void updateFeedbackCounters(String userId, Users.UserActivitiesRecord next) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || next == null) {
+            return;
+        }
+        Users.UserEventFeedbackCountersRecord feedback = next.eventFeedback() == null
+                ? emptyActivities().eventFeedback()
+                : next.eventFeedback();
+        Update update = new Update()
+                .set("activities.feedback", count(next.feedback()))
+                .set("activities.eventFeedback.ownEvents", count(feedback.ownEvents()))
+                .set("activities.eventFeedback.pending", count(feedback.pending()))
+                .set("activities.eventFeedback.feedbacked", count(feedback.feedbacked()))
+                .set("activities.eventFeedback.removed", count(feedback.removed()));
+        updateUserActivityFields(normalizedUserId, update);
+    }
+
+    private void updateUserActivityFields(String userId, Update update) {
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(userId)),
+                update,
+                Users.class);
     }
 
     private Users.UserActivitiesRecord emptyActivities() {
