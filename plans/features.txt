@@ -13,12 +13,12 @@ https://developers.facebook.com/ -> business verfication is needed
 
 desktop
 -------
-1) activity event popup: save draft on own event tab or draft event tab should be inserted on the fly nd counter value of the menu should be increased by 1
-moving one bucket to another, like deleting or anything else, should remove on the fly and change the menu counter -1 on existing and +1 for the target (when it will be displayed)
-at the moment only on smartlist reload i see thoise items
-2) maybe it's seed data fix, or query but the activity event menu counters should not include korabbi in the red badge counter
-3) activity popup is over 4K, split into separate components and wire up through store
-there is a host like controller inside which should be removed (store should be used instead)
+1) asset editor
+info menu - as a clickeable link menu item on asset
+(no graph parsing, no auto popuplation form the image
+"paste the link" button can be introduced even on the image, not sure
+
+location input with three button - delete + paste + instead of map, a link icon
 
 kellekek
 --------

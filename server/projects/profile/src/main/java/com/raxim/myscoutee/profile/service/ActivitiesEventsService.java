@@ -923,6 +923,10 @@ public class ActivitiesEventsService {
         maybePostMemberLeftMessage(request);
         maybeApplyLeaveCancellationRefund(request);
         List<ActivityEvent> updated = updateItemState(request, current -> {
+            String currentStatus = safeText(current.getStatus());
+            if (!ActivityEvent.STATUS_TRASHED.equals(currentStatus)) {
+                current.setStatusBeforeSuppression(currentStatus);
+            }
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
         });
