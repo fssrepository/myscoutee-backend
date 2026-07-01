@@ -916,8 +916,8 @@ public class ActivitiesEventsService {
 
     public void trash(EventActionRequestDto request) {
         String sourceId = request == null ? null : normalizeId(request.sourceId());
-        if (isOrganizerLifecycleRequest(request)
-                && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
+        boolean organizerLifecycleRequest = isOrganizerLifecycleRequest(request);
+        if (organizerLifecycleRequest && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
             return;
         }
         maybePostMemberLeftMessage(request);
@@ -929,10 +929,12 @@ public class ActivitiesEventsService {
             }
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
-        });
-        scheduleEventLifecycleChangedNotification(sourceId, updated, "deleted", request == null ? null : request.userId());
-        syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsUnavailable(updated, "trashed");
+        }, true);
+        if (organizerLifecycleRequest) {
+            scheduleEventLifecycleChangedNotification(sourceId, updated, "deleted", request == null ? null : request.userId());
+            syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
+            markEventAttachmentsUnavailable(updated, "trashed");
+        }
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
@@ -973,7 +975,11 @@ public class ActivitiesEventsService {
             return;
         }
         List<ActivityEvent> updated = updateItemState(request, current -> {
-            current.setStatus(ActivityEvent.STATUS_ACTIVE);
+            String restoredStatus = safeText(current.getStatusBeforeSuppression());
+            if (!StringUtils.hasText(restoredStatus) || isSuppressedLifecycleStatus(restoredStatus)) {
+                restoredStatus = ActivityEvent.STATUS_ACTIVE;
+            }
+            current.setStatus(restoredStatus);
             current.setStatusBeforeSuppression(null);
             current.setTrashedAtIso(null);
         });
@@ -2957,10 +2963,17 @@ public class ActivitiesEventsService {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
             return List.of();
         }
+        Set<String> scopedTrashSourceIds = activityEventsRepository.findDirectOwnerEvents(viewer.userId()).stream()
+                .filter(this::isTrashStatus)
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
         LinkedHashMap<String, ActivityEvent> invitationRecordsBySourceId = new LinkedHashMap<>();
         for (ActivityEvent record : activityEventsRepository.findActiveInvitationEvents(viewer.userId())) {
             String sourceId = normalizeId(record == null ? null : record.getSourceId());
             if (!StringUtils.hasText(sourceId)
+                    || scopedTrashSourceIds.contains(sourceId)
                     || !ActivityEvent.STATUS_ACTIVE.equals(safeText(record.getStatus()))
                     || isTrashStatus(record)
                     || !hasInvitationMembership(record, viewer.userId())) {
@@ -3361,13 +3374,20 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater) {
+        return updateItemState(request, updater, false);
+    }
+
+    private List<ActivityEvent> updateItemState(
+            EventActionRequestDto request,
+            Consumer<ActivityEvent> updater,
+            boolean createScopedRecord) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
             return List.of();
         }
 
-        List<ActivityEvent> documents = resolveActionDocuments(viewer.userId(), sourceId);
+        List<ActivityEvent> documents = resolveActionDocuments(viewer.userId(), sourceId, createScopedRecord);
         if (documents.isEmpty()) {
             return List.of();
         }
@@ -3453,6 +3473,10 @@ public class ActivitiesEventsService {
     }
 
     private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String sourceId) {
+        return resolveActionDocuments(ownerUserId, sourceId, false);
+    }
+
+    private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String sourceId, boolean createScopedRecord) {
         ActivityEvent preferred = findPreferredEventRecord(sourceId);
         if (preferred != null && isViewerAdmin(preferred, ownerUserId)) {
             return activityEventsRepository.findBySourceId(sourceId).stream()
@@ -3468,7 +3492,25 @@ public class ActivitiesEventsService {
                     return record;
                 })
                 .map(List::of)
-                .orElseGet(List::of);
+                .orElseGet(() -> createScopedRecord
+                        ? createScopedActionRecord(ownerUserId, sourceId, preferred)
+                        : List.of());
+    }
+
+    private List<ActivityEvent> createScopedActionRecord(String ownerUserId, String sourceId, ActivityEvent preferred) {
+        if (preferred == null
+                || !StringUtils.hasText(ownerUserId)
+                || !StringUtils.hasText(sourceId)
+                || !hasTrackedUserParticipation(preferred, ownerUserId)) {
+            return List.of();
+        }
+        ActivityEvent scoped = cloneDocument(preferred);
+        scoped.setId(resolveExistingId(ownerUserId, sourceId, null));
+        scoped.setSyncKey(resolveExistingSyncKey(ownerUserId, sourceId, null));
+        scoped.setOwnerUserId(ownerUserId);
+        scoped.setAdmins(resolveAdminUserIds(scoped.getSourceId(), scoped.getCreatorUserId()));
+        scoped.normalizeLifecycleState();
+        return List.of(scoped);
     }
 
     private List<ActivityEvent> ensurePublishedEventDocuments(List<ActivityEvent> documents, String actorUserId) {

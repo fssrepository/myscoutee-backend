@@ -168,11 +168,12 @@ public class UserActivityCountersService {
 
     private EventCounters resolveEventCounters(String userId) {
         Set<String> sourceIds = new LinkedHashSet<>();
+        collectSourceIds(sourceIds, activityEventsRepository.findDirectOwnerEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findAdminVisibleEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findAcceptedMembershipEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findActiveInvitationEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findPendingRequestEvents(userId));
-        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(activityEventsRepository.findBySourceIdIn(sourceIds));
+        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(activityEventsRepository.findBySourceIdIn(sourceIds), userId);
 
         int active = 0;
         int pending = 0;
@@ -385,7 +386,7 @@ public class UserActivityCountersService {
         }
     }
 
-    private Map<String, ActivityEvent> preferredEventsBySourceId(Collection<ActivityEvent> events) {
+    private Map<String, ActivityEvent> preferredEventsBySourceId(Collection<ActivityEvent> events, String userId) {
         Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
         for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
             String sourceId = normalizeId(event == null ? null : event.getSourceId());
@@ -393,7 +394,7 @@ public class UserActivityCountersService {
                 continue;
             }
             ActivityEvent current = preferred.get(sourceId);
-            if (current == null || eventPreferenceScore(event) > eventPreferenceScore(current)) {
+            if (current == null || eventPreferenceScore(event, userId) > eventPreferenceScore(current, userId)) {
                 preferred.put(sourceId, event);
             }
         }
@@ -409,11 +410,13 @@ public class UserActivityCountersService {
         }
     }
 
-    private int eventPreferenceScore(ActivityEvent event) {
+    private int eventPreferenceScore(ActivityEvent event, String userId) {
         if (event == null) {
             return 0;
         }
-        return (isTrashScopeStatus(event) ? 0 : 16)
+        String normalizedUserId = normalizeId(userId);
+        return (normalizedUserId.equals(normalizeId(event.getOwnerUserId())) ? 64 : 0)
+                + (isTrashScopeStatus(event) ? 0 : 16)
                 + (isHostingRecordForUser(event, normalizeId(event.getCreatorUserId())) ? 8 : 0)
                 + (isActiveEventStatus(event) ? 2 : 0)
                 + (!safeStrings(event.getAdmins()).isEmpty() ? 1 : 0);
