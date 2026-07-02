@@ -743,7 +743,7 @@ public class ActivitiesEventsService {
                 resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
-        return new EventSubEventsResultDto(slots);
+        return new EventSubEventsResultDto(parent.getMode(), slots);
     }
 
     private ActivityEvent preferredSubEventsDefinitionRecord(List<ActivityEvent> records, String viewerUserId) {

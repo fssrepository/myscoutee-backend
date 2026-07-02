@@ -366,6 +366,7 @@ public final class EventsDtos {
     }
 
     public record EventSubEventsResultDto(
+            String mode,
             List<EventSubEventsSlotDto> slots) {
     }
 

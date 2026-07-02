@@ -11,12 +11,9 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-event feedback lazy load
-a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
-
-desktop
--------
-1) asset editor
+1) event feedback lazy load
+2) a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
+3) asset editor
 info menu - as a clickeable link menu item on asset
 (no graph parsing, no auto popuplation form the image
 "paste the link" button can be introduced even on the image, not sure
