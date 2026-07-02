@@ -26,6 +26,7 @@ import java.util.function.BiPredicate;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -61,8 +62,10 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageAttachmentDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReplyDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadReceiptDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -99,6 +102,8 @@ public class ChatService {
     private static final String ASSET_TYPE_CAR = "Car";
     private static final String ASSET_TYPE_ACCOMMODATION = "Accommodation";
     private static final String ASSET_TYPE_SUPPLIES = "Supplies";
+    private static final int DEFAULT_CHAT_MESSAGES_PAGE_SIZE = 20;
+    private static final int MAX_CHAT_MESSAGES_PAGE_SIZE = 100;
 
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
@@ -317,6 +322,42 @@ public class ChatService {
         return messages.stream()
                 .map(message -> chatMessageMapper.toDto(message, userId, userCache))
                 .toList();
+    }
+
+    public ChatMessagesPageResponseDto queryMessagesPage(
+            String chatId,
+            String requestedUserId,
+            Integer limit,
+            String cursor) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        int pageSize = normalizeChatMessagesPageSize(limit);
+        int startIndex = normalizeChatMessagesCursor(cursor);
+        int total = normalizeLongCount(chatMessagesRepository.countByChatId(snapshot.chatId()));
+        if (startIndex >= total) {
+            return new ChatMessagesPageResponseDto(List.of(), total, null, null);
+        }
+        List<ChatMessage> messages = chatMessagesRepository
+                .findByChatIdOrderBySentAtIsoDesc(snapshot.chatId(), PageRequest.of(startIndex / pageSize, pageSize))
+                .stream()
+                .filter(Objects::nonNull)
+                .toList();
+        List<String> loadedMessageIds = messages.stream()
+                .map(ChatMessage::getId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .toList();
+        ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, loadedMessageIds, messages);
+        Map<String, Users> userCache = new LinkedHashMap<>();
+        List<ChatMessageDto> items = messages.stream()
+                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
+                .toList();
+        int nextIndex = startIndex + items.size();
+        return new ChatMessagesPageResponseDto(
+                items,
+                total,
+                nextIndex < total ? String.valueOf(nextIndex) : null,
+                toReadReceiptDto(readUpdate));
     }
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text) {
@@ -770,7 +811,7 @@ public class ChatService {
         String readAtIso = Instant.now().toString();
         Users viewer = null;
         ChatReadAvatarRecord reader = null;
-        List<ChatMessage> messages = targetAllMessages && preloadedMessages != null
+        List<ChatMessage> messages = preloadedMessages != null
                 ? preloadedMessages
                 : targetAllMessages
                 ? chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(snapshot.chatId())
@@ -800,9 +841,9 @@ public class ChatService {
             chatMessagesRepository.saveAll(changedMessages);
         }
         if (viewerChat != null && !changedMessages.isEmpty()) {
-            int unread = targetAllMessages && preloadedMessages != null
-                    ? countUnreadMessages(preloadedMessages, viewerUserId)
-                    : countUnreadMessages(snapshot.chatId(), viewerUserId);
+            int unread = targetAllMessages && preloadedMessages == null
+                    ? countUnreadMessages(snapshot.chatId(), viewerUserId)
+                    : Math.max(0, normalizeCount(viewerChat.getUnread()) - changedMessages.size());
             if (normalizeCount(viewerChat.getUnread()) != unread) {
                 Chat nextViewerChat = copyChat(viewerChat);
                 nextViewerChat.setUnread(unread);
@@ -1422,6 +1463,19 @@ public class ChatService {
                 readUpdate.unread());
     }
 
+    private ChatReadReceiptDto toReadReceiptDto(ChatReadUpdate readUpdate) {
+        if (readUpdate == null || readUpdate.readMessageIds().isEmpty()) {
+            return null;
+        }
+        return new ChatReadReceiptDto(
+                readUpdate.reader().id(),
+                readUpdate.reader().initials(),
+                readUpdate.reader().gender(),
+                readUpdate.readMessageIds(),
+                readUpdate.readAtIso(),
+                readUpdate.unread());
+    }
+
     private void publishChatEvent(ChatStreamEvent streamEvent) {
         chatStreamPublisher.publish(streamEvent);
     }
@@ -1801,6 +1855,31 @@ public class ChatService {
 
     private int normalizeCount(Integer value) {
         return Math.max(0, value == null ? 0 : value);
+    }
+
+    private int normalizeLongCount(long value) {
+        if (value <= 0L) {
+            return 0;
+        }
+        return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
+    }
+
+    private int normalizeChatMessagesPageSize(Integer value) {
+        if (value == null) {
+            return DEFAULT_CHAT_MESSAGES_PAGE_SIZE;
+        }
+        return Math.max(1, Math.min(MAX_CHAT_MESSAGES_PAGE_SIZE, value));
+    }
+
+    private int normalizeChatMessagesCursor(String cursor) {
+        if (!StringUtils.hasText(cursor)) {
+            return 0;
+        }
+        try {
+            return Math.max(0, Integer.parseInt(cursor.trim()));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
     }
 
     private String normalizeText(String value) {

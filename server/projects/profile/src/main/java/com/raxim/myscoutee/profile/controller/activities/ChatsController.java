@@ -15,6 +15,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceDelete
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageMutationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
@@ -65,10 +66,12 @@ public class ChatsController {
     }
 
     @GetMapping("/{chatId}/messages")
-    public List<ChatMessageDto> queryMessages(
+    public ChatMessagesPageResponseDto queryMessages(
             @PathVariable("chatId") String chatId,
-            @RequestParam("userId") String userId) {
-        return chatService.queryMessages(chatId, userId);
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "limit", required = false) Integer limit) {
+        return chatService.queryMessagesPage(chatId, userId, limit, cursor);
     }
 
     @PostMapping("/{chatId}/messages")

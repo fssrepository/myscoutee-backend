@@ -73,6 +73,13 @@ public final class ChatDtos {
             String nextCursor) {
     }
 
+    public record ChatMessagesPageResponseDto(
+            List<ChatMessageDto> items,
+            Integer total,
+            String nextCursor,
+            ChatReadReceiptDto read) {
+    }
+
     public record ChatMessageDto(
             String id,
             String clientId,

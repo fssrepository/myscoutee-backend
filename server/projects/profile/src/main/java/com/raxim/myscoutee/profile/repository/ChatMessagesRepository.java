@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -12,6 +13,11 @@ import com.raxim.myscoutee.profile.data.document.ChatMessage;
 public interface ChatMessagesRepository extends MongoRepository<ChatMessage, String> {
     @Query(value = "{ 'chatId': ?0 }", sort = "{ 'sentAtIso': 1 }")
     List<ChatMessage> findByChatIdOrderBySentAtIsoAsc(String chatId);
+
+    @Query(value = "{ 'chatId': ?0 }", sort = "{ 'sentAtIso': -1 }")
+    List<ChatMessage> findByChatIdOrderBySentAtIsoDesc(String chatId, Pageable pageable);
+
+    long countByChatId(String chatId);
 
     List<ChatMessage> findByChatIdIn(Collection<String> chatIds);
 
