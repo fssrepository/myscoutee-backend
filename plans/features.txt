@@ -11,12 +11,12 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
+for tomorrow
+------
 chat resources menu counter update
 popup component introduction to chat message popup window
-
 app-menu -> infocard/imagecard etc. to wire to appmenu-host
 base package cleanup like builder
-
 1) event feedback lazy load
 2) a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
 3) asset editor
