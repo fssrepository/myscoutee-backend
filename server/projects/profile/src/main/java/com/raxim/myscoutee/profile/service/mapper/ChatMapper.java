@@ -13,7 +13,9 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseAssigneeRecord;
 import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseRecord;
+import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMemberDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseAssigneeDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseDto;
@@ -26,16 +28,22 @@ public class ChatMapper {
     private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
 
     public ChatDto toDto(Chat record) {
+        return toDto(record, Map.of());
+    }
+
+    public ChatDto toDto(Chat record, Map<String, Users> usersById) {
         if (record == null) {
             return null;
         }
+        List<String> memberIds = new ArrayList<>(record.getMemberIds() == null ? List.of() : record.getMemberIds());
         return new ChatDto(
                 normalizeId(record.getChatId()),
                 safeText(record.getAvatar()),
                 safeText(record.getTitle()),
                 safeText(record.getLastMessage()),
                 safeText(record.getLastSenderId()),
-                new ArrayList<>(record.getMemberIds() == null ? List.of() : record.getMemberIds()),
+                memberIds,
+                toMemberDtos(memberIds, usersById),
                 normalizeCount(record.getUnread()),
                 record.getDateIso(),
                 record.getChannelType(),
@@ -47,9 +55,13 @@ public class ChatMapper {
     }
 
     public Map<String, ChatDto> toMap(Collection<Chat> records) {
+        return toMap(records, Map.of());
+    }
+
+    public Map<String, ChatDto> toMap(Collection<Chat> records, Map<String, Users> usersById) {
         Map<String, ChatDto> result = new LinkedHashMap<>();
         for (Chat record : records == null ? List.<Chat>of() : records) {
-            ChatDto dto = toDto(record);
+            ChatDto dto = toDto(record, usersById);
             String ownerId = normalizeId(dto == null ? null : dto.ownerId());
             if (StringUtils.hasText(ownerId)) {
                 result.put(ownerId, dto);
@@ -69,6 +81,7 @@ public class ChatMapper {
                 dto.lastMessage(),
                 dto.lastSenderId(),
                 new ArrayList<>(dto.memberIds() == null ? List.of() : dto.memberIds()),
+                new ArrayList<>(dto.members() == null ? List.of() : dto.members()),
                 dto.unread(),
                 dto.dateIso(),
                 dto.channelType(),
@@ -77,6 +90,32 @@ public class ChatMapper {
                 dto.distanceMetersExact(),
                 metrics,
                 dto.supportCase());
+    }
+
+    private List<ChatMemberDto> toMemberDtos(List<String> memberIds, Map<String, Users> usersById) {
+        if (memberIds == null || memberIds.isEmpty() || usersById == null || usersById.isEmpty()) {
+            return List.of();
+        }
+        List<ChatMemberDto> members = new ArrayList<>();
+        for (String memberId : memberIds) {
+            String normalizedMemberId = normalizeId(memberId);
+            if (!StringUtils.hasText(normalizedMemberId)) {
+                continue;
+            }
+            Users user = usersById.get(normalizedMemberId);
+            if (user == null) {
+                continue;
+            }
+            String name = safeText(user.getName());
+            String label = StringUtils.hasText(name) ? name : normalizedMemberId;
+            members.add(new ChatMemberDto(
+                    normalizedMemberId,
+                    label,
+                    StringUtils.hasText(safeText(user.getInitials())) ? safeText(user.getInitials()) : initialsFromText(label),
+                    normalizeGender(user.getGender()),
+                    firstImageUrl(user.getImages())));
+        }
+        return members;
     }
 
     private ChatSupportCaseDto toSupportCaseDto(Chat record) {
@@ -126,5 +165,38 @@ public class ChatMapper {
 
     private int normalizeCount(Integer value) {
         return value == null ? 0 : Math.max(0, value);
+    }
+
+    private String normalizeGender(String value) {
+        String normalized = safeText(value).toLowerCase();
+        return "woman".equals(normalized) ? "woman" : "man";
+    }
+
+    private String firstImageUrl(List<String> images) {
+        if (images == null) {
+            return null;
+        }
+        return images.stream()
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String initialsFromText(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String part : text.split("\\s+")) {
+            if (StringUtils.hasText(part)) {
+                builder.append(Character.toUpperCase(part.charAt(0)));
+            }
+            if (builder.length() >= 2) {
+                break;
+            }
+        }
+        return builder.toString();
     }
 }

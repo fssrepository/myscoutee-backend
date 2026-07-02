@@ -302,7 +302,8 @@ public class ChatService {
         adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
 
         Chat viewerChat = findOwnerChat(updatedDocuments, userId);
-        return toChatDto(viewerChat == null ? updatedDocuments.get(0) : viewerChat);
+        Chat responseChat = viewerChat == null ? updatedDocuments.get(0) : viewerChat;
+        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
     }
 
     public List<ChatMessageDto> queryMessages(String chatId, String requestedUserId) {
@@ -1049,6 +1050,10 @@ public class ChatService {
         return chatMapper.toDto(chat);
     }
 
+    private ChatDto toChatDto(Chat chat, Map<String, Users> usersById) {
+        return chatMapper.toDto(chat, usersById);
+    }
+
     private ChatProjection toChatProjection(Chat chat) {
         if (chat == null) {
             return null;
@@ -1065,14 +1070,16 @@ public class ChatService {
     }
 
     private List<ChatDto> chatDtosWithMetrics(List<Chat> records) {
-        List<Chat> metricRecords = (records == null ? List.<Chat>of() : records).stream()
+        List<Chat> safeRecords = records == null ? List.of() : records;
+        Map<String, Users> usersById = chatMemberUsers(safeRecords);
+        List<Chat> metricRecords = safeRecords.stream()
                 .filter(this::metricChatRecord)
                 .toList();
-        Map<String, ChatDto> dtoByOwnerId = chatMapper.toMap(metricRecords);
+        Map<String, ChatDto> dtoByOwnerId = chatMapper.toMap(metricRecords, usersById);
         patchChatDtosWithMetrics(metricRecords, dtoByOwnerId);
         List<ChatDto> result = new ArrayList<>();
-        for (Chat record : records == null ? List.<Chat>of() : records) {
-            ChatDto dto = toChatDto(record);
+        for (Chat record : safeRecords) {
+            ChatDto dto = toChatDto(record, usersById);
             String ownerId = normalizeId(dto == null ? null : dto.ownerId());
             if (StringUtils.hasText(ownerId) && supportsChatMetrics(chatChannelType(record))) {
                 result.add(dtoByOwnerId.getOrDefault(ownerId, dto));
@@ -1081,6 +1088,29 @@ public class ChatService {
             }
         }
         return result;
+    }
+
+    private Map<String, Users> chatMemberUsers(Collection<Chat> records) {
+        Set<String> memberIds = new LinkedHashSet<>();
+        for (Chat record : records == null ? List.<Chat>of() : records) {
+            for (String memberId : safeMemberIds(record == null ? null : record.getMemberIds())) {
+                String normalizedMemberId = normalizeId(memberId);
+                if (StringUtils.hasText(normalizedMemberId)) {
+                    memberIds.add(normalizedMemberId);
+                }
+            }
+        }
+        if (memberIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, Users> usersById = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(memberIds)) {
+            String userId = normalizeId(user == null ? null : user.getUserId());
+            if (StringUtils.hasText(userId)) {
+                usersById.put(userId, user);
+            }
+        }
+        return usersById;
     }
 
     private void patchChatDtosWithMetrics(List<Chat> records, Map<String, ChatDto> dtoByOwnerId) {

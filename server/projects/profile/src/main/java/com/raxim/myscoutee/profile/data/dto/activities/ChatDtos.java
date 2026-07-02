@@ -13,6 +13,14 @@ public final class ChatDtos {
             String imageUrl) {
     }
 
+    public record ChatMemberDto(
+            String id,
+            String name,
+            String initials,
+            String gender,
+            String imageUrl) {
+    }
+
     public record ChatDto(
             String id,
             String avatar,
@@ -20,6 +28,7 @@ public final class ChatDtos {
             String lastMessage,
             String lastSenderId,
             List<String> memberIds,
+            List<ChatMemberDto> members,
             Integer unread,
             String dateIso,
             String channelType,
