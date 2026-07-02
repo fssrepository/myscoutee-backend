@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
-import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageAttachmentRecord;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatMessageAttachmentRecord;
 import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
 
 @Service

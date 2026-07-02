@@ -24,6 +24,8 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -224,9 +226,12 @@ public class AdminModerationService {
         String chatId = "c-support-admin-" + targetUserId;
         String messageId = "m-admin-" + new ObjectId().toHexString();
         Users targetUser = usersRepository.findByUserId(targetUserId).orElse(null);
-        Chat.ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
-        Chat.ChatMessageRecord userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
-        chatMessagesRepository.save(ChatMessage.fromRecord(chatId, userMessage));
+        ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
+        ChatMessage userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
+        userMessage.setChatId(chatId);
+        userMessage.setMongoId(ChatMessage.buildMongoId(chatId, userMessage.getId()));
+        userMessage.refreshMessageSearchFields();
+        chatMessagesRepository.save(userMessage);
         Chat userChat = appendSupportMessageForOwner(
                 targetUserId,
                 chatId,
@@ -304,16 +309,16 @@ public class AdminModerationService {
         return supportCase;
     }
 
-    private Chat.ChatMessageRecord supportMessage(
+    private ChatMessage supportMessage(
             String messageId,
             String sender,
-            Chat.ChatAvatarRecord avatar,
+            ChatAvatarRecord avatar,
             String text,
             Instant now,
             String nowIso,
             boolean mine,
-            List<Chat.ChatReadAvatarRecord> readBy) {
-        Chat.ChatMessageRecord message = new Chat.ChatMessageRecord();
+            List<ChatReadAvatarRecord> readBy) {
+        ChatMessage message = new ChatMessage();
         message.setId(messageId);
         message.setSender(sender);
         message.setSenderAvatar(avatar);
@@ -325,8 +330,8 @@ public class AdminModerationService {
         return message;
     }
 
-    private Chat.ChatAvatarRecord chatAvatar(String id, String initials, String gender) {
-        Chat.ChatAvatarRecord avatar = new Chat.ChatAvatarRecord();
+    private ChatAvatarRecord chatAvatar(String id, String initials, String gender) {
+        ChatAvatarRecord avatar = new ChatAvatarRecord();
         avatar.setId(id);
         avatar.setInitials(initials);
         avatar.setGender(gender);
@@ -448,8 +453,8 @@ public class AdminModerationService {
                         && normalizedTargetUserId.equals(normalize(message.getSenderAvatar().getId())));
     }
 
-    private AdminChatMessageDto toChatMessage(Chat.ChatMessageRecord message) {
-        Chat.ChatAvatarRecord avatar = message.getSenderAvatar();
+    private AdminChatMessageDto toChatMessage(ChatMessage message) {
+        ChatAvatarRecord avatar = message.getSenderAvatar();
         return new AdminChatMessageDto(
                 message.getId(),
                 message.getSender(),

@@ -24,14 +24,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.Chat.ChatAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.Chat.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
+import com.raxim.myscoutee.profile.service.mapper.ChatMessageMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ChatServiceTest {
@@ -71,7 +72,8 @@ class ChatServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
-                new ChatMapper());
+                new ChatMapper(),
+                new ChatMessageMapper(usersRepository));
     }
 
     @AfterEach

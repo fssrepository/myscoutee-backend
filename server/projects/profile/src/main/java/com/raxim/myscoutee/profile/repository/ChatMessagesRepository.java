@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 
 public interface ChatMessagesRepository extends MongoRepository<ChatMessage, String> {
+    @Query(value = "{ 'chatId': ?0 }", sort = "{ 'sentAtIso': 1 }")
     List<ChatMessage> findByChatIdOrderBySentAtIsoAsc(String chatId);
 
     List<ChatMessage> findByChatIdIn(Collection<String> chatIds);

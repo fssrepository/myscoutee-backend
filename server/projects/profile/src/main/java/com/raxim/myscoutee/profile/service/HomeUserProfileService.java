@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
 import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -611,7 +612,7 @@ public class HomeUserProfileService {
         String messageId = normalizeOptionalText(request.messageId());
         String assetId = normalizeOptionalText(request.assetId());
         String assetType = normalizeOptionalText(request.assetType());
-        Chat.ChatMessageRecord reportedChatMessage = null;
+        ChatMessage reportedChatMessage = null;
         if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
             Chat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
             if (reportedChat == null) {
@@ -2168,7 +2169,7 @@ public class HomeUserProfileService {
         if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
             return null;
         }
-        Chat.ChatMessageRecord message = findChatMessage(normalizedChatId, normalizedMessageId);
+        ChatMessage message = findChatMessage(normalizedChatId, normalizedMessageId);
         if (message == null || message.getSenderAvatar() == null) {
             return null;
         }
@@ -2185,14 +2186,14 @@ public class HomeUserProfileService {
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private Chat.ChatMessageRecord findChatMessage(String chatId, String messageId) {
+    private ChatMessage findChatMessage(String chatId, String messageId) {
         String normalizedChatId = normalizeId(chatId);
         String normalizedMessageId = normalizeId(messageId);
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedMessageId)) {
             return null;
         }
         return chatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
-                .map(message -> (Chat.ChatMessageRecord) message)
+                .map(message -> (ChatMessage) message)
                 .orElse(null);
     }
 
