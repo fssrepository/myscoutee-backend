@@ -1,7 +1,11 @@
 package com.raxim.myscoutee.profile.service.mapper;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -10,6 +14,7 @@ import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseAssigneeRecord;
 import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseRecord;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseAssigneeDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseDto;
 
@@ -37,7 +42,41 @@ public class ChatMapper {
                 record.getOwnerId(),
                 record.getDistanceKm(),
                 record.getDistanceMetersExact(),
+                null,
                 toSupportCaseDto(record));
+    }
+
+    public Map<String, ChatDto> toMap(Collection<Chat> records) {
+        Map<String, ChatDto> result = new LinkedHashMap<>();
+        for (Chat record : records == null ? List.<Chat>of() : records) {
+            ChatDto dto = toDto(record);
+            String chatId = normalizeId(dto == null ? null : dto.id());
+            if (StringUtils.hasText(chatId)) {
+                result.put(chatId, dto);
+            }
+        }
+        return result;
+    }
+
+    public ChatDto withMetrics(ChatDto dto, ChatMetricsDto metrics) {
+        if (dto == null || Objects.equals(dto.metrics(), metrics)) {
+            return dto;
+        }
+        return new ChatDto(
+                dto.id(),
+                dto.avatar(),
+                dto.title(),
+                dto.lastMessage(),
+                dto.lastSenderId(),
+                new ArrayList<>(dto.memberIds() == null ? List.of() : dto.memberIds()),
+                dto.unread(),
+                dto.dateIso(),
+                dto.channelType(),
+                dto.ownerId(),
+                dto.distanceKm(),
+                dto.distanceMetersExact(),
+                metrics,
+                dto.supportCase());
     }
 
     private ChatSupportCaseDto toSupportCaseDto(Chat record) {

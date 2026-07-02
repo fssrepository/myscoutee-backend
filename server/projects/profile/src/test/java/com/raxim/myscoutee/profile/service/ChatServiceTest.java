@@ -26,6 +26,9 @@ import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -44,6 +47,12 @@ class ChatServiceTest {
     private MongoTemplate mongoTemplate;
     @Mock
     private UsersRepository usersRepository;
+    @Mock
+    private ActivityMembersRepository activityMembersRepository;
+    @Mock
+    private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
+    @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
@@ -66,6 +75,9 @@ class ChatServiceTest {
                 chatMessagesRepository,
                 mongoTemplate,
                 usersRepository,
+                activityMembersRepository,
+                activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository,
                 homeUserProfileService,
                 chatStreamPublisher,
                 chatPushNotificationService,

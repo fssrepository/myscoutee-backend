@@ -26,7 +26,24 @@ public final class ChatDtos {
             String ownerId,
             Double distanceKm,
             Integer distanceMetersExact,
+            ChatMetricsDto metrics,
             ChatSupportCaseDto supportCase) {
+    }
+
+    public record ChatMetricBucketDto(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
+    }
+
+    public record ChatMetricsDto(
+            ChatMetricBucketDto members,
+            ChatMetricBucketDto car,
+            ChatMetricBucketDto accommodation,
+            ChatMetricBucketDto supplies,
+            Integer groupsCount,
+            Integer pendingTotal) {
     }
 
     public record ChatSupportCaseDto(
