@@ -36,7 +36,8 @@ public record ChatStreamEvent(
         List<ChatMessageAttachmentDto> attachments,
         Boolean typing,
         List<String> messageIds,
-        String readAtIso) {
+        String readAtIso,
+        Integer unread) {
 
     public static ChatStreamEvent message(
             String chatId,
@@ -83,6 +84,7 @@ public record ChatStreamEvent(
                 attachments,
                 null,
                 null,
+                null,
                 null);
     }
 
@@ -117,6 +119,7 @@ public record ChatStreamEvent(
                 null,
                 typing,
                 null,
+                null,
                 null);
     }
 
@@ -126,7 +129,8 @@ public record ChatStreamEvent(
             String senderInitials,
             String senderGender,
             List<String> messageIds,
-            String readAtIso) {
+            String readAtIso,
+            Integer unread) {
         return new ChatStreamEvent(
                 "read",
                 chatId,
@@ -151,7 +155,8 @@ public record ChatStreamEvent(
                 null,
                 null,
                 messageIds,
-                readAtIso);
+                readAtIso,
+                unread);
     }
 
     public ChatSocketEventDto toSocketEvent(String viewerUserId) {
@@ -182,7 +187,8 @@ public record ChatStreamEvent(
                             senderInitials,
                             senderGender,
                             messageIds == null ? List.of() : List.copyOf(messageIds),
-                            readAtIso),
+                            readAtIso,
+                            unread),
                     null,
                     null,
                     null);

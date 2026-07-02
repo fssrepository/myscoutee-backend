@@ -50,9 +50,9 @@ public class ChatMapper {
         Map<String, ChatDto> result = new LinkedHashMap<>();
         for (Chat record : records == null ? List.<Chat>of() : records) {
             ChatDto dto = toDto(record);
-            String chatId = normalizeId(dto == null ? null : dto.id());
-            if (StringUtils.hasText(chatId)) {
-                result.put(chatId, dto);
+            String ownerId = normalizeId(dto == null ? null : dto.ownerId());
+            if (StringUtils.hasText(ownerId)) {
+                result.put(ownerId, dto);
             }
         }
         return result;

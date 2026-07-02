@@ -132,7 +132,8 @@ public final class ChatDtos {
             String userInitials,
             String userGender,
             List<String> messageIds,
-            String readAtIso) {
+            String readAtIso,
+            Integer unread) {
     }
 
     public record ChatSocketEventDto(
