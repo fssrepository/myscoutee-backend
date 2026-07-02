@@ -7,15 +7,15 @@ import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.raxim.myscoutee.profile.controller.activities.ActivitiesChatsController;
+import com.raxim.myscoutee.profile.controller.activities.ChatsController;
 import com.raxim.myscoutee.profile.controller.activities.ActivitiesEventLeaderboardController;
 import com.raxim.myscoutee.profile.controller.activities.ActivitiesEventsController;
 import com.raxim.myscoutee.profile.controller.auth.AuthController;
 import com.raxim.myscoutee.profile.controller.assets.AssetsController;
 import com.raxim.myscoutee.profile.controller.help.HelpCenterController;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageMutationRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSupportCaseMutationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageMutationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPostMessageRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseMutationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
@@ -208,49 +208,49 @@ class BoundaryPolicyAnnotationTest {
     @Test
     void chatBoundaryMethodsDeclareChatPolicies() throws Exception {
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "sendMessage",
                 new Class<?>[] { String.class, ChatPostMessageRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_MESSAGE_CREATE,
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "editMessage",
                 new Class<?>[] { String.class, String.class, ChatMessageMutationRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_MESSAGE_EDIT,
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "deleteMessage",
                 new Class<?>[] { String.class, String.class, String.class },
                 AccessPolicyKeys.CHAT_MESSAGE_DELETE,
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "pinMessage",
                 new Class<?>[] { String.class, String.class, ChatMessageMutationRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_MESSAGE_PIN,
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "reactToMessage",
                 new Class<?>[] { String.class, String.class, ChatMessageMutationRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_REACTION_MANAGE,
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "updateMessageAttachments",
                 new Class<?>[] { String.class, String.class, ChatMessageMutationRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_ATTACHMENT_ADD,
                 "#userId ?: #actorUserId",
                 "#chatId");
         assertMethodPolicy(
-                ActivitiesChatsController.class,
+                ChatsController.class,
                 "updateSupportCase",
                 new Class<?>[] { String.class, ChatSupportCaseMutationRequestDto.class, String.class },
                 AccessPolicyKeys.CHAT_SUPPORT_MANAGE,

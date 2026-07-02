@@ -2,8 +2,8 @@ package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
 
-public final class ActivityChatsDtos {
-    private ActivityChatsDtos() {
+public final class ChatDtos {
+    private ChatDtos() {
     }
 
     public record ChatReadAvatarDto(
@@ -13,32 +13,71 @@ public final class ActivityChatsDtos {
             String imageUrl) {
     }
 
-    public record ChatSummaryDto(
+    public record ChatMemberDto(
+            String id,
+            String name,
+            String initials,
+            String gender,
+            String imageUrl) {
+    }
+
+    public record ChatDto(
             String id,
             String avatar,
             String title,
             String lastMessage,
             String lastSenderId,
             List<String> memberIds,
+            List<ChatMemberDto> members,
             Integer unread,
             String dateIso,
             String channelType,
-            String eventId,
-            String subEventId,
-            String groupId,
+            String ownerId,
             Double distanceKm,
             Integer distanceMetersExact,
-            String supportCaseStatus,
-            String supportCaseAssigneeUserId,
-            String supportCaseAssigneeName,
-            String supportCaseAssigneeInitials,
-            String supportCaseUpdatedAtIso) {
+            ChatMetricsDto metrics,
+            ChatSupportCaseDto supportCase) {
+    }
+
+    public record ChatMetricBucketDto(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
+    }
+
+    public record ChatMetricsDto(
+            ChatMetricBucketDto members,
+            ChatMetricBucketDto car,
+            ChatMetricBucketDto accommodation,
+            ChatMetricBucketDto supplies,
+            Integer groupsCount,
+            Integer pendingTotal) {
+    }
+
+    public record ChatSupportCaseDto(
+            String status,
+            ChatSupportCaseAssigneeDto assignee,
+            String updatedAtIso) {
+    }
+
+    public record ChatSupportCaseAssigneeDto(
+            String userId,
+            String name,
+            String initials) {
     }
 
     public record ChatPageResponseDto(
-            List<ChatSummaryDto> items,
+            List<ChatDto> items,
             Integer total,
             String nextCursor) {
+    }
+
+    public record ChatMessagesPageResponseDto(
+            List<ChatMessageDto> items,
+            Integer total,
+            String nextCursor,
+            ChatReadReceiptDto read) {
     }
 
     public record ChatMessageDto(
@@ -109,7 +148,8 @@ public final class ActivityChatsDtos {
             String userInitials,
             String userGender,
             List<String> messageIds,
-            String readAtIso) {
+            String readAtIso,
+            Integer unread) {
     }
 
     public record ChatSocketEventDto(

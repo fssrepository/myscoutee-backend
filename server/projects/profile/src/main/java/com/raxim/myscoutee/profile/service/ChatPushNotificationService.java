@@ -10,7 +10,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService;
@@ -35,12 +35,12 @@ public class ChatPushNotificationService {
         this.notificationOutboxService = notificationOutboxService;
     }
 
-    public void notifyRecipients(List<ActivityChat> chatDocuments, ChatStreamEvent event) {
+    public void notifyRecipients(List<Chat> chatDocuments, ChatStreamEvent event) {
         if (event == null || chatDocuments == null || chatDocuments.isEmpty()) {
             return;
         }
 
-        ActivityChat referenceChat = chatDocuments.get(0);
+        Chat referenceChat = chatDocuments.get(0);
         String chatTitle = resolveChatTitle(referenceChat, event);
         String body = buildBody(event);
         String senderAvatarUrl = resolveSenderAvatarUrl(event.senderId());
@@ -80,10 +80,10 @@ public class ChatPushNotificationService {
                 safeText(event.senderId())));
     }
 
-    private Set<String> resolveRecipientUserIds(List<ActivityChat> chatDocuments, String senderUserId) {
+    private Set<String> resolveRecipientUserIds(List<Chat> chatDocuments, String senderUserId) {
         Set<String> recipients = new LinkedHashSet<>();
         String normalizedSenderUserId = safeText(senderUserId);
-        for (ActivityChat chat : chatDocuments) {
+        for (Chat chat : chatDocuments) {
             if (chat == null) {
                 continue;
             }
@@ -102,7 +102,7 @@ public class ChatPushNotificationService {
         return recipients;
     }
 
-    private String resolveChatTitle(ActivityChat referenceChat, ChatStreamEvent event) {
+    private String resolveChatTitle(Chat referenceChat, ChatStreamEvent event) {
         if (referenceChat != null && StringUtils.hasText(referenceChat.getTitle())) {
             return referenceChat.getTitle().trim();
         }

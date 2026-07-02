@@ -61,7 +61,7 @@ class ActivitiesMembersServiceTest {
     @Mock
     private AdminTelemetryService adminTelemetryService;
     @Mock
-    private ActivitiesChatService activitiesChatService;
+    private ChatService chatService;
     @Mock
     private EventSlotReadModelService eventSlotReadModelService;
     @Mock
@@ -85,7 +85,7 @@ class ActivitiesMembersServiceTest {
                 eventInviteNotificationService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                activitiesChatService,
+                chatService,
                 eventSlotReadModelService,
                 accessControlService,
                 userActivityCountersService);
@@ -137,7 +137,7 @@ class ActivitiesMembersServiceTest {
 
         verify(affinityRecomputeTaskService, atLeastOnce()).enqueueEventMembersChanged("event-1", "admin");
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
-        verify(activitiesChatService).postSystemMessage("event-1", "Target User was disqualified from the event.", "member-disqualify");
+        verify(chatService).postSystemMessage("event-1", "Target User was disqualified from the event.", "member-disqualify");
     }
 
     @Test
@@ -205,7 +205,7 @@ class ActivitiesMembersServiceTest {
         verify(activityMembersRepository).save(savedMember.capture());
         assertThat(savedMember.getValue().getStatus()).isEqualTo("accepted");
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
-        verify(activitiesChatService).postSystemMessage("event-1", "Target User was reinstated to the event.", "member-reinstate");
+        verify(chatService).postSystemMessage("event-1", "Target User was reinstated to the event.", "member-reinstate");
     }
 
     @Test
@@ -305,7 +305,7 @@ class ActivitiesMembersServiceTest {
         assertThat(savedMember.getValue().getPendingSource()).isNull();
         assertThat(savedMember.getValue().getRequestKind()).isNull();
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
-        verify(activitiesChatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
+        verify(chatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
     }
 
     @Test
@@ -371,7 +371,7 @@ class ActivitiesMembersServiceTest {
                 org.mockito.ArgumentMatchers.eq("admin"),
                 anyString());
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
-        verify(activitiesChatService).postSystemMessage("event-1", "Target User left the event.", "member-left");
+        verify(chatService).postSystemMessage("event-1", "Target User left the event.", "member-left");
     }
 
     @Test

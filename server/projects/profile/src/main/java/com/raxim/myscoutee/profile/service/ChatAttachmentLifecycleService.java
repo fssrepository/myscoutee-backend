@@ -7,9 +7,9 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatMessageAttachmentRecord;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
 
 @Service
 public class ChatAttachmentLifecycleService {
@@ -18,10 +18,10 @@ public class ChatAttachmentLifecycleService {
     private static final String STATUS_AVAILABLE = "available";
     private static final String STATUS_UNAVAILABLE = "unavailable";
 
-    private final ActivityChatMessagesRepository activityChatMessagesRepository;
+    private final ChatMessagesRepository chatMessagesRepository;
 
-    public ChatAttachmentLifecycleService(ActivityChatMessagesRepository activityChatMessagesRepository) {
-        this.activityChatMessagesRepository = activityChatMessagesRepository;
+    public ChatAttachmentLifecycleService(ChatMessagesRepository chatMessagesRepository) {
+        this.chatMessagesRepository = chatMessagesRepository;
     }
 
     public void markEventUnavailable(String eventId, String reason) {
@@ -47,8 +47,8 @@ public class ChatAttachmentLifecycleService {
             return;
         }
 
-        List<ActivityChatMessage> changedMessages = new ArrayList<>();
-        for (ActivityChatMessage message : activityChatMessagesRepository.findByMessageAttachmentTypeAndEntityId(normalizedType, normalizedEntityId)) {
+        List<ChatMessage> changedMessages = new ArrayList<>();
+        for (ChatMessage message : chatMessagesRepository.findByMessageAttachmentTypeAndEntityId(normalizedType, normalizedEntityId)) {
             if (message == null || message.getAttachments() == null || message.getAttachments().isEmpty()) {
                 continue;
             }
@@ -65,7 +65,7 @@ public class ChatAttachmentLifecycleService {
             }
         }
         if (!changedMessages.isEmpty()) {
-            activityChatMessagesRepository.saveAll(changedMessages);
+            chatMessagesRepository.saveAll(changedMessages);
         }
     }
 

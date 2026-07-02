@@ -29,7 +29,7 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -38,7 +38,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventRe
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -51,7 +51,7 @@ class AccessControlServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
-    private ActivityChatsRepository activityChatsRepository;
+    private ChatsRepository chatsRepository;
     @Mock
     private AssetsRepository assetsRepository;
     @Mock
@@ -78,7 +78,7 @@ class AccessControlServiceTest {
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
                 new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
-                new ChatPolicyFacts(activityChatsRepository, usersRepository, adminMenuCounterService));
+                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService));
         service.loadAccessControlCacheAtStartup();
     }
 
@@ -919,7 +919,7 @@ class AccessControlServiceTest {
     @Test
     void chatParticipantPoliciesAllowChatMember() {
         authenticateAs("u1");
-        when(activityChatsRepository.findByOwnerUserIdAndChatId("u1", "chat-1"))
+        when(chatsRepository.findByOwnerUserIdAndChatId("u1", "chat-1"))
                 .thenReturn(Optional.of(chat("chat-1", "u1", List.of("u1", "u2"), false)));
 
         assertThat(service.canCurrentActorCreateChatMessage("u1", "chat-1")).isTrue();
@@ -937,7 +937,7 @@ class AccessControlServiceTest {
         boolean allowed = service.canCurrentActorCreateChatMessage("u1", "chat-1");
 
         assertThat(allowed).isFalse();
-        verifyNoInteractions(activityChatsRepository);
+        verifyNoInteractions(chatsRepository);
     }
 
     @Test
@@ -949,7 +949,7 @@ class AccessControlServiceTest {
         boolean allowed = service.canCurrentActorCreateChatMessage("u1", "chat-1");
 
         assertThat(allowed).isFalse();
-        verifyNoInteractions(activityChatsRepository);
+        verifyNoInteractions(chatsRepository);
     }
 
     @Test
@@ -957,7 +957,7 @@ class AccessControlServiceTest {
         authenticateAs("admin");
         when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(user("admin")));
         when(adminMenuCounterService.isAdminUser(any(Users.class))).thenReturn(true);
-        when(activityChatsRepository.findByChatId("chat-support"))
+        when(chatsRepository.findByChatId("chat-support"))
                 .thenReturn(List.of(chat("chat-support", "requester", List.of("requester"), true)));
 
         boolean allowed = service.canCurrentActorManageSupportChat("admin", "chat-support");
@@ -974,7 +974,7 @@ class AccessControlServiceTest {
         boolean allowed = service.canCurrentActorManageSupportChat("u1", "chat-support");
 
         assertThat(allowed).isFalse();
-        verifyNoInteractions(activityChatsRepository);
+        verifyNoInteractions(chatsRepository);
     }
 
     private Authentication auth(String userId) {
@@ -1028,12 +1028,18 @@ class AccessControlServiceTest {
         return asset;
     }
 
-    private ActivityChat chat(String chatId, String ownerUserId, List<String> memberIds, boolean support) {
-        ActivityChat chat = new ActivityChat();
+    private Chat chat(String chatId, String ownerUserId, List<String> memberIds, boolean support) {
+        Chat chat = new Chat();
         chat.setChatId(chatId);
         chat.setOwnerUserId(ownerUserId);
         chat.setMemberIds(memberIds);
-        chat.setSupportCaseStatus(support ? "pending" : "");
+        if (support) {
+            Chat.SupportCaseRecord supportCase = new Chat.SupportCaseRecord();
+            supportCase.setStatus("pending");
+            chat.setChannelType("supportCase");
+            chat.setOwnerId(chatId);
+            chat.setSupportCase(supportCase);
+        }
         return chat;
     }
 

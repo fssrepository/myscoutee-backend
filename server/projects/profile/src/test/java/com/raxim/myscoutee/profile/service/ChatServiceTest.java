@@ -19,29 +19,41 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarRecord;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
+import com.raxim.myscoutee.profile.service.mapper.ChatMessageMapper;
 
 @ExtendWith(MockitoExtension.class)
-class ActivitiesChatServiceTest {
+class ChatServiceTest {
     @Mock
-    private ActivityChatsRepository activityChatsRepository;
+    private ChatsRepository chatsRepository;
     @Mock
-    private ActivityChatMessagesRepository activityChatMessagesRepository;
+    private ChatMessagesRepository chatMessagesRepository;
     @Mock
     private MongoTemplate mongoTemplate;
     @Mock
     private UsersRepository usersRepository;
+    @Mock
+    private ActivityMembersRepository activityMembersRepository;
+    @Mock
+    private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
+    @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
@@ -55,21 +67,26 @@ class ActivitiesChatServiceTest {
     @Mock
     private AccessControlService accessControlService;
 
-    private ActivitiesChatService service;
+    private ChatService service;
 
     @BeforeEach
     void setUp() {
-        service = new ActivitiesChatService(
-                activityChatsRepository,
-                activityChatMessagesRepository,
+        service = new ChatService(
+                chatsRepository,
+                chatMessagesRepository,
                 mongoTemplate,
                 usersRepository,
+                activityMembersRepository,
+                activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository,
                 homeUserProfileService,
                 chatStreamPublisher,
                 chatPushNotificationService,
                 adminTelemetryService,
                 adminMenuCounterService,
-                accessControlService);
+                accessControlService,
+                new ChatMapper(),
+                new ChatMessageMapper(usersRepository));
     }
 
     @AfterEach
@@ -78,54 +95,57 @@ class ActivitiesChatServiceTest {
     }
 
     @Test
-    void queryMessagesReusesUserLookupCacheForRepeatedParticipants() {
-        ActivityChat viewerChat = chat("chat-1", "viewer", 0);
-        ActivityChat senderChat = chat("chat-1", "sender", 0);
-        List<ActivityChatMessage> messages = List.of(
+    void queryMessagesPageReusesUserLookupCacheForRepeatedParticipants() {
+        Chat viewerChat = chat("chat-1", "viewer", 0);
+        Chat senderChat = chat("chat-1", "sender", 0);
+        List<ChatMessage> messages = List.of(
                 message("m1", "sender", "viewer", "2026-05-26T08:00:01Z"),
                 message("m2", "sender", "viewer", "2026-05-26T08:00:02Z"),
                 message("m3", "sender", "viewer", "2026-05-26T08:00:03Z"));
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(activityChatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
-        when(activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc("chat-1")).thenReturn(messages);
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(3L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class))).thenReturn(messages);
         when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
 
-        var result = service.queryMessages("chat-1", "viewer");
+        var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
 
-        assertThat(result).hasSize(3);
+        assertThat(result.items()).hasSize(3);
+        assertThat(result.total()).isEqualTo(3);
+        assertThat(result.read()).isNull();
         verify(usersRepository, times(1)).findByUserId("sender");
         verify(usersRepository, times(1)).findByUserId("viewer");
-        verify(activityChatMessagesRepository, never()).saveAll(anyList());
-        verify(activityChatsRepository, never()).save(any(ActivityChat.class));
+        verify(chatMessagesRepository, never()).saveAll(anyList());
+        verify(chatsRepository, never()).save(any(Chat.class));
     }
 
     @Test
     void queryChatsReadsOwnerCopiesWithoutRepairingMemberCopies() {
-        ActivityChat viewerChat = chat("chat-1", "viewer", 0);
+        Chat viewerChat = chat("chat-1", "viewer", 0);
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc("viewer")).thenReturn(List.of(viewerChat));
+        when(chatsRepository.findByOwnerUserIdOrderByDateIsoDesc("viewer")).thenReturn(List.of(viewerChat));
 
         assertThat(service.queryChats("viewer")).hasSize(1);
         assertThat(service.queryChats("viewer")).hasSize(1);
 
-        verify(activityChatsRepository, times(2)).findByOwnerUserIdOrderByDateIsoDesc("viewer");
-        verify(activityChatsRepository, never()).findByMemberIdsContaining("viewer");
-        verify(activityChatsRepository, never()).findByChatId(anyString());
-        verify(activityChatsRepository, never()).findByOwnerUserIdAndChatId(anyString(), anyString());
-        verify(activityChatsRepository, never()).saveAll(anyList());
+        verify(chatsRepository, times(2)).findByOwnerUserIdOrderByDateIsoDesc("viewer");
+        verify(chatsRepository, never()).findByMemberIdsContaining("viewer");
+        verify(chatsRepository, never()).findByChatId(anyString());
+        verify(chatsRepository, never()).findByOwnerUserIdAndChatId(anyString(), anyString());
+        verify(chatsRepository, never()).saveAll(anyList());
     }
 
     @Test
     void queryChatPageSortsLocalIsoSeedDatesByRequestedDateOrder() {
-        ActivityChat oldChat = chat("zz-old", "viewer", 0, "2026-03-01T07:48:00");
-        ActivityChat newChat = chat("aa-new", "viewer", 0, "2026-03-01T14:03:00");
-        ActivityChat midChat = chat("mm-mid", "viewer", 0, "2026-02-28T17:48:00");
+        Chat oldChat = chat("zz-old", "viewer", 0, "2026-03-01T07:48:00");
+        Chat newChat = chat("aa-new", "viewer", 0, "2026-03-01T14:03:00");
+        Chat midChat = chat("mm-mid", "viewer", 0, "2026-02-28T17:48:00");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(activityChatsRepository.findByOwnerUserId("viewer")).thenReturn(List.of(oldChat, newChat, midChat));
+        when(chatsRepository.findByOwnerUserId("viewer")).thenReturn(List.of(oldChat, newChat, midChat));
 
         var result = service.queryChatPage(
                 "viewer",
@@ -147,13 +167,13 @@ class ActivitiesChatServiceTest {
 
     @Test
     void queryChatPageFiltersChannelContextsOnServer() {
-        ActivityChat eventChat = chat("chat-event", "viewer", 0, "2026-03-01T07:48:00", "mainEvent");
-        ActivityChat subEventChat = chat("chat-sub-event", "viewer", 0, "2026-03-01T08:48:00", "optionalSubEvent");
-        ActivityChat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
-        ActivityChat serviceChat = chat("chat-service", "viewer", 0, "2026-03-01T10:48:00", "serviceEvent");
+        Chat eventChat = chat("chat-event", "viewer", 0, "2026-03-01T07:48:00", "mainEvent");
+        Chat subEventChat = chat("chat-sub-event", "viewer", 0, "2026-03-01T08:48:00", "optionalSubEvent");
+        Chat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
+        Chat serviceChat = chat("chat-service", "viewer", 0, "2026-03-01T10:48:00", "serviceEvent");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(activityChatsRepository.findByOwnerUserId("viewer")).thenReturn(List.of(
+        when(chatsRepository.findByOwnerUserId("viewer")).thenReturn(List.of(
                 eventChat,
                 subEventChat,
                 groupChat,
@@ -215,8 +235,8 @@ class ActivitiesChatServiceTest {
         assertThatThrownBy(() -> service.sendMessage("chat-1", "viewer", "hello"))
                 .hasMessageContaining("post in this chat");
 
-        verify(activityChatMessagesRepository, never()).save(any(ActivityChatMessage.class));
-        verify(activityChatsRepository, never()).findByChatId(anyString());
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
+        verify(chatsRepository, never()).findByChatId(anyString());
     }
 
     @Test
@@ -227,8 +247,8 @@ class ActivitiesChatServiceTest {
         assertThatThrownBy(() -> service.editMessage("chat-1", "viewer", "m1", "updated"))
                 .hasMessageContaining("change messages");
 
-        verify(activityChatMessagesRepository, never()).findByChatIdAndMessageId(anyString(), anyString());
-        verify(activityChatMessagesRepository, never()).save(any(ActivityChatMessage.class));
+        verify(chatMessagesRepository, never()).findByChatIdAndMessageId(anyString(), anyString());
+        verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
     }
 
     @Test
@@ -239,20 +259,20 @@ class ActivitiesChatServiceTest {
         assertThatThrownBy(() -> service.updateSupportCase("chat-support", "admin", "pick"))
                 .hasMessageContaining("support chat");
 
-        verify(activityChatsRepository, never()).findByChatId(anyString());
-        verify(activityChatsRepository, never()).saveAll(anyList());
+        verify(chatsRepository, never()).findByChatId(anyString());
+        verify(chatsRepository, never()).saveAll(anyList());
     }
 
-    private ActivityChat chat(String chatId, String ownerUserId, int unread) {
+    private Chat chat(String chatId, String ownerUserId, int unread) {
         return chat(chatId, ownerUserId, unread, "2026-05-26T08:00:00Z");
     }
 
-    private ActivityChat chat(String chatId, String ownerUserId, int unread, String dateIso) {
+    private Chat chat(String chatId, String ownerUserId, int unread, String dateIso) {
         return chat(chatId, ownerUserId, unread, dateIso, null);
     }
 
-    private ActivityChat chat(String chatId, String ownerUserId, int unread, String dateIso, String channelType) {
-        ActivityChat chat = new ActivityChat();
+    private Chat chat(String chatId, String ownerUserId, int unread, String dateIso, String channelType) {
+        Chat chat = new Chat();
         chat.setMongoId("chat-owner-copy:" + ownerUserId + ":" + chatId);
         chat.setChatId(chatId);
         chat.setOwnerUserId(ownerUserId);
@@ -265,8 +285,8 @@ class ActivitiesChatServiceTest {
         return chat;
     }
 
-    private ActivityChatMessage message(String messageId, String senderUserId, String readerUserId, String sentAtIso) {
-        ActivityChatMessage message = new ActivityChatMessage();
+    private ChatMessage message(String messageId, String senderUserId, String readerUserId, String sentAtIso) {
+        ChatMessage message = new ChatMessage();
         message.setMongoId("chat-message:chat-1:" + messageId);
         message.setChatId("chat-1");
         message.setId(messageId);

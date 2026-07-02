@@ -11,14 +11,19 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-desktop
--------
-1) activity event popup: save draft on own event tab or draft event tab should be inserted on the fly nd counter value of the menu should be increased by 1
-moving one bucket to another, like deleting or anything else, should remove on the fly and change the menu counter -1 on existing and +1 for the target (when it will be displayed)
-at the moment only on smartlist reload i see thoise items
-2) maybe it's seed data fix, or query but the activity event menu counters should not include korabbi in the red badge counter
-3) activity popup is over 4K, split into separate components and wire up through store
-there is a host like controller inside which should be removed (store should be used instead)
+for tomorrow
+------
+chat resources menu counter update
+popup component introduction to chat message popup window
+app-menu -> infocard/imagecard etc. to wire to appmenu-host
+base package cleanup like builder
+1) event feedback lazy load
+2) a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
+3) asset editor
+info menu - as a clickeable link menu item on asset
+(no graph parsing, no auto popuplation form the image
+"paste the link" button can be introduced even on the image, not sure
+location input with three button - delete + paste + instead of map, a link icon
 
 kellekek
 --------
@@ -29,9 +34,8 @@ lehet ket tab van a bejovoknek es a mar elfogadottaknak - ezt meg at kell gondol
 filter -> fuggo, elfogadottak
 stat icon (graph - mennyi a hatar, es aznap mennyi foglalas volt, esetleg rakkattintva mutatja is a listat)
 
-a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
-
 common in case when saw
 -----------------------
 the popups not covering the other popups many times
 popup-component introduction (many popup still does not have)
+hibernate app and reload on mobile stucks

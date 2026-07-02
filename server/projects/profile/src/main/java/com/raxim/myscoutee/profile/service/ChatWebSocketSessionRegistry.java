@@ -19,8 +19,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketEventDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
 
 import tools.jackson.databind.ObjectMapper;
 

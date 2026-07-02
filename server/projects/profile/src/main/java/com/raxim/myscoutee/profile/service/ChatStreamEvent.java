@@ -3,14 +3,14 @@ package com.raxim.myscoutee.profile.service;
 import java.util.List;
 import java.util.Objects;
 
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageAttachmentDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReactionDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReplyDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadReceiptDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatTypingDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageAttachmentDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReactionDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReplyDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadReceiptDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketEventDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatTypingDto;
 
 public record ChatStreamEvent(
         String type,
@@ -36,7 +36,8 @@ public record ChatStreamEvent(
         List<ChatMessageAttachmentDto> attachments,
         Boolean typing,
         List<String> messageIds,
-        String readAtIso) {
+        String readAtIso,
+        Integer unread) {
 
     public static ChatStreamEvent message(
             String chatId,
@@ -83,6 +84,7 @@ public record ChatStreamEvent(
                 attachments,
                 null,
                 null,
+                null,
                 null);
     }
 
@@ -117,6 +119,7 @@ public record ChatStreamEvent(
                 null,
                 typing,
                 null,
+                null,
                 null);
     }
 
@@ -126,7 +129,8 @@ public record ChatStreamEvent(
             String senderInitials,
             String senderGender,
             List<String> messageIds,
-            String readAtIso) {
+            String readAtIso,
+            Integer unread) {
         return new ChatStreamEvent(
                 "read",
                 chatId,
@@ -151,7 +155,8 @@ public record ChatStreamEvent(
                 null,
                 null,
                 messageIds,
-                readAtIso);
+                readAtIso,
+                unread);
     }
 
     public ChatSocketEventDto toSocketEvent(String viewerUserId) {
@@ -182,7 +187,8 @@ public record ChatStreamEvent(
                             senderInitials,
                             senderGender,
                             messageIds == null ? List.of() : List.copyOf(messageIds),
-                            readAtIso),
+                            readAtIso,
+                            unread),
                     null,
                     null,
                     null);

@@ -42036,5 +42036,76 @@
     "title": "San Diego Wildflower Social MS11L · Main Event",
     "unread": 0,
     "_id": "f89f38b9b7e7a22c9806e1c8"
+  },
+  {
+    "avatar": "NL",
+    "channelType": "serviceEvent",
+    "dateIso": "2026-02-26T10:18:00",
+    "eventId": "9018da9f33929fec90a0df70",
+    "id": "69f9c3340d2a6c146b88a2b0",
+    "lastMessage": "Notification channel for cancellations, postponements, and urgent event updates.",
+    "lastSenderId": "9f3b3f085e23af6c89dbc432",
+    "memberIds": [
+      "9f3b3f085e23af6c89dbc432",
+      "1d7d3545ba5e0f1d63918589",
+      "d182041b8a54132d5168034f",
+      "d04cd419e735549e3f312977",
+      "23820c1e76d3bd843f61c799",
+      "bf057de7c586eede7e84bdc7",
+      "b29df68956f3fe15e04558de"
+    ],
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "title": "Notify Participants · Night Food League",
+    "unread": 2,
+    "_id": "73f299749964fd8bb08cbb6c",
+    "serviceContext": "notification"
+  },
+  {
+    "avatar": "MS",
+    "channelType": "optionalSubEvent",
+    "dateIso": "2026-02-26T11:03:00",
+    "eventId": "9e5a5b0c84e154e6e71b2d41",
+    "id": "700f39a372c2a20dea51be69",
+    "lastMessage": "Optional sub-event channel for Seattle Wildflower Meetup NE04X.",
+    "lastSenderId": "9f3b3f085e23af6c89dbc432",
+    "memberIds": [
+      "9f3b3f085e23af6c89dbc432",
+      "904ee3c526298f6921cde3f3",
+      "e904dad402b47dd2cdaa8bec",
+      "25f4744ead36d038064d62c3",
+      "c033e546ef7c928fb8cf073b",
+      "931a01221376d8e28a068fe8",
+      "23820c1e76d3bd843f61c799",
+      "bf057de7c586eede7e84bdc7"
+    ],
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "title": "Main Session · Optional",
+    "unread": 7,
+    "_id": "fa8138569a685e4f4eacfc3c",
+    "subEventId": "e700916e6e50c6b50c272f1b"
+  },
+  {
+    "avatar": "WU",
+    "channelType": "optionalSubEvent",
+    "dateIso": "2026-02-26T11:48:00",
+    "eventId": "9e5a5b0c84e154e6e71b2d41",
+    "id": "a8300487c722c78768930253",
+    "lastMessage": "Optional wrap-up channel for Seattle Wildflower Meetup NE04X.",
+    "lastSenderId": "9f3b3f085e23af6c89dbc432",
+    "memberIds": [
+      "9f3b3f085e23af6c89dbc432",
+      "904ee3c526298f6921cde3f3",
+      "e904dad402b47dd2cdaa8bec",
+      "25f4744ead36d038064d62c3",
+      "c033e546ef7c928fb8cf073b",
+      "931a01221376d8e28a068fe8",
+      "23820c1e76d3bd843f61c799",
+      "bf057de7c586eede7e84bdc7"
+    ],
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "title": "Wrap-up · Optional",
+    "unread": 10,
+    "_id": "43208673d8f3a6ccf0a52b3a",
+    "subEventId": "b2bb3e98a0b3bfafed8a0934"
   }
 ]

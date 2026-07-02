@@ -26,7 +26,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -67,8 +68,8 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRe
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserSubmitActionResponseDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
@@ -188,8 +189,8 @@ public class HomeUserProfileService {
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
-    private final ActivityChatsRepository activityChatsRepository;
-    private final ActivityChatMessagesRepository activityChatMessagesRepository;
+    private final ChatsRepository chatsRepository;
+    private final ChatMessagesRepository chatMessagesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
@@ -219,8 +220,8 @@ public class HomeUserProfileService {
             UserExperienceProfilesRepository userExperienceProfilesRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
-            ActivityChatsRepository activityChatsRepository,
-            ActivityChatMessagesRepository activityChatMessagesRepository,
+            ChatsRepository chatsRepository,
+            ChatMessagesRepository chatMessagesRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
@@ -243,8 +244,8 @@ public class HomeUserProfileService {
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
-        this.activityChatsRepository = activityChatsRepository;
-        this.activityChatMessagesRepository = activityChatMessagesRepository;
+        this.chatsRepository = chatsRepository;
+        this.chatMessagesRepository = chatMessagesRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
@@ -611,9 +612,9 @@ public class HomeUserProfileService {
         String messageId = normalizeOptionalText(request.messageId());
         String assetId = normalizeOptionalText(request.assetId());
         String assetType = normalizeOptionalText(request.assetType());
-        ActivityChat.ChatMessageRecord reportedChatMessage = null;
+        ChatMessage reportedChatMessage = null;
         if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
-            ActivityChat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
+            Chat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
             if (reportedChat == null) {
                 return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
             }
@@ -2147,7 +2148,7 @@ public class HomeUserProfileService {
         return null;
     }
 
-    private ActivityChat resolveReportableChat(
+    private Chat resolveReportableChat(
             String reporterUserId,
             String targetUserId,
             String chatId,
@@ -2162,20 +2163,20 @@ public class HomeUserProfileService {
                 || !StringUtils.hasText(normalizedMessageId)) {
             return null;
         }
-        ActivityChat chat = activityChatsRepository
+        Chat chat = chatsRepository
                 .findByOwnerUserIdAndChatId(normalizedReporterUserId, normalizedChatId)
                 .orElse(null);
         if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
             return null;
         }
-        ActivityChat.ChatMessageRecord message = findChatMessage(normalizedChatId, normalizedMessageId);
+        ChatMessage message = findChatMessage(normalizedChatId, normalizedMessageId);
         if (message == null || message.getSenderAvatar() == null) {
             return null;
         }
         return normalizedTargetUserId.equals(normalizeId(message.getSenderAvatar().getId())) ? chat : null;
     }
 
-    private boolean chatHasMember(ActivityChat chat, String userId) {
+    private boolean chatHasMember(Chat chat, String userId) {
         String normalizedUserId = normalizeId(userId);
         if (chat == null || !StringUtils.hasText(normalizedUserId)) {
             return false;
@@ -2185,14 +2186,14 @@ public class HomeUserProfileService {
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private ActivityChat.ChatMessageRecord findChatMessage(String chatId, String messageId) {
+    private ChatMessage findChatMessage(String chatId, String messageId) {
         String normalizedChatId = normalizeId(chatId);
         String normalizedMessageId = normalizeId(messageId);
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedMessageId)) {
             return null;
         }
-        return activityChatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
-                .map(message -> (ActivityChat.ChatMessageRecord) message)
+        return chatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
+                .map(message -> (ChatMessage) message)
                 .orElse(null);
     }
 
