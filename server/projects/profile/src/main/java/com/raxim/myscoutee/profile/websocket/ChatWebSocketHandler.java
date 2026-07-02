@@ -17,10 +17,10 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
-import com.raxim.myscoutee.profile.service.ActivitiesChatService;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketEventDto;
+import com.raxim.myscoutee.profile.service.ChatService;
 import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
 
 @Component
@@ -28,17 +28,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatWebSocketHandler.class);
 
     private final ObjectMapper objectMapper;
-    private final ActivitiesChatService activitiesChatService;
+    private final ChatService chatService;
     private final ChatWebSocketSessionRegistry sessionRegistry;
     private final ConfigProperties configProperties;
 
     public ChatWebSocketHandler(
             ObjectMapper objectMapper,
-            ActivitiesChatService activitiesChatService,
+            ChatService chatService,
             ChatWebSocketSessionRegistry sessionRegistry,
             ConfigProperties configProperties) {
         this.objectMapper = objectMapper;
-        this.activitiesChatService = activitiesChatService;
+        this.chatService = chatService;
         this.sessionRegistry = sessionRegistry;
         this.configProperties = configProperties;
     }
@@ -48,7 +48,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         runWithSessionMode(session, () -> {
             String chatId = resolveChatId(session);
             String userId = resolveViewerUserId(session);
-            if (!StringUtils.hasText(chatId) || !StringUtils.hasText(userId) || !activitiesChatService.hasChatAccess(chatId, userId)) {
+            if (!StringUtils.hasText(chatId) || !StringUtils.hasText(userId) || !chatService.hasChatAccess(chatId, userId)) {
                 session.close(CloseStatus.NOT_ACCEPTABLE);
                 return;
             }
@@ -77,35 +77,35 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         try {
             runWithSessionMode(session, () -> {
                 if ("typing".equalsIgnoreCase(type)) {
-                    activitiesChatService.sendTypingSignal(chatId, userId, request.typing());
+                    chatService.sendTypingSignal(chatId, userId, request.typing());
                     return;
                 }
                 if ("read".equalsIgnoreCase(type)) {
-                    activitiesChatService.markMessagesRead(chatId, userId, request.messageIds());
+                    chatService.markMessagesRead(chatId, userId, request.messageIds());
                     return;
                 }
                 if ("edit".equalsIgnoreCase(type)) {
-                    ChatMessageDto saved = activitiesChatService.editMessage(chatId, userId, request.messageId(), request.text());
+                    ChatMessageDto saved = chatService.editMessage(chatId, userId, request.messageId(), request.text());
                     sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("delete".equalsIgnoreCase(type)) {
-                    ChatMessageDto saved = activitiesChatService.deleteMessage(chatId, userId, request.messageId());
+                    ChatMessageDto saved = chatService.deleteMessage(chatId, userId, request.messageId());
                     sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("pin".equalsIgnoreCase(type)) {
-                    ChatMessageDto saved = activitiesChatService.pinMessage(chatId, userId, request.messageId(), request.pinned());
+                    ChatMessageDto saved = chatService.pinMessage(chatId, userId, request.messageId(), request.pinned());
                     sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("reaction".equalsIgnoreCase(type)) {
-                    ChatMessageDto saved = activitiesChatService.reactToMessage(chatId, userId, request.messageId(), request.emoji());
+                    ChatMessageDto saved = chatService.reactToMessage(chatId, userId, request.messageId(), request.emoji());
                     sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
                 if ("attachments".equalsIgnoreCase(type)) {
-                    ChatMessageDto saved = activitiesChatService.updateMessageAttachments(chatId, userId, request.messageId(), request.attachments());
+                    ChatMessageDto saved = chatService.updateMessageAttachments(chatId, userId, request.messageId(), request.attachments());
                     sessionRegistry.sendAck(session, chatId, saved);
                     return;
                 }
@@ -115,7 +115,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 if (!StringUtils.hasText(request.text()) && (request.attachments() == null || request.attachments().isEmpty())) {
                     return;
                 }
-                ChatMessageDto saved = activitiesChatService.sendMessage(chatId, userId, request.text(), request.clientId(), request.replyTo(), request.attachments());
+                ChatMessageDto saved = chatService.sendMessage(chatId, userId, request.text(), request.clientId(), request.replyTo(), request.attachments());
                 sessionRegistry.sendAck(session, chatId, saved);
             });
         } catch (Exception exception) {

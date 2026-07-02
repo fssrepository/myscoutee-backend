@@ -22,8 +22,8 @@ import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -34,8 +34,8 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminFeedbackDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReportDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReportedUserDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -55,8 +55,8 @@ public class AdminModerationService {
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
     private final UsersRepository usersRepository;
-    private final ActivityChatsRepository chatsRepository;
-    private final ActivityChatMessagesRepository chatMessagesRepository;
+    private final ChatsRepository chatsRepository;
+    private final ChatMessagesRepository chatMessagesRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
@@ -66,8 +66,8 @@ public class AdminModerationService {
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
             UsersRepository usersRepository,
-            ActivityChatsRepository chatsRepository,
-            ActivityChatMessagesRepository chatMessagesRepository,
+            ChatsRepository chatsRepository,
+            ChatMessagesRepository chatMessagesRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService) {
@@ -218,16 +218,16 @@ public class AdminModerationService {
         }
     }
 
-    private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportCaseStatus) {
+    private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportStatus) {
         Instant now = Instant.now();
         String nowIso = now.toString();
         String chatId = "c-support-admin-" + targetUserId;
         String messageId = "m-admin-" + new ObjectId().toHexString();
         Users targetUser = usersRepository.findByUserId(targetUserId).orElse(null);
-        ActivityChat.ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
-        ActivityChat.ChatMessageRecord userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
-        chatMessagesRepository.save(ActivityChatMessage.fromRecord(chatId, userMessage));
-        ActivityChat userChat = appendSupportMessageForOwner(
+        Chat.ChatAvatarRecord adminAvatar = chatAvatar(admin.id(), admin.initials(), "woman");
+        Chat.ChatMessageRecord userMessage = supportMessage(messageId, admin.name(), adminAvatar, text, now, nowIso, false, List.of());
+        chatMessagesRepository.save(ChatMessage.fromRecord(chatId, userMessage));
+        Chat userChat = appendSupportMessageForOwner(
                 targetUserId,
                 chatId,
                 admin.initials(),
@@ -237,9 +237,9 @@ public class AdminModerationService {
                 admin.id(),
                 nowIso,
                 true,
-                supportCaseStatus,
+                supportStatus,
                 admin);
-        ActivityChat adminChat = appendSupportMessageForOwner(
+        Chat adminChat = appendSupportMessageForOwner(
                 admin.id(),
                 chatId,
                 text(targetUser == null ? null : targetUser.getInitials(), "U"),
@@ -249,13 +249,13 @@ public class AdminModerationService {
                 admin.id(),
                 nowIso,
                 false,
-                supportCaseStatus,
+                supportStatus,
                 admin);
         chatsRepository.save(userChat);
         chatsRepository.save(adminChat);
     }
 
-    private ActivityChat appendSupportMessageForOwner(
+    private Chat appendSupportMessageForOwner(
             String ownerUserId,
             String chatId,
             String avatar,
@@ -265,43 +265,55 @@ public class AdminModerationService {
             String lastSenderId,
             String dateIso,
             boolean unreadForOwner,
-            String supportCaseStatus,
+            String supportStatus,
             AdminUserDto assignee) {
-        ActivityChat chat = chatsRepository.findByOwnerUserIdAndChatId(ownerUserId, chatId).orElseGet(() -> {
-            ActivityChat next = new ActivityChat();
+        Chat chat = chatsRepository.findByOwnerUserIdAndChatId(ownerUserId, chatId).orElseGet(() -> {
+            Chat next = new Chat();
             next.setMongoId(new ObjectId().toHexString());
             next.setChatId(chatId);
             next.setOwnerUserId(ownerUserId);
             next.setUnread(0);
-            next.setChannelType("serviceEvent");
+            next.setChannelType("supportCase");
+            next.setOwnerId(chatId);
             return next;
         });
         chat.setAvatar(avatar);
         chat.setTitle(title);
         chat.setMemberIds(memberIds);
-        chat.setChannelType("serviceEvent");
+        chat.setChannelType("supportCase");
+        chat.setOwnerId(chatId);
         chat.setLastMessage(lastMessage);
         chat.setLastSenderId(lastSenderId);
         chat.setDateIso(dateIso);
-        chat.setSupportCaseStatus(text(supportCaseStatus, "pending"));
-        chat.setSupportCaseAssigneeUserId(assignee == null ? "" : text(assignee.id(), ""));
-        chat.setSupportCaseAssigneeName(assignee == null ? "" : text(assignee.name(), ""));
-        chat.setSupportCaseAssigneeInitials(assignee == null ? "" : text(assignee.initials(), ""));
-        chat.setSupportCaseUpdatedAtIso(dateIso);
+        chat.setSupportCase(supportCase(text(supportStatus, "pending"), assignee, dateIso));
         chat.setUnread(unreadForOwner ? Math.max(1, chat.getUnread() == null ? 1 : chat.getUnread() + 1) : 0);
         return chat;
     }
 
-    private ActivityChat.ChatMessageRecord supportMessage(
+    private Chat.SupportCaseRecord supportCase(String status, AdminUserDto assigneeDto, String updatedAtIso) {
+        Chat.SupportCaseRecord supportCase = new Chat.SupportCaseRecord();
+        supportCase.setStatus(text(status, "pending"));
+        supportCase.setUpdatedAtIso(text(updatedAtIso, ""));
+        if (assigneeDto != null && StringUtils.hasText(text(assigneeDto.id(), ""))) {
+            Chat.SupportCaseAssigneeRecord assignee = new Chat.SupportCaseAssigneeRecord();
+            assignee.setUserId(text(assigneeDto.id(), ""));
+            assignee.setName(text(assigneeDto.name(), ""));
+            assignee.setInitials(text(assigneeDto.initials(), ""));
+            supportCase.setAssignee(assignee);
+        }
+        return supportCase;
+    }
+
+    private Chat.ChatMessageRecord supportMessage(
             String messageId,
             String sender,
-            ActivityChat.ChatAvatarRecord avatar,
+            Chat.ChatAvatarRecord avatar,
             String text,
             Instant now,
             String nowIso,
             boolean mine,
-            List<ActivityChat.ChatReadAvatarRecord> readBy) {
-        ActivityChat.ChatMessageRecord message = new ActivityChat.ChatMessageRecord();
+            List<Chat.ChatReadAvatarRecord> readBy) {
+        Chat.ChatMessageRecord message = new Chat.ChatMessageRecord();
         message.setId(messageId);
         message.setSender(sender);
         message.setSenderAvatar(avatar);
@@ -313,8 +325,8 @@ public class AdminModerationService {
         return message;
     }
 
-    private ActivityChat.ChatAvatarRecord chatAvatar(String id, String initials, String gender) {
-        ActivityChat.ChatAvatarRecord avatar = new ActivityChat.ChatAvatarRecord();
+    private Chat.ChatAvatarRecord chatAvatar(String id, String initials, String gender) {
+        Chat.ChatAvatarRecord avatar = new Chat.ChatAvatarRecord();
         avatar.setId(id);
         avatar.setInitials(initials);
         avatar.setGender(gender);
@@ -368,7 +380,7 @@ public class AdminModerationService {
                 reports.stream().map(report -> toReport(report, usersById)).toList());
     }
 
-    private ActivityChat supportChat(String adminUserId, String targetUserId) {
+    private Chat supportChat(String adminUserId, String targetUserId) {
         String adminId = normalize(adminUserId);
         String userId = normalize(targetUserId);
         if (!StringUtils.hasText(adminId) || !StringUtils.hasText(userId)) {
@@ -381,13 +393,13 @@ public class AdminModerationService {
     }
 
     private int supportChatUnread(String adminUserId, String targetUserId) {
-        ActivityChat chat = supportChat(adminUserId, targetUserId);
+        Chat chat = supportChat(adminUserId, targetUserId);
         return chat == null ? 0 : Math.max(0, chat.getUnread() == null ? 0 : chat.getUnread());
     }
 
     private AdminReportDto toReport(UserReportSubmission report, Map<String, Users> usersById) {
         Users reporter = usersById.get(normalize(report.getUserId()));
-        ActivityChat chat = resolveReportedChat(report);
+        Chat chat = resolveReportedChat(report);
         return new AdminReportDto(report.getId(), report.getUserId(), text(reporter == null ? null : reporter.getName(), "Reporter"),
                 firstImage(reporter), report.getTargetUserId(), report.getHandle(), report.getReason(), report.getDetails(), report.getEventId(), report.getEventTitle(),
                 report.getEventStartAtIso(), report.getMemberEntryId(), report.getSourceType(), report.getSourceId(), report.getSourceText(),
@@ -397,7 +409,7 @@ public class AdminModerationService {
                 report.getCreatedDate());
     }
 
-    private ActivityChat resolveReportedChat(UserReportSubmission report) {
+    private Chat resolveReportedChat(UserReportSubmission report) {
         String chatId = normalize(report.getChatId());
         String messageId = normalize(report.getMessageId());
         String reporterUserId = normalize(report.getUserId());
@@ -414,7 +426,7 @@ public class AdminModerationService {
                 .orElse(null);
     }
 
-    private boolean chatIncludesMember(ActivityChat chat, String userId) {
+    private boolean chatIncludesMember(Chat chat, String userId) {
         String normalizedUserId = normalize(userId);
         if (chat == null || !StringUtils.hasText(normalizedUserId)) {
             return false;
@@ -424,7 +436,7 @@ public class AdminModerationService {
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private boolean chatContainsReportedMessage(ActivityChat chat, String messageId, String targetUserId) {
+    private boolean chatContainsReportedMessage(Chat chat, String messageId, String targetUserId) {
         String normalizedMessageId = normalize(messageId);
         String normalizedTargetUserId = normalize(targetUserId);
         if (chat == null || !StringUtils.hasText(normalizedMessageId) || !StringUtils.hasText(normalizedTargetUserId)) {
@@ -436,8 +448,8 @@ public class AdminModerationService {
                         && normalizedTargetUserId.equals(normalize(message.getSenderAvatar().getId())));
     }
 
-    private AdminChatMessageDto toChatMessage(ActivityChat.ChatMessageRecord message) {
-        ActivityChat.ChatAvatarRecord avatar = message.getSenderAvatar();
+    private AdminChatMessageDto toChatMessage(Chat.ChatMessageRecord message) {
+        Chat.ChatAvatarRecord avatar = message.getSenderAvatar();
         return new AdminChatMessageDto(
                 message.getId(),
                 message.getSender(),

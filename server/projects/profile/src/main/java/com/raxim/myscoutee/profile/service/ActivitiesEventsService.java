@@ -137,7 +137,7 @@ public class ActivitiesEventsService {
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final NotificationOutboxService notificationOutboxService;
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
-    private final ActivitiesChatService activitiesChatService;
+    private final ChatService chatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
@@ -167,7 +167,7 @@ public class ActivitiesEventsService {
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
             NotificationOutboxService notificationOutboxService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
-            ActivitiesChatService activitiesChatService,
+            ChatService chatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
@@ -195,7 +195,7 @@ public class ActivitiesEventsService {
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
         this.notificationOutboxService = notificationOutboxService;
         this.eventSchedulerProvider = eventSchedulerProvider;
-        this.activitiesChatService = activitiesChatService;
+        this.chatService = chatService;
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
@@ -2000,7 +2000,7 @@ public class ActivitiesEventsService {
             String nextStatus,
             boolean finalStage,
             TournamentResultSummary resultSummary) {
-        if (activitiesChatService == null || event == null || stage == null) {
+        if (chatService == null || event == null || stage == null) {
             return;
         }
         String eventId = normalizeId(event.getSourceId());
@@ -2024,16 +2024,16 @@ public class ActivitiesEventsService {
         } else {
             text = stageTitle + " was updated.";
         }
-        activitiesChatService.postSystemMessage(eventId, text, action);
+        chatService.postSystemMessage(eventId, text, action);
     }
 
     private void postMemberJoinedMessage(String eventId, Users user) {
-        if (activitiesChatService == null || user == null) {
+        if (chatService == null || user == null) {
             return;
         }
         String normalizedEventId = normalizeId(eventId);
         if (StringUtils.hasText(normalizedEventId)) {
-            activitiesChatService.postSystemMessage(
+            chatService.postSystemMessage(
                     normalizedEventId,
                     firstNonBlank(user.getName(), user.getId(), "A member") + " joined the event.",
                     "member-joined");
@@ -2043,14 +2043,14 @@ public class ActivitiesEventsService {
     private void maybePostMemberLeftMessage(EventActionRequestDto request) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
-        if (viewer == null || activitiesChatService == null || !StringUtils.hasText(sourceId)) {
+        if (viewer == null || chatService == null || !StringUtils.hasText(sourceId)) {
             return;
         }
         ActivityEvent preferred = findPreferredEventRecord(sourceId);
         if (preferred == null || isViewerAdmin(preferred, viewer.userId())) {
             return;
         }
-        activitiesChatService.postSystemMessage(
+        chatService.postSystemMessage(
                 sourceId,
                 firstNonBlank(viewer.user().getName(), viewer.userId(), "A member") + " left the event.",
                 "member-left");

@@ -38,33 +38,36 @@ import org.springframework.web.server.ResponseStatusException;
 import org.bson.Document;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageReactionRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageReplyRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarRecord;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageAttachmentDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReactionDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReplyDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageAttachmentRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageReactionRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageReplyRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseAssigneeRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.SupportCaseRecord;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageAttachmentDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReactionDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReplyDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
+import com.raxim.myscoutee.profile.service.mapper.ChatMapper;
 
 @Service
-public class ActivitiesChatService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesChatService.class);
+public class ChatService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
     private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
@@ -73,8 +76,8 @@ public class ActivitiesChatService {
     private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
     private static final String SUPPORT_CASE_FILTER_ALL = "all";
 
-    private final ActivityChatsRepository activityChatsRepository;
-    private final ActivityChatMessagesRepository activityChatMessagesRepository;
+    private final ChatsRepository chatsRepository;
+    private final ChatMessagesRepository chatMessagesRepository;
     private final MongoTemplate mongoTemplate;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
@@ -83,11 +86,12 @@ public class ActivitiesChatService {
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
+    private final ChatMapper chatMapper;
     private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
-    public ActivitiesChatService(
-            ActivityChatsRepository activityChatsRepository,
-            ActivityChatMessagesRepository activityChatMessagesRepository,
+    public ChatService(
+            ChatsRepository chatsRepository,
+            ChatMessagesRepository chatMessagesRepository,
             MongoTemplate mongoTemplate,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
@@ -95,9 +99,10 @@ public class ActivitiesChatService {
             ChatPushNotificationService chatPushNotificationService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
-            AccessControlService accessControlService) {
-        this.activityChatsRepository = activityChatsRepository;
-        this.activityChatMessagesRepository = activityChatMessagesRepository;
+            AccessControlService accessControlService,
+            ChatMapper chatMapper) {
+        this.chatsRepository = chatsRepository;
+        this.chatMessagesRepository = chatMessagesRepository;
         this.mongoTemplate = mongoTemplate;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -106,6 +111,7 @@ public class ActivitiesChatService {
         this.adminTelemetryService = adminTelemetryService;
         this.adminMenuCounterService = adminMenuCounterService;
         this.accessControlService = accessControlService;
+        this.chatMapper = chatMapper;
     }
 
     @PreDestroy
@@ -113,14 +119,14 @@ public class ActivitiesChatService {
         chatWriteExecutor.shutdownNow();
     }
 
-    public List<ChatSummaryDto> queryChats(String requestedUserId) {
+    public List<ChatDto> queryChats(String requestedUserId) {
         String userId = resolveUserId(requestedUserId);
         if (!StringUtils.hasText(userId)) {
             return List.of();
         }
-        return uniqueOwnerChats(activityChatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId)).stream()
+        return uniqueOwnerChats(chatsRepository.findByOwnerUserIdOrderByDateIsoDesc(userId)).stream()
                 .filter(Objects::nonNull)
-                .map(this::toSummaryDto)
+                .map(this::toChatDto)
                 .toList();
     }
 
@@ -161,20 +167,20 @@ public class ActivitiesChatService {
                     supportCaseFilterValue);
         }
 
-        List<ChatSummaryProjection> projections = uniqueOwnerChats(activityChatsRepository.findByOwnerUserId(userId)).stream()
+        List<ChatProjection> projections = uniqueOwnerChats(chatsRepository.findByOwnerUserId(userId)).stream()
                 .filter(Objects::nonNull)
-                .map(this::toSummaryProjection)
+                .map(this::toChatProjection)
                 .filter(Objects::nonNull)
-                .filter(item -> matchesChatContextFilter(item.summary(), contextFilter))
+                .filter(item -> matchesChatContextFilter(item.chat(), contextFilter))
                 .filter(item -> item.dateMs() >= rangeStartMs && item.dateMs() <= rangeEndMs)
-                .sorted(chatSummaryComparator(sort, sortAscending))
+                .sorted(chatComparator(sort, sortAscending))
                 .toList();
 
         int startIndex = resolveChatCursorStartIndex(projections, cursor);
         int limit = normalizeChatPageLimit(limitValue);
         int endIndex = Math.min(projections.size(), startIndex + limit);
-        List<ChatSummaryDto> items = projections.subList(startIndex, endIndex).stream()
-                .map(ChatSummaryProjection::summary)
+        List<ChatDto> items = projections.subList(startIndex, endIndex).stream()
+                .map(ChatProjection::chat)
                 .toList();
         String nextCursor = endIndex < projections.size() && !items.isEmpty()
                 ? serializeChatCursor(items.get(items.size() - 1))
@@ -197,22 +203,22 @@ public class ActivitiesChatService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
         }
         String supportCaseFilter = normalizeSupportCaseFilter(supportCaseFilterValue);
-        List<ChatSummaryProjection> projections = uniqueSupportCaseChats(
-                activityChatsRepository.findByChannelType("serviceEvent"),
+        List<ChatProjection> projections = uniqueSupportCaseChats(
+                chatsRepository.findByChannelType("supportCase"),
                 userId).stream()
                 .filter(this::isSupportCaseChat)
-                .map(this::toSummaryProjection)
+                .map(this::toChatProjection)
                 .filter(Objects::nonNull)
-                .filter(item -> matchesSupportCaseFilter(item.summary(), supportCaseFilter))
+                .filter(item -> matchesSupportCaseFilter(item.chat(), supportCaseFilter))
                 .filter(item -> item.dateMs() >= rangeStartMs && item.dateMs() <= rangeEndMs)
-                .sorted(chatSummaryComparator(sort, sortAscending))
+                .sorted(chatComparator(sort, sortAscending))
                 .toList();
 
         int startIndex = resolveChatCursorStartIndex(projections, cursor);
         int limit = normalizeChatPageLimit(limitValue);
         int endIndex = Math.min(projections.size(), startIndex + limit);
-        List<ChatSummaryDto> items = projections.subList(startIndex, endIndex).stream()
-                .map(ChatSummaryProjection::summary)
+        List<ChatDto> items = projections.subList(startIndex, endIndex).stream()
+                .map(ChatProjection::chat)
                 .toList();
         String nextCursor = endIndex < projections.size() && !items.isEmpty()
                 ? serializeChatCursor(items.get(items.size() - 1))
@@ -220,7 +226,7 @@ public class ActivitiesChatService {
         return new ChatPageResponseDto(items, projections.size(), nextCursor);
     }
 
-    public ChatSummaryDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
+    public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
         String userId = requireResolvedUserId(requestedUserId);
         String normalizedChatId = normalizeId(chatId);
         if (!StringUtils.hasText(normalizedChatId)) {
@@ -235,29 +241,29 @@ public class ActivitiesChatService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
         }
 
-        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
         if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(this::isSupportCaseChat)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case not found.");
         }
 
         SupportCaseState state = nextSupportCaseState(action, userId, actor);
-        List<ActivityChat> updatedDocuments = new ArrayList<>();
-        for (ActivityChat existing : chatDocuments) {
-            ActivityChat next = copyChat(existing);
+        List<Chat> updatedDocuments = new ArrayList<>();
+        for (Chat existing : chatDocuments) {
+            Chat next = copyChat(existing);
             applySupportCaseState(next, state);
             updatedDocuments.add(next);
         }
-        activityChatsRepository.saveAll(updatedDocuments);
+        chatsRepository.saveAll(updatedDocuments);
         adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
 
-        ActivityChat viewerChat = findOwnerChat(updatedDocuments, userId);
-        return toSummaryDto(viewerChat == null ? updatedDocuments.get(0) : viewerChat);
+        Chat viewerChat = findOwnerChat(updatedDocuments, userId);
+        return toChatDto(viewerChat == null ? updatedDocuments.get(0) : viewerChat);
     }
 
     public List<ChatMessageDto> queryMessages(String chatId, String requestedUserId) {
         String userId = requireResolvedUserId(requestedUserId);
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
-        List<ActivityChatMessage> messages = activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(snapshot.chatId()).stream()
+        List<ChatMessage> messages = chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(snapshot.chatId()).stream()
                 .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(message -> sortableDate(message.getSentAtIso())))
                 .toList();
@@ -281,7 +287,7 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
             return null;
         }
-        List<ActivityChat> chatDocuments = ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId));
+        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
         if (chatDocuments.isEmpty()) {
             return null;
         }
@@ -289,8 +295,8 @@ public class ActivitiesChatService {
         ChatMessageRecord messageRecord = buildSystemMessageRecord(normalizedText, systemType);
         ChatStreamEvent streamEvent = toStreamEvent(normalizedChatId, messageRecord);
         CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
-        activityChatMessagesRepository.save(toMessageDocument(normalizedChatId, messageRecord));
-        List<ActivityChat> updatedDocuments = updateChatSummaries(chatDocuments, messageRecord, "", false);
+        chatMessagesRepository.save(toMessageDocument(normalizedChatId, messageRecord));
+        List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, messageRecord, "", false);
         observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.system", "chats", normalizedChatId, "system");
@@ -323,9 +329,9 @@ public class ActivitiesChatService {
         ChatMessageRecord messageRecord = buildMessageRecord(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
         ChatStreamEvent streamEvent = toStreamEvent(accessSnapshot.chatId(), messageRecord);
         CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
-        List<ActivityChat> chatDocuments = chatDocumentsForMutation(accessSnapshot, userId);
-        activityChatMessagesRepository.save(toMessageDocument(accessSnapshot.chatId(), messageRecord));
-        List<ActivityChat> updatedDocuments = updateChatSummaries(chatDocuments, messageRecord, userId, true);
+        List<Chat> chatDocuments = chatDocumentsForMutation(accessSnapshot, userId);
+        chatMessagesRepository.save(toMessageDocument(accessSnapshot.chatId(), messageRecord));
+        List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, messageRecord, userId, true);
         observeChatEventPublish(redisPublish, streamEvent);
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.sent", "chats", accessSnapshot.chatId(), userId);
@@ -440,13 +446,13 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedUserId)) {
             return false;
         }
-        ActivityChat viewerChat = activityChatsRepository
+        Chat viewerChat = chatsRepository
                 .findByOwnerUserIdAndChatId(normalizedUserId, normalizedChatId)
                 .orElse(null);
         if (viewerChat != null) {
             return hasChatAccess(viewerChat, normalizedUserId);
         }
-        return activityChatsRepository.findByChatId(normalizedChatId).stream()
+        return chatsRepository.findByChatId(normalizedChatId).stream()
                 .anyMatch(chat -> hasChatAccess(chat, normalizedUserId));
     }
 
@@ -535,17 +541,17 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
         }
-        List<ActivityChat> chatDocuments = prepareOwnerCopies
-                ? ensureOwnerCopies(activityChatsRepository.findByChatId(normalizedChatId))
-                : activityChatsRepository.findByChatId(normalizedChatId);
+        List<Chat> chatDocuments = prepareOwnerCopies
+                ? ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId))
+                : chatsRepository.findByChatId(normalizedChatId);
         if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(chat -> hasChatAccess(chat, userId))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
         }
-        ActivityChat viewerChat = findOwnerChat(chatDocuments, userId);
+        Chat viewerChat = findOwnerChat(chatDocuments, userId);
         if (prepareOwnerCopies && viewerChat == null) {
-            ActivityChat baseChat = chatDocuments.get(0);
-            ActivityChat createdViewerChat = createOwnerCopy(baseChat, userId);
-            activityChatsRepository.save(createdViewerChat);
+            Chat baseChat = chatDocuments.get(0);
+            Chat createdViewerChat = createOwnerCopy(baseChat, userId);
+            chatsRepository.save(createdViewerChat);
             chatDocuments = new ArrayList<>(chatDocuments);
             chatDocuments.add(createdViewerChat);
             viewerChat = createdViewerChat;
@@ -557,19 +563,19 @@ public class ActivitiesChatService {
         return requireChat(chatId, userId, true);
     }
 
-    private List<ActivityChat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
+    private List<Chat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
         if (snapshot != null && snapshot.chatDocuments() != null && !snapshot.chatDocuments().isEmpty()) {
             return snapshot.chatDocuments();
         }
         return requireChatAccessForSend(snapshot == null ? "" : snapshot.chatId(), userId).chatDocuments();
     }
 
-    private List<ActivityChat> uniqueOwnerChats(List<ActivityChat> chatDocuments) {
+    private List<Chat> uniqueOwnerChats(List<Chat> chatDocuments) {
         if (chatDocuments == null || chatDocuments.isEmpty()) {
             return List.of();
         }
-        Map<String, ActivityChat> uniqueByChatId = new LinkedHashMap<>();
-        for (ActivityChat chat : chatDocuments) {
+        Map<String, Chat> uniqueByChatId = new LinkedHashMap<>();
+        for (Chat chat : chatDocuments) {
             if (chat == null) {
                 continue;
             }
@@ -577,7 +583,7 @@ public class ActivitiesChatService {
             if (!StringUtils.hasText(chatId)) {
                 continue;
             }
-            ActivityChat current = uniqueByChatId.get(chatId);
+            Chat current = uniqueByChatId.get(chatId);
             if (current == null || sortableDate(chat.getDateIso()) > sortableDate(current.getDateIso())) {
                 uniqueByChatId.put(chatId, chat);
             }
@@ -585,13 +591,13 @@ public class ActivitiesChatService {
         return new ArrayList<>(uniqueByChatId.values());
     }
 
-    private List<ActivityChat> uniqueSupportCaseChats(List<ActivityChat> chatDocuments, String viewerUserId) {
+    private List<Chat> uniqueSupportCaseChats(List<Chat> chatDocuments, String viewerUserId) {
         if (chatDocuments == null || chatDocuments.isEmpty()) {
             return List.of();
         }
         String normalizedViewerUserId = normalizeId(viewerUserId);
-        Map<String, ActivityChat> uniqueByChatId = new LinkedHashMap<>();
-        for (ActivityChat chat : chatDocuments) {
+        Map<String, Chat> uniqueByChatId = new LinkedHashMap<>();
+        for (Chat chat : chatDocuments) {
             if (chat == null || !isSupportCaseChat(chat)) {
                 continue;
             }
@@ -599,7 +605,7 @@ public class ActivitiesChatService {
             if (!StringUtils.hasText(chatId)) {
                 continue;
             }
-            ActivityChat current = uniqueByChatId.get(chatId);
+            Chat current = uniqueByChatId.get(chatId);
             boolean chatBelongsToViewer = normalizedViewerUserId.equals(normalizeId(chat.getOwnerUserId()));
             boolean currentBelongsToViewer = current != null && normalizedViewerUserId.equals(normalizeId(current.getOwnerUserId()));
             if (current == null
@@ -611,25 +617,25 @@ public class ActivitiesChatService {
         return new ArrayList<>(uniqueByChatId.values());
     }
 
-    private List<ActivityChat> ensureOwnerCopies(List<ActivityChat> chatDocuments) {
+    private List<Chat> ensureOwnerCopies(List<Chat> chatDocuments) {
         if (chatDocuments == null || chatDocuments.isEmpty()) {
             return List.of();
         }
-        Map<String, List<ActivityChat>> chatsByChatId = groupChatsByChatId(chatDocuments);
+        Map<String, List<Chat>> chatsByChatId = groupChatsByChatId(chatDocuments);
 
-        List<ActivityChat> created = new ArrayList<>();
-        for (List<ActivityChat> chatsWithSameId : chatsByChatId.values()) {
+        List<Chat> created = new ArrayList<>();
+        for (List<Chat> chatsWithSameId : chatsByChatId.values()) {
             if (chatsWithSameId.isEmpty()) {
                 continue;
             }
-            ActivityChat baseChat = chatsWithSameId.get(0);
+            Chat baseChat = chatsWithSameId.get(0);
             String chatId = normalizeId(baseChat.getChatId());
             if (!StringUtils.hasText(chatId)) {
                 continue;
             }
             Set<String> ownerUserIds = new LinkedHashSet<>();
             Set<String> participantUserIds = new LinkedHashSet<>();
-            for (ActivityChat chat : activityChatsRepository.findByChatId(chatId)) {
+            for (Chat chat : chatsRepository.findByChatId(chatId)) {
                 if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
                     ownerUserIds.add(normalizeId(chat.getOwnerUserId()));
                 }
@@ -639,21 +645,21 @@ public class ActivitiesChatService {
                 if (ownerUserIds.contains(participantUserId)) {
                     continue;
                 }
-                ActivityChat createdChat = createOwnerCopy(baseChat, participantUserId);
+                Chat createdChat = createOwnerCopy(baseChat, participantUserId);
                 created.add(createdChat);
                 chatsWithSameId.add(createdChat);
                 ownerUserIds.add(participantUserId);
             }
         }
         if (!created.isEmpty()) {
-            activityChatsRepository.saveAll(created);
+            chatsRepository.saveAll(created);
         }
         return flattenChatGroups(chatsByChatId);
     }
 
-    private Map<String, List<ActivityChat>> groupChatsByChatId(List<ActivityChat> chatDocuments) {
-        Map<String, List<ActivityChat>> chatsByChatId = new LinkedHashMap<>();
-        for (ActivityChat chat : chatDocuments == null ? List.<ActivityChat>of() : chatDocuments) {
+    private Map<String, List<Chat>> groupChatsByChatId(List<Chat> chatDocuments) {
+        Map<String, List<Chat>> chatsByChatId = new LinkedHashMap<>();
+        for (Chat chat : chatDocuments == null ? List.<Chat>of() : chatDocuments) {
             if (chat == null || !StringUtils.hasText(chat.getChatId())) {
                 continue;
             }
@@ -664,10 +670,10 @@ public class ActivitiesChatService {
     }
 
     private void collectChatOwnersAndParticipants(
-            List<ActivityChat> chatsWithSameId,
+            List<Chat> chatsWithSameId,
             Set<String> ownerUserIds,
             Set<String> participantUserIds) {
-        for (ActivityChat chat : chatsWithSameId == null ? List.<ActivityChat>of() : chatsWithSameId) {
+        for (Chat chat : chatsWithSameId == null ? List.<Chat>of() : chatsWithSameId) {
             if (StringUtils.hasText(chat.getOwnerUserId())) {
                 String ownerUserId = normalizeId(chat.getOwnerUserId());
                 ownerUserIds.add(ownerUserId);
@@ -681,9 +687,9 @@ public class ActivitiesChatService {
         }
     }
 
-    private List<ActivityChat> flattenChatGroups(Map<String, List<ActivityChat>> chatsByChatId) {
-        List<ActivityChat> flattened = new ArrayList<>();
-        for (List<ActivityChat> sameChatId : chatsByChatId.values()) {
+    private List<Chat> flattenChatGroups(Map<String, List<Chat>> chatsByChatId) {
+        List<Chat> flattened = new ArrayList<>();
+        for (List<Chat> sameChatId : chatsByChatId.values()) {
             flattened.addAll(sameChatId);
         }
         return flattened;
@@ -700,7 +706,7 @@ public class ActivitiesChatService {
             ChatDocumentsSnapshot snapshot,
             String viewerUserId,
             List<String> requestedMessageIds,
-            List<ActivityChatMessage> preloadedMessages) {
+            List<ChatMessage> preloadedMessages) {
         Set<String> targetMessageIds = requestedMessageIds == null
                 ? Set.of()
                 : requestedMessageIds.stream()
@@ -712,13 +718,13 @@ public class ActivitiesChatService {
         String readAtIso = Instant.now().toString();
         Users viewer = null;
         ChatReadAvatarRecord reader = null;
-        List<ActivityChatMessage> messages = targetAllMessages && preloadedMessages != null
+        List<ChatMessage> messages = targetAllMessages && preloadedMessages != null
                 ? preloadedMessages
                 : targetAllMessages
-                ? activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(snapshot.chatId())
-                : activityChatMessagesRepository.findByChatIdAndMessageIds(snapshot.chatId(), targetMessageIds);
-        List<ActivityChatMessage> changedMessages = new ArrayList<>();
-        for (ActivityChatMessage message : messages) {
+                ? chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(snapshot.chatId())
+                : chatMessagesRepository.findByChatIdAndMessageIds(snapshot.chatId(), targetMessageIds);
+        List<ChatMessage> changedMessages = new ArrayList<>();
+        for (ChatMessage message : messages) {
             if (message == null) {
                 continue;
             }
@@ -737,18 +743,18 @@ public class ActivitiesChatService {
                 changedMessages.add(message);
             }
         }
-        ActivityChat viewerChat = snapshot.viewerChat();
+        Chat viewerChat = snapshot.viewerChat();
         if (!changedMessages.isEmpty()) {
-            activityChatMessagesRepository.saveAll(changedMessages);
+            chatMessagesRepository.saveAll(changedMessages);
         }
         if (viewerChat != null && !changedMessages.isEmpty()) {
             int unread = targetAllMessages && preloadedMessages != null
                     ? countUnreadMessages(preloadedMessages, viewerUserId)
                     : countUnreadMessages(snapshot.chatId(), viewerUserId);
             if (normalizeCount(viewerChat.getUnread()) != unread) {
-                ActivityChat nextViewerChat = copyChat(viewerChat);
+                Chat nextViewerChat = copyChat(viewerChat);
                 nextViewerChat.setUnread(unread);
-                viewerChat = activityChatsRepository.save(nextViewerChat);
+                viewerChat = chatsRepository.save(nextViewerChat);
                 homeUserProfileService.evictUserReadCaches(viewerUserId);
             }
         }
@@ -779,12 +785,12 @@ public class ActivitiesChatService {
         }
         ChatDocumentsSnapshot snapshot = requireChat(normalizedChatId, userId);
         Users user = findUser(userId);
-        ActivityChatMessage message = activityChatMessagesRepository
+        ChatMessage message = chatMessagesRepository
                 .findByChatIdAndMessageId(snapshot.chatId(), normalizedMessageId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found."));
         mutator.apply(message, userId, user);
         message.refreshMessageSearchFields();
-        ActivityChatMessage updatedMessage = activityChatMessagesRepository.save(message);
+        ChatMessage updatedMessage = chatMessagesRepository.save(message);
         refreshChatSummaries(snapshot.chatId(), snapshot.chatDocuments());
         publishChatEvent(toStreamEvent(snapshot.chatId(), updatedMessage));
         return toMessageDto(updatedMessage, userId);
@@ -805,32 +811,32 @@ public class ActivitiesChatService {
                 .orElse(null);
     }
 
-    private ActivityChatMessage toMessageDocument(String chatId, ChatMessageRecord messageRecord) {
-        ActivityChatMessage document = ActivityChatMessage.fromRecord(chatId, copyMessageRecord(messageRecord));
-        document.setMongoId(ActivityChatMessage.buildMongoId(chatId, document.getId()));
+    private ChatMessage toMessageDocument(String chatId, ChatMessageRecord messageRecord) {
+        ChatMessage document = ChatMessage.fromRecord(chatId, copyMessageRecord(messageRecord));
+        document.setMongoId(ChatMessage.buildMongoId(chatId, document.getId()));
         document.refreshMessageSearchFields();
         return document;
     }
 
-    private List<ActivityChat> updateChatSummaries(
-            List<ActivityChat> chatDocuments,
+    private List<Chat> updateChatSummaries(
+            List<Chat> chatDocuments,
             ChatMessageRecord messageRecord,
             String lastSenderId,
             boolean clearUnreadForSender) {
         if (chatDocuments == null || chatDocuments.isEmpty() || messageRecord == null) {
             return List.of();
         }
-        List<ActivityChat> updatedDocuments = new ArrayList<>(chatDocuments.size());
-        BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, ActivityChat.class);
+        List<Chat> updatedDocuments = new ArrayList<>(chatDocuments.size());
+        BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class);
         boolean hasBulkUpdates = false;
         String summary = chatMessageSummary(messageRecord);
         String sentAtIso = messageRecord.getSentAtIso();
         String normalizedLastSenderId = normalizeId(lastSenderId);
-        for (ActivityChat existing : chatDocuments) {
+        for (Chat existing : chatDocuments) {
             if (existing == null || !StringUtils.hasText(existing.getMongoId())) {
                 continue;
             }
-            ActivityChat next = copyChat(existing);
+            Chat next = copyChat(existing);
             next.setLastMessage(summary);
             next.setLastSenderId(normalizedLastSenderId);
             next.setDateIso(sentAtIso);
@@ -853,9 +859,9 @@ public class ActivitiesChatService {
         return updatedDocuments;
     }
 
-    private void evictChatOwnerReadCaches(List<ActivityChat> chatDocuments) {
+    private void evictChatOwnerReadCaches(List<Chat> chatDocuments) {
         Set<String> ownerUserIds = new LinkedHashSet<>();
-        for (ActivityChat chat : chatDocuments == null ? List.<ActivityChat>of() : chatDocuments) {
+        for (Chat chat : chatDocuments == null ? List.<Chat>of() : chatDocuments) {
             if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
                 ownerUserIds.add(normalizeId(chat.getOwnerUserId()));
             }
@@ -863,24 +869,24 @@ public class ActivitiesChatService {
         homeUserProfileService.evictUserReadCaches(ownerUserIds);
     }
 
-    private void refreshChatSummaries(String chatId, List<ActivityChat> chatDocuments) {
+    private void refreshChatSummaries(String chatId, List<Chat> chatDocuments) {
         String normalizedChatId = normalizeId(chatId);
         if (!StringUtils.hasText(normalizedChatId)) {
             return;
         }
-        ChatMessageRecord latest = latestMessage(new ArrayList<>(activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId)));
-        List<ActivityChat> sourceDocuments = chatDocuments == null || chatDocuments.isEmpty()
-                ? activityChatsRepository.findByChatId(normalizedChatId)
+        ChatMessageRecord latest = latestMessage(new ArrayList<>(chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId)));
+        List<Chat> sourceDocuments = chatDocuments == null || chatDocuments.isEmpty()
+                ? chatsRepository.findByChatId(normalizedChatId)
                 : chatDocuments;
         if (sourceDocuments.isEmpty()) {
             return;
         }
-        List<ActivityChat> updatedDocuments = new ArrayList<>();
-        for (ActivityChat existing : sourceDocuments) {
+        List<Chat> updatedDocuments = new ArrayList<>();
+        for (Chat existing : sourceDocuments) {
             if (existing == null) {
                 continue;
             }
-            ActivityChat next = copyChat(existing);
+            Chat next = copyChat(existing);
             if (latest == null) {
                 next.setLastMessage("");
                 next.setLastSenderId("");
@@ -893,7 +899,7 @@ public class ActivitiesChatService {
             updatedDocuments.add(next);
         }
         if (!updatedDocuments.isEmpty()) {
-            activityChatsRepository.saveAll(updatedDocuments);
+            chatsRepository.saveAll(updatedDocuments);
         }
     }
 
@@ -938,42 +944,23 @@ public class ActivitiesChatService {
         return StringUtils.hasText(firebaseToken) && firebaseToken.equals(normalizeText(device.getFirebaseToken()));
     }
 
-    private ChatSummaryDto toSummaryDto(ActivityChat chat) {
-        return new ChatSummaryDto(
-                normalizeId(chat.getChatId()),
-                safeText(chat.getAvatar()),
-                safeText(chat.getTitle()),
-                safeText(chat.getLastMessage()),
-                safeText(chat.getLastSenderId()),
-                new ArrayList<>(chat.getMemberIds() == null ? List.of() : chat.getMemberIds()),
-                normalizeCount(chat.getUnread()),
-                chat.getDateIso(),
-                chat.getChannelType(),
-                chat.getEventId(),
-                chat.getSubEventId(),
-                chat.getGroupId(),
-                null,
-                null,
-                isSupportCaseChat(chat) ? normalizeSupportCaseStatus(chat.getSupportCaseStatus()) : "",
-                safeText(chat.getSupportCaseAssigneeUserId()),
-                safeText(chat.getSupportCaseAssigneeName()),
-                safeText(chat.getSupportCaseAssigneeInitials()),
-                safeText(chat.getSupportCaseUpdatedAtIso()));
+    private ChatDto toChatDto(Chat chat) {
+        return chatMapper.toDto(chat);
     }
 
-    private ChatSummaryProjection toSummaryProjection(ActivityChat chat) {
+    private ChatProjection toChatProjection(Chat chat) {
         if (chat == null) {
             return null;
         }
-        ChatSummaryDto summary = toSummaryDto(chat);
-        int unread = normalizeCount(summary.unread());
+        ChatDto dto = toChatDto(chat);
+        int unread = normalizeCount(dto.unread());
         int memberCount = Math.max(1, (int) safeMemberIds(chat.getMemberIds()).stream()
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .count());
         int relevanceScore = (unread * 10) + memberCount;
-        return new ChatSummaryProjection(summary, sortableDate(summary.dateIso()), Integer.MAX_VALUE, relevanceScore);
+        return new ChatProjection(dto, sortableDate(dto.dateIso()), Integer.MAX_VALUE, relevanceScore);
     }
 
     private ChatMessageDto toMessageDto(ChatMessageRecord message, String viewerUserId) {
@@ -1295,10 +1282,10 @@ public class ActivitiesChatService {
         });
     }
 
-    private ActivityChat findOwnerChat(List<ActivityChat> chats, String ownerUserId) {
+    private Chat findOwnerChat(List<Chat> chats, String ownerUserId) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
-        ActivityChat selected = null;
-        for (ActivityChat chat : chats) {
+        Chat selected = null;
+        for (Chat chat : chats) {
             if (chat == null || !normalizedOwnerUserId.equals(normalizeId(chat.getOwnerUserId()))) {
                 continue;
             }
@@ -1326,7 +1313,7 @@ public class ActivitiesChatService {
         return selected;
     }
 
-    private int messageCount(ActivityChat chat) {
+    private int messageCount(Chat chat) {
         if (chat == null) {
             return 0;
         }
@@ -1338,10 +1325,10 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(chatId)) {
             return 0;
         }
-        return activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(chatId).size();
+        return chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(chatId).size();
     }
 
-    private boolean hasChatAccess(ActivityChat chat, String userId) {
+    private boolean hasChatAccess(Chat chat, String userId) {
         if (chat == null || !StringUtils.hasText(userId)) {
             return false;
         }
@@ -1360,8 +1347,8 @@ public class ActivitiesChatService {
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private ActivityChat createOwnerCopy(ActivityChat baseChat, String ownerUserId) {
-        ActivityChat copy = copyChat(baseChat);
+    private Chat createOwnerCopy(Chat baseChat, String ownerUserId) {
+        Chat copy = copyChat(baseChat);
         copy.setMongoId(buildMongoId(ownerUserId, baseChat.getChatId()));
         copy.setOwnerUserId(ownerUserId);
         copy.setUnread(countUnreadMessages(baseChat.getChatId(), ownerUserId));
@@ -1374,7 +1361,7 @@ public class ActivitiesChatService {
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedViewerUserId)) {
             return 0;
         }
-        return countUnreadMessages(activityChatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId), normalizedViewerUserId);
+        return countUnreadMessages(chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId), normalizedViewerUserId);
     }
 
     private int countUnreadMessages(List<? extends ChatMessageRecord> messages, String viewerUserId) {
@@ -1399,8 +1386,8 @@ public class ActivitiesChatService {
         return unread;
     }
 
-    private ActivityChat copyChat(ActivityChat source) {
-        ActivityChat copy = new ActivityChat();
+    private Chat copyChat(Chat source) {
+        Chat copy = new Chat();
         copy.setMongoId(source.getMongoId());
         copy.setChatId(source.getChatId());
         copy.setOwnerUserId(source.getOwnerUserId());
@@ -1412,16 +1399,10 @@ public class ActivitiesChatService {
         copy.setUnread(source.getUnread());
         copy.setDateIso(source.getDateIso());
         copy.setChannelType(source.getChannelType());
-        copy.setEventId(source.getEventId());
-        copy.setSubEventId(source.getSubEventId());
-        copy.setGroupId(source.getGroupId());
+        copy.setOwnerId(source.getOwnerId());
         copy.setDistanceKm(null);
         copy.setDistanceMetersExact(null);
-        copy.setSupportCaseStatus(source.getSupportCaseStatus());
-        copy.setSupportCaseAssigneeUserId(source.getSupportCaseAssigneeUserId());
-        copy.setSupportCaseAssigneeName(source.getSupportCaseAssigneeName());
-        copy.setSupportCaseAssigneeInitials(source.getSupportCaseAssigneeInitials());
-        copy.setSupportCaseUpdatedAtIso(source.getSupportCaseUpdatedAtIso());
+        copy.setSupportCase(copySupportCase(source.getSupportCase()));
         return copy;
     }
 
@@ -1763,7 +1744,7 @@ public class ActivitiesChatService {
         return "all";
     }
 
-    private boolean matchesChatContextFilter(ChatSummaryDto item, String contextFilter) {
+    private boolean matchesChatContextFilter(ChatDto item, String contextFilter) {
         if (!StringUtils.hasText(contextFilter) || "all".equalsIgnoreCase(contextFilter)) {
             return true;
         }
@@ -1778,29 +1759,71 @@ public class ActivitiesChatService {
             return "groupSubEvent".equalsIgnoreCase(channelType);
         }
         if ("service".equalsIgnoreCase(contextFilter)) {
-            return "serviceEvent".equalsIgnoreCase(channelType);
+            return "serviceEvent".equalsIgnoreCase(channelType)
+                    || "supportCase".equalsIgnoreCase(channelType);
         }
         return true;
     }
 
-    private boolean matchesSupportCaseFilter(ChatSummaryDto item, String supportCaseFilter) {
+    private boolean matchesSupportCaseFilter(ChatDto item, String supportCaseFilter) {
         String normalizedFilter = normalizeSupportCaseFilter(supportCaseFilter);
         if (SUPPORT_CASE_FILTER_ALL.equals(normalizedFilter)) {
             return true;
         }
-        return normalizedFilter.equals(normalizeSupportCaseStatus(item == null ? null : item.supportCaseStatus()));
+        return normalizedFilter.equals(normalizeSupportCaseStatus(item == null || item.supportCase() == null
+                ? null
+                : item.supportCase().status()));
     }
 
-    private boolean isSupportCaseChat(ActivityChat chat) {
+    private boolean isSupportCaseChat(Chat chat) {
         if (chat == null) {
             return false;
         }
-        return StringUtils.hasText(safeText(chat.getSupportCaseStatus()))
+        return "supportCase".equalsIgnoreCase(safeText(chat.getChannelType()))
+                || StringUtils.hasText(supportStatus(chat))
                 || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
     }
 
     private boolean isAdminUser(Users user) {
         return adminMenuCounterService.isAdminUser(user);
+    }
+
+    private SupportCaseRecord toSupportCaseRecord(SupportCaseState state) {
+        SupportCaseRecord supportCase = new SupportCaseRecord();
+        supportCase.setStatus(normalizeSupportCaseStatus(state == null ? null : state.status()));
+        supportCase.setUpdatedAtIso(state == null ? "" : safeText(state.updatedAtIso()));
+        String assigneeUserId = normalizeId(state == null ? null : state.assigneeUserId());
+        if (StringUtils.hasText(assigneeUserId)) {
+            SupportCaseAssigneeRecord assignee = new SupportCaseAssigneeRecord();
+            assignee.setUserId(assigneeUserId);
+            assignee.setName(state == null ? "" : safeText(state.assigneeName()));
+            assignee.setInitials(state == null ? "" : safeText(state.assigneeInitials()));
+            supportCase.setAssignee(assignee);
+        }
+        return supportCase;
+    }
+
+    private SupportCaseRecord copySupportCase(SupportCaseRecord source) {
+        if (source == null) {
+            return null;
+        }
+        SupportCaseRecord copy = new SupportCaseRecord();
+        copy.setStatus(source.getStatus());
+        copy.setUpdatedAtIso(source.getUpdatedAtIso());
+        SupportCaseAssigneeRecord sourceAssignee = source.getAssignee();
+        if (sourceAssignee != null) {
+            SupportCaseAssigneeRecord assignee = new SupportCaseAssigneeRecord();
+            assignee.setUserId(sourceAssignee.getUserId());
+            assignee.setName(sourceAssignee.getName());
+            assignee.setInitials(sourceAssignee.getInitials());
+            copy.setAssignee(assignee);
+        }
+        return copy;
+    }
+
+    private String supportStatus(Chat chat) {
+        SupportCaseRecord supportCase = chat == null ? null : chat.getSupportCase();
+        return safeText(supportCase == null ? null : supportCase.getStatus());
     }
 
     private String normalizeSupportCaseStatus(String value) {
@@ -1847,12 +1870,12 @@ public class ActivitiesChatService {
                 nowIso);
     }
 
-    private void applySupportCaseState(ActivityChat chat, SupportCaseState state) {
-        chat.setSupportCaseStatus(state.status());
-        chat.setSupportCaseAssigneeUserId(state.assigneeUserId());
-        chat.setSupportCaseAssigneeName(state.assigneeName());
-        chat.setSupportCaseAssigneeInitials(state.assigneeInitials());
-        chat.setSupportCaseUpdatedAtIso(state.updatedAtIso());
+    private void applySupportCaseState(Chat chat, SupportCaseState state) {
+        chat.setChannelType("supportCase");
+        if (!StringUtils.hasText(normalizeId(chat.getOwnerId()))) {
+            chat.setOwnerId(normalizeId(chat.getChatId()));
+        }
+        chat.setSupportCase(toSupportCaseRecord(state));
     }
 
     private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
@@ -1877,7 +1900,7 @@ public class ActivitiesChatService {
         return false;
     }
 
-    private Comparator<ChatSummaryProjection> chatSummaryComparator(String sort, boolean ascending) {
+    private Comparator<ChatProjection> chatComparator(String sort, boolean ascending) {
         return (left, right) -> {
             int comparison;
             if ("relevance".equals(sort)) {
@@ -1895,7 +1918,7 @@ public class ActivitiesChatService {
                     return comparison;
                 }
             }
-            return safeText(left.summary().id()).compareTo(safeText(right.summary().id()));
+            return safeText(left.chat().id()).compareTo(safeText(right.chat().id()));
         };
     }
 
@@ -1907,20 +1930,20 @@ public class ActivitiesChatService {
         return ascending ? Long.compare(left, right) : Long.compare(right, left);
     }
 
-    private int resolveChatCursorStartIndex(List<ChatSummaryProjection> items, String cursor) {
+    private int resolveChatCursorStartIndex(List<ChatProjection> items, String cursor) {
         String cursorId = parseChatCursorId(cursor);
         if (!StringUtils.hasText(cursorId)) {
             return 0;
         }
         for (int index = 0; index < items.size(); index += 1) {
-            if (cursorId.equals(normalizeId(items.get(index).summary().id()))) {
+            if (cursorId.equals(normalizeId(items.get(index).chat().id()))) {
                 return index + 1;
             }
         }
         return 0;
     }
 
-    private String serializeChatCursor(ChatSummaryDto item) {
+    private String serializeChatCursor(ChatDto item) {
         return item == null ? null : normalizeId(item.id());
     }
 
@@ -1979,21 +2002,21 @@ public class ActivitiesChatService {
         return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    private record ChatSummaryProjection(
-            ChatSummaryDto summary,
+    private record ChatProjection(
+            ChatDto chat,
             long dateMs,
             int distanceMeters,
             int relevanceScore) {
     }
 
     private record ChatReadUpdate(
-            ActivityChat viewerChat,
+            Chat viewerChat,
             List<String> readMessageIds,
             ChatReadAvatarDto reader,
             String readAtIso) {
     }
 
-    private record ChatDocumentsSnapshot(String chatId, ActivityChat viewerChat, List<ActivityChat> chatDocuments) {
+    private record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {
     }
 
     private record SupportCaseState(

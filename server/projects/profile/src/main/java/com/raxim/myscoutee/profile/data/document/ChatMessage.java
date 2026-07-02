@@ -15,10 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatAvatarRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageAttachmentRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatMessageReactionRecord;
-import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatAvatarRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageAttachmentRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatMessageReactionRecord;
+import com.raxim.myscoutee.profile.data.document.Chat.ChatReadAvatarRecord;
 
 @org.springframework.data.mongodb.core.mapping.Document(collection = "chatMessages")
 @CompoundIndexes({
@@ -30,7 +30,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityChat.ChatReadAvatarReco
         @CompoundIndex(name = "chat_message_attachment_date", def = "{'messageAttachmentKeys': 1, 'sentAtIso': -1}"),
         @CompoundIndex(name = "chat_poll_voter_date", def = "{'pollVoterUserIds': 1, 'sentAtIso': -1}")
 })
-public class ActivityChatMessage extends ActivityChat.ChatMessageRecord {
+public class ChatMessage extends Chat.ChatMessageRecord {
     @MongoId(FieldType.STRING)
     private String mongoId;
 
@@ -134,8 +134,8 @@ public class ActivityChatMessage extends ActivityChat.ChatMessageRecord {
         this.pollVoterUserIds = new ArrayList<>(pollVoterIds);
     }
 
-    public static ActivityChatMessage fromRecord(String chatId, ActivityChat.ChatMessageRecord source) {
-        ActivityChatMessage copy = new ActivityChatMessage();
+    public static ChatMessage fromRecord(String chatId, Chat.ChatMessageRecord source) {
+        ChatMessage copy = new ChatMessage();
         String normalizedChatId = normalizeText(chatId);
         copy.setChatId(normalizedChatId);
         copy.setMongoId(buildMongoId(normalizedChatId, source == null ? null : source.getId()));

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -37,6 +38,8 @@ class UserActivityCountersServiceTest {
     private AssetsRepository assetsRepository;
     @Mock
     private EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    @Mock
+    private MongoTemplate mongoTemplate;
 
     private UserActivityCountersService service;
 
@@ -47,7 +50,8 @@ class UserActivityCountersServiceTest {
                 activityEventsRepository,
                 activityMembersRepository,
                 assetsRepository,
-                eventFeedbackStatesRepository);
+                eventFeedbackStatesRepository,
+                mongoTemplate);
     }
 
     @Test

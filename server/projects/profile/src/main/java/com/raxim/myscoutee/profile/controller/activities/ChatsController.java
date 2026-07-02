@@ -11,30 +11,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceDeleteRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatDeviceUpsertRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageMutationRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPageResponseDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatPostMessageRequestDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSummaryDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSupportCaseMutationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceDeleteRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageMutationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPostMessageRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseMutationRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
-import com.raxim.myscoutee.profile.service.ActivitiesChatService;
+import com.raxim.myscoutee.profile.service.ChatService;
 
 @RestController
 @RequestMapping("/activities/chats")
-public class ActivitiesChatsController {
-    private final ActivitiesChatService activitiesChatService;
+public class ChatsController {
+    private final ChatService chatService;
 
-    public ActivitiesChatsController(ActivitiesChatService activitiesChatService) {
-        this.activitiesChatService = activitiesChatService;
+    public ChatsController(ChatService chatService) {
+        this.chatService = chatService;
     }
 
     @GetMapping
-    public List<ChatSummaryDto> queryChats(@RequestParam("userId") String userId) {
-        return activitiesChatService.queryChats(userId);
+    public List<ChatDto> queryChats(@RequestParam("userId") String userId) {
+        return chatService.queryChats(userId);
     }
 
     @GetMapping("/page")
@@ -50,7 +50,7 @@ public class ActivitiesChatsController {
             @RequestParam(value = "rangeEndIso", required = false) String rangeEndIso,
             @RequestParam(value = "adminServiceOnly", required = false) Boolean adminServiceOnly,
             @RequestParam(value = "supportCaseFilter", required = false) String supportCaseFilter) {
-        return activitiesChatService.queryChatPage(
+        return chatService.queryChatPage(
                 userId,
                 contextFilter,
                 sort,
@@ -68,7 +68,7 @@ public class ActivitiesChatsController {
     public List<ChatMessageDto> queryMessages(
             @PathVariable("chatId") String chatId,
             @RequestParam("userId") String userId) {
-        return activitiesChatService.queryMessages(chatId, userId);
+        return chatService.queryMessages(chatId, userId);
     }
 
     @PostMapping("/{chatId}/messages")
@@ -84,7 +84,7 @@ public class ActivitiesChatsController {
         if (request == null) {
             return null;
         }
-        return activitiesChatService.sendMessage(chatId, userId, request.text(), null, request.replyTo(), request.attachments());
+        return chatService.sendMessage(chatId, userId, request.text(), null, request.replyTo(), request.attachments());
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/edit")
@@ -98,7 +98,7 @@ public class ActivitiesChatsController {
             @PathVariable("messageId") String messageId,
             @RequestBody ChatMessageMutationRequestDto request,
             @RequestParam(value = "userId", required = false) String userId) {
-        return activitiesChatService.editMessage(chatId, userId, messageId, request == null ? "" : request.text());
+        return chatService.editMessage(chatId, userId, messageId, request == null ? "" : request.text());
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/delete")
@@ -111,7 +111,7 @@ public class ActivitiesChatsController {
             @PathVariable("chatId") String chatId,
             @PathVariable("messageId") String messageId,
             @RequestParam(value = "userId", required = false) String userId) {
-        return activitiesChatService.deleteMessage(chatId, userId, messageId);
+        return chatService.deleteMessage(chatId, userId, messageId);
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/pin")
@@ -125,7 +125,7 @@ public class ActivitiesChatsController {
             @PathVariable("messageId") String messageId,
             @RequestBody ChatMessageMutationRequestDto request,
             @RequestParam(value = "userId", required = false) String userId) {
-        return activitiesChatService.pinMessage(chatId, userId, messageId, request != null && Boolean.TRUE.equals(request.pinned()));
+        return chatService.pinMessage(chatId, userId, messageId, request != null && Boolean.TRUE.equals(request.pinned()));
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/reaction")
@@ -139,7 +139,7 @@ public class ActivitiesChatsController {
             @PathVariable("messageId") String messageId,
             @RequestBody ChatMessageMutationRequestDto request,
             @RequestParam(value = "userId", required = false) String userId) {
-        return activitiesChatService.reactToMessage(chatId, userId, messageId, request == null ? "" : request.emoji());
+        return chatService.reactToMessage(chatId, userId, messageId, request == null ? "" : request.emoji());
     }
 
     @PostMapping("/{chatId}/messages/{messageId}/attachments")
@@ -153,14 +153,14 @@ public class ActivitiesChatsController {
             @PathVariable("messageId") String messageId,
             @RequestBody ChatMessageMutationRequestDto request,
             @RequestParam(value = "userId", required = false) String userId) {
-        return activitiesChatService.updateMessageAttachments(chatId, userId, messageId, request == null ? null : request.attachments());
+        return chatService.updateMessageAttachments(chatId, userId, messageId, request == null ? null : request.attachments());
     }
 
     @PostMapping("/devices")
     public void upsertDevice(
             @RequestBody ChatDeviceUpsertRequestDto request,
             @RequestParam(value = "userId", required = false) String userId) {
-        activitiesChatService.upsertDevice(request == null
+        chatService.upsertDevice(request == null
                 ? null
                 : new ChatDeviceUpsertRequestDto(
                         request.userId() == null ? userId : request.userId(),
@@ -182,7 +182,7 @@ public class ActivitiesChatsController {
                         request.deviceId(),
                         request.firebaseToken())
                 : new ChatDeviceDeleteRequestDto(userId, deviceId, firebaseToken);
-        activitiesChatService.deleteDevice(resolvedRequest);
+        chatService.deleteDevice(resolvedRequest);
     }
 
     @PostMapping("/{chatId}/support-case")
@@ -191,12 +191,12 @@ public class ActivitiesChatsController {
             subject = "#request?.userId() ?: #userId ?: #actorUserId",
             resourceId = "#chatId",
             skipWhenAuthenticationOptional = true)
-    public ChatSummaryDto updateSupportCase(
+    public ChatDto updateSupportCase(
             @PathVariable("chatId") String chatId,
             @RequestBody(required = false) ChatSupportCaseMutationRequestDto request,
             @RequestParam(value = "userId", required = false) String userId) {
         String actorUserId = request == null || request.userId() == null ? userId : request.userId();
         String action = request == null ? null : request.action();
-        return activitiesChatService.updateSupportCase(chatId, actorUserId, action);
+        return chatService.updateSupportCase(chatId, actorUserId, action);
     }
 }

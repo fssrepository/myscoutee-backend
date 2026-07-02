@@ -17,9 +17,10 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 @CompoundIndexes({
         @CompoundIndex(name = "chat_owner_public_id", def = "{'ownerUserId': 1, 'id': 1}", unique = true),
         @CompoundIndex(name = "chat_public_id_lookup", def = "{'id': 1}"),
-        @CompoundIndex(name = "chat_owner_date", def = "{'ownerUserId': 1, 'dateIso': -1}")
+        @CompoundIndex(name = "chat_owner_date", def = "{'ownerUserId': 1, 'dateIso': -1}"),
+        @CompoundIndex(name = "chat_owner_channel_owner", def = "{'ownerUserId': 1, 'channelType': 1, 'ownerId': 1}")
 })
-public class ActivityChat {
+public class Chat {
     @MongoId(FieldType.STRING)
     private String mongoId;
 
@@ -37,16 +38,10 @@ public class ActivityChat {
     private Integer unread;
     private String dateIso;
     private String channelType;
-    private String eventId;
-    private String subEventId;
-    private String groupId;
+    private String ownerId;
     private Double distanceKm;
     private Integer distanceMetersExact;
-    private String supportCaseStatus;
-    private String supportCaseAssigneeUserId;
-    private String supportCaseAssigneeName;
-    private String supportCaseAssigneeInitials;
-    private String supportCaseUpdatedAtIso;
+    private SupportCaseRecord supportCase;
 
     @Transient
     private List<ChatMessageRecord> messages = new ArrayList<>();
@@ -139,28 +134,12 @@ public class ActivityChat {
         this.channelType = channelType;
     }
 
-    public String getEventId() {
-        return eventId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
-
-    public String getSubEventId() {
-        return subEventId;
-    }
-
-    public void setSubEventId(String subEventId) {
-        this.subEventId = subEventId;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Double getDistanceKm() {
@@ -179,44 +158,12 @@ public class ActivityChat {
         this.distanceMetersExact = distanceMetersExact;
     }
 
-    public String getSupportCaseStatus() {
-        return supportCaseStatus;
+    public SupportCaseRecord getSupportCase() {
+        return supportCase;
     }
 
-    public void setSupportCaseStatus(String supportCaseStatus) {
-        this.supportCaseStatus = supportCaseStatus;
-    }
-
-    public String getSupportCaseAssigneeUserId() {
-        return supportCaseAssigneeUserId;
-    }
-
-    public void setSupportCaseAssigneeUserId(String supportCaseAssigneeUserId) {
-        this.supportCaseAssigneeUserId = supportCaseAssigneeUserId;
-    }
-
-    public String getSupportCaseAssigneeName() {
-        return supportCaseAssigneeName;
-    }
-
-    public void setSupportCaseAssigneeName(String supportCaseAssigneeName) {
-        this.supportCaseAssigneeName = supportCaseAssigneeName;
-    }
-
-    public String getSupportCaseAssigneeInitials() {
-        return supportCaseAssigneeInitials;
-    }
-
-    public void setSupportCaseAssigneeInitials(String supportCaseAssigneeInitials) {
-        this.supportCaseAssigneeInitials = supportCaseAssigneeInitials;
-    }
-
-    public String getSupportCaseUpdatedAtIso() {
-        return supportCaseUpdatedAtIso;
-    }
-
-    public void setSupportCaseUpdatedAtIso(String supportCaseUpdatedAtIso) {
-        this.supportCaseUpdatedAtIso = supportCaseUpdatedAtIso;
+    public void setSupportCase(SupportCaseRecord supportCase) {
+        this.supportCase = supportCase;
     }
 
     public List<ChatMessageRecord> getMessages() {
@@ -238,6 +185,66 @@ public class ActivityChat {
 
     private static String normalizeText(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    public static class SupportCaseRecord {
+        private String status;
+        private SupportCaseAssigneeRecord assignee;
+        private String updatedAtIso;
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public SupportCaseAssigneeRecord getAssignee() {
+            return assignee;
+        }
+
+        public void setAssignee(SupportCaseAssigneeRecord assignee) {
+            this.assignee = assignee;
+        }
+
+        public String getUpdatedAtIso() {
+            return updatedAtIso;
+        }
+
+        public void setUpdatedAtIso(String updatedAtIso) {
+            this.updatedAtIso = updatedAtIso;
+        }
+    }
+
+    public static class SupportCaseAssigneeRecord {
+        private String userId;
+        private String name;
+        private String initials;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getInitials() {
+            return initials;
+        }
+
+        public void setInitials(String initials) {
+            this.initials = initials;
+        }
     }
 
     public static class ChatMessageRecord {

@@ -93,7 +93,7 @@ class ActivitiesEventsServiceTest {
     @Mock
     private ObjectProvider<EventScheduler> eventSchedulerProvider;
     @Mock
-    private ActivitiesChatService activitiesChatService;
+    private ChatService chatService;
     @Mock
     private ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     @Mock
@@ -132,7 +132,7 @@ class ActivitiesEventsServiceTest {
                 chatAttachmentLifecycleService,
                 notificationOutboxService,
                 eventSchedulerProvider,
-                activitiesChatService,
+                chatService,
                 activitiesEventLeaderboardService,
                 eventSlotReadModelService,
                 accessControlService,
@@ -287,7 +287,7 @@ class ActivitiesEventsServiceTest {
 
         verify(activityEventsRepository, never()).saveAll(anyList());
         verify(paymentService, never()).cancelEventBooking(anyString(), anyString(), any(), any());
-        verify(activitiesChatService, never()).postSystemMessage(anyString(), anyString(), anyString());
+        verify(chatService, never()).postSystemMessage(anyString(), anyString(), anyString());
     }
 
     @Test

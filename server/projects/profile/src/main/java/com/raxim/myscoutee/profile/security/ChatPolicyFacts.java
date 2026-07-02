@@ -5,23 +5,23 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.service.AdminMenuCounterService;
 
 @Component
 public class ChatPolicyFacts {
-    private final ActivityChatsRepository activityChatsRepository;
+    private final ChatsRepository chatsRepository;
     private final UsersRepository usersRepository;
     private final AdminMenuCounterService adminMenuCounterService;
 
     public ChatPolicyFacts(
-            ActivityChatsRepository activityChatsRepository,
+            ChatsRepository chatsRepository,
             UsersRepository usersRepository,
             AdminMenuCounterService adminMenuCounterService) {
-        this.activityChatsRepository = activityChatsRepository;
+        this.chatsRepository = chatsRepository;
         this.usersRepository = usersRepository;
         this.adminMenuCounterService = adminMenuCounterService;
     }
@@ -32,13 +32,13 @@ public class ChatPolicyFacts {
         if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedActorUserId)) {
             return false;
         }
-        ActivityChat viewerChat = activityChatsRepository
+        Chat viewerChat = chatsRepository
                 .findByOwnerUserIdAndChatId(normalizedActorUserId, normalizedChatId)
                 .orElse(null);
         if (viewerChat != null) {
             return hasChatAccess(viewerChat, normalizedActorUserId);
         }
-        return safeChats(activityChatsRepository.findByChatId(normalizedChatId)).stream()
+        return safeChats(chatsRepository.findByChatId(normalizedChatId)).stream()
                 .anyMatch(chat -> hasChatAccess(chat, normalizedActorUserId));
     }
 
@@ -49,11 +49,11 @@ public class ChatPolicyFacts {
             return false;
         }
         return isAdminUser(normalizedActorUserId)
-                && safeChats(activityChatsRepository.findByChatId(normalizedChatId)).stream()
+                && safeChats(chatsRepository.findByChatId(normalizedChatId)).stream()
                         .anyMatch(this::isSupportCaseChat);
     }
 
-    private boolean hasChatAccess(ActivityChat chat, String actorUserId) {
+    private boolean hasChatAccess(Chat chat, String actorUserId) {
         if (chat == null || !StringUtils.hasText(actorUserId)) {
             return false;
         }
@@ -70,12 +70,13 @@ public class ChatPolicyFacts {
                         .anyMatch(normalizedActorUserId::equals);
     }
 
-    private boolean isSupportCaseChat(ActivityChat chat) {
+    private boolean isSupportCaseChat(Chat chat) {
         if (chat == null) {
             return false;
         }
         String chatId = normalizeId(chat.getChatId());
-        return StringUtils.hasText(safeText(chat.getSupportCaseStatus()))
+        return "supportCase".equalsIgnoreCase(safeText(chat.getChannelType()))
+                || StringUtils.hasText(safeText(chat.getSupportCase() == null ? null : chat.getSupportCase().getStatus()))
                 || (StringUtils.hasText(chatId) && chatId.startsWith("c-support-admin-"));
     }
 
@@ -84,7 +85,7 @@ public class ChatPolicyFacts {
         return adminMenuCounterService.isAdminUser(user);
     }
 
-    private List<ActivityChat> safeChats(List<ActivityChat> chats) {
+    private List<Chat> safeChats(List<Chat> chats) {
         return chats == null ? List.of() : chats;
     }
 

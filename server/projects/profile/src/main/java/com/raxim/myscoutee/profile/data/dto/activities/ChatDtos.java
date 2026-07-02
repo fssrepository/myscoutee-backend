@@ -2,8 +2,8 @@ package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
 
-public final class ActivityChatsDtos {
-    private ActivityChatsDtos() {
+public final class ChatDtos {
+    private ChatDtos() {
     }
 
     public record ChatReadAvatarDto(
@@ -13,7 +13,7 @@ public final class ActivityChatsDtos {
             String imageUrl) {
     }
 
-    public record ChatSummaryDto(
+    public record ChatDto(
             String id,
             String avatar,
             String title,
@@ -23,20 +23,26 @@ public final class ActivityChatsDtos {
             Integer unread,
             String dateIso,
             String channelType,
-            String eventId,
-            String subEventId,
-            String groupId,
+            String ownerId,
             Double distanceKm,
             Integer distanceMetersExact,
-            String supportCaseStatus,
-            String supportCaseAssigneeUserId,
-            String supportCaseAssigneeName,
-            String supportCaseAssigneeInitials,
-            String supportCaseUpdatedAtIso) {
+            ChatSupportCaseDto supportCase) {
+    }
+
+    public record ChatSupportCaseDto(
+            String status,
+            ChatSupportCaseAssigneeDto assignee,
+            String updatedAtIso) {
+    }
+
+    public record ChatSupportCaseAssigneeDto(
+            String userId,
+            String name,
+            String initials) {
     }
 
     public record ChatPageResponseDto(
-            List<ChatSummaryDto> items,
+            List<ChatDto> items,
             Integer total,
             String nextCursor) {
     }

@@ -32,8 +32,8 @@ import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
@@ -72,9 +72,9 @@ class HomeUserProfileServiceTest {
     @Mock
     private UserRatesRepository userRatesRepository;
     @Mock
-    private ActivityChatsRepository activityChatsRepository;
+    private ChatsRepository chatsRepository;
     @Mock
-    private ActivityChatMessagesRepository activityChatMessagesRepository;
+    private ChatMessagesRepository chatMessagesRepository;
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
@@ -126,8 +126,8 @@ class HomeUserProfileServiceTest {
                 userExperienceProfilesRepository,
                 userAffinityEdgesRepository,
                 userRatesRepository,
-                activityChatsRepository,
-                activityChatMessagesRepository,
+                chatsRepository,
+                chatMessagesRepository,
                 activityEventsRepository,
                 activityMembersRepository,
                 assetsRepository,
@@ -424,7 +424,7 @@ class HomeUserProfileServiceTest {
 
         assertFlatCounters(snapshot.counters());
         assertNestedCounters(snapshot.counters());
-        verifyNoInteractions(activityChatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
+        verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
     }
 
@@ -442,7 +442,7 @@ class HomeUserProfileServiceTest {
         assertFlatCounters(response.activities());
         assertNestedCounters(response.activities());
         assertThat(response.filterCount()).isEqualTo(3);
-        verifyNoInteractions(activityChatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
+        verifyNoInteractions(chatsRepository, activityEventsRepository, eventFeedbackStatesRepository,
                 eventParticipationTicketService, assetsRepository);
     }
 

@@ -3,14 +3,14 @@ package com.raxim.myscoutee.profile.service;
 import java.util.List;
 import java.util.Objects;
 
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageAttachmentDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReactionDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatMessageReplyDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatReadReceiptDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatSocketEventDto;
-import com.raxim.myscoutee.profile.data.dto.activities.ActivityChatsDtos.ChatTypingDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageAttachmentDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReactionDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReplyDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadReceiptDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketEventDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatTypingDto;
 
 public record ChatStreamEvent(
         String type,

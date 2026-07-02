@@ -24,8 +24,8 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.repository.ActivityChatMessagesRepository;
-import com.raxim.myscoutee.profile.repository.ActivityChatsRepository;
+import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AccountPurgeJobsRepository;
@@ -36,8 +36,8 @@ class DeletedAccountPurgeServiceTest {
     @Test
     void purgesDeletedUserOwnedEventsAssetsMembershipsAndMedia() {
         UsersRepository usersRepository = mock(UsersRepository.class);
-        ActivityChatsRepository activityChatsRepository = mock(ActivityChatsRepository.class);
-        ActivityChatMessagesRepository activityChatMessagesRepository = mock(ActivityChatMessagesRepository.class);
+        ChatsRepository chatsRepository = mock(ChatsRepository.class);
+        ChatMessagesRepository chatMessagesRepository = mock(ChatMessagesRepository.class);
         ActivityEventsRepository activityEventsRepository = mock(ActivityEventsRepository.class);
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
@@ -81,8 +81,8 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                activityChatsRepository,
-                activityChatMessagesRepository,
+                chatsRepository,
+                chatMessagesRepository,
                 activityEventsRepository,
                 assetsRepository,
                 activityMembersRepository,
@@ -107,8 +107,8 @@ class DeletedAccountPurgeServiceTest {
     @Test
     void keepsPurgeJobRetryableWhenMediaCleanupFails() {
         UsersRepository usersRepository = mock(UsersRepository.class);
-        ActivityChatsRepository activityChatsRepository = mock(ActivityChatsRepository.class);
-        ActivityChatMessagesRepository activityChatMessagesRepository = mock(ActivityChatMessagesRepository.class);
+        ChatsRepository chatsRepository = mock(ChatsRepository.class);
+        ChatMessagesRepository chatMessagesRepository = mock(ChatMessagesRepository.class);
         ActivityEventsRepository activityEventsRepository = mock(ActivityEventsRepository.class);
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
@@ -127,8 +127,8 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                activityChatsRepository,
-                activityChatMessagesRepository,
+                chatsRepository,
+                chatMessagesRepository,
                 activityEventsRepository,
                 assetsRepository,
                 activityMembersRepository,
@@ -152,8 +152,8 @@ class DeletedAccountPurgeServiceTest {
     @Test
     void purgesExpiredOnboardingUserWithExistingPurgeProcess() {
         UsersRepository usersRepository = mock(UsersRepository.class);
-        ActivityChatsRepository activityChatsRepository = mock(ActivityChatsRepository.class);
-        ActivityChatMessagesRepository activityChatMessagesRepository = mock(ActivityChatMessagesRepository.class);
+        ChatsRepository chatsRepository = mock(ChatsRepository.class);
+        ChatMessagesRepository chatMessagesRepository = mock(ChatMessagesRepository.class);
         ActivityEventsRepository activityEventsRepository = mock(ActivityEventsRepository.class);
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
@@ -179,8 +179,8 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                activityChatsRepository,
-                activityChatMessagesRepository,
+                chatsRepository,
+                chatMessagesRepository,
                 activityEventsRepository,
                 assetsRepository,
                 activityMembersRepository,

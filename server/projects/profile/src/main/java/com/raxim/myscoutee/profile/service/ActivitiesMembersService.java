@@ -74,7 +74,7 @@ public class ActivitiesMembersService {
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
-    private final ActivitiesChatService activitiesChatService;
+    private final ChatService chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
@@ -92,7 +92,7 @@ public class ActivitiesMembersService {
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            ActivitiesChatService activitiesChatService,
+            ChatService chatService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService) {
@@ -107,7 +107,7 @@ public class ActivitiesMembersService {
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
-        this.activitiesChatService = activitiesChatService;
+        this.chatService = chatService;
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
@@ -1684,7 +1684,7 @@ public class ActivitiesMembersService {
         String text = ACTION_REINSTATE.equals(action)
                 ? displayName + " was reinstated to the event."
                 : displayName + " was disqualified from the event.";
-        activitiesChatService.postSystemMessage(eventId, text, "member-" + action);
+        chatService.postSystemMessage(eventId, text, "member-" + action);
     }
 
     private List<ActivityMember> joinedAcceptedEventMembers(
@@ -1712,13 +1712,13 @@ public class ActivitiesMembersService {
             List<ActivityMember> joinedMembers,
             List<ActivityMember> removedMembers) {
         String normalizedEventId = normalizeId(eventId);
-        if (!StringUtils.hasText(normalizedEventId) || activitiesChatService == null) {
+        if (!StringUtils.hasText(normalizedEventId) || chatService == null) {
             return;
         }
         for (ActivityMember member : joinedMembers == null ? List.<ActivityMember>of() : joinedMembers) {
             String displayName = memberDisplayName(member);
             if (StringUtils.hasText(displayName)) {
-                activitiesChatService.postSystemMessage(normalizedEventId, displayName + " joined the event.", "member-joined");
+                chatService.postSystemMessage(normalizedEventId, displayName + " joined the event.", "member-joined");
             }
         }
         for (ActivityMember member : removedMembers == null ? List.<ActivityMember>of() : removedMembers) {
@@ -1727,7 +1727,7 @@ public class ActivitiesMembersService {
             }
             String displayName = memberDisplayName(member);
             if (StringUtils.hasText(displayName)) {
-                activitiesChatService.postSystemMessage(normalizedEventId, displayName + " left the event.", "member-left");
+                chatService.postSystemMessage(normalizedEventId, displayName + " left the event.", "member-left");
             }
         }
     }
