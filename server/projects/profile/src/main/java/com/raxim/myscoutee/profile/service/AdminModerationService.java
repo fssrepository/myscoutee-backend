@@ -278,14 +278,14 @@ public class AdminModerationService {
             next.setChatId(chatId);
             next.setOwnerUserId(ownerUserId);
             next.setUnread(0);
-            next.setChannelType("supportCase");
+            next.setChannelType("appSupport");
             next.setOwnerId(chatId);
             return next;
         });
         chat.setAvatar(avatar);
         chat.setTitle(title);
         chat.setMemberIds(memberIds);
-        chat.setChannelType("supportCase");
+        chat.setChannelType("appSupport");
         chat.setOwnerId(chatId);
         chat.setLastMessage(lastMessage);
         chat.setLastSenderId(lastSenderId);

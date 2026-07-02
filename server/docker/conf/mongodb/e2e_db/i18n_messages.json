@@ -444,6 +444,12 @@
     "value": "Application feedback"
   },
   {
+    "_id": "i18n-message-en-app-support",
+    "key": "app.support",
+    "lang": "en",
+    "value": "App support"
+  },
+  {
     "_id": "i18n-message-en-apply-filters",
     "key": "apply.filters",
     "lang": "en",
@@ -10780,6 +10786,12 @@
     "key": "application.feedback",
     "lang": "hu",
     "value": "Alkalmazás-visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-app-support",
+    "key": "app.support",
+    "lang": "hu",
+    "value": "App support"
   },
   {
     "_id": "i18n-message-hu-apply-filters",

@@ -88,6 +88,7 @@ public class ChatService {
     private static final String CHAT_CHANNEL_OPTIONAL_SUB_EVENT = "optionalSubEvent";
     private static final String CHAT_CHANNEL_GROUP_SUB_EVENT = "groupSubEvent";
     private static final String CHAT_CHANNEL_SERVICE_EVENT = "serviceEvent";
+    private static final String CHAT_CHANNEL_APP_SUPPORT = "appSupport";
     private static final String CHAT_CHANNEL_SUPPORT_CASE = "supportCase";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
@@ -241,8 +242,11 @@ public class ChatService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
         }
         String supportCaseFilter = normalizeSupportCaseFilter(supportCaseFilterValue);
+        List<Chat> supportCaseSourceRecords = new ArrayList<>();
+        supportCaseSourceRecords.addAll(chatsRepository.findByChannelType(CHAT_CHANNEL_SUPPORT_CASE));
+        supportCaseSourceRecords.addAll(chatsRepository.findByChannelType(CHAT_CHANNEL_APP_SUPPORT));
         List<Chat> candidateRecords = uniqueSupportCaseChats(
-                chatsRepository.findByChannelType("supportCase"),
+                supportCaseSourceRecords,
                 userId).stream()
                 .filter(this::isSupportCaseChat)
                 .filter(chat -> matchesSupportCaseFilter(toChatDto(chat), supportCaseFilter))
@@ -1821,6 +1825,7 @@ public class ChatService {
                 || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
                 || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
                 || CHAT_CHANNEL_SERVICE_EVENT.equals(channelType)
+                || CHAT_CHANNEL_APP_SUPPORT.equals(channelType)
                 || CHAT_CHANNEL_SUPPORT_CASE.equals(channelType)) {
             return channelType;
         }
@@ -1880,7 +1885,8 @@ public class ChatService {
         if ("event".equalsIgnoreCase(normalized)
                 || "subEvent".equalsIgnoreCase(normalized)
                 || "group".equalsIgnoreCase(normalized)
-                || "service".equalsIgnoreCase(normalized)) {
+                || "service".equalsIgnoreCase(normalized)
+                || "appSupport".equalsIgnoreCase(normalized)) {
             return normalized;
         }
         return "all";
@@ -1901,7 +1907,10 @@ public class ChatService {
             return "groupSubEvent".equalsIgnoreCase(channelType);
         }
         if ("service".equalsIgnoreCase(contextFilter)) {
-            return "serviceEvent".equalsIgnoreCase(channelType)
+            return "serviceEvent".equalsIgnoreCase(channelType);
+        }
+        if ("appSupport".equalsIgnoreCase(contextFilter)) {
+            return "appSupport".equalsIgnoreCase(channelType)
                     || "supportCase".equalsIgnoreCase(channelType);
         }
         return true;
@@ -2013,7 +2022,7 @@ public class ChatService {
     }
 
     private void applySupportCaseState(Chat chat, SupportCaseState state) {
-        chat.setChannelType("supportCase");
+        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
         if (!StringUtils.hasText(normalizeId(chat.getOwnerId()))) {
             chat.setOwnerId(normalizeId(chat.getChatId()));
         }
