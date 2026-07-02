@@ -311,19 +311,6 @@ public class ChatService {
         return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
     }
 
-    public List<ChatMessageDto> queryMessages(String chatId, String requestedUserId) {
-        String userId = requireResolvedUserId(requestedUserId);
-        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
-        List<ChatMessage> messages = chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(snapshot.chatId()).stream()
-                .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(message -> sortableDate(message.getSentAtIso())))
-                .toList();
-        Map<String, Users> userCache = new LinkedHashMap<>();
-        return messages.stream()
-                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
-                .toList();
-    }
-
     public ChatMessagesPageResponseDto queryMessagesPage(
             String chatId,
             String requestedUserId,

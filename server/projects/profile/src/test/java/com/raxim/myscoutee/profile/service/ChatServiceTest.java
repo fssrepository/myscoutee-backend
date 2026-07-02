@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.raxim.myscoutee.profile.data.document.Chat;
@@ -94,7 +95,7 @@ class ChatServiceTest {
     }
 
     @Test
-    void queryMessagesReusesUserLookupCacheForRepeatedParticipants() {
+    void queryMessagesPageReusesUserLookupCacheForRepeatedParticipants() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat senderChat = chat("chat-1", "sender", 0);
         List<ChatMessage> messages = List.of(
@@ -104,13 +105,16 @@ class ChatServiceTest {
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
-        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc("chat-1")).thenReturn(messages);
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(3L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class))).thenReturn(messages);
         when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
 
-        var result = service.queryMessages("chat-1", "viewer");
+        var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
 
-        assertThat(result).hasSize(3);
+        assertThat(result.items()).hasSize(3);
+        assertThat(result.total()).isEqualTo(3);
+        assertThat(result.read()).isNull();
         verify(usersRepository, times(1)).findByUserId("sender");
         verify(usersRepository, times(1)).findByUserId("viewer");
         verify(chatMessagesRepository, never()).saveAll(anyList());

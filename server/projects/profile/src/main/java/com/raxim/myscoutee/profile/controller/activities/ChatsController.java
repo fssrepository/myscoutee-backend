@@ -66,7 +66,7 @@ public class ChatsController {
     }
 
     @GetMapping("/{chatId}/messages")
-    public ChatMessagesPageResponseDto queryMessages(
+    public ChatMessagesPageResponseDto queryMessagesPage(
             @PathVariable("chatId") String chatId,
             @RequestParam("userId") String userId,
             @RequestParam(value = "cursor", required = false) String cursor,
