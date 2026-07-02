@@ -11,6 +11,9 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
+event feedback lazy load
+a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
+
 desktop
 -------
 1) asset editor
@@ -28,9 +31,8 @@ lehet ket tab van a bejovoknek es a mar elfogadottaknak - ezt meg at kell gondol
 filter -> fuggo, elfogadottak
 stat icon (graph - mennyi a hatar, es aznap mennyi foglalas volt, esetleg rakkattintva mutatja is a listat)
 
-a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
-
 common in case when saw
 -----------------------
 the popups not covering the other popups many times
 popup-component introduction (many popup still does not have)
+hibernate app and reload on mobile stucks
