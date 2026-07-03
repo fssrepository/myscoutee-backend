@@ -29,5 +29,5 @@ check, all popup is lazy loaded (admin stat etc.)
 hibernate app and reload on mobile stucks
 base package cleanup like builder
 fix translation half hungarian
-form-flow introduction to event/asset editor
+form-flow introduction to event editor and probably we have few other forms
 korabbi/kesobbi red counter badge
