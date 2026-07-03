@@ -25,7 +25,7 @@ common in case when saw
 app-menu -> infocard/imagecard etc. to wire to appmenu-host
 popup-component introduction (many popup still does not have + it solves sizing)
 open popup check whether fat dto is being sent instead of an id or so
-check, all popup is lazy loaded (admin stat etc.)
+check, all popup is lazy loaded
 hibernate app and reload on mobile stucks
 base package cleanup like builder
 fix translation half hungarian
