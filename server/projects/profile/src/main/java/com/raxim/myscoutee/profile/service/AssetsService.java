@@ -887,6 +887,7 @@ public class AssetsService {
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(safeText(dto.sourceLink()));
         next.setRoutes(normalizeStrings(dto.routes()));
+        next.setPoliciesEnabled(Boolean.TRUE.equals(dto.policiesEnabled()));
         next.setPolicies(normalizePolicies(dto.policies()));
         next.setPricing(clonePricing(dto.pricing()));
         next.setRequests(normalizeRequests(dto.requests()));
@@ -933,6 +934,7 @@ public class AssetsService {
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(current == null ? "" : safeText(current.getSourceLink()));
         next.setRoutes(current == null ? List.of() : normalizeStrings(current.getRoutes()));
+        next.setPoliciesEnabled(current == null ? Boolean.TRUE.equals(dto.policiesEnabled()) : Boolean.TRUE.equals(current.getPoliciesEnabled()));
         next.setPolicies(current == null ? List.of() : new ArrayList<>(safePolicies(current.getPolicies())));
         next.setPricing(current == null ? null : clonePricing(current.getPricing()));
         next.setRequests(normalizeRequests(dto.requests()));
@@ -972,6 +974,7 @@ public class AssetsService {
         clone.setImageUrl(source.getImageUrl());
         clone.setSourceLink(source.getSourceLink());
         clone.setRoutes(new ArrayList<>(normalizeStrings(source.getRoutes())));
+        clone.setPoliciesEnabled(Boolean.TRUE.equals(source.getPoliciesEnabled()));
         clone.setPolicies(new ArrayList<>(safePolicies(source.getPolicies())));
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
@@ -1160,6 +1163,7 @@ public class AssetsService {
         }
         String type = normalizeAssetType(asset.getType());
         List<AssetPolicyRecord> policies = safePolicies(asset.getPolicies());
+        boolean policiesEnabled = Boolean.TRUE.equals(asset.getPoliciesEnabled());
         return new AssetDto(
                 normalizeId(asset.getAssetId()),
                 type,
@@ -1173,7 +1177,8 @@ public class AssetsService {
                 safeText(asset.getImageUrl()),
                 assetLocationLabel(asset, type),
                 assetPriceLabel(asset),
-                policies.size(),
+                policiesEnabled,
+                policiesEnabled ? policies.size() : 0,
                 normalizeVisibility(asset.getVisibility()),
                 safeText(asset.getStatus()),
                 normalizeId(asset.getOwnerUserId()),
@@ -1200,6 +1205,7 @@ public class AssetsService {
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()),
                 normalizeStrings(asset.getRoutes()),
+                Boolean.TRUE.equals(asset.getPoliciesEnabled()),
                 safePolicies(asset.getPolicies()).stream()
                         .map(policy -> new PolicyItemDto(
                                 normalizeId(policy.id()),

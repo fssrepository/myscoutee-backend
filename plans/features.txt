@@ -37,3 +37,4 @@ hibernate app and reload on mobile stucks
 base package cleanup like builder
 popup-component introduction
 fix translation half hungarian
+form-flow introduction to event/asset editor

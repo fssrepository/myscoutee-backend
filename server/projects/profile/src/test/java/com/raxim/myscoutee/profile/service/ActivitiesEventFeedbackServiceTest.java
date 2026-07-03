@@ -21,6 +21,7 @@ import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.mapper.EventFeedbackStatMapper;
 
 @ExtendWith(MockitoExtension.class)
 class ActivitiesEventFeedbackServiceTest {
@@ -42,6 +43,8 @@ class ActivitiesEventFeedbackServiceTest {
     private AccessControlService accessControlService;
     @Mock
     private UserActivityCountersService userActivityCountersService;
+    @Mock
+    private EventFeedbackStatMapper eventFeedbackStatMapper;
 
     private ActivitiesEventFeedbackService service;
 
@@ -56,7 +59,8 @@ class ActivitiesEventFeedbackServiceTest {
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 accessControlService,
-                userActivityCountersService);
+                userActivityCountersService,
+                eventFeedbackStatMapper);
     }
 
     @Test

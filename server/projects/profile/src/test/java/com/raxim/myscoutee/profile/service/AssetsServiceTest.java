@@ -997,6 +997,7 @@ class AssetsServiceTest {
                 "",
                 "",
                 List.of(),
+                false,
                 List.of(),
                 null,
                 "Public",
