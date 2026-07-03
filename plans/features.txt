@@ -13,8 +13,6 @@ https://developers.facebook.com/ -> business verfication is needed
 
 for tomorrow
 ------
-app-menu -> infocard/imagecard etc. to wire to appmenu-host
-1) event feedback lazy load
 2) a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
 3) asset editor
 info menu - as a clickeable link menu item on asset
@@ -33,8 +31,10 @@ stat icon (graph - mennyi a hatar, es aznap mennyi foglalas volt, esetleg rakkat
 
 common in case when saw
 -----------------------
+app-menu -> infocard/imagecard etc. to wire to appmenu-host
 the popups not covering the other popups many times
 popup-component introduction (many popup still does not have)
 hibernate app and reload on mobile stucks
 base package cleanup like builder
 popup-component introduction
+fix translation half hungarian
