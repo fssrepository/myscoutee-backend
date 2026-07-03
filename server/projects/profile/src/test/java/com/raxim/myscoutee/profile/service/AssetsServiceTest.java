@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.client.result.UpdateResult;
 
-import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
@@ -28,8 +27,6 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
@@ -79,7 +76,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -135,7 +131,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -194,7 +189,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -251,7 +245,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -300,7 +293,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -340,7 +332,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -399,7 +390,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -446,7 +436,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -473,7 +462,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -500,7 +488,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -527,7 +514,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -566,7 +552,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 mock(AdminTelemetryService.class),
@@ -597,7 +582,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -629,7 +613,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -672,7 +655,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -709,7 +691,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -747,7 +728,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -785,7 +765,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -819,7 +798,6 @@ class AssetsServiceTest {
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
-                mock(AssetSourceRefreshProperties.class),
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -835,71 +813,6 @@ class AssetsServiceTest {
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
         assertThat(savedAsset.getValue().getRequests()).isEmpty();
         verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
-    }
-
-    @Test
-    void refreshFromSourceStopsBeforeHostValidationWhenPolicyDenies() {
-        AssetSourceRefreshProperties refreshProperties = mock(AssetSourceRefreshProperties.class);
-        AccessControlService accessControlService = mock(AccessControlService.class);
-        when(refreshProperties.isEnabled()).thenReturn(true);
-        when(accessControlService.canCurrentActorRefreshAssetSource("u1", "asset-1")).thenReturn(false);
-
-        AssetsService service = new AssetsService(
-                mock(AssetsRepository.class),
-                mock(UsersRepository.class),
-                mock(ActivityMembersRepository.class),
-                mock(EventParticipationTicketService.class),
-                mock(PaymentService.class),
-                mock(MongoTemplate.class),
-                refreshProperties,
-                mock(AbsoluteAffinityService.class),
-                mock(AffinityRecomputeTaskService.class),
-                mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
-                mock(ChatAttachmentLifecycleService.class),
-                accessControlService,
-                mock(UserActivityCountersService.class));
-
-        AssetSourceRefreshResponseDto response = service.refreshFromSource(
-                new AssetSourceRefreshRequestDto("u1", "asset-1", "Car", "https://example.com/car"));
-
-        assertThat(response.enabled()).isTrue();
-        assertThat(response.supported()).isFalse();
-        assertThat(response.normalizedUrl()).isEqualTo("https://example.com/car");
-        verify(accessControlService).canCurrentActorRefreshAssetSource("u1", "asset-1");
-        verify(refreshProperties, never()).getAllowedHosts();
-    }
-
-    @Test
-    void refreshFromSourceUsesOwnerContextWhenAssetIdIsMissing() {
-        AssetSourceRefreshProperties refreshProperties = mock(AssetSourceRefreshProperties.class);
-        AccessControlService accessControlService = mock(AccessControlService.class);
-        when(refreshProperties.isEnabled()).thenReturn(true);
-        when(refreshProperties.getAllowedHosts()).thenReturn(List.of("booking.com"));
-        when(accessControlService.canCurrentActorRefreshAssetSource("u1", null)).thenReturn(true);
-
-        AssetsService service = new AssetsService(
-                mock(AssetsRepository.class),
-                mock(UsersRepository.class),
-                mock(ActivityMembersRepository.class),
-                mock(EventParticipationTicketService.class),
-                mock(PaymentService.class),
-                mock(MongoTemplate.class),
-                refreshProperties,
-                mock(AbsoluteAffinityService.class),
-                mock(AffinityRecomputeTaskService.class),
-                mock(AdminTelemetryService.class),
-                mock(NotificationOutboxService.class),
-                mock(ChatAttachmentLifecycleService.class),
-                accessControlService,
-                mock(UserActivityCountersService.class));
-
-        AssetSourceRefreshResponseDto response = service.refreshFromSource(
-                new AssetSourceRefreshRequestDto("u1", "Car", "https://example.com/car"));
-
-        assertThat(response.enabled()).isTrue();
-        assertThat(response.supported()).isFalse();
-        verify(accessControlService).canCurrentActorRefreshAssetSource("u1", null);
     }
 
     private Asset asset() {

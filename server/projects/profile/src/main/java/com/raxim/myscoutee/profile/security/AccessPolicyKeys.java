@@ -88,19 +88,16 @@ public final class AccessPolicyKeys {
     // 28. Actor may promote another user to asset manager.
     public static final String ASSET_MANAGER_PROMOTE_ACTOR = "asset.manager.promote.actor";
 
-    // 29. Owner/manager may refresh asset from external source.
-    public static final String ASSET_SOURCE_REFRESH = "asset.source.refresh";
-
-    // 30. Event participant may request/borrow asset for event.
+    // 29. Event participant may request/borrow asset for event.
     public static final String ASSET_BORROW_REQUEST = "asset.borrow.request";
 
-    // 31. Owner/manager may approve borrow request.
+    // 30. Owner/manager may approve borrow request.
     public static final String ASSET_BORROW_APPROVE = "asset.borrow.approve";
 
-    // 32. Owner/manager may reject borrow request.
+    // 31. Owner/manager may reject borrow request.
     public static final String ASSET_BORROW_REJECT = "asset.borrow.reject";
 
-    // 33. Requester or owner/manager may cancel request.
+    // 32. Requester or owner/manager may cancel request.
     public static final String ASSET_BORROW_CANCEL = "asset.borrow.cancel";
 
     // 34. Chat participant may post message.

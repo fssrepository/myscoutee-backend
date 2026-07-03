@@ -8,7 +8,6 @@ import com.raxim.myscoutee.profile.security.condition.ActorCanManageAssetConditi
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageEventCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageMembersCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanManageSupportChatCondition;
-import com.raxim.myscoutee.profile.security.condition.ActorCanRefreshAssetSourceCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanTakeOverAssetCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorCanTakeOverEventCondition;
 import com.raxim.myscoutee.profile.security.condition.ActorDiffersFromSubjectCondition;
@@ -38,7 +37,6 @@ public final class AccessPolicyTestSupport {
                 new ActorCanAccessChatCondition(),
                 new ActorCanManageSupportChatCondition(),
                 new ActorCanManageAssetCondition(),
-                new ActorCanRefreshAssetSourceCondition(),
                 new ActorCanTakeOverAssetCondition(),
                 new SubjectIsNotProtectedMemberCondition()));
     }

@@ -15,8 +15,6 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
@@ -114,13 +112,4 @@ public class AssetsController {
         return assetsService.makeManager(request);
     }
 
-    @PostMapping("/refresh-from-source")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.ASSET_SOURCE_REFRESH,
-            subject = "#request?.userId()",
-            resourceId = "#request?.assetId() ?: #request?.userId()",
-            skipWhenAuthenticationOptional = true)
-    public AssetSourceRefreshResponseDto refreshFromSource(@RequestBody AssetSourceRefreshRequestDto request) {
-        return assetsService.refreshFromSource(request);
-    }
 }

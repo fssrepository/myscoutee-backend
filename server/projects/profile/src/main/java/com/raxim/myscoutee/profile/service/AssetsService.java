@@ -1,8 +1,5 @@
 package com.raxim.myscoutee.profile.service;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,8 +16,6 @@ import java.util.UUID;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -32,7 +27,6 @@ import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
 
-import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -45,8 +39,6 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -84,7 +76,6 @@ public class AssetsService {
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
-    private final AssetSourceRefreshProperties assetSourceRefreshProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
@@ -100,7 +91,6 @@ public class AssetsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             MongoTemplate mongoTemplate,
-            AssetSourceRefreshProperties assetSourceRefreshProperties,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
@@ -114,7 +104,6 @@ public class AssetsService {
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.mongoTemplate = mongoTemplate;
-        this.assetSourceRefreshProperties = assetSourceRefreshProperties;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
@@ -535,63 +524,6 @@ public class AssetsService {
 
     private String assetRequestEventId(AssetRequestRecord request) {
         return normalizeId(request == null || request.booking() == null ? null : request.booking().eventId());
-    }
-
-    public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
-        String normalizedUserId = normalizeId(request == null ? null : request.userId());
-        String normalizedAssetId = normalizeId(request == null ? null : request.assetId());
-        String normalizedUrl = normalizeExternalUrl(request == null ? null : request.sourceLink());
-        boolean enabled = assetSourceRefreshProperties.isEnabled();
-        if (!StringUtils.hasText(normalizedUrl)) {
-            return new AssetSourceRefreshResponseDto(enabled, false, normalizedUrl, null, null, null, null);
-        }
-        if (!enabled) {
-            return new AssetSourceRefreshResponseDto(false, false, normalizedUrl, null, null, null, null);
-        }
-        if (!accessControlService.canCurrentActorRefreshAssetSource(normalizedUserId, normalizedAssetId)) {
-            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
-        }
-
-        URI uri = toUri(normalizedUrl);
-        String normalizedHost = normalizeHost(uri == null ? null : uri.getHost());
-        if (!isAllowedRefreshHost(normalizedHost)) {
-            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
-        }
-
-        try {
-            org.jsoup.nodes.Document document = Jsoup.connect(normalizedUrl)
-                    .userAgent("Mozilla/5.0 (compatible; MyScouteeBot/1.0)")
-                    .timeout(Math.max(1000, assetSourceRefreshProperties.getTimeoutMs()))
-                    .followRedirects(false)
-                    .get();
-            String finalUrl = normalizeExternalUrl(document.location());
-            String title = firstMetaContent(document, "property", "og:title");
-            if (!StringUtils.hasText(title)) {
-                title = safeText(document.title());
-            }
-            String subtitle = firstMetaContent(document, "property", "og:site_name");
-            if (!StringUtils.hasText(subtitle)) {
-                subtitle = normalizedHost;
-            }
-            String details = firstMetaContent(document, "property", "og:description");
-            if (!StringUtils.hasText(details)) {
-                details = firstMetaContent(document, "name", "description");
-            }
-            String imageUrl = firstMetaContent(document, "property", "og:image");
-            if (!StringUtils.hasText(imageUrl)) {
-                imageUrl = firstMetaContent(document, "name", "twitter:image");
-            }
-            return new AssetSourceRefreshResponseDto(
-                    true,
-                    true,
-                    StringUtils.hasText(finalUrl) ? finalUrl : normalizedUrl,
-                    safeNullableText(title),
-                    safeNullableText(subtitle),
-                    safeNullableText(details),
-                    safeNullableText(imageUrl));
-        } catch (IOException ex) {
-            return new AssetSourceRefreshResponseDto(true, true, normalizedUrl, null, null, null, null);
-        }
     }
 
     public Optional<Asset> findAssetByAssetId(String assetId) {
@@ -1175,6 +1107,7 @@ public class AssetsService {
                 normalizeAssetQuantity(type, asset.getQuantity(), asset.getCapacityTotal()),
                 safeText(asset.getDetails()),
                 safeText(asset.getImageUrl()),
+                safeText(asset.getSourceLink()),
                 assetLocationLabel(asset, type),
                 assetPriceLabel(asset),
                 policiesEnabled,
@@ -1820,42 +1753,6 @@ public class AssetsService {
         return Math.abs(hash);
     }
 
-    private boolean isAllowedRefreshHost(String host) {
-        if (!StringUtils.hasText(host)) {
-            return false;
-        }
-        for (String allowedHost : assetSourceRefreshProperties.getAllowedHosts()) {
-            String normalizedAllowedHost = normalizeHost(allowedHost);
-            if (!StringUtils.hasText(normalizedAllowedHost)) {
-                continue;
-            }
-            if (host.equals(normalizedAllowedHost) || host.endsWith("." + normalizedAllowedHost)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String firstMetaContent(org.jsoup.nodes.Document document, String attributeName, String attributeValue) {
-        if (document == null || !StringUtils.hasText(attributeName) || !StringUtils.hasText(attributeValue)) {
-            return "";
-        }
-        for (Element element : document.select("meta[" + attributeName + "]")) {
-            if (!attributeValue.equalsIgnoreCase(safeText(element.attr(attributeName)))) {
-                continue;
-            }
-            String absoluteContent = safeText(element.absUrl("content"));
-            if (StringUtils.hasText(absoluteContent)) {
-                return absoluteContent;
-            }
-            String content = safeText(element.attr("content"));
-            if (StringUtils.hasText(content)) {
-                return content;
-            }
-        }
-        return "";
-    }
-
     private List<AssetDto> safeAssets(List<AssetDto> assets) {
         return assets == null ? List.of() : assets;
     }
@@ -2106,31 +2003,6 @@ public class AssetsService {
         return Double.isFinite(normalized) ? Math.max(0d, normalized) : null;
     }
 
-    private String normalizeExternalUrl(String value) {
-        String trimmed = safeText(value);
-        if (!StringUtils.hasText(trimmed)) {
-            return "";
-        }
-        String candidate = trimmed.matches("^[a-zA-Z][a-zA-Z0-9+.-]*://.*$") ? trimmed : "https://" + trimmed;
-        URI uri = toUri(candidate);
-        if (uri == null || !StringUtils.hasText(uri.getHost())) {
-            return "";
-        }
-        String scheme = StringUtils.hasText(uri.getScheme()) ? uri.getScheme().toLowerCase() : "https";
-        if (!"http".equals(scheme) && !"https".equals(scheme)) {
-            return "";
-        }
-        return uri.normalize().toString();
-    }
-
-    private URI toUri(String value) {
-        try {
-            return new URI(value);
-        } catch (URISyntaxException ex) {
-            return null;
-        }
-    }
-
     private String normalizeId(String value) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
@@ -2143,10 +2015,6 @@ public class AssetsService {
     private String effectiveActorUserId(String userId) {
         String normalizedUserId = normalizeId(userId);
         return StringUtils.hasText(normalizedUserId) ? normalizedUserId : currentActorUserId();
-    }
-
-    private String normalizeHost(String value) {
-        return safeText(value).toLowerCase();
     }
 
     private String normalizeAssetType(String type) {

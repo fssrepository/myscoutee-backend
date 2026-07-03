@@ -22,6 +22,7 @@ public final class AssetsDtos {
             Integer quantity,
             String description,
             String imageUrl,
+            String sourceLink,
             String locationLabel,
             String priceLabel,
             Boolean policiesEnabled,
@@ -68,6 +69,7 @@ public final class AssetsDtos {
                     quantity,
                     details,
                     imageUrl,
+                    sourceLink,
                     type != null && type.equals("Accommodation") && routes != null && !routes.isEmpty()
                             ? routes.get(0)
                             : city,
@@ -102,26 +104,6 @@ public final class AssetsDtos {
             String userId,
             String assetId,
             String targetUserId) {
-    }
-
-    public record AssetSourceRefreshRequestDto(
-            String userId,
-            String assetId,
-            String type,
-            String sourceLink) {
-        public AssetSourceRefreshRequestDto(String userId, String type, String sourceLink) {
-            this(userId, null, type, sourceLink);
-        }
-    }
-
-    public record AssetSourceRefreshResponseDto(
-            Boolean enabled,
-            Boolean supported,
-            String normalizedUrl,
-            String title,
-            String subtitle,
-            String details,
-            String imageUrl) {
     }
 
     public record AssetTicketsPageDto(
