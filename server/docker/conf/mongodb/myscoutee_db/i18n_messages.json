@@ -8892,6 +8892,42 @@
     "value": "Asset misuse"
   },
   {
+    "_id": "i18n-message-en-asset-owned-empty-supplies-description",
+    "key": "asset.owned.empty.supplies.description",
+    "lang": "en",
+    "value": "Add supplies or shared gear so the list can populate."
+  },
+  {
+    "_id": "i18n-message-en-asset-owned-empty-supplies-label",
+    "key": "asset.owned.empty.supplies.label",
+    "lang": "en",
+    "value": "No supplies yet"
+  },
+  {
+    "_id": "i18n-message-en-asset-owned-empty-car-description",
+    "key": "asset.owned.empty.car.description",
+    "lang": "en",
+    "value": "Add a car or ride so it can show up here."
+  },
+  {
+    "_id": "i18n-message-en-asset-owned-empty-car-label",
+    "key": "asset.owned.empty.car.label",
+    "lang": "en",
+    "value": "No cars yet"
+  },
+  {
+    "_id": "i18n-message-en-asset-owned-empty-accommodation-description",
+    "key": "asset.owned.empty.accommodation.description",
+    "lang": "en",
+    "value": "Add a property, stay, room, or place so it can show up here."
+  },
+  {
+    "_id": "i18n-message-en-asset-owned-empty-accommodation-label",
+    "key": "asset.owned.empty.accommodation.label",
+    "lang": "en",
+    "value": "No properties yet"
+  },
+  {
     "_id": "i18n-message-en-asset-requests-actions-open",
     "key": "asset.requests.actions.open",
     "lang": "en",
@@ -19216,6 +19252,42 @@
     "key": "asset.misuse",
     "lang": "hu",
     "value": "Eszköz-visszaélés"
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-supplies-description",
+    "key": "asset.owned.empty.supplies.description",
+    "lang": "hu",
+    "value": "Adj hozzá eszközöket vagy megosztható felszerelést, hogy a lista feltöltődhessen."
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-supplies-label",
+    "key": "asset.owned.empty.supplies.label",
+    "lang": "hu",
+    "value": "Még nincsenek eszközeid"
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-car-description",
+    "key": "asset.owned.empty.car.description",
+    "lang": "hu",
+    "value": "Adj hozzá egy autót vagy fuvart, hogy megjelenjen itt."
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-car-label",
+    "key": "asset.owned.empty.car.label",
+    "lang": "hu",
+    "value": "Még nincs autód"
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-accommodation-description",
+    "key": "asset.owned.empty.accommodation.description",
+    "lang": "hu",
+    "value": "Adj hozzá egy ingatlant, szállást, szobát vagy helyet, hogy megjelenjen itt."
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-accommodation-label",
+    "key": "asset.owned.empty.accommodation.label",
+    "lang": "hu",
+    "value": "Még nincs szállásod"
   },
   {
     "_id": "i18n-message-hu-asset-requests-actions-open",
