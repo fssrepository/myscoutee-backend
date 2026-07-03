@@ -39,15 +39,15 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageR
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageStateSnapshotDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatOptionDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatSectionDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
+import com.raxim.myscoutee.profile.service.mapper.EventFeedbackStatMapper;
+import com.raxim.myscoutee.profile.service.mapper.EventFeedbackStatMapper.EventFeedbackStatRecord;
 
 @Service
 public class ActivitiesEventFeedbackService {
@@ -64,6 +64,7 @@ public class ActivitiesEventFeedbackService {
     private final AdminTelemetryService adminTelemetryService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
+    private final EventFeedbackStatMapper eventFeedbackStatMapper;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -74,7 +75,8 @@ public class ActivitiesEventFeedbackService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AccessControlService accessControlService,
-            UserActivityCountersService userActivityCountersService) {
+            UserActivityCountersService userActivityCountersService,
+            EventFeedbackStatMapper eventFeedbackStatMapper) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
@@ -84,6 +86,7 @@ public class ActivitiesEventFeedbackService {
         this.adminTelemetryService = adminTelemetryService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
+        this.eventFeedbackStatMapper = eventFeedbackStatMapper;
     }
 
     public List<EventFeedbackStateDto> queryStates(String requestedUserId) {
@@ -146,7 +149,7 @@ public class ActivitiesEventFeedbackService {
         if (!ownedEventIds.contains(eventId)) {
             return emptyStatResult(eventId);
         }
-        return toStatDto(eventId, queryFeedbackStatRecords(userId, eventId));
+        return eventFeedbackStatMapper.toDto(eventId, queryFeedbackStatRecords(userId, eventId));
     }
 
     public EventFeedbackDetailDto loadDetail(EventFeedbackQueryDto request) {
@@ -392,7 +395,7 @@ public class ActivitiesEventFeedbackService {
             entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, submittedAtIso);
             entry.updatedAtIso = firstNonBlank(entry.updatedAtIso, submittedAtIso);
             entry.visible = true;
-            if ("event".equals(safeText(answer.getKind()))) {
+            if ("event".equalsIgnoreCase(safeText(answer.getKind()))) {
                 entry.overallValue = firstNonBlank(entry.overallValue, answer.getPrimaryValue());
                 entry.improveValue = firstNonBlank(entry.improveValue, answer.getSecondaryValue());
                 if (entry.personalityTraitIds.isEmpty()) {
@@ -423,59 +426,6 @@ public class ActivitiesEventFeedbackService {
         return entriesByViewerUserId.computeIfAbsent(
                 viewerUserId,
                 key -> new EventFeedbackStatAccumulator(eventId, viewerUserId));
-    }
-
-    private EventFeedbackStatDto toStatDto(String eventId, List<EventFeedbackStatRecord> records) {
-        String normalizedEventId = normalizeId(eventId);
-        List<EventFeedbackStatRecord> safeRecords = records == null ? List.of() : records.stream()
-                .filter(Objects::nonNull)
-                .filter(record -> Objects.equals(normalizedEventId, normalizeId(record.eventId())))
-                .toList();
-        int totalResponses = safeRecords.size();
-        return new EventFeedbackStatDto(
-                normalizedEventId,
-                totalResponses,
-                List.of(
-                        toStatSection(
-                                "overall",
-                                totalResponses,
-                                safeRecords.stream().map(EventFeedbackStatRecord::overallValue).toList()),
-                        toStatSection(
-                                "improve",
-                                totalResponses,
-                                safeRecords.stream().map(EventFeedbackStatRecord::improveValue).toList()),
-                        toStatSection(
-                                "traits",
-                                totalResponses,
-                                safeRecords.stream().flatMap(record -> record.personalityTraitIds().stream()).toList())));
-    }
-
-    private EventFeedbackStatSectionDto toStatSection(
-            String key,
-            int responseCount,
-            List<String> values) {
-        return new EventFeedbackStatSectionDto(
-                safeText(key),
-                Math.max(0, responseCount),
-                countStatOptions(values));
-    }
-
-    private List<EventFeedbackStatOptionDto> countStatOptions(List<String> values) {
-        Map<String, Integer> countByKey = new LinkedHashMap<>();
-        for (String value : values == null ? List.<String>of() : values) {
-            String normalizedValue = safeText(value);
-            if (!StringUtils.hasText(normalizedValue)) {
-                continue;
-            }
-            countByKey.put(normalizedValue, countByKey.getOrDefault(normalizedValue, 0) + 1);
-        }
-        return countByKey.entrySet().stream()
-                .map(entry -> new EventFeedbackStatOptionDto(entry.getKey(), Math.max(0, entry.getValue())))
-                .filter(option -> StringUtils.hasText(option.key()) && option.count() > 0)
-                .sorted(Comparator
-                        .comparing(EventFeedbackStatOptionDto::count, Comparator.reverseOrder())
-                        .thenComparing(EventFeedbackStatOptionDto::key))
-                .toList();
     }
 
     private List<ActivityEvent> queryFeedbackCandidateEvents(String userId) {
@@ -1359,16 +1309,6 @@ public class ActivitiesEventFeedbackService {
             this.viewerUserId = viewerUserId;
             this.eventId = eventId;
         }
-    }
-
-    private record EventFeedbackStatRecord(
-            String eventId,
-            String viewerUserId,
-            String submittedAtIso,
-            String updatedAtIso,
-            String overallValue,
-            String improveValue,
-            List<String> personalityTraitIds) {
     }
 
     private static final class EventFeedbackStatAccumulator {
