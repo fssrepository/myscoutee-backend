@@ -38,6 +38,10 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQ
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageStateSnapshotDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatOptionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatSectionDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
@@ -129,6 +133,20 @@ public class ActivitiesEventFeedbackService {
                 List.copyOf(receivedEvents),
                 state,
                 counts(allItems, organizerItems));
+    }
+
+    public EventFeedbackStatDto loadStatById(EventFeedbackStatQueryDto request) {
+        Users activeUser = homeUserProfileService.resolveCurrentUser(request == null ? null : request.userId());
+        String userId = normalizeId(activeUser == null ? null : activeUser.getUserId());
+        String eventId = normalizeId(request == null ? null : request.eventId());
+        if (!StringUtils.hasText(userId) || activeUser == null || !StringUtils.hasText(eventId)) {
+            return emptyStatResult(eventId);
+        }
+        List<String> ownedEventIds = eventSourceIds(queryOrganizerFeedbackEvents(userId));
+        if (!ownedEventIds.contains(eventId)) {
+            return emptyStatResult(eventId);
+        }
+        return toStatDto(eventId, queryFeedbackStatRecords(userId, eventId));
     }
 
     public EventFeedbackDetailDto loadDetail(EventFeedbackQueryDto request) {
@@ -329,6 +347,135 @@ public class ActivitiesEventFeedbackService {
             }
         }
         return receivedEvents;
+    }
+
+    private List<EventFeedbackStatRecord> queryFeedbackStatRecords(String userId, String eventId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedEventId)) {
+            return List.of();
+        }
+
+        Map<String, EventFeedbackStatAccumulator> entriesByViewerUserId = new LinkedHashMap<>();
+        for (EventFeedbackState state : eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(List.of(normalizedEventId))) {
+            if (state == null) {
+                continue;
+            }
+            String viewerUserId = normalizeId(state.getViewerUserId());
+            String stateEventId = normalizeId(state.getEventId());
+            if (!Objects.equals(normalizedEventId, stateEventId)
+                    || !StringUtils.hasText(viewerUserId)
+                    || Objects.equals(normalizedUserId, viewerUserId)) {
+                continue;
+            }
+            EventFeedbackStatAccumulator entry = ensureFeedbackStatEntry(entriesByViewerUserId, normalizedEventId, viewerUserId);
+            entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, state.getSubmittedAtIso());
+            entry.updatedAtIso = firstNonBlank(entry.updatedAtIso, state.getUpdatedDate());
+            if (StringUtils.hasText(state.getOrganizerNote())) {
+                entry.visible = true;
+            }
+        }
+
+        for (EventFeedbackAnswer answer : eventFeedbackAnswersRepository.findByEventIdInOrderByEventIdAscSubmittedAtIsoDesc(List.of(normalizedEventId))) {
+            if (answer == null) {
+                continue;
+            }
+            String viewerUserId = normalizeId(answer.getViewerUserId());
+            String answerEventId = normalizeId(answer.getEventId());
+            if (!Objects.equals(normalizedEventId, answerEventId)
+                    || !StringUtils.hasText(viewerUserId)
+                    || Objects.equals(normalizedUserId, viewerUserId)) {
+                continue;
+            }
+            EventFeedbackStatAccumulator entry = ensureFeedbackStatEntry(entriesByViewerUserId, normalizedEventId, viewerUserId);
+            String submittedAtIso = safeText(answer.getSubmittedAtIso());
+            entry.submittedAtIso = firstNonBlank(entry.submittedAtIso, submittedAtIso);
+            entry.updatedAtIso = firstNonBlank(entry.updatedAtIso, submittedAtIso);
+            entry.visible = true;
+            if ("event".equals(safeText(answer.getKind()))) {
+                entry.overallValue = firstNonBlank(entry.overallValue, answer.getPrimaryValue());
+                entry.improveValue = firstNonBlank(entry.improveValue, answer.getSecondaryValue());
+                if (entry.personalityTraitIds.isEmpty()) {
+                    entry.personalityTraitIds.addAll(normalizeIds(answer.getPersonalityTraitIds()));
+                }
+            }
+        }
+
+        return entriesByViewerUserId.values().stream()
+                .filter(entry -> entry.visible)
+                .map(entry -> new EventFeedbackStatRecord(
+                        entry.eventId,
+                        entry.viewerUserId,
+                        safeText(entry.submittedAtIso),
+                        safeText(entry.updatedAtIso),
+                        safeText(entry.overallValue),
+                        safeText(entry.improveValue),
+                        List.copyOf(entry.personalityTraitIds)))
+                .sorted((left, right) -> firstNonBlank(right.updatedAtIso(), right.submittedAtIso())
+                        .compareTo(firstNonBlank(left.updatedAtIso(), left.submittedAtIso())))
+                .toList();
+    }
+
+    private EventFeedbackStatAccumulator ensureFeedbackStatEntry(
+            Map<String, EventFeedbackStatAccumulator> entriesByViewerUserId,
+            String eventId,
+            String viewerUserId) {
+        return entriesByViewerUserId.computeIfAbsent(
+                viewerUserId,
+                key -> new EventFeedbackStatAccumulator(eventId, viewerUserId));
+    }
+
+    private EventFeedbackStatDto toStatDto(String eventId, List<EventFeedbackStatRecord> records) {
+        String normalizedEventId = normalizeId(eventId);
+        List<EventFeedbackStatRecord> safeRecords = records == null ? List.of() : records.stream()
+                .filter(Objects::nonNull)
+                .filter(record -> Objects.equals(normalizedEventId, normalizeId(record.eventId())))
+                .toList();
+        int totalResponses = safeRecords.size();
+        return new EventFeedbackStatDto(
+                normalizedEventId,
+                totalResponses,
+                List.of(
+                        toStatSection(
+                                "overall",
+                                totalResponses,
+                                safeRecords.stream().map(EventFeedbackStatRecord::overallValue).toList()),
+                        toStatSection(
+                                "improve",
+                                totalResponses,
+                                safeRecords.stream().map(EventFeedbackStatRecord::improveValue).toList()),
+                        toStatSection(
+                                "traits",
+                                totalResponses,
+                                safeRecords.stream().flatMap(record -> record.personalityTraitIds().stream()).toList())));
+    }
+
+    private EventFeedbackStatSectionDto toStatSection(
+            String key,
+            int responseCount,
+            List<String> values) {
+        return new EventFeedbackStatSectionDto(
+                safeText(key),
+                Math.max(0, responseCount),
+                countStatOptions(values));
+    }
+
+    private List<EventFeedbackStatOptionDto> countStatOptions(List<String> values) {
+        Map<String, Integer> countByKey = new LinkedHashMap<>();
+        for (String value : values == null ? List.<String>of() : values) {
+            String normalizedValue = safeText(value);
+            if (!StringUtils.hasText(normalizedValue)) {
+                continue;
+            }
+            countByKey.put(normalizedValue, countByKey.getOrDefault(normalizedValue, 0) + 1);
+        }
+        return countByKey.entrySet().stream()
+                .map(entry -> new EventFeedbackStatOptionDto(entry.getKey(), Math.max(0, entry.getValue())))
+                .filter(option -> StringUtils.hasText(option.key()) && option.count() > 0)
+                .sorted(Comparator
+                        .comparing(EventFeedbackStatOptionDto::count, Comparator.reverseOrder())
+                        .thenComparing(EventFeedbackStatOptionDto::key))
+                .toList();
     }
 
     private List<ActivityEvent> queryFeedbackCandidateEvents(String userId) {
@@ -804,6 +951,10 @@ public class ActivitiesEventFeedbackService {
         return new EventFeedbackDetailDto(safeText(eventId), "", "", List.of());
     }
 
+    private EventFeedbackStatDto emptyStatResult(String eventId) {
+        return new EventFeedbackStatDto(safeText(eventId), 0, List.of());
+    }
+
     private Map<String, List<EventFeedbackReceivedEntryDto>> receivedEntriesByEventId(
             List<EventFeedbackReceivedEventDto> receivedEvents) {
         Map<String, List<EventFeedbackReceivedEntryDto>> entriesByEventId = new LinkedHashMap<>();
@@ -1207,6 +1358,32 @@ public class ActivitiesEventFeedbackService {
         private ReceivedFeedbackEntryAccumulator(String viewerUserId, String eventId) {
             this.viewerUserId = viewerUserId;
             this.eventId = eventId;
+        }
+    }
+
+    private record EventFeedbackStatRecord(
+            String eventId,
+            String viewerUserId,
+            String submittedAtIso,
+            String updatedAtIso,
+            String overallValue,
+            String improveValue,
+            List<String> personalityTraitIds) {
+    }
+
+    private static final class EventFeedbackStatAccumulator {
+        private final String eventId;
+        private final String viewerUserId;
+        private String submittedAtIso = "";
+        private String updatedAtIso = "";
+        private String overallValue = "";
+        private String improveValue = "";
+        private boolean visible = false;
+        private final List<String> personalityTraitIds = new ArrayList<>();
+
+        private EventFeedbackStatAccumulator(String eventId, String viewerUserId) {
+            this.eventId = eventId;
+            this.viewerUserId = viewerUserId;
         }
     }
 
