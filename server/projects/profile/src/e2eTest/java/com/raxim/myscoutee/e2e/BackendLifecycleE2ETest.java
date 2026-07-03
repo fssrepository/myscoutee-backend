@@ -190,7 +190,7 @@ class BackendLifecycleE2ETest {
 
         JsonNode paidTickets = getJson("/assets/tickets?userId=" + PAID_MEMBER_ID);
         assertThat(paidTickets.path("total").asInt()).isEqualTo(1);
-        assertThat(ids(paidTickets.path("records"), "id")).containsExactly(EVENT_ID);
+        assertThat(ids(paidTickets.path("items"), "id")).containsExactly(EVENT_ID);
         assertThat(ids(getJson("/activities/events/attending?userId=" + PAID_MEMBER_ID), "id"))
                 .contains(EVENT_ID);
 

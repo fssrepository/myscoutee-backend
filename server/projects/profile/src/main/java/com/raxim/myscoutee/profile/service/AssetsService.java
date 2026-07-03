@@ -39,6 +39,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -172,14 +173,14 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<EventDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
+        List<AssetTicketDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .map(this::toTicketEventDto)
+                .map(this::toAssetTicketDto)
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing((EventDto item) -> toSortableDate(item.startAtIso())))
+                .sorted(Comparator.comparing((AssetTicketDto item) -> toSortableDate(item.dateIso())))
                 .toList();
 
-        List<EventDto> visible = new ArrayList<>(ordered.stream()
+        List<AssetTicketDto> visible = new ArrayList<>(ordered.stream()
                 .filter(item -> matchesTicketOrder(item, upcoming))
                 .toList());
         if (!upcoming) {
@@ -923,77 +924,28 @@ public class AssetsService {
         return clone;
     }
 
-    private EventDto toTicketEventDto(ActivityEvent event) {
+    private AssetTicketDto toAssetTicketDto(ActivityEvent event) {
         String sourceId = normalizeId(event.getSourceId());
         if (!StringUtils.hasText(sourceId)) {
             return null;
         }
-        EventMemberSnapshot memberSnapshot = resolveEventMemberSnapshot(event);
-        return new EventDto(
+        boolean admin = Boolean.TRUE.equals(event.getIsAdmin());
+        return new AssetTicketDto(
                 sourceId,
-                normalizeId(event.getOwnerUserId()),
+                admin ? "hosting" : "events",
                 safeText(event.getStatus()),
-                normalizeStrings(event.getAdmins()),
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),
                 safeText(event.getTimeframe()),
-                StringUtils.hasText(event.getInviter()) ? event.getInviter().trim() : null,
-                normalizeCount(event.getActivity()),
-                normalizeId(event.getCreatorUserId()),
-                safeText(event.getCreatorName()),
-                safeText(event.getCreatorInitials()),
-                safeText(event.getCreatorCity()),
-                safeText(event.getVisibility()),
+                safeNullableText(event.getStartAtIso()),
+                Math.max(0, (int) Math.round(safeDouble(event.getDistanceKm()) * 1000d)),
+                admin,
                 safeNullableText(event.getStartAtIso()),
                 safeNullableText(event.getEndAtIso()),
-                safeDouble(event.getDistanceKm()),
                 safeText(event.getImageUrl()),
-                safeText(event.getLocation()),
-                nullableCount(event.getCapacityMin()),
-                nullableCount(event.getCapacityMax()),
-                normalizeCount(event.getCapacityTotal()),
-                safeText(event.getEventType()),
-                normalizeMode(event.getMode()),
-                memberSnapshot.acceptedUserIds().size(),
-                memberSnapshot.pendingUserIds().size(),
-                memberSnapshot.acceptedUserIds(),
-                memberSnapshot.pendingUserIds(),
-                normalizeStrings(event.getInvitedMemberUserIds()),
-                normalizeStrings(event.getPendingRequestMemberUserIds()),
-                null,
-                safeDouble(event.getBoost()));
-    }
-
-    private EventMemberSnapshot resolveEventMemberSnapshot(ActivityEvent event) {
-        String eventId = event == null ? null : normalizeId(event.getSourceId());
-        String creatorUserId = event == null ? null : normalizeId(event.getCreatorUserId());
-        if (!StringUtils.hasText(eventId)) {
-            return new EventMemberSnapshot(List.of(), List.of());
-        }
-
-        Query query = Query.query(Criteria.where("ownerType").is("event").and("ownerId").is(eventId));
-        List<ActivityMember> members = mongoTemplate.find(query, ActivityMember.class);
-        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
-        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
-        for (ActivityMember member : members) {
-            if (member == null) {
-                continue;
-            }
-            String memberUserId = normalizeId(member.getUserId());
-            if (!StringUtils.hasText(memberUserId)) {
-                continue;
-            }
-            if ("pending".equals(normalizeMemberStatus(member.getStatus()))) {
-                pendingUserIds.add(memberUserId);
-            } else {
-                acceptedUserIds.add(memberUserId);
-            }
-        }
-        if (acceptedUserIds.isEmpty() && StringUtils.hasText(creatorUserId)) {
-            acceptedUserIds.add(creatorUserId);
-        }
-        pendingUserIds.removeAll(acceptedUserIds);
-        return new EventMemberSnapshot(new ArrayList<>(acceptedUserIds), new ArrayList<>(pendingUserIds));
+                safeText(event.getVisibility()),
+                safeText(event.getCreatorInitials()),
+                safeText(event.getCreatorInitials()));
     }
 
     private String normalizeMemberStatus(String status) {
@@ -1972,9 +1924,6 @@ public class AssetsService {
         return value == null || !Double.isFinite(value) ? 0d : value;
     }
 
-    private record EventMemberSnapshot(List<String> acceptedUserIds, List<String> pendingUserIds) {
-    }
-
     private String safeNullableText(String value) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
@@ -2043,21 +1992,21 @@ public class AssetsService {
         return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
     }
 
-    private boolean matchesTicketOrder(EventDto item, boolean upcoming) {
+    private boolean matchesTicketOrder(AssetTicketDto item, boolean upcoming) {
         long endAtMs = resolveTicketEndAtMs(item);
         boolean past = endAtMs < System.currentTimeMillis();
         return upcoming ? !past : past;
     }
 
-    private long resolveTicketEndAtMs(EventDto item) {
+    private long resolveTicketEndAtMs(AssetTicketDto item) {
         if (item == null) {
             return Long.MIN_VALUE;
         }
-        long endAtMs = toSortableDate(item.endAtIso());
+        long endAtMs = toSortableDate(item.endAt());
         if (endAtMs != Long.MIN_VALUE) {
             return endAtMs;
         }
-        return toSortableDate(item.startAtIso());
+        return toSortableDate(item.dateIso());
     }
 
     private long toSortableDate(String value) {

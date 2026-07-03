@@ -2,7 +2,6 @@ package com.raxim.myscoutee.profile.data.dto.assets;
 
 import java.util.List;
 
-import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -106,8 +105,26 @@ public final class AssetsDtos {
             String targetUserId) {
     }
 
+    public record AssetTicketDto(
+            String id,
+            String type,
+            String status,
+            String title,
+            String subtitle,
+            String detail,
+            String dateIso,
+            Integer distanceMetersExact,
+            Boolean isAdmin,
+            String startAt,
+            String endAt,
+            String imageUrl,
+            String visibility,
+            String avatarInitials,
+            String creatorInitials) {
+    }
+
     public record AssetTicketsPageDto(
-            List<EventDto> records,
+            List<AssetTicketDto> items,
             Integer total) {
     }
 }
