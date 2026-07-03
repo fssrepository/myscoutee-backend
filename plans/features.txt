@@ -31,3 +31,4 @@ base package cleanup like builder
 fix translation half hungarian
 form-flow introduction to event editor and probably we have few other forms
 korabbi/kesobbi red counter badge
+bundle size - we have some small chunks and a bigger barrel (1MB)
