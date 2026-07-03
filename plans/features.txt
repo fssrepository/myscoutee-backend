@@ -13,7 +13,6 @@ https://developers.facebook.com/ -> business verfication is needed
 
 for tomorrow
 ------
-2) a policy view is single-rownak tunik (valszeg memory, nem local) - smartlist but not lazy loaded
 3) asset editor
 info menu - as a clickeable link menu item on asset
 (no graph parsing, no auto popuplation form the image
