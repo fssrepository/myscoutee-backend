@@ -13,6 +13,9 @@ https://developers.facebook.com/ -> business verfication is needed
 
 kellekek
 --------
+pricing on the fly calculation on selected date or slot (asset/event explore)
+resource popup - clicking omember badge is not lazy load artifical delay
+badge row should be one line on event explore cards
 kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben
 a kellekek menuben egy kolcsonzesi ido grafikon, es gey vonal, hogy mi a telitettseg?
 (lehet ra lehetne kattintani a grafikon egyes reszeire es vmi statisztikat csinal)
