@@ -280,11 +280,13 @@ public class ActivitiesResourcesService {
                             0,
                             remainingEntries.stream().mapToInt(entry -> normalizeCount(entry.quantity())).sum(),
                             nextManagerUserId,
+                            false,
                             List.of())
                     : new SubEventAssignedAssetSettingsRecord(
                             currentSettings.capacityMin(),
                             currentSettings.capacityMax(),
                             nextManagerUserId,
+                            normalizeRouteEnabled(currentSettings.routeEnabled(), currentSettings.routes()),
                             currentSettings.routes() == null ? List.of() : new ArrayList<>(currentSettings.routes()));
             if (supplyAssignmentIds.stream().noneMatch(existingAssetId -> assetId.equals(normalizeId(existingAssetId)))) {
                 supplyAssignmentIds.add(assetId);
@@ -334,6 +336,7 @@ public class ActivitiesResourcesService {
                             Math.max(0, normalizeCount(assetEntry.getValue().capacityMin())),
                             Math.max(0, normalizeCount(assetEntry.getValue().capacityMax())),
                             normalizeId(assetEntry.getValue().addedByUserId()),
+                            normalizeRouteEnabled(assetEntry.getValue().routeEnabled(), assetEntry.getValue().routes()),
                             normalizeStrings(assetEntry.getValue().routes())));
                 }
             }
@@ -532,6 +535,13 @@ public class ActivitiesResourcesService {
             return addedByUserId;
         }
         return normalizeId(fallbackUserId);
+    }
+
+    private boolean normalizeRouteEnabled(Boolean value, List<String> routes) {
+        if (value != null) {
+            return Boolean.TRUE.equals(value);
+        }
+        return routes != null && routes.stream().anyMatch(item -> StringUtils.hasText(safeText(item)));
     }
 
     private String selectSupplyManagerUserId(

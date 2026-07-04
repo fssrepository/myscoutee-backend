@@ -161,6 +161,7 @@ public class ActivitySubEventResource {
             Integer capacityMin,
             Integer capacityMax,
             String addedByUserId,
+            Boolean routeEnabled,
             List<String> routes) {
     }
 

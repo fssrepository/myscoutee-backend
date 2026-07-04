@@ -307,6 +307,7 @@ public final class SharedDtos {
             Integer capacityMin,
             Integer capacityMax,
             String addedByUserId,
+            Boolean routeEnabled,
             List<String> routes) {
     }
 

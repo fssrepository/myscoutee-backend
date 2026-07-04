@@ -74,6 +74,7 @@ public class ActivitySubEventResourceMapper {
                             normalizeCount(value.capacityMin()),
                             normalizeCount(value.capacityMax()),
                             normalizeId(value.addedByUserId()),
+                            normalizeRouteEnabled(value.routeEnabled(), value.routes()),
                             value.routes() == null ? List.of() : new ArrayList<>(value.routes())));
                 }
             }
@@ -122,6 +123,13 @@ public class ActivitySubEventResourceMapper {
 
     private int normalizeCount(Integer value) {
         return Math.max(0, value == null ? 0 : value);
+    }
+
+    private boolean normalizeRouteEnabled(Boolean value, List<String> routes) {
+        if (value != null) {
+            return Boolean.TRUE.equals(value);
+        }
+        return routes != null && routes.stream().anyMatch(item -> StringUtils.hasText(safeText(item)));
     }
 
     private String normalizeId(String value) {
