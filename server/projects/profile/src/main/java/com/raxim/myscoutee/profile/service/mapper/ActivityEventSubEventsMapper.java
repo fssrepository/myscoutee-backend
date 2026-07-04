@@ -852,12 +852,13 @@ public class ActivityEventSubEventsMapper {
         List<String> assignedIds = resourceRecord.assetAssignmentIds() == null
                 ? List.of()
                 : resourceRecord.assetAssignmentIds().getOrDefault(type, List.of());
-        List<String> assetIds = assignedIds == null || assignedIds.isEmpty()
-                ? new ArrayList<>(settingsByAssetId.keySet())
-                : assignedIds;
+        List<String> assetIds = normalizedAssetIds(
+                assignedIds == null || assignedIds.isEmpty()
+                        ? new ArrayList<>(settingsByAssetId.keySet())
+                        : assignedIds);
         int capacityMin = 0;
         int capacityMax = 0;
-        int accepted = 0;
+        int accepted = "Supplies".equals(type) ? 0 : assetIds.size();
         for (String assetId : assetIds) {
             SubEventAssignedAssetSettingsDto settings = settingsByAssetId.get(assetId);
             capacityMin += nonNegativeInteger(settings == null ? null : settings.capacityMin());
@@ -867,6 +868,20 @@ public class ActivityEventSubEventsMapper {
             }
         }
         return new ResourceMetric(accepted, 0, capacityMin, capacityMax);
+    }
+
+    private List<String> normalizedAssetIds(List<String> source) {
+        if (source == null || source.isEmpty()) {
+            return List.of();
+        }
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (String item : source) {
+            String assetId = normalizeId(item);
+            if (StringUtils.hasText(assetId)) {
+                ids.add(assetId);
+            }
+        }
+        return new ArrayList<>(ids);
     }
 
     private int supplyContributionQuantity(ActivitySubEventResourceStateDto resourceRecord, String assetId) {
