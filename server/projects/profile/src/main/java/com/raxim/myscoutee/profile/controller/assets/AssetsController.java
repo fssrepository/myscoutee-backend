@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
@@ -41,10 +42,29 @@ public class AssetsController {
     }
 
     @GetMapping("/explore")
-    public List<AssetDto> queryVisibleAssets(
+    public Object queryVisibleAssets(
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam("type") String type,
-            @RequestParam(value = "category", required = false) String category) {
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "startAtIso", required = false) String startAtIso,
+            @RequestParam(value = "endAtIso", required = false) String endAtIso,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "order", required = false) String order) {
+        if (page != null || pageSize != null || hasText(cursor) || hasText(order) || hasText(startAtIso) || hasText(endAtIso)) {
+            AssetExplorePageDto result = assetsService.queryVisibleAssetsPage(
+                    userId,
+                    type,
+                    category,
+                    startAtIso,
+                    endAtIso,
+                    page,
+                    pageSize,
+                    cursor,
+                    order);
+            return result;
+        }
         return assetsService.queryVisibleAssets(userId, type, category);
     }
 
@@ -110,6 +130,10 @@ public class AssetsController {
             skipWhenAuthenticationOptional = true)
     public AssetDto makeManager(@RequestBody AssetMakeManagerRequestDto request) {
         return assetsService.makeManager(request);
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
 }

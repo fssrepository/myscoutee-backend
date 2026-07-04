@@ -34,6 +34,12 @@ public final class AssetsDtos {
             List<String> menuActions) {
     }
 
+    public record AssetExplorePageDto(
+            List<AssetDto> items,
+            Integer total,
+            String nextCursor) {
+    }
+
     public record AssetDetailDto(
             String id,
             String type,

@@ -18,6 +18,10 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -37,6 +41,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
@@ -151,16 +156,62 @@ public class AssetsService {
         }
 
         double viewerAffinity = resolveStoredUserAffinity(normalizedUserId);
-        return assetsRepository.findAll().stream()
-                .filter(Objects::nonNull)
-                .filter(asset -> normalizedType.equals(normalizeAssetType(asset.getType())))
-                .filter(asset -> !normalizedUserId.equals(normalizeId(asset.getOwnerUserId())))
-                .filter(asset -> !StringUtils.hasText(normalizedCategory) || normalizedCategory.equals(safeText(asset.getCategory())))
+        List<Asset> assets = queryVisibleExploreAssets(normalizedUserId, normalizedType, normalizedCategory).stream()
                 .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
                 .sorted(visibleAssetComparator(viewerAffinity))
-                .map(this::toAssetDto)
+                .toList();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        return assets.stream()
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public AssetExplorePageDto queryVisibleAssetsPage(
+            String userId,
+            String type,
+            String category,
+            String startAtIso,
+            String endAtIso,
+            Integer page,
+            Integer pageSize,
+            String cursor,
+            String order) {
+        String normalizedUserId = effectiveActorUserId(userId);
+        String normalizedType = normalizeAssetType(type);
+        String normalizedCategory = safeText(category);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedType)) {
+            return new AssetExplorePageDto(List.of(), 0, null);
+        }
+
+        String normalizedOrder = normalizeAssetExploreOrder(order);
+        String normalizedStartAtIso = safeText(startAtIso);
+        String normalizedEndAtIso = safeText(endAtIso);
+        int normalizedPageSize = Math.max(1, Math.min(100, pageSize == null ? 20 : pageSize.intValue()));
+        int normalizedPage = Math.max(0, page == null ? 0 : page.intValue());
+        int cursorOffset = parseAssetExploreCursor(cursor);
+        int startIndex = cursorOffset >= 0 ? cursorOffset : normalizedPage * normalizedPageSize;
+
+        AssetExploreMongoPage pageResult = queryVisibleExploreAssetsPage(
+                normalizedUserId,
+                normalizedType,
+                normalizedCategory,
+                normalizedStartAtIso,
+                normalizedEndAtIso,
+                normalizedOrder,
+                Math.max(0, startIndex),
+                normalizedPageSize);
+        List<Asset> pageAssets = pageResult.items();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(pageAssets);
+        List<AssetDto> items = pageAssets.stream()
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new AssetExplorePageDto(
+                items,
+                pageResult.total(),
+                pageResult.nextCursor());
     }
 
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
@@ -985,11 +1036,202 @@ public class AssetsService {
         return ownerNamesByUserId;
     }
 
+    private List<Asset> queryVisibleExploreAssets(String userId, String type, String category) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedType = normalizeAssetType(type);
+        String normalizedCategory = safeText(category);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedType)) {
+            return List.of();
+        }
+
+        Query query = new BasicQuery(visibleExploreMatchDocument(normalizedUserId, normalizedType, normalizedCategory));
+        return mongoTemplate.find(query, Asset.class);
+    }
+
+    private AssetExploreMongoPage queryVisibleExploreAssetsPage(
+            String userId,
+            String type,
+            String category,
+            String startAtIso,
+            String endAtIso,
+            String order,
+            int startIndex,
+            int pageSize) {
+        List<AggregationOperation> operations = new ArrayList<>();
+        operations.add(context -> new Document("$match", visibleExploreMatchDocument(userId, type, category)));
+        operations.add(context -> new Document("$addFields", new Document()
+                .append("assetExploreAvailability", assetExploreAvailabilityExpression(startAtIso, endAtIso))
+                .append("assetExplorePrice", assetExplorePriceExpression())
+                .append("assetExplorePolicyCount", assetExplorePolicyCountExpression())));
+        operations.add(context -> new Document("$match", new Document("assetExploreAvailability", new Document("$gt", 0))));
+        operations.add(context -> new Document("$sort", assetExploreSortDocument(order)));
+        operations.add(context -> new Document("$facet", new Document()
+                .append("metadata", List.of(new Document("$count", "total")))
+                .append("items", List.of(
+                        new Document("$skip", Math.max(0, startIndex)),
+                        new Document("$limit", Math.max(1, pageSize))))));
+
+        Aggregation aggregation = Aggregation.newAggregation(operations);
+        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "assets", Document.class);
+        Document result = results.getUniqueMappedResult();
+        if (result == null) {
+            return new AssetExploreMongoPage(List.of(), 0, null);
+        }
+
+        List<Document> metadata = documents(result.get("metadata"));
+        int total = metadata.isEmpty() ? 0 : normalizeCount(metadata.get(0).get("total"));
+        List<Asset> items = documents(result.get("items")).stream()
+                .map(document -> mongoTemplate.getConverter().read(Asset.class, document))
+                .filter(Objects::nonNull)
+                .toList();
+        int nextIndex = Math.max(0, startIndex) + items.size();
+        return new AssetExploreMongoPage(items, total, nextIndex < total ? String.valueOf(nextIndex) : null);
+    }
+
+    private Document visibleExploreMatchDocument(String userId, String type, String category) {
+        List<Document> and = new ArrayList<>();
+        and.add(new Document("type", type));
+        and.add(new Document("ownerUserId", new Document("$ne", userId)));
+        and.add(new Document("status", new Document("$in", List.of(STATUS_ACTIVE, "active"))));
+        if (StringUtils.hasText(category)) {
+            and.add(new Document("category", category));
+        }
+
+        List<String> friendOwnerUserIds = visibleExploreFriendOwnerUserIds(userId);
+        List<String> publicVisibilities = new ArrayList<>();
+        publicVisibilities.add(null);
+        publicVisibilities.add("");
+        publicVisibilities.add("Public");
+        List<Document> visibilityOr = new ArrayList<>();
+        visibilityOr.add(new Document("visibility", new Document("$in", publicVisibilities)));
+        if (!friendOwnerUserIds.isEmpty()) {
+            visibilityOr.add(new Document("$and", List.of(
+                    new Document("visibility", "Friends only"),
+                    new Document("ownerUserId", new Document("$in", friendOwnerUserIds)))));
+        }
+        and.add(new Document("$or", visibilityOr));
+        return new Document("$and", and);
+    }
+
+    private List<String> visibleExploreFriendOwnerUserIds(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+        return usersRepository.findAll().stream()
+                .map(user -> normalizeId(user == null ? null : user.getUserId()))
+                .filter(StringUtils::hasText)
+                .filter(ownerUserId -> isFriendOfActiveUser(ownerUserId, normalizedUserId))
+                .toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Document> documents(Object value) {
+        if (value instanceof List<?> list) {
+            return list.stream()
+                    .filter(Document.class::isInstance)
+                    .map(Document.class::cast)
+                    .toList();
+        }
+        return List.of();
+    }
+
     private Comparator<Asset> visibleAssetComparator(double viewerAffinity) {
         return Comparator
                 .comparingDouble((Asset asset) -> -assetExploreScore(asset, viewerAffinity))
                 .thenComparing(asset -> safeText(asset.getTitle()))
                 .thenComparing(asset -> normalizeId(asset.getAssetId()));
+    }
+
+    private String normalizeAssetExploreOrder(String order) {
+        String normalized = safeText(order);
+        return "lowest-price".equals(normalized) || "fewest-policies".equals(normalized)
+                ? normalized
+                : "availability";
+    }
+
+    private int parseAssetExploreCursor(String cursor) {
+        String normalized = safeText(cursor);
+        if (!StringUtils.hasText(normalized)) {
+            return -1;
+        }
+        try {
+            return Math.max(0, Integer.parseInt(normalized));
+        } catch (NumberFormatException ex) {
+            return -1;
+        }
+    }
+
+    private Document assetExploreAvailabilityExpression(String startAtIso, String endAtIso) {
+        Document quantity = numericExpression("$quantity", 0);
+        Document capacityTotal = numericExpression("$capacityTotal", 0);
+        Document totalQuantity = new Document("$cond", List.of(
+                new Document("$gt", List.of(quantity, 0)),
+                quantity,
+                new Document("$cond", List.of(
+                        new Document("$eq", List.of("$type", "Supplies")),
+                        new Document("$max", List.of(1, capacityTotal)),
+                        1))));
+        Document overlappingQuantity = assetExploreOverlappingQuantityExpression(startAtIso, endAtIso);
+        return new Document("$max", List.of(0, new Document("$subtract", List.of(totalQuantity, overlappingQuantity))));
+    }
+
+    private Document assetExploreOverlappingQuantityExpression(String startAtIso, String endAtIso) {
+        if (!StringUtils.hasText(startAtIso) || !StringUtils.hasText(endAtIso)) {
+            return new Document("$literal", 0);
+        }
+        Document requestFilter = new Document("$filter", new Document()
+                .append("input", new Document("$ifNull", List.of("$requests", List.of())))
+                .append("as", "request")
+                .append("cond", new Document("$and", List.of(
+                        new Document("$or", List.of(
+                                new Document("$eq", List.of("$$request.status", MEMBER_STATUS_ACCEPTED)),
+                                new Document("$eq", List.of("$$request.requestKind", "manual")))),
+                        new Document("$ne", List.of("$$request.booking.inventoryApplied", true)),
+                        new Document("$lt", List.of("$$request.booking.startAtIso", endAtIso)),
+                        new Document("$lt", List.of(startAtIso, "$$request.booking.endAtIso"))))));
+        Document requestQuantity = new Document("$max", List.of(1, numericExpression("$$request.booking.quantity", 1)));
+        return new Document("$sum", new Document("$map", new Document()
+                .append("input", requestFilter)
+                .append("as", "request")
+                .append("in", requestQuantity)));
+    }
+
+    private Document assetExplorePriceExpression() {
+        return numericExpression("$pricing.basePrice", 0);
+    }
+
+    private Document assetExplorePolicyCountExpression() {
+        return new Document("$cond", List.of(
+                new Document("$eq", List.of("$policiesEnabled", true)),
+                new Document("$size", new Document("$ifNull", List.of("$policies", List.of()))),
+                0));
+    }
+
+    private Document assetExploreSortDocument(String order) {
+        Document sort = new Document();
+        if ("lowest-price".equals(order)) {
+            sort.append("assetExplorePrice", 1);
+            sort.append("assetExploreAvailability", -1);
+        } else if ("fewest-policies".equals(order)) {
+            sort.append("assetExplorePolicyCount", 1);
+            sort.append("assetExploreAvailability", -1);
+        } else {
+            sort.append("assetExploreAvailability", -1);
+            sort.append("assetExplorePrice", 1);
+        }
+        sort.append("title", 1);
+        sort.append("ownerUserId", 1);
+        sort.append("assetId", 1);
+        return sort;
+    }
+
+    private Document numericExpression(String input, Number fallback) {
+        return new Document("$convert", new Document()
+                .append("input", input)
+                .append("to", "double")
+                .append("onError", fallback)
+                .append("onNull", fallback));
     }
 
     private double assetExploreScore(Asset asset, double viewerAffinity) {
@@ -2041,4 +2283,11 @@ public class AssetsService {
         }
         return initials.toString();
     }
+
+    private record AssetExploreMongoPage(
+            List<Asset> items,
+            int total,
+            String nextCursor) {
+    }
+
 }
