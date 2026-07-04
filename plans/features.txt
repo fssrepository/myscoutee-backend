@@ -24,6 +24,8 @@ on event explore multislot should be shown somehow (duration maybe)
 if we haven't any subevent, then the list should show one event card maybe, not to be empty
 or show the event defiition instead of smart list, but the header stays
 
+there are no active slots for this event, pls. view the definition
+
 kellekek
 --------
 kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben
