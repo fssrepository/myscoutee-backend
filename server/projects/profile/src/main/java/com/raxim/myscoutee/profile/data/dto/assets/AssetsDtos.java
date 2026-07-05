@@ -133,4 +133,55 @@ public final class AssetsDtos {
             List<AssetTicketDto> items,
             Integer total) {
     }
+
+    public record AssetOccupancyStatDto(
+            String id,
+            String assetId,
+            String ownerUserId,
+            String dateIso,
+            String startAtIso,
+            String endAtIso,
+            Integer occupied,
+            Integer capacity,
+            Integer pendingCount,
+            Integer pendingQuantity,
+            Integer itemCount) {
+    }
+
+    public record AssetOccupancyRowDto(
+            String id,
+            String assetId,
+            String ownerUserId,
+            String dateIso,
+            String startAtIso,
+            String endAtIso,
+            String title,
+            String subtitle,
+            String detail,
+            String scheduleLabel,
+            String avatarInitials,
+            String avatarUrl,
+            String gender,
+            String status,
+            String requestKind,
+            Integer quantity,
+            Integer occupied,
+            Integer capacity,
+            Integer remaining,
+            Integer pendingCount,
+            Integer pendingQuantity,
+            List<String> menuActions) {
+    }
+
+    public record AssetOccupancyStatsPageDto(
+            List<AssetOccupancyStatDto> items,
+            Integer total,
+            String nextCursor) {
+    }
+
+    public record AssetOccupancyPageDto(
+            List<AssetOccupancyRowDto> items,
+            Integer total,
+            String nextCursor) {
+    }
 }

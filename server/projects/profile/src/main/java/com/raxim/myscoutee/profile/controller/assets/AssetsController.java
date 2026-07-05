@@ -15,20 +15,27 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyStatsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
+import com.raxim.myscoutee.profile.service.AssetAvailabilityService;
 import com.raxim.myscoutee.profile.service.AssetsService;
 
 @RestController
 @RequestMapping("/assets")
 public class AssetsController {
     private final AssetsService assetsService;
+    private final AssetAvailabilityService assetAvailabilityService;
 
-    public AssetsController(AssetsService assetsService) {
+    public AssetsController(
+            AssetsService assetsService,
+            AssetAvailabilityService assetAvailabilityService) {
         this.assetsService = assetsService;
+        this.assetAvailabilityService = assetAvailabilityService;
     }
 
     @GetMapping
@@ -39,6 +46,44 @@ public class AssetsController {
     @GetMapping("/{assetId}")
     public AssetDetailDto queryAssetDetail(@PathVariable("assetId") String assetId) {
         return assetsService.queryAssetDetail(assetId);
+    }
+
+    @GetMapping("/{assetId}/availability")
+    public AssetOccupancyPageDto loadOccupancyByAssetId(
+            @PathVariable("assetId") String assetId,
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "dateIso", required = false) String dateIso,
+            @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        return assetAvailabilityService.loadOccupancyByAssetId(
+                userId,
+                assetId,
+                dateIso,
+                filter,
+                page,
+                pageSize,
+                cursor);
+    }
+
+    @GetMapping("/{assetId}/availability/stats")
+    public AssetOccupancyStatsPageDto loadStatByAssetId(
+            @PathVariable("assetId") String assetId,
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "rangeStart", required = false) String rangeStart,
+            @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "60") Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        return assetAvailabilityService.loadStatByAssetId(
+                userId,
+                assetId,
+                rangeStart,
+                rangeEnd,
+                page,
+                pageSize,
+                cursor);
     }
 
     @GetMapping("/explore")
