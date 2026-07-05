@@ -279,12 +279,14 @@ public class ActivitiesResourcesService {
                     ? new SubEventAssignedAssetSettingsRecord(
                             0,
                             remainingEntries.stream().mapToInt(entry -> normalizeCount(entry.quantity())).sum(),
+                            remainingEntries.stream().mapToInt(entry -> normalizeCount(entry.quantity())).sum(),
                             nextManagerUserId,
                             false,
                             List.of())
                     : new SubEventAssignedAssetSettingsRecord(
                             currentSettings.capacityMin(),
                             currentSettings.capacityMax(),
+                            currentSettings.quantity(),
                             nextManagerUserId,
                             normalizeRouteEnabled(currentSettings.routeEnabled(), currentSettings.routes()),
                             currentSettings.routes() == null ? List.of() : new ArrayList<>(currentSettings.routes()));
@@ -335,6 +337,7 @@ public class ActivitiesResourcesService {
                     normalizedSettings.put(assetId, new SubEventAssignedAssetSettingsRecord(
                             Math.max(0, normalizeCount(assetEntry.getValue().capacityMin())),
                             Math.max(0, normalizeCount(assetEntry.getValue().capacityMax())),
+                            Math.max(0, normalizeCount(assetEntry.getValue().quantity())),
                             normalizeId(assetEntry.getValue().addedByUserId()),
                             normalizeRouteEnabled(assetEntry.getValue().routeEnabled(), assetEntry.getValue().routes()),
                             normalizeStrings(assetEntry.getValue().routes())));

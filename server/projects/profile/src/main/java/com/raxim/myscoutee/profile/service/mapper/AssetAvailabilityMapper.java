@@ -71,7 +71,7 @@ public class AssetAvailabilityMapper {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         String normalizedAssetId = normalizeId(assetId);
         String normalizedFilter = normalizeFilter(filter);
-        String normalizedOrder = normalizeOrder(order);
+        String normalizedOrder = normalizeStatsOrder(order);
         List<AssetRequest> source = safeRequests(requests).stream()
                 .filter(request -> matchesOrder(request, normalizedOrder))
                 .filter(request -> matchesFilter(request, normalizedFilter))
@@ -101,7 +101,7 @@ public class AssetAvailabilityMapper {
                 .toList();
         int occupied = overlapping.stream()
                 .filter(this::isCommittedRequest)
-                .mapToInt(this::requestQuantity)
+                .mapToInt(this::requestOccupancyCount)
                 .sum();
         List<AssetRequest> pending = overlapping.stream()
                 .filter(this::isPendingRequest)
@@ -141,7 +141,7 @@ public class AssetAvailabilityMapper {
                         ? requestsOverlap(request, other)
                         : requestOverlaps(other, dateRange.start(), dateRange.end()))
                 .toList();
-        int occupied = committed.stream().mapToInt(this::requestQuantity).sum();
+        int occupied = committed.stream().mapToInt(this::requestOccupancyCount).sum();
         int pendingCurrentQuantity = isCommittedRequest(request) ? 0 : requestQuantity(request);
         int capacity = assetCapacity(request);
         AssetRequestBookingRecord booking = request == null ? null : request.booking();
@@ -257,6 +257,9 @@ public class AssetAvailabilityMapper {
     }
 
     private boolean matchesOrder(AssetRequest request, String order) {
+        if ("all".equals(order)) {
+            return true;
+        }
         LocalDateTime end = requestEndTime(request);
         if (end == null) {
             return false;
@@ -442,6 +445,10 @@ public class AssetAvailabilityMapper {
         return Math.max(1, normalizeCount(booking == null ? null : booking.quantity(), 1));
     }
 
+    private int requestOccupancyCount(AssetRequest request) {
+        return isManualRequest(request) ? 1 : requestQuantity(request);
+    }
+
     private boolean isCommittedRequest(AssetRequest request) {
         return "accepted".equals(normalizeStatus(request == null ? null : request.status())) || isManualRequest(request);
     }
@@ -464,6 +471,14 @@ public class AssetAvailabilityMapper {
 
     private String normalizeOrder(String order) {
         return "earlier".equals(safeText(order)) ? "earlier" : "later";
+    }
+
+    private String normalizeStatsOrder(String order) {
+        String normalized = safeText(order);
+        if ("earlier".equals(normalized) || "later".equals(normalized)) {
+            return normalized;
+        }
+        return "all";
     }
 
     private String normalizeStatus(String value) {

@@ -26,6 +26,14 @@ or show the event defiition instead of smart list, but the header stays
 
 there are no active slots for this event, pls. view the definition
 
+after finishing clicking on calendar should filter the list for day, but should show the result (not sure how you wired, but maybe you need to extend the filtering with date range -- we have somethijng similar on asset explore, but over there the date range input also visible) - maybe instead of replacign the first header line, i would advice to show the same composition of calendar, so we can change the date range and filter accordingly -- not sure how you wired through the java backend but i would advice to extend the present list query lgic with an otional date range filter
+
+kellekek, calendar view occupancy 1/5, list view won't show (it will be the  stat, so no other stat page)
+
+on mobile image carousel has been stretched...
+
+not only car - ride /flight - add car - vehicle instead, not car
+
 kellekek
 --------
 kellekek - 1 / 3 - adott idore szol, sztem nincs ertelme megjeleniteni a single-row szeru elemben

@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -1339,6 +1341,9 @@ public class AssetsService {
         int borrowedItems = 0;
         int pendingItems = 0;
         for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
+            if (!isLaterAssetRequest(request)) {
+                continue;
+            }
             if (isManualAssetRequest(request)) {
                 assignedItems++;
             } else if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request == null ? null : request.status()))) {
@@ -1354,6 +1359,23 @@ public class AssetsService {
                 assignedItems,
                 borrowedItems,
                 pendingItems);
+    }
+
+    private boolean isLaterAssetRequest(AssetRequest request) {
+        long endAtMs = assetRequestEndAtMs(request);
+        return endAtMs != Long.MIN_VALUE && endAtMs >= System.currentTimeMillis();
+    }
+
+    private long assetRequestEndAtMs(AssetRequest request) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        long startAtMs = toSortableDate(firstNonBlank(
+                booking == null ? null : booking.startAtIso(),
+                request == null ? null : request.requestedAtIso()));
+        if (startAtMs == Long.MIN_VALUE) {
+            return Long.MIN_VALUE;
+        }
+        long endAtMs = toSortableDate(booking == null ? null : booking.endAtIso());
+        return endAtMs > startAtMs ? endAtMs : startAtMs + 24L * 60L * 60L * 1000L;
     }
 
     private AssetRequestMetricsDto normalizeAssetRequestMetrics(AssetRequestMetricsDto metrics) {
@@ -2370,7 +2392,11 @@ public class AssetsService {
         try {
             return Instant.parse(normalizedValue).toEpochMilli();
         } catch (Exception ignored) {
-            return Long.MIN_VALUE;
+            try {
+                return LocalDateTime.parse(normalizedValue).toInstant(ZoneOffset.UTC).toEpochMilli();
+            } catch (Exception ignoredAgain) {
+                return Long.MIN_VALUE;
+            }
         }
     }
 

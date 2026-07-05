@@ -73,6 +73,7 @@ public class ActivitySubEventResourceMapper {
                     settings.put(assetId, new SubEventAssignedAssetSettingsDto(
                             normalizeCount(value.capacityMin()),
                             normalizeCount(value.capacityMax()),
+                            normalizeCount(value.quantity()),
                             normalizeId(value.addedByUserId()),
                             normalizeRouteEnabled(value.routeEnabled(), value.routes()),
                             value.routes() == null ? List.of() : new ArrayList<>(value.routes())));
