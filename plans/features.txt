@@ -22,8 +22,6 @@ checkout event explore - redesign - (i think it's hard coded data now,
 does not rely on policy and it's not lazy loaded)
 on event explore multislot should be shown somehow (duration maybe)
 
-on mobile image carousel has been stretched...
-
 common in case when saw
 -----------------------
 app-menu -> infocard/imagecard etc. to wire to appmenu-host
