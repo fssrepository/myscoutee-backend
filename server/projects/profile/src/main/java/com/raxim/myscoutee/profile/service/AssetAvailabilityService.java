@@ -26,13 +26,15 @@ public class AssetAvailabilityService {
             String userId,
             String assetId,
             String dateIso,
+            String rangeStart,
+            String rangeEnd,
             String filter,
             String order,
             Integer page,
             Integer pageSize,
             String cursor) {
         List<AssetRequest> requests = availabilityRepository.findRequestsByOwnerAsset(userId, assetId);
-        return availabilityMapper.toOccupancyPage(userId, assetId, requests, dateIso, filter, order, page, pageSize, cursor);
+        return availabilityMapper.toOccupancyPage(userId, assetId, requests, dateIso, rangeStart, rangeEnd, filter, order, page, pageSize, cursor);
     }
 
     public AssetOccupancyStatsPageDto loadStatByAssetId(

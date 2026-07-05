@@ -33,6 +33,8 @@ public class AssetAvailabilityMapper {
             String assetId,
             List<AssetRequest> requests,
             String dateIso,
+            String rangeStart,
+            String rangeEnd,
             String filter,
             String order,
             Integer page,
@@ -40,7 +42,7 @@ public class AssetAvailabilityMapper {
             String cursor) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         String normalizedAssetId = normalizeId(assetId);
-        DateRange dateRange = availabilityDateRange(dateIso);
+        DateRange dateRange = availabilityDateRange(dateIso, rangeStart, rangeEnd);
         String normalizedFilter = normalizeFilter(filter);
         String normalizedOrder = normalizeOrder(order);
         List<AssetRequest> source = safeRequests(requests);
@@ -368,9 +370,50 @@ public class AssetAvailabilityMapper {
                 .orElse("");
     }
 
-    private DateRange availabilityDateRange(String dateIso) {
+    private DateRange availabilityDateRange(String dateIso, String rangeStart, String rangeEnd) {
+        DateRange range = availabilityQueryRange(rangeStart, rangeEnd);
+        if (range != null) {
+            return range;
+        }
         LocalDate parsed = parseDateOnly(dateIso);
         return parsed == null ? null : new DateRange(parsed, parsed.plusDays(1));
+    }
+
+    private DateRange availabilityQueryRange(String rangeStart, String rangeEnd) {
+        String startInput = safeText(rangeStart);
+        String endInput = safeText(rangeEnd);
+        if (!StringUtils.hasText(startInput) && !StringUtils.hasText(endInput)) {
+            return null;
+        }
+        LocalDate start = parseDate(startInput);
+        if (start == null) {
+            start = parseDate(endInput);
+        }
+        if (start == null) {
+            return null;
+        }
+        LocalDate end = StringUtils.hasText(endInput)
+                ? parseRangeEndDate(endInput)
+                : start.plusDays(1);
+        if (end == null) {
+            end = start.plusDays(1);
+        }
+        if (end.isBefore(start)) {
+            return new DateRange(end, start);
+        }
+        if (end.isEqual(start)) {
+            return new DateRange(start, start.plusDays(1));
+        }
+        return new DateRange(start, end);
+    }
+
+    private LocalDate parseRangeEndDate(String value) {
+        String normalized = safeText(value);
+        LocalDate end = parseDate(normalized);
+        if (end == null) {
+            return null;
+        }
+        return normalized.matches("\\d{4}-\\d{2}-\\d{2}") ? end.plusDays(1) : end;
     }
 
     private DateRange statsRange(String rangeStart, String rangeEnd) {
