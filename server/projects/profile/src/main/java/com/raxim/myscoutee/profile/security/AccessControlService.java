@@ -218,13 +218,6 @@ public class AccessControlService implements AccessPolicyData {
         return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR, actorUserId, assetId);
     }
 
-    public boolean canCurrentActorRefreshAssetSource(String ownerUserId, String assetId) {
-        String normalizedOwnerUserId = normalizeId(ownerUserId);
-        String normalizedAssetId = normalizeId(assetId);
-        String resourceId = StringUtils.hasText(normalizedAssetId) ? normalizedAssetId : normalizedOwnerUserId;
-        return canCurrentActorUseAssetPolicy(AccessPolicyKeys.ASSET_SOURCE_REFRESH, normalizedOwnerUserId, resourceId);
-    }
-
     public boolean canCurrentActorCreateEvent(String ownerUserId, String eventId) {
         return canCurrentActorUsePolicy(AccessPolicyKeys.EVENT_CREATE, ownerUserId, eventId);
     }

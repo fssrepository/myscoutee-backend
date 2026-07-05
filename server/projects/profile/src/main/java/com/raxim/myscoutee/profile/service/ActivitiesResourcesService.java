@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
@@ -211,7 +212,7 @@ public class ActivitiesResourcesService {
         boolean changed = false;
         String fallbackManagerUserId = normalizeId(record.getAssetOwnerUserId());
 
-        for (String type : List.of("Car", "Accommodation")) {
+        for (String type : List.of(AssetCatalog.TYPE_TRANSPORT, AssetCatalog.TYPE_ACCOMMODATION)) {
             List<String> assignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault(type, List.of()));
             Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault(type, Map.of()));
             Set<String> candidateAssetIds = new LinkedHashSet<>(assignmentIds);
@@ -241,8 +242,8 @@ public class ActivitiesResourcesService {
             }
         }
 
-        List<String> supplyAssignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault("Supplies", List.of()));
-        Map<String, SubEventAssignedAssetSettingsRecord> supplySettingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault("Supplies", Map.of()));
+        List<String> supplyAssignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault(AssetCatalog.TYPE_SUPPLIES, List.of()));
+        Map<String, SubEventAssignedAssetSettingsRecord> supplySettingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault(AssetCatalog.TYPE_SUPPLIES, Map.of()));
         Set<String> supplyAssetIds = new LinkedHashSet<>(supplyAssignmentIds);
         supplyAssetIds.addAll(supplySettingsByAssetId.keySet());
         supplyAssetIds.addAll(nextSupplyEntriesByAssetId.keySet());
@@ -279,12 +280,16 @@ public class ActivitiesResourcesService {
                     ? new SubEventAssignedAssetSettingsRecord(
                             0,
                             remainingEntries.stream().mapToInt(entry -> normalizeCount(entry.quantity())).sum(),
+                            remainingEntries.stream().mapToInt(entry -> normalizeCount(entry.quantity())).sum(),
                             nextManagerUserId,
+                            false,
                             List.of())
                     : new SubEventAssignedAssetSettingsRecord(
                             currentSettings.capacityMin(),
                             currentSettings.capacityMax(),
+                            currentSettings.quantity(),
                             nextManagerUserId,
+                            normalizeRouteEnabled(currentSettings.routeEnabled(), currentSettings.routes()),
                             currentSettings.routes() == null ? List.of() : new ArrayList<>(currentSettings.routes()));
             if (supplyAssignmentIds.stream().noneMatch(existingAssetId -> assetId.equals(normalizeId(existingAssetId)))) {
                 supplyAssignmentIds.add(assetId);
@@ -296,8 +301,8 @@ public class ActivitiesResourcesService {
             }
         }
         if (suppliesChanged) {
-            storeAssignmentIds(nextAssignmentIds, "Supplies", supplyAssignmentIds);
-            storeSettings(nextSettingsByType, "Supplies", supplySettingsByAssetId);
+            storeAssignmentIds(nextAssignmentIds, AssetCatalog.TYPE_SUPPLIES, supplyAssignmentIds);
+            storeSettings(nextSettingsByType, AssetCatalog.TYPE_SUPPLIES, supplySettingsByAssetId);
             changed = true;
         }
 
@@ -333,7 +338,9 @@ public class ActivitiesResourcesService {
                     normalizedSettings.put(assetId, new SubEventAssignedAssetSettingsRecord(
                             Math.max(0, normalizeCount(assetEntry.getValue().capacityMin())),
                             Math.max(0, normalizeCount(assetEntry.getValue().capacityMax())),
+                            Math.max(0, normalizeCount(assetEntry.getValue().quantity())),
                             normalizeId(assetEntry.getValue().addedByUserId()),
+                            normalizeRouteEnabled(assetEntry.getValue().routeEnabled(), assetEntry.getValue().routes()),
                             normalizeStrings(assetEntry.getValue().routes())));
                 }
             }
@@ -532,6 +539,13 @@ public class ActivitiesResourcesService {
             return addedByUserId;
         }
         return normalizeId(fallbackUserId);
+    }
+
+    private boolean normalizeRouteEnabled(Boolean value, List<String> routes) {
+        if (value != null) {
+            return Boolean.TRUE.equals(value);
+        }
+        return routes != null && routes.stream().anyMatch(item -> StringUtils.hasText(safeText(item)));
     }
 
     private String selectSupplyManagerUserId(

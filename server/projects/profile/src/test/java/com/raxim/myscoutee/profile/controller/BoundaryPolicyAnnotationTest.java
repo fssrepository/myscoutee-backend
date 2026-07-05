@@ -19,7 +19,6 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseM
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
 import com.raxim.myscoutee.profile.controller.media.MediaController;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
@@ -196,13 +195,6 @@ class BoundaryPolicyAnnotationTest {
                 AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
                 "#request?.userId()",
                 "#request?.assetId()");
-        assertMethodPolicy(
-                AssetsController.class,
-                "refreshFromSource",
-                new Class<?>[] { AssetSourceRefreshRequestDto.class },
-                AccessPolicyKeys.ASSET_SOURCE_REFRESH,
-                "#request?.userId()",
-                "#request?.assetId() ?: #request?.userId()");
     }
 
     @Test

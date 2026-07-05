@@ -16,6 +16,7 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
@@ -128,9 +129,18 @@ public class ActivityEventSubEventsMapper {
             Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey,
             Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey,
             String assetOwnerUserId) {
+        return withSubEventStates(slots, resourceRecordsByKey, stageRuntimeByKey, Map.of(), assetOwnerUserId);
+    }
+
+    public List<EventSubEventsSlotDto> withSubEventStates(
+            List<EventSubEventsSlotDto> slots,
+            Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey,
+            Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey,
+            Map<String, SubEventResourceMetric> resourceMetricsByKey,
+            String assetOwnerUserId) {
         String normalizedAssetOwnerUserId = normalizeId(assetOwnerUserId);
         return (slots == null ? List.<EventSubEventsSlotDto>of() : slots).stream()
-                .map(slot -> withSubEventStates(slot, resourceRecordsByKey, stageRuntimeByKey, normalizedAssetOwnerUserId))
+                .map(slot -> withSubEventStates(slot, resourceRecordsByKey, stageRuntimeByKey, resourceMetricsByKey, normalizedAssetOwnerUserId))
                 .toList();
     }
 
@@ -138,6 +148,7 @@ public class ActivityEventSubEventsMapper {
             EventSubEventsSlotDto slot,
             Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey,
             Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey,
+            Map<String, SubEventResourceMetric> resourceMetricsByKey,
             String assetOwnerUserId) {
         if (slot == null) {
             return null;
@@ -152,7 +163,7 @@ public class ActivityEventSubEventsMapper {
                     ActivitySubEventStageRuntimeStateDto stageRuntime = stageRuntimeByKey == null
                             ? null
                             : stageRuntimeByKey.get(subEventStageRuntimeRecordKey(ownerId, subEventId));
-                    return withStageRuntime(withResourceRecord(item, resourceRecord), stageRuntime);
+                    return withStageRuntime(withResourceRecord(item, resourceRecord, resourceMetricsByKey), stageRuntime);
                 })
                 .toList();
         return new EventSubEventsSlotDto(
@@ -191,6 +202,17 @@ public class ActivityEventSubEventsMapper {
         return StringUtils.hasText(normalizedOwnerId) && StringUtils.hasText(normalizedSubEventId)
                 ? normalizedOwnerId + ":" + normalizedSubEventId
                 : "";
+    }
+
+    public String subEventResourceMetricKey(String ownerId, String subEventId, String type) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedType = safeText(type);
+        return StringUtils.hasText(normalizedOwnerId)
+                && StringUtils.hasText(normalizedSubEventId)
+                && StringUtils.hasText(normalizedType)
+                        ? normalizedOwnerId + ":" + normalizedSubEventId + ":" + normalizedType
+                        : "";
     }
 
     private List<SubEventsSlotSource> subEventsSlotSources(
@@ -642,31 +664,37 @@ public class ActivityEventSubEventsMapper {
                 null);
     }
 
-    private SubEventItemDto withResourceRecord(SubEventItemDto item, ActivitySubEventResourceStateDto resourceRecord) {
+    private SubEventItemDto withResourceRecord(
+            SubEventItemDto item,
+            ActivitySubEventResourceStateDto resourceRecord,
+            Map<String, SubEventResourceMetric> resourceMetricsByKey) {
         if (item == null) {
             return null;
         }
-        ResourceMetric car = resourceMetric(
+        ResourceMetric transport = resourceMetric(
                 resourceRecord,
-                "Car",
+                AssetCatalog.TYPE_TRANSPORT,
                 item.carsAccepted(),
                 item.carsPending(),
                 item.carsCapacityMin(),
-                item.carsCapacityMax());
+                item.carsCapacityMax(),
+                resourceMetricsByKey);
         ResourceMetric accommodation = resourceMetric(
                 resourceRecord,
-                "Accommodation",
+                AssetCatalog.TYPE_ACCOMMODATION,
                 item.accommodationAccepted(),
                 item.accommodationPending(),
                 item.accommodationCapacityMin(),
-                item.accommodationCapacityMax());
+                item.accommodationCapacityMax(),
+                resourceMetricsByKey);
         ResourceMetric supplies = resourceMetric(
                 resourceRecord,
-                "Supplies",
+                AssetCatalog.TYPE_SUPPLIES,
                 item.suppliesAccepted(),
                 item.suppliesPending(),
                 item.suppliesCapacityMin(),
-                item.suppliesCapacityMax());
+                item.suppliesCapacityMax(),
+                resourceMetricsByKey);
         return new SubEventItemDto(
                 item.id(),
                 item.name(),
@@ -685,14 +713,14 @@ public class ActivityEventSubEventsMapper {
                 item.capacityMax(),
                 item.membersAccepted(),
                 item.membersPending(),
-                car.pending(),
+                transport.pending(),
                 accommodation.pending(),
                 supplies.pending(),
-                car.accepted(),
+                transport.accepted(),
                 accommodation.accepted(),
                 supplies.accepted(),
-                car.capacityMin(),
-                car.capacityMax(),
+                transport.capacityMin(),
+                transport.capacityMax(),
                 accommodation.capacityMin(),
                 accommodation.capacityMax(),
                 supplies.capacityMin(),
@@ -837,7 +865,8 @@ public class ActivityEventSubEventsMapper {
             Integer fallbackAccepted,
             Integer fallbackPending,
             Integer fallbackCapacityMin,
-            Integer fallbackCapacityMax) {
+            Integer fallbackCapacityMax,
+            Map<String, SubEventResourceMetric> resourceMetricsByKey) {
         if (resourceRecord == null) {
             return new ResourceMetric(
                     nonNegativeInteger(fallbackAccepted),
@@ -852,21 +881,44 @@ public class ActivityEventSubEventsMapper {
         List<String> assignedIds = resourceRecord.assetAssignmentIds() == null
                 ? List.of()
                 : resourceRecord.assetAssignmentIds().getOrDefault(type, List.of());
-        List<String> assetIds = assignedIds == null || assignedIds.isEmpty()
-                ? new ArrayList<>(settingsByAssetId.keySet())
-                : assignedIds;
+        List<String> assetIds = normalizedAssetIds(
+                assignedIds == null || assignedIds.isEmpty()
+                        ? new ArrayList<>(settingsByAssetId.keySet())
+                        : assignedIds);
         int capacityMin = 0;
         int capacityMax = 0;
-        int accepted = 0;
+        int accepted = AssetCatalog.TYPE_SUPPLIES.equals(type) ? 0 : assetIds.size();
+        int pending = 0;
         for (String assetId : assetIds) {
             SubEventAssignedAssetSettingsDto settings = settingsByAssetId.get(assetId);
             capacityMin += nonNegativeInteger(settings == null ? null : settings.capacityMin());
             capacityMax += nonNegativeInteger(settings == null ? null : settings.capacityMax());
-            if ("Supplies".equals(type)) {
+            if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
                 accepted += supplyContributionQuantity(resourceRecord, assetId);
             }
         }
-        return new ResourceMetric(accepted, 0, capacityMin, capacityMax);
+        SubEventResourceMetric metric = resourceMetricsByKey == null
+                ? null
+                : resourceMetricsByKey.get(subEventResourceMetricKey(resourceRecord.ownerId(), resourceRecord.subEventId(), type));
+        if (metric != null) {
+            accepted = nonNegativeInteger(metric.accepted());
+            pending = nonNegativeInteger(metric.pending());
+        }
+        return new ResourceMetric(accepted, pending, capacityMin, capacityMax);
+    }
+
+    private List<String> normalizedAssetIds(List<String> source) {
+        if (source == null || source.isEmpty()) {
+            return List.of();
+        }
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (String item : source) {
+            String assetId = normalizeId(item);
+            if (StringUtils.hasText(assetId)) {
+                ids.add(assetId);
+            }
+        }
+        return new ArrayList<>(ids);
     }
 
     private int supplyContributionQuantity(ActivitySubEventResourceStateDto resourceRecord, String assetId) {
@@ -953,6 +1005,11 @@ public class ActivityEventSubEventsMapper {
     public record SubEventStageRuntimeLookup(
             String ownerId,
             String subEventId) {
+    }
+
+    public record SubEventResourceMetric(
+            Integer accepted,
+            Integer pending) {
     }
 
     public record SubEventStateLookups(

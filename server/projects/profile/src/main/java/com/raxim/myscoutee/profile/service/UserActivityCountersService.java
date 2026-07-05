@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -231,9 +232,9 @@ public class UserActivityCountersService {
                 continue;
             }
             switch (safeText(asset.getType())) {
-                case "Car" -> cars += 1;
-                case "Accommodation" -> accommodation += 1;
-                case "Supplies" -> supplies += 1;
+                case AssetCatalog.TYPE_TRANSPORT -> cars += 1;
+                case AssetCatalog.TYPE_ACCOMMODATION -> accommodation += 1;
+                case AssetCatalog.TYPE_SUPPLIES -> supplies += 1;
                 default -> {
                 }
             }

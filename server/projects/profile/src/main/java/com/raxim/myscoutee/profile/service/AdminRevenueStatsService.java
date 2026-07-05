@@ -12,6 +12,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.AdminStatsSnapshot;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -197,14 +198,14 @@ public class AdminRevenueStatsService {
         }
         String value = firstNonBlank(asset.getType(), firstNonBlank(asset.getCategory(), "Asset"));
         String normalized = safeText(value).toLowerCase(Locale.ROOT);
-        if ("car".equals(normalized) || "transport".equals(normalized) || "vehicle".equals(normalized)) {
-            return "Car";
+        if ("transport".equals(normalized) || "vehicle".equals(normalized)) {
+            return AssetCatalog.TYPE_TRANSPORT;
         }
-        if ("accommodation".equals(normalized) || "lodging".equals(normalized) || "stay".equals(normalized)) {
-            return "Accommodation";
+        if ("accommodation".equals(normalized) || "lodging".equals(normalized) || "property".equals(normalized)) {
+            return AssetCatalog.TYPE_ACCOMMODATION;
         }
         if ("supplies".equals(normalized) || "supply".equals(normalized) || "equipment".equals(normalized) || "gear".equals(normalized)) {
-            return "Supplies";
+            return AssetCatalog.TYPE_SUPPLIES;
         }
         return value;
     }

@@ -33,6 +33,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -99,7 +100,7 @@ class BackendChatMediaE2ETest {
     private static final String CHAT_ID = "e2e-chat-media-main";
     private static final String SUPPORT_CHAT_ID = "c-support-admin-e2e-chat-media";
     private static final String EVENT_ID = "e2e-chat-shared-event";
-    private static final String ASSET_ID = "e2e-chat-shared-car";
+    private static final String ASSET_ID = "e2e-chat-shared-transport";
     private static final Instant BASE_TIME = Instant.parse("2026-06-20T12:00:00Z");
 
     private static TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo;
@@ -184,7 +185,7 @@ class BackendChatMediaE2ETest {
                 Map.of("attachments", updatedAttachments()));
         assertAttachment(updatedAttachments, EVENT_ID, "available", "");
         assertAttachment(updatedAttachments, ASSET_ID, "available", "");
-        assertThat(attachmentByEntity(updatedAttachments, ASSET_ID).path("title").asString()).isEqualTo("Updated shared team car");
+        assertThat(attachmentByEntity(updatedAttachments, ASSET_ID).path("title").asString()).isEqualTo("Updated shared team transport");
 
         postOk("/activities/events/trash", Map.of(
                 "userId", SENDER_ID,
@@ -492,15 +493,15 @@ class BackendChatMediaE2ETest {
         asset.setSyncKey("e2e-chat-asset-" + UUID.randomUUID());
         asset.setAssetId(ASSET_ID);
         asset.setOwnerUserId(SENDER_ID);
-        asset.setType("Car");
-        asset.setTitle("Shared team car");
+        asset.setType(AssetCatalog.TYPE_TRANSPORT);
+        asset.setTitle("Shared team transport");
         asset.setSubtitle("Four seats");
-        asset.setCategory("Transport");
+        asset.setCategory(AssetCatalog.CATEGORY_SEDAN);
         asset.setCity("Bratislava");
         asset.setCapacityTotal(4);
         asset.setQuantity(1);
         asset.setDetails("Asset attached to a chat message.");
-        asset.setImageUrl("https://example.test/assets/chat-media-car.png");
+        asset.setImageUrl("https://example.test/assets/chat-media-transport.png");
         asset.setRoutes(List.of("Chat Media Arena"));
         asset.setVisibility("Public");
         asset.setStatus("A");
@@ -514,7 +515,7 @@ class BackendChatMediaE2ETest {
     private List<Map<String, Object>> initialAttachments() {
         List<Map<String, Object>> attachments = new ArrayList<>();
         attachments.add(eventAttachment("Shared Chat Event"));
-        attachments.add(assetAttachment("Shared team car"));
+        attachments.add(assetAttachment("Shared team transport"));
         attachments.add(linkAttachment());
         return attachments;
     }
@@ -530,7 +531,7 @@ class BackendChatMediaE2ETest {
     private List<Map<String, Object>> updatedAttachments() {
         List<Map<String, Object>> attachments = new ArrayList<>();
         attachments.add(eventAttachment("Updated shared event"));
-        attachments.add(assetAttachment("Updated shared team car"));
+        attachments.add(assetAttachment("Updated shared team transport"));
         return attachments;
     }
 
@@ -553,10 +554,10 @@ class BackendChatMediaE2ETest {
         attachment.put("type", "asset");
         attachment.put("title", title);
         attachment.put("entityId", ASSET_ID);
-        attachment.put("assetType", "Car");
+        attachment.put("assetType", AssetCatalog.TYPE_TRANSPORT);
         attachment.put("ownerUserId", SENDER_ID);
         attachment.put("status", "available");
-        attachment.put("subtitle", "Transport");
+        attachment.put("subtitle", AssetCatalog.TYPE_TRANSPORT);
         attachment.put("description", "Shared asset in a chat.");
         return attachment;
     }

@@ -38,6 +38,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.AccountPurgeJob;
@@ -103,7 +104,7 @@ class BackendEmailAccountSchedulersE2ETest {
     private static final String PURGED_USER_ID = "e2e-purge-user";
     private static final String SURVIVOR_ID = "e2e-purge-survivor";
     private static final String PURGED_EVENT_ID = "e2e-purge-owned-event";
-    private static final String PURGED_ASSET_ID = "e2e-purge-owned-car";
+    private static final String PURGED_ASSET_ID = "e2e-purge-owned-transport";
     private static final String PURGE_CHAT_ID = "e2e-purge-chat";
     private static final Instant BASE_TIME = Instant.parse("2026-06-25T12:00:00Z");
 
@@ -318,9 +319,9 @@ class BackendEmailAccountSchedulersE2ETest {
         asset.setSyncKey("e2e-purge-asset-" + UUID.randomUUID());
         asset.setAssetId(PURGED_ASSET_ID);
         asset.setOwnerUserId(PURGED_USER_ID);
-        asset.setType("Car");
-        asset.setTitle("Owned car to purge");
-        asset.setImageUrl("asset/purge-car.webp");
+        asset.setType(AssetCatalog.TYPE_TRANSPORT);
+        asset.setTitle("Owned transport to purge");
+        asset.setImageUrl("asset/purge-transport.webp");
         asset.setVisibility("Public");
         asset.setStatus("A");
         asset.setCreatedDate(BASE_TIME.toString());

@@ -21,6 +21,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackNoteR
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
@@ -199,6 +201,11 @@ public class ActivitiesEventsController {
     @PostMapping("/feedback/page")
     public EventFeedbackPageResultDto loadFeedbackPage(@RequestBody EventFeedbackPageQueryDto request) {
         return activitiesEventFeedbackService.loadPage(request);
+    }
+
+    @PostMapping("/feedback/stat")
+    public EventFeedbackStatDto loadFeedbackStat(@RequestBody EventFeedbackStatQueryDto request) {
+        return activitiesEventFeedbackService.loadStatById(request);
     }
 
     @PostMapping("/feedback/detail")

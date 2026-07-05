@@ -13,23 +13,29 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetOccupancyStatsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
+import com.raxim.myscoutee.profile.service.AssetAvailabilityService;
 import com.raxim.myscoutee.profile.service.AssetsService;
 
 @RestController
 @RequestMapping("/assets")
 public class AssetsController {
     private final AssetsService assetsService;
+    private final AssetAvailabilityService assetAvailabilityService;
 
-    public AssetsController(AssetsService assetsService) {
+    public AssetsController(
+            AssetsService assetsService,
+            AssetAvailabilityService assetAvailabilityService) {
         this.assetsService = assetsService;
+        this.assetAvailabilityService = assetAvailabilityService;
     }
 
     @GetMapping
@@ -42,11 +48,78 @@ public class AssetsController {
         return assetsService.queryAssetDetail(assetId);
     }
 
+    @GetMapping("/{assetId}/availability")
+    public AssetOccupancyPageDto loadOccupancyByAssetId(
+            @PathVariable("assetId") String assetId,
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "dateIso", required = false) String dateIso,
+            @RequestParam(value = "rangeStart", required = false) String rangeStart,
+            @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+            @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        return assetAvailabilityService.loadOccupancyByAssetId(
+                userId,
+                assetId,
+                dateIso,
+                rangeStart,
+                rangeEnd,
+                filter,
+                order,
+                page,
+                pageSize,
+                cursor);
+    }
+
+    @GetMapping("/{assetId}/availability/stats")
+    public AssetOccupancyStatsPageDto loadStatByAssetId(
+            @PathVariable("assetId") String assetId,
+            @RequestParam(value = "userId", required = false) String userId,
+            @RequestParam(value = "rangeStart", required = false) String rangeStart,
+            @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+            @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "60") Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        return assetAvailabilityService.loadStatByAssetId(
+                userId,
+                assetId,
+                rangeStart,
+                rangeEnd,
+                filter,
+                order,
+                page,
+                pageSize,
+                cursor);
+    }
+
     @GetMapping("/explore")
-    public List<AssetDto> queryVisibleAssets(
+    public Object queryVisibleAssets(
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam("type") String type,
-            @RequestParam(value = "category", required = false) String category) {
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "startAtIso", required = false) String startAtIso,
+            @RequestParam(value = "endAtIso", required = false) String endAtIso,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "order", required = false) String order) {
+        if (page != null || pageSize != null || hasText(cursor) || hasText(order) || hasText(startAtIso) || hasText(endAtIso)) {
+            AssetExplorePageDto result = assetsService.queryVisibleAssetsPage(
+                    userId,
+                    type,
+                    category,
+                    startAtIso,
+                    endAtIso,
+                    page,
+                    pageSize,
+                    cursor,
+                    order);
+            return result;
+        }
         return assetsService.queryVisibleAssets(userId, type, category);
     }
 
@@ -114,13 +187,8 @@ public class AssetsController {
         return assetsService.makeManager(request);
     }
 
-    @PostMapping("/refresh-from-source")
-    @RequiresPolicy(
-            key = AccessPolicyKeys.ASSET_SOURCE_REFRESH,
-            subject = "#request?.userId()",
-            resourceId = "#request?.assetId() ?: #request?.userId()",
-            skipWhenAuthenticationOptional = true)
-    public AssetSourceRefreshResponseDto refreshFromSource(@RequestBody AssetSourceRefreshRequestDto request) {
-        return assetsService.refreshFromSource(request);
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
+
 }

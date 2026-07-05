@@ -1,9 +1,8 @@
 package com.raxim.myscoutee.profile.service;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -19,10 +18,12 @@ import java.util.UUID;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -32,21 +33,23 @@ import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
 
-import com.raxim.myscoutee.common.config.properties.AssetSourceRefreshProperties;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetPolicyRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
+import com.raxim.myscoutee.profile.data.document.AssetRequest;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshRequestDto;
-import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetSourceRefreshResponseDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -76,15 +79,12 @@ public class AssetsService {
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
 
-    private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
-
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
-    private final AssetSourceRefreshProperties assetSourceRefreshProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
@@ -100,7 +100,6 @@ public class AssetsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             MongoTemplate mongoTemplate,
-            AssetSourceRefreshProperties assetSourceRefreshProperties,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
@@ -114,7 +113,6 @@ public class AssetsService {
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.mongoTemplate = mongoTemplate;
-        this.assetSourceRefreshProperties = assetSourceRefreshProperties;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
@@ -134,8 +132,9 @@ public class AssetsService {
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
         return assets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -148,7 +147,11 @@ public class AssetsService {
         }
         return assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
-                .map(asset -> toAssetDetailDto(asset, resolveOwnerNamesByUserId(List.of(asset)), normalizedUserId))
+                .map(asset -> toAssetDetailDto(
+                        asset,
+                        resolveOwnerNamesByUserId(List.of(asset)),
+                        normalizedUserId,
+                        resolveAssetRequestMetrics(asset)))
                 .orElse(null);
     }
 
@@ -161,16 +164,64 @@ public class AssetsService {
         }
 
         double viewerAffinity = resolveStoredUserAffinity(normalizedUserId);
-        return assetsRepository.findAll().stream()
-                .filter(Objects::nonNull)
-                .filter(asset -> normalizedType.equals(normalizeAssetType(asset.getType())))
-                .filter(asset -> !normalizedUserId.equals(normalizeId(asset.getOwnerUserId())))
-                .filter(asset -> !StringUtils.hasText(normalizedCategory) || normalizedCategory.equals(safeText(asset.getCategory())))
+        List<Asset> assets = queryVisibleExploreAssets(normalizedUserId, normalizedType, normalizedCategory).stream()
                 .filter(asset -> shouldIncludeExploreAsset(asset, normalizedUserId))
                 .sorted(visibleAssetComparator(viewerAffinity))
-                .map(this::toAssetDto)
+                .toList();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
+        return assets.stream()
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    public AssetExplorePageDto queryVisibleAssetsPage(
+            String userId,
+            String type,
+            String category,
+            String startAtIso,
+            String endAtIso,
+            Integer page,
+            Integer pageSize,
+            String cursor,
+            String order) {
+        String normalizedUserId = effectiveActorUserId(userId);
+        String normalizedType = normalizeAssetType(type);
+        String normalizedCategory = safeText(category);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedType)) {
+            return new AssetExplorePageDto(List.of(), 0, null);
+        }
+
+        String normalizedOrder = normalizeAssetExploreOrder(order);
+        String normalizedStartAtIso = safeText(startAtIso);
+        String normalizedEndAtIso = safeText(endAtIso);
+        int normalizedPageSize = Math.max(1, Math.min(100, pageSize == null ? 20 : pageSize.intValue()));
+        int normalizedPage = Math.max(0, page == null ? 0 : page.intValue());
+        int cursorOffset = parseAssetExploreCursor(cursor);
+        int startIndex = cursorOffset >= 0 ? cursorOffset : normalizedPage * normalizedPageSize;
+
+        AssetExploreMongoPage pageResult = queryVisibleExploreAssetsPage(
+                normalizedUserId,
+                normalizedType,
+                normalizedCategory,
+                normalizedStartAtIso,
+                normalizedEndAtIso,
+                normalizedOrder,
+                Math.max(0, startIndex),
+                normalizedPageSize);
+        List<Asset> pageAssets = pageResult.items();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(pageAssets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(pageAssets);
+        List<AssetDto> items = pageAssets.stream()
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new AssetExplorePageDto(
+                items,
+                pageResult.total(),
+                pageResult.nextCursor());
     }
 
     public AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order) {
@@ -183,14 +234,14 @@ public class AssetsService {
         int normalizedPageSize = Math.max(1, pageSize == null ? 20 : pageSize.intValue());
         boolean upcoming = !"past".equalsIgnoreCase(safeText(order));
 
-        List<EventDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
+        List<AssetTicketDto> ordered = eventParticipationTicketService.queryTicketRecordsForUser(normalizedUserId).stream()
                 .filter(Objects::nonNull)
-                .map(this::toTicketEventDto)
+                .map(this::toAssetTicketDto)
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing((EventDto item) -> toSortableDate(item.startAtIso())))
+                .sorted(Comparator.comparing((AssetTicketDto item) -> toSortableDate(item.dateIso())))
                 .toList();
 
-        List<EventDto> visible = new ArrayList<>(ordered.stream()
+        List<AssetTicketDto> visible = new ArrayList<>(ordered.stream()
                 .filter(item -> matchesTicketOrder(item, upcoming))
                 .toList());
         if (!upcoming) {
@@ -537,63 +588,6 @@ public class AssetsService {
         return normalizeId(request == null || request.booking() == null ? null : request.booking().eventId());
     }
 
-    public AssetSourceRefreshResponseDto refreshFromSource(AssetSourceRefreshRequestDto request) {
-        String normalizedUserId = normalizeId(request == null ? null : request.userId());
-        String normalizedAssetId = normalizeId(request == null ? null : request.assetId());
-        String normalizedUrl = normalizeExternalUrl(request == null ? null : request.sourceLink());
-        boolean enabled = assetSourceRefreshProperties.isEnabled();
-        if (!StringUtils.hasText(normalizedUrl)) {
-            return new AssetSourceRefreshResponseDto(enabled, false, normalizedUrl, null, null, null, null);
-        }
-        if (!enabled) {
-            return new AssetSourceRefreshResponseDto(false, false, normalizedUrl, null, null, null, null);
-        }
-        if (!accessControlService.canCurrentActorRefreshAssetSource(normalizedUserId, normalizedAssetId)) {
-            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
-        }
-
-        URI uri = toUri(normalizedUrl);
-        String normalizedHost = normalizeHost(uri == null ? null : uri.getHost());
-        if (!isAllowedRefreshHost(normalizedHost)) {
-            return new AssetSourceRefreshResponseDto(true, false, normalizedUrl, null, null, null, null);
-        }
-
-        try {
-            org.jsoup.nodes.Document document = Jsoup.connect(normalizedUrl)
-                    .userAgent("Mozilla/5.0 (compatible; MyScouteeBot/1.0)")
-                    .timeout(Math.max(1000, assetSourceRefreshProperties.getTimeoutMs()))
-                    .followRedirects(false)
-                    .get();
-            String finalUrl = normalizeExternalUrl(document.location());
-            String title = firstMetaContent(document, "property", "og:title");
-            if (!StringUtils.hasText(title)) {
-                title = safeText(document.title());
-            }
-            String subtitle = firstMetaContent(document, "property", "og:site_name");
-            if (!StringUtils.hasText(subtitle)) {
-                subtitle = normalizedHost;
-            }
-            String details = firstMetaContent(document, "property", "og:description");
-            if (!StringUtils.hasText(details)) {
-                details = firstMetaContent(document, "name", "description");
-            }
-            String imageUrl = firstMetaContent(document, "property", "og:image");
-            if (!StringUtils.hasText(imageUrl)) {
-                imageUrl = firstMetaContent(document, "name", "twitter:image");
-            }
-            return new AssetSourceRefreshResponseDto(
-                    true,
-                    true,
-                    StringUtils.hasText(finalUrl) ? finalUrl : normalizedUrl,
-                    safeNullableText(title),
-                    safeNullableText(subtitle),
-                    safeNullableText(details),
-                    safeNullableText(imageUrl));
-        } catch (IOException ex) {
-            return new AssetSourceRefreshResponseDto(true, true, normalizedUrl, null, null, null, null);
-        }
-    }
-
     public Optional<Asset> findAssetByAssetId(String assetId) {
         String normalizedAssetId = normalizeId(assetId);
         if (!StringUtils.hasText(normalizedAssetId)) {
@@ -887,6 +881,7 @@ public class AssetsService {
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(safeText(dto.sourceLink()));
         next.setRoutes(normalizeStrings(dto.routes()));
+        next.setPoliciesEnabled(Boolean.TRUE.equals(dto.policiesEnabled()));
         next.setPolicies(normalizePolicies(dto.policies()));
         next.setPricing(clonePricing(dto.pricing()));
         next.setRequests(normalizeRequests(dto.requests()));
@@ -933,6 +928,7 @@ public class AssetsService {
         next.setImageUrl(safeText(dto.imageUrl()));
         next.setSourceLink(current == null ? "" : safeText(current.getSourceLink()));
         next.setRoutes(current == null ? List.of() : normalizeStrings(current.getRoutes()));
+        next.setPoliciesEnabled(current == null ? Boolean.TRUE.equals(dto.policiesEnabled()) : Boolean.TRUE.equals(current.getPoliciesEnabled()));
         next.setPolicies(current == null ? List.of() : new ArrayList<>(safePolicies(current.getPolicies())));
         next.setPricing(current == null ? null : clonePricing(current.getPricing()));
         next.setRequests(normalizeRequests(dto.requests()));
@@ -972,6 +968,7 @@ public class AssetsService {
         clone.setImageUrl(source.getImageUrl());
         clone.setSourceLink(source.getSourceLink());
         clone.setRoutes(new ArrayList<>(normalizeStrings(source.getRoutes())));
+        clone.setPoliciesEnabled(Boolean.TRUE.equals(source.getPoliciesEnabled()));
         clone.setPolicies(new ArrayList<>(safePolicies(source.getPolicies())));
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(safeRequests(source.getRequests())));
@@ -988,77 +985,28 @@ public class AssetsService {
         return clone;
     }
 
-    private EventDto toTicketEventDto(ActivityEvent event) {
+    private AssetTicketDto toAssetTicketDto(ActivityEvent event) {
         String sourceId = normalizeId(event.getSourceId());
         if (!StringUtils.hasText(sourceId)) {
             return null;
         }
-        EventMemberSnapshot memberSnapshot = resolveEventMemberSnapshot(event);
-        return new EventDto(
+        boolean admin = Boolean.TRUE.equals(event.getIsAdmin());
+        return new AssetTicketDto(
                 sourceId,
-                normalizeId(event.getOwnerUserId()),
+                admin ? "hosting" : "events",
                 safeText(event.getStatus()),
-                normalizeStrings(event.getAdmins()),
                 safeText(event.getTitle()),
                 safeText(event.getSubtitle()),
                 safeText(event.getTimeframe()),
-                StringUtils.hasText(event.getInviter()) ? event.getInviter().trim() : null,
-                normalizeCount(event.getActivity()),
-                normalizeId(event.getCreatorUserId()),
-                safeText(event.getCreatorName()),
-                safeText(event.getCreatorInitials()),
-                safeText(event.getCreatorCity()),
-                safeText(event.getVisibility()),
+                safeNullableText(event.getStartAtIso()),
+                Math.max(0, (int) Math.round(safeDouble(event.getDistanceKm()) * 1000d)),
+                admin,
                 safeNullableText(event.getStartAtIso()),
                 safeNullableText(event.getEndAtIso()),
-                safeDouble(event.getDistanceKm()),
                 safeText(event.getImageUrl()),
-                safeText(event.getLocation()),
-                nullableCount(event.getCapacityMin()),
-                nullableCount(event.getCapacityMax()),
-                normalizeCount(event.getCapacityTotal()),
-                safeText(event.getEventType()),
-                normalizeMode(event.getMode()),
-                memberSnapshot.acceptedUserIds().size(),
-                memberSnapshot.pendingUserIds().size(),
-                memberSnapshot.acceptedUserIds(),
-                memberSnapshot.pendingUserIds(),
-                normalizeStrings(event.getInvitedMemberUserIds()),
-                normalizeStrings(event.getPendingRequestMemberUserIds()),
-                null,
-                safeDouble(event.getBoost()));
-    }
-
-    private EventMemberSnapshot resolveEventMemberSnapshot(ActivityEvent event) {
-        String eventId = event == null ? null : normalizeId(event.getSourceId());
-        String creatorUserId = event == null ? null : normalizeId(event.getCreatorUserId());
-        if (!StringUtils.hasText(eventId)) {
-            return new EventMemberSnapshot(List.of(), List.of());
-        }
-
-        Query query = Query.query(Criteria.where("ownerType").is("event").and("ownerId").is(eventId));
-        List<ActivityMember> members = mongoTemplate.find(query, ActivityMember.class);
-        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>();
-        LinkedHashSet<String> pendingUserIds = new LinkedHashSet<>();
-        for (ActivityMember member : members) {
-            if (member == null) {
-                continue;
-            }
-            String memberUserId = normalizeId(member.getUserId());
-            if (!StringUtils.hasText(memberUserId)) {
-                continue;
-            }
-            if ("pending".equals(normalizeMemberStatus(member.getStatus()))) {
-                pendingUserIds.add(memberUserId);
-            } else {
-                acceptedUserIds.add(memberUserId);
-            }
-        }
-        if (acceptedUserIds.isEmpty() && StringUtils.hasText(creatorUserId)) {
-            acceptedUserIds.add(creatorUserId);
-        }
-        pendingUserIds.removeAll(acceptedUserIds);
-        return new EventMemberSnapshot(new ArrayList<>(acceptedUserIds), new ArrayList<>(pendingUserIds));
+                safeText(event.getVisibility()),
+                safeText(event.getCreatorInitials()),
+                safeText(event.getCreatorInitials()));
     }
 
     private String normalizeMemberStatus(String status) {
@@ -1098,11 +1046,202 @@ public class AssetsService {
         return ownerNamesByUserId;
     }
 
+    private List<Asset> queryVisibleExploreAssets(String userId, String type, String category) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedType = normalizeAssetType(type);
+        String normalizedCategory = safeText(category);
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedType)) {
+            return List.of();
+        }
+
+        Query query = new BasicQuery(visibleExploreMatchDocument(normalizedUserId, normalizedType, normalizedCategory));
+        return mongoTemplate.find(query, Asset.class);
+    }
+
+    private AssetExploreMongoPage queryVisibleExploreAssetsPage(
+            String userId,
+            String type,
+            String category,
+            String startAtIso,
+            String endAtIso,
+            String order,
+            int startIndex,
+            int pageSize) {
+        List<AggregationOperation> operations = new ArrayList<>();
+        operations.add(context -> new Document("$match", visibleExploreMatchDocument(userId, type, category)));
+        operations.add(context -> new Document("$addFields", new Document()
+                .append("assetExploreAvailability", assetExploreAvailabilityExpression(startAtIso, endAtIso))
+                .append("assetExplorePrice", assetExplorePriceExpression())
+                .append("assetExplorePolicyCount", assetExplorePolicyCountExpression())));
+        operations.add(context -> new Document("$match", new Document("assetExploreAvailability", new Document("$gt", 0))));
+        operations.add(context -> new Document("$sort", assetExploreSortDocument(order)));
+        operations.add(context -> new Document("$facet", new Document()
+                .append("metadata", List.of(new Document("$count", "total")))
+                .append("items", List.of(
+                        new Document("$skip", Math.max(0, startIndex)),
+                        new Document("$limit", Math.max(1, pageSize))))));
+
+        Aggregation aggregation = Aggregation.newAggregation(operations);
+        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "assets", Document.class);
+        Document result = results.getUniqueMappedResult();
+        if (result == null) {
+            return new AssetExploreMongoPage(List.of(), 0, null);
+        }
+
+        List<Document> metadata = documents(result.get("metadata"));
+        int total = metadata.isEmpty() ? 0 : normalizeCount(metadata.get(0).get("total"));
+        List<Asset> items = documents(result.get("items")).stream()
+                .map(document -> mongoTemplate.getConverter().read(Asset.class, document))
+                .filter(Objects::nonNull)
+                .toList();
+        int nextIndex = Math.max(0, startIndex) + items.size();
+        return new AssetExploreMongoPage(items, total, nextIndex < total ? String.valueOf(nextIndex) : null);
+    }
+
+    private Document visibleExploreMatchDocument(String userId, String type, String category) {
+        List<Document> and = new ArrayList<>();
+        and.add(new Document("type", type));
+        and.add(new Document("ownerUserId", new Document("$ne", userId)));
+        and.add(new Document("status", new Document("$in", List.of(STATUS_ACTIVE, "active"))));
+        if (StringUtils.hasText(category)) {
+            and.add(new Document("category", category));
+        }
+
+        List<String> friendOwnerUserIds = visibleExploreFriendOwnerUserIds(userId);
+        List<String> publicVisibilities = new ArrayList<>();
+        publicVisibilities.add(null);
+        publicVisibilities.add("");
+        publicVisibilities.add("Public");
+        List<Document> visibilityOr = new ArrayList<>();
+        visibilityOr.add(new Document("visibility", new Document("$in", publicVisibilities)));
+        if (!friendOwnerUserIds.isEmpty()) {
+            visibilityOr.add(new Document("$and", List.of(
+                    new Document("visibility", "Friends only"),
+                    new Document("ownerUserId", new Document("$in", friendOwnerUserIds)))));
+        }
+        and.add(new Document("$or", visibilityOr));
+        return new Document("$and", and);
+    }
+
+    private List<String> visibleExploreFriendOwnerUserIds(String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+        return usersRepository.findAll().stream()
+                .map(user -> normalizeId(user == null ? null : user.getUserId()))
+                .filter(StringUtils::hasText)
+                .filter(ownerUserId -> isFriendOfActiveUser(ownerUserId, normalizedUserId))
+                .toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Document> documents(Object value) {
+        if (value instanceof List<?> list) {
+            return list.stream()
+                    .filter(Document.class::isInstance)
+                    .map(Document.class::cast)
+                    .toList();
+        }
+        return List.of();
+    }
+
     private Comparator<Asset> visibleAssetComparator(double viewerAffinity) {
         return Comparator
                 .comparingDouble((Asset asset) -> -assetExploreScore(asset, viewerAffinity))
                 .thenComparing(asset -> safeText(asset.getTitle()))
                 .thenComparing(asset -> normalizeId(asset.getAssetId()));
+    }
+
+    private String normalizeAssetExploreOrder(String order) {
+        String normalized = safeText(order);
+        return "lowest-price".equals(normalized) || "fewest-policies".equals(normalized)
+                ? normalized
+                : "availability";
+    }
+
+    private int parseAssetExploreCursor(String cursor) {
+        String normalized = safeText(cursor);
+        if (!StringUtils.hasText(normalized)) {
+            return -1;
+        }
+        try {
+            return Math.max(0, Integer.parseInt(normalized));
+        } catch (NumberFormatException ex) {
+            return -1;
+        }
+    }
+
+    private Document assetExploreAvailabilityExpression(String startAtIso, String endAtIso) {
+        Document quantity = numericExpression("$quantity", 0);
+        Document capacityTotal = numericExpression("$capacityTotal", 0);
+        Document totalQuantity = new Document("$cond", List.of(
+                new Document("$gt", List.of(quantity, 0)),
+                quantity,
+                new Document("$cond", List.of(
+                        new Document("$eq", List.of("$type", AssetCatalog.TYPE_SUPPLIES)),
+                        new Document("$max", List.of(1, capacityTotal)),
+                        1))));
+        Document overlappingQuantity = assetExploreOverlappingQuantityExpression(startAtIso, endAtIso);
+        return new Document("$max", List.of(0, new Document("$subtract", List.of(totalQuantity, overlappingQuantity))));
+    }
+
+    private Document assetExploreOverlappingQuantityExpression(String startAtIso, String endAtIso) {
+        if (!StringUtils.hasText(startAtIso) || !StringUtils.hasText(endAtIso)) {
+            return new Document("$literal", 0);
+        }
+        Document requestFilter = new Document("$filter", new Document()
+                .append("input", new Document("$ifNull", List.of("$requests", List.of())))
+                .append("as", "request")
+                .append("cond", new Document("$and", List.of(
+                        new Document("$or", List.of(
+                                new Document("$eq", List.of("$$request.status", MEMBER_STATUS_ACCEPTED)),
+                                new Document("$eq", List.of("$$request.requestKind", "manual")))),
+                        new Document("$ne", List.of("$$request.booking.inventoryApplied", true)),
+                        new Document("$lt", List.of("$$request.booking.startAtIso", endAtIso)),
+                        new Document("$lt", List.of(startAtIso, "$$request.booking.endAtIso"))))));
+        Document requestQuantity = new Document("$max", List.of(1, numericExpression("$$request.booking.quantity", 1)));
+        return new Document("$sum", new Document("$map", new Document()
+                .append("input", requestFilter)
+                .append("as", "request")
+                .append("in", requestQuantity)));
+    }
+
+    private Document assetExplorePriceExpression() {
+        return numericExpression("$pricing.basePrice", 0);
+    }
+
+    private Document assetExplorePolicyCountExpression() {
+        return new Document("$cond", List.of(
+                new Document("$eq", List.of("$policiesEnabled", true)),
+                new Document("$size", new Document("$ifNull", List.of("$policies", List.of()))),
+                0));
+    }
+
+    private Document assetExploreSortDocument(String order) {
+        Document sort = new Document();
+        if ("lowest-price".equals(order)) {
+            sort.append("assetExplorePrice", 1);
+            sort.append("assetExploreAvailability", -1);
+        } else if ("fewest-policies".equals(order)) {
+            sort.append("assetExplorePolicyCount", 1);
+            sort.append("assetExploreAvailability", -1);
+        } else {
+            sort.append("assetExploreAvailability", -1);
+            sort.append("assetExplorePrice", 1);
+        }
+        sort.append("title", 1);
+        sort.append("ownerUserId", 1);
+        sort.append("assetId", 1);
+        return sort;
+    }
+
+    private Document numericExpression(String input, Number fallback) {
+        return new Document("$convert", new Document()
+                .append("input", input)
+                .append("to", "double")
+                .append("onError", fallback)
+                .append("onNull", fallback));
     }
 
     private double assetExploreScore(Asset asset, double viewerAffinity) {
@@ -1154,12 +1293,125 @@ public class AssetsService {
         return toAssetDto(asset, Map.of(), null);
     }
 
+    private Map<String, AssetRequestMetricsDto> resolveAssetRequestMetricsByAssetId(Collection<Asset> assets) {
+        if (assets == null || assets.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, String> ownerUserIdByAssetId = new LinkedHashMap<>();
+        for (Asset asset : assets) {
+            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
+            if (StringUtils.hasText(assetId) && StringUtils.hasText(ownerUserId)) {
+                ownerUserIdByAssetId.put(assetId, ownerUserId);
+            }
+        }
+        if (ownerUserIdByAssetId.isEmpty()) {
+            return Map.of();
+        }
+        List<AssetRequest> requests = mongoTemplate.find(
+                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())),
+                AssetRequest.class);
+        Map<String, List<AssetRequest>> requestsByAssetId = new LinkedHashMap<>();
+        for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
+            String assetId = normalizeId(request == null ? null : request.assetId());
+            String ownerUserId = normalizeId(request == null ? null : request.ownerUserId());
+            if (!StringUtils.hasText(assetId) || !Objects.equals(ownerUserIdByAssetId.get(assetId), ownerUserId)) {
+                continue;
+            }
+            requestsByAssetId.computeIfAbsent(assetId, ignored -> new ArrayList<>()).add(request);
+        }
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = new LinkedHashMap<>();
+        for (String assetId : ownerUserIdByAssetId.keySet()) {
+            metricsByAssetId.put(assetId, toAssetRequestMetrics(requestsByAssetId.getOrDefault(assetId, List.of())));
+        }
+        return metricsByAssetId;
+    }
+
+    private AssetRequestMetricsDto resolveAssetRequestMetrics(Asset asset) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (!StringUtils.hasText(assetId)) {
+            return emptyAssetRequestMetrics();
+        }
+        return resolveAssetRequestMetricsByAssetId(List.of(asset)).getOrDefault(assetId, emptyAssetRequestMetrics());
+    }
+
+    private AssetRequestMetricsDto toAssetRequestMetrics(Collection<AssetRequest> requests) {
+        int assignedItems = 0;
+        int borrowedItems = 0;
+        int pendingItems = 0;
+        for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
+            if (!isLaterAssetRequest(request)) {
+                continue;
+            }
+            if (isManualAssetRequest(request)) {
+                assignedItems++;
+            } else if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request == null ? null : request.status()))) {
+                borrowedItems++;
+            } else if ("pending".equals(normalizeRequestStatus(request == null ? null : request.status()))) {
+                pendingItems++;
+            }
+        }
+        int activeItems = assignedItems + borrowedItems;
+        return new AssetRequestMetricsDto(
+                activeItems + pendingItems,
+                activeItems,
+                assignedItems,
+                borrowedItems,
+                pendingItems);
+    }
+
+    private boolean isLaterAssetRequest(AssetRequest request) {
+        long endAtMs = assetRequestEndAtMs(request);
+        return endAtMs != Long.MIN_VALUE && endAtMs >= System.currentTimeMillis();
+    }
+
+    private long assetRequestEndAtMs(AssetRequest request) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        long startAtMs = toSortableDate(firstNonBlank(
+                booking == null ? null : booking.startAtIso(),
+                request == null ? null : request.requestedAtIso()));
+        if (startAtMs == Long.MIN_VALUE) {
+            return Long.MIN_VALUE;
+        }
+        long endAtMs = toSortableDate(booking == null ? null : booking.endAtIso());
+        return endAtMs > startAtMs ? endAtMs : startAtMs + 24L * 60L * 60L * 1000L;
+    }
+
+    private AssetRequestMetricsDto normalizeAssetRequestMetrics(AssetRequestMetricsDto metrics) {
+        if (metrics == null) {
+            return emptyAssetRequestMetrics();
+        }
+        int assignedItems = normalizeCount(metrics.assignedItems());
+        int borrowedItems = normalizeCount(metrics.borrowedItems());
+        int pendingItems = normalizeCount(metrics.pendingItems());
+        int activeItems = normalizeCount(metrics.activeItems());
+        int allItems = normalizeCount(metrics.allItems());
+        return new AssetRequestMetricsDto(allItems, activeItems, assignedItems, borrowedItems, pendingItems);
+    }
+
+    private AssetRequestMetricsDto emptyAssetRequestMetrics() {
+        return new AssetRequestMetricsDto(0, 0, 0, 0, 0);
+    }
+
+    private boolean isManualAssetRequest(AssetRequest request) {
+        return "manual".equals(normalizeAssetRequestKind(request == null ? null : request.requestKind()));
+    }
+
     private AssetDto toAssetDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        return toAssetDto(asset, ownerNamesByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
+    }
+
+    private AssetDto toAssetDto(
+            Asset asset,
+            Map<String, String> ownerNamesByUserId,
+            String viewerUserId,
+            AssetRequestMetricsDto metrics) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
         String type = normalizeAssetType(asset.getType());
         List<AssetPolicyRecord> policies = safePolicies(asset.getPolicies());
+        boolean policiesEnabled = Boolean.TRUE.equals(asset.getPoliciesEnabled());
         return new AssetDto(
                 normalizeId(asset.getAssetId()),
                 type,
@@ -1171,18 +1423,29 @@ public class AssetsService {
                 normalizeAssetQuantity(type, asset.getQuantity(), asset.getCapacityTotal()),
                 safeText(asset.getDetails()),
                 safeText(asset.getImageUrl()),
+                safeText(asset.getSourceLink()),
                 assetLocationLabel(asset, type),
                 assetPriceLabel(asset),
-                policies.size(),
+                policiesEnabled,
+                policiesEnabled ? policies.size() : 0,
                 normalizeVisibility(asset.getVisibility()),
                 safeText(asset.getStatus()),
                 normalizeId(asset.getOwnerUserId()),
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
+                normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId));
     }
 
     private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        return toAssetDetailDto(asset, ownerNamesByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
+    }
+
+    private AssetDetailDto toAssetDetailDto(
+            Asset asset,
+            Map<String, String> ownerNamesByUserId,
+            String viewerUserId,
+            AssetRequestMetricsDto metrics) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
@@ -1200,6 +1463,7 @@ public class AssetsService {
                 safeText(asset.getImageUrl()),
                 safeText(asset.getSourceLink()),
                 normalizeStrings(asset.getRoutes()),
+                Boolean.TRUE.equals(asset.getPoliciesEnabled()),
                 safePolicies(asset.getPolicies()).stream()
                         .map(policy -> new PolicyItemDto(
                                 normalizeId(policy.id()),
@@ -1213,11 +1477,12 @@ public class AssetsService {
                 normalizeId(asset.getOwnerUserId()),
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
+                normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId));
     }
 
     private String assetLocationLabel(Asset asset, String type) {
-        if (!"Accommodation".equals(type)) {
+        if (!AssetCatalog.TYPE_ACCOMMODATION.equals(type)) {
             return safeText(asset == null ? null : asset.getCity());
         }
         return normalizeStrings(asset == null ? null : asset.getRoutes()).stream()
@@ -1814,42 +2079,6 @@ public class AssetsService {
         return Math.abs(hash);
     }
 
-    private boolean isAllowedRefreshHost(String host) {
-        if (!StringUtils.hasText(host)) {
-            return false;
-        }
-        for (String allowedHost : assetSourceRefreshProperties.getAllowedHosts()) {
-            String normalizedAllowedHost = normalizeHost(allowedHost);
-            if (!StringUtils.hasText(normalizedAllowedHost)) {
-                continue;
-            }
-            if (host.equals(normalizedAllowedHost) || host.endsWith("." + normalizedAllowedHost)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String firstMetaContent(org.jsoup.nodes.Document document, String attributeName, String attributeValue) {
-        if (document == null || !StringUtils.hasText(attributeName) || !StringUtils.hasText(attributeValue)) {
-            return "";
-        }
-        for (Element element : document.select("meta[" + attributeName + "]")) {
-            if (!attributeValue.equalsIgnoreCase(safeText(element.attr(attributeName)))) {
-                continue;
-            }
-            String absoluteContent = safeText(element.absUrl("content"));
-            if (StringUtils.hasText(absoluteContent)) {
-                return absoluteContent;
-            }
-            String content = safeText(element.attr("content"));
-            if (StringUtils.hasText(content)) {
-                return content;
-            }
-        }
-        return "";
-    }
-
     private List<AssetDto> safeAssets(List<AssetDto> assets) {
         return assets == null ? List.of() : assets;
     }
@@ -1859,7 +2088,7 @@ public class AssetsService {
         if (parsed > 0) {
             return parsed;
         }
-        if ("Supplies".equals(type)) {
+        if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
             return Math.max(1, normalizeCount(capacityFallback));
         }
         return 1;
@@ -2069,9 +2298,6 @@ public class AssetsService {
         return value == null || !Double.isFinite(value) ? 0d : value;
     }
 
-    private record EventMemberSnapshot(List<String> acceptedUserIds, List<String> pendingUserIds) {
-    }
-
     private String safeNullableText(String value) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
@@ -2100,31 +2326,6 @@ public class AssetsService {
         return Double.isFinite(normalized) ? Math.max(0d, normalized) : null;
     }
 
-    private String normalizeExternalUrl(String value) {
-        String trimmed = safeText(value);
-        if (!StringUtils.hasText(trimmed)) {
-            return "";
-        }
-        String candidate = trimmed.matches("^[a-zA-Z][a-zA-Z0-9+.-]*://.*$") ? trimmed : "https://" + trimmed;
-        URI uri = toUri(candidate);
-        if (uri == null || !StringUtils.hasText(uri.getHost())) {
-            return "";
-        }
-        String scheme = StringUtils.hasText(uri.getScheme()) ? uri.getScheme().toLowerCase() : "https";
-        if (!"http".equals(scheme) && !"https".equals(scheme)) {
-            return "";
-        }
-        return uri.normalize().toString();
-    }
-
-    private URI toUri(String value) {
-        try {
-            return new URI(value);
-        } catch (URISyntaxException ex) {
-            return null;
-        }
-    }
-
     private String normalizeId(String value) {
         String normalizedValue = safeText(value);
         return StringUtils.hasText(normalizedValue) ? normalizedValue : null;
@@ -2139,13 +2340,9 @@ public class AssetsService {
         return StringUtils.hasText(normalizedUserId) ? normalizedUserId : currentActorUserId();
     }
 
-    private String normalizeHost(String value) {
-        return safeText(value).toLowerCase();
-    }
-
     private String normalizeAssetType(String type) {
         String normalizedType = safeText(type);
-        return ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
+        return AssetCatalog.ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
     }
 
     private String normalizeAssetRequestKind(String kind) {
@@ -2169,21 +2366,21 @@ public class AssetsService {
         return StringUtils.hasText(normalizedValue) ? normalizedValue : fallback;
     }
 
-    private boolean matchesTicketOrder(EventDto item, boolean upcoming) {
+    private boolean matchesTicketOrder(AssetTicketDto item, boolean upcoming) {
         long endAtMs = resolveTicketEndAtMs(item);
         boolean past = endAtMs < System.currentTimeMillis();
         return upcoming ? !past : past;
     }
 
-    private long resolveTicketEndAtMs(EventDto item) {
+    private long resolveTicketEndAtMs(AssetTicketDto item) {
         if (item == null) {
             return Long.MIN_VALUE;
         }
-        long endAtMs = toSortableDate(item.endAtIso());
+        long endAtMs = toSortableDate(item.endAt());
         if (endAtMs != Long.MIN_VALUE) {
             return endAtMs;
         }
-        return toSortableDate(item.startAtIso());
+        return toSortableDate(item.dateIso());
     }
 
     private long toSortableDate(String value) {
@@ -2194,7 +2391,11 @@ public class AssetsService {
         try {
             return Instant.parse(normalizedValue).toEpochMilli();
         } catch (Exception ignored) {
-            return Long.MIN_VALUE;
+            try {
+                return LocalDateTime.parse(normalizedValue).toInstant(ZoneOffset.UTC).toEpochMilli();
+            } catch (Exception ignoredAgain) {
+                return Long.MIN_VALUE;
+            }
         }
     }
 
@@ -2218,4 +2419,11 @@ public class AssetsService {
         }
         return initials.toString();
     }
+
+    private record AssetExploreMongoPage(
+            List<Asset> items,
+            int total,
+            String nextCursor) {
+    }
+
 }

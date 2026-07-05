@@ -20,12 +20,6 @@ config:
   facebook-app-secret: ${FACEBOOK_APP_SECRET:}
   websocket-allowed-origin-patterns: ${WEBSOCKET_ALLOWED_ORIGIN_PATTERNS:http://localhost,http://localhost:4200,https://localhost,https://localhost:4200}
 
-assets:
-  source-refresh:
-    enabled: ${ASSET_SOURCE_REFRESH_ENABLED:true}
-    timeout-ms: ${ASSET_SOURCE_REFRESH_TIMEOUT_MS:5000}
-    allowed-hosts: ${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS:booking.com,www.booking.com}
-
 auth:
   region-security:
     enabled: ${AUTH_REGION_SECURITY_ENABLED:false}

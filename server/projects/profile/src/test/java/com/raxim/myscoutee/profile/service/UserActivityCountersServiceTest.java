@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -59,11 +60,11 @@ class UserActivityCountersServiceTest {
         Users user = user("owner", activitiesWithAssetAndFeedback(0, 0, 0, 5, 2, 1, 3, 4));
         when(usersRepository.findByUserId("owner")).thenReturn(Optional.of(user));
         when(assetsRepository.findByOwnerUserId("owner")).thenReturn(List.of(
-                asset("Car", "A"),
-                asset("Accommodation", "A"),
-                asset("Supplies", "A"),
-                asset("Supplies", "UR"),
-                asset("Car", "D")));
+                asset(AssetCatalog.TYPE_TRANSPORT, "A"),
+                asset(AssetCatalog.TYPE_ACCOMMODATION, "A"),
+                asset(AssetCatalog.TYPE_SUPPLIES, "A"),
+                asset(AssetCatalog.TYPE_SUPPLIES, "UR"),
+                asset(AssetCatalog.TYPE_TRANSPORT, "D")));
 
         service.refreshAssetCountersForUser("owner");
 

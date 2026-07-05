@@ -603,51 +603,6 @@ class AccessControlServiceTest {
     }
 
     @Test
-    void assetSourceRefreshAllowsOwnerPreCreateRefreshWithoutAssetId() {
-        authenticateAs("u1");
-
-        assertThat(service.canCurrentActorRefreshAssetSource("u1", null)).isTrue();
-        assertThat(service.canCurrentActorRefreshAssetSource("u2", null)).isFalse();
-        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
-    }
-
-    @Test
-    void assetSourceRefreshAllowsAcceptedAssetManagerWhenAssetIdIsPresent() {
-        authenticateAs("u2");
-        when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2")));
-        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset("asset-1", "u1", "A")));
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
-                .thenReturn(Optional.of(member("asset", "asset-1", "u2", "accepted", "Manager")));
-
-        boolean allowed = service.canCurrentActorRefreshAssetSource("u1", "asset-1");
-
-        assertThat(allowed).isTrue();
-    }
-
-    @Test
-    void assetSourceRefreshRejectsAnotherActorWhenAssetIdIsMissing() {
-        authenticateAs("u2");
-
-        boolean allowed = service.canCurrentActorRefreshAssetSource("u1", null);
-
-        assertThat(allowed).isFalse();
-        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
-    }
-
-    @Test
-    void assetSourceRefreshDenyGrantOverridesAssetManagerRule() {
-        authenticateAs("u2");
-        when(accessGrantsRepository.findAll())
-                .thenReturn(List.of(grant("u1", "asset.source.refresh", "asset", "asset-1", "deny")));
-        service.refreshAccessControlCache();
-
-        boolean allowed = service.canCurrentActorRefreshAssetSource("u1", "asset-1");
-
-        assertThat(allowed).isFalse();
-        verifyNoInteractions(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository);
-    }
-
-    @Test
     void assetBorrowRequestAllowsAcceptedEventParticipant() {
         authenticateAs("u2");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u2"))
@@ -1292,13 +1247,6 @@ class AccessControlServiceTest {
                         "asset.manager.promote.actor",
                         "asset",
                         List.of("actorMatchesSubject", "noExplicitDeny", "actorCanManageAsset"),
-                        List.of(),
-                        null),
-                policy(
-                        AccessPolicyKeys.ASSET_SOURCE_REFRESH,
-                        "asset.source.refresh",
-                        "asset",
-                        List.of("noExplicitDeny", "actorCanRefreshAssetSource"),
                         List.of(),
                         null),
                 policy(

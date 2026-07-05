@@ -160,7 +160,9 @@ public class ActivitySubEventResource {
     public record SubEventAssignedAssetSettingsRecord(
             Integer capacityMin,
             Integer capacityMax,
+            Integer quantity,
             String addedByUserId,
+            Boolean routeEnabled,
             List<String> routes) {
     }
 

@@ -26,8 +26,8 @@
         "id": "resources",
         "icon": "inventory_2",
         "title": "Resources and Capacity",
-        "blurb": "Assign people, cars, accommodation, and supplies with limits.",
-        "contentHtml": "<p><strong>Assign people, cars, accommodation, and supplies with limits.</strong></p><p>Use resource menus to assign assets into sub events and groups, then adjust capacity ranges directly where needed.</p><p>Badges summarize pending requests and remaining capacity so action priorities are visible at a glance.</p><ul><li>Capacity min/max control per assignment</li><li>Contextual badges for pending requests</li><li>Route and location support for travel resources</li></ul>"
+        "blurb": "Assign people, transport, accommodation, and supplies with limits.",
+        "contentHtml": "<p><strong>Assign people, transport, accommodation, and supplies with limits.</strong></p><p>Use resource menus to assign assets into sub events and groups, then adjust capacity ranges directly where needed.</p><p>Badges summarize pending requests and remaining capacity so action priorities are visible at a glance.</p><ul><li>Capacity min/max control per assignment</li><li>Contextual badges for pending requests</li><li>Route and location support for travel resources</li></ul>"
       },
       {
         "id": "activities",
@@ -72,8 +72,8 @@
         "id": "resources",
         "icon": "inventory_2",
         "title": "Erőforrások és kapacitás",
-        "blurb": "Rendelj embereket, autókat, szállást és kellékeket limitekkel.",
-        "contentHtml": "<p><strong>Rendelj embereket, autókat, szállást és kellékeket limitekkel.</strong></p><p>Az erőforrásmenükben eszközöket rendelhetsz aleseményekhez és csoportokhoz, majd közvetlenül állíthatod a kapacitásokat.</p><ul><li>Minimum/maximum kapacitás feladatonként</li><li>Kontextusos jelvények függő kérésekhez</li><li>Útvonal- és helytámogatás utazási erőforrásokhoz</li></ul>"
+        "blurb": "Rendelj embereket, transportkat, szállást és kellékeket limitekkel.",
+        "contentHtml": "<p><strong>Rendelj embereket, transportkat, szállást és kellékeket limitekkel.</strong></p><p>Az erőforrásmenükben eszközöket rendelhetsz aleseményekhez és csoportokhoz, majd közvetlenül állíthatod a kapacitásokat.</p><ul><li>Minimum/maximum kapacitás feladatonként</li><li>Kontextusos jelvények függő kérésekhez</li><li>Útvonal- és helytámogatás utazási erőforrásokhoz</li></ul>"
       },
       {
         "id": "activities",
@@ -534,7 +534,7 @@
         "icon": "inventory_2",
         "title": "Your assets",
         "blurb": "This popup starts from your own things, not from one event.",
-        "contentHtml": "<p>The type menu switches between <strong>Car</strong>, <strong>Accommodation</strong>, <strong>Supplies</strong>, and <strong>Ticket</strong>. The red number is the count for that type.</p><p><strong>Car</strong>, <strong>Accommodation</strong>, and <strong>Supplies</strong> are editable assets you own. The plus button creates a new one. <strong>Ticket</strong> is different: it is for event entry codes and scanning, not for editing a physical asset.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-entry\" alt=\"Your assets\"></figure>",
+        "contentHtml": "<p>The type menu switches between <strong>Transport</strong>, <strong>Accommodation</strong>, <strong>Supplies</strong>, and <strong>Ticket</strong>. The red number is the count for that type.</p><p><strong>Transport</strong>, <strong>Accommodation</strong>, and <strong>Supplies</strong> are editable assets you own. The plus button creates a new one. <strong>Ticket</strong> is different: it is for event entry codes and scanning, not for editing a physical asset.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-entry\" alt=\"Your assets\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/4bb070c7b7a156ae95e274a5.svg"
         ],
@@ -557,7 +557,7 @@
         "id": "assets-editor",
         "icon": "edit",
         "title": "Common asset editor",
-        "blurb": "Cars, accommodation, and supplies share this basic editor.",
+        "blurb": "Transport, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>For every real asset you set the image/source link, type, title, category, capacity, quantity, details, visibility, optional pricing, and lending policies.</p><p><strong>Public</strong> can be found broadly in Asset Explorer. <strong>Friends only</strong> limits discovery to your friend/network context. <strong>Invitation only</strong> keeps it out of normal discovery, so it is used by direct sharing or assignment.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets%2Fassets-editor\" alt=\"Common asset editor\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/1e6e0fafa93a7dc7ddb47726.svg"
@@ -613,7 +613,7 @@
         "icon": "inventory_2",
         "title": "Saját eszközeid",
         "blurb": "Ez a popup a saját dolgaidból indul ki, nem egy konkrét eseményből.",
-        "contentHtml": "<p>A típusmenü vált: <strong>Autó</strong>, <strong>Ingatlan</strong>, <strong>Kellékek</strong> és <strong>Jegy</strong>. A piros szám az adott típus darabszáma.</p><p>Az <strong>Autó</strong>, <strong>Ingatlan</strong> és <strong>Kellékek</strong> szerkeszthető saját eszközök. A plusz gomb újat hoz létre. A <strong>Jegy</strong> más: belépőkódokra és szkennelésre való, nem tárgyi eszköz szerkesztésére.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-entry\" alt=\"Saját eszközeid\"></figure>",
+        "contentHtml": "<p>A típusmenü vált: <strong>Transport</strong>, <strong>Accommodation</strong>, <strong>Kellékek</strong> és <strong>Jegy</strong>. A piros szám az adott típus darabszáma.</p><p>Az <strong>Transport</strong>, <strong>Accommodation</strong> és <strong>Kellékek</strong> szerkeszthető saját eszközök. A plusz gomb újat hoz létre. A <strong>Jegy</strong> más: belépőkódokra és szkennelésre való, nem tárgyi eszköz szerkesztésére.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-entry\" alt=\"Saját eszközeid\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
@@ -625,7 +625,7 @@
         "icon": "view_agenda",
         "title": "Egy eszközkártya",
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
-        "contentHtml": "<p>A kép az eszköz fotója; ha nincs kép, a kártya a beépített nincs-kép jelzést mutatja. A kis ikon a típust jelzi. A cím az eszköz neve, alatta típus/kategória/város, a szöveg pedig praktikus megjegyzés.</p><p>A jobb oldali jelvény a hasznos szám: férőhely, ágy, mennyiség vagy függő kérés. A hárompontos menüben tulajdonosi műveletek vannak: <strong>Megosztás</strong>, <strong>Szerkesztés</strong>, <strong>Törlés</strong>. Ingatlannál helyszín/térkép gomb is megjelenhet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-card\" alt=\"Egy eszközkártya\"></figure>",
+        "contentHtml": "<p>A kép az eszköz fotója; ha nincs kép, a kártya a beépített nincs-kép jelzést mutatja. A kis ikon a típust jelzi. A cím az eszköz neve, alatta típus/kategória/város, a szöveg pedig praktikus megjegyzés.</p><p>A jobb oldali jelvény a hasznos szám: férőhely, ágy, mennyiség vagy függő kérés. A hárompontos menüben tulajdonosi műveletek vannak: <strong>Megosztás</strong>, <strong>Szerkesztés</strong>, <strong>Törlés</strong>. Accommodation típusnál helyszín/térkép gomb is megjelenhet.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-card\" alt=\"Egy eszközkártya\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/698694e2d2bd85c6ca344e45.svg"
         ],
@@ -636,7 +636,7 @@
         "id": "assets-editor",
         "icon": "edit",
         "title": "Közös eszközszerkesztő",
-        "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
+        "blurb": "A Transport, Accommodation és kellék ugyanarra az alap szerkesztőre épül.",
         "contentHtml": "<p>Minden valódi eszköznél képet/forráslinket, típust, címet, kategóriát, kapacitást, mennyiséget, leírást, láthatóságot, opcionális árat és kölcsönzési szabályokat adhatsz meg.</p><p>A <strong>Public</strong> szélesen megjelenhet az Eszköz Felfedezésben. A <strong>Friends only</strong> az ismerősi/hálózati körre szűkít. Az <strong>Invitation only</strong> nem normál felfedezésre való, hanem közvetlen megosztásra vagy hozzárendelésre.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets%2Fassets-editor\" alt=\"Közös eszközszerkesztő\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/5756209f04ce59e79ba0d04e.svg"
@@ -715,7 +715,7 @@
         "id": "assets-editor",
         "icon": "edit",
         "title": "Accommodation-specific fields",
-        "blurb": "Cars, accommodation, and supplies share this basic editor.",
+        "blurb": "Transport, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>Beyond the common fields, accommodation needs a <strong>location</strong>. The map/location button uses that place. Use details for check-in, sleeping setup, shared rooms, quiet hours, pets, parking, and what a guest must know before requesting it.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-accommodation%2Fassets-editor\" alt=\"Accommodation-specific fields\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/2d15f16061402b2c050b1ac7.svg"
@@ -757,8 +757,8 @@
     "languageLabel": "Magyar",
     "version": 1,
     "active": true,
-    "title": "Ingatlan eszközök magyarázat",
-    "summary": "Saját ingatlanok, helyszín, szerkesztés és kérések",
+    "title": "Accommodation eszközök magyarázat",
+    "summary": "Saját szállások, helyszín, szerkesztés és kérések",
     "description": "Short in-app guidance for the selected screen.",
     "headerColor": "violet",
     "createdDate": "2026-05-22T00:00:00.000Z",
@@ -769,9 +769,9 @@
       {
         "id": "assets-entry",
         "icon": "apartment",
-        "title": "Saját ingatlanok",
-        "blurb": "Az ingatlan a közös eszközszerkesztőt használja, helyszínnel kiegészítve.",
-        "contentHtml": "<p>Az <strong>Ingatlan</strong> tab szállást, szobát, ágyat vagy helyet listáz, amit saját eszközként birtokolsz vagy kezelsz. Adj hozzá helyet, majd írd le a lokációt, alvó kapacitást, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható szállás megjelenhet az Eszköz Felfedezésben, és kérhető. Eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-entry\" alt=\"Saját ingatlanok\"></figure>",
+        "title": "Saját szállások",
+        "blurb": "Az accommodation a közös eszközszerkesztőt használja, helyszínnel kiegészítve.",
+        "contentHtml": "<p>Az <strong>Accommodation</strong> tab szállást, szobát, ágyat vagy helyet listáz, amit saját eszközként birtokolsz vagy kezelsz. Adj hozzá helyet, majd írd le a lokációt, alvó kapacitást, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható szállás megjelenhet az Eszköz Felfedezésben, és kérhető. Eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-entry\" alt=\"Saját szállások\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
@@ -781,9 +781,9 @@
       {
         "id": "assets-card",
         "icon": "apartment",
-        "title": "Egy ingatlankártya",
+        "title": "Egy szálláskártya",
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
-        "contentHtml": "<p>A kép a helyet mutatja. Az ikon jelzi, hogy ingatlan/szállás, a cím a hely neve, alatta típus, város vagy kategória jelenhet meg.</p><p>A jobb oldali jelvény ágyat, szobát, kapacitást vagy függő kérést mutathat. A hely ikon térképet nyithat, ha van helyszín.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-card\" alt=\"Egy ingatlankártya\"></figure>",
+        "contentHtml": "<p>A kép a helyet mutatja. Az ikon jelzi, hogy accommodation/szállás, a cím a hely neve, alatta típus, város vagy kategória jelenhet meg.</p><p>A jobb oldali jelvény ágyat, szobát, kapacitást vagy függő kérést mutathat. A hely ikon térképet nyithat, ha van helyszín.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-card\" alt=\"Egy szálláskártya\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/4bb5a82eaaf7a9fbf1466fbd.svg"
         ],
@@ -793,9 +793,9 @@
       {
         "id": "assets-editor",
         "icon": "edit",
-        "title": "Ingatlanra jellemző mezők",
-        "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
-        "contentHtml": "<p>A közös mezőkön túl az ingatlannál a <strong>helyszín</strong> fontos. A térkép/helyszín gomb ezt használja. Írd a részletekhez a bejutást, alvási rendet, közös szobát, csendidőt, kisállatot, parkolást és amit kérés előtt tudni kell.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-editor\" alt=\"Ingatlanra jellemző mezők\"></figure>",
+        "title": "Accommodation típusra jellemző mezők",
+        "blurb": "A Transport, Accommodation és kellék ugyanarra az alap szerkesztőre épül.",
+        "contentHtml": "<p>A közös mezőkön túl az Accommodation típusnál a <strong>helyszín</strong> fontos. A térkép/helyszín gomb ezt használja. Írd a részletekhez a bejutást, alvási rendet, közös szobát, csendidőt, kisállatot, parkolást és amit kérés előtt tudni kell.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-accommodation%2Fassets-editor\" alt=\"Accommodation típusra jellemző mezők\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/3265a9e299133b901acf812e.svg"
         ],
@@ -830,14 +830,14 @@
     "contextKey": "assets.accommodation"
   },
   {
-    "_id": "explanation-assets-car-default-v1",
+    "_id": "explanation-assets-transport-default-v1",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
     "version": 1,
     "active": true,
-    "title": "Car assets explanation",
-    "summary": "Own cars, car cards, car editor, and car requests",
+    "title": "Transport assets explanation",
+    "summary": "Own transport, transport cards, transport editor, and transport requests",
     "description": "Short in-app guidance for the selected screen.",
     "headerColor": "violet",
     "createdDate": "2026-05-22T00:00:00.000Z",
@@ -848,9 +848,9 @@
       {
         "id": "assets-entry",
         "icon": "directions_car",
-        "title": "Your cars",
-        "blurb": "Cars use the common editor, with travel details added.",
-        "contentHtml": "<p>The <strong>Car</strong> tab lists vehicles you own or manage as your own assets. Use plus to add a car, then describe seats, route, city, pickup notes, rules, price, and visibility.</p><p>A public or friends-only car can be discovered in Asset Explorer and requested. The same car can also be assigned to an event or sub-event from that event&rsquo;s resource screen.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-entry\" alt=\"Your cars\"></figure>",
+        "title": "Your transport",
+        "blurb": "Transport use the common editor, with travel details added.",
+        "contentHtml": "<p>The <strong>Transport</strong> tab lists vehicles you own or manage as your own assets. Use plus to add a transport, then describe seats, route, city, pickup notes, rules, price, and visibility.</p><p>A public or friends-only transport can be discovered in Asset Explorer and requested. The same transport can also be assigned to an event or sub-event from that event&rsquo;s resource screen.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-transport%2Fassets-entry\" alt=\"Your transport\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/4bb070c7b7a156ae95e274a5.svg"
         ],
@@ -860,9 +860,9 @@
       {
         "id": "assets-card",
         "icon": "directions_car",
-        "title": "Reading a car card",
+        "title": "Reading a transport card",
         "blurb": "This is the short version of one thing you own.",
-        "contentHtml": "<p>The photo shows the car. The icon confirms it is a car, the title is the car name, and the second line can show model, transmission, category, route, or city.</p><p>The right badge is seats or pending requests. The three-dot menu is where the owner shares, edits, or deletes the car.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-card\" alt=\"Reading a car card\"></figure>",
+        "contentHtml": "<p>The photo shows the transport. The icon confirms it is a transport, the title is the transport name, and the second line can show model, transmission, category, route, or city.</p><p>The right badge is seats or pending requests. The three-dot menu is where the owner shares, edits, or deletes the transport.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-transport%2Fassets-card\" alt=\"Reading a transport card\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/8b698d81df5286079810a8f9.svg"
         ],
@@ -872,9 +872,9 @@
       {
         "id": "assets-editor",
         "icon": "edit",
-        "title": "Car-specific fields",
-        "blurb": "Cars, accommodation, and supplies share this basic editor.",
-        "contentHtml": "<p>Beyond the common fields, a car is mainly about <strong>seats</strong> and <strong>route</strong>. Use details for pickup window, luggage limits, fuel sharing, route stops, driver notes, and whether people can request it outside your own events.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-editor\" alt=\"Car-specific fields\"></figure>",
+        "title": "Transport-specific fields",
+        "blurb": "Transport, accommodation, and supplies share this basic editor.",
+        "contentHtml": "<p>Beyond the common fields, a transport is mainly about <strong>seats</strong> and <strong>route</strong>. Use details for pickup window, luggage limits, fuel sharing, route stops, driver notes, and whether people can request it outside your own events.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-transport%2Fassets-editor\" alt=\"Transport-specific fields\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/1e6e0fafa93a7dc7ddb47726.svg"
         ],
@@ -886,7 +886,7 @@
         "icon": "assignment",
         "title": "Requests and helpers",
         "blurb": "Open the badge when somebody wants to use what you own.",
-        "contentHtml": "<p>The requests popup can show all rows, active items, pending requests, and borrowed items. A row shows who asked, the related event or use context, the time window, and how much capacity is left.</p><p>You can approve or reject pending requests. For accepted people you may promote someone to <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-requests\" alt=\"Requests and helpers\"></figure>",
+        "contentHtml": "<p>The requests popup can show all rows, active items, pending requests, and borrowed items. A row shows who asked, the related event or use context, the time window, and how much capacity is left.</p><p>You can approve or reject pending requests. For accepted people you may promote someone to <strong>Manager</strong> for that asset. Manager is only a helper role for that asset; it is not the same as app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-transport%2Fassets-requests\" alt=\"Requests and helpers\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/57e7f5ad1e92e845ede5da23.svg"
         ],
@@ -898,7 +898,7 @@
         "icon": "travel_explore",
         "title": "Where an asset can be used",
         "blurb": "Visibility controls discovery; event screens assign the asset.",
-        "contentHtml": "<p>Your own asset can appear in <strong>Asset Explorer</strong> when its visibility allows it. That is where other people can discover it and request it.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That assignment screen can have extra event-only states, but those are not the normal own-assets list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-car%2Fassets-scope\" alt=\"Where an asset can be used\"></figure>",
+        "contentHtml": "<p>Your own asset can appear in <strong>Asset Explorer</strong> when its visibility allows it. That is where other people can discover it and request it.</p><p>The same asset can also be assigned to an event or sub-event from the event resource screen. That assignment screen can have extra event-only states, but those are not the normal own-assets list.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-transport%2Fassets-scope\" alt=\"Where an asset can be used\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/ed771fd8aca61800112f358e.svg"
         ],
@@ -906,17 +906,17 @@
         "panelSpan": "span-2"
       }
     ],
-    "contextKey": "assets.car"
+    "contextKey": "assets.transport"
   },
   {
-    "_id": "explanation-assets-car-default-hu-v1",
+    "_id": "explanation-assets-transport-default-hu-v1",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
     "version": 1,
     "active": true,
-    "title": "Autó eszközök magyarázat",
-    "summary": "Saját autók, autókártyák, szerkesztés és kérések",
+    "title": "Transport eszközök magyarázat",
+    "summary": "Saját transportk, transportkártyák, szerkesztés és kérések",
     "description": "Short in-app guidance for the selected screen.",
     "headerColor": "violet",
     "createdDate": "2026-05-22T00:00:00.000Z",
@@ -927,9 +927,9 @@
       {
         "id": "assets-entry",
         "icon": "directions_car",
-        "title": "Saját autóid",
-        "blurb": "Az autó a közös eszközszerkesztőt használja, utazási adatokkal kiegészítve.",
-        "contentHtml": "<p>Az <strong>Autó</strong> tab azokat a járműveket listázza, amelyeket saját eszközként birtokolsz vagy kezelsz. A plusz gombbal adhatsz hozzá autót, majd megadhatod a férőhelyet, útvonalat, várost, indulási megjegyzést, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható autó megjelenhet az Eszköz Felfedezésben, és kérhető. Ugyanez az autó eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-entry\" alt=\"Saját autóid\"></figure>",
+        "title": "Saját transport eszközeid",
+        "blurb": "A Transport a közös eszközszerkesztőt használja, utazási adatokkal kiegészítve.",
+        "contentHtml": "<p>Az <strong>Transport</strong> tab azokat a járműveket listázza, amelyeket saját eszközként birtokolsz vagy kezelsz. A plusz gombbal adhatsz hozzá transportot, majd megadhatod a férőhelyet, útvonalat, várost, indulási megjegyzést, szabályokat, árat és láthatóságot.</p><p>A nyilvános vagy ismerősöknek látható transport megjelenhet az Eszköz Felfedezésben, és kérhető. Ugyanez a transport eseményhez vagy aleseményhez is hozzárendelhető az esemény erőforrás képernyőjén.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-transport%2Fassets-entry\" alt=\"Saját transport eszközeid\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/b244f0b6394cbe81ad9afc08.svg"
         ],
@@ -939,9 +939,9 @@
       {
         "id": "assets-card",
         "icon": "directions_car",
-        "title": "Egy autókártya",
+        "title": "Egy transport kártya",
         "blurb": "Ez egy saját eszköz rövid, olvasható változata.",
-        "contentHtml": "<p>A kép az autót mutatja. Az ikon jelzi, hogy autóról van szó, a cím az autó neve, alatta modell, váltó, kategória, útvonal vagy város jelenhet meg.</p><p>A jobb oldali jelvény férőhelyet vagy függő kérést mutat. A hárompontos menüben a tulajdonos megoszt, szerkeszt vagy töröl.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-card\" alt=\"Egy autókártya\"></figure>",
+        "contentHtml": "<p>A kép a transportot mutatja. Az ikon jelzi, hogy transportról van szó, a cím a transport neve, alatta modell, váltó, kategória, útvonal vagy város jelenhet meg.</p><p>A jobb oldali jelvény férőhelyet vagy függő kérést mutat. A hárompontos menüben a tulajdonos megoszt, szerkeszt vagy töröl.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-transport%2Fassets-card\" alt=\"Egy transport kártya\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/698694e2d2bd85c6ca344e45.svg"
         ],
@@ -951,9 +951,9 @@
       {
         "id": "assets-editor",
         "icon": "edit",
-        "title": "Autóra jellemző mezők",
-        "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
-        "contentHtml": "<p>A közös mezőkön túl az autó főleg <strong>férőhelyről</strong> és <strong>útvonalról</strong> szól. Írd a részletekhez az indulási ablakot, csomaglimitet, üzemanyag-megosztást, megállókat, sofőr megjegyzést, és hogy kérhető-e a saját eseményeiden kívül is.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-editor\" alt=\"Autóra jellemző mezők\"></figure>",
+        "title": "Transportra jellemző mezők",
+        "blurb": "A Transport, Accommodation és kellék ugyanarra az alap szerkesztőre épül.",
+        "contentHtml": "<p>A közös mezőkön túl a transport főleg <strong>férőhelyről</strong> és <strong>útvonalról</strong> szól. Írd a részletekhez az indulási ablakot, csomaglimitet, üzemanyag-megosztást, megállókat, sofőr megjegyzést, és hogy kérhető-e a saját eseményeiden kívül is.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-transport%2Fassets-editor\" alt=\"Transportra jellemző mezők\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/5756209f04ce59e79ba0d04e.svg"
         ],
@@ -965,7 +965,7 @@
         "icon": "assignment",
         "title": "Kérések és segítők",
         "blurb": "A jelvényt nyisd meg, ha valaki használni szeretné, ami a tied.",
-        "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-requests\" alt=\"Kérések és segítők\"></figure>",
+        "contentHtml": "<p>A kérések popupban válthatsz: összes sor, aktív elemek, függő kérések és kölcsönadott elemek. Egy sor megmutatja, ki kérte, milyen eseményhez vagy használati helyzethez kapcsolódik, milyen időablakra, és mennyi kapacitás marad.</p><p>Függő kérésnél jóváhagyhatsz vagy elutasíthatsz. Elfogadott emberből lehet <strong>Manager</strong> az adott eszközhöz. A Manager csak az adott eszköz segítő szerepe; nem ugyanaz, mint az app admin.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-transport%2Fassets-requests\" alt=\"Kérések és segítők\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/ff75c0e9ce75458dcd00843e.svg"
         ],
@@ -977,7 +977,7 @@
         "icon": "travel_explore",
         "title": "Hol használható egy eszköz",
         "blurb": "A láthatóság a felfedezést szabályozza; az eseményképernyők hozzárendelnek.",
-        "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-car%2Fassets-scope\" alt=\"Hol használható egy eszköz\"></figure>",
+        "contentHtml": "<p>A saját eszközöd megjelenhet az <strong>Eszköz Felfedezésben</strong>, ha a láthatósága engedi. Ott mások megtalálhatják és kérhetik.</p><p>Ugyanezt az eszközt eseményhez vagy aleseményhez is hozzá lehet rendelni az esemény erőforrás képernyőjén. Ott lehetnek extra, csak eseményhez tartozó állapotok, de ezek nem a normál saját eszközlista jelentései.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-transport%2Fassets-scope\" alt=\"Hol használható egy eszköz\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/4185f4f19af46bb1094f35ae.svg"
         ],
@@ -985,7 +985,7 @@
         "panelSpan": "span-2"
       }
     ],
-    "contextKey": "assets.car"
+    "contextKey": "assets.transport"
   },
   {
     "_id": "explanation-assets-supplies-default-v1",
@@ -1031,7 +1031,7 @@
         "id": "assets-editor",
         "icon": "edit",
         "title": "Supply-specific fields",
-        "blurb": "Cars, accommodation, and supplies share this basic editor.",
+        "blurb": "Transport, accommodation, and supplies share this basic editor.",
         "contentHtml": "<p>Beyond the common fields, supplies are mainly about <strong>quantity</strong>. Use details for condition, pickup/return rules, what is included, missing parts, deposit, and whether several people can borrow parts of the quantity.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-supplies%2Fassets-editor\" alt=\"Supply-specific fields\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/d1931e08d9ce04d9b9a60dee.svg"
@@ -1110,7 +1110,7 @@
         "id": "assets-editor",
         "icon": "edit",
         "title": "Kellékre jellemző mezők",
-        "blurb": "Az autó, ingatlan és kellék ugyanarra az alap szerkesztőre épül.",
+        "blurb": "A Transport, Accommodation és kellék ugyanarra az alap szerkesztőre épül.",
         "contentHtml": "<p>A közös mezőkön túl a kellék főleg <strong>mennyiségről</strong> szól. Írd a részletekhez az állapotot, átvétel/visszahozás módját, mit tartalmaz, mi hiányzik, van-e kaució, és osztható-e a mennyiség több ember között.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-supplies%2Fassets-editor\" alt=\"Kellékre jellemző mezők\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/0dde84f0e82906a8fb5242df.svg"
@@ -1166,7 +1166,7 @@
         "icon": "qr_code_2",
         "title": "Your tickets",
         "blurb": "Tickets are event entry records, not editable owned assets.",
-        "contentHtml": "<p>The <strong>Ticket</strong> tab is separate from Car, Accommodation, and Supplies. It lists ticketed events and entry codes connected to you.</p><p>Use <strong>Upcoming</strong> and <strong>Past</strong> to change the list. The <strong>Scan Ticket</strong> button opens scanner mode for reading another person&rsquo;s QR code at check-in.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-tickets\" alt=\"Your tickets\"></figure>",
+        "contentHtml": "<p>The <strong>Ticket</strong> tab is separate from Transport, Accommodation, and Supplies. It lists ticketed events and entry codes connected to you.</p><p>Use <strong>Upcoming</strong> and <strong>Past</strong> to change the list. The <strong>Scan Ticket</strong> button opens scanner mode for reading another person&rsquo;s QR code at check-in.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-tickets\" alt=\"Your tickets\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/6074b4e9186e40ccb8ae6770.svg"
         ],
@@ -1177,7 +1177,7 @@
         "icon": "confirmation_number",
         "title": "Reading a ticket card",
         "blurb": "A ticket card points back to an event.",
-        "contentHtml": "<p>The card shows the event image, title, date, role, and ticket context. Tap the QR badge in the top-right corner to open your own code for that ticket.</p><p>You do not edit this like a car or supply. Its data comes from the event, booking, member role, and ticketing/check-in setup.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Reading a ticket card\"></figure>",
+        "contentHtml": "<p>The card shows the event image, title, date, role, and ticket context. Tap the QR badge in the top-right corner to open your own code for that ticket.</p><p>You do not edit this like a transport or supply. Its data comes from the event, booking, member role, and ticketing/check-in setup.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Reading a ticket card\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/c63b93f558678f70f154dc2c.svg"
         ],
@@ -1218,7 +1218,7 @@
         "icon": "qr_code_2",
         "title": "Saját jegyek",
         "blurb": "A jegy belépési rekord, nem szerkeszthető saját tárgyi eszköz.",
-        "contentHtml": "<p>A <strong>Jegy</strong> tab külön van az Autó, Ingatlan és Kellékek típusoktól. Jegyes eseményeket és hozzád kapcsolódó belépőkódokat listáz.</p><p>A <strong>Közelgő</strong> és <strong>Korábbi</strong> a listát váltja. A <strong>Scan Ticket</strong> gomb szkenner módot nyit, amikor más ember QR kódját kell beolvasni beléptetésnél.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-tickets\" alt=\"Saját jegyek\"></figure>",
+        "contentHtml": "<p>A <strong>Jegy</strong> tab külön van az Transport, Accommodation és Kellékek típusoktól. Jegyes eseményeket és hozzád kapcsolódó belépőkódokat listáz.</p><p>A <strong>Közelgő</strong> és <strong>Korábbi</strong> a listát váltja. A <strong>Scan Ticket</strong> gomb szkenner módot nyit, amikor más ember QR kódját kell beolvasni beléptetésnél.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-tickets\" alt=\"Saját jegyek\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/b23fc9b2494ddc7c4d0d1211.svg"
         ],
@@ -1229,7 +1229,7 @@
         "icon": "confirmation_number",
         "title": "Egy jegykártya",
         "blurb": "A jegykártya egy eseményre mutat vissza.",
-        "contentHtml": "<p>A kártya eseményképet, címet, dátumot, szerepet és jegykörnyezetet mutat. A jobb felső QR jelvényre koppintva a saját jegykódod nyílik meg.</p><p>Ezt nem úgy szerkeszted, mint egy autót vagy kelléket. Az adatai az eseményből, foglalásból, tagszerepből és ticketing/check-in beállításból jönnek.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Egy jegykártya\"></figure>",
+        "contentHtml": "<p>A kártya eseményképet, címet, dátumot, szerepet és jegykörnyezetet mutat. A jobb felső QR jelvényre koppintva a saját jegykódod nyílik meg.</p><p>Ezt nem úgy szerkeszted, mint egy transport eszközt vagy kelléket. Az adatai az eseményből, foglalásból, tagszerepből és ticketing/check-in beállításból jönnek.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fassets-tickets%2Fassets-ticket-card\" alt=\"Egy jegykártya\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/45f386e7ae216b8c69d572af.svg"
         ],
@@ -1578,7 +1578,7 @@
         "icon": "groups",
         "title": "Members and roles",
         "blurb": "This popup is where organizers handle people.",
-        "contentHtml": "<p><strong>Admin</strong> is the main organizer. <strong>Manager</strong> is a helper under Admin: managers can help with members and resources, and can also appear because someone manages an assigned car, accommodation, or supply. <strong>Member</strong> is a normal attendee.</p><p><strong>Invite</strong> adds people. <strong>Pending only</strong> shows waiting requests/invites. The status chip shows Admin, Manager, Member, pending, invite, or disqualified. The eye opens a profile; the three-dot menu can approve, reject/delete, remove, disqualify, reinstate, or report depending on your role and the member state.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-members\" alt=\"Members and roles\"></figure>",
+        "contentHtml": "<p><strong>Admin</strong> is the main organizer. <strong>Manager</strong> is a helper under Admin: managers can help with members and resources, and can also appear because someone manages an assigned transport, accommodation, or supply. <strong>Member</strong> is a normal attendee.</p><p><strong>Invite</strong> adds people. <strong>Pending only</strong> shows waiting requests/invites. The status chip shows Admin, Manager, Member, pending, invite, or disqualified. The eye opens a profile; the three-dot menu can approve, reject/delete, remove, disqualify, reinstate, or report depending on your role and the member state.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-members\" alt=\"Members and roles\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/228e0ada667e7c0f154f48cd.svg"
         ],
@@ -1590,7 +1590,7 @@
         "icon": "inventory_2",
         "title": "Resources",
         "blurb": "Resources are the people and things assigned to one part.",
-        "contentHtml": "<p>From a sub-event or group menu you can open <strong>Members</strong>, <strong>Car</strong>, <strong>Accommodation</strong>, or <strong>Supplies</strong>. <strong>Assign</strong> attaches something you already control. <strong>Explore</strong> searches available assets and can start a request/booking flow.</p><p>Counts show accepted and pending assignments. Capacity tells you whether that part has enough people, car seats, beds/rooms, or supplies. If a resource has its own manager, that person can become a Manager for the event context.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-assets\" alt=\"Resources\"></figure>",
+        "contentHtml": "<p>From a sub-event or group menu you can open <strong>Members</strong>, <strong>Transport</strong>, <strong>Accommodation</strong>, or <strong>Supplies</strong>. <strong>Assign</strong> attaches something you already control. <strong>Explore</strong> searches available assets and can start a request/booking flow.</p><p>Counts show accepted and pending assignments. Capacity tells you whether that part has enough people, transport seats, beds/rooms, or supplies. If a resource has its own manager, that person can become a Manager for the event context.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Aen%2Fevent-editor%2Fevent-editor-assets\" alt=\"Resources\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/755030cd4258714d5ecde44b.svg"
         ],
@@ -1669,7 +1669,7 @@
         "icon": "groups",
         "title": "Tagok és szerepek",
         "blurb": "Ez az a popup, ahol a szervező embereket kezel.",
-        "contentHtml": "<p>Az <strong>Admin</strong> a fő szervező. A <strong>Manager</strong> Admin alatti segítő: kezelhet tagokat és erőforrásokat, és akkor is megjelenhet, ha valaki egy hozzárendelt autó, szállás vagy kellék felelőse. A <strong>Member</strong> sima résztvevő.</p><p>A <strong>Invite</strong> meghív. A <strong>Pending only</strong> csak a várakozó kéréseket/meghívásokat mutatja. A jelvény mutatja: Admin, Manager, Member, függő kérés, kiküldött meghívó vagy kizárt. A szem profilra visz; a hárompontos menü szereptől és állapottól függően jóváhagyást, elutasítást/törlést, eltávolítást, kizárást, visszaállítást vagy jelentést ad.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-members\" alt=\"Tagok és szerepek\"></figure>",
+        "contentHtml": "<p>Az <strong>Admin</strong> a fő szervező. A <strong>Manager</strong> Admin alatti segítő: kezelhet tagokat és erőforrásokat, és akkor is megjelenhet, ha valaki egy hozzárendelt transport, szállás vagy kellék felelőse. A <strong>Member</strong> sima résztvevő.</p><p>A <strong>Invite</strong> meghív. A <strong>Pending only</strong> csak a várakozó kéréseket/meghívásokat mutatja. A jelvény mutatja: Admin, Manager, Member, függő kérés, kiküldött meghívó vagy kizárt. A szem profilra visz; a hárompontos menü szereptől és állapottól függően jóváhagyást, elutasítást/törlést, eltávolítást, kizárást, visszaállítást vagy jelentést ad.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-members\" alt=\"Tagok és szerepek\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/a4946ca10b5959fe13f925ce.svg"
         ],
@@ -1681,7 +1681,7 @@
         "icon": "inventory_2",
         "title": "Erőforrások",
         "blurb": "Erőforrás az ember vagy dolog, amit egy részhez hozzárendelsz.",
-        "contentHtml": "<p>Egy alesemény vagy csoport menüjéből nyitható: <strong>Members</strong>, <strong>Car</strong>, <strong>Accommodation</strong> és <strong>Supplies</strong>. Az <strong>Assign</strong> olyat tesz hozzá, amit már kezelsz. Az <strong>Explore</strong> elérhető eszközt keres, és kérés/foglalás folyamatot indíthat.</p><p>A számok az elfogadott és függő hozzárendeléseket mutatják. A kapacitásból látod, elég ember, ülés, szálláshely vagy kellék van-e ahhoz a részhez. Ha egy erőforrásnak saját felelőse van, ő Managerként is megjelenhet az esemény környezetében.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-assets\" alt=\"Erőforrások\"></figure>",
+        "contentHtml": "<p>Egy alesemény vagy csoport menüjéből nyitható: <strong>Members</strong>, <strong>Transport</strong>, <strong>Accommodation</strong> és <strong>Supplies</strong>. Az <strong>Assign</strong> olyat tesz hozzá, amit már kezelsz. Az <strong>Explore</strong> elérhető eszközt keres, és kérés/foglalás folyamatot indíthat.</p><p>A számok az elfogadott és függő hozzárendeléseket mutatják. A kapacitásból látod, elég ember, ülés, szálláshely vagy kellék van-e ahhoz a részhez. Ha egy erőforrásnak saját felelőse van, ő Managerként is megjelenhet az esemény környezetében.</p><figure class=\"explanation-seeded-visual lazy-image-frame-loading\"><img class=\"lazy-image-loading\" src=\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==#lazy-src=help-seeded-image%3Ahu%2Fevent-editor%2Fevent-editor-assets\" alt=\"Erőforrások\"></figure>",
         "imageUrls": [
           "/media/public?key=seeded-help/c3d541e0fd49b60934e0719e.svg"
         ],

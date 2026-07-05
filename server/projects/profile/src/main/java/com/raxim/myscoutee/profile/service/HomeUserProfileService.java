@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
@@ -96,9 +97,9 @@ public class HomeUserProfileService {
     private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
     private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final String ASSET_TYPE_CAR = "Car";
-    private static final String ASSET_TYPE_ACCOMMODATION = "Accommodation";
-    private static final String ASSET_TYPE_SUPPLIES = "Supplies";
+    private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
+    private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
+    private static final String ASSET_TYPE_SUPPLIES = AssetCatalog.TYPE_SUPPLIES;
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String STATUS_PENDING = "pending";
     private static final String STATUS_DELETED = "deleted";

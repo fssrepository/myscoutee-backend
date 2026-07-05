@@ -45,6 +45,7 @@ public class Asset {
     private String imageUrl;
     private String sourceLink;
     private List<String> routes = new ArrayList<>();
+    private Boolean policiesEnabled = Boolean.FALSE;
     private List<AssetPolicyRecord> policies = new ArrayList<>();
     private PricingConfigDto pricing;
     private List<AssetRequestRecord> requests = new ArrayList<>();
@@ -189,6 +190,14 @@ public class Asset {
 
     public List<AssetPolicyRecord> getPolicies() {
         return policies;
+    }
+
+    public Boolean getPoliciesEnabled() {
+        return policiesEnabled;
+    }
+
+    public void setPoliciesEnabled(Boolean policiesEnabled) {
+        this.policiesEnabled = policiesEnabled;
     }
 
     public void setPolicies(List<AssetPolicyRecord> policies) {

@@ -39,6 +39,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -99,9 +100,9 @@ public class ChatService {
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String RUNTIME_STATUS_DELETED = "D";
-    private static final String ASSET_TYPE_CAR = "Car";
-    private static final String ASSET_TYPE_ACCOMMODATION = "Accommodation";
-    private static final String ASSET_TYPE_SUPPLIES = "Supplies";
+    private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
+    private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
+    private static final String ASSET_TYPE_SUPPLIES = AssetCatalog.TYPE_SUPPLIES;
     private static final int DEFAULT_CHAT_MESSAGES_PAGE_SIZE = 20;
     private static final int MAX_CHAT_MESSAGES_PAGE_SIZE = 100;
 
@@ -1200,7 +1201,7 @@ public class ChatService {
             ChatMetricBucketDto members,
             Map<String, List<ActivitySubEventResource>> resourcesByMetricKey,
             Map<String, ActivitySubEventStageRuntime> stageRuntimeByMetricKey) {
-        ChatMetricBucketDto car = null;
+        ChatMetricBucketDto transport = null;
         ChatMetricBucketDto accommodation = null;
         ChatMetricBucketDto supplies = null;
         Integer groupsCount = null;
@@ -1215,7 +1216,7 @@ public class ChatService {
                     lookup.parts().eventId(),
                     lookup.ownerId(),
                     lookup.parts().subEventId());
-            car = assetBucket(resources, ASSET_TYPE_CAR);
+            transport = assetBucket(resources, ASSET_TYPE_TRANSPORT);
             accommodation = assetBucket(resources, ASSET_TYPE_ACCOMMODATION);
             supplies = assetBucket(resources, ASSET_TYPE_SUPPLIES);
             ActivitySubEventStageRuntime stageRuntime = firstStageRuntime(
@@ -1224,14 +1225,14 @@ public class ChatService {
                     lookup.ownerId(),
                     lookup.parts().subEventId());
             groupsCount = stageRuntime == null ? null : countValue(stageRuntime.getGroupsCount());
-            pendingTotal += countValue(car.pending())
+            pendingTotal += countValue(transport.pending())
                     + countValue(accommodation.pending())
                     + countValue(supplies.pending());
         }
 
         return new ChatMetricsDto(
                 members,
-                car,
+                transport,
                 accommodation,
                 supplies,
                 groupsCount,

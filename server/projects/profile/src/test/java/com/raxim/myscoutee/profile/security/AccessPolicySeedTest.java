@@ -53,7 +53,6 @@ class AccessPolicySeedTest {
             AccessPolicyKeys.ASSET_TAKEOVER,
             AccessPolicyKeys.ASSET_MANAGER_PROMOTE_TARGET,
             AccessPolicyKeys.ASSET_MANAGER_PROMOTE_ACTOR,
-            AccessPolicyKeys.ASSET_SOURCE_REFRESH,
             AccessPolicyKeys.ASSET_BORROW_REQUEST,
             AccessPolicyKeys.ASSET_BORROW_APPROVE,
             AccessPolicyKeys.ASSET_BORROW_REJECT,

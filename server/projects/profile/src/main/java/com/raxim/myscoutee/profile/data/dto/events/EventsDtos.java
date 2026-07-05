@@ -153,6 +153,28 @@ public final class EventsDtos {
             String eventId) {
     }
 
+    public record EventFeedbackStatQueryDto(
+            String userId,
+            String eventId) {
+    }
+
+    public record EventFeedbackStatOptionDto(
+            String key,
+            Integer count) {
+    }
+
+    public record EventFeedbackStatSectionDto(
+            String key,
+            Integer responseCount,
+            List<EventFeedbackStatOptionDto> options) {
+    }
+
+    public record EventFeedbackStatDto(
+            String eventId,
+            Integer totalResponses,
+            List<EventFeedbackStatSectionDto> sections) {
+    }
+
     public record EventFeedbackPageCountsDto(
             Integer ownEvents,
             Integer pending,

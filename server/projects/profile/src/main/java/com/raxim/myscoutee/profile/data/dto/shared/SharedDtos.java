@@ -306,7 +306,9 @@ public final class SharedDtos {
     public record SubEventAssignedAssetSettingsDto(
             Integer capacityMin,
             Integer capacityMax,
+            Integer quantity,
             String addedByUserId,
+            Boolean routeEnabled,
             List<String> routes) {
     }
 
