@@ -59,12 +59,16 @@ public class AssetAvailabilityMapper {
             List<AssetRequest> requests,
             String rangeStart,
             String rangeEnd,
+            String filter,
             Integer page,
             Integer pageSize,
             String cursor) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         String normalizedAssetId = normalizeId(assetId);
-        List<AssetRequest> source = safeRequests(requests);
+        String normalizedFilter = normalizeFilter(filter);
+        List<AssetRequest> source = safeRequests(requests).stream()
+                .filter(request -> matchesFilter(request, normalizedFilter))
+                .toList();
         DateRange range = statsRange(rangeStart, rangeEnd);
         List<AssetOccupancyStatDto> stats = new ArrayList<>();
         LocalDate day = range.start();

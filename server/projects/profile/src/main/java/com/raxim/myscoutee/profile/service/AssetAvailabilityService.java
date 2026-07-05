@@ -39,10 +39,11 @@ public class AssetAvailabilityService {
             String assetId,
             String rangeStart,
             String rangeEnd,
+            String filter,
             Integer page,
             Integer pageSize,
             String cursor) {
         List<AssetRequest> requests = availabilityRepository.findRequestsByOwnerAsset(userId, assetId);
-        return availabilityMapper.toStatsPage(userId, assetId, requests, rangeStart, rangeEnd, page, pageSize, cursor);
+        return availabilityMapper.toStatsPage(userId, assetId, requests, rangeStart, rangeEnd, filter, page, pageSize, cursor);
     }
 }

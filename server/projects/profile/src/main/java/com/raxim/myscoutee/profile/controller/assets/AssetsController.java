@@ -73,6 +73,7 @@ public class AssetsController {
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "rangeStart", required = false) String rangeStart,
             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
+            @RequestParam(value = "filter", required = false) String filter,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "60") Integer pageSize,
             @RequestParam(value = "cursor", required = false) String cursor) {
@@ -81,6 +82,7 @@ public class AssetsController {
                 assetId,
                 rangeStart,
                 rangeEnd,
+                filter,
                 page,
                 pageSize,
                 cursor);

@@ -10,6 +10,14 @@ public final class AssetsDtos {
     private AssetsDtos() {
     }
 
+    public record AssetRequestMetricsDto(
+            Integer allItems,
+            Integer activeItems,
+            Integer assignedItems,
+            Integer borrowedItems,
+            Integer pendingItems) {
+    }
+
     public record AssetDto(
             String id,
             String type,
@@ -31,7 +39,54 @@ public final class AssetsDtos {
             String ownerUserId,
             String ownerName,
             List<AssetMemberRequestDto> requests,
+            AssetRequestMetricsDto metrics,
             List<String> menuActions) {
+        public AssetDto(
+                String id,
+                String type,
+                String title,
+                String subtitle,
+                String category,
+                String city,
+                Integer capacityTotal,
+                Integer quantity,
+                String description,
+                String imageUrl,
+                String sourceLink,
+                String locationLabel,
+                String priceLabel,
+                Boolean policiesEnabled,
+                Integer policyCount,
+                String visibility,
+                String status,
+                String ownerUserId,
+                String ownerName,
+                List<AssetMemberRequestDto> requests,
+                List<String> menuActions) {
+            this(
+                    id,
+                    type,
+                    title,
+                    subtitle,
+                    category,
+                    city,
+                    capacityTotal,
+                    quantity,
+                    description,
+                    imageUrl,
+                    sourceLink,
+                    locationLabel,
+                    priceLabel,
+                    policiesEnabled,
+                    policyCount,
+                    visibility,
+                    status,
+                    ownerUserId,
+                    ownerName,
+                    requests,
+                    null,
+                    menuActions);
+        }
     }
 
     public record AssetExplorePageDto(
@@ -61,7 +116,55 @@ public final class AssetsDtos {
             String ownerUserId,
             String ownerName,
             List<AssetMemberRequestDto> requests,
+            AssetRequestMetricsDto metrics,
             List<String> menuActions) {
+        public AssetDetailDto(
+                String id,
+                String type,
+                String title,
+                String subtitle,
+                String category,
+                String city,
+                Integer capacityTotal,
+                Integer quantity,
+                String details,
+                String imageUrl,
+                String sourceLink,
+                List<String> routes,
+                Boolean policiesEnabled,
+                List<PolicyItemDto> policies,
+                PricingConfigDto pricing,
+                String visibility,
+                String status,
+                String ownerUserId,
+                String ownerName,
+                List<AssetMemberRequestDto> requests,
+                List<String> menuActions) {
+            this(
+                    id,
+                    type,
+                    title,
+                    subtitle,
+                    category,
+                    city,
+                    capacityTotal,
+                    quantity,
+                    details,
+                    imageUrl,
+                    sourceLink,
+                    routes,
+                    policiesEnabled,
+                    policies,
+                    pricing,
+                    visibility,
+                    status,
+                    ownerUserId,
+                    ownerName,
+                    requests,
+                    null,
+                    menuActions);
+        }
+
         public AssetDto toAssetDto() {
             return new AssetDto(
                     id,
@@ -86,6 +189,7 @@ public final class AssetsDtos {
                     ownerUserId,
                     ownerName,
                     requests,
+                    metrics,
                     menuActions);
         }
     }

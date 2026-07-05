@@ -37,6 +37,7 @@ import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetPolicyRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
+import com.raxim.myscoutee.profile.data.document.AssetRequest;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
@@ -44,6 +45,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetRequestMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
@@ -129,8 +131,9 @@ public class AssetsService {
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
         return assets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -143,7 +146,11 @@ public class AssetsService {
         }
         return assetsRepository.findByOwnerUserIdAndAssetId(normalizedUserId, normalizedAssetId)
                 .filter(asset -> asset != null && !isSuppressedLifecycleStatus(asset.getStatus()))
-                .map(asset -> toAssetDetailDto(asset, resolveOwnerNamesByUserId(List.of(asset)), normalizedUserId))
+                .map(asset -> toAssetDetailDto(
+                        asset,
+                        resolveOwnerNamesByUserId(List.of(asset)),
+                        normalizedUserId,
+                        resolveAssetRequestMetrics(asset)))
                 .orElse(null);
     }
 
@@ -161,8 +168,9 @@ public class AssetsService {
                 .sorted(visibleAssetComparator(viewerAffinity))
                 .toList();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(assets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(assets);
         return assets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -203,8 +211,9 @@ public class AssetsService {
                 normalizedPageSize);
         List<Asset> pageAssets = pageResult.items();
         Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(pageAssets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(pageAssets);
         List<AssetDto> items = pageAssets.stream()
-                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId))
+                .map(asset -> toAssetDto(asset, ownerNamesByUserId, normalizedUserId, metricsByAssetId.get(normalizeId(asset.getAssetId()))))
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -1283,7 +1292,99 @@ public class AssetsService {
         return toAssetDto(asset, Map.of(), null);
     }
 
+    private Map<String, AssetRequestMetricsDto> resolveAssetRequestMetricsByAssetId(Collection<Asset> assets) {
+        if (assets == null || assets.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, String> ownerUserIdByAssetId = new LinkedHashMap<>();
+        for (Asset asset : assets) {
+            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
+            if (StringUtils.hasText(assetId) && StringUtils.hasText(ownerUserId)) {
+                ownerUserIdByAssetId.put(assetId, ownerUserId);
+            }
+        }
+        if (ownerUserIdByAssetId.isEmpty()) {
+            return Map.of();
+        }
+        List<AssetRequest> requests = mongoTemplate.find(
+                Query.query(Criteria.where("assetId").in(ownerUserIdByAssetId.keySet())),
+                AssetRequest.class);
+        Map<String, List<AssetRequest>> requestsByAssetId = new LinkedHashMap<>();
+        for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
+            String assetId = normalizeId(request == null ? null : request.assetId());
+            String ownerUserId = normalizeId(request == null ? null : request.ownerUserId());
+            if (!StringUtils.hasText(assetId) || !Objects.equals(ownerUserIdByAssetId.get(assetId), ownerUserId)) {
+                continue;
+            }
+            requestsByAssetId.computeIfAbsent(assetId, ignored -> new ArrayList<>()).add(request);
+        }
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = new LinkedHashMap<>();
+        for (String assetId : ownerUserIdByAssetId.keySet()) {
+            metricsByAssetId.put(assetId, toAssetRequestMetrics(requestsByAssetId.getOrDefault(assetId, List.of())));
+        }
+        return metricsByAssetId;
+    }
+
+    private AssetRequestMetricsDto resolveAssetRequestMetrics(Asset asset) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        if (!StringUtils.hasText(assetId)) {
+            return emptyAssetRequestMetrics();
+        }
+        return resolveAssetRequestMetricsByAssetId(List.of(asset)).getOrDefault(assetId, emptyAssetRequestMetrics());
+    }
+
+    private AssetRequestMetricsDto toAssetRequestMetrics(Collection<AssetRequest> requests) {
+        int assignedItems = 0;
+        int borrowedItems = 0;
+        int pendingItems = 0;
+        for (AssetRequest request : requests == null ? List.<AssetRequest>of() : requests) {
+            if (isManualAssetRequest(request)) {
+                assignedItems++;
+            } else if (MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request == null ? null : request.status()))) {
+                borrowedItems++;
+            } else if ("pending".equals(normalizeRequestStatus(request == null ? null : request.status()))) {
+                pendingItems++;
+            }
+        }
+        int activeItems = assignedItems + borrowedItems;
+        return new AssetRequestMetricsDto(
+                activeItems + pendingItems,
+                activeItems,
+                assignedItems,
+                borrowedItems,
+                pendingItems);
+    }
+
+    private AssetRequestMetricsDto normalizeAssetRequestMetrics(AssetRequestMetricsDto metrics) {
+        if (metrics == null) {
+            return emptyAssetRequestMetrics();
+        }
+        int assignedItems = normalizeCount(metrics.assignedItems());
+        int borrowedItems = normalizeCount(metrics.borrowedItems());
+        int pendingItems = normalizeCount(metrics.pendingItems());
+        int activeItems = normalizeCount(metrics.activeItems());
+        int allItems = normalizeCount(metrics.allItems());
+        return new AssetRequestMetricsDto(allItems, activeItems, assignedItems, borrowedItems, pendingItems);
+    }
+
+    private AssetRequestMetricsDto emptyAssetRequestMetrics() {
+        return new AssetRequestMetricsDto(0, 0, 0, 0, 0);
+    }
+
+    private boolean isManualAssetRequest(AssetRequest request) {
+        return "manual".equals(normalizeAssetRequestKind(request == null ? null : request.requestKind()));
+    }
+
     private AssetDto toAssetDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        return toAssetDto(asset, ownerNamesByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
+    }
+
+    private AssetDto toAssetDto(
+            Asset asset,
+            Map<String, String> ownerNamesByUserId,
+            String viewerUserId,
+            AssetRequestMetricsDto metrics) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
@@ -1311,10 +1412,19 @@ public class AssetsService {
                 normalizeId(asset.getOwnerUserId()),
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
+                normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId));
     }
 
     private AssetDetailDto toAssetDetailDto(Asset asset, Map<String, String> ownerNamesByUserId, String viewerUserId) {
+        return toAssetDetailDto(asset, ownerNamesByUserId, viewerUserId, resolveAssetRequestMetrics(asset));
+    }
+
+    private AssetDetailDto toAssetDetailDto(
+            Asset asset,
+            Map<String, String> ownerNamesByUserId,
+            String viewerUserId,
+            AssetRequestMetricsDto metrics) {
         if (asset == null || !StringUtils.hasText(normalizeId(asset.getAssetId()))) {
             return null;
         }
@@ -1346,6 +1456,7 @@ public class AssetsService {
                 normalizeId(asset.getOwnerUserId()),
                 resolveOwnerName(asset.getOwnerUserId(), ownerNamesByUserId),
                 toAssetRequestDtos(asset, viewerUserId),
+                normalizeAssetRequestMetrics(metrics),
                 resolveAssetMenuActions(asset, viewerUserId));
     }
 
