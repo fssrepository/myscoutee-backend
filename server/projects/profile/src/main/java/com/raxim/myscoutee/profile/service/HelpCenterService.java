@@ -51,7 +51,7 @@ public class HelpCenterService {
     private static final String EXPLANATION_CHATS_CONTEXT = "chats";
     private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
     private static final String EXPLANATION_ASSETS_CONTEXT = "assets";
-    private static final String EXPLANATION_ASSETS_CAR_CONTEXT = "assets.car";
+    private static final String EXPLANATION_ASSETS_TRANSPORT_CONTEXT = "assets.transport";
     private static final String EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT = "assets.accommodation";
     private static final String EXPLANATION_ASSETS_SUPPLIES_CONTEXT = "assets.supplies";
     private static final String EXPLANATION_ASSETS_TICKETS_CONTEXT = "assets.tickets";
@@ -65,7 +65,7 @@ public class HelpCenterService {
             "profile.editor",
             "profile.view",
             EXPLANATION_ASSETS_CONTEXT,
-            EXPLANATION_ASSETS_CAR_CONTEXT,
+            EXPLANATION_ASSETS_TRANSPORT_CONTEXT,
             EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT,
             EXPLANATION_ASSETS_SUPPLIES_CONTEXT,
             EXPLANATION_ASSETS_TICKETS_CONTEXT,

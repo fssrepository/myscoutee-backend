@@ -48,6 +48,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -112,7 +113,7 @@ class BackendContentMediaE2ETest {
     private static final String MEDIA_USER_ID = userId(3);
     private static final String SHARE_EVENT_ID = "e2e-content-share-event";
     private static final String REPORT_EVENT_ID = "e2e-content-report-event";
-    private static final String SHARE_ASSET_ID = "e2e-content-share-car";
+    private static final String SHARE_ASSET_ID = "e2e-content-share-transport";
     private static final Instant BASE_TIME = Instant.parse("2026-06-25T12:00:00Z");
 
     private static TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo;
@@ -266,7 +267,7 @@ class BackendContentMediaE2ETest {
         JsonNode assetShareToken = postJson("/share-tokens", Map.of(
                 "kind", "asset",
                 "entityId", SHARE_ASSET_ID,
-                "assetType", "Car",
+                "assetType", AssetCatalog.TYPE_TRANSPORT,
                 "ownerUserId", MEDIA_USER_ID));
         JsonNode resolvedAsset = getJson("/share-tokens/resolve?token=" + encode(assetShareToken.path("token").asString())
                 + "&userId=" + MEDIA_USER_ID);
@@ -508,12 +509,12 @@ class BackendContentMediaE2ETest {
         asset.setSyncKey("content-share-asset-" + UUID.randomUUID());
         asset.setAssetId(SHARE_ASSET_ID);
         asset.setOwnerUserId(MEDIA_USER_ID);
-        asset.setType("Car");
-        asset.setTitle("Shareable Backend Car");
-        asset.setSubtitle("Car - Budapest");
+        asset.setType(AssetCatalog.TYPE_TRANSPORT);
+        asset.setTitle("Shareable Backend Transport");
+        asset.setSubtitle("Transport - Budapest");
         asset.setCity("Budapest");
-        asset.setDetails("A backend e2e car that can be resolved from a share token.");
-        asset.setImageUrl("https://example.test/share-car.png");
+        asset.setDetails("A backend e2e transport asset that can be resolved from a share token.");
+        asset.setImageUrl("https://example.test/share-transport.png");
         asset.setSourceLink("/assets/" + SHARE_ASSET_ID);
         asset.setStatus("A");
         asset.setVisibility("Public");

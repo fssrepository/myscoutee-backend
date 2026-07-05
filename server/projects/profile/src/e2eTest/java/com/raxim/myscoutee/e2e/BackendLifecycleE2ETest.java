@@ -44,6 +44,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityChat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -102,8 +103,8 @@ class BackendLifecycleE2ETest {
     private static final String OUTSIDER_ID = userId(50);
     private static final String EVENT_ID = "e2e-life-paid-camp";
     private static final String SUB_EVENT_ID = "e2e-life-sub-cars";
-    private static final String RESOURCE_ASSET_ID = "e2e-life-resource-car";
-    private static final String MANAGED_ASSET_ID = "e2e-life-managed-car";
+    private static final String RESOURCE_ASSET_ID = "e2e-life-resource-transport";
+    private static final String MANAGED_ASSET_ID = "e2e-life-managed-transport";
     private static final Instant BASE_TIME = Instant.parse("2026-06-15T12:00:00Z");
 
     private static TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo;
@@ -215,7 +216,7 @@ class BackendLifecycleE2ETest {
 
         seedAcceptedEventMember(EVENT_ID, RESOURCE_OWNER_ID);
         JsonNode resources = postJson("/activities/events/subevent-resources/replace", resourceAssignmentState());
-        assertThat(ids(resources.path("assetAssignmentIds").path("Car")))
+        assertThat(ids(resources.path("assetAssignmentIds").path(AssetCatalog.TYPE_TRANSPORT)))
                 .containsExactly(RESOURCE_ASSET_ID);
         JsonNode eventMembersAfterResource = getJson("/activities/events/members?ownerType=event&ownerId=" + EVENT_ID);
         assertThat(memberStatus(eventMembersAfterResource, RESOURCE_OWNER_ID)).isEqualTo("accepted");
@@ -276,7 +277,7 @@ class BackendLifecycleE2ETest {
         Asset trashed = findAsset(MANAGED_ASSET_ID);
         assertThat(trashed.getStatus()).isEqualTo("T");
         assertThat(trashed.getTrashedAtIso()).isNotBlank();
-        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=" + AssetCatalog.TYPE_TRANSPORT), "id"))
                 .doesNotContain(MANAGED_ASSET_ID);
 
         NotificationOutboxItem unavailableNotification = findOnlyNotification("asset-unavailable", MANAGED_ASSET_ID);
@@ -494,26 +495,26 @@ class BackendLifecycleE2ETest {
 
     @Test
     void assetExploreFiltersVisibilityTypeAndTrashRestoreThroughHttp() {
-        String publicCar = "e2e-life-public-car";
+        String publicTransport = "e2e-life-public-transport";
         String publicTent = "e2e-life-public-tent";
-        String invitationCar = "e2e-life-invite-car";
+        String invitationTransport = "e2e-life-invite-transport";
 
-        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(publicCar, "Car", "Public")));
-        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(publicTent, "Tent", "Public")));
-        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(invitationCar, "Car", "Invitation only")));
+        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(publicTransport, AssetCatalog.TYPE_TRANSPORT, "Public")));
+        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(publicTent, AssetCatalog.TYPE_SUPPLIES, "Public")));
+        postOk("/assets/upsert", Map.of("userId", ASSET_OWNER_ID, "asset", assetCard(invitationTransport, AssetCatalog.TYPE_TRANSPORT, "Invitation only")));
 
-        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
-                .contains(publicCar)
-                .doesNotContain(publicTent, invitationCar);
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=" + AssetCatalog.TYPE_TRANSPORT), "id"))
+                .contains(publicTransport)
+                .doesNotContain(publicTent, invitationTransport);
 
-        postOk("/assets/delete", Map.of("userId", ASSET_OWNER_ID, "assetId", publicCar));
-        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
-                .doesNotContain(publicCar, invitationCar);
+        postOk("/assets/delete", Map.of("userId", ASSET_OWNER_ID, "assetId", publicTransport));
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=" + AssetCatalog.TYPE_TRANSPORT), "id"))
+                .doesNotContain(publicTransport, invitationTransport);
 
-        postOk("/assets/restore", Map.of("userId", ASSET_OWNER_ID, "assetId", publicCar));
-        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=Car"), "id"))
-                .contains(publicCar)
-                .doesNotContain(invitationCar);
+        postOk("/assets/restore", Map.of("userId", ASSET_OWNER_ID, "assetId", publicTransport));
+        assertThat(ids(getJson("/assets/explore?userId=" + OUTSIDER_ID + "&type=" + AssetCatalog.TYPE_TRANSPORT), "id"))
+                .contains(publicTransport)
+                .doesNotContain(invitationTransport);
     }
 
     @Test
@@ -650,7 +651,7 @@ class BackendLifecycleE2ETest {
         payload.put("creatorCity", "Bratislava");
         payload.put("location", "Lifecycle Arena");
         payload.put("locationCoordinates", new LocationCoordinatesDto(48.1486d, 17.1077d));
-        payload.put("topics", List.of("football", "cars"));
+        payload.put("topics", List.of("football", "transport"));
         payload.put("subEvents", List.of(subEvent()));
         payload.put("mode", "Casual");
         return payload;
@@ -659,7 +660,7 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> subEvent() {
         Map<String, Object> item = new LinkedHashMap<>();
         item.put("id", SUB_EVENT_ID);
-        item.put("name", "Car logistics");
+        item.put("name", "Transport logistics");
         item.put("description", "Coordinate shared transport");
         item.put("startAt", BASE_TIME.plus(Duration.ofMinutes(30)).toString());
         item.put("endAt", BASE_TIME.plus(Duration.ofHours(1)).toString());
@@ -884,15 +885,15 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> resourceAssetCard() {
         Map<String, Object> asset = new LinkedHashMap<>();
         asset.put("id", RESOURCE_ASSET_ID);
-        asset.put("type", "Car");
-        asset.put("title", "Resource Car");
+        asset.put("type", AssetCatalog.TYPE_TRANSPORT);
+        asset.put("title", "Resource Transport");
         asset.put("subtitle", "Four seats");
-        asset.put("category", "Transport");
+        asset.put("category", AssetCatalog.CATEGORY_SEDAN);
         asset.put("city", "Bratislava");
         asset.put("capacityTotal", 4);
         asset.put("quantity", 1);
-        asset.put("details", "Resource car for event logistics");
-        asset.put("imageUrl", "https://example.test/assets/resource-car.png");
+        asset.put("details", "Resource transport for event logistics");
+        asset.put("imageUrl", "https://example.test/assets/resource-transport.png");
         asset.put("routes", List.of("Lifecycle Arena"));
         asset.put("visibility", "Public");
         return asset;
@@ -903,9 +904,9 @@ class BackendLifecycleE2ETest {
                 "ownerId", EVENT_ID,
                 "subEventId", SUB_EVENT_ID,
                 "assetOwnerUserId", RESOURCE_OWNER_ID,
-                "assetAssignmentIds", Map.of("Car", List.of(RESOURCE_ASSET_ID)),
+                "assetAssignmentIds", Map.of(AssetCatalog.TYPE_TRANSPORT, List.of(RESOURCE_ASSET_ID)),
                 "assetSettingsByType", Map.of(
-                        "Car", Map.of(
+                        AssetCatalog.TYPE_TRANSPORT, Map.of(
                                 RESOURCE_ASSET_ID, Map.of(
                                         "capacityMin", 1,
                                         "capacityMax", 1,
@@ -917,15 +918,15 @@ class BackendLifecycleE2ETest {
     private Map<String, Object> managedAssetCard() {
         Map<String, Object> asset = new LinkedHashMap<>();
         asset.put("id", MANAGED_ASSET_ID);
-        asset.put("type", "Car");
-        asset.put("title", "Managed Team Car");
+        asset.put("type", AssetCatalog.TYPE_TRANSPORT);
+        asset.put("title", "Managed Team Transport");
         asset.put("subtitle", "Owner plus manager");
-        asset.put("category", "Transport");
+        asset.put("category", AssetCatalog.CATEGORY_SEDAN);
         asset.put("city", "Bratislava");
         asset.put("capacityTotal", 4);
         asset.put("quantity", 1);
-        asset.put("details", "Asset lifecycle e2e car");
-        asset.put("imageUrl", "https://example.test/assets/managed-car.png");
+        asset.put("details", "Asset lifecycle e2e transport");
+        asset.put("imageUrl", "https://example.test/assets/managed-transport.png");
         asset.put("routes", List.of("Bratislava", "Lifecycle Arena"));
         asset.put("visibility", "Public");
         asset.put("requests", List.of(Map.of(
@@ -935,7 +936,7 @@ class BackendLifecycleE2ETest {
                 "initials", "LU",
                 "gender", "woman",
                 "status", "pending",
-                "note", "Can manage the car",
+                "note", "Can manage the transport",
                 "requestKind", "borrow",
                 "requestedAtIso", BASE_TIME.minus(Duration.ofDays(1)).toString())));
         return asset;
@@ -947,7 +948,7 @@ class BackendLifecycleE2ETest {
         asset.put("type", type);
         asset.put("title", "Lifecycle " + type + " " + assetId);
         asset.put("subtitle", "Explore contract asset");
-        asset.put("category", "Car".equals(type) ? "Transport" : "Camp");
+        asset.put("category", AssetCatalog.TYPE_TRANSPORT.equals(type) ? AssetCatalog.CATEGORY_SEDAN : AssetCatalog.CATEGORY_CAMPING);
         asset.put("city", "Bratislava");
         asset.put("capacityTotal", 4);
         asset.put("quantity", 1);

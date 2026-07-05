@@ -16,6 +16,7 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
@@ -670,9 +671,9 @@ public class ActivityEventSubEventsMapper {
         if (item == null) {
             return null;
         }
-        ResourceMetric car = resourceMetric(
+        ResourceMetric transport = resourceMetric(
                 resourceRecord,
-                "Car",
+                AssetCatalog.TYPE_TRANSPORT,
                 item.carsAccepted(),
                 item.carsPending(),
                 item.carsCapacityMin(),
@@ -680,7 +681,7 @@ public class ActivityEventSubEventsMapper {
                 resourceMetricsByKey);
         ResourceMetric accommodation = resourceMetric(
                 resourceRecord,
-                "Accommodation",
+                AssetCatalog.TYPE_ACCOMMODATION,
                 item.accommodationAccepted(),
                 item.accommodationPending(),
                 item.accommodationCapacityMin(),
@@ -688,7 +689,7 @@ public class ActivityEventSubEventsMapper {
                 resourceMetricsByKey);
         ResourceMetric supplies = resourceMetric(
                 resourceRecord,
-                "Supplies",
+                AssetCatalog.TYPE_SUPPLIES,
                 item.suppliesAccepted(),
                 item.suppliesPending(),
                 item.suppliesCapacityMin(),
@@ -712,14 +713,14 @@ public class ActivityEventSubEventsMapper {
                 item.capacityMax(),
                 item.membersAccepted(),
                 item.membersPending(),
-                car.pending(),
+                transport.pending(),
                 accommodation.pending(),
                 supplies.pending(),
-                car.accepted(),
+                transport.accepted(),
                 accommodation.accepted(),
                 supplies.accepted(),
-                car.capacityMin(),
-                car.capacityMax(),
+                transport.capacityMin(),
+                transport.capacityMax(),
                 accommodation.capacityMin(),
                 accommodation.capacityMax(),
                 supplies.capacityMin(),
@@ -886,13 +887,13 @@ public class ActivityEventSubEventsMapper {
                         : assignedIds);
         int capacityMin = 0;
         int capacityMax = 0;
-        int accepted = "Supplies".equals(type) ? 0 : assetIds.size();
+        int accepted = AssetCatalog.TYPE_SUPPLIES.equals(type) ? 0 : assetIds.size();
         int pending = 0;
         for (String assetId : assetIds) {
             SubEventAssignedAssetSettingsDto settings = settingsByAssetId.get(assetId);
             capacityMin += nonNegativeInteger(settings == null ? null : settings.capacityMin());
             capacityMax += nonNegativeInteger(settings == null ? null : settings.capacityMax());
-            if ("Supplies".equals(type)) {
+            if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
                 accepted += supplyContributionQuantity(resourceRecord, assetId);
             }
         }

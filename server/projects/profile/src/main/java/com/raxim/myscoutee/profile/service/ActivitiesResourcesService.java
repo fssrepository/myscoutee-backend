@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
@@ -211,7 +212,7 @@ public class ActivitiesResourcesService {
         boolean changed = false;
         String fallbackManagerUserId = normalizeId(record.getAssetOwnerUserId());
 
-        for (String type : List.of("Car", "Accommodation")) {
+        for (String type : List.of(AssetCatalog.TYPE_TRANSPORT, AssetCatalog.TYPE_ACCOMMODATION)) {
             List<String> assignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault(type, List.of()));
             Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault(type, Map.of()));
             Set<String> candidateAssetIds = new LinkedHashSet<>(assignmentIds);
@@ -241,8 +242,8 @@ public class ActivitiesResourcesService {
             }
         }
 
-        List<String> supplyAssignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault("Supplies", List.of()));
-        Map<String, SubEventAssignedAssetSettingsRecord> supplySettingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault("Supplies", Map.of()));
+        List<String> supplyAssignmentIds = new ArrayList<>(nextAssignmentIds.getOrDefault(AssetCatalog.TYPE_SUPPLIES, List.of()));
+        Map<String, SubEventAssignedAssetSettingsRecord> supplySettingsByAssetId = new LinkedHashMap<>(nextSettingsByType.getOrDefault(AssetCatalog.TYPE_SUPPLIES, Map.of()));
         Set<String> supplyAssetIds = new LinkedHashSet<>(supplyAssignmentIds);
         supplyAssetIds.addAll(supplySettingsByAssetId.keySet());
         supplyAssetIds.addAll(nextSupplyEntriesByAssetId.keySet());
@@ -300,8 +301,8 @@ public class ActivitiesResourcesService {
             }
         }
         if (suppliesChanged) {
-            storeAssignmentIds(nextAssignmentIds, "Supplies", supplyAssignmentIds);
-            storeSettings(nextSettingsByType, "Supplies", supplySettingsByAssetId);
+            storeAssignmentIds(nextAssignmentIds, AssetCatalog.TYPE_SUPPLIES, supplyAssignmentIds);
+            storeSettings(nextSettingsByType, AssetCatalog.TYPE_SUPPLIES, supplySettingsByAssetId);
             changed = true;
         }
 

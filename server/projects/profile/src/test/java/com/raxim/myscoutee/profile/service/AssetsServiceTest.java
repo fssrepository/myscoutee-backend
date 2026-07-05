@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.client.result.UpdateResult;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
@@ -820,7 +821,7 @@ class AssetsServiceTest {
         asset.setId("asset-doc-1");
         asset.setAssetId("asset-1");
         asset.setOwnerUserId("u1");
-        asset.setType("Supplies");
+        asset.setType(AssetCatalog.TYPE_SUPPLIES);
         asset.setTitle("Camp Kit");
         asset.setCity("Austin");
         asset.setCapacityTotal(2);
@@ -854,7 +855,7 @@ class AssetsServiceTest {
                 "2026-05-11T10:00:00Z",
                 new AssetRequestBookingRecord(
                         "event-1",
-                        "Weekend Ride",
+                        "Weekend Transport",
                         "subevent-1",
                         "Morning Trip",
                         "slot-1",
@@ -899,10 +900,10 @@ class AssetsServiceTest {
             List<AssetMemberRequestDto> requests) {
         return new AssetDetailDto(
                 assetId,
-                "Supplies",
+                AssetCatalog.TYPE_SUPPLIES,
                 title,
                 "",
-                "Camping",
+                AssetCatalog.CATEGORY_CAMPING,
                 "Austin",
                 2,
                 quantity,
@@ -934,7 +935,7 @@ class AssetsServiceTest {
                 "2026-05-11T10:00:00Z",
                 new AssetRequestBookingDto(
                         eventId,
-                        "Weekend Ride",
+                        "Weekend Transport",
                         "subevent-1",
                         "Morning Trip",
                         "slot-1",

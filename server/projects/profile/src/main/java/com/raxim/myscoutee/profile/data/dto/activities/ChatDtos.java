@@ -48,7 +48,7 @@ public final class ChatDtos {
 
     public record ChatMetricsDto(
             ChatMetricBucketDto members,
-            ChatMetricBucketDto car,
+            ChatMetricBucketDto transport,
             ChatMetricBucketDto accommodation,
             ChatMetricBucketDto supplies,
             Integer groupsCount,

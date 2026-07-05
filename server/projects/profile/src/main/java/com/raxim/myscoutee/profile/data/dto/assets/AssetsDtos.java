@@ -2,6 +2,7 @@ package com.raxim.myscoutee.profile.data.dto.assets;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -178,7 +179,7 @@ public final class AssetsDtos {
                     details,
                     imageUrl,
                     sourceLink,
-                    type != null && type.equals("Accommodation") && routes != null && !routes.isEmpty()
+                    type != null && type.equals(AssetCatalog.TYPE_ACCOMMODATION) && routes != null && !routes.isEmpty()
                             ? routes.get(0)
                             : city,
                     null,

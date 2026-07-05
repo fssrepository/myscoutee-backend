@@ -570,10 +570,10 @@
     "value": "Cancel"
   },
   {
-    "_id": "i18n-message-en-car",
-    "key": "car",
+    "_id": "i18n-message-en-transport",
+    "key": "transport",
     "lang": "en",
-    "value": "Car"
+    "value": "Transport"
   },
   {
     "_id": "i18n-message-en-category",
@@ -5496,10 +5496,10 @@
     "value": "Profile was not able to save"
   },
   {
-    "_id": "i18n-message-en-property",
-    "key": "property",
+    "_id": "i18n-message-en-accommodation",
+    "key": "accommodation",
     "lang": "en",
-    "value": "Property"
+    "value": "Accommodation"
   },
   {
     "_id": "i18n-message-en-quick-reach-card",
@@ -7674,7 +7674,7 @@
     "value": "Capricorn"
   },
   {
-    "_id": "i18n-message-en-career-focused",
+    "_id": "i18n-message-en-transporteer-focused",
     "key": "career.focused",
     "lang": "en",
     "value": "Career-focused"
@@ -8904,22 +8904,22 @@
     "value": "No supplies yet"
   },
   {
-    "_id": "i18n-message-en-asset-owned-empty-car-description",
-    "key": "asset.owned.empty.car.description",
+    "_id": "i18n-message-en-asset-owned-empty-transport-description",
+    "key": "asset.owned.empty.transport.description",
     "lang": "en",
-    "value": "Add a car or ride so it can show up here."
+    "value": "Add transport so it can show up here."
   },
   {
-    "_id": "i18n-message-en-asset-owned-empty-car-label",
-    "key": "asset.owned.empty.car.label",
+    "_id": "i18n-message-en-asset-owned-empty-transport-label",
+    "key": "asset.owned.empty.transport.label",
     "lang": "en",
-    "value": "No cars yet"
+    "value": "No transport yet"
   },
   {
     "_id": "i18n-message-en-asset-owned-empty-accommodation-description",
     "key": "asset.owned.empty.accommodation.description",
     "lang": "en",
-    "value": "Add a property, stay, room, or place so it can show up here."
+    "value": "Add a accommodation, stay, room, or place so it can show up here."
   },
   {
     "_id": "i18n-message-en-asset-owned-empty-accommodation-label",
@@ -10218,7 +10218,7 @@
     "value": "#Entrepreneurship"
   },
   {
-    "_id": "i18n-message-en-careerdriven",
+    "_id": "i18n-message-en-transporteerdriven",
     "key": "#CareerDriven",
     "lang": "en",
     "value": "#CareerDriven"
@@ -11004,10 +11004,10 @@
     "value": "Mégse"
   },
   {
-    "_id": "i18n-message-hu-car",
-    "key": "car",
+    "_id": "i18n-message-hu-transport",
+    "key": "transport",
     "lang": "hu",
-    "value": "Autó"
+    "value": "Transport"
   },
   {
     "_id": "i18n-message-hu-category",
@@ -15930,10 +15930,10 @@
     "value": "A profilt nem sikerült menteni"
   },
   {
-    "_id": "i18n-message-hu-property",
-    "key": "property",
+    "_id": "i18n-message-hu-accommodation",
+    "key": "accommodation",
     "lang": "hu",
-    "value": "Ingatlan"
+    "value": "Accommodation"
   },
   {
     "_id": "i18n-message-hu-quick-reach-card",
@@ -18108,7 +18108,7 @@
     "value": "Bak"
   },
   {
-    "_id": "i18n-message-hu-career-focused",
+    "_id": "i18n-message-hu-transporteer-focused",
     "key": "career.focused",
     "lang": "hu",
     "value": "Karrierközpontú"
@@ -19320,22 +19320,22 @@
     "value": "Még nincsenek eszközeid"
   },
   {
-    "_id": "i18n-message-hu-asset-owned-empty-car-description",
-    "key": "asset.owned.empty.car.description",
+    "_id": "i18n-message-hu-asset-owned-empty-transport-description",
+    "key": "asset.owned.empty.transport.description",
     "lang": "hu",
-    "value": "Adj hozzá egy autót vagy fuvart, hogy megjelenjen itt."
+    "value": "Adj hozzá transport eszközt, hogy megjelenjen itt."
   },
   {
-    "_id": "i18n-message-hu-asset-owned-empty-car-label",
-    "key": "asset.owned.empty.car.label",
+    "_id": "i18n-message-hu-asset-owned-empty-transport-label",
+    "key": "asset.owned.empty.transport.label",
     "lang": "hu",
-    "value": "Még nincs autód"
+    "value": "Még nincs transportd"
   },
   {
     "_id": "i18n-message-hu-asset-owned-empty-accommodation-description",
     "key": "asset.owned.empty.accommodation.description",
     "lang": "hu",
-    "value": "Adj hozzá egy ingatlant, szállást, szobát vagy helyet, hogy megjelenjen itt."
+    "value": "Adj hozzá szállást, szobát vagy helyet, hogy megjelenjen itt."
   },
   {
     "_id": "i18n-message-hu-asset-owned-empty-accommodation-label",
@@ -20640,7 +20640,7 @@
     "value": "#Vállalkozás"
   },
   {
-    "_id": "i18n-message-hu-careerdriven",
+    "_id": "i18n-message-hu-transporteerdriven",
     "key": "#CareerDriven",
     "lang": "hu",
     "value": "#Karrierközpontú"

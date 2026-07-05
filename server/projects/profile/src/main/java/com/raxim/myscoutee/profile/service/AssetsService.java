@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
 
+import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -77,8 +78,6 @@ public class AssetsService {
     private static final String ROLE_ADMIN = "Admin";
     private static final String ROLE_MANAGER = "Manager";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
-
-    private static final Set<String> ASSET_TYPES = Set.of("Car", "Accommodation", "Supplies");
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
@@ -1180,7 +1179,7 @@ public class AssetsService {
                 new Document("$gt", List.of(quantity, 0)),
                 quantity,
                 new Document("$cond", List.of(
-                        new Document("$eq", List.of("$type", "Supplies")),
+                        new Document("$eq", List.of("$type", AssetCatalog.TYPE_SUPPLIES)),
                         new Document("$max", List.of(1, capacityTotal)),
                         1))));
         Document overlappingQuantity = assetExploreOverlappingQuantityExpression(startAtIso, endAtIso);
@@ -1483,7 +1482,7 @@ public class AssetsService {
     }
 
     private String assetLocationLabel(Asset asset, String type) {
-        if (!"Accommodation".equals(type)) {
+        if (!AssetCatalog.TYPE_ACCOMMODATION.equals(type)) {
             return safeText(asset == null ? null : asset.getCity());
         }
         return normalizeStrings(asset == null ? null : asset.getRoutes()).stream()
@@ -2089,7 +2088,7 @@ public class AssetsService {
         if (parsed > 0) {
             return parsed;
         }
-        if ("Supplies".equals(type)) {
+        if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
             return Math.max(1, normalizeCount(capacityFallback));
         }
         return 1;
@@ -2343,7 +2342,7 @@ public class AssetsService {
 
     private String normalizeAssetType(String type) {
         String normalizedType = safeText(type);
-        return ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
+        return AssetCatalog.ASSET_TYPES.contains(normalizedType) ? normalizedType : null;
     }
 
     private String normalizeAssetRequestKind(String kind) {

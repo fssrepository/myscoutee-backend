@@ -24,13 +24,12 @@ on event explore multislot should be shown somehow (duration maybe)
 
 on mobile image carousel has been stretched...
 
-not only car - ride /flight - add car - transport instead, not car
-
 common in case when saw
 -----------------------
 app-menu -> infocard/imagecard etc. to wire to appmenu-host
 popup-component introduction (many popup still does not have + it solves sizing)
-hibernate app and reload on mobile stucks
 fix translation half hungarian
 form-flow introduction to event editor
+
+hibernate app and reload on mobile stucks
 bundle size - we have some small chunks and a bigger barrel (1MB)

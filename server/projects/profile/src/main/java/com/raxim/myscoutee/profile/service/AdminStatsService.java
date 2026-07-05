@@ -364,18 +364,18 @@ public class AdminStatsService {
                     String normalized = normalizeKey(entry.getKey());
                     String labelKey = switch (normalized) {
                         case "accommodation" -> "accommodation";
-                        case "car" -> "car";
+                        case "transport" -> "transport";
                         case "supplies" -> "supplies";
                         default -> "";
                     };
                     String icon = switch (normalized) {
                         case "accommodation" -> "hotel";
-                        case "car" -> "directions_car";
+                        case "transport" -> "directions_car";
                         default -> "category";
                     };
                     String tone = switch (normalized) {
                         case "accommodation" -> "gold";
-                        case "car" -> "blue";
+                        case "transport" -> "blue";
                         case "supplies" -> "green";
                         default -> "slate";
                     };
