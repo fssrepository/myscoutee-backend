@@ -8952,6 +8952,60 @@
     "value": "No quantity entered yet."
   },
   {
+    "_id": "i18n-message-en-asset-requests-empty-availability-label",
+    "key": "asset.requests.empty.availability.label",
+    "lang": "en",
+    "value": "No availability items"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-empty-day-label",
+    "key": "asset.requests.empty.day.label",
+    "lang": "en",
+    "value": "No items in this range"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-empty-earlier-description",
+    "key": "asset.requests.empty.earlier.description",
+    "lang": "en",
+    "value": "Check Later for upcoming asset activity."
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-empty-later-description",
+    "key": "asset.requests.empty.later.description",
+    "lang": "en",
+    "value": "Check Earlier; the activity may already have passed."
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-event-label",
+    "key": "event.subevents.empty.event.label",
+    "lang": "en",
+    "value": "No sub events in this event"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-label",
+    "key": "event.subevents.empty.label",
+    "lang": "en",
+    "value": "No sub events yet"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-past-description",
+    "key": "event.subevents.empty.past.description",
+    "lang": "en",
+    "value": "Check Later for upcoming sub events."
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-slot-label",
+    "key": "event.subevents.empty.slot.label",
+    "lang": "en",
+    "value": "No sub events in this slot"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-upcoming-description",
+    "key": "event.subevents.empty.upcoming.description",
+    "lang": "en",
+    "value": "Check Earlier; all sub events may already have passed."
+  },
+  {
     "_id": "i18n-message-en-asset-requests-filter-active-items",
     "key": "asset.requests.filter.active.items",
     "lang": "en",
@@ -19312,6 +19366,60 @@
     "key": "asset.requests.empty.no.quantity",
     "lang": "hu",
     "value": "Még nincs mennyiség megadva."
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-empty-availability-label",
+    "key": "asset.requests.empty.availability.label",
+    "lang": "hu",
+    "value": "Nincs elérhetőségi elem"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-empty-day-label",
+    "key": "asset.requests.empty.day.label",
+    "lang": "hu",
+    "value": "Nincs elem ebben az időszakban"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-empty-earlier-description",
+    "key": "asset.requests.empty.earlier.description",
+    "lang": "hu",
+    "value": "Nézd meg a Későbbi nézetet a közelgő eszközaktivitáshoz."
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-empty-later-description",
+    "key": "asset.requests.empty.later.description",
+    "lang": "hu",
+    "value": "Nézd meg a Korábbi nézetet; lehet, hogy már lezajlott."
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-event-label",
+    "key": "event.subevents.empty.event.label",
+    "lang": "hu",
+    "value": "Nincs alesemény ebben az eseményben"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-label",
+    "key": "event.subevents.empty.label",
+    "lang": "hu",
+    "value": "Még nincs alesemény"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-past-description",
+    "key": "event.subevents.empty.past.description",
+    "lang": "hu",
+    "value": "Nézd meg a Későbbi nézetet a közelgő aleseményekhez."
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-slot-label",
+    "key": "event.subevents.empty.slot.label",
+    "lang": "hu",
+    "value": "Nincs alesemény ebben az idősávban"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-upcoming-description",
+    "key": "event.subevents.empty.upcoming.description",
+    "lang": "hu",
+    "value": "Nézd meg a Korábbi nézetet; lehet, hogy már minden alesemény lezajlott."
   },
   {
     "_id": "i18n-message-hu-asset-requests-filter-active-items",

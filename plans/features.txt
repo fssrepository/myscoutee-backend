@@ -32,5 +32,5 @@ app-menu -> infocard/imagecard etc. to wire to appmenu-host
 popup-component introduction (many popup still does not have + it solves sizing)
 hibernate app and reload on mobile stucks
 fix translation half hungarian
-form-flow introduction to event editor and probably we have few other forms
+form-flow introduction to event editor
 bundle size - we have some small chunks and a bigger barrel (1MB)
