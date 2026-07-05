@@ -25,7 +25,6 @@ on event explore multislot should be shown somehow (duration maybe)
 common in case when saw
 -----------------------
 app-menu -> infocard/imagecard etc. to wire to appmenu-host
-form-flow introduction to event editor
 remove customization from shared styles
 
 check which popup is being opened through hardwiring and populate the header through hard-wiring
