@@ -27,8 +27,6 @@ common in case when saw
 app-menu -> infocard/imagecard etc. to wire to appmenu-host
 form-flow introduction to event editor
 remove customization from shared styles
-custom scss cleanup (ask codex whether see any duplicates or what can be generalized and just slight different)
-hard-coded string removal from the code
 
 check which popup is being opened through hardwiring and populate the header through hard-wiring
 
