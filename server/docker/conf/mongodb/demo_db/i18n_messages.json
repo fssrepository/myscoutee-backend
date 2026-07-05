@@ -5442,16 +5442,16 @@
     "value": "Physique"
   },
   {
-    "_id": "i18n-message-en-profile-save-timed-out",
-    "key": "profile.save.timed.out",
-    "lang": "en",
-    "value": "Profile save timed out"
-  },
-  {
     "_id": "i18n-message-en-please-register",
     "key": "please.register",
     "lang": "en",
     "value": "Please register"
+  },
+  {
+    "_id": "i18n-message-en-profile-save-timed-out",
+    "key": "profile.save.timed.out",
+    "lang": "en",
+    "value": "Profile save timed out"
   },
   {
     "_id": "i18n-message-en-profile-setup",
@@ -5494,12 +5494,6 @@
     "key": "profile.was.not.able.to.save",
     "lang": "en",
     "value": "Profile was not able to save"
-  },
-  {
-    "_id": "i18n-message-en-accommodation",
-    "key": "accommodation",
-    "lang": "en",
-    "value": "Accommodation"
   },
   {
     "_id": "i18n-message-en-quick-reach-card",
@@ -6900,6 +6894,12 @@
     "value": "Loading stats"
   },
   {
+    "_id": "i18n-message-en-manage",
+    "key": "manage",
+    "lang": "en",
+    "value": "Manage"
+  },
+  {
     "_id": "i18n-message-en-set-priorities-and-feedback",
     "key": "set.priorities.and.feedback",
     "lang": "en",
@@ -7674,7 +7674,7 @@
     "value": "Capricorn"
   },
   {
-    "_id": "i18n-message-en-transporteer-focused",
+    "_id": "i18n-message-en-career-focused",
     "key": "career.focused",
     "lang": "en",
     "value": "Career-focused"
@@ -8640,6 +8640,48 @@
     "value": "Sports"
   },
   {
+    "_id": "i18n-message-en-stage-status-finalized",
+    "key": "stage.status.finalized",
+    "lang": "en",
+    "value": "Finalized"
+  },
+  {
+    "_id": "i18n-message-en-stage-status-started",
+    "key": "stage.status.started",
+    "lang": "en",
+    "value": "Started"
+  },
+  {
+    "_id": "i18n-message-en-stage-status-closed",
+    "key": "stage.status.closed",
+    "lang": "en",
+    "value": "Closed"
+  },
+  {
+    "_id": "i18n-message-en-stage-status-blocked",
+    "key": "stage.status.blocked",
+    "lang": "en",
+    "value": "Blocked"
+  },
+  {
+    "_id": "i18n-message-en-stage-status-scores-review",
+    "key": "stage.status.scores.review",
+    "lang": "en",
+    "value": "Under review"
+  },
+  {
+    "_id": "i18n-message-en-stage-status-scheduled",
+    "key": "stage.status.scheduled",
+    "lang": "en",
+    "value": "Scheduled"
+  },
+  {
+    "_id": "i18n-message-en-stage-status-suspended",
+    "key": "stage.status.suspended",
+    "lang": "en",
+    "value": "Suspended"
+  },
+  {
     "_id": "i18n-message-en-start-feedback",
     "key": "start.feedback",
     "lang": "en",
@@ -8758,6 +8800,42 @@
     "key": "under.review",
     "lang": "en",
     "value": "Under Review"
+  },
+  {
+    "_id": "i18n-message-en-trash-draft",
+    "key": "trash.draft",
+    "lang": "en",
+    "value": "Draft"
+  },
+  {
+    "_id": "i18n-message-en-trash-event",
+    "key": "trash.event",
+    "lang": "en",
+    "value": "Event"
+  },
+  {
+    "_id": "i18n-message-en-trash-invitation",
+    "key": "trash.invitation",
+    "lang": "en",
+    "value": "Invitation"
+  },
+  {
+    "_id": "i18n-message-en-trash-joined-event",
+    "key": "trash.joined.event",
+    "lang": "en",
+    "value": "Joined Event"
+  },
+  {
+    "_id": "i18n-message-en-trash-own-event",
+    "key": "trash.own.event",
+    "lang": "en",
+    "value": "Own Event"
+  },
+  {
+    "_id": "i18n-message-en-trash-pending-event",
+    "key": "trash.pending.event",
+    "lang": "en",
+    "value": "Pending Event"
   },
   {
     "_id": "i18n-message-en-ux-improvement",
@@ -8886,28 +8964,28 @@
     "value": "Asset"
   },
   {
+    "_id": "i18n-message-en-asset-availability",
+    "key": "asset.availability",
+    "lang": "en",
+    "value": "Availability"
+  },
+  {
     "_id": "i18n-message-en-asset-misuse",
     "key": "asset.misuse",
     "lang": "en",
     "value": "Asset misuse"
   },
   {
-    "_id": "i18n-message-en-asset-owned-empty-supplies-description",
-    "key": "asset.owned.empty.supplies.description",
+    "_id": "i18n-message-en-asset-owned-empty-accommodation-label",
+    "key": "asset.owned.empty.accommodation.label",
     "lang": "en",
-    "value": "Add supplies or shared gear so the list can populate."
+    "value": "No properties yet"
   },
   {
-    "_id": "i18n-message-en-asset-owned-empty-supplies-label",
-    "key": "asset.owned.empty.supplies.label",
+    "_id": "i18n-message-en-asset-owned-empty-accommodation-description",
+    "key": "asset.owned.empty.accommodation.description",
     "lang": "en",
-    "value": "No supplies yet"
-  },
-  {
-    "_id": "i18n-message-en-asset-owned-empty-transport-description",
-    "key": "asset.owned.empty.transport.description",
-    "lang": "en",
-    "value": "Add transport so it can show up here."
+    "value": "Add accommodation, a room, or a place so it can show up here."
   },
   {
     "_id": "i18n-message-en-asset-owned-empty-transport-label",
@@ -8916,16 +8994,22 @@
     "value": "No transport yet"
   },
   {
-    "_id": "i18n-message-en-asset-owned-empty-accommodation-description",
-    "key": "asset.owned.empty.accommodation.description",
+    "_id": "i18n-message-en-asset-owned-empty-transport-description",
+    "key": "asset.owned.empty.transport.description",
     "lang": "en",
-    "value": "Add a accommodation, stay, room, or place so it can show up here."
+    "value": "Add a transport asset so it can show up here."
   },
   {
-    "_id": "i18n-message-en-asset-owned-empty-accommodation-label",
-    "key": "asset.owned.empty.accommodation.label",
+    "_id": "i18n-message-en-asset-owned-empty-supplies-label",
+    "key": "asset.owned.empty.supplies.label",
     "lang": "en",
-    "value": "No properties yet"
+    "value": "No supplies yet"
+  },
+  {
+    "_id": "i18n-message-en-asset-owned-empty-supplies-description",
+    "key": "asset.owned.empty.supplies.description",
+    "lang": "en",
+    "value": "Add supplies or shared gear so the list can populate."
   },
   {
     "_id": "i18n-message-en-asset-requests-actions-open",
@@ -8938,18 +9022,6 @@
     "key": "asset.requests.close",
     "lang": "en",
     "value": "Close asset requests"
-  },
-  {
-    "_id": "i18n-message-en-asset-requests-empty-no-activity",
-    "key": "asset.requests.empty.no.activity",
-    "lang": "en",
-    "value": "No borrow or assignment activity yet."
-  },
-  {
-    "_id": "i18n-message-en-asset-requests-empty-no-quantity",
-    "key": "asset.requests.empty.no.quantity",
-    "lang": "en",
-    "value": "No quantity entered yet."
   },
   {
     "_id": "i18n-message-en-asset-requests-empty-availability-label",
@@ -8976,34 +9048,16 @@
     "value": "Check Earlier; the activity may already have passed."
   },
   {
-    "_id": "i18n-message-en-event-subevents-empty-event-label",
-    "key": "event.subevents.empty.event.label",
+    "_id": "i18n-message-en-asset-requests-empty-no-activity",
+    "key": "asset.requests.empty.no.activity",
     "lang": "en",
-    "value": "No sub events in this event"
+    "value": "No borrow or assignment activity yet."
   },
   {
-    "_id": "i18n-message-en-event-subevents-empty-label",
-    "key": "event.subevents.empty.label",
+    "_id": "i18n-message-en-asset-requests-empty-no-quantity",
+    "key": "asset.requests.empty.no.quantity",
     "lang": "en",
-    "value": "No sub events yet"
-  },
-  {
-    "_id": "i18n-message-en-event-subevents-empty-past-description",
-    "key": "event.subevents.empty.past.description",
-    "lang": "en",
-    "value": "Check Later for upcoming sub events."
-  },
-  {
-    "_id": "i18n-message-en-event-subevents-empty-slot-label",
-    "key": "event.subevents.empty.slot.label",
-    "lang": "en",
-    "value": "No sub events in this slot"
-  },
-  {
-    "_id": "i18n-message-en-event-subevents-empty-upcoming-description",
-    "key": "event.subevents.empty.upcoming.description",
-    "lang": "en",
-    "value": "Check Earlier; all sub events may already have passed."
+    "value": "No quantity entered yet."
   },
   {
     "_id": "i18n-message-en-asset-requests-filter-active-items",
@@ -9028,6 +9082,24 @@
     "key": "asset.requests.filter.pending.requests",
     "lang": "en",
     "value": "Pending Requests"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-order-earlier",
+    "key": "asset.requests.order.earlier",
+    "lang": "en",
+    "value": "Earlier"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-order-later",
+    "key": "asset.requests.order.later",
+    "lang": "en",
+    "value": "Later"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-order-open",
+    "key": "asset.requests.order.open",
+    "lang": "en",
+    "value": "Open request order"
   },
   {
     "_id": "i18n-message-en-asset-requests-inventory-badge-left",
@@ -9136,6 +9208,36 @@
     "key": "asset.requests.subtitle",
     "lang": "en",
     "value": "Requests and assignments with time-based availability"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-event-label",
+    "key": "event.subevents.empty.event.label",
+    "lang": "en",
+    "value": "No sub events in this event"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-label",
+    "key": "event.subevents.empty.label",
+    "lang": "en",
+    "value": "No sub events yet"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-past-description",
+    "key": "event.subevents.empty.past.description",
+    "lang": "en",
+    "value": "Check Later for upcoming sub events."
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-slot-label",
+    "key": "event.subevents.empty.slot.label",
+    "lang": "en",
+    "value": "No sub events in this slot"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-empty-upcoming-description",
+    "key": "event.subevents.empty.upcoming.description",
+    "lang": "en",
+    "value": "Check Earlier; all sub events may already have passed."
   },
   {
     "_id": "i18n-message-en-availability-methods",
@@ -10218,7 +10320,7 @@
     "value": "#Entrepreneurship"
   },
   {
-    "_id": "i18n-message-en-transporteerdriven",
+    "_id": "i18n-message-en-careerdriven",
     "key": "#CareerDriven",
     "lang": "en",
     "value": "#CareerDriven"
@@ -10432,6 +10534,540 @@
     "key": "review.the.terms.that.apply.when.you.use.myscoutee.features.accounts.events.chats.and.community.tools.",
     "lang": "en",
     "value": "Review the terms that apply when you use MyScoutee features, accounts, events, chats, and community tools."
+  },
+  {
+    "_id": "i18n-message-en-apartment",
+    "key": "apartment",
+    "lang": "en",
+    "value": "Apartment"
+  },
+  {
+    "_id": "i18n-message-en-audio",
+    "key": "audio",
+    "lang": "en",
+    "value": "Audio"
+  },
+  {
+    "_id": "i18n-message-en-bicycle",
+    "key": "bicycle",
+    "lang": "en",
+    "value": "Bicycle"
+  },
+  {
+    "_id": "i18n-message-en-boat",
+    "key": "boat",
+    "lang": "en",
+    "value": "Boat"
+  },
+  {
+    "_id": "i18n-message-en-bus",
+    "key": "bus",
+    "lang": "en",
+    "value": "Bus"
+  },
+  {
+    "_id": "i18n-message-en-camping",
+    "key": "camping",
+    "lang": "en",
+    "value": "Camping"
+  },
+  {
+    "_id": "i18n-message-en-campsite",
+    "key": "campsite",
+    "lang": "en",
+    "value": "Campsite"
+  },
+  {
+    "_id": "i18n-message-en-decor",
+    "key": "decor",
+    "lang": "en",
+    "value": "Decor"
+  },
+  {
+    "_id": "i18n-message-en-flight",
+    "key": "flight",
+    "lang": "en",
+    "value": "Flight"
+  },
+  {
+    "_id": "i18n-message-en-hotel",
+    "key": "hotel",
+    "lang": "en",
+    "value": "Hotel"
+  },
+  {
+    "_id": "i18n-message-en-house",
+    "key": "house",
+    "lang": "en",
+    "value": "House"
+  },
+  {
+    "_id": "i18n-message-en-motorcycle",
+    "key": "motorcycle",
+    "lang": "en",
+    "value": "Motorcycle"
+  },
+  {
+    "_id": "i18n-message-en-room",
+    "key": "room",
+    "lang": "en",
+    "value": "Room"
+  },
+  {
+    "_id": "i18n-message-en-safety",
+    "key": "safety",
+    "lang": "en",
+    "value": "Safety"
+  },
+  {
+    "_id": "i18n-message-en-sedan",
+    "key": "sedan",
+    "lang": "en",
+    "value": "Sedan"
+  },
+  {
+    "_id": "i18n-message-en-shuttle",
+    "key": "shuttle",
+    "lang": "en",
+    "value": "Shuttle"
+  },
+  {
+    "_id": "i18n-message-en-storage",
+    "key": "storage",
+    "lang": "en",
+    "value": "Storage"
+  },
+  {
+    "_id": "i18n-message-en-suv",
+    "key": "suv",
+    "lang": "en",
+    "value": "SUV"
+  },
+  {
+    "_id": "i18n-message-en-tech",
+    "key": "tech",
+    "lang": "en",
+    "value": "Tech"
+  },
+  {
+    "_id": "i18n-message-en-truck",
+    "key": "truck",
+    "lang": "en",
+    "value": "Truck"
+  },
+  {
+    "_id": "i18n-message-en-van",
+    "key": "van",
+    "lang": "en",
+    "value": "Van"
+  },
+  {
+    "_id": "i18n-message-en-venue",
+    "key": "venue",
+    "lang": "en",
+    "value": "Venue"
+  },
+  {
+    "_id": "i18n-message-en-workspace",
+    "key": "workspace",
+    "lang": "en",
+    "value": "Workspace"
+  },
+  {
+    "_id": "i18n-message-en-asset-image",
+    "key": "asset.image",
+    "lang": "en",
+    "value": "Asset image"
+  },
+  {
+    "_id": "i18n-message-en-lending-policies",
+    "key": "lending.policies",
+    "lang": "en",
+    "value": "Lending Policies"
+  },
+  {
+    "_id": "i18n-message-en-asset-lending-policies-description",
+    "key": "asset.lending.policies.description",
+    "lang": "en",
+    "value": "Add the rules borrowers need to read and approve before borrowing this asset."
+  },
+  {
+    "_id": "i18n-message-en-asset-lending-policies-empty",
+    "key": "asset.lending.policies.empty",
+    "lang": "en",
+    "value": "No lending policies yet. Add policies if borrowers must review terms before sending the request."
+  },
+  {
+    "_id": "i18n-message-en-asset-lending-policies-popup-subtitle",
+    "key": "asset.lending.policies.popup.subtitle",
+    "lang": "en",
+    "value": "Keep the list compact here. Open a policy to edit the details borrowers need to read and approve."
+  },
+  {
+    "_id": "i18n-message-en-asset-lending-policies-editor-subtitle",
+    "key": "asset.lending.policies.editor.subtitle",
+    "lang": "en",
+    "value": "Write the lending policy clearly and choose whether borrowers must approve it before sending the request."
+  },
+  {
+    "_id": "i18n-message-en-total-capacity",
+    "key": "total.capacity",
+    "lang": "en",
+    "value": "Total capacity"
+  },
+  {
+    "_id": "i18n-message-en-source-link",
+    "key": "source.link",
+    "lang": "en",
+    "value": "Source link"
+  },
+  {
+    "_id": "i18n-message-en-save-asset",
+    "key": "save.asset",
+    "lang": "en",
+    "value": "Save asset"
+  },
+  {
+    "_id": "i18n-message-en-save-route-assignment",
+    "key": "save.route.assignment",
+    "lang": "en",
+    "value": "Save route assignment"
+  },
+  {
+    "_id": "i18n-message-en-open-asset-visibility-selector",
+    "key": "open.asset.visibility.selector",
+    "lang": "en",
+    "value": "Open asset visibility selector"
+  },
+  {
+    "_id": "i18n-message-en-open-asset-category",
+    "key": "open.asset.category",
+    "lang": "en",
+    "value": "Open asset category"
+  },
+  {
+    "_id": "i18n-message-en-open-availability-view",
+    "key": "open.availability.view",
+    "lang": "en",
+    "value": "Open availability view"
+  },
+  {
+    "_id": "i18n-message-en-available-first",
+    "key": "available.first",
+    "lang": "en",
+    "value": "Available first"
+  },
+  {
+    "_id": "i18n-message-en-lowest-price",
+    "key": "lowest.price",
+    "lang": "en",
+    "value": "Lowest price"
+  },
+  {
+    "_id": "i18n-message-en-fewest-policies",
+    "key": "fewest.policies",
+    "lang": "en",
+    "value": "Fewest policies"
+  },
+  {
+    "_id": "i18n-message-en-no-visible-assets-right-now",
+    "key": "no.visible.assets.right.now",
+    "lang": "en",
+    "value": "No visible assets right now."
+  },
+  {
+    "_id": "i18n-message-en-open-asset-explore-order",
+    "key": "open.asset.explore.order",
+    "lang": "en",
+    "value": "Open asset explore order"
+  },
+  {
+    "_id": "i18n-message-en-open-asset-explore-category",
+    "key": "open.asset.explore.category",
+    "lang": "en",
+    "value": "Open asset explore category"
+  },
+  {
+    "_id": "i18n-message-en-no-ticketed-events",
+    "key": "no.ticketed.events",
+    "lang": "en",
+    "value": "No ticketed events"
+  },
+  {
+    "_id": "i18n-message-en-scan-ticket",
+    "key": "scan.ticket",
+    "lang": "en",
+    "value": "Scan Ticket"
+  },
+  {
+    "_id": "i18n-message-en-scan-ticket-aria",
+    "key": "scan.ticket.aria",
+    "lang": "en",
+    "value": "Scan ticket"
+  },
+  {
+    "_id": "i18n-message-en-add-asset",
+    "key": "add.asset",
+    "lang": "en",
+    "value": "Add asset"
+  },
+  {
+    "_id": "i18n-message-en-open-selected-assets",
+    "key": "open.selected.assets",
+    "lang": "en",
+    "value": "Open selected assets"
+  },
+  {
+    "_id": "i18n-message-en-save-selected-assets",
+    "key": "save.selected.assets",
+    "lang": "en",
+    "value": "Save selected assets"
+  },
+  {
+    "_id": "i18n-message-en-take-over-asset-question",
+    "key": "take.over.asset.question",
+    "lang": "en",
+    "value": "Take over asset?"
+  },
+  {
+    "_id": "i18n-message-en-open-ticket-date-ordering",
+    "key": "open.ticket.date.ordering",
+    "lang": "en",
+    "value": "Open ticket date ordering"
+  },
+  {
+    "_id": "i18n-message-en-open-asset-filter",
+    "key": "open.asset.filter",
+    "lang": "en",
+    "value": "Open asset filter"
+  },
+  {
+    "_id": "i18n-message-en-delete-asset",
+    "key": "delete.asset",
+    "lang": "en",
+    "value": "Delete asset"
+  },
+  {
+    "_id": "i18n-message-en-runtime-route-for-this-event-asset",
+    "key": "runtime.route.for.this.event.asset",
+    "lang": "en",
+    "value": "Runtime route for this event asset."
+  },
+  {
+    "_id": "i18n-message-en-no-route-is-set-for-this-event-asset",
+    "key": "no.route.is.set.for.this.event.asset",
+    "lang": "en",
+    "value": "No route is set for this event asset."
+  },
+  {
+    "_id": "i18n-message-en-set-route-used-by-transport-assignment",
+    "key": "set.route.used.by.transport.assignment",
+    "lang": "en",
+    "value": "Set the route used by this transport for the selected event assignment."
+  },
+  {
+    "_id": "i18n-message-en-remove-assignment",
+    "key": "remove.assignment",
+    "lang": "en",
+    "value": "Remove assignment"
+  },
+  {
+    "_id": "i18n-message-en-no-invite-candidates-right-now",
+    "key": "no.invite.candidates.right.now",
+    "lang": "en",
+    "value": "No invite candidates right now."
+  },
+  {
+    "_id": "i18n-message-en-open-invite-sort",
+    "key": "open.invite.sort",
+    "lang": "en",
+    "value": "Open invite sort"
+  },
+  {
+    "_id": "i18n-message-en-open-selected-members",
+    "key": "open.selected.members",
+    "lang": "en",
+    "value": "Open selected members"
+  },
+  {
+    "_id": "i18n-message-en-no-assigned-resources-yet",
+    "key": "no.assigned.resources.yet",
+    "lang": "en",
+    "value": "No assigned resources yet."
+  },
+  {
+    "_id": "i18n-message-en-open-sub-event-asset-actions",
+    "key": "open.sub.event.asset.actions",
+    "lang": "en",
+    "value": "Open sub-event asset actions"
+  },
+  {
+    "_id": "i18n-message-en-share-asset-label",
+    "key": "share.asset.label",
+    "lang": "en",
+    "value": "Share asset"
+  },
+  {
+    "_id": "i18n-message-en-location",
+    "key": "location",
+    "lang": "en",
+    "value": "Location"
+  },
+  {
+    "_id": "i18n-message-en-accommodation-address",
+    "key": "accommodation.address",
+    "lang": "en",
+    "value": "Accommodation address"
+  },
+  {
+    "_id": "i18n-message-en-subtitle",
+    "key": "subtitle",
+    "lang": "en",
+    "value": "Subtitle"
+  },
+  {
+    "_id": "i18n-message-en-assign",
+    "key": "assign",
+    "lang": "en",
+    "value": "Assign"
+  },
+  {
+    "_id": "i18n-message-en-start",
+    "key": "start",
+    "lang": "en",
+    "value": "Start"
+  },
+  {
+    "_id": "i18n-message-en-end",
+    "key": "end",
+    "lang": "en",
+    "value": "End"
+  },
+  {
+    "_id": "i18n-message-en-start-date",
+    "key": "start.date",
+    "lang": "en",
+    "value": "Start date"
+  },
+  {
+    "_id": "i18n-message-en-end-date",
+    "key": "end.date",
+    "lang": "en",
+    "value": "End date"
+  },
+  {
+    "_id": "i18n-message-en-graph",
+    "key": "graph",
+    "lang": "en",
+    "value": "Graph"
+  },
+  {
+    "_id": "i18n-message-en-myscoutee-support",
+    "key": "myscoutee.support",
+    "lang": "en",
+    "value": "MyScoutee Support"
+  },
+  {
+    "_id": "i18n-message-en-open-affinity-graph",
+    "key": "open.affinity.graph",
+    "lang": "en",
+    "value": "Open affinity graph"
+  },
+  {
+    "_id": "i18n-message-en-open-asset-members",
+    "key": "open.asset.members",
+    "lang": "en",
+    "value": "Open asset members"
+  },
+  {
+    "_id": "i18n-message-en-open-chat",
+    "key": "open.chat",
+    "lang": "en",
+    "value": "Open chat"
+  },
+  {
+    "_id": "i18n-message-en-open-events",
+    "key": "open.events",
+    "lang": "en",
+    "value": "Open events"
+  },
+  {
+    "_id": "i18n-message-en-open-feedback",
+    "key": "open.feedback",
+    "lang": "en",
+    "value": "Open feedback"
+  },
+  {
+    "_id": "i18n-message-en-open-help",
+    "key": "open.help",
+    "lang": "en",
+    "value": "Open help"
+  },
+  {
+    "_id": "i18n-message-en-open-invitations",
+    "key": "open.invitations",
+    "lang": "en",
+    "value": "Open invitations"
+  },
+  {
+    "_id": "i18n-message-en-open-my-events",
+    "key": "open.my.events",
+    "lang": "en",
+    "value": "Open my events"
+  },
+  {
+    "_id": "i18n-message-en-open-privacy",
+    "key": "open.privacy",
+    "lang": "en",
+    "value": "Open privacy"
+  },
+  {
+    "_id": "i18n-message-en-open-property-map",
+    "key": "open.property.map",
+    "lang": "en",
+    "value": "Open property map"
+  },
+  {
+    "_id": "i18n-message-en-open-rates",
+    "key": "open.rates",
+    "lang": "en",
+    "value": "Open rates"
+  },
+  {
+    "_id": "i18n-message-en-open-terms",
+    "key": "open.terms",
+    "lang": "en",
+    "value": "Open terms"
+  },
+  {
+    "_id": "i18n-message-en-open-ticket-qr-code",
+    "key": "open.ticket.qr.code",
+    "lang": "en",
+    "value": "Open ticket QR code"
+  },
+  {
+    "_id": "i18n-message-en-reactivate-account-question",
+    "key": "reactivate.account.question",
+    "lang": "en",
+    "value": "Reactivate account?"
+  },
+  {
+    "_id": "i18n-message-en-save-capacity",
+    "key": "save.capacity",
+    "lang": "en",
+    "value": "Save capacity"
+  },
+  {
+    "_id": "i18n-message-en-share-myscoutee",
+    "key": "share.myscoutee",
+    "lang": "en",
+    "value": "Share MyScoutee"
+  },
+  {
+    "_id": "i18n-message-en-logout-question",
+    "key": "logout.question",
+    "lang": "en",
+    "value": "Logout?"
   },
   {
     "_id": "i18n-message-hu-about",
@@ -11007,7 +11643,7 @@
     "_id": "i18n-message-hu-transport",
     "key": "transport",
     "lang": "hu",
-    "value": "Transport"
+    "value": "Közlekedés"
   },
   {
     "_id": "i18n-message-hu-category",
@@ -15876,16 +16512,16 @@
     "value": "Testalkat"
   },
   {
-    "_id": "i18n-message-hu-profile-save-timed-out",
-    "key": "profile.save.timed.out",
-    "lang": "hu",
-    "value": "A profil mentése időtúllépés miatt megszakadt"
-  },
-  {
     "_id": "i18n-message-hu-please-register",
     "key": "please.register",
     "lang": "hu",
     "value": "Regisztráció"
+  },
+  {
+    "_id": "i18n-message-hu-profile-save-timed-out",
+    "key": "profile.save.timed.out",
+    "lang": "hu",
+    "value": "A profil mentése időtúllépés miatt megszakadt"
   },
   {
     "_id": "i18n-message-hu-profile-setup",
@@ -15928,12 +16564,6 @@
     "key": "profile.was.not.able.to.save",
     "lang": "hu",
     "value": "A profilt nem sikerült menteni"
-  },
-  {
-    "_id": "i18n-message-hu-accommodation",
-    "key": "accommodation",
-    "lang": "hu",
-    "value": "Accommodation"
   },
   {
     "_id": "i18n-message-hu-quick-reach-card",
@@ -17334,6 +17964,12 @@
     "value": "Statisztika betöltése"
   },
   {
+    "_id": "i18n-message-hu-manage",
+    "key": "manage",
+    "lang": "hu",
+    "value": "Kezelés"
+  },
+  {
     "_id": "i18n-message-hu-set-priorities-and-feedback",
     "key": "set.priorities.and.feedback",
     "lang": "hu",
@@ -18108,7 +18744,7 @@
     "value": "Bak"
   },
   {
-    "_id": "i18n-message-hu-transporteer-focused",
+    "_id": "i18n-message-hu-career-focused",
     "key": "career.focused",
     "lang": "hu",
     "value": "Karrierközpontú"
@@ -19008,6 +19644,48 @@
     "value": "Sport"
   },
   {
+    "_id": "i18n-message-hu-stage-status-finalized",
+    "key": "stage.status.finalized",
+    "lang": "hu",
+    "value": "Lezárva"
+  },
+  {
+    "_id": "i18n-message-hu-stage-status-started",
+    "key": "stage.status.started",
+    "lang": "hu",
+    "value": "Elindítva"
+  },
+  {
+    "_id": "i18n-message-hu-stage-status-closed",
+    "key": "stage.status.closed",
+    "lang": "hu",
+    "value": "Befejezve"
+  },
+  {
+    "_id": "i18n-message-hu-stage-status-blocked",
+    "key": "stage.status.blocked",
+    "lang": "hu",
+    "value": "Blokkolva"
+  },
+  {
+    "_id": "i18n-message-hu-stage-status-scores-review",
+    "key": "stage.status.scores.review",
+    "lang": "hu",
+    "value": "Felülvizsgálat alatt"
+  },
+  {
+    "_id": "i18n-message-hu-stage-status-scheduled",
+    "key": "stage.status.scheduled",
+    "lang": "hu",
+    "value": "Ütemezve"
+  },
+  {
+    "_id": "i18n-message-hu-stage-status-suspended",
+    "key": "stage.status.suspended",
+    "lang": "hu",
+    "value": "Felfüggesztve"
+  },
+  {
     "_id": "i18n-message-hu-start-feedback",
     "key": "start.feedback",
     "lang": "hu",
@@ -19120,6 +19798,42 @@
     "key": "under.review",
     "lang": "hu",
     "value": "Felülvizsgálat alatt"
+  },
+  {
+    "_id": "i18n-message-hu-trash-draft",
+    "key": "trash.draft",
+    "lang": "hu",
+    "value": "Piszkozat"
+  },
+  {
+    "_id": "i18n-message-hu-trash-event",
+    "key": "trash.event",
+    "lang": "hu",
+    "value": "Esemény"
+  },
+  {
+    "_id": "i18n-message-hu-trash-invitation",
+    "key": "trash.invitation",
+    "lang": "hu",
+    "value": "Meghívás"
+  },
+  {
+    "_id": "i18n-message-hu-trash-joined-event",
+    "key": "trash.joined.event",
+    "lang": "hu",
+    "value": "Csatlakozott esemény"
+  },
+  {
+    "_id": "i18n-message-hu-trash-own-event",
+    "key": "trash.own.event",
+    "lang": "hu",
+    "value": "Saját esemény"
+  },
+  {
+    "_id": "i18n-message-hu-trash-pending-event",
+    "key": "trash.pending.event",
+    "lang": "hu",
+    "value": "Függő esemény"
   },
   {
     "_id": "i18n-message-hu-ux-improvement",
@@ -19302,34 +20016,22 @@
     "value": "Eszköz"
   },
   {
+    "_id": "i18n-message-hu-asset-availability",
+    "key": "asset.availability",
+    "lang": "hu",
+    "value": "Elérhetőség"
+  },
+  {
     "_id": "i18n-message-hu-asset-misuse",
     "key": "asset.misuse",
     "lang": "hu",
     "value": "Eszköz-visszaélés"
   },
   {
-    "_id": "i18n-message-hu-asset-owned-empty-supplies-description",
-    "key": "asset.owned.empty.supplies.description",
+    "_id": "i18n-message-hu-asset-owned-empty-accommodation-label",
+    "key": "asset.owned.empty.accommodation.label",
     "lang": "hu",
-    "value": "Adj hozzá eszközöket vagy megosztható felszerelést, hogy a lista feltöltődhessen."
-  },
-  {
-    "_id": "i18n-message-hu-asset-owned-empty-supplies-label",
-    "key": "asset.owned.empty.supplies.label",
-    "lang": "hu",
-    "value": "Még nincsenek eszközeid"
-  },
-  {
-    "_id": "i18n-message-hu-asset-owned-empty-transport-description",
-    "key": "asset.owned.empty.transport.description",
-    "lang": "hu",
-    "value": "Adj hozzá transport eszközt, hogy megjelenjen itt."
-  },
-  {
-    "_id": "i18n-message-hu-asset-owned-empty-transport-label",
-    "key": "asset.owned.empty.transport.label",
-    "lang": "hu",
-    "value": "Még nincs transportd"
+    "value": "Még nincs szállásod"
   },
   {
     "_id": "i18n-message-hu-asset-owned-empty-accommodation-description",
@@ -19338,10 +20040,28 @@
     "value": "Adj hozzá szállást, szobát vagy helyet, hogy megjelenjen itt."
   },
   {
-    "_id": "i18n-message-hu-asset-owned-empty-accommodation-label",
-    "key": "asset.owned.empty.accommodation.label",
+    "_id": "i18n-message-hu-asset-owned-empty-transport-label",
+    "key": "asset.owned.empty.transport.label",
     "lang": "hu",
-    "value": "Még nincs szállásod"
+    "value": "Még nincs transport eszközöd"
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-transport-description",
+    "key": "asset.owned.empty.transport.description",
+    "lang": "hu",
+    "value": "Adj hozzá transport eszközt, hogy megjelenjen itt."
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-supplies-label",
+    "key": "asset.owned.empty.supplies.label",
+    "lang": "hu",
+    "value": "Még nincsenek eszközeid"
+  },
+  {
+    "_id": "i18n-message-hu-asset-owned-empty-supplies-description",
+    "key": "asset.owned.empty.supplies.description",
+    "lang": "hu",
+    "value": "Adj hozzá eszközöket vagy megosztható felszerelést, hogy a lista feltöltődhessen."
   },
   {
     "_id": "i18n-message-hu-asset-requests-actions-open",
@@ -19354,18 +20074,6 @@
     "key": "asset.requests.close",
     "lang": "hu",
     "value": "Eszközkérések bezárása"
-  },
-  {
-    "_id": "i18n-message-hu-asset-requests-empty-no-activity",
-    "key": "asset.requests.empty.no.activity",
-    "lang": "hu",
-    "value": "Még nincs kölcsönzés vagy hozzárendelés."
-  },
-  {
-    "_id": "i18n-message-hu-asset-requests-empty-no-quantity",
-    "key": "asset.requests.empty.no.quantity",
-    "lang": "hu",
-    "value": "Még nincs mennyiség megadva."
   },
   {
     "_id": "i18n-message-hu-asset-requests-empty-availability-label",
@@ -19392,34 +20100,16 @@
     "value": "Nézd meg a Korábbi nézetet; lehet, hogy már lezajlott."
   },
   {
-    "_id": "i18n-message-hu-event-subevents-empty-event-label",
-    "key": "event.subevents.empty.event.label",
+    "_id": "i18n-message-hu-asset-requests-empty-no-activity",
+    "key": "asset.requests.empty.no.activity",
     "lang": "hu",
-    "value": "Nincs alesemény ebben az eseményben"
+    "value": "Még nincs kölcsönzés vagy hozzárendelés."
   },
   {
-    "_id": "i18n-message-hu-event-subevents-empty-label",
-    "key": "event.subevents.empty.label",
+    "_id": "i18n-message-hu-asset-requests-empty-no-quantity",
+    "key": "asset.requests.empty.no.quantity",
     "lang": "hu",
-    "value": "Még nincs alesemény"
-  },
-  {
-    "_id": "i18n-message-hu-event-subevents-empty-past-description",
-    "key": "event.subevents.empty.past.description",
-    "lang": "hu",
-    "value": "Nézd meg a Későbbi nézetet a közelgő aleseményekhez."
-  },
-  {
-    "_id": "i18n-message-hu-event-subevents-empty-slot-label",
-    "key": "event.subevents.empty.slot.label",
-    "lang": "hu",
-    "value": "Nincs alesemény ebben az idősávban"
-  },
-  {
-    "_id": "i18n-message-hu-event-subevents-empty-upcoming-description",
-    "key": "event.subevents.empty.upcoming.description",
-    "lang": "hu",
-    "value": "Nézd meg a Korábbi nézetet; lehet, hogy már minden alesemény lezajlott."
+    "value": "Még nincs mennyiség megadva."
   },
   {
     "_id": "i18n-message-hu-asset-requests-filter-active-items",
@@ -19444,6 +20134,24 @@
     "key": "asset.requests.filter.pending.requests",
     "lang": "hu",
     "value": "Függő kérések"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-order-earlier",
+    "key": "asset.requests.order.earlier",
+    "lang": "hu",
+    "value": "Korábbi"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-order-later",
+    "key": "asset.requests.order.later",
+    "lang": "hu",
+    "value": "Későbbi"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-order-open",
+    "key": "asset.requests.order.open",
+    "lang": "hu",
+    "value": "Kéréssorrend megnyitása"
   },
   {
     "_id": "i18n-message-hu-asset-requests-inventory-badge-left",
@@ -19552,6 +20260,36 @@
     "key": "asset.requests.subtitle",
     "lang": "hu",
     "value": "Időalapú elérhetőségű kérések és hozzárendelések"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-event-label",
+    "key": "event.subevents.empty.event.label",
+    "lang": "hu",
+    "value": "Nincs alesemény ebben az eseményben"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-label",
+    "key": "event.subevents.empty.label",
+    "lang": "hu",
+    "value": "Még nincs alesemény"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-past-description",
+    "key": "event.subevents.empty.past.description",
+    "lang": "hu",
+    "value": "Nézd meg a Későbbi nézetet a közelgő aleseményekhez."
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-slot-label",
+    "key": "event.subevents.empty.slot.label",
+    "lang": "hu",
+    "value": "Nincs alesemény ebben az idősávban"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-empty-upcoming-description",
+    "key": "event.subevents.empty.upcoming.description",
+    "lang": "hu",
+    "value": "Nézd meg a Korábbi nézetet; lehet, hogy már minden alesemény lezajlott."
   },
   {
     "_id": "i18n-message-hu-availability-methods",
@@ -20640,7 +21378,7 @@
     "value": "#Vállalkozás"
   },
   {
-    "_id": "i18n-message-hu-transporteerdriven",
+    "_id": "i18n-message-hu-careerdriven",
     "key": "#CareerDriven",
     "lang": "hu",
     "value": "#Karrierközpontú"
@@ -20854,5 +21592,551 @@
     "key": "review.the.terms.that.apply.when.you.use.myscoutee.features.accounts.events.chats.and.community.tools.",
     "lang": "hu",
     "value": "Tekintsd át a MyScoutee funkcióira, fiókjaira, eseményeire, csevegéseire és közösségi eszközeire vonatkozó feltételeket."
+  },
+  {
+    "_id": "i18n-message-hu-apartment",
+    "key": "apartment",
+    "lang": "hu",
+    "value": "Apartman"
+  },
+  {
+    "_id": "i18n-message-hu-audio",
+    "key": "audio",
+    "lang": "hu",
+    "value": "Hangtechnika"
+  },
+  {
+    "_id": "i18n-message-hu-bicycle",
+    "key": "bicycle",
+    "lang": "hu",
+    "value": "Kerékpár"
+  },
+  {
+    "_id": "i18n-message-hu-boat",
+    "key": "boat",
+    "lang": "hu",
+    "value": "Hajó"
+  },
+  {
+    "_id": "i18n-message-hu-bus",
+    "key": "bus",
+    "lang": "hu",
+    "value": "Busz"
+  },
+  {
+    "_id": "i18n-message-hu-camping",
+    "key": "camping",
+    "lang": "hu",
+    "value": "Kemping"
+  },
+  {
+    "_id": "i18n-message-hu-campsite",
+    "key": "campsite",
+    "lang": "hu",
+    "value": "Kempinghely"
+  },
+  {
+    "_id": "i18n-message-hu-decor",
+    "key": "decor",
+    "lang": "hu",
+    "value": "Dekoráció"
+  },
+  {
+    "_id": "i18n-message-hu-flight",
+    "key": "flight",
+    "lang": "hu",
+    "value": "Repülőjárat"
+  },
+  {
+    "_id": "i18n-message-hu-hotel",
+    "key": "hotel",
+    "lang": "hu",
+    "value": "Szálloda"
+  },
+  {
+    "_id": "i18n-message-hu-house",
+    "key": "house",
+    "lang": "hu",
+    "value": "Ház"
+  },
+  {
+    "_id": "i18n-message-hu-motorcycle",
+    "key": "motorcycle",
+    "lang": "hu",
+    "value": "Motor"
+  },
+  {
+    "_id": "i18n-message-hu-room",
+    "key": "room",
+    "lang": "hu",
+    "value": "Szoba"
+  },
+  {
+    "_id": "i18n-message-hu-safety",
+    "key": "safety",
+    "lang": "hu",
+    "value": "Biztonság"
+  },
+  {
+    "_id": "i18n-message-hu-sedan",
+    "key": "sedan",
+    "lang": "hu",
+    "value": "Szedán"
+  },
+  {
+    "_id": "i18n-message-hu-shuttle",
+    "key": "shuttle",
+    "lang": "hu",
+    "value": "Transzfer"
+  },
+  {
+    "_id": "i18n-message-hu-storage",
+    "key": "storage",
+    "lang": "hu",
+    "value": "Tároló"
+  },
+  {
+    "_id": "i18n-message-hu-suv",
+    "key": "suv",
+    "lang": "hu",
+    "value": "SUV"
+  },
+  {
+    "_id": "i18n-message-hu-tech",
+    "key": "tech",
+    "lang": "hu",
+    "value": "Technika"
+  },
+  {
+    "_id": "i18n-message-hu-truck",
+    "key": "truck",
+    "lang": "hu",
+    "value": "Teherautó"
+  },
+  {
+    "_id": "i18n-message-hu-van",
+    "key": "van",
+    "lang": "hu",
+    "value": "Furgon"
+  },
+  {
+    "_id": "i18n-message-hu-venue",
+    "key": "venue",
+    "lang": "hu",
+    "value": "Helyszín"
+  },
+  {
+    "_id": "i18n-message-hu-workspace",
+    "key": "workspace",
+    "lang": "hu",
+    "value": "Munkatér"
+  },
+  {
+    "_id": "i18n-message-hu-asset-image",
+    "key": "asset.image",
+    "lang": "hu",
+    "value": "Eszközkép"
+  },
+  {
+    "_id": "i18n-message-hu-lending-policies",
+    "key": "lending.policies",
+    "lang": "hu",
+    "value": "Kölcsönzési feltételek"
+  },
+  {
+    "_id": "i18n-message-hu-asset-lending-policies-description",
+    "key": "asset.lending.policies.description",
+    "lang": "hu",
+    "value": "Add meg a szabályokat, amelyeket a kölcsönzőknek el kell olvasniuk és jóvá kell hagyniuk a kérés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-asset-lending-policies-empty",
+    "key": "asset.lending.policies.empty",
+    "lang": "hu",
+    "value": "Még nincsenek kölcsönzési feltételek. Akkor adj hozzá ilyet, ha a kölcsönzőknek kérés előtt feltételeket kell átnézniük."
+  },
+  {
+    "_id": "i18n-message-hu-asset-lending-policies-popup-subtitle",
+    "key": "asset.lending.policies.popup.subtitle",
+    "lang": "hu",
+    "value": "Itt maradjon tömör a lista. Nyiss meg egy feltételt a kölcsönzőknek szánt részletek szerkesztéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-asset-lending-policies-editor-subtitle",
+    "key": "asset.lending.policies.editor.subtitle",
+    "lang": "hu",
+    "value": "Írd le egyértelműen a kölcsönzési feltételt, és válaszd ki, hogy a kölcsönzőknek jóvá kell-e hagyniuk a kérés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-total-capacity",
+    "key": "total.capacity",
+    "lang": "hu",
+    "value": "Teljes kapacitás"
+  },
+  {
+    "_id": "i18n-message-hu-source-link",
+    "key": "source.link",
+    "lang": "hu",
+    "value": "Forráshivatkozás"
+  },
+  {
+    "_id": "i18n-message-hu-save-asset",
+    "key": "save.asset",
+    "lang": "hu",
+    "value": "Eszköz mentése"
+  },
+  {
+    "_id": "i18n-message-hu-save-route-assignment",
+    "key": "save.route.assignment",
+    "lang": "hu",
+    "value": "Útvonal-hozzárendelés mentése"
+  },
+  {
+    "_id": "i18n-message-hu-open-asset-visibility-selector",
+    "key": "open.asset.visibility.selector",
+    "lang": "hu",
+    "value": "Eszköz láthatóságának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-asset-category",
+    "key": "open.asset.category",
+    "lang": "hu",
+    "value": "Eszközkategória megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-availability-view",
+    "key": "open.availability.view",
+    "lang": "hu",
+    "value": "Elérhetőségi nézet megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-available-first",
+    "key": "available.first",
+    "lang": "hu",
+    "value": "Elérhetők előre"
+  },
+  {
+    "_id": "i18n-message-hu-lowest-price",
+    "key": "lowest.price",
+    "lang": "hu",
+    "value": "Legalacsonyabb ár"
+  },
+  {
+    "_id": "i18n-message-hu-fewest-policies",
+    "key": "fewest.policies",
+    "lang": "hu",
+    "value": "Legkevesebb feltétel"
+  },
+  {
+    "_id": "i18n-message-hu-no-visible-assets-right-now",
+    "key": "no.visible.assets.right.now",
+    "lang": "hu",
+    "value": "Most nincs látható eszköz."
+  },
+  {
+    "_id": "i18n-message-hu-open-asset-explore-order",
+    "key": "open.asset.explore.order",
+    "lang": "hu",
+    "value": "Eszközkeresés rendezésének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-asset-explore-category",
+    "key": "open.asset.explore.category",
+    "lang": "hu",
+    "value": "Eszközkeresés kategóriájának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-no-ticketed-events",
+    "key": "no.ticketed.events",
+    "lang": "hu",
+    "value": "Nincsenek jegyes események"
+  },
+  {
+    "_id": "i18n-message-hu-scan-ticket",
+    "key": "scan.ticket",
+    "lang": "hu",
+    "value": "Jegy szkennelése"
+  },
+  {
+    "_id": "i18n-message-hu-scan-ticket-aria",
+    "key": "scan.ticket.aria",
+    "lang": "hu",
+    "value": "Jegy szkennelése"
+  },
+  {
+    "_id": "i18n-message-hu-add-asset",
+    "key": "add.asset",
+    "lang": "hu",
+    "value": "Eszköz hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-open-selected-assets",
+    "key": "open.selected.assets",
+    "lang": "hu",
+    "value": "Kijelölt eszközök megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-save-selected-assets",
+    "key": "save.selected.assets",
+    "lang": "hu",
+    "value": "Kijelölt eszközök mentése"
+  },
+  {
+    "_id": "i18n-message-hu-take-over-asset-question",
+    "key": "take.over.asset.question",
+    "lang": "hu",
+    "value": "Átveszed az eszközt?"
+  },
+  {
+    "_id": "i18n-message-hu-open-ticket-date-ordering",
+    "key": "open.ticket.date.ordering",
+    "lang": "hu",
+    "value": "Jegyek dátum szerinti rendezésének megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-asset-filter",
+    "key": "open.asset.filter",
+    "lang": "hu",
+    "value": "Eszközszűrő megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-delete-asset",
+    "key": "delete.asset",
+    "lang": "hu",
+    "value": "Eszköz törlése"
+  },
+  {
+    "_id": "i18n-message-hu-runtime-route-for-this-event-asset",
+    "key": "runtime.route.for.this.event.asset",
+    "lang": "hu",
+    "value": "Az eseményhez használt aktuális útvonal ehhez az eszközhöz."
+  },
+  {
+    "_id": "i18n-message-hu-no-route-is-set-for-this-event-asset",
+    "key": "no.route.is.set.for.this.event.asset",
+    "lang": "hu",
+    "value": "Ehhez az eseményeszközhöz nincs útvonal beállítva."
+  },
+  {
+    "_id": "i18n-message-hu-set-route-used-by-transport-assignment",
+    "key": "set.route.used.by.transport.assignment",
+    "lang": "hu",
+    "value": "Állítsd be az útvonalat, amelyet ez a közlekedési eszköz használ a kiválasztott esemény-hozzárendelésnél."
+  },
+  {
+    "_id": "i18n-message-hu-remove-assignment",
+    "key": "remove.assignment",
+    "lang": "hu",
+    "value": "Hozzárendelés eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-no-invite-candidates-right-now",
+    "key": "no.invite.candidates.right.now",
+    "lang": "hu",
+    "value": "Most nincs meghívható jelölt."
+  },
+  {
+    "_id": "i18n-message-hu-open-invite-sort",
+    "key": "open.invite.sort",
+    "lang": "hu",
+    "value": "Meghívási rendezés megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-selected-members",
+    "key": "open.selected.members",
+    "lang": "hu",
+    "value": "Kijelölt tagok megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-no-assigned-resources-yet",
+    "key": "no.assigned.resources.yet",
+    "lang": "hu",
+    "value": "Még nincs hozzárendelt erőforrás."
+  },
+  {
+    "_id": "i18n-message-hu-open-sub-event-asset-actions",
+    "key": "open.sub.event.asset.actions",
+    "lang": "hu",
+    "value": "Alesemény eszközműveleteinek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-share-asset-label",
+    "key": "share.asset.label",
+    "lang": "hu",
+    "value": "Eszköz megosztása"
+  },
+  {
+    "_id": "i18n-message-hu-remove-feedback",
+    "key": "remove.feedback",
+    "lang": "hu",
+    "value": "Visszajelzés eltávolítása?"
+  },
+  {
+    "_id": "i18n-message-hu-restore-feedback-question",
+    "key": "restore.feedback.question",
+    "lang": "hu",
+    "value": "Visszajelzés visszaállítása?"
+  },
+  {
+    "_id": "i18n-message-hu-location",
+    "key": "location",
+    "lang": "hu",
+    "value": "Helyszín"
+  },
+  {
+    "_id": "i18n-message-hu-accommodation-address",
+    "key": "accommodation.address",
+    "lang": "hu",
+    "value": "Szállás címe"
+  },
+  {
+    "_id": "i18n-message-hu-subtitle",
+    "key": "subtitle",
+    "lang": "hu",
+    "value": "Alcím"
+  },
+  {
+    "_id": "i18n-message-hu-assign",
+    "key": "assign",
+    "lang": "hu",
+    "value": "Hozzárendelés"
+  },
+  {
+    "_id": "i18n-message-hu-start",
+    "key": "start",
+    "lang": "hu",
+    "value": "Kezdés"
+  },
+  {
+    "_id": "i18n-message-hu-end",
+    "key": "end",
+    "lang": "hu",
+    "value": "Befejezés"
+  },
+  {
+    "_id": "i18n-message-hu-start-date",
+    "key": "start.date",
+    "lang": "hu",
+    "value": "Kezdő dátum"
+  },
+  {
+    "_id": "i18n-message-hu-end-date",
+    "key": "end.date",
+    "lang": "hu",
+    "value": "Záró dátum"
+  },
+  {
+    "_id": "i18n-message-hu-graph",
+    "key": "graph",
+    "lang": "hu",
+    "value": "Gráf"
+  },
+  {
+    "_id": "i18n-message-hu-myscoutee-support",
+    "key": "myscoutee.support",
+    "lang": "hu",
+    "value": "MyScoutee támogatás"
+  },
+  {
+    "_id": "i18n-message-hu-open-affinity-graph",
+    "key": "open.affinity.graph",
+    "lang": "hu",
+    "value": "Affinitási gráf megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-asset-members",
+    "key": "open.asset.members",
+    "lang": "hu",
+    "value": "Eszköztagok megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-chat",
+    "key": "open.chat",
+    "lang": "hu",
+    "value": "Csevegés megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-events",
+    "key": "open.events",
+    "lang": "hu",
+    "value": "Események megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-feedback",
+    "key": "open.feedback",
+    "lang": "hu",
+    "value": "Visszajelzés megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-help",
+    "key": "open.help",
+    "lang": "hu",
+    "value": "Segítség megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-invitations",
+    "key": "open.invitations",
+    "lang": "hu",
+    "value": "Meghívások megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-my-events",
+    "key": "open.my.events",
+    "lang": "hu",
+    "value": "Saját események megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-privacy",
+    "key": "open.privacy",
+    "lang": "hu",
+    "value": "Adatvédelem megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-property-map",
+    "key": "open.property.map",
+    "lang": "hu",
+    "value": "Ingatlantérkép megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-rates",
+    "key": "open.rates",
+    "lang": "hu",
+    "value": "Értékelések megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-terms",
+    "key": "open.terms",
+    "lang": "hu",
+    "value": "Feltételek megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-open-ticket-qr-code",
+    "key": "open.ticket.qr.code",
+    "lang": "hu",
+    "value": "Jegy QR-kódjának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-reactivate-account-question",
+    "key": "reactivate.account.question",
+    "lang": "hu",
+    "value": "Fiók újraaktiválása?"
+  },
+  {
+    "_id": "i18n-message-hu-save-capacity",
+    "key": "save.capacity",
+    "lang": "hu",
+    "value": "Kapacitás mentése"
+  },
+  {
+    "_id": "i18n-message-hu-share-myscoutee",
+    "key": "share.myscoutee",
+    "lang": "hu",
+    "value": "MyScoutee megosztása"
+  },
+  {
+    "_id": "i18n-message-hu-logout-question",
+    "key": "logout.question",
+    "lang": "hu",
+    "value": "Biztosan kilép?"
   }
 ]
