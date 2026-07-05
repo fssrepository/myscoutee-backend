@@ -274,6 +274,12 @@ public final class AssetsDtos {
             Integer remaining,
             Integer pendingCount,
             Integer pendingQuantity,
+            String eventId,
+            String eventTitle,
+            String subEventId,
+            String subEventTitle,
+            String subEventStartAtIso,
+            String subEventEndAtIso,
             List<String> menuActions) {
     }
 

@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +34,7 @@ public class AssetAvailabilityMapper {
             List<AssetRequest> requests,
             String dateIso,
             String filter,
+            String order,
             Integer page,
             Integer pageSize,
             String cursor) {
@@ -40,11 +42,13 @@ public class AssetAvailabilityMapper {
         String normalizedAssetId = normalizeId(assetId);
         DateRange dateRange = availabilityDateRange(dateIso);
         String normalizedFilter = normalizeFilter(filter);
+        String normalizedOrder = normalizeOrder(order);
         List<AssetRequest> source = safeRequests(requests);
         List<AssetRequest> rows = source.stream()
+                .filter(request -> matchesOrder(request, normalizedOrder))
                 .filter(request -> matchesFilter(request, normalizedFilter))
                 .filter(request -> dateRange == null || requestOverlaps(request, dateRange.start(), dateRange.end()))
-                .sorted(this::compareRequests)
+                .sorted((left, right) -> compareRequests(left, right, normalizedOrder))
                 .toList();
         List<AssetOccupancyRowDto> mapped = rows.stream()
                 .map(request -> toOccupancyRowDto(normalizedOwnerUserId, normalizedAssetId, source, request, dateRange))
@@ -60,13 +64,16 @@ public class AssetAvailabilityMapper {
             String rangeStart,
             String rangeEnd,
             String filter,
+            String order,
             Integer page,
             Integer pageSize,
             String cursor) {
         String normalizedOwnerUserId = normalizeId(ownerUserId);
         String normalizedAssetId = normalizeId(assetId);
         String normalizedFilter = normalizeFilter(filter);
+        String normalizedOrder = normalizeOrder(order);
         List<AssetRequest> source = safeRequests(requests).stream()
+                .filter(request -> matchesOrder(request, normalizedOrder))
                 .filter(request -> matchesFilter(request, normalizedFilter))
                 .toList();
         DateRange range = statsRange(rangeStart, rangeEnd);
@@ -75,6 +82,9 @@ public class AssetAvailabilityMapper {
         while (!day.isAfter(range.end())) {
             stats.add(toOccupancyStatDto(normalizedOwnerUserId, normalizedAssetId, source, day));
             day = day.plusDays(1);
+        }
+        if ("earlier".equals(normalizedOrder)) {
+            Collections.reverse(stats);
         }
         PageSlice<AssetOccupancyStatDto> slice = slice(stats, page, pageSize, cursor);
         return new AssetOccupancyStatsPageDto(slice.items(), stats.size(), slice.nextCursor());
@@ -157,6 +167,12 @@ public class AssetAvailabilityMapper {
                 capacity - occupied - pendingCurrentQuantity,
                 pending.size(),
                 pending.stream().mapToInt(this::requestQuantity).sum(),
+                safeNullableText(booking == null ? null : booking.eventId()),
+                safeNullableText(booking == null ? null : booking.eventTitle()),
+                safeNullableText(booking == null ? null : booking.subEventId()),
+                safeNullableText(booking == null ? null : booking.subEventTitle()),
+                safeNullableText(booking == null ? null : booking.startAtIso()),
+                safeNullableText(booking == null ? null : booking.endAtIso()),
                 menuActions(request));
     }
 
@@ -215,6 +231,12 @@ public class AssetAvailabilityMapper {
         if (isPendingRequest(request)) {
             return List.of("accept", "remove");
         }
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        if (isManualRequest(request)
+                && StringUtils.hasText(safeText(booking == null ? null : booking.eventId()))
+                && StringUtils.hasText(safeText(booking == null ? null : booking.subEventId()))) {
+            return List.of("manage");
+        }
         if (!isManualRequest(request) && "accepted".equals(normalizeStatus(request == null ? null : request.status()))) {
             return List.of("makeManager");
         }
@@ -234,14 +256,28 @@ public class AssetAvailabilityMapper {
         return true;
     }
 
-    private int compareRequests(AssetRequest left, AssetRequest right) {
+    private boolean matchesOrder(AssetRequest request, String order) {
+        LocalDateTime end = requestEndTime(request);
+        if (end == null) {
+            return false;
+        }
+        boolean finished = end.isBefore(LocalDateTime.now(ZoneOffset.UTC));
+        return "earlier".equals(order) ? finished : !finished;
+    }
+
+    private int compareRequests(AssetRequest left, AssetRequest right, String order) {
+        int direction = "earlier".equals(order) ? -1 : 1;
+        int day = direction * Long.compare(daySortTime(left), daySortTime(right));
+        if (day != 0) {
+            return day;
+        }
+        int time = direction * Long.compare(sortTime(left), sortTime(right));
+        if (time != 0) {
+            return time;
+        }
         int bucket = Integer.compare(bucketOrder(left), bucketOrder(right));
         if (bucket != 0) {
             return bucket;
-        }
-        int time = Long.compare(sortTime(right), sortTime(left));
-        if (time != 0) {
-            return time;
         }
         return normalizeId(left == null ? null : left.id()).compareTo(normalizeId(right == null ? null : right.id()));
     }
@@ -257,9 +293,33 @@ public class AssetAvailabilityMapper {
     }
 
     private long sortTime(AssetRequest request) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        LocalDateTime value = parseDateTime(booking == null
+                ? request == null ? null : request.requestedAtIso()
+                : firstNonBlank(booking.startAtIso(), request == null ? null : request.requestedAtIso()));
+        if (value != null) {
+            return value.toInstant(ZoneOffset.UTC).toEpochMilli();
+        }
         DateRange range = requestDateRange(request);
-        LocalDateTime value = range == null ? parseDateTime(request == null ? null : request.requestedAtIso()) : range.start().atStartOfDay();
-        return value == null ? 0L : value.toInstant(ZoneOffset.UTC).toEpochMilli();
+        return range == null ? 0L : range.start().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+    }
+
+    private long daySortTime(AssetRequest request) {
+        DateRange range = requestDateRange(request);
+        LocalDate value = range == null ? parseDate(request == null ? null : request.requestedAtIso()) : range.start();
+        return value == null ? 0L : value.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+    }
+
+    private LocalDateTime requestEndTime(AssetRequest request) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        LocalDateTime start = parseDateTime(booking == null
+                ? request == null ? null : request.requestedAtIso()
+                : firstNonBlank(booking.startAtIso(), request == null ? null : request.requestedAtIso()));
+        if (start == null) {
+            return null;
+        }
+        LocalDateTime end = parseDateTime(booking == null ? null : booking.endAtIso());
+        return end != null && end.isAfter(start) ? end : start.plusDays(1);
     }
 
     private boolean requestsOverlap(AssetRequest left, AssetRequest right) {
@@ -400,6 +460,10 @@ public class AssetAvailabilityMapper {
             return normalized;
         }
         return "all";
+    }
+
+    private String normalizeOrder(String order) {
+        return "earlier".equals(safeText(order)) ? "earlier" : "later";
     }
 
     private String normalizeStatus(String value) {

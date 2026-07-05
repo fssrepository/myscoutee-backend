@@ -27,11 +27,12 @@ public class AssetAvailabilityService {
             String assetId,
             String dateIso,
             String filter,
+            String order,
             Integer page,
             Integer pageSize,
             String cursor) {
         List<AssetRequest> requests = availabilityRepository.findRequestsByOwnerAsset(userId, assetId);
-        return availabilityMapper.toOccupancyPage(userId, assetId, requests, dateIso, filter, page, pageSize, cursor);
+        return availabilityMapper.toOccupancyPage(userId, assetId, requests, dateIso, filter, order, page, pageSize, cursor);
     }
 
     public AssetOccupancyStatsPageDto loadStatByAssetId(
@@ -40,10 +41,11 @@ public class AssetAvailabilityService {
             String rangeStart,
             String rangeEnd,
             String filter,
+            String order,
             Integer page,
             Integer pageSize,
             String cursor) {
         List<AssetRequest> requests = availabilityRepository.findRequestsByOwnerAsset(userId, assetId);
-        return availabilityMapper.toStatsPage(userId, assetId, requests, rangeStart, rangeEnd, filter, page, pageSize, cursor);
+        return availabilityMapper.toStatsPage(userId, assetId, requests, rangeStart, rangeEnd, filter, order, page, pageSize, cursor);
     }
 }

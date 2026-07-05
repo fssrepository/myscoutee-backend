@@ -54,6 +54,7 @@ public class AssetsController {
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "dateIso", required = false) String dateIso,
             @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
             @RequestParam(value = "cursor", required = false) String cursor) {
@@ -62,6 +63,7 @@ public class AssetsController {
                 assetId,
                 dateIso,
                 filter,
+                order,
                 page,
                 pageSize,
                 cursor);
@@ -74,6 +76,7 @@ public class AssetsController {
             @RequestParam(value = "rangeStart", required = false) String rangeStart,
             @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
             @RequestParam(value = "filter", required = false) String filter,
+            @RequestParam(value = "order", required = false) String order,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "60") Integer pageSize,
             @RequestParam(value = "cursor", required = false) String cursor) {
@@ -83,6 +86,7 @@ public class AssetsController {
                 rangeStart,
                 rangeEnd,
                 filter,
+                order,
                 page,
                 pageSize,
                 cursor);
