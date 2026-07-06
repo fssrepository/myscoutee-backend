@@ -42,6 +42,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -66,6 +67,8 @@ class ActivitiesEventsServiceTest {
     private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     @Mock
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    @Mock
+    private ActivityMembersRepository activityMembersRepository;
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -118,6 +121,7 @@ class ActivitiesEventsServiceTest {
                 activitySubEventGroupsRepository,
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
+                activityMembersRepository,
                 usersRepository,
                 userAffinityEdgesRepository,
                 homeUserProfileService,
