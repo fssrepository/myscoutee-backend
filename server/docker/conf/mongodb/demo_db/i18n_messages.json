@@ -3111,7 +3111,7 @@
     "_id": "i18n-message-en-login-disabled-mode-choose-a-demo-user-to-open-perspective-based-data",
     "key": "login.disabled.mode.choose.a.demo.user.to.open.perspective.based.data",
     "lang": "en",
-    "value": "Login disabled mode. Choose a demo user to open perspective-based data."
+    "value": "Choose a demo profile."
   },
   {
     "_id": "i18n-message-en-login-disabled-mode-choose-an-admin-user-to-seed-moderation-data",
@@ -14205,7 +14205,7 @@
     "_id": "i18n-message-hu-login-disabled-mode-choose-a-demo-user-to-open-perspective-based-data",
     "key": "login.disabled.mode.choose.a.demo.user.to.open.perspective.based.data",
     "lang": "hu",
-    "value": "Bejelentkezés nélküli mód. Válassz demo felhasználót a nézőpont szerinti adatok megnyitásához."
+    "value": "Válassz demo profilt."
   },
   {
     "_id": "i18n-message-hu-login-disabled-mode-choose-an-admin-user-to-seed-moderation-data",
