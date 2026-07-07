@@ -3674,11 +3674,19 @@ public class ActivitiesEventsService {
         if (MEMBER_STATUS_DELETED.equals(trackedEventMembershipStatus(record))) {
             return true;
         }
-        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, sourceId, normalizedUserId)
+        return MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, normalizedUserId));
+    }
+
+    private String eventMembershipStatusForUser(String sourceId, String userId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedSourceId) || !StringUtils.hasText(normalizedUserId)) {
+            return "";
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedSourceId, normalizedUserId)
                 .map(ActivityMember::getStatus)
                 .map(this::safeText)
-                .filter(MEMBER_STATUS_DELETED::equals)
-                .isPresent();
+                .orElse("");
     }
 
     private ActivityEvent buildMembershipProjection(String ownerUserId, ActivityEvent record) {
@@ -4533,6 +4541,9 @@ public class ActivitiesEventsService {
         }
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         String sourceId = normalizeId(record.getSourceId());
+        if (MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, userId))) {
+            return false;
+        }
         if (ctx != null && StringUtils.hasText(sourceId) && ctx.trackedEventSourceIds().contains(sourceId)) {
             return true;
         }
