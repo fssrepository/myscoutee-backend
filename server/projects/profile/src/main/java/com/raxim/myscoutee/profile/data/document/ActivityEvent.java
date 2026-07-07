@@ -91,6 +91,7 @@ public class ActivityEvent {
     private Boolean autoInviter;
     private String frequency;
     private Boolean ticketing;
+    private Boolean approvalRequired;
     private PricingConfigDto pricing;
     private Boolean policiesEnabled;
     private List<PolicyItemDto> policies = new ArrayList<>();
@@ -218,6 +219,8 @@ public class ActivityEvent {
     public void setFrequency(String frequency) { this.frequency = frequency; }
     public Boolean getTicketing() { return ticketing; }
     public void setTicketing(Boolean ticketing) { this.ticketing = ticketing; }
+    public Boolean getApprovalRequired() { return approvalRequired; }
+    public void setApprovalRequired(Boolean approvalRequired) { this.approvalRequired = approvalRequired; }
     public PricingConfigDto getPricing() { return pricing; }
     public void setPricing(PricingConfigDto pricing) { this.pricing = pricing; }
     public Boolean getPoliciesEnabled() { return policiesEnabled; }

@@ -1698,9 +1698,13 @@ public class ActivitiesEventsService {
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
             return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
-        boolean approvalRequested = isApprovalRequested(request);
+        boolean alreadyAccepted = isAcceptedMember(
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId),
+                viewer.userId());
+        boolean approvalRequested = isApprovalRequested(request)
+                || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
-        boolean accepted = !waitingList && isConfirmedBooking(request, preferred);
+        boolean accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
@@ -1710,7 +1714,7 @@ public class ActivitiesEventsService {
                     .orElse(null);
             if (slotRecord != null) {
                 waitingList = waitingList || isRecordFull(slotRecord);
-                accepted = !waitingList && isConfirmedBooking(request, preferred);
+                accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
                 ActivitiesMembersService.OwnerMembersSnapshot slotSnapshot =
                         activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
@@ -3944,6 +3948,9 @@ public class ActivitiesEventsService {
         document.setTicketing(publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getTicketing())
                 : request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
+        document.setApprovalRequired(publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getApprovalRequired())
+                : request.approvalRequired() != null ? request.approvalRequired() : existing != null && Boolean.TRUE.equals(existing.getApprovalRequired()));
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
@@ -4400,6 +4407,7 @@ public class ActivitiesEventsService {
                 .include("capacityMax")
                 .include("capacityTotal")
                 .include("ticketing")
+                .include("approvalRequired")
                 .include("parentEventId")
                 .include("slotTemplateId")
                 .include("generated")
@@ -5349,6 +5357,7 @@ public class ActivitiesEventsService {
         next.setAutoInviter(parent.getAutoInviter());
         next.setFrequency(parent.getFrequency());
         next.setTicketing(parent.getTicketing());
+        next.setApprovalRequired(parent.getApprovalRequired());
         next.setPricing(clonePricing(parent.getPricing()));
         next.setSlotsEnabled(false);
         next.setSlotTemplates(List.of());

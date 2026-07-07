@@ -68,6 +68,7 @@ public class ActivityEventDetailMapper {
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
+                Boolean.TRUE.equals(record.getApprovalRequired()),
                 clonePricing(record.getPricing()),
                 Boolean.TRUE.equals(record.getPoliciesEnabled()),
                 clonePolicies(record.getPolicies()),

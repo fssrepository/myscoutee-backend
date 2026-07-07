@@ -32,9 +32,10 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 @Service
 public class EventCheckoutBasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
-    private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "pay");
-    private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed");
-    private static final String STATUS_DELETED = "deleted";
+    private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "approval-pending", "approved", "pay");
+    private static final List<String> ACTIVE_RESULT_STATES = List.of("active", "failed");
+    private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed", "approval-pending", "approved");
+    private static final String RESULT_STATE_DELETED = "deleted";
     private static final String SYSTEM_USER = "checkout-basket-purge";
 
     private final EventCheckoutBasketItemsRepository repository;
@@ -59,7 +60,11 @@ public class EventCheckoutBasketService {
         }
 
         List<EventCheckoutBasketItemDto> items = repository
-                .findByUserIdAndSourceIdAndStatusIn(normalizedUserId, normalizedSourceId, ACTIVE_STATUSES)
+                .findByUserIdAndSourceIdAndStatusInAndActiveResultState(
+                        normalizedUserId,
+                        normalizedSourceId,
+                        ACTIVE_STATUSES,
+                        ACTIVE_RESULT_STATES)
                 .stream()
                 .map(this::toItemDto)
                 .filter(Objects::nonNull)
@@ -84,9 +89,13 @@ public class EventCheckoutBasketService {
                 .orElse("USD");
         String status = items.stream().anyMatch(item -> "pay".equals(item.status()))
                 ? "pay"
-                : items.stream().anyMatch(item -> "confirmed".equals(item.status()))
-                        ? "confirmed"
-                        : "draft";
+                : items.stream().anyMatch(item -> "approved".equals(item.status()))
+                        ? "approved"
+                        : items.stream().anyMatch(item -> "approval-pending".equals(item.status()))
+                                ? "approval-pending"
+                                : items.stream().anyMatch(item -> "confirmed".equals(item.status()))
+                                        ? "confirmed"
+                                        : "draft";
 
         return new EventCheckoutBasketDto(
                 normalizedUserId,
@@ -128,11 +137,12 @@ public class EventCheckoutBasketService {
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(staleStatuses),
+                activeResultStateCriteria(),
                 incomingItemIds.isEmpty()
                         ? Criteria.where("itemId").exists(true)
                         : Criteria.where("itemId").nin(incomingItemIds)));
         mongoTemplate.updateMulti(staleQuery, new Update()
-                .set("status", STATUS_DELETED)
+                .set("resultState", RESULT_STATE_DELETED)
                 .set("updatedAtIso", nowIso), EventCheckoutBasketItem.class);
 
         for (EventCheckoutBasketItemDto item : incomingItems) {
@@ -149,6 +159,7 @@ public class EventCheckoutBasketService {
                     Criteria.where("itemId").is(itemId)));
             EventCheckoutBasketItem existing = mongoTemplate.findOne(itemQuery, EventCheckoutBasketItem.class);
             String status = mergeStatus(existing == null ? null : existing.getStatus(), firstText(item.status(), requestStatus));
+            String resultState = normalizeResultState(item.resultState());
             Update update = new Update()
                     .set("itemId", itemId)
                     .set("userId", normalizedUserId)
@@ -165,6 +176,7 @@ public class EventCheckoutBasketService {
                     .set("currency", firstText(item.currency(), firstText(request.currency(), "USD")))
                     .set("quantity", Math.max(1, item.quantity() == null ? 1 : item.quantity()))
                     .set("status", status)
+                    .set("resultState", resultState)
                     .set("pricingSummaryRows", item.pricingSummaryRows() == null ? List.of() : List.copyOf(item.pricingSummaryRows()))
                     .set("checkoutSessionId", normalizeId(item.checkoutSessionId()))
                     .set("updatedAtIso", nowIso)
@@ -194,10 +206,11 @@ public class EventCheckoutBasketService {
             String nowIso = (now == null ? Instant.now() : now).toString();
             Query query = new Query(new Criteria().andOperator(
                     Criteria.where("status").in(PURGEABLE_STATUSES),
+                    activeResultStateCriteria(),
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso)));
             Update update = new Update()
-                    .set("status", STATUS_DELETED)
+                    .set("resultState", RESULT_STATE_DELETED)
                     .set("updatedAtIso", nowIso);
             UpdateResult result = mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class);
             int modified = result == null ? 0 : Math.toIntExact(Math.min(Integer.MAX_VALUE, result.getModifiedCount()));
@@ -250,6 +263,7 @@ public class EventCheckoutBasketService {
                 currency,
                 Math.max(1, item.getQuantity() == null ? 1 : item.getQuantity()),
                 normalizeStatus(item.getStatus()),
+                normalizeResultState(item.getResultState()),
                 item.getPricingSummaryRows() == null ? List.of() : List.copyOf(item.getPricingSummaryRows()),
                 normalizeId(item.getCheckoutSessionId()),
                 safeText(item.getCreatedAtIso()),
@@ -314,7 +328,22 @@ public class EventCheckoutBasketService {
 
     private String normalizeStatus(String status) {
         String normalized = safeText(status);
-        return "confirmed".equals(normalized) || "pay".equals(normalized) ? normalized : "draft";
+        return "confirmed".equals(normalized)
+                || "approval-pending".equals(normalized)
+                || "approved".equals(normalized)
+                || "pay".equals(normalized)
+                || "cancelled".equals(normalized)
+                || "rejected".equals(normalized)
+                || "deleted".equals(normalized)
+                ? normalized
+                : "draft";
+    }
+
+    private String normalizeResultState(String resultState) {
+        String normalized = safeText(resultState);
+        return "deleted".equals(normalized) || "succeeded".equals(normalized) || "failed".equals(normalized)
+                ? normalized
+                : "active";
     }
 
     private String mergeStatus(String existingStatus, String nextStatus) {
@@ -323,10 +352,13 @@ public class EventCheckoutBasketService {
         if ("pay".equals(existing)) {
             return existing;
         }
-        if ("confirmed".equals(existing) && "draft".equals(next)) {
-            return existing;
-        }
         return next;
+    }
+
+    private Criteria activeResultStateCriteria() {
+        return new Criteria().orOperator(
+                Criteria.where("resultState").exists(false),
+                Criteria.where("resultState").in(ACTIVE_RESULT_STATES));
     }
 
     private String firstText(String value, String fallback) {

@@ -3415,7 +3415,27 @@
         "icon": null
       }
     ],
-    "policiesEnabled": false
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "policy-checkin-window",
+        "title": "Check-in window",
+        "description": "Arrive within the first 15 minutes of the selected slot so the organizer can release late spots.",
+        "required": true
+      },
+      {
+        "id": "policy-cancellation",
+        "title": "Cancellation",
+        "description": "Paid extras are refundable only until 24 hours before the selected slot starts.",
+        "required": true
+      },
+      {
+        "id": "policy-media",
+        "title": "Photos & recap",
+        "description": "A private recap may be shared with attendees after the event.",
+        "required": false
+      }
+    ]
   },
   {
     "_id": {

@@ -13,7 +13,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPrici
 
 @Document(collection = "eventCheckoutBasketItems")
 @CompoundIndexes({
-        @CompoundIndex(name = "checkout_basket_user_source_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'updatedAtIso': -1}"),
+        @CompoundIndex(name = "checkout_basket_user_source_status", def = "{'userId': 1, 'sourceId': 1, 'status': 1, 'resultState': 1, 'updatedAtIso': -1}"),
         @CompoundIndex(name = "checkout_basket_user_source_item", def = "{'userId': 1, 'sourceId': 1, 'itemId': 1}", unique = true, sparse = true),
         @CompoundIndex(name = "checkout_basket_expiry_status", def = "{'expiresAtIso': 1, 'status': 1}")
 })
@@ -38,6 +38,7 @@ public class EventCheckoutBasketItem {
     private String currency;
     private Integer quantity;
     private String status;
+    private String resultState;
     private List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows = new ArrayList<>();
     private String checkoutSessionId;
     private String createdAtIso;
@@ -91,6 +92,9 @@ public class EventCheckoutBasketItem {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getResultState() { return resultState; }
+    public void setResultState(String resultState) { this.resultState = resultState; }
 
     public List<EventCheckoutPricingSummaryRowDto> getPricingSummaryRows() { return pricingSummaryRows; }
     public void setPricingSummaryRows(List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {

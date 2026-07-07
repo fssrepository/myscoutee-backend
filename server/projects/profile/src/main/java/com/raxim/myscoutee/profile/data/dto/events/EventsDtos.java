@@ -280,6 +280,7 @@ public final class EventsDtos {
             List<String> invitedMemberUserIds,
             List<String> pendingRequestMemberUserIds,
             String pendingReason,
+            Boolean approvalRequired,
             Double boost) {
     }
 
@@ -336,6 +337,7 @@ public final class EventsDtos {
             Boolean autoInviter,
             String frequency,
             Boolean ticketing,
+            Boolean approvalRequired,
             PricingConfigDto pricing,
             Boolean policiesEnabled,
             List<PolicyItemDto> policies,
@@ -447,6 +449,7 @@ public final class EventsDtos {
             String currency,
             Integer quantity,
             String status,
+            String resultState,
             List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
             String checkoutSessionId,
             String createdAtIso,

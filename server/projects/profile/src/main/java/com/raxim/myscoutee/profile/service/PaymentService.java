@@ -309,6 +309,7 @@ public class PaymentService {
                                 item.currency(),
                                 item.quantity(),
                                 checkoutState,
+                                item.resultState(),
                                 item.pricingSummaryRows(),
                                 hasText(item.checkoutSessionId()) ? item.checkoutSessionId() : normalizedSessionId,
                                 item.createdAtIso(),

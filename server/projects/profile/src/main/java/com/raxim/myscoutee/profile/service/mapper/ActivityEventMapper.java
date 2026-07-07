@@ -78,6 +78,7 @@ public class ActivityEventMapper {
                 invitedMemberUserIds,
                 pendingRequestMemberUserIds,
                 null,
+                Boolean.TRUE.equals(record.getApprovalRequired()),
                 safeDouble(record.getBoost()));
     }
 
