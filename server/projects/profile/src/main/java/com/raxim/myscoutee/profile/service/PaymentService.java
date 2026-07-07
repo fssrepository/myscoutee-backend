@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
@@ -37,14 +38,19 @@ public class PaymentService {
 
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
+    private final EventCheckoutBasketService eventCheckoutBasketService;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
 
-    public PaymentService(List<PaymentProcessor> processorList, PaymentsRepository paymentsRepository) {
+    public PaymentService(
+            List<PaymentProcessor> processorList,
+            PaymentsRepository paymentsRepository,
+            EventCheckoutBasketService eventCheckoutBasketService) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
+        this.eventCheckoutBasketService = eventCheckoutBasketService;
     }
 
     public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request, String provider) {
@@ -65,6 +71,7 @@ public class PaymentService {
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
         paymentsRepository.save(payment);
+        eventCheckoutBasketService.saveBasket(withCheckoutState(request, "confirmed", sessionDto.id()));
         return sessionDto;
     }
 
@@ -84,6 +91,7 @@ public class PaymentService {
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
         paymentsRepository.save(payment);
+        eventCheckoutBasketService.saveBasket(withCheckoutState(request, "pay", payment.getCheckoutSessionId()));
         return sessionDto;
     }
 
@@ -262,6 +270,8 @@ public class PaymentService {
         payment.setSlotSourceId(normalizeId(request == null ? null : request.slotSourceId()));
         payment.setOptionalSubEventIds(request == null ? List.of() : normalizeStrings(request.optionalSubEventIds()));
         payment.setAcceptedPolicyIds(request == null ? List.of() : normalizeStrings(request.acceptedPolicyIds()));
+        payment.setBasketItems(request == null || request.basketItems() == null ? List.of() : request.basketItems());
+        payment.setPricingSummaryRows(request == null || request.pricingSummaryRows() == null ? List.of() : request.pricingSummaryRows());
         payment.setLineItems(request == null || request.lineItems() == null ? List.of() : request.lineItems());
     }
 
@@ -273,6 +283,52 @@ public class PaymentService {
         return paymentsRepository.findByGatewaySessionId(normalizedSessionId)
                 .or(() -> paymentsRepository.findByCheckoutSessionId(normalizedSessionId))
                 .or(() -> paymentsRepository.findById(normalizedSessionId));
+    }
+
+    private EventCheckoutRequestDto withCheckoutState(EventCheckoutRequestDto request, String checkoutState, String checkoutSessionId) {
+        if (request == null) {
+            return null;
+        }
+        String normalizedSessionId = normalizeId(checkoutSessionId);
+        List<EventCheckoutBasketItemDto> basketItems = request.basketItems() == null
+                ? List.of()
+                : request.basketItems().stream()
+                        .filter(Objects::nonNull)
+                        .map(item -> new EventCheckoutBasketItemDto(
+                                item.id(),
+                                item.kind(),
+                                item.sourceId(),
+                                item.slotSourceId(),
+                                item.slotTemplateId(),
+                                item.selectedDateKey(),
+                                item.subEventId(),
+                                item.resourceType(),
+                                item.label(),
+                                item.detail(),
+                                item.amount(),
+                                item.currency(),
+                                item.quantity(),
+                                checkoutState,
+                                item.pricingSummaryRows(),
+                                hasText(item.checkoutSessionId()) ? item.checkoutSessionId() : normalizedSessionId,
+                                item.createdAtIso(),
+                                item.updatedAtIso(),
+                                item.expiresAtIso()))
+                        .toList();
+        return new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                request.slotSourceId(),
+                request.optionalSubEventIds(),
+                request.assetSelections(),
+                request.acceptedPolicyIds(),
+                basketItems,
+                request.pricingSummaryRows(),
+                checkoutState,
+                request.lineItems(),
+                request.totalAmount(),
+                request.currency(),
+                request.pendingReason());
     }
 
     private void ensurePaymentRequestCompatible(Payment payment, EventCheckoutRequestDto request) {

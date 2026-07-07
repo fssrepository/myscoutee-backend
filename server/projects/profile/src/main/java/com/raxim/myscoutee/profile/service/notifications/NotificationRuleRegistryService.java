@@ -30,6 +30,7 @@ public class NotificationRuleRegistryService {
     public static final String RULE_EVENT_AUTO_INVITER = "event-auto-inviter";
     public static final String RULE_EVENT_TOURNAMENT_REVIEW = "event-tournament-review";
     public static final String RULE_EVENT_COUNTER_EXPIRY = "event-counter-expiry";
+    public static final String RULE_EVENT_CHECKOUT_BASKET_PURGE = "event-checkout-basket-purge";
 
     private static final String SYSTEM_USER = "notification-registry";
     private static final String INTERVAL_UNIT_SECONDS = "seconds";
@@ -44,7 +45,8 @@ public class NotificationRuleRegistryService {
             RULE_EVENT_RANDOM_GROUPS,
             RULE_EVENT_AUTO_INVITER,
             RULE_EVENT_TOURNAMENT_REVIEW,
-            RULE_EVENT_COUNTER_EXPIRY);
+            RULE_EVENT_COUNTER_EXPIRY,
+            RULE_EVENT_CHECKOUT_BASKET_PURGE);
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
     private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
 

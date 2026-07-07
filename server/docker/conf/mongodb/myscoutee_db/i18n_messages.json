@@ -2100,6 +2100,18 @@
     "value": "Expires past event records and refreshes affected user activity counters every five minutes."
   },
   {
+    "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge",
+    "key": "admin.jobs.rule.event.checkout.basket.purge",
+    "lang": "en",
+    "value": "Checkout basket purge"
+  },
+  {
+    "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge-description",
+    "key": "admin.jobs.rule.event.checkout.basket.purge.description",
+    "lang": "en",
+    "value": "Marks expired draft checkout basket items as deleted after the purchase window closes."
+  },
+  {
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "en",
@@ -2860,6 +2872,18 @@
     "key": "event.counter.expiry.description",
     "lang": "en",
     "value": "Expires past events and refreshes affected counters."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-basket-purge",
+    "key": "event.checkout.basket.purge",
+    "lang": "en",
+    "value": "Checkout basket purge"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-basket-purge-description",
+    "key": "event.checkout.basket.purge.description",
+    "lang": "en",
+    "value": "Marks expired checkout basket drafts as deleted."
   },
   {
     "_id": "i18n-message-en-notifications-outbox-worker",
@@ -13170,6 +13194,18 @@
     "value": "Ötpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
   },
   {
+    "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge",
+    "key": "admin.jobs.rule.event.checkout.basket.purge",
+    "lang": "hu",
+    "value": "Checkout kosár tisztítás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge-description",
+    "key": "admin.jobs.rule.event.checkout.basket.purge.description",
+    "lang": "hu",
+    "value": "A vásárlási ablak után törölt státuszra állítja a lejárt checkout kosár elemeket."
+  },
+  {
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "hu",
@@ -13930,6 +13966,18 @@
     "key": "event.counter.expiry.description",
     "lang": "hu",
     "value": "Lejáratja a múltbeli eseményeket, és frissíti az érintett számlálókat."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-basket-purge",
+    "key": "event.checkout.basket.purge",
+    "lang": "hu",
+    "value": "Checkout kosár tisztítás"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-basket-purge-description",
+    "key": "event.checkout.basket.purge.description",
+    "lang": "hu",
+    "value": "Törölt státuszra állítja a lejárt checkout kosár piszkozatokat."
   },
   {
     "_id": "i18n-message-hu-notifications-outbox-worker",

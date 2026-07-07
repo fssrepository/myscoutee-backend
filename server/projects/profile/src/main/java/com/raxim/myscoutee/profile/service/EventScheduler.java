@@ -79,6 +79,7 @@ public class EventScheduler {
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final EventCounterExpiryService eventCounterExpiryService;
+    private final EventCheckoutBasketService eventCheckoutBasketService;
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
     private final Algo algo = new Algo();
@@ -102,6 +103,7 @@ public class EventScheduler {
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventInviteNotificationService eventInviteNotificationService,
             EventCounterExpiryService eventCounterExpiryService,
+            EventCheckoutBasketService eventCheckoutBasketService,
             NotificationRuleRegistryService notificationRuleRegistryService,
             PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;
@@ -112,6 +114,7 @@ public class EventScheduler {
         this.activitiesEventLeaderboardService = activitiesEventLeaderboardService;
         this.eventInviteNotificationService = eventInviteNotificationService;
         this.eventCounterExpiryService = eventCounterExpiryService;
+        this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.platformParametersService = platformParametersService;
     }
@@ -150,6 +153,12 @@ public class EventScheduler {
             int expiredCount = eventCounterExpiryService.runExpiryPassNow();
             if (expiredCount > 0) {
                 LOGGER.info("Expired {} event counter source(s).", expiredCount);
+            }
+        }
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
+            int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBaskets(now);
+            if (purgedCount > 0) {
+                LOGGER.info("Purged {} checkout basket item(s).", purgedCount);
             }
         }
     }

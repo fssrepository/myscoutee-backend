@@ -400,6 +400,9 @@ public final class EventsDtos {
             List<String> optionalSubEventIds,
             List<EventCheckoutAssetSelectionDto> assetSelections,
             List<String> acceptedPolicyIds,
+            List<EventCheckoutBasketItemDto> basketItems,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            String checkoutState,
             List<EventCheckoutLineItemDto> lineItems,
             Double totalAmount,
             String currency,
@@ -418,6 +421,52 @@ public final class EventsDtos {
             String detail,
             Double amount,
             String currency) {
+    }
+
+    public record EventCheckoutPricingSummaryRowDto(
+            String key,
+            String label,
+            String detail,
+            Double amount,
+            String currency,
+            Integer multiplier) {
+    }
+
+    public record EventCheckoutBasketItemDto(
+            String id,
+            String kind,
+            String sourceId,
+            String slotSourceId,
+            String slotTemplateId,
+            String selectedDateKey,
+            String subEventId,
+            String resourceType,
+            String label,
+            String detail,
+            Double amount,
+            String currency,
+            Integer quantity,
+            String status,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            String checkoutSessionId,
+            String createdAtIso,
+            String updatedAtIso,
+            String expiresAtIso) {
+    }
+
+    public record EventCheckoutBasketDto(
+            String userId,
+            String sourceId,
+            String status,
+            List<EventCheckoutBasketItemDto> items,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            List<EventCheckoutLineItemDto> lineItems,
+            Double totalAmount,
+            String currency,
+            String slotSourceId,
+            String selectedDateKey,
+            String checkoutSessionId,
+            String expiresAtIso) {
     }
 
     public record EventCheckoutSessionDto(
