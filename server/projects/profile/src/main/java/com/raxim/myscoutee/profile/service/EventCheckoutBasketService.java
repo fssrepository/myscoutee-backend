@@ -33,9 +33,9 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 @Service
 public class EventCheckoutBasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
-    private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "approval-pending", "approved", "pay");
+    private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved", "pay");
     private static final List<String> VISIBLE_RESULT_STATES = List.of("pending", "active", "failed");
-    private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed", "approval-pending", "approved");
+    private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved");
     private static final String RESULT_STATE_DELETED = "deleted";
     private static final String SYSTEM_USER = "checkout-basket-purge";
 
@@ -94,9 +94,11 @@ public class EventCheckoutBasketService {
                         ? "approved"
                         : items.stream().anyMatch(item -> "approval-pending".equals(item.status()))
                                 ? "approval-pending"
-                                : items.stream().anyMatch(item -> "confirmed".equals(item.status()))
-                                        ? "confirmed"
-                                        : "draft";
+                                : items.stream().anyMatch(item -> "waiting".equals(item.status()))
+                                        ? "waiting"
+                                        : items.stream().anyMatch(item -> "confirmed".equals(item.status()))
+                                                ? "confirmed"
+                                                : "draft";
 
         return new EventCheckoutBasketDto(
                 normalizedUserId,
@@ -358,6 +360,7 @@ public class EventCheckoutBasketService {
     private String normalizeStatus(String status) {
         String normalized = safeText(status);
         return "confirmed".equals(normalized)
+                || "waiting".equals(normalized)
                 || "approval-pending".equals(normalized)
                 || "approved".equals(normalized)
                 || "pay".equals(normalized)

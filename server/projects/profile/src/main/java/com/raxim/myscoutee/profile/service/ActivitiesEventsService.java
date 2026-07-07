@@ -1825,7 +1825,9 @@ public class ActivitiesEventsService {
                         request.sourceId(),
                         "approval".equals(safeText(result == null ? null : result.pendingReason()))
                                 ? "approval-pending"
-                                : "confirmed",
+                                : "waitlist".equals(safeText(result == null ? null : result.pendingReason()))
+                                        ? "waiting"
+                                        : "confirmed",
                         null,
                         result == null ? null : result.pendingReason(),
                         session == null ? null : session.id()));
