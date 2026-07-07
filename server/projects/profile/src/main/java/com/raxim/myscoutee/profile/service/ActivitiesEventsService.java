@@ -111,6 +111,7 @@ public class ActivitiesEventsService {
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String MEMBER_STATUS_INVITED = "I";
+    private static final String MEMBER_STATUS_DELETED = "deleted";
     private static final String STAGE_STATUS_ACTIVE = "A";
     private static final String STAGE_STATUS_START_REVIEW = "RS";
     private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
@@ -318,6 +319,13 @@ public class ActivitiesEventsService {
     }
 
     private EventQueryContext buildUserListCardQueryContext(ViewerContext viewer, boolean includeEdgeWeights) {
+        return buildUserListCardQueryContext(viewer, includeEdgeWeights, false);
+    }
+
+    private EventQueryContext buildUserListCardQueryContext(
+            ViewerContext viewer,
+            boolean includeEdgeWeights,
+            boolean includeDeletedMemberships) {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
             return emptyEventQueryContext();
         }
@@ -329,7 +337,7 @@ public class ActivitiesEventsService {
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
-        Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
+        Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId(), includeDeletedMemberships);
         LinkedHashSet<String> membershipSourceIds = new LinkedHashSet<>(trackedStatusesBySourceId.keySet());
         membershipSourceIds.removeAll(directSourceIds);
 
@@ -432,7 +440,11 @@ public class ActivitiesEventsService {
     }
 
     private Map<String, String> trackedEventMembershipStatuses(String userId) {
-        Map<String, String> rawStatuses = activitiesMembersService.findTrackedEventMembershipStatusesForUser(userId);
+        return trackedEventMembershipStatuses(userId, false);
+    }
+
+    private Map<String, String> trackedEventMembershipStatuses(String userId, boolean includeDeleted) {
+        Map<String, String> rawStatuses = activitiesMembersService.findTrackedEventMembershipStatusesForUser(userId, includeDeleted);
         if (rawStatuses == null || rawStatuses.isEmpty()) {
             return Map.of();
         }
@@ -443,7 +455,8 @@ public class ActivitiesEventsService {
             if (StringUtils.hasText(sourceId)
                     && (MEMBER_STATUS_ACCEPTED.equals(status)
                     || MEMBER_STATUS_PENDING.equals(status)
-                    || MEMBER_STATUS_INVITED.equals(status))) {
+                    || MEMBER_STATUS_INVITED.equals(status)
+                    || (includeDeleted && MEMBER_STATUS_DELETED.equals(status)))) {
                 statusesBySourceId.put(sourceId, status);
             }
         }
@@ -681,8 +694,10 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
-                queryDirectFilteredRecords(viewer, "trash", "all").stream()
+        EventsFilterRequestDto request = new EventsFilterRequestDto(
+                requestedUserId, "trash", "all", null, null, null, null, null, null, null, null);
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true), () ->
+                queryFilteredRecords(viewer, request).stream()
                         .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
@@ -690,7 +705,23 @@ public class ActivitiesEventsService {
     }
 
     public EventsExplorePageDto queryTrashPage(String requestedUserId, Integer requestedLimit, String cursor) {
-        return queryDirectFilterPage(requestedUserId, "trash", "all", requestedLimit, cursor);
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) {
+            return new EventsExplorePageDto(List.of(), 0, null);
+        }
+        EventsFilterRequestDto request = new EventsFilterRequestDto(
+                requestedUserId, "trash", "all", null, null, null, requestedLimit, cursor, null, null, null);
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true), () -> {
+            int limit = normalizePageLimit(requestedLimit, 12);
+            List<ActivityEvent> sorted = sortEventRecordsByStart(queryFilteredRecords(viewer, request));
+            int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
+            int endIndex = Math.min(sorted.size(), startIndex + limit);
+            List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
+            String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
+                    ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
+                    : null;
+            return new EventsExplorePageDto(toHydratedEventDtos(viewer, pageRecords), sorted.size(), nextCursor);
+        });
     }
 
     private EventsExplorePageDto queryDirectFilterPage(
@@ -726,6 +757,11 @@ public class ActivitiesEventsService {
         }
         String filter = normalizeActivityListFilter(request == null ? null : request.filter());
         String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        if ("trash".equals(filter)) {
+            EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request), true);
+            return withEventQueryContext(context, () ->
+                    pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
+        }
         if (usesDirectOwnerListFilter(filter)) {
             return withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
                     pageEventListRecords(viewer, queryDirectFilteredRecords(viewer, filter, hostingPublicationFilter), request));
@@ -3171,7 +3207,9 @@ public class ActivitiesEventsService {
             case "invitations" -> invitationItems;
             case "my-events" -> "drafts".equals(hostingPublicationFilter) ? draftItems : myEventItems;
             case "drafts" -> draftItems;
-            case "trash" -> userItems.stream().filter(this::isTrashStatus).toList();
+            case "trash" -> userItems.stream()
+                    .filter(record -> isTrashStatus(record) || hasDeletedMembership(record, viewer.userId()))
+                    .toList();
             default -> activeEventItems;
         };
     }
@@ -3625,6 +3663,22 @@ public class ActivitiesEventsService {
         }
         String status = safeText(record == null ? null : record.getStatus());
         return ActivityEvent.STATUS_TRASHED.equals(status);
+    }
+
+    private boolean hasDeletedMembership(ActivityEvent record, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(sourceId)) {
+            return false;
+        }
+        if (MEMBER_STATUS_DELETED.equals(trackedEventMembershipStatus(record))) {
+            return true;
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, sourceId, normalizedUserId)
+                .map(ActivityMember::getStatus)
+                .map(this::safeText)
+                .filter(MEMBER_STATUS_DELETED::equals)
+                .isPresent();
     }
 
     private ActivityEvent buildMembershipProjection(String ownerUserId, ActivityEvent record) {

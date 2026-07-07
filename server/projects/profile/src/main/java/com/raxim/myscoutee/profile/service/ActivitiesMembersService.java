@@ -190,6 +190,10 @@ public class ActivitiesMembersService {
     }
 
     public Map<String, String> findTrackedEventMembershipStatusesForUser(String userId) {
+        return findTrackedEventMembershipStatusesForUser(userId, false);
+    }
+
+    public Map<String, String> findTrackedEventMembershipStatusesForUser(String userId, boolean includeDeleted) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return Map.of();
@@ -200,7 +204,10 @@ public class ActivitiesMembersService {
                 continue;
             }
             String status = normalizeStatus(member.getStatus());
-            if (!STATUS_ACCEPTED.equals(status) && !STATUS_PENDING.equals(status) && !STATUS_INVITED.equals(status)) {
+            if (!STATUS_ACCEPTED.equals(status)
+                    && !STATUS_PENDING.equals(status)
+                    && !STATUS_INVITED.equals(status)
+                    && !(includeDeleted && STATUS_DELETED.equals(status))) {
                 continue;
             }
             String ownerId = normalizeId(member.getOwnerId());
