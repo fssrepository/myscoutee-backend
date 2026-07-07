@@ -26,6 +26,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBaske
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.repository.EventCheckoutBasketItemsRepository;
 import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService;
 
@@ -33,7 +34,7 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 public class EventCheckoutBasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
     private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "approval-pending", "approved", "pay");
-    private static final List<String> ACTIVE_RESULT_STATES = List.of("active", "failed");
+    private static final List<String> VISIBLE_RESULT_STATES = List.of("pending", "active", "failed");
     private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed", "approval-pending", "approved");
     private static final String RESULT_STATE_DELETED = "deleted";
     private static final String SYSTEM_USER = "checkout-basket-purge";
@@ -60,11 +61,11 @@ public class EventCheckoutBasketService {
         }
 
         List<EventCheckoutBasketItemDto> items = repository
-                .findByUserIdAndSourceIdAndStatusInAndActiveResultState(
+                .findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                         normalizedUserId,
                         normalizedSourceId,
                         ACTIVE_STATUSES,
-                        ACTIVE_RESULT_STATES)
+                        VISIBLE_RESULT_STATES)
                 .stream()
                 .map(this::toItemDto)
                 .filter(Objects::nonNull)
@@ -137,7 +138,7 @@ public class EventCheckoutBasketService {
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(staleStatuses),
-                activeResultStateCriteria(),
+                visibleResultStateCriteria(),
                 incomingItemIds.isEmpty()
                         ? Criteria.where("itemId").exists(true)
                         : Criteria.where("itemId").nin(incomingItemIds)));
@@ -188,6 +189,34 @@ public class EventCheckoutBasketService {
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
     }
 
+    public EventCheckoutBasketDto updateBasketState(EventCheckoutStateChangeRequestDto request) {
+        String normalizedUserId = normalizeId(request == null ? null : request.userId());
+        String normalizedSourceId = normalizeId(request == null ? null : request.sourceId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+        String checkoutState = normalizeStatus(request.checkoutState());
+        String resultState = normalizeResultState(request.resultState());
+        String nowIso = Instant.now().toString();
+        Update update = new Update()
+                .set("status", checkoutState)
+                .set("updatedAtIso", nowIso);
+        if (StringUtils.hasText(resultState)) {
+            update.set("resultState", resultState);
+        }
+        String checkoutSessionId = normalizeId(request.checkoutSessionId());
+        if (StringUtils.hasText(checkoutSessionId)) {
+            update.set("checkoutSessionId", checkoutSessionId);
+        }
+        Query query = new Query(new Criteria().andOperator(
+                Criteria.where("userId").is(normalizedUserId),
+                Criteria.where("sourceId").is(normalizedSourceId),
+                Criteria.where("status").in(ACTIVE_STATUSES),
+                visibleResultStateCriteria()));
+        mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class);
+        return loadBasketByEvent(normalizedUserId, normalizedSourceId);
+    }
+
     public int purgeExpiredDraftBasketsNow() {
         return purgeExpiredDraftBaskets(Instant.now());
     }
@@ -206,7 +235,7 @@ public class EventCheckoutBasketService {
             String nowIso = (now == null ? Instant.now() : now).toString();
             Query query = new Query(new Criteria().andOperator(
                     Criteria.where("status").in(PURGEABLE_STATUSES),
-                    activeResultStateCriteria(),
+                    visibleResultStateCriteria(),
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso)));
             Update update = new Update()
@@ -334,7 +363,6 @@ public class EventCheckoutBasketService {
                 || "pay".equals(normalized)
                 || "cancelled".equals(normalized)
                 || "rejected".equals(normalized)
-                || "deleted".equals(normalized)
                 ? normalized
                 : "draft";
     }
@@ -343,7 +371,7 @@ public class EventCheckoutBasketService {
         String normalized = safeText(resultState);
         return "deleted".equals(normalized) || "succeeded".equals(normalized) || "failed".equals(normalized)
                 ? normalized
-                : "active";
+                : "pending";
     }
 
     private String mergeStatus(String existingStatus, String nextStatus) {
@@ -355,10 +383,10 @@ public class EventCheckoutBasketService {
         return next;
     }
 
-    private Criteria activeResultStateCriteria() {
+    private Criteria visibleResultStateCriteria() {
         return new Criteria().orOperator(
                 Criteria.where("resultState").exists(false),
-                Criteria.where("resultState").in(ACTIVE_RESULT_STATES));
+                Criteria.where("resultState").in(VISIBLE_RESULT_STATES));
     }
 
     private String firstText(String value, String fallback) {

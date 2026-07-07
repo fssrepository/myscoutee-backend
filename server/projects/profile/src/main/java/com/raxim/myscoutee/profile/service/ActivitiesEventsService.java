@@ -49,6 +49,11 @@ import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -135,6 +140,7 @@ public class ActivitiesEventsService {
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
+    private final EventCheckoutBasketService eventCheckoutBasketService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -166,6 +172,7 @@ public class ActivitiesEventsService {
             ActivitiesMembersService activitiesMembersService,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
+            EventCheckoutBasketService eventCheckoutBasketService,
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
@@ -195,6 +202,7 @@ public class ActivitiesEventsService {
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
+        this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
@@ -1698,6 +1706,7 @@ public class ActivitiesEventsService {
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
             return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
+        syncCheckoutBasketForJoin(request);
         boolean alreadyAccepted = isAcceptedMember(
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId),
                 viewer.userId());
@@ -1757,6 +1766,130 @@ public class ActivitiesEventsService {
                 refreshed == null ? preferred : refreshed,
                 snapshot,
                 request);
+    }
+
+    public EventParticipationActionResultDto payEventCheckout(EventCheckoutStateChangeRequestDto request, String provider) {
+        if (request == null) {
+            return null;
+        }
+        EventCheckoutBasketDto basket = eventCheckoutBasketService.loadBasketByEvent(request.userId(), request.sourceId());
+        if (basket == null || basket.items() == null || basket.items().isEmpty()) {
+            return null;
+        }
+        EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
+        EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
+        EventActionRequestDto joinRequest = new EventActionRequestDto(
+                request.userId(),
+                request.sourceId(),
+                basket.slotSourceId(),
+                basket.items().stream()
+                        .map(item -> normalizeId(item.subEventId()))
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList(),
+                List.of(),
+                List.of(),
+                session == null ? null : session.id(),
+                Boolean.TRUE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        try {
+            EventParticipationActionResultDto result = requestJoin(joinRequest);
+            if (result == null || "unchanged".equals(safeText(result.membershipStatus()))) {
+                eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                        request.userId(),
+                        request.sourceId(),
+                        "pay",
+                        "failed",
+                        null,
+                        session == null ? null : session.id()));
+                return result;
+            }
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    "pay",
+                    "succeeded",
+                    null,
+                    session == null ? null : session.id()));
+            return result;
+        } catch (RuntimeException exception) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    "pay",
+                    "failed",
+                    null,
+                    session == null ? null : session.id()));
+            throw exception;
+        }
+    }
+
+    private void syncCheckoutBasketForJoin(EventActionRequestDto request) {
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (!StringUtils.hasText(checkoutState)) {
+            return;
+        }
+        String userId = normalizeId(request.userId());
+        String sourceId = normalizeId(request.sourceId());
+        if (!StringUtils.hasText(userId) || !StringUtils.hasText(sourceId)) {
+            return;
+        }
+        List<EventCheckoutBasketItemDto> basketItems = request.basketItems() == null
+                ? List.of()
+                : request.basketItems().stream().filter(Objects::nonNull).toList();
+        if (!basketItems.isEmpty()) {
+            eventCheckoutBasketService.saveBasket(new EventCheckoutRequestDto(
+                    userId,
+                    sourceId,
+                    request.slotSourceId(),
+                    request.optionalSubEventIds(),
+                    request.assetSelections(),
+                    request.acceptedPolicyIds(),
+                    basketItems,
+                    request.pricingSummaryRows(),
+                    checkoutState,
+                    request.lineItems(),
+                    request.totalAmount(),
+                    request.currency(),
+                    request.pendingReason()));
+            return;
+        }
+        eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                userId,
+                sourceId,
+                checkoutState,
+                null,
+                request.pendingReason(),
+                request.paymentSessionId()));
+    }
+
+    private EventCheckoutRequestDto checkoutRequestFromBasket(
+            EventCheckoutStateChangeRequestDto request,
+            EventCheckoutBasketDto basket) {
+        return new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                basket.slotSourceId(),
+                basket.items().stream()
+                        .map(item -> normalizeId(item.subEventId()))
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList(),
+                List.of(),
+                List.of(),
+                basket.items(),
+                basket.pricingSummaryRows(),
+                "pay",
+                basket.lineItems(),
+                basket.totalAmount(),
+                basket.currency(),
+                null);
     }
 
     private EventParticipationActionResultDto toParticipationActionResult(

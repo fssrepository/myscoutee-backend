@@ -10,7 +10,7 @@ import com.raxim.myscoutee.profile.data.document.EventCheckoutBasketItem;
 
 public interface EventCheckoutBasketItemsRepository extends MongoRepository<EventCheckoutBasketItem, String> {
     @Query(value = "{ 'userId': ?0, 'sourceId': ?1, 'status': { $in: ?2 }, $or: [ { 'resultState': { $exists: false } }, { 'resultState': { $in: ?3 } } ] }", sort = "{ 'selectedDateKey': 1, 'createdAtIso': 1, 'itemId': 1 }")
-    List<EventCheckoutBasketItem> findByUserIdAndSourceIdAndStatusInAndActiveResultState(
+    List<EventCheckoutBasketItem> findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
             String userId,
             String sourceId,
             Collection<String> statuses,

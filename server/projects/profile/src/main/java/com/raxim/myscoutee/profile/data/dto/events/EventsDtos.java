@@ -51,7 +51,13 @@ public final class EventsDtos {
             List<String> acceptedPolicyIds,
             String paymentSessionId,
             Boolean bookingConfirmed,
-            String pendingReason) {
+            String pendingReason,
+            String checkoutState,
+            List<EventCheckoutBasketItemDto> basketItems,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            List<EventCheckoutLineItemDto> lineItems,
+            Double totalAmount,
+            String currency) {
     }
 
     public record EventParticipationActionResultDto(
@@ -409,6 +415,15 @@ public final class EventsDtos {
             Double totalAmount,
             String currency,
             String pendingReason) {
+    }
+
+    public record EventCheckoutStateChangeRequestDto(
+            String userId,
+            String sourceId,
+            String checkoutState,
+            String resultState,
+            String pendingReason,
+            String checkoutSessionId) {
     }
 
     public record EventCheckoutAssetSelectionDto(

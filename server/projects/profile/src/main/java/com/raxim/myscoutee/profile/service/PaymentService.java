@@ -95,6 +95,33 @@ public class PaymentService {
         return sessionDto;
     }
 
+    public EventCheckoutSessionDto payCheckout(EventCheckoutRequestDto request, String provider) {
+        String normalizedProvider = normalizeProvider(provider);
+        EventCheckoutSessionDto sessionDto = !enablePay
+                ? createDummySession(request, null)
+                : resolveProcessor(normalizedProvider).pay(request, null);
+
+        Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
+        ensurePaymentRequestCompatible(payment, request);
+        hydratePaymentRequest(payment, request, normalizedProvider);
+        String sessionId = normalizeId(sessionDto.id());
+        payment.setCheckoutSessionId(hasText(payment.getCheckoutSessionId()) ? payment.getCheckoutSessionId() : sessionId);
+        payment.setGatewaySessionId(sessionId);
+        payment.setStatus(safeText(sessionDto.status()));
+        payment.setBookingStatus(hasText(payment.getBookingStatus()) ? payment.getBookingStatus() : BOOKING_STATUS_INITIATED);
+        payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
+        payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
+        paymentsRepository.save(payment);
+        return new EventCheckoutSessionDto(
+                payment.getCheckoutSessionId(),
+                sessionDto.provider(),
+                sessionDto.mode(),
+                sessionDto.status(),
+                sessionDto.amount(),
+                sessionDto.currency(),
+                sessionDto.paymentUrl());
+    }
+
     public void recordEventJoin(
             String paymentSessionId,
             String userId,
