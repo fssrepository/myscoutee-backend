@@ -1,8 +1,3 @@
-e-kozig
--------
-onya form editor and display on view (indexeddb save and grid layout+form editor)
-mobil/desktop view switch like on base44
-
 myscoutee
 ---------
 cloudflare - caching images (so won't need to use google cloud bandwith)
@@ -10,19 +5,3 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
-
-event explore
--------------
-pricing on the fly calculation on selected date or slot (asset/event explore)
-
-checkout event explore - redesign - (i think it's hard coded data now,
-does not rely on policy and it's not lazy loaded)
-
-you can buy for periodic event (slot) or just one time --- we need to set is on the event editor also
-
-common in case when saw
------------------------
-app-menu -> infocard/imagecard etc. to wire to appmenu-host
-
-hibernate app and reload on mobile stucks
-bundle size - we have some small chunks and a bigger barrel (1MB)
