@@ -57,7 +57,48 @@ public final class EventsDtos {
             List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
             List<EventCheckoutLineItemDto> lineItems,
             Double totalAmount,
-            String currency) {
+            String currency,
+            Boolean removeMembershipOnly,
+            String checkoutResultState,
+            String checkoutSessionId,
+            Object counterDelta) {
+        public EventActionRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean bookingConfirmed,
+                String pendingReason,
+                String checkoutState,
+                List<EventCheckoutBasketItemDto> basketItems,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    bookingConfirmed,
+                    pendingReason,
+                    checkoutState,
+                    basketItems,
+                    pricingSummaryRows,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
     }
 
     public record EventParticipationActionResultDto(
@@ -420,10 +461,21 @@ public final class EventsDtos {
     public record EventCheckoutStateChangeRequestDto(
             String userId,
             String sourceId,
+            String slotSourceId,
             String checkoutState,
             String resultState,
             String pendingReason,
-            String checkoutSessionId) {
+            String checkoutSessionId,
+            Object counterDelta) {
+        public EventCheckoutStateChangeRequestDto(
+                String userId,
+                String sourceId,
+                String checkoutState,
+                String resultState,
+                String pendingReason,
+                String checkoutSessionId) {
+            this(userId, sourceId, null, checkoutState, resultState, pendingReason, checkoutSessionId, null);
+        }
     }
 
     public record EventCheckoutAssetSelectionDto(

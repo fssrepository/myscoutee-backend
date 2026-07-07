@@ -700,6 +700,52 @@ public class ActivitiesMembersService {
         }
     }
 
+    public OwnerMembersSnapshot removeEventParticipation(String eventId, String userId, String actorUserId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedUserId = normalizeId(userId);
+        String normalizedActorUserId = resolveActorUserId(actorUserId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
+            return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+
+        synchronized (eventJoinLock(normalizedEventId)) {
+            List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
+            ActivityMember current = existing.stream()
+                    .filter(Objects::nonNull)
+                    .filter(member -> normalizedUserId.equals(normalizeId(member.getUserId())))
+                    .findFirst()
+                    .orElse(null);
+            if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
+                return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+            }
+
+            String currentStatus = normalizeStatus(current.getStatus());
+            String nowIso = Instant.now().toString();
+            ActivityMember deletedMember = toDeletedMember(current, normalizedActorUserId, nowIso);
+            activityMembersRepository.save(deletedMember);
+            enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, normalizedActorUserId);
+            adminTelemetryService.record(
+                    "event.member.removed",
+                    "events",
+                    normalizedEventId,
+                    normalizedActorUserId,
+                    1L,
+                    Map.of("targetUserId", normalizedUserId));
+            if (STATUS_ACCEPTED.equals(currentStatus)) {
+                cascadeRemovedEventMembersFromAssignedAssets(normalizedEventId, List.of(current), normalizedActorUserId, nowIso);
+                Set<String> removedManagedAssetIds = activitiesResourcesService
+                        .removeManagedResourcesForRemovedEventMembers(normalizedEventId, List.of(current), normalizedActorUserId, nowIso);
+                clearRemovedManagedAssetMembers(removedManagedAssetIds, normalizedActorUserId, nowIso);
+                processEventWaitlist(normalizedEventId, findPreferredEventRecord(normalizedEventId), true);
+                postEventMembershipChangeMessages(normalizedEventId, List.of(), List.of(current));
+            }
+            eventParticipationTicketService.syncParticipationTicketsForEvent(normalizedEventId);
+            refreshEmbeddedEventMembers(normalizedEventId);
+            userActivityCountersService.refreshEventCountersForSourceIds(List.of(normalizedEventId));
+            return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
+    }
+
     private Object eventJoinLock(String eventId) {
         return eventJoinLocks.computeIfAbsent(eventId, ignored -> new Object());
     }

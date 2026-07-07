@@ -129,8 +129,8 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/trash")
-    public void trash(@RequestBody EventActionRequestDto request) {
-        activitiesEventsService.trash(request);
+    public EventParticipationActionResultDto trash(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.trash(request);
     }
 
     @PostMapping("/publish")

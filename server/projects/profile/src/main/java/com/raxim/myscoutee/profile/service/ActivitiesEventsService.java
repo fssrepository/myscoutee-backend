@@ -1255,11 +1255,14 @@ public class ActivitiesEventsService {
         });
     }
 
-    public void trash(EventActionRequestDto request) {
+    public EventParticipationActionResultDto trash(EventActionRequestDto request) {
         String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (Boolean.TRUE.equals(request == null ? null : request.removeMembershipOnly())) {
+            return removeCheckoutMembershipOnly(request, sourceId);
+        }
         boolean organizerLifecycleRequest = isOrganizerLifecycleRequest(request);
         if (organizerLifecycleRequest && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
-            return;
+            return null;
         }
         maybePostMemberLeftMessage(request);
         maybeApplyLeaveCancellationRefund(request);
@@ -1277,6 +1280,49 @@ public class ActivitiesEventsService {
             markEventAttachmentsUnavailable(updated, "trashed");
         }
         userActivityCountersService.refreshEventCountersForDocuments(updated);
+        return null;
+    }
+
+    private EventParticipationActionResultDto removeCheckoutMembershipOnly(
+            EventActionRequestDto request,
+            String sourceId) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String normalizedSourceId = normalizeId(sourceId);
+        String slotSourceId = normalizeId(request == null ? null : request.slotSourceId());
+        if (viewer == null || !StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (StringUtils.hasText(checkoutState)) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    viewer.userId(),
+                    normalizedSourceId,
+                    slotSourceId,
+                    checkoutState,
+                    firstNonBlank(request.checkoutResultState(), "deleted"),
+                    request.pendingReason(),
+                    firstNonBlank(request.checkoutSessionId(), request.paymentSessionId(), null),
+                    request.counterDelta()));
+        }
+
+        List<String> membershipSourceIds = new ArrayList<>();
+        membershipSourceIds.add(normalizedSourceId);
+        if (StringUtils.hasText(slotSourceId) && !normalizedSourceId.equals(slotSourceId)) {
+            membershipSourceIds.add(slotSourceId);
+        }
+
+        ActivitiesMembersService.OwnerMembersSnapshot sourceSnapshot = null;
+        for (String membershipSourceId : membershipSourceIds) {
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                    activitiesMembersService.removeEventParticipation(membershipSourceId, viewer.userId(), viewer.userId());
+            if (normalizedSourceId.equals(membershipSourceId)) {
+                sourceSnapshot = snapshot;
+            }
+        }
+
+        ActivityEvent refreshed = findPreferredEventRecord(normalizedSourceId);
+        return toParticipationLeaveResult(normalizedSourceId, slotSourceId, refreshed, sourceSnapshot, request);
     }
 
     public void publish(EventActionRequestDto request) {
@@ -1795,12 +1841,13 @@ public class ActivitiesEventsService {
         if (basket == null || basket.items() == null || basket.items().isEmpty()) {
             return null;
         }
+        String slotSourceId = firstNonBlank(basket.slotSourceId(), request.slotSourceId(), null);
         EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
         EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
         EventActionRequestDto joinRequest = new EventActionRequestDto(
                 request.userId(),
                 request.sourceId(),
-                basket.slotSourceId(),
+                slotSourceId,
                 basket.items().stream()
                         .map(item -> normalizeId(item.subEventId()))
                         .filter(StringUtils::hasText)
@@ -1823,6 +1870,7 @@ public class ActivitiesEventsService {
                 eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                         request.userId(),
                         request.sourceId(),
+                        slotSourceId,
                         "approval".equals(safeText(result == null ? null : result.pendingReason()))
                                 ? "approval-pending"
                                 : "waitlist".equals(safeText(result == null ? null : result.pendingReason()))
@@ -1830,25 +1878,30 @@ public class ActivitiesEventsService {
                                         : "confirmed",
                         null,
                         result == null ? null : result.pendingReason(),
-                        session == null ? null : session.id()));
+                        session == null ? null : session.id(),
+                        request.counterDelta()));
                 return result;
             }
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     request.userId(),
                     request.sourceId(),
+                    slotSourceId,
                     "pay",
                     "succeeded",
                     null,
-                    session == null ? null : session.id()));
+                    session == null ? null : session.id(),
+                    request.counterDelta()));
             return result;
         } catch (RuntimeException exception) {
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     request.userId(),
                     request.sourceId(),
+                    slotSourceId,
                     "pay",
                     "failed",
                     null,
-                    session == null ? null : session.id()));
+                    session == null ? null : session.id(),
+                    request.counterDelta()));
             throw exception;
         }
     }
@@ -1886,10 +1939,12 @@ public class ActivitiesEventsService {
         eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                 userId,
                 sourceId,
+                request.slotSourceId(),
                 checkoutState,
                 null,
                 request.pendingReason(),
-                request.paymentSessionId()));
+                request.paymentSessionId(),
+                request.counterDelta()));
     }
 
     private EventCheckoutRequestDto checkoutRequestFromBasket(
@@ -1898,7 +1953,7 @@ public class ActivitiesEventsService {
         return new EventCheckoutRequestDto(
                 request.userId(),
                 request.sourceId(),
-                basket.slotSourceId(),
+                firstNonBlank(basket.slotSourceId(), request.slotSourceId(), null),
                 basket.items().stream()
                         .map(item -> normalizeId(item.subEventId()))
                         .filter(StringUtils::hasText)
@@ -1946,6 +2001,37 @@ public class ActivitiesEventsService {
                 Math.max(acceptedMembers, capacityTotal),
                 capacityTotal > 0 && acceptedMembers >= capacityTotal,
                 normalizeId(request == null ? null : request.paymentSessionId()));
+    }
+
+    private EventParticipationActionResultDto toParticipationLeaveResult(
+            String sourceId,
+            String slotSourceId,
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            EventActionRequestDto request) {
+        int acceptedMembers = snapshot == null
+                ? normalizeCount(record == null ? null : record.getAcceptedMembers())
+                : snapshot.acceptedMembers();
+        int pendingMembers = snapshot == null
+                ? normalizeCount(record == null ? null : record.getPendingMembers())
+                : snapshot.pendingMembers();
+        int capacityTotal = snapshot == null || snapshot.capacityTotal() == null
+                ? normalizeCount(record == null ? null : record.getCapacityTotal())
+                : Math.max(0, snapshot.capacityTotal());
+        return new EventParticipationActionResultDto(
+                normalizeId(sourceId),
+                StringUtils.hasText(slotSourceId) ? normalizeId(slotSourceId) : null,
+                "leave",
+                "deleted",
+                null,
+                acceptedMembers,
+                pendingMembers,
+                Math.max(acceptedMembers, capacityTotal),
+                capacityTotal > 0 && acceptedMembers >= capacityTotal,
+                normalizeId(firstNonBlank(
+                        request == null ? null : request.checkoutSessionId(),
+                        request == null ? null : request.paymentSessionId(),
+                        null)));
     }
 
     private String pendingReasonForAction(boolean waitingList, boolean approvalRequested) {
