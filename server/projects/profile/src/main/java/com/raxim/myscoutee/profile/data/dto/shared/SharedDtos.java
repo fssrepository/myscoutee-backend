@@ -37,6 +37,12 @@ public final class SharedDtos {
             String currency) {
     }
 
+    public record PricingQuantityRuleDto(
+            String id,
+            Integer minQuantity,
+            PricingActionDto action) {
+    }
+
     public record PricingDemandRuleDto(
             String id,
             String operator,
@@ -91,6 +97,8 @@ public final class SharedDtos {
             String currency,
             String taxMode,
             String chargeType,
+            Boolean quantityRulesEnabled,
+            List<PricingQuantityRuleDto> quantityRules,
             Double minPrice,
             Double maxPrice,
             String rounding,

@@ -372,7 +372,8 @@ public final class EventsDtos {
             String view,
             String anchorDate,
             String rangeStart,
-            String rangeEnd) {
+            String rangeEnd,
+            Boolean participantOnly) {
     }
 
     public record EventSubEventsSlotDto(

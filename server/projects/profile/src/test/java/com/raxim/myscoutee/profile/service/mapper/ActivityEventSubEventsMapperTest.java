@@ -79,7 +79,7 @@ class ActivityEventSubEventsMapperTest {
 
     private EventSubEventsQueryDto query(String order, Instant anchor) {
         String date = anchor.atOffset(ZoneOffset.UTC).toLocalDate().toString();
-        return new EventSubEventsQueryDto("user-1", "event-1", order, "day", date, date, date);
+        return new EventSubEventsQueryDto("user-1", "event-1", order, "day", date, date, date, false);
     }
 
     private SubEventDefinitionDto subEventDefinition(int durationMinutes) {

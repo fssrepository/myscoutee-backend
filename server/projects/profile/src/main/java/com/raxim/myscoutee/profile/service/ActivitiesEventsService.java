@@ -41,6 +41,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
@@ -71,8 +72,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventSt
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
+import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -97,6 +100,8 @@ public class ActivitiesEventsService {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
+    private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
+    private static final String OWNER_TYPE_GROUP = "group";
     private static final String SLOT_READ_MODEL_USER_ID = "__slot_read_model__";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
@@ -123,6 +128,7 @@ public class ActivitiesEventsService {
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    private final ActivityMembersRepository activityMembersRepository;
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
@@ -153,6 +159,7 @@ public class ActivitiesEventsService {
             ActivitySubEventGroupsRepository activitySubEventGroupsRepository,
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
+            ActivityMembersRepository activityMembersRepository,
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
@@ -181,6 +188,7 @@ public class ActivitiesEventsService {
         this.activitySubEventGroupsRepository = activitySubEventGroupsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
+        this.activityMembersRepository = activityMembersRepository;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -735,6 +743,9 @@ public class ActivitiesEventsService {
                 parentEventId,
                 parent,
                 request);
+        if (Boolean.TRUE.equals(request.participantOnly())) {
+            baseSlots = filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
+        }
         SubEventStateLookups lookups = activityEventSubEventsMapper.subEventStateLookups(baseSlots, viewer.userId());
         Map<String, ActivitySubEventResourceStateDto> resourceRecordsByKey = subEventResourceRecordsByKey(lookups.resourceLookups());
         Map<String, ActivitySubEventStageRuntimeStateDto> stageRuntimeByKey = subEventStageRuntimeRecordsByKey(lookups.stageRuntimeLookups());
@@ -744,6 +755,309 @@ public class ActivitiesEventsService {
                 stageRuntimeByKey,
                 viewer.userId());
         return new EventSubEventsResultDto(parent.getMode(), slots);
+    }
+
+    private List<EventSubEventsSlotDto> filterSubEventSlotsByAcceptedParticipation(
+            List<EventSubEventsSlotDto> slots,
+            String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || slots == null || slots.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventParticipationSlotCandidate> candidates = slots.stream()
+                .filter(Objects::nonNull)
+                .map(this::subEventParticipationSlotCandidate)
+                .toList();
+        if (candidates.isEmpty()) {
+            return List.of();
+        }
+        addManualGroupOwnerIds(candidates);
+        Set<String> acceptedEventOwnerIds = acceptedParticipantOwnerIds(
+                OWNER_TYPE_EVENT,
+                candidates.stream()
+                        .flatMap(candidate -> candidate.eventOwnerIds.stream())
+                        .toList(),
+                normalizedUserId);
+        Set<String> acceptedSubEventOwnerIds = acceptedParticipantOwnerIds(
+                OWNER_TYPE_SUB_EVENT,
+                candidates.stream()
+                        .flatMap(candidate -> candidate.subEventOwnerIdsByIndex.values().stream())
+                        .flatMap(Collection::stream)
+                        .toList(),
+                normalizedUserId);
+        Set<String> acceptedGroupOwnerIds = acceptedParticipantOwnerIds(
+                OWNER_TYPE_GROUP,
+                candidates.stream()
+                        .flatMap(candidate -> candidate.groupOwnerIds.stream())
+                        .toList(),
+                normalizedUserId);
+
+        List<EventSubEventsSlotDto> filtered = new ArrayList<>();
+        for (SubEventParticipationSlotCandidate candidate : candidates) {
+            List<SubEventItemDto> items = candidate.items();
+            boolean hasSlotParticipation = intersects(candidate.eventOwnerIds, acceptedEventOwnerIds)
+                    || intersects(candidate.groupOwnerIds, acceptedGroupOwnerIds)
+                    || hasTournamentSubEventParticipation(candidate, acceptedSubEventOwnerIds);
+            if (hasSlotParticipation) {
+                filtered.add(candidate.slot);
+                continue;
+            }
+            List<SubEventItemDto> filteredItems = new ArrayList<>();
+            for (int index = 0; index < items.size(); index += 1) {
+                if (intersects(candidate.subEventOwnerIdsByIndex.get(index), acceptedSubEventOwnerIds)) {
+                    filteredItems.add(items.get(index));
+                }
+            }
+            if (!filteredItems.isEmpty()) {
+                filtered.add(withSubEventItems(candidate.slot, filteredItems));
+            }
+        }
+        return filtered;
+    }
+
+    private SubEventParticipationSlotCandidate subEventParticipationSlotCandidate(EventSubEventsSlotDto slot) {
+        SubEventParticipationSlotCandidate candidate = new SubEventParticipationSlotCandidate(slot);
+        String slotOwnerId = subEventParticipantSlotOwnerId(slot);
+        candidate.eventOwnerIds.addAll(uniqueParticipantOwnerIds(
+                slotOwnerId,
+                slot == null ? null : slot.parentEventId(),
+                slot == null ? null : slot.slotSourceId(),
+                slot == null ? null : slot.id()));
+        List<SubEventItemDto> items = candidate.items();
+        for (int index = 0; index < items.size(); index += 1) {
+            SubEventItemDto item = items.get(index);
+            String subEventId = subEventParticipantItemId(item, index);
+            candidate.subEventOwnerIdsByIndex.put(index, new LinkedHashSet<>(
+                    subEventParticipantOwnerIds(candidate.eventOwnerIds, subEventId)));
+            candidate.groupOwnerIds.addAll(generatedGroupParticipantOwnerIds(subEventId, item == null ? null : item.groupsCount()));
+        }
+        return candidate;
+    }
+
+    private void addManualGroupOwnerIds(List<SubEventParticipationSlotCandidate> candidates) {
+        List<SubEventStageRuntimeLookup> runtimeRefs = new ArrayList<>();
+        for (SubEventParticipationSlotCandidate candidate : candidates == null ? List.<SubEventParticipationSlotCandidate>of() : candidates) {
+            String slotOwnerId = subEventParticipantSlotOwnerId(candidate.slot);
+            if (!StringUtils.hasText(slotOwnerId)) {
+                continue;
+            }
+            List<SubEventItemDto> items = candidate.items();
+            for (int index = 0; index < items.size(); index += 1) {
+                String subEventId = subEventParticipantItemId(items.get(index), index);
+                if (StringUtils.hasText(subEventId)) {
+                    runtimeRefs.add(new SubEventStageRuntimeLookup(slotOwnerId, subEventId));
+                }
+            }
+        }
+        Map<String, ActivitySubEventStageRuntime> runtimeByKey = subEventStageRuntimeDocumentsByKey(runtimeRefs);
+        Set<String> runtimeOwnerIds = runtimeByKey.values().stream()
+                .map(ActivitySubEventStageRuntime::getId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (runtimeOwnerIds.isEmpty()) {
+            return;
+        }
+        Map<String, List<String>> groupIdsByRuntimeOwnerId = new LinkedHashMap<>();
+        List<ActivitySubEventGroup> groups = activitySubEventGroupsRepository
+                .findByOwnerIdInAndStatusNot(runtimeOwnerIds, RUNTIME_STATUS_DELETED);
+        for (ActivitySubEventGroup group : groups == null ? List.<ActivitySubEventGroup>of() : groups) {
+            String ownerId = normalizeId(group == null ? null : group.getOwnerId());
+            String groupId = normalizeId(group == null ? null : group.getGroupId());
+            if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(groupId)) {
+                continue;
+            }
+            groupIdsByRuntimeOwnerId.computeIfAbsent(ownerId, ignored -> new ArrayList<>()).add(groupId);
+        }
+        if (groupIdsByRuntimeOwnerId.isEmpty()) {
+            return;
+        }
+        for (SubEventParticipationSlotCandidate candidate : candidates) {
+            String slotOwnerId = subEventParticipantSlotOwnerId(candidate.slot);
+            if (!StringUtils.hasText(slotOwnerId)) {
+                continue;
+            }
+            List<SubEventItemDto> items = candidate.items();
+            for (int index = 0; index < items.size(); index += 1) {
+                String subEventId = subEventParticipantItemId(items.get(index), index);
+                ActivitySubEventStageRuntime runtime = runtimeByKey.get(
+                        activityEventSubEventsMapper.subEventStageRuntimeRecordKey(slotOwnerId, subEventId));
+                String runtimeOwnerId = normalizeId(runtime == null ? null : runtime.getId());
+                if (StringUtils.hasText(runtimeOwnerId)) {
+                    candidate.groupOwnerIds.addAll(groupIdsByRuntimeOwnerId.getOrDefault(runtimeOwnerId, List.of()));
+                }
+            }
+        }
+    }
+
+    private Map<String, ActivitySubEventStageRuntime> subEventStageRuntimeDocumentsByKey(
+            Collection<SubEventStageRuntimeLookup> refs) {
+        if (refs == null || refs.isEmpty()) {
+            return Map.of();
+        }
+        Set<String> ownerIds = refs.stream()
+                .map(SubEventStageRuntimeLookup::ownerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Set<String> requestedKeys = refs.stream()
+                .map(ref -> activityEventSubEventsMapper.subEventStageRuntimeRecordKey(ref.ownerId(), ref.subEventId()))
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (ownerIds.isEmpty() || requestedKeys.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, ActivitySubEventStageRuntime> recordsByKey = new LinkedHashMap<>();
+        List<ActivitySubEventStageRuntime> records = activitySubEventStageRuntimeRepository
+                .findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
+        for (ActivitySubEventStageRuntime record : records == null ? List.<ActivitySubEventStageRuntime>of() : records) {
+            String key = activityEventSubEventsMapper.subEventStageRuntimeRecordKey(
+                    record == null ? null : record.getOwnerId(),
+                    record == null ? null : record.getSubEventId());
+            if (requestedKeys.contains(key)) {
+                recordsByKey.put(key, record);
+            }
+        }
+        return recordsByKey;
+    }
+
+    private Set<String> acceptedParticipantOwnerIds(
+            String ownerType,
+            Collection<String> ownerIds,
+            String userId) {
+        Set<String> normalizedOwnerIds = ownerIds == null
+                ? Set.of()
+                : ownerIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(ownerType) || normalizedOwnerIds.isEmpty() || !StringUtils.hasText(normalizedUserId)) {
+            return Set.of();
+        }
+        return activityMembersRepository
+                .findAcceptedByOwnerTypeOwnerIdInAndUserId(ownerType, normalizedOwnerIds, normalizedUserId, MEMBER_STATUS_ACCEPTED)
+                .stream()
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+    }
+
+    private boolean hasTournamentSubEventParticipation(
+            SubEventParticipationSlotCandidate candidate,
+            Set<String> acceptedSubEventOwnerIds) {
+        List<SubEventItemDto> items = candidate.items();
+        for (int index = 0; index < items.size(); index += 1) {
+            if (isTournamentSubEvent(items.get(index))
+                    && intersects(candidate.subEventOwnerIdsByIndex.get(index), acceptedSubEventOwnerIds)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String subEventParticipantSlotOwnerId(EventSubEventsSlotDto slot) {
+        return firstNonBlank(
+                slot == null ? null : slot.slotSourceId(),
+                slot == null ? null : slot.parentEventId(),
+                slot == null ? null : slot.id());
+    }
+
+    private String subEventParticipantItemId(SubEventItemDto item, int index) {
+        return firstNonBlank(item == null ? null : item.id(), "subevent-" + (index + 1));
+    }
+
+    private List<String> subEventParticipantOwnerIds(Set<String> eventOwnerIds, String subEventId) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedSubEventId)) {
+            return List.of();
+        }
+        List<String> ownerIds = new ArrayList<>();
+        ownerIds.add(normalizedSubEventId);
+        for (String eventOwnerId : eventOwnerIds == null ? Set.<String>of() : eventOwnerIds) {
+            String normalizedEventOwnerId = normalizeId(eventOwnerId);
+            if (StringUtils.hasText(normalizedEventOwnerId)) {
+                ownerIds.add(normalizedEventOwnerId + ":" + normalizedSubEventId);
+            }
+        }
+        return uniqueParticipantOwnerIds(ownerIds.toArray(String[]::new));
+    }
+
+    private List<String> generatedGroupParticipantOwnerIds(String subEventId, Integer groupsCount) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        int groupCount = Math.max(0, groupsCount == null ? 0 : groupsCount);
+        if (!StringUtils.hasText(normalizedSubEventId) || groupCount <= 0) {
+            return List.of();
+        }
+        List<String> ownerIds = new ArrayList<>();
+        for (int index = 1; index <= groupCount; index += 1) {
+            ownerIds.add(normalizedSubEventId + ":group:" + index);
+            ownerIds.add(normalizedSubEventId + "-group-" + index);
+        }
+        return uniqueParticipantOwnerIds(ownerIds.toArray(String[]::new));
+    }
+
+    private boolean intersects(Set<String> ownerIds, Set<String> acceptedOwnerIds) {
+        if (ownerIds == null || ownerIds.isEmpty() || acceptedOwnerIds == null || acceptedOwnerIds.isEmpty()) {
+            return false;
+        }
+        for (String ownerId : ownerIds) {
+            if (acceptedOwnerIds.contains(normalizeId(ownerId))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isTournamentSubEvent(SubEventItemDto item) {
+        return item != null
+                && (Math.max(0, item.groupsCount() == null ? 0 : item.groupsCount()) > 0
+                        || "Score".equalsIgnoreCase(safeText(item.tournamentLeaderboardType()))
+                        || "Fifa".equalsIgnoreCase(safeText(item.tournamentLeaderboardType())));
+    }
+
+    private EventSubEventsSlotDto withSubEventItems(EventSubEventsSlotDto slot, List<SubEventItemDto> items) {
+        return new EventSubEventsSlotDto(
+                slot == null ? "" : slot.id(),
+                slot == null ? "" : slot.parentEventId(),
+                slot == null ? null : slot.slotSourceId(),
+                slot == null ? null : slot.slotTemplateId(),
+                slot == null ? null : slot.title(),
+                slot == null ? null : slot.timeframe(),
+                slot == null ? null : slot.startAt(),
+                slot == null ? null : slot.endAt(),
+                items == null ? List.of() : items);
+    }
+
+    private List<String> uniqueParticipantOwnerIds(String... values) {
+        if (values == null || values.length == 0) {
+            return List.of();
+        }
+        List<String> result = new ArrayList<>();
+        Set<String> seen = new LinkedHashSet<>();
+        for (String value : values) {
+            String normalized = normalizeId(value);
+            if (StringUtils.hasText(normalized) && seen.add(normalized)) {
+                result.add(normalized);
+            }
+        }
+        return result;
+    }
+
+    private static final class SubEventParticipationSlotCandidate {
+        private final EventSubEventsSlotDto slot;
+        private final Set<String> eventOwnerIds = new LinkedHashSet<>();
+        private final Map<Integer, Set<String>> subEventOwnerIdsByIndex = new LinkedHashMap<>();
+        private final Set<String> groupOwnerIds = new LinkedHashSet<>();
+
+        private SubEventParticipationSlotCandidate(EventSubEventsSlotDto slot) {
+            this.slot = slot;
+        }
+
+        private List<SubEventItemDto> items() {
+            return slot == null || slot.subEventItems() == null ? List.of() : slot.subEventItems();
+        }
     }
 
     private ActivityEvent preferredSubEventsDefinitionRecord(List<ActivityEvent> records, String viewerUserId) {
@@ -1260,11 +1574,11 @@ public class ActivitiesEventsService {
         String slotDate = generatedSlotDateFromSourceId(parentEventId, slotSourceId);
         List<EventSubEventsQueryDto> queries = StringUtils.hasText(slotDate)
                 ? List.of(
-                        new EventSubEventsQueryDto(request.userId(), parentEventId, "upcoming", "day", slotDate, slotDate, slotDate),
-                        new EventSubEventsQueryDto(request.userId(), parentEventId, "past", "day", slotDate, slotDate, slotDate))
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "upcoming", "day", slotDate, slotDate, slotDate, false),
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "past", "day", slotDate, slotDate, slotDate, false))
                 : List.of(
-                        new EventSubEventsQueryDto(request.userId(), parentEventId, "upcoming", "day", null, null, null),
-                        new EventSubEventsQueryDto(request.userId(), parentEventId, "past", "day", null, null, null));
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "upcoming", "day", null, null, null, false),
+                        new EventSubEventsQueryDto(request.userId(), parentEventId, "past", "day", null, null, null, false));
         for (EventSubEventsQueryDto query : queries) {
             EventSubEventsSlotDto slot = activityEventSubEventsMapper.toSlotDtos(parentEventId, parent, query).stream()
                     .filter(candidate -> slotSourceId.equals(normalizeId(candidate == null ? null : candidate.slotSourceId()))
