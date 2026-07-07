@@ -240,7 +240,7 @@ public class ActivitiesEventsService {
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
         Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
-        Set<String> trackedSourceIds = new LinkedHashSet<>(trackedStatusesBySourceId.keySet());
+        Set<String> trackedSourceIds = visibleActivitySourceIds(trackedStatusesBySourceId);
         Set<String> membershipSourceIds = new LinkedHashSet<>(trackedSourceIds);
         membershipSourceIds.removeAll(directSourceIds);
 
@@ -277,7 +277,7 @@ public class ActivitiesEventsService {
             return emptyEventQueryContext();
         }
         Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
-        Set<String> trackedSourceIds = new LinkedHashSet<>(trackedStatusesBySourceId.keySet());
+        Set<String> trackedSourceIds = visibleActivitySourceIds(trackedStatusesBySourceId);
         List<ActivityEvent> preferredRecords = computePreferredEventRecords(loadEventDocumentsBySourceIds(trackedSourceIds));
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId = buildMemberSnapshotMap(preferredRecords);
         EventQueryContext snapshotContext = new EventQueryContext(
@@ -448,6 +448,25 @@ public class ActivitiesEventsService {
             }
         }
         return statusesBySourceId;
+    }
+
+    private Set<String> visibleActivitySourceIds(Map<String, String> statusesBySourceId) {
+        Set<String> sourceIds = statusesBySourceId == null
+                ? new LinkedHashSet<>()
+                : new LinkedHashSet<>(statusesBySourceId.keySet());
+        if (sourceIds.isEmpty()) {
+            return sourceIds;
+        }
+        for (ActivityEvent record : loadEventDocumentsBySourceIds(sourceIds)) {
+            if (isGeneratedSlotRecord(record)) {
+                String parentEventId = normalizeId(record.getParentEventId());
+                if (StringUtils.hasText(parentEventId)) {
+                    sourceIds.add(parentEventId);
+                    sourceIds.remove(normalizeId(record.getSourceId()));
+                }
+            }
+        }
+        return sourceIds;
     }
 
     private boolean isTrackedAttendingMembershipStatus(String status) {
@@ -1800,13 +1819,15 @@ public class ActivitiesEventsService {
                 null);
         try {
             EventParticipationActionResultDto result = requestJoin(joinRequest);
-            if (result == null || "unchanged".equals(safeText(result.membershipStatus()))) {
+            if (result == null || !"accepted".equals(safeText(result.membershipStatus()))) {
                 eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                         request.userId(),
                         request.sourceId(),
-                        "pay",
-                        "failed",
+                        "approval".equals(safeText(result == null ? null : result.pendingReason()))
+                                ? "approval-pending"
+                                : "confirmed",
                         null,
+                        result == null ? null : result.pendingReason(),
                         session == null ? null : session.id()));
                 return result;
             }
