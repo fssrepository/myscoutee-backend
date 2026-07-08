@@ -3310,7 +3310,7 @@
       },
       {
         "accommodationPending": 1,
-        "capacityMax": 17,
+        "capacityMax": 8,
         "capacityMin": 0,
         "carsPending": 0,
         "createdByUserId": "1b1c70be2349b3359a8f6f94",
@@ -3319,7 +3319,7 @@
         "groups": [],
         "id": "16226723e2a40397ecb76efa",
         "membersAccepted": 0,
-        "membersPending": 17,
+        "membersPending": 0,
         "name": "Side Activity",
         "optional": true,
         "startAt": "2026-07-12T19:20",
@@ -3411,7 +3411,37 @@
         "groups": [],
         "optional": true,
         "capacityMin": 0,
-        "capacityMax": 17,
+        "capacityMax": 8,
+        "pricing": {
+          "mode": "fixed",
+          "basePrice": 9,
+          "currency": "USD",
+          "taxMode": "excluded",
+          "chargeType": "per_attendee",
+          "quantityRulesEnabled": false,
+          "quantityRules": [],
+          "minPrice": 5,
+          "maxPrice": 17,
+          "rounding": "none",
+          "demandRulesEnabled": false,
+          "demandRules": [],
+          "timeRulesEnabled": false,
+          "timeRules": [],
+          "cancellationPolicy": {
+            "enabled": false,
+            "rules": []
+          },
+          "slotPricingEnabled": false,
+          "slotOverrides": [],
+          "audience": {
+            "enabled": false,
+            "memberPrice": null,
+            "vipPrice": null,
+            "inviteOnlyDiscountPercent": null,
+            "promoCodes": [],
+            "soldOutLabel": "Show \"Sold Out\""
+          }
+        },
         "icon": null
       }
     ],
