@@ -817,8 +817,8 @@ public class ActivitiesEventsService {
         }
         ActivityEvent checkoutParent = parent;
         EventCheckoutBasketDto checkoutBasket = eventCheckoutBasketService.loadBasketByEvent(viewer.userId(), parentEventId);
-        Map<String, Integer> slotReservations = eventCheckoutBasketService.activeSlotReservationCountsByEvent(parentEventId, viewer.userId());
-        Map<String, Integer> optionalReservations = eventCheckoutBasketService.activeOptionalReservationCountsByEvent(parentEventId, viewer.userId());
+        Map<String, Integer> slotReservations = eventCheckoutBasketService.activeSlotReservationCountsByEvent(parentEventId);
+        Map<String, Integer> optionalReservations = eventCheckoutBasketService.activeOptionalReservationCountsByEvent(parentEventId);
         boolean basketView = "basket".equalsIgnoreCase(safeText(request == null ? null : request.view()));
 
         List<EventSlotOccurrenceDto> allSlots = cloneSlotOccurrences(checkoutParent.getUpcomingSlots()).stream()
@@ -1834,13 +1834,14 @@ public class ActivitiesEventsService {
 
         String checkoutState = safeText(request == null ? null : request.checkoutState());
         if (StringUtils.hasText(checkoutState)) {
+            String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     viewer.userId(),
                     normalizedSourceId,
                     slotSourceId,
                     checkoutState,
                     firstNonBlank(request.checkoutResultState(), "deleted"),
-                    request.pendingReason(),
+                    pendingReason,
                     firstNonBlank(request.checkoutSessionId(), request.paymentSessionId(), null),
                     request.counterDelta()));
         }
@@ -2336,6 +2337,7 @@ public class ActivitiesEventsService {
                 affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
                 if (joinedSlot) {
+                    markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, slotSourceId);
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                     postMemberJoinedMessage(sourceId, viewer.user());
                 } else if (checkoutBasketUpdateRequested) {
@@ -2361,6 +2363,7 @@ public class ActivitiesEventsService {
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
         affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
         if (joined) {
+            markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, null);
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
             postMemberJoinedMessage(sourceId, viewer.user());
         } else if (checkoutBasketUpdateRequested) {
@@ -2375,6 +2378,26 @@ public class ActivitiesEventsService {
                 refreshed == null ? preferred : refreshed,
                 snapshot,
                 request);
+    }
+
+    private void markAcceptedCheckoutBasketSucceeded(
+            EventActionRequestDto request,
+            String userId,
+            String sourceId,
+            String slotSourceId) {
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (!StringUtils.hasText(checkoutState)) {
+            return;
+        }
+        eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                userId,
+                sourceId,
+                slotSourceId,
+                checkoutState,
+                "succeeded",
+                null,
+                request.paymentSessionId(),
+                request.counterDelta()));
     }
 
     public EventParticipationActionResultDto payEventCheckout(EventCheckoutStateChangeRequestDto request, String provider) {
@@ -2476,6 +2499,7 @@ public class ActivitiesEventsService {
         if (!StringUtils.hasText(checkoutState)) {
             return;
         }
+        String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
         String userId = normalizeId(request.userId());
         String sourceId = normalizeId(request.sourceId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(sourceId)) {
@@ -2498,7 +2522,7 @@ public class ActivitiesEventsService {
                     request.lineItems(),
                     request.totalAmount(),
                     request.currency(),
-                    request.pendingReason()));
+                    pendingReason));
             return;
         }
         eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
@@ -2507,7 +2531,7 @@ public class ActivitiesEventsService {
                 request.slotSourceId(),
                 checkoutState,
                 null,
-                request.pendingReason(),
+                pendingReason,
                 request.paymentSessionId(),
                 request.counterDelta()));
     }
@@ -2690,6 +2714,20 @@ public class ActivitiesEventsService {
             return "approval";
         }
         return null;
+    }
+
+    private String pendingReasonForCheckoutState(String checkoutState, String pendingReason) {
+        String normalizedState = safeText(checkoutState);
+        if ("waiting".equals(normalizedState)) {
+            return "waitlist";
+        }
+        if ("approval-pending".equals(normalizedState)) {
+            return "approval";
+        }
+        if (StringUtils.hasText(normalizedState)) {
+            return null;
+        }
+        return pendingReasonForDto(pendingReason);
     }
 
     private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {
@@ -3268,11 +3306,15 @@ public class ActivitiesEventsService {
     }
 
     private boolean isWaitlistRequested(EventActionRequestDto request) {
-        return "waitlist".equals(safeText(request == null ? null : request.pendingReason()));
+        return "waitlist".equals(pendingReasonForCheckoutState(
+                request == null ? null : request.checkoutState(),
+                request == null ? null : request.pendingReason()));
     }
 
     private boolean isApprovalRequested(EventActionRequestDto request) {
-        return "approval".equals(safeText(request == null ? null : request.pendingReason()));
+        return "approval".equals(pendingReasonForCheckoutState(
+                request == null ? null : request.checkoutState(),
+                request == null ? null : request.pendingReason()));
     }
 
     private boolean isRecordFull(ActivityEvent record) {

@@ -34,7 +34,8 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 public class EventCheckoutBasketService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
     private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved", "pay");
-    private static final List<String> VISIBLE_RESULT_STATES = List.of("pending", "active", "failed");
+    private static final List<String> DISPLAY_RESULT_STATES = List.of("pending", "active", "failed", "succeeded");
+    private static final List<String> RESERVATION_RESULT_STATES = List.of("pending", "active", "failed");
     private static final List<String> PURGEABLE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved");
     private static final String RESULT_STATE_DELETED = "deleted";
     private static final String SYSTEM_USER = "checkout-basket-purge";
@@ -65,7 +66,7 @@ public class EventCheckoutBasketService {
                         normalizedUserId,
                         normalizedSourceId,
                         ACTIVE_STATUSES,
-                        VISIBLE_RESULT_STATES)
+                        DISPLAY_RESULT_STATES)
                 .stream()
                 .map(this::toItemDto)
                 .filter(Objects::nonNull)
@@ -115,33 +116,33 @@ public class EventCheckoutBasketService {
                 items.stream().map(EventCheckoutBasketItemDto::expiresAtIso).filter(StringUtils::hasText).findFirst().orElse(null));
     }
 
-    public Map<String, Integer> activeSlotReservationCountsByEvent(String sourceId, String excludedUserId) {
-        return activeReservationCountsByEvent(sourceId, excludedUserId, "event", true);
+    public Map<String, Integer> activeSlotReservationCountsByEvent(String sourceId) {
+        return activeReservationCountsByEvent(sourceId, "event", true);
     }
 
-    public Map<String, Integer> activeOptionalReservationCountsByEvent(String sourceId, String excludedUserId) {
-        return activeReservationCountsByEvent(sourceId, excludedUserId, "sub_event", false);
+    public Map<String, Integer> activeOptionalReservationCountsByEvent(String sourceId) {
+        return activeReservationCountsByEvent(sourceId, "sub_event", false);
     }
 
     private Map<String, Integer> activeReservationCountsByEvent(
             String sourceId,
-            String excludedUserId,
             String kind,
             boolean slotReservation) {
         String normalizedSourceId = normalizeId(sourceId);
         if (!StringUtils.hasText(normalizedSourceId)) {
             return Map.of();
         }
-        String normalizedExcludedUserId = normalizeId(excludedUserId);
         Map<String, Integer> counts = new LinkedHashMap<>();
+        Set<String> countedItemKeys = new HashSet<>();
         for (EventCheckoutBasketItem item : repository.findBySourceIdAndStatusInAndVisibleResultState(
                 normalizedSourceId,
                 ACTIVE_STATUSES,
-                VISIBLE_RESULT_STATES)) {
+                RESERVATION_RESULT_STATES)) {
             if (item == null || !kind.equals(safeText(item.getKind()))) {
                 continue;
             }
-            if (StringUtils.hasText(normalizedExcludedUserId) && normalizedExcludedUserId.equals(normalizeId(item.getUserId()))) {
+            String countedItemKey = normalizeId(item.getUserId()) + "::" + firstText(item.getItemId(), item.getKind() + ":" + item.getSlotSourceId() + ":" + item.getSubEventId());
+            if (!countedItemKeys.add(countedItemKey)) {
                 continue;
             }
             String key = normalizeId(slotReservation ? item.getSlotSourceId() : item.getSubEventId());
@@ -178,7 +179,7 @@ public class EventCheckoutBasketService {
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(ACTIVE_STATUSES),
-                visibleResultStateCriteria(),
+                displayResultStateCriteria(),
                 incomingItemIds.isEmpty()
                         ? Criteria.where("itemId").exists(true)
                         : Criteria.where("itemId").nin(incomingItemIds)));
@@ -252,7 +253,7 @@ public class EventCheckoutBasketService {
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(ACTIVE_STATUSES),
-                visibleResultStateCriteria()));
+                displayResultStateCriteria()));
         mongoTemplate.updateMulti(query, update, EventCheckoutBasketItem.class);
         return loadBasketByEvent(normalizedUserId, normalizedSourceId);
     }
@@ -275,7 +276,7 @@ public class EventCheckoutBasketService {
             String nowIso = (now == null ? Instant.now() : now).toString();
             Query query = new Query(new Criteria().andOperator(
                     Criteria.where("status").in(PURGEABLE_STATUSES),
-                    visibleResultStateCriteria(),
+                    reservationResultStateCriteria(),
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso)));
             Update update = new Update()
@@ -424,10 +425,16 @@ public class EventCheckoutBasketService {
         return next;
     }
 
-    private Criteria visibleResultStateCriteria() {
+    private Criteria displayResultStateCriteria() {
         return new Criteria().orOperator(
                 Criteria.where("resultState").exists(false),
-                Criteria.where("resultState").in(VISIBLE_RESULT_STATES));
+                Criteria.where("resultState").in(DISPLAY_RESULT_STATES));
+    }
+
+    private Criteria reservationResultStateCriteria() {
+        return new Criteria().orOperator(
+                Criteria.where("resultState").exists(false),
+                Criteria.where("resultState").in(RESERVATION_RESULT_STATES));
     }
 
     private String firstText(String value, String fallback) {
