@@ -851,7 +851,8 @@ public class ActivitiesEventsService {
         CheckoutSlotPricing pricing = resolveCheckoutSlotPricing(parent == null ? null : parent.getPricing(), parent, slot);
         int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
         int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
-        int availableSlots = Math.max(0, capacityTotal - acceptedMembers);
+        int pendingMembers = normalizeCount(slot == null ? null : slot.pendingMembers());
+        int availableSlots = Math.max(0, capacityTotal - acceptedMembers - pendingMembers);
         return new EventCheckoutSlotDto(
                 slot == null ? "" : slot.id(),
                 slot == null ? "" : slot.parentEventId(),
@@ -863,7 +864,7 @@ public class ActivitiesEventsService {
                 slot == null ? null : slot.endAtIso(),
                 capacityTotal,
                 acceptedMembers,
-                normalizeCount(slot == null ? null : slot.pendingMembers()),
+                pendingMembers,
                 availableSlots,
                 pricing.amount(),
                 pricing.currency(),
