@@ -2386,6 +2386,10 @@ public class ActivitiesEventsService {
             return null;
         }
         String slotSourceId = firstNonBlank(basket.slotSourceId(), request.slotSourceId(), null);
+        String paymentMembershipSourceId = firstNonBlank(slotSourceId, request.sourceId(), null);
+        ActivitiesMembersService.OwnerMembersSnapshot acceptedBeforePaymentSnapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(paymentMembershipSourceId));
+        boolean acceptedBeforePayment = isAcceptedMember(acceptedBeforePaymentSnapshot, request.userId());
         EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
         EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
         EventActionRequestDto joinRequest = new EventActionRequestDto(
@@ -2411,6 +2415,22 @@ public class ActivitiesEventsService {
         try {
             EventParticipationActionResultDto result = requestJoin(joinRequest);
             if (result == null || !"accepted".equals(safeText(result.membershipStatus()))) {
+                if (acceptedBeforePayment) {
+                    ActivityEvent paymentRecord = StringUtils.hasText(slotSourceId)
+                            ? loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
+                                    .filter(Objects::nonNull)
+                                    .findFirst()
+                                    .orElse(null)
+                            : findPreferredEventRecord(request.sourceId());
+                    result = toParticipationActionResult(
+                            request.sourceId(),
+                            slotSourceId,
+                            "accepted",
+                            null,
+                            paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
+                            acceptedBeforePaymentSnapshot,
+                            joinRequest);
+                } else {
                 eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                         request.userId(),
                         request.sourceId(),
@@ -2425,6 +2445,7 @@ public class ActivitiesEventsService {
                         session == null ? null : session.id(),
                         request.counterDelta()));
                 return result;
+                }
             }
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     request.userId(),

@@ -174,11 +174,10 @@ public class EventCheckoutBasketService {
 
         String nowIso = Instant.now().toString();
         String requestStatus = normalizeStatus(request.checkoutState());
-        List<String> staleStatuses = "pay".equals(requestStatus) ? ACTIVE_STATUSES : PURGEABLE_STATUSES;
         Query staleQuery = new Query(new Criteria().andOperator(
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
-                Criteria.where("status").in(staleStatuses),
+                Criteria.where("status").in(ACTIVE_STATUSES),
                 visibleResultStateCriteria(),
                 incomingItemIds.isEmpty()
                         ? Criteria.where("itemId").exists(true)
