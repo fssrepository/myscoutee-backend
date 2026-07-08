@@ -2310,6 +2310,7 @@ public class ActivitiesEventsService {
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
             return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
+        boolean checkoutBasketUpdateRequested = isPendingCheckoutBasketUpdateRequest(request, viewer.userId(), requestedSourceId);
         syncCheckoutBasketForJoin(request);
         boolean alreadyAccepted = isAcceptedMember(
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId),
@@ -2337,6 +2338,8 @@ public class ActivitiesEventsService {
                 if (joinedSlot) {
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                     postMemberJoinedMessage(sourceId, viewer.user());
+                } else if (checkoutBasketUpdateRequested) {
+                    enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
                 ActivityEvent refreshedSlotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
                         .filter(this::isGeneratedSlotRecord)
@@ -2360,6 +2363,8 @@ public class ActivitiesEventsService {
         if (joined) {
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
             postMemberJoinedMessage(sourceId, viewer.user());
+        } else if (checkoutBasketUpdateRequested) {
+            enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         return toParticipationActionResult(
@@ -2484,6 +2489,78 @@ public class ActivitiesEventsService {
                 request.pendingReason(),
                 request.paymentSessionId(),
                 request.counterDelta()));
+    }
+
+    private boolean isPendingCheckoutBasketUpdateRequest(
+            EventActionRequestDto request,
+            String userId,
+            String sourceId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        if (request == null || !StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+            return false;
+        }
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (!"waiting".equals(checkoutState) && !"approval-pending".equals(checkoutState)) {
+            return false;
+        }
+        if (request.basketItems() == null || request.basketItems().isEmpty()) {
+            return false;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedSourceId);
+        return snapshot != null
+                && (snapshot.pendingMemberUserIds().contains(normalizedUserId)
+                        || snapshot.hasPendingRequest(normalizedUserId));
+    }
+
+    private void enqueueCheckoutBasketUpdatedNotification(
+            ActivityEvent event,
+            Users member,
+            String pendingReason) {
+        if (notificationOutboxService == null || event == null || member == null) {
+            return;
+        }
+        String eventId = normalizeId(event.getSourceId());
+        String memberUserId = normalizeId(member.getId());
+        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(memberUserId)) {
+            return;
+        }
+        List<String> adminUserIds = resolveAdminUserIds(eventId, event.getCreatorUserId()).stream()
+                .filter(userId -> !memberUserId.equals(normalizeId(userId)))
+                .toList();
+        if (adminUserIds.isEmpty()) {
+            return;
+        }
+        boolean waitlist = "waitlist".equals(safeText(pendingReason));
+        String eventTitle = firstNonBlank(event.getTitle(), "event");
+        String memberName = firstNonBlank(member.getName(), memberUserId, "A member");
+        String title = waitlist ? "Waitlist basket updated" : "Booking update needs re-approval";
+        String body = waitlist
+                ? memberName + " updated the waiting-list basket for " + eventTitle + ". Review the new selection."
+                : memberName + " updated the checkout basket for " + eventTitle + ". Please re-approve the request.";
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", safeText(event.getTitle()));
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", memberName);
+        payload.put("pendingReason", safeText(pendingReason));
+        payload.put("checkoutAction", "basket-update");
+        payload.put("updatedAt", Instant.now().toString());
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-checkout-basket-updated",
+                "event",
+                eventId,
+                "event-admins",
+                adminUserIds,
+                title,
+                body,
+                "/game",
+                firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "event-checkout-basket-updated-" + eventId + "-" + memberUserId,
+                payload,
+                memberUserId));
     }
 
     private EventCheckoutRequestDto checkoutRequestFromBasket(
