@@ -165,24 +165,13 @@ public class EventCheckoutBasketService {
         List<EventCheckoutBasketItemDto> incomingItems = request.basketItems() == null
                 ? List.of()
                 : request.basketItems().stream().filter(Objects::nonNull).toList();
-        Set<String> incomingItemIds = new HashSet<>();
-        for (EventCheckoutBasketItemDto item : incomingItems) {
-            String itemId = normalizeId(item.id());
-            if (StringUtils.hasText(itemId)) {
-                incomingItemIds.add(itemId);
-            }
-        }
-
         String nowIso = Instant.now().toString();
         String requestStatus = normalizeStatus(request.checkoutState());
         Query staleQuery = new Query(new Criteria().andOperator(
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
                 Criteria.where("status").in(ACTIVE_STATUSES),
-                displayResultStateCriteria(),
-                incomingItemIds.isEmpty()
-                        ? Criteria.where("itemId").exists(true)
-                        : Criteria.where("itemId").nin(incomingItemIds)));
+                displayResultStateCriteria()));
         mongoTemplate.updateMulti(staleQuery, new Update()
                 .set("resultState", RESULT_STATE_DELETED)
                 .set("updatedAtIso", nowIso), EventCheckoutBasketItem.class);
