@@ -51,6 +51,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutOptionalSubEventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
@@ -815,44 +816,76 @@ public class ActivitiesEventsService {
             parent = selected;
         }
         ActivityEvent checkoutParent = parent;
+        EventCheckoutBasketDto checkoutBasket = eventCheckoutBasketService.loadBasketByEvent(viewer.userId(), parentEventId);
+        Map<String, Integer> slotReservations = eventCheckoutBasketService.activeSlotReservationCountsByEvent(parentEventId, viewer.userId());
+        Map<String, Integer> optionalReservations = eventCheckoutBasketService.activeOptionalReservationCountsByEvent(parentEventId, viewer.userId());
+        boolean basketView = "basket".equalsIgnoreCase(safeText(request == null ? null : request.view()));
 
         List<EventSlotOccurrenceDto> allSlots = cloneSlotOccurrences(checkoutParent.getUpcomingSlots()).stream()
                 .filter(Objects::nonNull)
                 .filter(slot -> checkoutSlotMatchesOrder(slot, request))
-                .filter(slot -> checkoutSlotOverlapsRange(slot, request))
+                .filter(slot -> basketView || checkoutSlotOverlapsRange(slot, request))
                 .sorted((left, right) -> checkoutSlotDirection(request)
                         * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
                 .toList();
         List<EventCheckoutSlotDto> allSlotDtos = allSlots.stream()
-                .map(slot -> toCheckoutSlotDto(checkoutParent, slot))
+                .map(slot -> toCheckoutSlotDto(checkoutParent, slot, slotReservations.getOrDefault(normalizeId(slot.id()), 0)))
                 .toList();
         List<EventCheckoutSlotDayDto> days = checkoutSlotDayDtos(allSlotDtos);
+        Map<String, EventCheckoutSlotDto> allSlotDtosById = new LinkedHashMap<>();
+        for (EventCheckoutSlotDto slotDto : allSlotDtos) {
+            String slotId = normalizeId(slotDto == null ? null : slotDto.id());
+            if (StringUtils.hasText(slotId)) {
+                allSlotDtosById.put(slotId, slotDto);
+            }
+        }
+        List<EventCheckoutSlotDto> basketSlotDtos = checkoutBasket == null
+                ? List.of()
+                : (checkoutBasket.items() == null ? List.<EventCheckoutBasketItemDto>of() : checkoutBasket.items()).stream()
+                        .filter(Objects::nonNull)
+                        .filter(item -> "event".equals(safeText(item.kind())))
+                        .filter(item -> StringUtils.hasText(normalizeId(item.slotSourceId())))
+                        .map(item -> allSlotDtosById.getOrDefault(
+                                normalizeId(item.slotSourceId()),
+                                checkoutSlotDtoFromBasketItem(checkoutParent, item)))
+                        .filter(Objects::nonNull)
+                        .sorted((left, right) -> checkoutSlotDirection(request)
+                                * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
+                        .toList();
+        List<EventCheckoutSlotDto> pageSource = basketView ? basketSlotDtos : allSlotDtos;
         int offset = checkoutCursorOffset(request == null ? null : request.cursor());
         int limit = Math.max(1, Math.min(60, request == null || request.limit() == null ? 15 : request.limit()));
-        int from = Math.min(offset, allSlotDtos.size());
-        int to = Math.min(allSlotDtos.size(), from + limit);
-        String nextCursor = to < allSlotDtos.size() ? Integer.toString(to) : null;
-        String currency = allSlotDtos.stream()
+        int from = Math.min(offset, pageSource.size());
+        int to = Math.min(pageSource.size(), from + limit);
+        String nextCursor = to < pageSource.size() ? Integer.toString(to) : null;
+        String currency = pageSource.stream()
                 .map(EventCheckoutSlotDto::currency)
                 .filter(StringUtils::hasText)
                 .findFirst()
+                .or(() -> allSlotDtos.stream()
+                        .map(EventCheckoutSlotDto::currency)
+                        .filter(StringUtils::hasText)
+                        .findFirst())
                 .orElseGet(() -> checkoutPricingCurrency(checkoutParent.getPricing()));
         return new EventCheckoutSlotsResultDto(
                 parentEventId,
                 checkoutParent.getMode(),
                 days,
-                allSlotDtos.subList(from, to),
-                allSlotDtos.size(),
+                pageSource.subList(from, to),
+                pageSource.size(),
                 nextCursor,
-                currency);
+                currency,
+                checkoutOptionalSubEventDtos(checkoutParent, optionalReservations, currency),
+                checkoutBasket);
     }
 
-    private EventCheckoutSlotDto toCheckoutSlotDto(ActivityEvent parent, EventSlotOccurrenceDto slot) {
+    private EventCheckoutSlotDto toCheckoutSlotDto(ActivityEvent parent, EventSlotOccurrenceDto slot, int reservedCount) {
         CheckoutSlotPricing pricing = resolveCheckoutSlotPricing(parent == null ? null : parent.getPricing(), parent, slot);
         int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
         int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
         int pendingMembers = normalizeCount(slot == null ? null : slot.pendingMembers());
-        int availableSlots = Math.max(0, capacityTotal - acceptedMembers - pendingMembers);
+        int activeReservations = Math.max(0, reservedCount);
+        int availableSlots = Math.max(0, capacityTotal - acceptedMembers - pendingMembers - activeReservations);
         return new EventCheckoutSlotDto(
                 slot == null ? "" : slot.id(),
                 slot == null ? "" : slot.parentEventId(),
@@ -866,6 +899,91 @@ public class ActivitiesEventsService {
                 acceptedMembers,
                 pendingMembers,
                 availableSlots,
+                pricing.amount(),
+                pricing.currency(),
+                pricing.rows());
+    }
+
+    private EventCheckoutSlotDto checkoutSlotDtoFromBasketItem(ActivityEvent parent, EventCheckoutBasketItemDto item) {
+        String slotSourceId = normalizeId(item == null ? null : item.slotSourceId());
+        if (!StringUtils.hasText(slotSourceId)) {
+            return null;
+        }
+        String selectedDateKey = safeText(item.selectedDateKey());
+        int quantity = Math.max(1, item.quantity() == null ? 1 : item.quantity());
+        return new EventCheckoutSlotDto(
+                slotSourceId,
+                parent == null ? "" : parent.getSourceId(),
+                slotSourceId,
+                item.slotTemplateId(),
+                parent == null ? null : parent.getTitle(),
+                firstNonBlank(item.detail(), parent == null ? null : parent.getTimeframe(), "Selected slot"),
+                StringUtils.hasText(selectedDateKey) ? selectedDateKey + "T00:00:00.000Z" : parent == null ? null : parent.getStartAtIso(),
+                StringUtils.hasText(selectedDateKey) ? selectedDateKey + "T23:59:59.000Z" : parent == null ? null : parent.getEndAtIso(),
+                quantity,
+                0,
+                0,
+                quantity,
+                Math.max(0d, item.amount() == null ? 0d : item.amount()),
+                firstNonBlank(item.currency(), parent == null ? null : checkoutPricingCurrency(parent.getPricing()), "USD"),
+                item.pricingSummaryRows() == null ? List.of() : item.pricingSummaryRows());
+    }
+
+    private List<EventCheckoutOptionalSubEventDto> checkoutOptionalSubEventDtos(
+            ActivityEvent parent,
+            Map<String, Integer> reservations,
+            String fallbackCurrency) {
+        if (parent == null || !Boolean.TRUE.equals(parent.getSubEventsEnabled())) {
+            return List.of();
+        }
+        Map<String, SubEventDefinitionDto> definitionsById = new LinkedHashMap<>();
+        addCheckoutOptionalDefinitions(definitionsById, parent.getSubEventDefinitions());
+        for (EventSlotTemplateDto template : parent.getSlotTemplates() == null ? List.<EventSlotTemplateDto>of() : parent.getSlotTemplates()) {
+            addCheckoutOptionalDefinitions(definitionsById, template == null ? null : template.subEventDefinitions());
+        }
+        return definitionsById.values().stream()
+                .filter(Objects::nonNull)
+                .filter(item -> Boolean.TRUE.equals(item.optional()))
+                .map(item -> toCheckoutOptionalSubEventDto(
+                        item,
+                        reservations == null ? 0 : reservations.getOrDefault(normalizeId(item.id()), 0),
+                        fallbackCurrency))
+                .toList();
+    }
+
+    private void addCheckoutOptionalDefinitions(
+            Map<String, SubEventDefinitionDto> target,
+            List<SubEventDefinitionDto> definitions) {
+        if (target == null) {
+            return;
+        }
+        int index = 0;
+        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
+            String id = firstNonBlank(definition == null ? null : definition.id(), fallbackSubEventId(index));
+            index += 1;
+            if (definition == null || !StringUtils.hasText(id) || target.containsKey(id)) {
+                continue;
+            }
+            target.put(id, definition);
+        }
+    }
+
+    private EventCheckoutOptionalSubEventDto toCheckoutOptionalSubEventDto(
+            SubEventDefinitionDto definition,
+            int reservedCount,
+            String fallbackCurrency) {
+        CheckoutSlotPricing pricing = resolveCheckoutOptionalSubEventPricing(definition, fallbackCurrency);
+        int capacityTotal = normalizeCount(definition == null ? null : definition.capacityMax());
+        int normalizedReservedCount = Math.max(0, reservedCount);
+        return new EventCheckoutOptionalSubEventDto(
+                definition == null ? "" : firstNonBlank(definition.id(), "optional"),
+                definition == null ? "Optional sub event" : firstNonBlank(definition.name(), definition.id(), "Optional sub event"),
+                definition == null ? null : definition.description(),
+                null,
+                null,
+                capacityTotal,
+                normalizedReservedCount,
+                Math.max(0, capacityTotal - normalizedReservedCount),
                 pricing.amount(),
                 pricing.currency(),
                 pricing.rows());
@@ -976,6 +1094,29 @@ public class ActivitiesEventsService {
             rows.add(new EventCheckoutPricingSummaryRowDto("rounding", "Rounding", null, roundMoney(roundedPrice - nextPrice), currency, 1));
         }
         return new CheckoutSlotPricing(roundMoney(roundedPrice), currency, rows);
+    }
+
+    private CheckoutSlotPricing resolveCheckoutOptionalSubEventPricing(
+            SubEventDefinitionDto definition,
+            String fallbackCurrency) {
+        PricingConfigDto pricing = definition == null ? null : definition.pricing();
+        String currency = pricing == null || !StringUtils.hasText(safeText(pricing.currency()))
+                ? firstNonBlank(fallbackCurrency, "USD")
+                : checkoutPricingCurrency(pricing);
+        if (pricing == null) {
+            return new CheckoutSlotPricing(0d, currency, List.of());
+        }
+        double amount = roundMoney(Math.max(0d, safeDouble(pricing.basePrice())));
+        return new CheckoutSlotPricing(
+                amount,
+                currency,
+                List.of(new EventCheckoutPricingSummaryRowDto(
+                        "subevent:" + firstNonBlank(definition.id(), "optional") + ":base",
+                        firstNonBlank(definition.name(), "Optional sub event"),
+                        null,
+                        amount,
+                        currency,
+                        1)));
     }
 
     private String checkoutPricingCurrency(PricingConfigDto pricing) {

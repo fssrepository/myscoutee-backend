@@ -445,6 +445,7 @@ public final class EventsDtos {
     public record EventCheckoutSlotsQueryDto(
             String userId,
             String eventId,
+            String view,
             String order,
             String anchorDate,
             String rangeStart,
@@ -479,6 +480,20 @@ public final class EventsDtos {
             List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
     }
 
+    public record EventCheckoutOptionalSubEventDto(
+            String id,
+            String name,
+            String description,
+            String startAt,
+            String endAt,
+            Integer capacityTotal,
+            Integer reservedCount,
+            Integer availableCount,
+            Double amount,
+            String currency,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
+    }
+
     public record EventCheckoutSlotsResultDto(
             String eventId,
             String mode,
@@ -486,7 +501,9 @@ public final class EventsDtos {
             List<EventCheckoutSlotDto> slots,
             Integer total,
             String nextCursor,
-            String currency) {
+            String currency,
+            List<EventCheckoutOptionalSubEventDto> optionalSubEvents,
+            EventCheckoutBasketDto checkoutBasket) {
     }
 
     public record EventCheckoutRequestDto(

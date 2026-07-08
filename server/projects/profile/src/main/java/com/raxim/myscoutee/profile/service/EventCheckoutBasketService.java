@@ -115,6 +115,45 @@ public class EventCheckoutBasketService {
                 items.stream().map(EventCheckoutBasketItemDto::expiresAtIso).filter(StringUtils::hasText).findFirst().orElse(null));
     }
 
+    public Map<String, Integer> activeSlotReservationCountsByEvent(String sourceId, String excludedUserId) {
+        return activeReservationCountsByEvent(sourceId, excludedUserId, "event", true);
+    }
+
+    public Map<String, Integer> activeOptionalReservationCountsByEvent(String sourceId, String excludedUserId) {
+        return activeReservationCountsByEvent(sourceId, excludedUserId, "sub_event", false);
+    }
+
+    private Map<String, Integer> activeReservationCountsByEvent(
+            String sourceId,
+            String excludedUserId,
+            String kind,
+            boolean slotReservation) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return Map.of();
+        }
+        String normalizedExcludedUserId = normalizeId(excludedUserId);
+        Map<String, Integer> counts = new LinkedHashMap<>();
+        for (EventCheckoutBasketItem item : repository.findBySourceIdAndStatusInAndVisibleResultState(
+                normalizedSourceId,
+                ACTIVE_STATUSES,
+                VISIBLE_RESULT_STATES)) {
+            if (item == null || !kind.equals(safeText(item.getKind()))) {
+                continue;
+            }
+            if (StringUtils.hasText(normalizedExcludedUserId) && normalizedExcludedUserId.equals(normalizeId(item.getUserId()))) {
+                continue;
+            }
+            String key = normalizeId(slotReservation ? item.getSlotSourceId() : item.getSubEventId());
+            if (!StringUtils.hasText(key)) {
+                continue;
+            }
+            int quantity = Math.max(1, item.getQuantity() == null ? 1 : item.getQuantity());
+            counts.put(key, counts.getOrDefault(key, 0) + quantity);
+        }
+        return counts;
+    }
+
     public EventCheckoutBasketDto saveBasket(EventCheckoutRequestDto request) {
         String normalizedUserId = normalizeId(request == null ? null : request.userId());
         String normalizedSourceId = normalizeId(request == null ? null : request.sourceId());
