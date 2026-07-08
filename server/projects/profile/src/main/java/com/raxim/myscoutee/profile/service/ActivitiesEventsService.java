@@ -51,8 +51,13 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotDayDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
@@ -76,7 +81,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventRe
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingDemandRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -783,6 +791,359 @@ public class ActivitiesEventsService {
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
                         isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
+    }
+
+    public EventCheckoutSlotsResultDto loadCheckoutSlots(EventCheckoutSlotsQueryDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = normalizeId(request == null ? null : request.eventId());
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent selected = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(sourceId)), viewer.userId());
+        if (selected == null) {
+            return null;
+        }
+        String parentEventId = isGeneratedSlotRecord(selected)
+                ? firstNonBlank(selected.getParentEventId(), selected.getSourceId())
+                : selected.getSourceId();
+        if (!StringUtils.hasText(parentEventId)) {
+            return null;
+        }
+        eventSlotReadModelService.refreshForChangedSourceIds(List.of(parentEventId));
+        ActivityEvent parent = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(parentEventId)), viewer.userId());
+        if (parent == null) {
+            parent = selected;
+        }
+        ActivityEvent checkoutParent = parent;
+
+        List<EventSlotOccurrenceDto> allSlots = cloneSlotOccurrences(checkoutParent.getUpcomingSlots()).stream()
+                .filter(Objects::nonNull)
+                .filter(slot -> checkoutSlotMatchesOrder(slot, request))
+                .filter(slot -> checkoutSlotOverlapsRange(slot, request))
+                .sorted((left, right) -> checkoutSlotDirection(request)
+                        * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
+                .toList();
+        List<EventCheckoutSlotDto> allSlotDtos = allSlots.stream()
+                .map(slot -> toCheckoutSlotDto(checkoutParent, slot))
+                .toList();
+        List<EventCheckoutSlotDayDto> days = checkoutSlotDayDtos(allSlotDtos);
+        int offset = checkoutCursorOffset(request == null ? null : request.cursor());
+        int limit = Math.max(1, Math.min(60, request == null || request.limit() == null ? 15 : request.limit()));
+        int from = Math.min(offset, allSlotDtos.size());
+        int to = Math.min(allSlotDtos.size(), from + limit);
+        String nextCursor = to < allSlotDtos.size() ? Integer.toString(to) : null;
+        String currency = allSlotDtos.stream()
+                .map(EventCheckoutSlotDto::currency)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElseGet(() -> checkoutPricingCurrency(checkoutParent.getPricing()));
+        return new EventCheckoutSlotsResultDto(
+                parentEventId,
+                checkoutParent.getMode(),
+                days,
+                allSlotDtos.subList(from, to),
+                allSlotDtos.size(),
+                nextCursor,
+                currency);
+    }
+
+    private EventCheckoutSlotDto toCheckoutSlotDto(ActivityEvent parent, EventSlotOccurrenceDto slot) {
+        CheckoutSlotPricing pricing = resolveCheckoutSlotPricing(parent == null ? null : parent.getPricing(), parent, slot);
+        int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
+        int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
+        int availableSlots = Math.max(0, capacityTotal - acceptedMembers);
+        return new EventCheckoutSlotDto(
+                slot == null ? "" : slot.id(),
+                slot == null ? "" : slot.parentEventId(),
+                slot == null ? "" : slot.id(),
+                slot == null ? null : slot.slotTemplateId(),
+                slot == null ? null : slot.title(),
+                slot == null ? null : slot.timeframe(),
+                slot == null ? null : slot.startAtIso(),
+                slot == null ? null : slot.endAtIso(),
+                capacityTotal,
+                acceptedMembers,
+                normalizeCount(slot == null ? null : slot.pendingMembers()),
+                availableSlots,
+                pricing.amount(),
+                pricing.currency(),
+                pricing.rows());
+    }
+
+    private List<EventCheckoutSlotDayDto> checkoutSlotDayDtos(List<EventCheckoutSlotDto> slots) {
+        Map<String, CheckoutSlotDayAccumulator> grouped = new LinkedHashMap<>();
+        for (EventCheckoutSlotDto slot : slots == null ? List.<EventCheckoutSlotDto>of() : slots) {
+            String dateKey = checkoutSlotDateKey(slot == null ? null : slot.startAtIso());
+            if (!StringUtils.hasText(dateKey)) {
+                continue;
+            }
+            CheckoutSlotDayAccumulator accumulator = grouped.computeIfAbsent(
+                    dateKey,
+                    key -> new CheckoutSlotDayAccumulator(slot == null ? "USD" : slot.currency()));
+            accumulator.add(slot);
+        }
+        return grouped.entrySet().stream()
+                .map(entry -> entry.getValue().toDto(entry.getKey()))
+                .toList();
+    }
+
+    private CheckoutSlotPricing resolveCheckoutSlotPricing(
+            PricingConfigDto pricing,
+            ActivityEvent parent,
+            EventSlotOccurrenceDto slot) {
+        String currency = checkoutPricingCurrency(pricing);
+        if (pricing == null) {
+            return new CheckoutSlotPricing(0d, currency, List.of());
+        }
+        String slotTemplateId = safeText(slot == null ? null : slot.slotTemplateId());
+        double previewBase = safeDouble(pricing.basePrice());
+        if (Boolean.TRUE.equals(pricing.slotPricingEnabled()) && StringUtils.hasText(slotTemplateId)) {
+            previewBase = (pricing.slotOverrides() == null ? List.<com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingSlotOverrideDto>of() : pricing.slotOverrides()).stream()
+                    .filter(override -> slotTemplateId.equals(safeText(override == null ? null : override.slotId())))
+                    .map(override -> override == null ? null : override.price())
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .map(this::safeDouble)
+                    .orElse(previewBase);
+        }
+        List<EventCheckoutPricingSummaryRowDto> rows = new ArrayList<>();
+        rows.add(new EventCheckoutPricingSummaryRowDto(
+                StringUtils.hasText(slotTemplateId) ? "base:" + slotTemplateId : "base",
+                StringUtils.hasText(slotTemplateId) ? "Slot base price" : "Base price",
+                null,
+                roundMoney(previewBase),
+                currency,
+                1));
+
+        double nextPrice = previewBase;
+        int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
+        int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
+        int capacityFilledPercent = capacityTotal > 0
+                ? (int) Math.round((acceptedMembers / (double) capacityTotal) * 100d)
+                : 0;
+        double hoursUntilStart = resolveCheckoutHoursUntilStart(slot == null ? null : slot.startAtIso());
+
+        if (checkoutPricingModeMatches(pricing.mode(), "demand-based", "hybrid") && Boolean.TRUE.equals(pricing.demandRulesEnabled())) {
+            for (PricingDemandRuleDto rule : pricing.demandRules() == null ? List.<PricingDemandRuleDto>of() : pricing.demandRules()) {
+                if (!matchesCheckoutDemandRule(rule, capacityFilledPercent, slotTemplateId)) {
+                    continue;
+                }
+                double previousPrice = nextPrice;
+                nextPrice = applyCheckoutPricingAction(nextPrice, rule.action());
+                rows.add(new EventCheckoutPricingSummaryRowDto(
+                        "demand:" + firstNonBlank(rule.id(), UUID.randomUUID().toString()),
+                        "Demand pricing",
+                        describeCheckoutPricingAction(rule.action()),
+                        roundMoney(nextPrice - previousPrice),
+                        currency,
+                        1));
+            }
+        }
+        if (checkoutPricingModeMatches(pricing.mode(), "time-based", "hybrid") && Boolean.TRUE.equals(pricing.timeRulesEnabled())) {
+            for (PricingTimeRuleDto rule : pricing.timeRules() == null ? List.<PricingTimeRuleDto>of() : pricing.timeRules()) {
+                if (!matchesCheckoutTimeRule(rule, hoursUntilStart, slotTemplateId, slot == null ? null : slot.startAtIso())) {
+                    continue;
+                }
+                double previousPrice = nextPrice;
+                nextPrice = applyCheckoutPricingAction(nextPrice, rule.action());
+                rows.add(new EventCheckoutPricingSummaryRowDto(
+                        "time:" + firstNonBlank(rule.id(), UUID.randomUUID().toString()),
+                        "Time pricing",
+                        describeCheckoutPricingAction(rule.action()),
+                        roundMoney(nextPrice - previousPrice),
+                        currency,
+                        1));
+            }
+        }
+
+        if (pricing.minPrice() != null) {
+            double previousPrice = nextPrice;
+            nextPrice = Math.max(safeDouble(pricing.minPrice()), nextPrice);
+            if (nextPrice != previousPrice) {
+                rows.add(new EventCheckoutPricingSummaryRowDto("min-price", "Minimum price", null, roundMoney(nextPrice - previousPrice), currency, 1));
+            }
+        }
+        if (pricing.maxPrice() != null) {
+            double previousPrice = nextPrice;
+            nextPrice = Math.min(safeDouble(pricing.maxPrice()), nextPrice);
+            if (nextPrice != previousPrice) {
+                rows.add(new EventCheckoutPricingSummaryRowDto("max-price", "Maximum price", null, roundMoney(nextPrice - previousPrice), currency, 1));
+            }
+        }
+        double roundedPrice = applyCheckoutRounding(nextPrice, pricing.rounding());
+        if (roundedPrice != nextPrice) {
+            rows.add(new EventCheckoutPricingSummaryRowDto("rounding", "Rounding", null, roundMoney(roundedPrice - nextPrice), currency, 1));
+        }
+        return new CheckoutSlotPricing(roundMoney(roundedPrice), currency, rows);
+    }
+
+    private String checkoutPricingCurrency(PricingConfigDto pricing) {
+        String currency = safeText(pricing == null ? null : pricing.currency()).toUpperCase(Locale.ROOT);
+        return StringUtils.hasText(currency) ? currency : "USD";
+    }
+
+    private boolean checkoutPricingModeMatches(String value, String... expected) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        if (!StringUtils.hasText(normalized)) {
+            normalized = "fixed";
+        }
+        for (String candidate : expected == null ? new String[0] : expected) {
+            if (normalized.equals(safeText(candidate).toLowerCase(Locale.ROOT))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesCheckoutDemandRule(PricingDemandRuleDto rule, int capacityFilledPercent, String slotTemplateId) {
+        if (rule == null) {
+            return false;
+        }
+        if ("selected_slots".equals(safeText(rule.appliesTo())) && !checkoutRuleIncludesSlot(rule.slotIds(), slotTemplateId)) {
+            return false;
+        }
+        int threshold = normalizeCount(rule.capacityFilledPercent());
+        return "lte".equals(safeText(rule.operator()))
+                ? capacityFilledPercent <= threshold
+                : capacityFilledPercent >= threshold;
+    }
+
+    private boolean matchesCheckoutTimeRule(PricingTimeRuleDto rule, double hoursUntilStart, String slotTemplateId, String startAtIso) {
+        if (rule == null) {
+            return false;
+        }
+        if ("selected_slots".equals(safeText(rule.appliesTo())) && !checkoutRuleIncludesSlot(rule.slotIds(), slotTemplateId)) {
+            return false;
+        }
+        String trigger = safeText(rule.trigger());
+        if ("specific_date".equals(trigger)) {
+            String start = safeText(rule.specificDateStart());
+            String end = safeText(rule.specificDateEnd());
+            String comparisonDate = safeText(startAtIso).length() >= 10 ? safeText(startAtIso).substring(0, 10) : "";
+            return StringUtils.hasText(start)
+                    && StringUtils.hasText(end)
+                    && StringUtils.hasText(comparisonDate)
+                    && comparisonDate.compareTo(start) >= 0
+                    && comparisonDate.compareTo(end) <= 0;
+        }
+        double value = Math.max(0d, safeDouble(rule.offsetValue()));
+        if ("hours_before_start".equals(trigger)) {
+            return hoursUntilStart <= value;
+        }
+        return hoursUntilStart <= value * 24d;
+    }
+
+    private boolean checkoutRuleIncludesSlot(List<String> slotIds, String slotTemplateId) {
+        String normalizedSlotTemplateId = safeText(slotTemplateId);
+        return StringUtils.hasText(normalizedSlotTemplateId)
+                && (slotIds == null ? List.<String>of() : slotIds).stream()
+                        .anyMatch(item -> normalizedSlotTemplateId.equals(safeText(item)));
+    }
+
+    private double applyCheckoutPricingAction(double currentPrice, PricingActionDto action) {
+        if (action == null) {
+            return Math.max(0d, currentPrice);
+        }
+        double value = safeDouble(action.value());
+        return switch (safeText(action.kind())) {
+            case "set_exact_price" -> Math.max(0d, value);
+            case "increase_amount" -> Math.max(0d, currentPrice + value);
+            case "decrease_amount" -> Math.max(0d, currentPrice - value);
+            case "decrease_percent" -> Math.max(0d, currentPrice * (1d - (value / 100d)));
+            default -> Math.max(0d, currentPrice * (1d + (value / 100d)));
+        };
+    }
+
+    private String describeCheckoutPricingAction(PricingActionDto action) {
+        double value = action == null ? 0d : safeDouble(action.value());
+        return switch (safeText(action == null ? null : action.kind())) {
+            case "set_exact_price" -> "Set to " + roundMoney(value);
+            case "increase_amount" -> "+" + roundMoney(value);
+            case "decrease_amount" -> "-" + roundMoney(value);
+            case "decrease_percent" -> "-" + roundMoney(value) + "%";
+            default -> "+" + roundMoney(value) + "%";
+        };
+    }
+
+    private double applyCheckoutRounding(double price, String rounding) {
+        return switch (safeText(rounding)) {
+            case "whole" -> Math.round(price);
+            case "half" -> Math.round(price * 2d) / 2d;
+            default -> roundMoney(price);
+        };
+    }
+
+    private double roundMoney(double value) {
+        return Math.round(value * 100d) / 100d;
+    }
+
+    private double resolveCheckoutHoursUntilStart(String startAtIso) {
+        long startMs = toSortableDate(startAtIso);
+        if (startMs <= 0L) {
+            return 0d;
+        }
+        return Math.max(0d, Math.round((startMs - System.currentTimeMillis()) / (60d * 60d * 1000d)));
+    }
+
+    private boolean checkoutSlotMatchesOrder(EventSlotOccurrenceDto slot, EventCheckoutSlotsQueryDto query) {
+        long end = toSortableDate(slot == null ? null : slot.endAtIso());
+        if (end <= 0L) {
+            end = toSortableDate(slot == null ? null : slot.startAtIso());
+        }
+        if (end <= 0L) {
+            return false;
+        }
+        boolean past = end <= System.currentTimeMillis();
+        return "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? past : !past;
+    }
+
+    private boolean checkoutSlotOverlapsRange(EventSlotOccurrenceDto slot, EventCheckoutSlotsQueryDto query) {
+        LocalDate rangeStart = checkoutQueryDate(firstNonBlank(query == null ? null : query.rangeStart(), query == null ? null : query.anchorDate()));
+        LocalDate rangeEnd = checkoutQueryDate(query == null ? null : query.rangeEnd());
+        if (rangeStart == null && rangeEnd == null) {
+            return true;
+        }
+        long startMs = toSortableDate(slot == null ? null : slot.startAtIso());
+        long endMs = toSortableDate(slot == null ? null : slot.endAtIso());
+        if (endMs <= 0L) {
+            endMs = startMs;
+        }
+        if (rangeStart != null && endMs < rangeStart.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()) {
+            return false;
+        }
+        if (rangeEnd != null && startMs > rangeEnd.atTime(23, 59, 59, 999_000_000).toInstant(ZoneOffset.UTC).toEpochMilli()) {
+            return false;
+        }
+        return true;
+    }
+
+    private int checkoutSlotDirection(EventCheckoutSlotsQueryDto query) {
+        return "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? -1 : 1;
+    }
+
+    private LocalDate checkoutQueryDate(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(text.length() > 10 ? text.substring(0, 10) : text);
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
+    }
+
+    private String checkoutSlotDateKey(String startAtIso) {
+        long startMs = toSortableDate(startAtIso);
+        return startMs <= 0L ? "" : Instant.ofEpochMilli(startMs).atZone(ZoneOffset.UTC).toLocalDate().toString();
+    }
+
+    private int checkoutCursorOffset(String cursor) {
+        try {
+            return Math.max(0, Integer.parseInt(safeText(cursor)));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
     }
 
     public EventSubEventsResultDto loadSubEventsById(EventSubEventsQueryDto request) {
@@ -5987,6 +6348,45 @@ public class ActivitiesEventsService {
         merged.addAll(first);
         merged.addAll(second);
         return merged;
+    }
+
+    private record CheckoutSlotPricing(
+            double amount,
+            String currency,
+            List<EventCheckoutPricingSummaryRowDto> rows) {
+    }
+
+    private static final class CheckoutSlotDayAccumulator {
+        private int slotCount;
+        private int availableSlots;
+        private double lowestAmount = Double.MAX_VALUE;
+        private String currency;
+
+        CheckoutSlotDayAccumulator(String currency) {
+            this.currency = StringUtils.hasText(currency) ? currency : "USD";
+        }
+
+        void add(EventCheckoutSlotDto slot) {
+            if (slot == null) {
+                return;
+            }
+            slotCount += 1;
+            availableSlots += Math.max(0, slot.availableSlots() == null ? 0 : slot.availableSlots());
+            double amount = slot.amount() == null ? 0d : Math.max(0d, slot.amount());
+            lowestAmount = Math.min(lowestAmount, amount);
+            if (StringUtils.hasText(slot.currency())) {
+                currency = slot.currency();
+            }
+        }
+
+        EventCheckoutSlotDayDto toDto(String dateKey) {
+            return new EventCheckoutSlotDayDto(
+                    dateKey,
+                    slotCount,
+                    availableSlots,
+                    lowestAmount == Double.MAX_VALUE ? 0d : lowestAmount,
+                    currency);
+        }
     }
 
     private record ViewerContext(

@@ -25,6 +25,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatD
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
@@ -118,6 +120,11 @@ public class ActivitiesEventsController {
     @PostMapping("/sub-events")
     public EventSubEventsResultDto subEvents(@RequestBody EventSubEventsQueryDto request) {
         return activitiesEventsService.loadSubEventsById(request);
+    }
+
+    @PostMapping("/checkout/slots")
+    public EventCheckoutSlotsResultDto checkoutSlots(@RequestBody EventCheckoutSlotsQueryDto request) {
+        return activitiesEventsService.loadCheckoutSlots(request);
     }
 
     @PostMapping("/explore")
