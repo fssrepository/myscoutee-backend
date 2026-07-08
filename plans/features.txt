@@ -6,6 +6,8 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
+after payment, store signal add the event under the active or osszes if it's available
+
 bug:
 ---
 introduce from-flow to event editor, but extenral ngoutlet input --
