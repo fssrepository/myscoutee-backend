@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.admin;
 
 import java.util.List;
+import java.util.Map;
 
 public final class AdminDtos {
     private AdminDtos() {}
@@ -333,6 +334,7 @@ public final class AdminDtos {
             String generatedAtIso,
             String source,
             String health,
+            Map<String, Long> filterCounts,
             List<AdminMonitoringCategoryDto> categories) {}
     public record AdminMonitoringCategoryDto(
             String key,

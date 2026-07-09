@@ -91,8 +91,10 @@ public class AdminController {
     }
 
     @GetMapping("/monitoring")
-    public AdminMonitoringStateDto monitoring(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return adminMonitoringService.state(adminUserId);
+    public AdminMonitoringStateDto monitoring(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "filter", required = false) String filter) {
+        return adminMonitoringService.state(adminUserId, filter);
     }
 
     @GetMapping("/affinity-recompute/metrics")
