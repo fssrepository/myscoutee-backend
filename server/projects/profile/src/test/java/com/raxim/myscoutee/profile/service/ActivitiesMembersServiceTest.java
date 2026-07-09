@@ -460,6 +460,7 @@ class ActivitiesMembersServiceTest {
                 "2026-05-12T10:00:00Z",
                 "",
                 null,
-                null);
+                null,
+                List.of());
     }
 }
