@@ -26,6 +26,7 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsHistoryDt
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsRevertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminParamsStateDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReviewResolveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminStatsDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
@@ -81,8 +82,11 @@ public class AdminController {
     }
 
     @GetMapping("/dashboard")
-    public AdminDashboardDto dashboard(@RequestParam(value = "adminUserId", required = false) String adminUserId) {
-        return adminModerationService.dashboard(adminUserId);
+    public AdminDashboardDto dashboard(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "reportsStatus", required = false) String reportsStatus,
+            @RequestParam(value = "feedbackStatus", required = false) String feedbackStatus) {
+        return adminModerationService.dashboard(adminUserId, reportsStatus, feedbackStatus);
     }
 
     @GetMapping("/stats")
@@ -193,6 +197,20 @@ public class AdminController {
     @PostMapping("/users/{userId}/unblock")
     public AdminDashboardDto unblock(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
         return adminModerationService.unblock(userId, request);
+    }
+
+    @PostMapping("/reports/{reportId}/resolve")
+    public AdminDashboardDto resolveReport(
+            @PathVariable String reportId,
+            @RequestBody(required = false) AdminReviewResolveRequestDto request) {
+        return adminModerationService.resolveReport(reportId, request);
+    }
+
+    @PostMapping("/feedback/{feedbackId}/resolve")
+    public AdminDashboardDto resolveFeedback(
+            @PathVariable String feedbackId,
+            @RequestBody(required = false) AdminReviewResolveRequestDto request) {
+        return adminModerationService.resolveFeedback(feedbackId, request);
     }
 
     @GetMapping("/notifications")

@@ -23,6 +23,8 @@ public class UserFeedbackSubmission {
     private String details;
     private String createdDate;
     private String createdUser;
+    private String resolvedAtIso;
+    private String resolvedByAdminUserId;
     private String updatedDate;
     private String updatedUser;
 
@@ -88,6 +90,22 @@ public class UserFeedbackSubmission {
 
     public void setCreatedUser(String createdUser) {
         this.createdUser = createdUser;
+    }
+
+    public String getResolvedAtIso() {
+        return resolvedAtIso;
+    }
+
+    public void setResolvedAtIso(String resolvedAtIso) {
+        this.resolvedAtIso = resolvedAtIso;
+    }
+
+    public String getResolvedByAdminUserId() {
+        return resolvedByAdminUserId;
+    }
+
+    public void setResolvedByAdminUserId(String resolvedByAdminUserId) {
+        this.resolvedByAdminUserId = resolvedByAdminUserId;
     }
 
     public String getUpdatedDate() {

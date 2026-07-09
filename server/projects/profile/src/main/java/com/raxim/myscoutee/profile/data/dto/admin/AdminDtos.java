@@ -15,6 +15,7 @@ public final class AdminDtos {
             String about,
             List<String> images) {}
     public record AdminActionRequestDto(String adminUserId, String message) {}
+    public record AdminReviewResolveRequestDto(String adminUserId, Boolean resolved) {}
     public record AdminParamsStateDto(
             List<AdminParamsSectionDto> sections,
             String updatedDate) {}
@@ -395,7 +396,13 @@ public final class AdminDtos {
             AdminUserDto activeAdmin,
             List<AdminReportedUserDto> reportedUsers,
             List<AdminReportedUserDto> blockedUsers,
-            List<AdminFeedbackDto> feedback) {}
+            List<AdminFeedbackDto> feedback,
+            AdminReviewCountsDto reviewCounts) {}
+    public record AdminReviewCountsDto(
+            Integer reportsUnresolved,
+            Integer reportsResolved,
+            Integer feedbackUnresolved,
+            Integer feedbackResolved) {}
     public record AdminReportedUserDto(
             String userId,
             String name,
@@ -431,7 +438,9 @@ public final class AdminDtos {
             String assetType,
             String chatTitle,
             List<AdminChatMessageDto> chatMessages,
-            String createdDate) {}
+            String createdDate,
+            String resolvedAtIso,
+            String resolvedByAdminUserId) {}
     public record AdminFeedbackDto(
             String id,
             String userId,
@@ -440,5 +449,7 @@ public final class AdminDtos {
             String category,
             String subject,
             String details,
-            String createdDate) {}
+            String createdDate,
+            String resolvedAtIso,
+            String resolvedByAdminUserId) {}
 }
