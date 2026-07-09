@@ -123,7 +123,7 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Please update the reported behavior before your account is blocked.", "picked");
+                : "Please update the reported behavior before your account is blocked.", "warned");
         adminTelemetryService.record("admin.user.warned", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
