@@ -186,6 +186,21 @@ public class EventSlotReadModelService {
         return pendingMemberUserIds.size();
     }
 
+    private int slotDefinitionCapacityTotal(List<SubEventDefinitionDto> definitions) {
+        int capacityTotal = 0;
+        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
+            if (definition == null || Boolean.TRUE.equals(definition.optional())) {
+                continue;
+            }
+            int capacityMax = normalizeCount(definition.capacityMax());
+            if (capacityMax <= 0) {
+                continue;
+            }
+            capacityTotal = capacityTotal <= 0 ? capacityMax : Math.min(capacityTotal, capacityMax);
+        }
+        return capacityTotal;
+    }
+
     private boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
         if (slots == null || slots.isEmpty()) {
             return true;
