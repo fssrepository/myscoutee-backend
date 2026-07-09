@@ -4449,9 +4449,6 @@ public class ActivitiesEventsService {
         if (!Boolean.TRUE.equals(record.getPublished())) {
             return false;
         }
-        if (isRecordFull(record)) {
-            return false;
-        }
         if (activeUserId.equals(normalizeId(record.getCreatorUserId()))) {
             return false;
         }
