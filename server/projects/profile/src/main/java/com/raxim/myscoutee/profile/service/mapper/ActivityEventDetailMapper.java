@@ -65,6 +65,7 @@ public class ActivityEventDetailMapper {
                 nullableCount(record.getCapacityMax()),
                 normalizeCount(record.getCapacityTotal()),
                 normalizeCount(record.getCapacityTotal()),
+                resolveEventFull(record, upcomingSlots),
                 Boolean.TRUE.equals(record.getAutoInviter()),
                 safeText(record.getFrequency()),
                 Boolean.TRUE.equals(record.getTicketing()),
@@ -96,6 +97,31 @@ public class ActivityEventDetailMapper {
                 safeDouble(record.getBoost()),
                 safeDouble(record.getAffinity()),
                 null);
+    }
+
+    private Boolean resolveEventFull(ActivityEvent record, List<EventSlotOccurrenceDto> upcomingSlots) {
+        if (record == null) {
+            return Boolean.FALSE;
+        }
+        if (Boolean.TRUE.equals(record.getFull())) {
+            return Boolean.TRUE;
+        }
+        if (Boolean.TRUE.equals(record.getSlotsEnabled()) && !Boolean.TRUE.equals(record.getGenerated())) {
+            if (upcomingSlots == null || upcomingSlots.isEmpty()) {
+                return Boolean.TRUE;
+            }
+            return upcomingSlots.stream().allMatch(this::isSlotOccurrenceFull);
+        }
+        int capacityTotal = normalizeCount(record.getCapacityTotal());
+        return capacityTotal > 0 && normalizeCount(record.getAcceptedMembers()) >= capacityTotal;
+    }
+
+    private boolean isSlotOccurrenceFull(EventSlotOccurrenceDto slot) {
+        if (slot == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(slot.capacityTotal());
+        return capacityTotal > 0 && normalizeCount(slot.acceptedMembers()) >= capacityTotal;
     }
 
     private String resolveEventType(ActivityEvent record) {

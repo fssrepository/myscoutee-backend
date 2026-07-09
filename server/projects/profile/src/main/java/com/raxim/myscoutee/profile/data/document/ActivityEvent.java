@@ -88,6 +88,7 @@ public class ActivityEvent {
     private Integer capacityMin;
     private Integer capacityMax;
     private Integer capacityTotal;
+    private Boolean full;
     private Boolean autoInviter;
     private String frequency;
     private Boolean ticketing;
@@ -213,6 +214,8 @@ public class ActivityEvent {
     public void setCapacityMax(Integer capacityMax) { this.capacityMax = capacityMax; }
     public Integer getCapacityTotal() { return capacityTotal; }
     public void setCapacityTotal(Integer capacityTotal) { this.capacityTotal = capacityTotal; }
+    public Boolean getFull() { return full; }
+    public void setFull(Boolean full) { this.full = full; }
     public Boolean getAutoInviter() { return autoInviter; }
     public void setAutoInviter(Boolean autoInviter) { this.autoInviter = autoInviter; }
     public String getFrequency() { return frequency; }

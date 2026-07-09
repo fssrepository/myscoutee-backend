@@ -2440,6 +2440,32 @@ public class ActivitiesEventsService {
         ActivitiesMembersService.OwnerMembersSnapshot acceptedBeforePaymentSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(paymentMembershipSourceId));
         boolean acceptedBeforePayment = isAcceptedMember(acceptedBeforePaymentSnapshot, request.userId());
+        ActivityEvent paymentRecord = StringUtils.hasText(slotSourceId)
+                ? loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse(null)
+                : findPreferredEventRecord(request.sourceId());
+        if (!paymentService.hasJoinedEventJoin(request.userId(), paymentMembershipSourceId)
+                && isRecordFull(paymentRecord)) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    slotSourceId,
+                    "waiting",
+                    null,
+                    "waitlist",
+                    null,
+                    request.counterDelta()));
+            return toParticipationActionResult(
+                    request.sourceId(),
+                    slotSourceId,
+                    "pending",
+                    "waitlist",
+                    paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
+                    acceptedBeforePaymentSnapshot,
+                    null);
+        }
         EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
         EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
         EventActionRequestDto joinRequest = new EventActionRequestDto(
@@ -2466,12 +2492,6 @@ public class ActivitiesEventsService {
             EventParticipationActionResultDto result = requestJoin(joinRequest);
             if (result == null || !"accepted".equals(safeText(result.membershipStatus()))) {
                 if (acceptedBeforePayment) {
-                    ActivityEvent paymentRecord = StringUtils.hasText(slotSourceId)
-                            ? loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
-                                    .filter(Objects::nonNull)
-                                    .findFirst()
-                                    .orElse(null)
-                            : findPreferredEventRecord(request.sourceId());
                     result = toParticipationActionResult(
                             request.sourceId(),
                             slotSourceId,
@@ -2687,7 +2707,7 @@ public class ActivitiesEventsService {
                 acceptedMembers,
                 pendingMembers,
                 Math.max(acceptedMembers, capacityTotal),
-                capacityTotal > 0 && acceptedMembers >= capacityTotal,
+                resolveFullForActionResult(record, acceptedMembers, capacityTotal),
                 normalizeId(request == null ? null : request.paymentSessionId()));
     }
 
@@ -2715,7 +2735,7 @@ public class ActivitiesEventsService {
                 acceptedMembers,
                 pendingMembers,
                 Math.max(acceptedMembers, capacityTotal),
-                capacityTotal > 0 && acceptedMembers >= capacityTotal,
+                resolveFullForActionResult(record, acceptedMembers, capacityTotal),
                 normalizeId(firstNonBlank(
                         request == null ? null : request.checkoutSessionId(),
                         request == null ? null : request.paymentSessionId(),
@@ -3348,11 +3368,49 @@ public class ActivitiesEventsService {
         if (record == null) {
             return false;
         }
+        if (Boolean.TRUE.equals(record.getFull())) {
+            return true;
+        }
+        if (isSlotParentRecord(record)) {
+            return slotParentFull(record.getUpcomingSlots());
+        }
+        return directRecordFull(record);
+    }
+
+    private boolean resolveFullForActionResult(ActivityEvent record, int acceptedMembers, int capacityTotal) {
+        if (record != null && Boolean.TRUE.equals(record.getFull())) {
+            return true;
+        }
+        if (record != null && isSlotParentRecord(record)) {
+            return slotParentFull(record.getUpcomingSlots());
+        }
+        return capacityTotal > 0 && acceptedMembers >= capacityTotal;
+    }
+
+    private boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
+        if (slots == null || slots.isEmpty()) {
+            return true;
+        }
+        return slots.stream().allMatch(this::slotOccurrenceFull);
+    }
+
+    private boolean slotOccurrenceFull(EventSlotOccurrenceDto slot) {
+        if (slot == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(slot.capacityTotal());
+        return capacityTotal > 0 && normalizeCount(slot.acceptedMembers()) >= capacityTotal;
+    }
+
+    private boolean directRecordFull(ActivityEvent record) {
+        if (record == null) {
+            return false;
+        }
         int capacityTotal = normalizeCount(record.getCapacityTotal());
         if (capacityTotal <= 0) {
             return false;
         }
-        return resolveAcceptedMemberUserIds(record).size() >= capacityTotal;
+        return Math.max(normalizeCount(record.getAcceptedMembers()), resolveAcceptedMemberUserIds(record).size()) >= capacityTotal;
     }
 
     private void recordJoinPayment(
@@ -4391,6 +4449,9 @@ public class ActivitiesEventsService {
         if (!Boolean.TRUE.equals(record.getPublished())) {
             return false;
         }
+        if (isRecordFull(record)) {
+            return false;
+        }
         if (activeUserId.equals(normalizeId(record.getCreatorUserId()))) {
             return false;
         }
@@ -4952,6 +5013,7 @@ public class ActivitiesEventsService {
         document.setPendingMemberUserIds(pendingMemberUserIds);
         document.setInvitedMemberUserIds(invitedMemberUserIds);
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
+        document.setFull(directRecordFull(document));
         document.setTopics(normalizeStrings(request.topics()));
         boolean subEventsEnabled = publishedManageMode
                 ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
@@ -5300,7 +5362,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean exploreHasOpenSpots(ActivityEvent record) {
-        return normalizeCount(record.getCapacityTotal()) > resolveAcceptedMemberUserIds(record).size();
+        return !isRecordFull(record);
     }
 
     private boolean isViewerAdmin(ActivityEvent record, String viewerUserId) {
@@ -5383,6 +5445,7 @@ public class ActivitiesEventsService {
                 .include("capacityMin")
                 .include("capacityMax")
                 .include("capacityTotal")
+                .include("full")
                 .include("ticketing")
                 .include("approvalRequired")
                 .include("parentEventId")
@@ -6350,6 +6413,7 @@ public class ActivitiesEventsService {
         next.setPendingMemberUserIds(slotMembers.pendingMemberUserIds());
         next.setInvitedMemberUserIds(slotMembers.invitedMemberUserIds());
         next.setPendingRequestMemberUserIds(slotMembers.pendingRequestMemberUserIds());
+        next.setFull(directRecordFull(next));
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
         next.setSubEventDefinitions(cloneSubEventDefinitions(definitions));

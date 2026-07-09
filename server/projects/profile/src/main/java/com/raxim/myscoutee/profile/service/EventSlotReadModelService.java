@@ -83,8 +83,14 @@ public class EventSlotReadModelService {
             List<EventSlotOccurrenceDto> nextSlots = isSlotParentRecord(document)
                     ? upcomingByParentId.getOrDefault(sourceId, List.of())
                     : List.of();
-            if (!Objects.equals(normalizeSlotOccurrences(document.getUpcomingSlots()), nextSlots)) {
+            boolean nextFull = isSlotParentRecord(document)
+                    ? slotParentFull(nextSlots)
+                    : directRecordFull(document);
+            boolean slotsChanged = !Objects.equals(normalizeSlotOccurrences(document.getUpcomingSlots()), nextSlots);
+            boolean fullChanged = !Objects.equals(Boolean.TRUE.equals(document.getFull()), nextFull);
+            if (slotsChanged || fullChanged) {
                 document.setUpcomingSlots(nextSlots);
+                document.setFull(nextFull);
                 toSave.add(document);
             }
         }
@@ -173,6 +179,29 @@ public class EventSlotReadModelService {
         }
         pendingMemberUserIds.removeIf(acceptedUserIds::contains);
         return pendingMemberUserIds.size();
+    }
+
+    private boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
+        if (slots == null || slots.isEmpty()) {
+            return true;
+        }
+        return slots.stream().allMatch(this::slotOccurrenceFull);
+    }
+
+    private boolean slotOccurrenceFull(EventSlotOccurrenceDto slot) {
+        if (slot == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(slot.capacityTotal());
+        return capacityTotal > 0 && normalizeCount(slot.acceptedMembers()) >= capacityTotal;
+    }
+
+    private boolean directRecordFull(ActivityEvent record) {
+        if (record == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(record.getCapacityTotal());
+        return capacityTotal > 0 && normalizeCount(record.getAcceptedMembers()) >= capacityTotal;
     }
 
     private boolean isSlotParentRecord(ActivityEvent record) {

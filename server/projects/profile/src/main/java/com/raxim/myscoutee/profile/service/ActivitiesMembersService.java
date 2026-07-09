@@ -1831,6 +1831,7 @@ public class ActivitiesMembersService {
                     snapshot == null || snapshot.capacityTotal() == null
                             ? Math.max(acceptedMembers, document.getCapacityTotal() == null ? 0 : document.getCapacityTotal())
                             : snapshot.capacityTotal()));
+            document.setFull(resolveDirectEventFull(document));
             documentsToSave.add(document);
         }
         if (!documentsToSave.isEmpty()) {
@@ -1838,6 +1839,15 @@ public class ActivitiesMembersService {
             eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
             affinityRecomputeTaskService.enqueueEventMembersChanged(normalizedEventId, "system");
         }
+    }
+
+    private boolean resolveDirectEventFull(ActivityEvent document) {
+        if (document == null) {
+            return false;
+        }
+        int capacityTotal = Math.max(0, document.getCapacityTotal() == null ? 0 : document.getCapacityTotal());
+        int acceptedMembers = Math.max(0, document.getAcceptedMembers() == null ? 0 : document.getAcceptedMembers());
+        return capacityTotal > 0 && acceptedMembers >= capacityTotal;
     }
 
     private String normalizeStatus(String status) {
