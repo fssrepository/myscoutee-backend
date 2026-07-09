@@ -590,20 +590,23 @@ public class HomeUserProfileService {
         if (!StringUtils.hasText(targetUserId)
                 || !StringUtils.hasText(eventId)
                 || userId.equals(targetUserId)) {
-            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
         }
 
         ActivityEvent eventRecord = resolvePreferredEventRecord(eventId);
-        ActivityMember reporterMembership = resolveAcceptedReportMember(eventId, userId, eventRecord);
-        ActivityMember targetMembership = resolveAcceptedReportMember(eventId, targetUserId, eventRecord);
-        if (reporterMembership == null || targetMembership == null) {
-            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        ActivityMember reporterMembership = resolveAcceptedReportMember(eventId, userId);
+        ActivityMember targetMembership = resolveAcceptedReportMember(eventId, targetUserId);
+        boolean sharedAcceptedEvent = reporterMembership != null && targetMembership != null;
+        boolean reportableEventOrganizer = isReportableEventOrganizer(eventRecord, targetUserId);
+        if (!sharedAcceptedEvent && !reportableEventOrganizer) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
         }
 
         String requestMemberEntryId = normalizeId(request.memberEntryId());
         String resolvedTargetMemberEntryId = resolveActivityMemberEntryId(targetMembership);
-        if (StringUtils.hasText(requestMemberEntryId) && !requestMemberEntryId.equals(resolvedTargetMemberEntryId)) {
-            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for members you shared an event with.");
+        if (StringUtils.hasText(requestMemberEntryId)
+                && !requestMemberEntryId.equals(resolvedTargetMemberEntryId)) {
+            return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
         }
 
         String sourceType = normalizeOptionalText(request.sourceType());
@@ -2131,7 +2134,7 @@ public class HomeUserProfileService {
         return preferredEventRecordsBySourceId(activityEventsRepository.findBySourceId(normalizedEventId)).get(normalizedEventId);
     }
 
-    private ActivityMember resolveAcceptedReportMember(String eventId, String userId, ActivityEvent eventRecord) {
+    private ActivityMember resolveAcceptedReportMember(String eventId, String userId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
@@ -2147,6 +2150,22 @@ public class HomeUserProfileService {
                     : null;
         }
         return null;
+    }
+
+    private boolean isReportableEventOrganizer(ActivityEvent eventRecord, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        if (eventRecord == null
+                || !ActivityEvent.STATUS_ACTIVE.equals(eventRecord.getStatus())
+                || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(eventRecord.getOwnerUserId()))
+                || normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
+            return true;
+        }
+        return (eventRecord.getAdmins() == null ? List.<String>of() : eventRecord.getAdmins()).stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
     }
 
     private Chat resolveReportableChat(

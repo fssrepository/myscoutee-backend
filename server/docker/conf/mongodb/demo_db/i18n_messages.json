@@ -11280,6 +11280,72 @@
     "value": "Unblocking..."
   },
   {
+    "_id": "i18n-message-en-share-what-happened-reports-are-reviewed-by-moderation-and-we-use-them-t",
+    "key": "share.what.happened.reports.are.reviewed.by.moderation.and.we.use.them.to.improve.trust.and.safety",
+    "lang": "en",
+    "value": "Share what happened. Reports are reviewed by moderation, and we use them to improve trust and safety."
+  },
+  {
+    "_id": "i18n-message-en-user",
+    "key": "user",
+    "lang": "en",
+    "value": "User"
+  },
+  {
+    "_id": "i18n-message-en-event-context",
+    "key": "event.context",
+    "lang": "en",
+    "value": "Event context"
+  },
+  {
+    "_id": "i18n-message-en-reason",
+    "key": "reason",
+    "lang": "en",
+    "value": "Reason"
+  },
+  {
+    "_id": "i18n-message-en-selected-member",
+    "key": "selected.member",
+    "lang": "en",
+    "value": "Selected member"
+  },
+  {
+    "_id": "i18n-message-en-selected-member-placeholder",
+    "key": "selected.member.placeholder",
+    "lang": "en",
+    "value": "Selected member"
+  },
+  {
+    "_id": "i18n-message-en-submit-report",
+    "key": "submit.report",
+    "lang": "en",
+    "value": "Submit report"
+  },
+  {
+    "_id": "i18n-message-en-add-short-details-about-what-happened-and-why-you-are-reporting-this-mem",
+    "key": "add.short.details.about.what.happened.and.why.you.are.reporting.this.member.placeholder",
+    "lang": "en",
+    "value": "Add short details about what happened and why you are reporting this member."
+  },
+  {
+    "_id": "i18n-message-en-reports-can-only-be-started-from-a-member-card-of-an-event-you-both-atte",
+    "key": "reports.can.only.be.started.from.a.member.card.of.an.event.you.both.attended",
+    "lang": "en",
+    "value": "Reports can only be started from a member card of an event you both attended."
+  },
+  {
+    "_id": "i18n-message-en-reports-can-only-be-started-from-an-event-organizer-or-a-member-card-tie",
+    "key": "reports.can.only.be.started.from.an.event.organizer.or.a.member.card.tied.to.an.event",
+    "lang": "en",
+    "value": "Reports can only be started from an event organizer or a member card tied to an event."
+  },
+  {
+    "_id": "i18n-message-en-reports-can-only-be-submitted-for-an-event-organizer-or-a-member-you-sha",
+    "key": "reports.can.only.be.submitted.for.an.event.organizer.or.a.member.you.shared.an.event.with",
+    "lang": "en",
+    "value": "Reports can only be submitted for an event organizer or a member you shared an event with."
+  },
+  {
     "_id": "i18n-message-en-logout-question",
     "key": "logout.question",
     "lang": "en",
@@ -22564,6 +22630,72 @@
     "key": "admin.reports.action.unblock.busy",
     "lang": "hu",
     "value": "Feloldás..."
+  },
+  {
+    "_id": "i18n-message-hu-share-what-happened-reports-are-reviewed-by-moderation-and-we-use-them-t",
+    "key": "share.what.happened.reports.are.reviewed.by.moderation.and.we.use.them.to.improve.trust.and.safety",
+    "lang": "hu",
+    "value": "Mondd el, mi történt. A jelentéseket a moderátorok felülvizsgálják, és felhasználjuk őket a bizalom és a biztonság javítására."
+  },
+  {
+    "_id": "i18n-message-hu-user",
+    "key": "user",
+    "lang": "hu",
+    "value": "Felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-event-context",
+    "key": "event.context",
+    "lang": "hu",
+    "value": "Esemény kontextusa"
+  },
+  {
+    "_id": "i18n-message-hu-reason",
+    "key": "reason",
+    "lang": "hu",
+    "value": "Indok"
+  },
+  {
+    "_id": "i18n-message-hu-selected-member",
+    "key": "selected.member",
+    "lang": "hu",
+    "value": "Kiválasztott tag"
+  },
+  {
+    "_id": "i18n-message-hu-selected-member-placeholder",
+    "key": "selected.member.placeholder",
+    "lang": "hu",
+    "value": "Kiválasztott tag"
+  },
+  {
+    "_id": "i18n-message-hu-submit-report",
+    "key": "submit.report",
+    "lang": "hu",
+    "value": "Jelentés küldése"
+  },
+  {
+    "_id": "i18n-message-hu-add-short-details-about-what-happened-and-why-you-are-reporting-this-mem",
+    "key": "add.short.details.about.what.happened.and.why.you.are.reporting.this.member.placeholder",
+    "lang": "hu",
+    "value": "Írd le röviden, mi történt, és miért jelented ezt a tagot."
+  },
+  {
+    "_id": "i18n-message-hu-reports-can-only-be-started-from-a-member-card-of-an-event-you-both-atte",
+    "key": "reports.can.only.be.started.from.a.member.card.of.an.event.you.both.attended",
+    "lang": "hu",
+    "value": "Jelentést csak olyan esemény tagkártyájáról indíthatsz, amelyen mindketten részt vettetek."
+  },
+  {
+    "_id": "i18n-message-hu-reports-can-only-be-started-from-an-event-organizer-or-a-member-card-tie",
+    "key": "reports.can.only.be.started.from.an.event.organizer.or.a.member.card.tied.to.an.event",
+    "lang": "hu",
+    "value": "Jelentést csak egy esemény szervezőjéről vagy az eseményhez tartozó tagkártyáról indíthatsz."
+  },
+  {
+    "_id": "i18n-message-hu-reports-can-only-be-submitted-for-an-event-organizer-or-a-member-you-sha",
+    "key": "reports.can.only.be.submitted.for.an.event.organizer.or.a.member.you.shared.an.event.with",
+    "lang": "hu",
+    "value": "Jelentést csak az esemény szervezőjéről vagy olyan tagról küldhetsz, akivel közös eseményen vettél részt."
   },
   {
     "_id": "i18n-message-hu-logout-question",
