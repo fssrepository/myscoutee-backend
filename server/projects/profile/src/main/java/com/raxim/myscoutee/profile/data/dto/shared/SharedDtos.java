@@ -339,6 +339,13 @@ public final class SharedDtos {
             String addedAtIso) {
     }
 
+    public record SubEventSupplyContributionPageDto(
+            List<SubEventSupplyContributionEntryDto> items,
+            Integer total,
+            Integer page,
+            Integer pageSize) {
+    }
+
     public record ActivitySubEventResourceStateDto(
             String ownerId,
             String subEventId,
