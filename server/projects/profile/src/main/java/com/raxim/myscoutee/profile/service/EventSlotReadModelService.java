@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 
 @Service
@@ -145,7 +146,11 @@ public class EventSlotReadModelService {
         }
         int acceptedMembers = acceptedMembersIncludingParentAdmins(parent, item);
         int pendingMembers = pendingMembersExcludingAcceptedAdmins(parent, item);
-        int capacityTotal = Math.max(acceptedMembers, normalizeCount(item.getCapacityTotal()));
+        int slotCapacityTotal = slotDefinitionCapacityTotal(item.getSubEventDefinitions());
+        int baseCapacityTotal = slotCapacityTotal > 0
+                ? slotCapacityTotal
+                : normalizeCount(item.getCapacityTotal());
+        int capacityTotal = Math.max(acceptedMembers, baseCapacityTotal);
         return new EventSlotOccurrenceDto(
                 sourceId,
                 normalizeId(parent == null ? null : parent.getSourceId()),

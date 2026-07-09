@@ -6416,7 +6416,7 @@ public class ActivitiesEventsService {
         String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
         ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
         ActivityEvent next = new ActivityEvent();
-        GeneratedSlotMemberSnapshot slotMembers = generatedSlotMemberSnapshot(parent, existing);
+        GeneratedSlotMemberSnapshot slotMembers = generatedSlotMemberSnapshot(parent, existing, definitions);
         String nowIso = Instant.now().toString();
         next.setId(resolveExistingId(SLOT_READ_MODEL_USER_ID, sourceId, existing));
         next.setSyncKey(resolveExistingSyncKey(SLOT_READ_MODEL_USER_ID, sourceId, existing == null ? null : existing.getSyncKey()));
@@ -6489,7 +6489,10 @@ public class ActivitiesEventsService {
         records.add(next);
     }
 
-    private GeneratedSlotMemberSnapshot generatedSlotMemberSnapshot(ActivityEvent parent, ActivityEvent existing) {
+    private GeneratedSlotMemberSnapshot generatedSlotMemberSnapshot(
+            ActivityEvent parent,
+            ActivityEvent existing,
+            List<SubEventDefinitionDto> definitions) {
         List<String> adminUserIds = normalizeIds(parent == null ? null : parent.getAdmins());
         List<String> rawAcceptedMemberUserIds = normalizeIds(existing == null ? null : existing.getAcceptedMemberUserIds());
         LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>(rawAcceptedMemberUserIds);
@@ -6510,7 +6513,11 @@ public class ActivitiesEventsService {
         List<String> pendingRequestMemberUserIds = removeUserIds(
                 normalizeIds(existing == null ? null : existing.getPendingRequestMemberUserIds()),
                 acceptedUserIds);
-        int capacityTotal = Math.max(acceptedMembers, normalizeCount(parent == null ? null : parent.getCapacityTotal()));
+        int slotCapacityTotal = slotDefinitionCapacityTotal(definitions);
+        int baseCapacityTotal = slotCapacityTotal > 0
+                ? slotCapacityTotal
+                : normalizeCount(parent == null ? null : parent.getCapacityTotal());
+        int capacityTotal = Math.max(acceptedMembers, baseCapacityTotal);
         return new GeneratedSlotMemberSnapshot(
                 adminUserIds,
                 acceptedMembers,
@@ -6520,6 +6527,21 @@ public class ActivitiesEventsService {
                 pendingMemberUserIds,
                 invitedMemberUserIds,
                 pendingRequestMemberUserIds);
+    }
+
+    private int slotDefinitionCapacityTotal(List<SubEventDefinitionDto> definitions) {
+        int capacityTotal = 0;
+        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
+            if (definition == null || Boolean.TRUE.equals(definition.optional())) {
+                continue;
+            }
+            int capacityMax = normalizeCount(definition.capacityMax());
+            if (capacityMax <= 0) {
+                continue;
+            }
+            capacityTotal = capacityTotal <= 0 ? capacityMax : Math.min(capacityTotal, capacityMax);
+        }
+        return capacityTotal;
     }
 
     private List<String> removeUserIds(List<String> userIds, Set<String> excludedUserIds) {
