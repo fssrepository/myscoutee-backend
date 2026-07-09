@@ -264,6 +264,12 @@
     "value": "Solved"
   },
   {
+    "_id": "i18n-message-en-activities-support-case-filter-warned",
+    "key": "activities.support.case.filter.warned",
+    "lang": "en",
+    "value": "Warned"
+  },
+  {
     "_id": "i18n-message-en-activities-support-case-status-blocked",
     "key": "activities.support.case.status.blocked",
     "lang": "en",
@@ -286,6 +292,12 @@
     "key": "activities.support.case.status.solved",
     "lang": "en",
     "value": "Solved"
+  },
+  {
+    "_id": "i18n-message-en-activities-support-case-status-warned",
+    "key": "activities.support.case.status.warned",
+    "lang": "en",
+    "value": "Warned"
   },
   {
     "_id": "i18n-message-en-add-myscoutee-to-your-home-screen",
@@ -904,6 +916,18 @@
     "key": "demo.data.ready",
     "lang": "en",
     "value": "Demo data ready"
+  },
+  {
+    "_id": "i18n-message-en-demo-admin-selector-subtitle",
+    "key": "demo.admin.selector.subtitle",
+    "lang": "en",
+    "value": "Choose an admin profile."
+  },
+  {
+    "_id": "i18n-message-en-demo-selector-subtitle",
+    "key": "demo.selector.subtitle",
+    "lang": "en",
+    "value": "Choose a demo profile."
   },
   {
     "_id": "i18n-message-en-demo-session-ready",
@@ -2100,18 +2124,6 @@
     "value": "Expires past event records and refreshes affected user activity counters every five minutes."
   },
   {
-    "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge",
-    "key": "admin.jobs.rule.event.checkout.basket.purge",
-    "lang": "en",
-    "value": "Checkout basket purge"
-  },
-  {
-    "_id": "i18n-message-en-admin-jobs-rule-event-checkout-basket-purge-description",
-    "key": "admin.jobs.rule.event.checkout.basket.purge.description",
-    "lang": "en",
-    "value": "Marks expired draft checkout basket items as deleted after the purchase window closes."
-  },
-  {
     "_id": "i18n-message-en-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "en",
@@ -2874,18 +2886,6 @@
     "value": "Expires past events and refreshes affected counters."
   },
   {
-    "_id": "i18n-message-en-event-checkout-basket-purge",
-    "key": "event.checkout.basket.purge",
-    "lang": "en",
-    "value": "Checkout basket purge"
-  },
-  {
-    "_id": "i18n-message-en-event-checkout-basket-purge-description",
-    "key": "event.checkout.basket.purge.description",
-    "lang": "en",
-    "value": "Marks expired checkout basket drafts as deleted."
-  },
-  {
     "_id": "i18n-message-en-notifications-outbox-worker",
     "key": "notifications.outbox.worker",
     "lang": "en",
@@ -3106,18 +3106,6 @@
     "key": "login",
     "lang": "en",
     "value": "Login"
-  },
-  {
-    "_id": "i18n-message-en-login-disabled-mode-choose-a-demo-user-to-open-perspective-based-data",
-    "key": "login.disabled.mode.choose.a.demo.user.to.open.perspective.based.data",
-    "lang": "en",
-    "value": "Choose a demo profile."
-  },
-  {
-    "_id": "i18n-message-en-login-disabled-mode-choose-an-admin-user-to-seed-moderation-data",
-    "key": "login.disabled.mode.choose.an.admin.user.to.seed.moderation.data",
-    "lang": "en",
-    "value": "Login disabled mode. Choose an admin user to seed moderation data."
   },
   {
     "_id": "i18n-message-en-moderation-and-support",
@@ -7206,6 +7194,12 @@
     "value": "Waiting List"
   },
   {
+    "_id": "i18n-message-en-warn",
+    "key": "warn",
+    "lang": "en",
+    "value": "Warn"
+  },
+  {
     "_id": "i18n-message-en-warn-in-chat",
     "key": "warn.in.chat",
     "lang": "en",
@@ -11088,6 +11082,204 @@
     "value": "Share MyScoutee"
   },
   {
+    "_id": "i18n-message-en-admin-review-status-resolved",
+    "key": "admin.review.status.resolved",
+    "lang": "en",
+    "value": "Resolved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-status-unresolved",
+    "key": "admin.review.status.unresolved",
+    "lang": "en",
+    "value": "Unresolved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-solved",
+    "key": "admin.review.action.mark.solved",
+    "lang": "en",
+    "value": "Mark solved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-solved-busy",
+    "key": "admin.review.action.mark.solved.busy",
+    "lang": "en",
+    "value": "Marking solved..."
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-unresolved",
+    "key": "admin.review.action.mark.unresolved",
+    "lang": "en",
+    "value": "Mark unresolved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-unresolved-busy",
+    "key": "admin.review.action.mark.unresolved.busy",
+    "lang": "en",
+    "value": "Reopening..."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-review-status-filter",
+    "key": "admin.feedback.review.status.filter",
+    "lang": "en",
+    "value": "Feedback status filter"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-review-status-filter",
+    "key": "admin.reports.review.status.filter",
+    "lang": "en",
+    "value": "Report status filter"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-empty-title",
+    "key": "admin.feedback.empty.title",
+    "lang": "en",
+    "value": "No feedback"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-empty-description",
+    "key": "admin.feedback.empty.description",
+    "lang": "en",
+    "value": "No application feedback has been submitted."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-empty-title",
+    "key": "admin.reports.empty.title",
+    "lang": "en",
+    "value": "No reports"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-empty-description",
+    "key": "admin.reports.empty.description",
+    "lang": "en",
+    "value": "No moderation reports are waiting for review."
+  },
+  {
+    "_id": "i18n-message-en-admin-blocked-users-subtitle",
+    "key": "admin.blocked.users.subtitle",
+    "lang": "en",
+    "value": "Profiles currently blocked by moderation."
+  },
+  {
+    "_id": "i18n-message-en-admin-blocked-users-empty-title",
+    "key": "admin.blocked.users.empty.title",
+    "lang": "en",
+    "value": "No blocked users"
+  },
+  {
+    "_id": "i18n-message-en-admin-blocked-users-empty-description",
+    "key": "admin.blocked.users.empty.description",
+    "lang": "en",
+    "value": "No profiles are currently blocked by moderation."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-solved-title",
+    "key": "admin.feedback.confirm.mark.solved.title",
+    "lang": "en",
+    "value": "Mark feedback solved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-solved-message",
+    "key": "admin.feedback.confirm.mark.solved.message",
+    "lang": "en",
+    "value": "{user} will receive a support message saying the feedback was reviewed."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-unresolved-title",
+    "key": "admin.feedback.confirm.mark.unresolved.title",
+    "lang": "en",
+    "value": "Mark feedback unresolved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-unresolved-message",
+    "key": "admin.feedback.confirm.mark.unresolved.message",
+    "lang": "en",
+    "value": "The feedback will return to the unresolved list."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-fallback-user",
+    "key": "admin.feedback.fallback.user",
+    "lang": "en",
+    "value": "The user"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-solved-title",
+    "key": "admin.reports.confirm.mark.solved.title",
+    "lang": "en",
+    "value": "Mark report solved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-solved-message",
+    "key": "admin.reports.confirm.mark.solved.message",
+    "lang": "en",
+    "value": "{user} will receive a support message saying the report was reviewed."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-unresolved-title",
+    "key": "admin.reports.confirm.mark.unresolved.title",
+    "lang": "en",
+    "value": "Mark report unresolved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-unresolved-message",
+    "key": "admin.reports.confirm.mark.unresolved.message",
+    "lang": "en",
+    "value": "The report will return to the unresolved list."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-fallback-reporter",
+    "key": "admin.reports.fallback.reporter",
+    "lang": "en",
+    "value": "The reporter"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-block-title",
+    "key": "admin.reports.confirm.block.title",
+    "lang": "en",
+    "value": "Block {user}?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-block-message",
+    "key": "admin.reports.confirm.block.message",
+    "lang": "en",
+    "value": "The user will be blocked and a support chat message will be sent."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-unblock-title",
+    "key": "admin.reports.confirm.unblock.title",
+    "lang": "en",
+    "value": "Unblock {user}?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-unblock-message",
+    "key": "admin.reports.confirm.unblock.message",
+    "lang": "en",
+    "value": "The user profile status will be restored and they can use MyScoutee again."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-block",
+    "key": "admin.reports.action.block",
+    "lang": "en",
+    "value": "Block"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-block-busy",
+    "key": "admin.reports.action.block.busy",
+    "lang": "en",
+    "value": "Blocking..."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-unblock",
+    "key": "admin.reports.action.unblock",
+    "lang": "en",
+    "value": "Unblock"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-unblock-busy",
+    "key": "admin.reports.action.unblock.busy",
+    "lang": "en",
+    "value": "Unblocking..."
+  },
+  {
     "_id": "i18n-message-en-logout-question",
     "key": "logout.question",
     "lang": "en",
@@ -11358,6 +11550,12 @@
     "value": "Megoldott"
   },
   {
+    "_id": "i18n-message-hu-activities-support-case-filter-warned",
+    "key": "activities.support.case.filter.warned",
+    "lang": "hu",
+    "value": "Figyelmeztetett"
+  },
+  {
     "_id": "i18n-message-hu-activities-support-case-status-blocked",
     "key": "activities.support.case.status.blocked",
     "lang": "hu",
@@ -11380,6 +11578,12 @@
     "key": "activities.support.case.status.solved",
     "lang": "hu",
     "value": "Megoldott"
+  },
+  {
+    "_id": "i18n-message-hu-activities-support-case-status-warned",
+    "key": "activities.support.case.status.warned",
+    "lang": "hu",
+    "value": "Figyelmeztetett"
   },
   {
     "_id": "i18n-message-hu-add-myscoutee-to-your-home-screen",
@@ -11998,6 +12202,18 @@
     "key": "demo.data.ready",
     "lang": "hu",
     "value": "Demo adatok készen állnak"
+  },
+  {
+    "_id": "i18n-message-hu-demo-admin-selector-subtitle",
+    "key": "demo.admin.selector.subtitle",
+    "lang": "hu",
+    "value": "Válassz admin profilt."
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-subtitle",
+    "key": "demo.selector.subtitle",
+    "lang": "hu",
+    "value": "Válassz demo profilt."
   },
   {
     "_id": "i18n-message-hu-demo-session-ready",
@@ -13194,18 +13410,6 @@
     "value": "Ötpercenként lejáratja a múltbeli esemény rekordokat, és frissíti az érintett felhasználói aktivitás számlálókat."
   },
   {
-    "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge",
-    "key": "admin.jobs.rule.event.checkout.basket.purge",
-    "lang": "hu",
-    "value": "Checkout kosár tisztítás"
-  },
-  {
-    "_id": "i18n-message-hu-admin-jobs-rule-event-checkout-basket-purge-description",
-    "key": "admin.jobs.rule.event.checkout.basket.purge.description",
-    "lang": "hu",
-    "value": "A vásárlási ablak után törölt státuszra állítja a lejárt checkout kosár elemeket."
-  },
-  {
     "_id": "i18n-message-hu-admin-jobs-rule-notification-outbox",
     "key": "admin.jobs.rule.notification.outbox",
     "lang": "hu",
@@ -13968,18 +14172,6 @@
     "value": "Lejáratja a múltbeli eseményeket, és frissíti az érintett számlálókat."
   },
   {
-    "_id": "i18n-message-hu-event-checkout-basket-purge",
-    "key": "event.checkout.basket.purge",
-    "lang": "hu",
-    "value": "Checkout kosár tisztítás"
-  },
-  {
-    "_id": "i18n-message-hu-event-checkout-basket-purge-description",
-    "key": "event.checkout.basket.purge.description",
-    "lang": "hu",
-    "value": "Törölt státuszra állítja a lejárt checkout kosár piszkozatokat."
-  },
-  {
     "_id": "i18n-message-hu-notifications-outbox-worker",
     "key": "notifications.outbox.worker",
     "lang": "hu",
@@ -14200,18 +14392,6 @@
     "key": "login",
     "lang": "hu",
     "value": "Bejelentkezés"
-  },
-  {
-    "_id": "i18n-message-hu-login-disabled-mode-choose-a-demo-user-to-open-perspective-based-data",
-    "key": "login.disabled.mode.choose.a.demo.user.to.open.perspective.based.data",
-    "lang": "hu",
-    "value": "Válassz demo profilt."
-  },
-  {
-    "_id": "i18n-message-hu-login-disabled-mode-choose-an-admin-user-to-seed-moderation-data",
-    "key": "login.disabled.mode.choose.an.admin.user.to.seed.moderation.data",
-    "lang": "hu",
-    "value": "Bejelentkezés nélküli mód. Válassz admin felhasználót a moderációs adatok feltöltéséhez."
   },
   {
     "_id": "i18n-message-hu-moderation-and-support",
@@ -18300,6 +18480,12 @@
     "value": "Várólista"
   },
   {
+    "_id": "i18n-message-hu-warn",
+    "key": "warn",
+    "lang": "hu",
+    "value": "Figyelmeztetés"
+  },
+  {
     "_id": "i18n-message-hu-warn-in-chat",
     "key": "warn.in.chat",
     "lang": "hu",
@@ -22180,6 +22366,204 @@
     "key": "share.myscoutee",
     "lang": "hu",
     "value": "MyScoutee megosztása"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-status-resolved",
+    "key": "admin.review.status.resolved",
+    "lang": "hu",
+    "value": "Megoldott"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-status-unresolved",
+    "key": "admin.review.status.unresolved",
+    "lang": "hu",
+    "value": "Megoldatlan"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-solved",
+    "key": "admin.review.action.mark.solved",
+    "lang": "hu",
+    "value": "Megoldottra jelölés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-solved-busy",
+    "key": "admin.review.action.mark.solved.busy",
+    "lang": "hu",
+    "value": "Megoldottra jelölés..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-unresolved",
+    "key": "admin.review.action.mark.unresolved",
+    "lang": "hu",
+    "value": "Megoldatlanná jelölés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-unresolved-busy",
+    "key": "admin.review.action.mark.unresolved.busy",
+    "lang": "hu",
+    "value": "Újranyitás..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-review-status-filter",
+    "key": "admin.feedback.review.status.filter",
+    "lang": "hu",
+    "value": "Visszajelzés állapotszűrő"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-review-status-filter",
+    "key": "admin.reports.review.status.filter",
+    "lang": "hu",
+    "value": "Jelentés állapotszűrő"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-empty-title",
+    "key": "admin.feedback.empty.title",
+    "lang": "hu",
+    "value": "Nincs visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-empty-description",
+    "key": "admin.feedback.empty.description",
+    "lang": "hu",
+    "value": "Még nem érkezett alkalmazás-visszajelzés."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-empty-title",
+    "key": "admin.reports.empty.title",
+    "lang": "hu",
+    "value": "Nincs jelentés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-empty-description",
+    "key": "admin.reports.empty.description",
+    "lang": "hu",
+    "value": "Nincs moderációs jelentés átnézésre."
+  },
+  {
+    "_id": "i18n-message-hu-admin-blocked-users-subtitle",
+    "key": "admin.blocked.users.subtitle",
+    "lang": "hu",
+    "value": "Moderáció által jelenleg letiltott profilok."
+  },
+  {
+    "_id": "i18n-message-hu-admin-blocked-users-empty-title",
+    "key": "admin.blocked.users.empty.title",
+    "lang": "hu",
+    "value": "Nincs letiltott felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-admin-blocked-users-empty-description",
+    "key": "admin.blocked.users.empty.description",
+    "lang": "hu",
+    "value": "Jelenleg nincs moderáció által letiltott profil."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-solved-title",
+    "key": "admin.feedback.confirm.mark.solved.title",
+    "lang": "hu",
+    "value": "Visszajelzés megoldottra jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-solved-message",
+    "key": "admin.feedback.confirm.mark.solved.message",
+    "lang": "hu",
+    "value": "{user} támogatási üzenetet kap arról, hogy a visszajelzést átnéztük."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-unresolved-title",
+    "key": "admin.feedback.confirm.mark.unresolved.title",
+    "lang": "hu",
+    "value": "Visszajelzés megoldatlanná jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-unresolved-message",
+    "key": "admin.feedback.confirm.mark.unresolved.message",
+    "lang": "hu",
+    "value": "A visszajelzés visszakerül a megoldatlan listába."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-fallback-user",
+    "key": "admin.feedback.fallback.user",
+    "lang": "hu",
+    "value": "A felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-solved-title",
+    "key": "admin.reports.confirm.mark.solved.title",
+    "lang": "hu",
+    "value": "Jelentés megoldottra jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-solved-message",
+    "key": "admin.reports.confirm.mark.solved.message",
+    "lang": "hu",
+    "value": "{user} támogatási üzenetet kap arról, hogy a jelentést átnéztük."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-unresolved-title",
+    "key": "admin.reports.confirm.mark.unresolved.title",
+    "lang": "hu",
+    "value": "Jelentés megoldatlanná jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-unresolved-message",
+    "key": "admin.reports.confirm.mark.unresolved.message",
+    "lang": "hu",
+    "value": "A jelentés visszakerül a megoldatlan listába."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-fallback-reporter",
+    "key": "admin.reports.fallback.reporter",
+    "lang": "hu",
+    "value": "A jelentő"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-block-title",
+    "key": "admin.reports.confirm.block.title",
+    "lang": "hu",
+    "value": "Letiltod {user} felhasználót?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-block-message",
+    "key": "admin.reports.confirm.block.message",
+    "lang": "hu",
+    "value": "A felhasználó le lesz tiltva, és támogatási csevegőüzenetet kap."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-unblock-title",
+    "key": "admin.reports.confirm.unblock.title",
+    "lang": "hu",
+    "value": "Feloldod {user} tiltását?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-unblock-message",
+    "key": "admin.reports.confirm.unblock.message",
+    "lang": "hu",
+    "value": "A felhasználó profilállapota visszaáll, és újra használhatja a MyScoutee-t."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-block",
+    "key": "admin.reports.action.block",
+    "lang": "hu",
+    "value": "Letiltás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-block-busy",
+    "key": "admin.reports.action.block.busy",
+    "lang": "hu",
+    "value": "Letiltás..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-unblock",
+    "key": "admin.reports.action.unblock",
+    "lang": "hu",
+    "value": "Feloldás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-unblock-busy",
+    "key": "admin.reports.action.unblock.busy",
+    "lang": "hu",
+    "value": "Feloldás..."
   },
   {
     "_id": "i18n-message-hu-logout-question",
