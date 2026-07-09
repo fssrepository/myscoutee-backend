@@ -14,7 +14,7 @@ public final class AdminDtos {
             String headline,
             String about,
             List<String> images) {}
-    public record AdminActionRequestDto(String adminUserId, String message) {}
+    public record AdminActionRequestDto(String adminUserId, String message, String reportId) {}
     public record AdminReviewResolveRequestDto(String adminUserId, Boolean resolved) {}
     public record AdminParamsStateDto(
             List<AdminParamsSectionDto> sections,
@@ -439,6 +439,8 @@ public final class AdminDtos {
             String chatTitle,
             List<AdminChatMessageDto> chatMessages,
             String createdDate,
+            String warnedAtIso,
+            String warnedByAdminUserId,
             String resolvedAtIso,
             String resolvedByAdminUserId) {}
     public record AdminFeedbackDto(

@@ -35,6 +35,8 @@ public class UserReportSubmission {
     private String assetType;
     private String createdDate;
     private String createdUser;
+    private String warnedAtIso;
+    private String warnedByAdminUserId;
     private String resolvedAtIso;
     private String resolvedByAdminUserId;
     private String updatedDate;
@@ -157,6 +159,22 @@ public class UserReportSubmission {
 
     public void setCreatedUser(String createdUser) {
         this.createdUser = createdUser;
+    }
+
+    public String getWarnedAtIso() {
+        return warnedAtIso;
+    }
+
+    public void setWarnedAtIso(String warnedAtIso) {
+        this.warnedAtIso = warnedAtIso;
+    }
+
+    public String getWarnedByAdminUserId() {
+        return warnedByAdminUserId;
+    }
+
+    public void setWarnedByAdminUserId(String warnedByAdminUserId) {
+        this.warnedByAdminUserId = warnedByAdminUserId;
     }
 
     public String getResolvedAtIso() {

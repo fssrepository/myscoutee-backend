@@ -144,6 +144,7 @@ public class AdminModerationService {
         String targetUserId = normalize(userId);
         ensureReportedUser(targetUserId);
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
+        markReportWarned(targetUserId, admin.id(), request == null ? null : request.reportId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
                 : "Please update the reported behavior before your account is blocked.", "warned");
@@ -305,6 +306,24 @@ public class AdminModerationService {
                 || reportsRepository.findByTargetUserIdOrderByCreatedDateDesc(targetUserId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only reported users can be moderated.");
         }
+    }
+
+    private void markReportWarned(String targetUserId, String adminUserId, String reportId) {
+        String normalizedReportId = normalize(reportId);
+        if (!StringUtils.hasText(normalizedReportId)) {
+            return;
+        }
+        UserReportSubmission report = reportsRepository.findById(normalizedReportId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found."));
+        if (!targetUserId.equals(normalize(report.getTargetUserId()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Report does not belong to the reported user.");
+        }
+        String nowIso = Instant.now().toString();
+        report.setWarnedAtIso(nowIso);
+        report.setWarnedByAdminUserId(adminUserId);
+        report.setUpdatedDate(nowIso);
+        report.setUpdatedUser(adminUserId);
+        reportsRepository.save(report);
     }
 
     private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportStatus) {
@@ -561,6 +580,8 @@ public class AdminModerationService {
                 chat == null ? null : chat.getTitle(),
                 chat == null ? List.of() : chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(chat.getChatId()).stream().map(this::toChatMessage).toList(),
                 report.getCreatedDate(),
+                report.getWarnedAtIso(),
+                report.getWarnedByAdminUserId(),
                 report.getResolvedAtIso(),
                 report.getResolvedByAdminUserId());
     }
