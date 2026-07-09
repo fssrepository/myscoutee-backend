@@ -31,6 +31,7 @@ import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminA
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.service.AdminAffinityGraphService;
@@ -326,6 +327,17 @@ public class AdminController {
             @RequestParam(value = "adminUserId", required = false) String adminUserId,
             @RequestParam(value = "lang", required = false) String lang) {
         return ideaPostsService.adminPosts(adminUserId, lang);
+    }
+
+    @GetMapping(value = "/ideas", params = {"page", "pageSize"})
+    public IdeaPostAdminPageDto ideasPage(
+            @RequestParam(value = "adminUserId", required = false) String adminUserId,
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        return ideaPostsService.adminPostsPage(adminUserId, lang, status, page, pageSize, cursor);
     }
 
     @PostMapping("/ideas")

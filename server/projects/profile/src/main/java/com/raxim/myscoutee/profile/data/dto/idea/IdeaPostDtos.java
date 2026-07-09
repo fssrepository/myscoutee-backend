@@ -28,6 +28,21 @@ public final class IdeaPostDtos {
             String updatedByUserId) {
     }
 
+    public record IdeaPostAdminCountsDto(
+            Integer all,
+            Integer featured,
+            Integer published,
+            Integer drafts,
+            Integer trashed) {
+    }
+
+    public record IdeaPostAdminPageDto(
+            List<IdeaPostDto> records,
+            Integer total,
+            String nextCursor,
+            IdeaPostAdminCountsDto counts) {
+    }
+
     public record IdeaPostSaveRequestDto(
             String actorUserId,
             String id,

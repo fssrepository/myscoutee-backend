@@ -1,0 +1,19 @@
+{
+  "name": "admin ideas editor paged state",
+  "group": "admin",
+  "order": 1071,
+  "method": "GET",
+  "path": "/api/admin/ideas",
+  "headers": {
+    "X-App-Session-Kind": "demo"
+  },
+  "params": {
+    "adminUserId": "{{adminUserId}}",
+    "lang": "en",
+    "status": "published",
+    "page": "0",
+    "pageSize": "2"
+  },
+  "expectedStatus": 200,
+  "maxMs": 8000
+}
