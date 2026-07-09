@@ -855,9 +855,11 @@ public class ActivitiesEventsService {
                         .filter(Objects::nonNull)
                         .filter(item -> "event".equals(safeText(item.kind())))
                         .filter(item -> StringUtils.hasText(normalizeId(item.slotSourceId())))
-                        .map(item -> allSlotDtosById.getOrDefault(
-                                normalizeId(item.slotSourceId()),
-                                checkoutSlotDtoFromBasketItem(checkoutParent, item)))
+                        .map(item -> isSucceededCheckoutResult(item.resultState())
+                                ? checkoutSlotDtoFromBasketItem(checkoutParent, item)
+                                : allSlotDtosById.getOrDefault(
+                                        normalizeId(item.slotSourceId()),
+                                        checkoutSlotDtoFromBasketItem(checkoutParent, item)))
                         .filter(Objects::nonNull)
                         .sorted((left, right) -> checkoutSlotDirection(request)
                                 * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
@@ -1109,11 +1111,7 @@ public class ActivitiesEventsService {
                 rows.add(new EventCheckoutPricingSummaryRowDto("max-price", "Maximum price", null, roundMoney(nextPrice - previousPrice), currency, 1));
             }
         }
-        double roundedPrice = applyCheckoutRounding(nextPrice, pricing.rounding());
-        if (roundedPrice != nextPrice) {
-            rows.add(new EventCheckoutPricingSummaryRowDto("rounding", "Rounding", null, roundMoney(roundedPrice - nextPrice), currency, 1));
-        }
-        return new CheckoutSlotPricing(roundMoney(roundedPrice), currency, rows);
+        return new CheckoutSlotPricing(roundMoney(nextPrice), currency, rows);
     }
 
     private CheckoutSlotPricing resolveCheckoutOptionalSubEventPricing(
@@ -1224,14 +1222,6 @@ public class ActivitiesEventsService {
             case "decrease_amount" -> "-" + roundMoney(value);
             case "decrease_percent" -> "-" + roundMoney(value) + "%";
             default -> "+" + roundMoney(value) + "%";
-        };
-    }
-
-    private double applyCheckoutRounding(double price, String rounding) {
-        return switch (safeText(rounding)) {
-            case "whole" -> Math.round(price);
-            case "half" -> Math.round(price * 2d) / 2d;
-            default -> roundMoney(price);
         };
     }
 
@@ -6748,9 +6738,12 @@ public class ActivitiesEventsService {
                 return;
             }
             slotCount += 1;
-            availableSlots += Math.max(0, slot.availableSlots() == null ? 0 : slot.availableSlots());
-            double amount = slot.amount() == null ? 0d : Math.max(0d, slot.amount());
-            lowestAmount = Math.min(lowestAmount, amount);
+            int slotAvailable = Math.max(0, slot.availableSlots() == null ? 0 : slot.availableSlots());
+            availableSlots += slotAvailable;
+            if (slotAvailable > 0) {
+                double amount = slot.amount() == null ? 0d : Math.max(0d, slot.amount());
+                lowestAmount = Math.min(lowestAmount, amount);
+            }
             if (StringUtils.hasText(slot.currency())) {
                 currency = slot.currency();
             }
