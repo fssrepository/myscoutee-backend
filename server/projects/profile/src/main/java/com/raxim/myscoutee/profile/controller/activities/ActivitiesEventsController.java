@@ -25,6 +25,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatD
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
@@ -120,6 +122,11 @@ public class ActivitiesEventsController {
         return activitiesEventsService.loadSubEventsById(request);
     }
 
+    @PostMapping("/checkout/slots")
+    public EventCheckoutSlotsResultDto checkoutSlots(@RequestBody EventCheckoutSlotsQueryDto request) {
+        return activitiesEventsService.loadCheckoutSlots(request);
+    }
+
     @PostMapping("/explore")
     public Object explore(@RequestBody EventsExploreQueryDto request) {
         if (activitiesEventsService.isPagedExploreRequest(request)) {
@@ -129,8 +136,8 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/trash")
-    public void trash(@RequestBody EventActionRequestDto request) {
-        activitiesEventsService.trash(request);
+    public EventParticipationActionResultDto trash(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.trash(request);
     }
 
     @PostMapping("/publish")

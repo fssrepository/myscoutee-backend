@@ -28,8 +28,9 @@ public class ActivitiesMembersController {
     @GetMapping
     public List<ActivityMemberEntryDto> queryMembers(
             @RequestParam("ownerType") String ownerType,
-            @RequestParam("ownerId") String ownerId) {
-        return activitiesMembersService.queryMembers(ownerType, ownerId);
+            @RequestParam("ownerId") String ownerId,
+            @RequestParam(value = "pendingOnly", required = false) Boolean pendingOnly) {
+        return activitiesMembersService.queryMembers(ownerType, ownerId, pendingOnly);
     }
 
     @PostMapping("/summaries")

@@ -3111,7 +3111,7 @@
     "avatar": "SY",
     "title": "Sunset Beach Volley",
     "subtitle": "Casual teams, rotation rounds, and post-game snacks.",
-    "timeframe": "Mar 14 · 5:00 PM - 8:30 PM",
+    "timeframe": "Every Sun · 5:00 PM - 8:30 PM",
     "inviter": null,
     "unread": 0,
     "activity": 0,
@@ -3123,8 +3123,8 @@
     "creatorCity": "San Diego",
     "visibility": "Public",
     "blindMode": "Blind Event",
-    "startAtIso": "2027-03-02T11:30:00.000Z",
-    "endAtIso": "2027-03-02T14:00:00.000Z",
+    "startAtIso": "2026-07-12T17:00:00.000Z",
+    "endAtIso": "2026-10-25T20:30:00.000Z",
     "distanceKm": 0,
     "imageUrl": "https://picsum.photos/seed/demo-event-events%3A1b1c70be2349b3359a8f6f94%3Afc7345ce1a673d775e0f11bd%3Asunset-beach-volley/1200/700",
     "sourceLink": "https://example.com/event/1b1c70be2349b3359a8f6f94/fc7345ce1a673d775e0f11bd",
@@ -3144,9 +3144,121 @@
     "capacityMax": 25,
     "capacityTotal": 50,
     "autoInviter": true,
-    "frequency": "One-time",
+    "frequency": "Weekly",
     "ticketing": true,
-    "slotsEnabled": false,
+    "pricing": {
+      "mode": "hybrid",
+      "basePrice": 24,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_attendee",
+      "quantityRulesEnabled": true,
+      "quantityRules": [
+        {
+          "id": "sunset-quantity-3",
+          "minQuantity": 3,
+          "action": {
+            "kind": "decrease_amount",
+            "value": 2
+          }
+        }
+      ],
+      "minPrice": 18,
+      "maxPrice": 42,
+      "rounding": "half",
+      "demandRulesEnabled": true,
+      "demandRules": [
+        {
+          "id": "sunset-demand-40",
+          "operator": "gte",
+          "capacityFilledPercent": 40,
+          "action": {
+            "kind": "increase_percent",
+            "value": 12
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        }
+      ],
+      "timeRulesEnabled": true,
+      "timeRules": [
+        {
+          "id": "sunset-time-early-week",
+          "trigger": "days_before_start",
+          "offsetValue": 7,
+          "specificDateStart": null,
+          "specificDateEnd": null,
+          "action": {
+            "kind": "decrease_percent",
+            "value": 8
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        },
+        {
+          "id": "sunset-time-last-day",
+          "trigger": "hours_before_start",
+          "offsetValue": 24,
+          "specificDateStart": null,
+          "specificDateEnd": null,
+          "action": {
+            "kind": "increase_amount",
+            "value": 3
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        }
+      ],
+      "cancellationPolicy": {
+        "enabled": true,
+        "rules": [
+          {
+            "id": "sunset-cancel-week",
+            "offsetUnit": "days",
+            "offsetValue": 7,
+            "refundKind": "percent",
+            "refundValue": 50
+          },
+          {
+            "id": "sunset-cancel-day",
+            "offsetUnit": "hours",
+            "offsetValue": 24,
+            "refundKind": "none",
+            "refundValue": null
+          }
+        ]
+      },
+      "slotPricingEnabled": true,
+      "slotOverrides": [
+        {
+          "id": "sunset-beach-volley-sunday-evening-override",
+          "slotId": "sunset-beach-volley-sunday-evening",
+          "label": "Sunday evening",
+          "startAt": "2026-07-12T17:00:00",
+          "endAt": null,
+          "price": 26,
+          "currency": "USD"
+        }
+      ],
+      "audience": {
+        "enabled": false,
+        "memberPrice": 20,
+        "vipPrice": 18,
+        "inviteOnlyDiscountPercent": 15,
+        "promoCodes": [],
+        "soldOutLabel": "Show \"Sold Out\""
+      }
+    },
+    "slotsEnabled": true,
+    "slotTemplates": [
+      {
+        "id": "sunset-beach-volley-sunday-evening",
+        "startAt": "2026-07-12T17:00:00",
+        "overrideDate": null,
+        "closed": false,
+        "subEventDefinitions": []
+      }
+    ],
     "parentEventId": null,
     "slotTemplateId": null,
     "generated": false,
@@ -3165,17 +3277,17 @@
         "carsPending": 1,
         "createdByUserId": "1b1c70be2349b3359a8f6f94",
         "description": "Casual teams, rotation rounds, and post-game snacks. (1/3)",
-        "endAt": "2027-03-02T13:20",
+        "endAt": "2026-07-12T18:10",
         "groups": [],
         "id": "c204797e9aab92404c6494a6",
         "membersAccepted": 4,
         "membersPending": 7,
         "name": "Kickoff",
         "optional": false,
-        "startAt": "2027-03-02T12:30",
+        "startAt": "2026-07-12T17:00",
         "suppliesPending": 2,
         "slotStartOffsetMinutes": 0,
-        "slotDurationMinutes": 50
+        "slotDurationMinutes": 70
       },
       {
         "accommodationPending": 0,
@@ -3184,48 +3296,61 @@
         "carsPending": 2,
         "createdByUserId": "1b1c70be2349b3359a8f6f94",
         "description": "Casual teams, rotation rounds, and post-game snacks. (2/3)",
-        "endAt": "2027-03-02T14:10",
+        "endAt": "2026-07-12T19:20",
         "groups": [],
         "id": "f43123caee169dbe06d7c98c",
         "membersAccepted": 4,
         "membersPending": 10,
         "name": "Main Session",
         "optional": false,
-        "startAt": "2027-03-02T13:20",
+        "startAt": "2026-07-12T18:10",
         "suppliesPending": 3,
         "slotStartOffsetMinutes": 0,
-        "slotDurationMinutes": 50
+        "slotDurationMinutes": 70
       },
       {
         "accommodationPending": 1,
-        "capacityMax": 17,
+        "capacityMax": 8,
         "capacityMin": 0,
         "carsPending": 0,
         "createdByUserId": "1b1c70be2349b3359a8f6f94",
         "description": "Casual teams, rotation rounds, and post-game snacks. (3/3)",
-        "endAt": "2027-03-02T15:00",
+        "endAt": "2026-07-12T20:30",
         "groups": [],
         "id": "16226723e2a40397ecb76efa",
         "membersAccepted": 0,
-        "membersPending": 17,
+        "membersPending": 0,
         "name": "Side Activity",
         "optional": true,
-        "startAt": "2027-03-02T14:10",
+        "startAt": "2026-07-12T19:20",
         "suppliesPending": 0,
         "slotStartOffsetMinutes": 0,
-        "slotDurationMinutes": 50
+        "slotDurationMinutes": 70
       }
     ],
     "mode": "Casual",
     "rating": 7.2,
     "boost": 23056.25,
     "affinity": 1567382,
-    "createdDate": "2027-03-02T11:30:00.000Z",
+    "createdDate": "2026-07-12T17:00:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
-    "updatedDate": "2027-03-02T11:30:00.000Z",
+    "updatedDate": "2026-07-12T17:00:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
-    "upcomingSlots": [],
-    "expired": true,
+    "upcomingSlots": [
+      {
+        "id": "fc7345ce1a673d775e0f11bd:slot:sunset-beach-volley-sunday-evening:2026-07-12T17:00:00Z",
+        "parentEventId": "fc7345ce1a673d775e0f11bd",
+        "slotTemplateId": "sunset-beach-volley-sunday-evening",
+        "title": "Sunset Beach Volley",
+        "timeframe": "2026-07-12 · 17:00 - 20:30",
+        "startAtIso": "2026-07-12T17:00:00Z",
+        "endAtIso": "2026-07-12T20:30:00Z",
+        "capacityTotal": 50,
+        "acceptedMembers": 5,
+        "pendingMembers": 3
+      }
+    ],
+    "expired": false,
     "acceptedMemberUserIds": [
       "1b1c70be2349b3359a8f6f94",
       "d04cd419e735549e3f312977",
@@ -3253,7 +3378,7 @@
         "description": "Casual teams, rotation rounds, and post-game snacks. (1/3)",
         "timing": "During",
         "offsetMinutes": 0,
-        "durationMinutes": 50,
+        "durationMinutes": 70,
         "location": "",
         "groups": [],
         "optional": false,
@@ -3267,7 +3392,7 @@
         "description": "Casual teams, rotation rounds, and post-game snacks. (2/3)",
         "timing": "After",
         "offsetMinutes": 0,
-        "durationMinutes": 50,
+        "durationMinutes": 70,
         "location": "",
         "groups": [],
         "optional": false,
@@ -3281,16 +3406,66 @@
         "description": "Casual teams, rotation rounds, and post-game snacks. (3/3)",
         "timing": "After",
         "offsetMinutes": 0,
-        "durationMinutes": 50,
+        "durationMinutes": 70,
         "location": "",
         "groups": [],
         "optional": true,
         "capacityMin": 0,
-        "capacityMax": 17,
+        "capacityMax": 8,
+        "pricing": {
+          "mode": "fixed",
+          "basePrice": 9,
+          "currency": "USD",
+          "taxMode": "excluded",
+          "chargeType": "per_attendee",
+          "quantityRulesEnabled": false,
+          "quantityRules": [],
+          "minPrice": 5,
+          "maxPrice": 17,
+          "rounding": "none",
+          "demandRulesEnabled": false,
+          "demandRules": [],
+          "timeRulesEnabled": false,
+          "timeRules": [],
+          "cancellationPolicy": {
+            "enabled": false,
+            "rules": []
+          },
+          "slotPricingEnabled": false,
+          "slotOverrides": [],
+          "audience": {
+            "enabled": false,
+            "memberPrice": null,
+            "vipPrice": null,
+            "inviteOnlyDiscountPercent": null,
+            "promoCodes": [],
+            "soldOutLabel": "Show \"Sold Out\""
+          }
+        },
         "icon": null
       }
     ],
-    "policiesEnabled": false
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "policy-checkin-window",
+        "title": "Check-in window",
+        "description": "Arrive within the first 15 minutes of the selected slot so the organizer can release late spots.",
+        "required": true
+      },
+      {
+        "id": "policy-cancellation",
+        "title": "Cancellation",
+        "description": "Paid extras are refundable only until 24 hours before the selected slot starts.",
+        "required": true
+      },
+      {
+        "id": "policy-media",
+        "title": "Photos & recap",
+        "description": "A private recap may be shared with attendees after the event.",
+        "required": false
+      }
+    ]
   },
   {
     "_id": {

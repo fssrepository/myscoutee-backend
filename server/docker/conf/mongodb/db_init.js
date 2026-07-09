@@ -5,6 +5,7 @@ const requiredCollections = [
   'assets',
   'activityMembers',
   'activityResources',
+  'eventCheckoutBasketItems',
   'accessPolicyDefinitions',
   'accessGrants',
   'chats',
@@ -246,6 +247,19 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
   portalDb.activityMembers.createIndex(
     { ownerType: 1, status: 1, requestKind: 1 },
     { name: 'activity_member_status_request' }
+  );
+
+  portalDb.eventCheckoutBasketItems.createIndex(
+    { userId: 1, sourceId: 1, status: 1, updatedAtIso: -1 },
+    { name: 'checkout_basket_user_source_status' }
+  );
+  portalDb.eventCheckoutBasketItems.createIndex(
+    { userId: 1, sourceId: 1, itemId: 1 },
+    { name: 'checkout_basket_user_source_item', unique: true, sparse: true }
+  );
+  portalDb.eventCheckoutBasketItems.createIndex(
+    { expiresAtIso: 1, status: 1 },
+    { name: 'checkout_basket_expiry_status' }
   );
 
   portalDb.activityResources.createIndex(

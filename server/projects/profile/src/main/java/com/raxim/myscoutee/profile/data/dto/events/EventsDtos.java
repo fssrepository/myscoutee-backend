@@ -51,7 +51,54 @@ public final class EventsDtos {
             List<String> acceptedPolicyIds,
             String paymentSessionId,
             Boolean bookingConfirmed,
-            String pendingReason) {
+            String pendingReason,
+            String checkoutState,
+            List<EventCheckoutBasketItemDto> basketItems,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            List<EventCheckoutLineItemDto> lineItems,
+            Double totalAmount,
+            String currency,
+            Boolean removeMembershipOnly,
+            String checkoutResultState,
+            String checkoutSessionId,
+            Object counterDelta) {
+        public EventActionRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean bookingConfirmed,
+                String pendingReason,
+                String checkoutState,
+                List<EventCheckoutBasketItemDto> basketItems,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    bookingConfirmed,
+                    pendingReason,
+                    checkoutState,
+                    basketItems,
+                    pricingSummaryRows,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
     }
 
     public record EventParticipationActionResultDto(
@@ -271,6 +318,7 @@ public final class EventsDtos {
             Integer capacityMin,
             Integer capacityMax,
             Integer capacityTotal,
+            Boolean full,
             String eventType,
             String mode,
             Integer acceptedMembers,
@@ -280,6 +328,8 @@ public final class EventsDtos {
             List<String> invitedMemberUserIds,
             List<String> pendingRequestMemberUserIds,
             String pendingReason,
+            Boolean approvalRequired,
+            String checkoutResultState,
             Double boost) {
     }
 
@@ -333,9 +383,11 @@ public final class EventsDtos {
             Integer capacityMax,
             Integer capacityTotal,
             Integer capacityTotalActual,
+            Boolean full,
             Boolean autoInviter,
             String frequency,
             Boolean ticketing,
+            Boolean approvalRequired,
             PricingConfigDto pricing,
             Boolean policiesEnabled,
             List<PolicyItemDto> policies,
@@ -393,6 +445,72 @@ public final class EventsDtos {
             List<EventSubEventsSlotDto> slots) {
     }
 
+    public record EventCheckoutSlotsQueryDto(
+            String userId,
+            String eventId,
+            String view,
+            String order,
+            String anchorDate,
+            String rangeStart,
+            String rangeEnd,
+            Integer limit,
+            String cursor) {
+    }
+
+    public record EventCheckoutSlotDayDto(
+            String dateKey,
+            Integer slotCount,
+            Integer availableSlots,
+            Boolean bookedByViewer,
+            Double lowestAmount,
+            String currency) {
+    }
+
+    public record EventCheckoutSlotDto(
+            String id,
+            String parentEventId,
+            String slotSourceId,
+            String slotTemplateId,
+            String title,
+            String timeframe,
+            String startAtIso,
+            String endAtIso,
+            Integer capacityTotal,
+            Integer acceptedMembers,
+            Integer pendingMembers,
+            Integer availableSlots,
+            Boolean bookedByViewer,
+            Double amount,
+            String currency,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
+    }
+
+    public record EventCheckoutOptionalSubEventDto(
+            String id,
+            String name,
+            String description,
+            String startAt,
+            String endAt,
+            Integer capacityTotal,
+            Integer reservedCount,
+            Integer availableCount,
+            Double amount,
+            String currency,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
+    }
+
+    public record EventCheckoutSlotsResultDto(
+            String eventId,
+            String mode,
+            List<EventCheckoutSlotDayDto> days,
+            List<EventCheckoutSlotDto> slots,
+            Integer total,
+            String nextCursor,
+            String currency,
+            List<EventCheckoutOptionalSubEventDto> optionalSubEvents,
+            EventCheckoutBasketDto checkoutBasket) {
+    }
+
     public record EventCheckoutRequestDto(
             String userId,
             String sourceId,
@@ -400,10 +518,33 @@ public final class EventsDtos {
             List<String> optionalSubEventIds,
             List<EventCheckoutAssetSelectionDto> assetSelections,
             List<String> acceptedPolicyIds,
+            List<EventCheckoutBasketItemDto> basketItems,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            String checkoutState,
             List<EventCheckoutLineItemDto> lineItems,
             Double totalAmount,
             String currency,
             String pendingReason) {
+    }
+
+    public record EventCheckoutStateChangeRequestDto(
+            String userId,
+            String sourceId,
+            String slotSourceId,
+            String checkoutState,
+            String resultState,
+            String pendingReason,
+            String checkoutSessionId,
+            Object counterDelta) {
+        public EventCheckoutStateChangeRequestDto(
+                String userId,
+                String sourceId,
+                String checkoutState,
+                String resultState,
+                String pendingReason,
+                String checkoutSessionId) {
+            this(userId, sourceId, null, checkoutState, resultState, pendingReason, checkoutSessionId, null);
+        }
     }
 
     public record EventCheckoutAssetSelectionDto(
@@ -418,6 +559,53 @@ public final class EventsDtos {
             String detail,
             Double amount,
             String currency) {
+    }
+
+    public record EventCheckoutPricingSummaryRowDto(
+            String key,
+            String label,
+            String detail,
+            Double amount,
+            String currency,
+            Integer multiplier) {
+    }
+
+    public record EventCheckoutBasketItemDto(
+            String id,
+            String kind,
+            String sourceId,
+            String slotSourceId,
+            String slotTemplateId,
+            String selectedDateKey,
+            String subEventId,
+            String resourceType,
+            String label,
+            String detail,
+            Double amount,
+            String currency,
+            Integer quantity,
+            String status,
+            String resultState,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            String checkoutSessionId,
+            String createdAtIso,
+            String updatedAtIso,
+            String expiresAtIso) {
+    }
+
+    public record EventCheckoutBasketDto(
+            String userId,
+            String sourceId,
+            String status,
+            List<EventCheckoutBasketItemDto> items,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            List<EventCheckoutLineItemDto> lineItems,
+            Double totalAmount,
+            String currency,
+            String slotSourceId,
+            String selectedDateKey,
+            String checkoutSessionId,
+            String expiresAtIso) {
     }
 
     public record EventCheckoutSessionDto(

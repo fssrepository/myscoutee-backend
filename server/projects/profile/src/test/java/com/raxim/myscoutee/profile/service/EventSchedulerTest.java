@@ -58,6 +58,8 @@ class EventSchedulerTest {
     @Mock
     private EventCounterExpiryService eventCounterExpiryService;
     @Mock
+    private EventCheckoutBasketService eventCheckoutBasketService;
+    @Mock
     private NotificationRuleRegistryService notificationRuleRegistryService;
     @Mock
     private PlatformParametersService platformParametersService;
@@ -468,6 +470,7 @@ class EventSchedulerTest {
                 activitiesEventLeaderboardService,
                 eventInviteNotificationService,
                 eventCounterExpiryService,
+                eventCheckoutBasketService,
                 notificationRuleRegistryService,
                 platformParametersService);
     }

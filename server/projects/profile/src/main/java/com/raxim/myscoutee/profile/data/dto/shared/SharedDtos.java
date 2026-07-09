@@ -280,6 +280,17 @@ public final class SharedDtos {
             String ownerId) {
     }
 
+    public record ActivityMemberInvolvementDto(
+            String id,
+            String ownerType,
+            String ownerId,
+            String label,
+            String detail,
+            String status,
+            String role,
+            String actionAtIso) {
+    }
+
     public record ActivityMemberEntryDto(
             String id,
             String userId,
@@ -298,7 +309,8 @@ public final class SharedDtos {
             String actionAtIso,
             String metWhere,
             String avatarUrl,
-            UserDto profile) {
+            UserDto profile,
+            List<ActivityMemberInvolvementDto> involvements) {
     }
 
     public record ActivityMembersSummaryDto(

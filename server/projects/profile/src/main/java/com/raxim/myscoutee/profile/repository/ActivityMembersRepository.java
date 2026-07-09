@@ -20,6 +20,14 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
 
     List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String ownerType, Collection<String> ownerIds);
 
+    @Query("{ 'userId': { $in: ?0 }, 'status': { $ne: ?1 }, '$or': [ { 'ownerType': ?2, 'ownerId': ?3 }, { 'ownerId': { '$regex': ?4 } } ] }")
+    List<ActivityMember> findInvolvementRecordsByUserIdsAndOwnerScope(
+            Collection<String> userIds,
+            String deletedStatus,
+            String ownerType,
+            String ownerId,
+            String ownerIdPrefixRegex);
+
     @Query("{ 'ownerType': ?0, 'ownerId': { $in: ?1 }, 'userId': ?2, 'status': ?3 }")
     List<ActivityMember> findAcceptedByOwnerTypeOwnerIdInAndUserId(
             String ownerType,
