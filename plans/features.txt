@@ -9,5 +9,4 @@ https://developers.facebook.com/ -> business verfication is needed
 bugs
 ----
 1) after payment, store signal add the event under the active or osszes if it's available
-2) resize the image on event editor form (can be bigger)
-3) calendar month on checkout should calculate/load pricing per day based on event config
+2) calendar month on checkout should calculate/load pricing per day based on event config
