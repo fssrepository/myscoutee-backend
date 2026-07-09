@@ -828,8 +828,18 @@ public class ActivitiesEventsService {
                 .sorted((left, right) -> checkoutSlotDirection(request)
                         * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
                 .toList();
+        Set<String> bookedSlotIds = acceptedParticipantOwnerIds(
+                OWNER_TYPE_EVENT,
+                allSlots.stream()
+                        .map(EventSlotOccurrenceDto::id)
+                        .toList(),
+                viewer.userId());
         List<EventCheckoutSlotDto> allSlotDtos = allSlots.stream()
-                .map(slot -> toCheckoutSlotDto(checkoutParent, slot, slotReservations.getOrDefault(normalizeId(slot.id()), 0)))
+                .map(slot -> toCheckoutSlotDto(
+                        checkoutParent,
+                        slot,
+                        slotReservations.getOrDefault(normalizeId(slot.id()), 0),
+                        bookedSlotIds.contains(normalizeId(slot.id()))))
                 .toList();
         List<EventCheckoutSlotDayDto> days = checkoutSlotDayDtos(allSlotDtos);
         Map<String, EventCheckoutSlotDto> allSlotDtosById = new LinkedHashMap<>();
@@ -879,7 +889,11 @@ public class ActivitiesEventsService {
                 checkoutBasket);
     }
 
-    private EventCheckoutSlotDto toCheckoutSlotDto(ActivityEvent parent, EventSlotOccurrenceDto slot, int reservedCount) {
+    private EventCheckoutSlotDto toCheckoutSlotDto(
+            ActivityEvent parent,
+            EventSlotOccurrenceDto slot,
+            int reservedCount,
+            boolean bookedByViewer) {
         CheckoutSlotPricing pricing = resolveCheckoutSlotPricing(parent == null ? null : parent.getPricing(), parent, slot);
         int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
         int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
@@ -899,6 +913,7 @@ public class ActivitiesEventsService {
                 acceptedMembers,
                 pendingMembers,
                 availableSlots,
+                bookedByViewer,
                 pricing.amount(),
                 pricing.currency(),
                 pricing.rows());
@@ -924,9 +939,14 @@ public class ActivitiesEventsService {
                 0,
                 0,
                 quantity,
+                isSucceededCheckoutResult(item == null ? null : item.resultState()),
                 Math.max(0d, item.amount() == null ? 0d : item.amount()),
                 firstNonBlank(item.currency(), parent == null ? null : checkoutPricingCurrency(parent.getPricing()), "USD"),
                 item.pricingSummaryRows() == null ? List.of() : item.pricingSummaryRows());
+    }
+
+    private boolean isSucceededCheckoutResult(String resultState) {
+        return "succeeded".equals(safeText(resultState));
     }
 
     private List<EventCheckoutOptionalSubEventDto> checkoutOptionalSubEventDtos(
@@ -1242,6 +1262,9 @@ public class ActivitiesEventsService {
     private boolean checkoutSlotOverlapsRange(EventSlotOccurrenceDto slot, EventCheckoutSlotsQueryDto query) {
         LocalDate rangeStart = checkoutQueryDate(firstNonBlank(query == null ? null : query.rangeStart(), query == null ? null : query.anchorDate()));
         LocalDate rangeEnd = checkoutQueryDate(query == null ? null : query.rangeEnd());
+        if (checkoutQueryIsUpcomingFromDate(query, rangeStart, rangeEnd)) {
+            rangeEnd = null;
+        }
         if (rangeStart == null && rangeEnd == null) {
             return true;
         }
@@ -1257,6 +1280,13 @@ public class ActivitiesEventsService {
             return false;
         }
         return true;
+    }
+
+    private boolean checkoutQueryIsUpcomingFromDate(EventCheckoutSlotsQueryDto query, LocalDate rangeStart, LocalDate rangeEnd) {
+        return rangeStart != null
+                && rangeStart.equals(rangeEnd)
+                && "day".equalsIgnoreCase(safeText(query == null ? null : query.view()))
+                && !"past".equalsIgnoreCase(safeText(query == null ? null : query.order()));
     }
 
     private int checkoutSlotDirection(EventCheckoutSlotsQueryDto query) {
@@ -1384,9 +1414,10 @@ public class ActivitiesEventsService {
     private SubEventParticipationSlotCandidate subEventParticipationSlotCandidate(EventSubEventsSlotDto slot) {
         SubEventParticipationSlotCandidate candidate = new SubEventParticipationSlotCandidate(slot);
         String slotOwnerId = subEventParticipantSlotOwnerId(slot);
+        boolean concreteSlot = isConcreteSubEventSlot(slot);
         candidate.eventOwnerIds.addAll(uniqueParticipantOwnerIds(
                 slotOwnerId,
-                slot == null ? null : slot.parentEventId(),
+                concreteSlot ? null : slot == null ? null : slot.parentEventId(),
                 slot == null ? null : slot.slotSourceId(),
                 slot == null ? null : slot.id()));
         List<SubEventItemDto> items = candidate.items();
@@ -1528,6 +1559,12 @@ public class ActivitiesEventsService {
                 slot == null ? null : slot.slotSourceId(),
                 slot == null ? null : slot.parentEventId(),
                 slot == null ? null : slot.id());
+    }
+
+    private boolean isConcreteSubEventSlot(EventSubEventsSlotDto slot) {
+        String slotSourceId = normalizeId(slot == null ? null : slot.slotSourceId());
+        String parentEventId = normalizeId(slot == null ? null : slot.parentEventId());
+        return StringUtils.hasText(slotSourceId) && !slotSourceId.equals(parentEventId);
     }
 
     private String subEventParticipantItemId(SubEventItemDto item, int index) {
@@ -6268,6 +6305,7 @@ public class ActivitiesEventsService {
         String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
         ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
         ActivityEvent next = new ActivityEvent();
+        GeneratedSlotMemberSnapshot slotMembers = generatedSlotMemberSnapshot(parent, existing);
         String nowIso = Instant.now().toString();
         next.setId(resolveExistingId(SLOT_READ_MODEL_USER_ID, sourceId, existing));
         next.setSyncKey(resolveExistingSyncKey(SLOT_READ_MODEL_USER_ID, sourceId, existing == null ? null : existing.getSyncKey()));
@@ -6303,7 +6341,7 @@ public class ActivitiesEventsService {
         next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
         next.setCapacityMin(parent.getCapacityMin());
         next.setCapacityMax(parent.getCapacityMax());
-        next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
+        next.setCapacityTotal(slotMembers.capacityTotal());
         next.setAutoInviter(parent.getAutoInviter());
         next.setFrequency(parent.getFrequency());
         next.setTicketing(parent.getTicketing());
@@ -6316,8 +6354,12 @@ public class ActivitiesEventsService {
         next.setGenerated(true);
         next.setEventType("slot");
         next.setUpcomingSlots(List.of());
-        next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
-        next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
+        next.setAcceptedMembers(slotMembers.acceptedMembers());
+        next.setPendingMembers(slotMembers.pendingMembers());
+        next.setAcceptedMemberUserIds(slotMembers.acceptedMemberUserIds());
+        next.setPendingMemberUserIds(slotMembers.pendingMemberUserIds());
+        next.setInvitedMemberUserIds(slotMembers.invitedMemberUserIds());
+        next.setPendingRequestMemberUserIds(slotMembers.pendingRequestMemberUserIds());
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
         next.setSubEventDefinitions(cloneSubEventDefinitions(definitions));
@@ -6330,9 +6372,51 @@ public class ActivitiesEventsService {
         next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(creatorUserId);
-        next.setAdmins(List.of());
+        next.setAdmins(slotMembers.adminUserIds());
         next.normalizeLifecycleState();
         records.add(next);
+    }
+
+    private GeneratedSlotMemberSnapshot generatedSlotMemberSnapshot(ActivityEvent parent, ActivityEvent existing) {
+        List<String> adminUserIds = normalizeIds(parent == null ? null : parent.getAdmins());
+        List<String> rawAcceptedMemberUserIds = normalizeIds(existing == null ? null : existing.getAcceptedMemberUserIds());
+        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>(rawAcceptedMemberUserIds);
+        acceptedMemberUserIds.addAll(adminUserIds);
+        int storedAcceptedMembers = normalizeCount(existing == null ? null : existing.getAcceptedMembers());
+        int acceptedMembers = acceptedMemberUserIds.isEmpty()
+                ? storedAcceptedMembers
+                : acceptedMemberUserIds.size();
+        Set<String> acceptedUserIds = new LinkedHashSet<>(acceptedMemberUserIds);
+        List<String> rawPendingMemberUserIds = normalizeIds(existing == null ? null : existing.getPendingMemberUserIds());
+        List<String> pendingMemberUserIds = removeUserIds(rawPendingMemberUserIds, acceptedUserIds);
+        int pendingMembers = rawPendingMemberUserIds.isEmpty()
+                ? normalizeCount(existing == null ? null : existing.getPendingMembers())
+                : pendingMemberUserIds.size();
+        List<String> invitedMemberUserIds = removeUserIds(
+                normalizeIds(existing == null ? null : existing.getInvitedMemberUserIds()),
+                acceptedUserIds);
+        List<String> pendingRequestMemberUserIds = removeUserIds(
+                normalizeIds(existing == null ? null : existing.getPendingRequestMemberUserIds()),
+                acceptedUserIds);
+        int capacityTotal = Math.max(acceptedMembers, normalizeCount(parent == null ? null : parent.getCapacityTotal()));
+        return new GeneratedSlotMemberSnapshot(
+                adminUserIds,
+                acceptedMembers,
+                pendingMembers,
+                capacityTotal,
+                new ArrayList<>(acceptedMemberUserIds),
+                pendingMemberUserIds,
+                invitedMemberUserIds,
+                pendingRequestMemberUserIds);
+    }
+
+    private List<String> removeUserIds(List<String> userIds, Set<String> excludedUserIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+        return userIds.stream()
+                .filter(userId -> !excludedUserIds.contains(userId))
+                .toList();
     }
 
     private String buildGeneratedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime occurrenceStart) {
@@ -6636,6 +6720,17 @@ public class ActivitiesEventsService {
             double amount,
             String currency,
             List<EventCheckoutPricingSummaryRowDto> rows) {
+    }
+
+    private record GeneratedSlotMemberSnapshot(
+            List<String> adminUserIds,
+            int acceptedMembers,
+            int pendingMembers,
+            int capacityTotal,
+            List<String> acceptedMemberUserIds,
+            List<String> pendingMemberUserIds,
+            List<String> invitedMemberUserIds,
+            List<String> pendingRequestMemberUserIds) {
     }
 
     private static final class CheckoutSlotDayAccumulator {

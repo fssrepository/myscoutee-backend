@@ -58,13 +58,20 @@ public class EventSlotReadModelService {
         if (parentDocuments.isEmpty()) {
             return List.of();
         }
+        Map<String, ActivityEvent> parentBySourceId = new LinkedHashMap<>();
+        for (ActivityEvent parent : parentDocuments) {
+            String sourceId = normalizeId(parent.getSourceId());
+            if (StringUtils.hasText(sourceId)) {
+                parentBySourceId.put(sourceId, parent);
+            }
+        }
         List<ActivityEvent> rawSlotDocuments = activityEventsRepository.findByParentEventIdIn(normalizedParentIds);
         List<ActivityEvent> slotDocuments = (rawSlotDocuments == null ? List.<ActivityEvent>of() : rawSlotDocuments).stream()
                 .filter(Objects::nonNull)
                 .toList();
         Map<String, List<EventSlotOccurrenceDto>> upcomingByParentId = new LinkedHashMap<>();
         for (String parentSourceId : parentIdSet) {
-            upcomingByParentId.put(parentSourceId, buildUpcomingSlotOccurrences(parentSourceId, slotDocuments));
+            upcomingByParentId.put(parentSourceId, buildUpcomingSlotOccurrences(parentBySourceId.get(parentSourceId), slotDocuments));
         }
 
         List<ActivityEvent> toSave = new ArrayList<>();
@@ -107,9 +114,9 @@ public class EventSlotReadModelService {
     }
 
     private List<EventSlotOccurrenceDto> buildUpcomingSlotOccurrences(
-            String parentSourceId,
+            ActivityEvent parent,
             List<ActivityEvent> slotDocuments) {
-        String normalizedParentSourceId = normalizeId(parentSourceId);
+        String normalizedParentSourceId = normalizeId(parent == null ? null : parent.getSourceId());
         if (!StringUtils.hasText(normalizedParentSourceId)) {
             return List.of();
         }
@@ -120,27 +127,52 @@ public class EventSlotReadModelService {
                 .filter(item -> !Boolean.TRUE.equals(item.getIsTrashed()))
                 .filter(item -> toSortableDate(item.getEndAtIso()) >= nowMs)
                 .sorted(Comparator.comparingLong(item -> toSortableDate(item.getStartAtIso())))
-                .map(item -> toSlotOccurrence(normalizedParentSourceId, item))
+                .map(item -> toSlotOccurrence(parent, item))
                 .filter(Objects::nonNull)
                 .toList();
     }
 
-    private EventSlotOccurrenceDto toSlotOccurrence(String parentSourceId, ActivityEvent item) {
+    private EventSlotOccurrenceDto toSlotOccurrence(ActivityEvent parent, ActivityEvent item) {
         String sourceId = normalizeId(item == null ? null : item.getSourceId());
         if (!StringUtils.hasText(sourceId)) {
             return null;
         }
+        int acceptedMembers = acceptedMembersIncludingParentAdmins(parent, item);
+        int pendingMembers = pendingMembersExcludingAcceptedAdmins(parent, item);
+        int capacityTotal = Math.max(acceptedMembers, normalizeCount(item.getCapacityTotal()));
         return new EventSlotOccurrenceDto(
                 sourceId,
-                parentSourceId,
+                normalizeId(parent == null ? null : parent.getSourceId()),
                 safeText(item.getSlotTemplateId()),
                 safeText(item.getTitle()),
                 safeText(item.getTimeframe()),
                 safeText(item.getStartAtIso()),
                 safeText(item.getEndAtIso()),
-                normalizeCount(item.getCapacityTotal()),
-                normalizeCount(item.getAcceptedMembers()),
-                normalizeCount(item.getPendingMembers()));
+                capacityTotal,
+                acceptedMembers,
+                pendingMembers);
+    }
+
+    private int acceptedMembersIncludingParentAdmins(ActivityEvent parent, ActivityEvent slot) {
+        List<String> parentAdminIds = normalizeIds(parent == null ? null : parent.getAdmins());
+        List<String> acceptedMemberUserIds = normalizeIds(slot == null ? null : slot.getAcceptedMemberUserIds());
+        LinkedHashSet<String> mergedUserIds = new LinkedHashSet<>(acceptedMemberUserIds);
+        mergedUserIds.addAll(parentAdminIds);
+        int storedAcceptedMembers = normalizeCount(slot == null ? null : slot.getAcceptedMembers());
+        return mergedUserIds.isEmpty() ? storedAcceptedMembers : mergedUserIds.size();
+    }
+
+    private int pendingMembersExcludingAcceptedAdmins(ActivityEvent parent, ActivityEvent slot) {
+        List<String> parentAdminIds = normalizeIds(parent == null ? null : parent.getAdmins());
+        List<String> acceptedMemberUserIds = normalizeIds(slot == null ? null : slot.getAcceptedMemberUserIds());
+        LinkedHashSet<String> acceptedUserIds = new LinkedHashSet<>(acceptedMemberUserIds);
+        acceptedUserIds.addAll(parentAdminIds);
+        List<String> pendingMemberUserIds = normalizeIds(slot == null ? null : slot.getPendingMemberUserIds());
+        if (pendingMemberUserIds.isEmpty()) {
+            return normalizeCount(slot == null ? null : slot.getPendingMembers());
+        }
+        pendingMemberUserIds.removeIf(acceptedUserIds::contains);
+        return pendingMemberUserIds.size();
     }
 
     private boolean isSlotParentRecord(ActivityEvent record) {

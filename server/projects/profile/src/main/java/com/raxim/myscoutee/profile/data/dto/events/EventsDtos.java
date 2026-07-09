@@ -475,6 +475,7 @@ public final class EventsDtos {
             Integer acceptedMembers,
             Integer pendingMembers,
             Integer availableSlots,
+            Boolean bookedByViewer,
             Double amount,
             String currency,
             List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
