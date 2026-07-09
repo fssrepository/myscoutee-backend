@@ -1873,10 +1873,13 @@ public class ActivitiesEventsService {
                     request.counterDelta()));
         }
 
-        List<String> membershipSourceIds = new ArrayList<>();
+        LinkedHashSet<String> membershipSourceIds = new LinkedHashSet<>();
         membershipSourceIds.add(normalizedSourceId);
         if (StringUtils.hasText(slotSourceId) && !normalizedSourceId.equals(slotSourceId)) {
             membershipSourceIds.add(slotSourceId);
+        } else {
+            membershipSourceIds.addAll(generatedSlotSourceIdsForParent(normalizedSourceId));
+            membershipSourceIds.addAll(activeGeneratedSlotMembershipSourceIdsForUser(normalizedSourceId, viewer.userId()));
         }
 
         ActivitiesMembersService.OwnerMembersSnapshot sourceSnapshot = null;
@@ -1890,6 +1893,39 @@ public class ActivitiesEventsService {
 
         ActivityEvent refreshed = findPreferredEventRecord(normalizedSourceId);
         return toParticipationLeaveResult(normalizedSourceId, slotSourceId, refreshed, sourceSnapshot, request);
+    }
+
+    private List<String> generatedSlotSourceIdsForParent(String parentSourceId) {
+        String normalizedParentSourceId = normalizeId(parentSourceId);
+        if (!StringUtils.hasText(normalizedParentSourceId)) {
+            return List.of();
+        }
+        List<ActivityEvent> slotDocuments = activityEventsRepository.findByParentEventIdIn(List.of(normalizedParentSourceId));
+        return computePreferredEventRecords(slotDocuments == null ? List.of() : slotDocuments).stream()
+                .filter(this::isGeneratedSlotRecord)
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    private List<String> activeGeneratedSlotMembershipSourceIdsForUser(String parentSourceId, String userId) {
+        String normalizedParentSourceId = normalizeId(parentSourceId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedParentSourceId) || !StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+        String generatedSlotPrefix = normalizedParentSourceId + ":slot:";
+        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !MEMBER_STATUS_DELETED.equals(safeText(member.getStatus())))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(ownerId -> ownerId.startsWith(generatedSlotPrefix))
+                .distinct()
+                .toList();
     }
 
     public void publish(EventActionRequestDto request) {
