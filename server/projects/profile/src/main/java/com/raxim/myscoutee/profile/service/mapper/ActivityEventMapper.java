@@ -19,9 +19,11 @@ import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
 public class ActivityEventMapper {
     public record MappingContext(
             LocationCoordinatesDto viewerCoordinates,
-            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId) {
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+            Map<String, String> checkoutResultStatesBySourceId) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
+            checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
         }
     }
 
@@ -81,7 +83,19 @@ public class ActivityEventMapper {
                 pendingRequestMemberUserIds,
                 null,
                 Boolean.TRUE.equals(record.getApprovalRequired()),
+                resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()));
+    }
+
+    private String resolveCheckoutResultState(ActivityEvent record, MappingContext context) {
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        if (!StringUtils.hasText(sourceId) || context == null || context.checkoutResultStatesBySourceId() == null) {
+            return null;
+        }
+        String value = context.checkoutResultStatesBySourceId().get(sourceId);
+        return "pending".equals(value) || "deleted".equals(value) || "succeeded".equals(value) || "failed".equals(value)
+                ? value
+                : null;
     }
 
     private Boolean resolveEventFull(ActivityEvent record, int acceptedMembers, int capacityTotal) {

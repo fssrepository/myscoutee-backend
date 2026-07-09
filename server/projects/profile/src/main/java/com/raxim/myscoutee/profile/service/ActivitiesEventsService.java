@@ -4033,10 +4033,56 @@ public class ActivitiesEventsService {
                 current == null ? Set.of() : current.trackedEventSourceIds(),
                 current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey());
+        Map<String, String> checkoutResultStatesBySourceId = checkoutResultStatesBySourceId(
+                viewer == null ? null : viewer.userId(),
+                hydratedRecords);
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
-                .map(record -> toEventDto(record, viewer))
+                .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
                 .toList());
+    }
+
+    private Map<String, String> checkoutResultStatesBySourceId(
+            String userId,
+            List<ActivityEvent> records) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, String> result = new LinkedHashMap<>();
+        for (ActivityEvent record : records) {
+            String sourceId = normalizeId(record == null ? null : record.getSourceId());
+            if (!StringUtils.hasText(sourceId) || result.containsKey(sourceId)) {
+                continue;
+            }
+            String resultState = checkoutBasketResultState(eventCheckoutBasketService.loadBasketByEvent(normalizedUserId, sourceId));
+            if (StringUtils.hasText(resultState)) {
+                result.put(sourceId, resultState);
+            }
+        }
+        return result.isEmpty() ? Map.of() : result;
+    }
+
+    private String checkoutBasketResultState(EventCheckoutBasketDto basket) {
+        List<String> resultStates = basket == null || basket.items() == null
+                ? List.of()
+                : basket.items().stream()
+                        .map(item -> safeText(item == null ? null : item.resultState()))
+                        .map(value -> StringUtils.hasText(value) ? value : "pending")
+                        .toList();
+        if (resultStates.isEmpty()) {
+            return null;
+        }
+        if (resultStates.stream().anyMatch("failed"::equals)) {
+            return "failed";
+        }
+        if (resultStates.stream().allMatch("deleted"::equals)) {
+            return "deleted";
+        }
+        if (resultStates.stream().allMatch(value -> "deleted".equals(value) || "succeeded".equals(value))) {
+            return "succeeded";
+        }
+        return "pending";
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> resolveHydratedPageSnapshots(
@@ -4576,18 +4622,33 @@ public class ActivitiesEventsService {
     }
 
     private EventDto toEventDto(ActivityEvent record, ViewerContext viewer) {
-        return activityEventMapper.toDto(record, eventDtoMappingContext(viewer, record));
+        return toEventDto(record, viewer, Map.of());
+    }
+
+    private EventDto toEventDto(
+            ActivityEvent record,
+            ViewerContext viewer,
+            Map<String, String> checkoutResultStatesBySourceId) {
+        return activityEventMapper.toDto(record, eventDtoMappingContext(viewer, record, checkoutResultStatesBySourceId));
     }
 
     private ActivityEventMapper.MappingContext eventDtoMappingContext(
             ViewerContext viewer,
             ActivityEvent record) {
+        return eventDtoMappingContext(viewer, record, Map.of());
+    }
+
+    private ActivityEventMapper.MappingContext eventDtoMappingContext(
+            ViewerContext viewer,
+            ActivityEvent record,
+            Map<String, String> checkoutResultStatesBySourceId) {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
                 ctx == null ? singleRecordSnapshot(record) : ctx.snapshotsBySourceId();
         return new ActivityEventMapper.MappingContext(
                 viewer == null ? null : viewer.locationCoordinates(),
-                snapshotsBySourceId);
+                snapshotsBySourceId,
+                checkoutResultStatesBySourceId);
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> singleRecordSnapshot(ActivityEvent record) {
@@ -6787,6 +6848,7 @@ public class ActivitiesEventsService {
     private static final class CheckoutSlotDayAccumulator {
         private int slotCount;
         private int availableSlots;
+        private boolean bookedByViewer;
         private double lowestAmount = Double.MAX_VALUE;
         private String currency;
 
@@ -6801,6 +6863,7 @@ public class ActivitiesEventsService {
             slotCount += 1;
             int slotAvailable = Math.max(0, slot.availableSlots() == null ? 0 : slot.availableSlots());
             availableSlots += slotAvailable;
+            bookedByViewer = bookedByViewer || Boolean.TRUE.equals(slot.bookedByViewer());
             if (slotAvailable > 0) {
                 double amount = slot.amount() == null ? 0d : Math.max(0d, slot.amount());
                 lowestAmount = Math.min(lowestAmount, amount);
@@ -6815,6 +6878,7 @@ public class ActivitiesEventsService {
                     dateKey,
                     slotCount,
                     availableSlots,
+                    bookedByViewer,
                     lowestAmount == Double.MAX_VALUE ? 0d : lowestAmount,
                     currency);
         }

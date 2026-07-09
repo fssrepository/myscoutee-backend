@@ -329,6 +329,7 @@ public final class EventsDtos {
             List<String> pendingRequestMemberUserIds,
             String pendingReason,
             Boolean approvalRequired,
+            String checkoutResultState,
             Double boost) {
     }
 
@@ -460,6 +461,7 @@ public final class EventsDtos {
             String dateKey,
             Integer slotCount,
             Integer availableSlots,
+            Boolean bookedByViewer,
             Double lowestAmount,
             String currency) {
     }
