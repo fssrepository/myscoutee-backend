@@ -123,6 +123,10 @@ public class ActivitiesMembersService {
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
+        return queryMembers(ownerType, ownerId, false);
+    }
+
+    public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId, Boolean pendingOnly) {
         String normalizedOwnerType = normalizeOwnerType(ownerType);
         String normalizedOwnerId = normalizeId(ownerId);
         if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
@@ -136,6 +140,8 @@ public class ActivitiesMembersService {
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
         List<ActivityMember> ownerMembers = loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus())))
+                .filter(member -> !Boolean.TRUE.equals(pendingOnly)
+                        || STATUS_PENDING.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .toList();
         Map<String, List<ActivityMemberInvolvementDto>> involvementsByUserId = memberInvolvementsByUserId(
                 normalizedOwnerType,
