@@ -7,3 +7,6 @@ buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
 new deployment of frontend makes load issue - stuck on android view
+on timeline view remove the snap
+(it should have been native, i think one hour should be visible only at a time)
+there is a delay on snap, maybe remove the snap
