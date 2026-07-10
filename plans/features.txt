@@ -5,6 +5,3 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
-
-eevnt explore - checkout popup has rednering issues
-accept and scrolling/back/forward is slow etc.
