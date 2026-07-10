@@ -10725,7 +10725,7 @@
     "_id": "i18n-message-en-asset-lending-policies-editor-subtitle",
     "key": "asset.lending.policies.editor.subtitle",
     "lang": "en",
-    "value": "Write the lending policy clearly and choose whether borrowers must approve it before sending the request."
+    "value": "Describe the policy and choose if approval is required."
   },
   {
     "_id": "i18n-message-en-total-capacity",
@@ -22065,7 +22065,7 @@
     "_id": "i18n-message-hu-asset-lending-policies-editor-subtitle",
     "key": "asset.lending.policies.editor.subtitle",
     "lang": "hu",
-    "value": "Írd le egyértelműen a kölcsönzési feltételt, és válaszd ki, hogy a kölcsönzőknek jóvá kell-e hagyniuk a kérés előtt."
+    "value": "Írd le a feltételt, és válaszd ki, kötelező-e jóváhagyni."
   },
   {
     "_id": "i18n-message-hu-total-capacity",
