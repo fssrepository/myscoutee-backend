@@ -22702,5 +22702,125 @@
     "key": "logout.question",
     "lang": "hu",
     "value": "Biztosan kilép?"
+  },
+  {
+    "_id": "i18n-message-en-after",
+    "key": "after",
+    "lang": "en",
+    "value": "After"
+  },
+  {
+    "_id": "i18n-message-en-anchor",
+    "key": "anchor",
+    "lang": "en",
+    "value": "Anchor"
+  },
+  {
+    "_id": "i18n-message-en-before",
+    "key": "before",
+    "lang": "en",
+    "value": "Before"
+  },
+  {
+    "_id": "i18n-message-en-during",
+    "key": "during",
+    "lang": "en",
+    "value": "During"
+  },
+  {
+    "_id": "i18n-message-en-event-anchor",
+    "key": "event.anchor",
+    "lang": "en",
+    "value": "Event Anchor"
+  },
+  {
+    "_id": "i18n-message-en-minutes-short",
+    "key": "minutes.short",
+    "lang": "en",
+    "value": "min"
+  },
+  {
+    "_id": "i18n-message-en-offset",
+    "key": "offset",
+    "lang": "en",
+    "value": "Offset"
+  },
+  {
+    "_id": "i18n-message-en-offset-minutes",
+    "key": "offset.minutes",
+    "lang": "en",
+    "value": "Offset minutes"
+  },
+  {
+    "_id": "i18n-message-en-placement",
+    "key": "placement",
+    "lang": "en",
+    "value": "Placement"
+  },
+  {
+    "_id": "i18n-message-en-position",
+    "key": "position",
+    "lang": "en",
+    "value": "Position"
+  },
+  {
+    "_id": "i18n-message-hu-after",
+    "key": "after",
+    "lang": "hu",
+    "value": "Utána"
+  },
+  {
+    "_id": "i18n-message-hu-anchor",
+    "key": "anchor",
+    "lang": "hu",
+    "value": "Viszonyítási pont"
+  },
+  {
+    "_id": "i18n-message-hu-before",
+    "key": "before",
+    "lang": "hu",
+    "value": "Előtte"
+  },
+  {
+    "_id": "i18n-message-hu-during",
+    "key": "during",
+    "lang": "hu",
+    "value": "Közben"
+  },
+  {
+    "_id": "i18n-message-hu-event-anchor",
+    "key": "event.anchor",
+    "lang": "hu",
+    "value": "Viszonyítási pont"
+  },
+  {
+    "_id": "i18n-message-hu-minutes-short",
+    "key": "minutes.short",
+    "lang": "hu",
+    "value": "perc"
+  },
+  {
+    "_id": "i18n-message-hu-offset",
+    "key": "offset",
+    "lang": "hu",
+    "value": "Eltolás"
+  },
+  {
+    "_id": "i18n-message-hu-offset-minutes",
+    "key": "offset.minutes",
+    "lang": "hu",
+    "value": "Eltolás percben"
+  },
+  {
+    "_id": "i18n-message-hu-placement",
+    "key": "placement",
+    "lang": "hu",
+    "value": "Elhelyezés"
+  },
+  {
+    "_id": "i18n-message-hu-position",
+    "key": "position",
+    "lang": "hu",
+    "value": "Pozíció"
   }
 ]

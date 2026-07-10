@@ -2,13 +2,13 @@
   {
     "_id": "i18n-bundle-en",
     "lang": "en",
-    "version": "2026.07.09.en.3",
-    "updatedAt": 1783555200000
+    "version": "2026.07.10.en.1",
+    "updatedAt": 1783641600000
   },
   {
     "_id": "i18n-bundle-hu",
     "lang": "hu",
-    "version": "2026.07.10.hu.1",
+    "version": "2026.07.10.hu.2",
     "updatedAt": 1783641600000
   }
 ]
