@@ -267,6 +267,7 @@ public class EventTicketSyncService {
             next.setCapacityTotal(normalizeCount(canonical.getCapacityTotal()));
             next.setAutoInviter(Boolean.TRUE.equals(canonical.getAutoInviter()));
             next.setFrequency(safeText(canonical.getFrequency()));
+            next.setApprovalRequired(Boolean.TRUE.equals(canonical.getApprovalRequired()));
             next.setPricing(canonical.getPricing());
             next.setAcceptedMembers(normalizeCount(canonical.getAcceptedMembers()));
             next.setPendingMembers(normalizeCount(canonical.getPendingMembers()));
@@ -287,6 +288,7 @@ public class EventTicketSyncService {
                     : safeNullableText(canonical.getTrashedAtIso()));
         } else {
             next.setTicketing(false);
+            next.setApprovalRequired(false);
         }
 
         next.setCreatedDate(existing == null
@@ -343,6 +345,7 @@ public class EventTicketSyncService {
         clone.setAutoInviter(source.getAutoInviter());
         clone.setFrequency(source.getFrequency());
         clone.setTicketing(source.getTicketing());
+        clone.setApprovalRequired(source.getApprovalRequired());
         clone.setPricing(source.getPricing());
         clone.setAcceptedMembers(source.getAcceptedMembers());
         clone.setPendingMembers(source.getPendingMembers());
@@ -402,6 +405,7 @@ public class EventTicketSyncService {
                 && Boolean.TRUE.equals(left.getAutoInviter()) == Boolean.TRUE.equals(right.getAutoInviter())
                 && Objects.equals(safeText(left.getFrequency()), safeText(right.getFrequency()))
                 && Boolean.TRUE.equals(left.getTicketing()) == Boolean.TRUE.equals(right.getTicketing())
+                && Boolean.TRUE.equals(left.getApprovalRequired()) == Boolean.TRUE.equals(right.getApprovalRequired())
                 && Objects.equals(left.getPricing(), right.getPricing())
                 && normalizeCount(left.getAcceptedMembers()) == normalizeCount(right.getAcceptedMembers())
                 && normalizeCount(left.getPendingMembers()) == normalizeCount(right.getPendingMembers())

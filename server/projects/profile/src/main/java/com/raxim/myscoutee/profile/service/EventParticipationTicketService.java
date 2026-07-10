@@ -215,6 +215,7 @@ public class EventParticipationTicketService {
                 ? cloneDocument(existing)
                 : buildParticipationOverlay(snapshot, ownerUserId, existing);
         next.setTicketing(false);
+        next.setApprovalRequired(false);
         boolean globallyTrashed = preferred != null && Boolean.TRUE.equals(preferred.getIsTrashed());
         if (globallyTrashed) {
             next.setStatus("T");
@@ -271,6 +272,7 @@ public class EventParticipationTicketService {
         next.setAutoInviter(Boolean.TRUE.equals(preferred.getAutoInviter()));
         next.setFrequency(safeText(preferred.getFrequency()));
         next.setTicketing(Boolean.TRUE.equals(preferred.getTicketing()));
+        next.setApprovalRequired(Boolean.TRUE.equals(preferred.getApprovalRequired()));
         next.setPricing(preferred.getPricing());
         next.setAcceptedMembers(Math.max(normalizeCount(preferred.getAcceptedMembers()), snapshot.acceptedMemberUserIds().size()));
         next.setPendingMembers(Math.max(normalizeCount(preferred.getPendingMembers()), snapshot.pendingMemberUserIds().size()));
@@ -411,6 +413,7 @@ public class EventParticipationTicketService {
                 && Objects.equals(left.getAutoInviter(), right.getAutoInviter())
                 && Objects.equals(left.getFrequency(), right.getFrequency())
                 && Objects.equals(left.getTicketing(), right.getTicketing())
+                && Objects.equals(left.getApprovalRequired(), right.getApprovalRequired())
                 && Objects.equals(left.getPricing(), right.getPricing())
                 && Objects.equals(left.getAcceptedMembers(), right.getAcceptedMembers())
                 && Objects.equals(left.getPendingMembers(), right.getPendingMembers())

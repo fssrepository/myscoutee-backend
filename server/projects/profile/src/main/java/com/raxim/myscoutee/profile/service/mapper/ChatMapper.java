@@ -23,6 +23,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseD
 @Component
 public class ChatMapper {
     private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    private static final String SUPPORT_CASE_STATUS_WARNED = "warned";
     private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
     private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
     private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
@@ -148,6 +149,7 @@ public class ChatMapper {
     private String normalizeSupportCaseStatus(String value) {
         String normalized = safeText(value).toLowerCase();
         return switch (normalized) {
+            case SUPPORT_CASE_STATUS_WARNED -> SUPPORT_CASE_STATUS_WARNED;
             case SUPPORT_CASE_STATUS_PICKED -> SUPPORT_CASE_STATUS_PICKED;
             case SUPPORT_CASE_STATUS_SOLVED -> SUPPORT_CASE_STATUS_SOLVED;
             case SUPPORT_CASE_STATUS_BLOCKED -> SUPPORT_CASE_STATUS_BLOCKED;

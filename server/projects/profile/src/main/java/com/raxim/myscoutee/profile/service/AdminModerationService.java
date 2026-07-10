@@ -35,6 +35,8 @@ import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminFeedbackDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReportDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReportedUserDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReviewCountsDto;
+import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminReviewResolveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
@@ -85,7 +87,14 @@ public class AdminModerationService {
     }
 
     public AdminDashboardDto dashboard(String adminUserId) {
-        return dashboardFor(resolveAdmin(adminUserId));
+        return dashboard(adminUserId, null, null);
+    }
+
+    public AdminDashboardDto dashboard(String adminUserId, String reportsStatus, String feedbackStatus) {
+        return dashboardFor(
+                resolveAdmin(adminUserId),
+                normalizeReviewStatus(reportsStatus),
+                normalizeReviewStatus(feedbackStatus));
     }
 
     public AdminUserDto resolveAdminActor(String adminUserId) {
@@ -93,9 +102,15 @@ public class AdminModerationService {
     }
 
     private AdminDashboardDto dashboardFor(AdminUserDto admin) {
-        List<UserReportSubmission> reports = reportsRepository.findAllByOrderByCreatedDateDesc();
-        List<UserFeedbackSubmission> feedback = feedbackRepository.findAllByOrderByCreatedDateDesc();
-        Map<String, Users> usersById = usersById(reports, feedback);
+        return dashboardFor(admin, null, null);
+    }
+
+    private AdminDashboardDto dashboardFor(AdminUserDto admin, String reportsStatus, String feedbackStatus) {
+        List<UserReportSubmission> allReports = reportsRepository.findAllByOrderByCreatedDateDesc();
+        List<UserFeedbackSubmission> allFeedback = feedbackRepository.findAllByOrderByCreatedDateDesc();
+        List<UserReportSubmission> reports = filterReportsByStatus(allReports, reportsStatus);
+        List<UserFeedbackSubmission> feedback = filterFeedbackByStatus(allFeedback, feedbackStatus);
+        Map<String, Users> usersById = usersById(allReports, allFeedback);
         Map<String, List<UserReportSubmission>> byTarget = new LinkedHashMap<>();
         for (UserReportSubmission report : reports) {
             String targetUserId = normalize(report.getTargetUserId());
@@ -103,27 +118,36 @@ public class AdminModerationService {
                 byTarget.computeIfAbsent(targetUserId, ignored -> new ArrayList<>()).add(report);
             }
         }
+        Map<String, List<UserReportSubmission>> allByTarget = new LinkedHashMap<>();
+        for (UserReportSubmission report : allReports) {
+            String targetUserId = normalize(report.getTargetUserId());
+            if (StringUtils.hasText(targetUserId)) {
+                allByTarget.computeIfAbsent(targetUserId, ignored -> new ArrayList<>()).add(report);
+            }
+        }
         List<AdminReportedUserDto> reportedUsers = byTarget.entrySet().stream()
                 .map(entry -> toReportedUser(entry.getKey(), entry.getValue(), usersById, admin.id()))
                 .sorted(Comparator.comparing(AdminReportedUserDto::lastReportedAtIso, Comparator.nullsLast(String::compareTo)).reversed())
                 .toList();
         List<AdminReportedUserDto> blockedUsers = usersRepository.findByProfileStatus("blocked").stream()
-                .map(user -> toBlockedUser(user, byTarget.getOrDefault(normalize(user.getId()), List.of()), usersById, admin.id()))
+                .map(user -> toBlockedUser(user, allByTarget.getOrDefault(normalize(user.getId()), List.of()), usersById, admin.id()))
                 .toList();
         return new AdminDashboardDto(
                 admin,
                 reportedUsers,
                 blockedUsers,
-                feedback.stream().map(item -> toFeedback(item, usersById)).toList());
+                feedback.stream().map(item -> toFeedback(item, usersById)).toList(),
+                reviewCounts(allReports, allFeedback));
     }
 
     public AdminDashboardDto warn(String userId, AdminActionRequestDto request) {
         String targetUserId = normalize(userId);
         ensureReportedUser(targetUserId);
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
+        markReportWarned(targetUserId, admin.id(), request == null ? null : request.reportId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Please update the reported behavior before your account is blocked.", "picked");
+                : "Please update the reported behavior before your account is blocked.", "warned");
         adminTelemetryService.record("admin.user.warned", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
@@ -158,6 +182,70 @@ public class AdminModerationService {
         usersRepository.save(user);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
         adminTelemetryService.record("admin.user.unblocked", "moderation", targetUserId, admin.id());
+        return dashboard(admin.id());
+    }
+
+    public AdminDashboardDto resolveReport(String reportId, AdminReviewResolveRequestDto request) {
+        String normalizedReportId = normalize(reportId);
+        if (!StringUtils.hasText(normalizedReportId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Report id is required.");
+        }
+        AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
+        UserReportSubmission report = reportsRepository.findById(normalizedReportId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found."));
+        boolean resolved = request == null || request.resolved() == null || Boolean.TRUE.equals(request.resolved());
+        boolean wasResolved = isResolved(report.getResolvedAtIso());
+        String nowIso = Instant.now().toString();
+        if (resolved) {
+            report.setResolvedAtIso(nowIso);
+            report.setResolvedByAdminUserId(admin.id());
+        } else {
+            report.setResolvedAtIso(null);
+            report.setResolvedByAdminUserId(null);
+        }
+        report.setUpdatedDate(nowIso);
+        report.setUpdatedUser(admin.id());
+        reportsRepository.save(report);
+        if (resolved && !wasResolved) {
+            appendSupportMessage(
+                    normalize(report.getUserId()),
+                    admin,
+                    reportResolvedMessage(report),
+                    "solved");
+        }
+        adminTelemetryService.record(resolved ? "admin.report.resolved" : "admin.report.unresolved", "moderation", normalizedReportId, admin.id());
+        return dashboard(admin.id());
+    }
+
+    public AdminDashboardDto resolveFeedback(String feedbackId, AdminReviewResolveRequestDto request) {
+        String normalizedFeedbackId = normalize(feedbackId);
+        if (!StringUtils.hasText(normalizedFeedbackId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Feedback id is required.");
+        }
+        AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
+        UserFeedbackSubmission feedback = feedbackRepository.findById(normalizedFeedbackId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feedback not found."));
+        boolean resolved = request == null || request.resolved() == null || Boolean.TRUE.equals(request.resolved());
+        boolean wasResolved = isResolved(feedback.getResolvedAtIso());
+        String nowIso = Instant.now().toString();
+        if (resolved) {
+            feedback.setResolvedAtIso(nowIso);
+            feedback.setResolvedByAdminUserId(admin.id());
+        } else {
+            feedback.setResolvedAtIso(null);
+            feedback.setResolvedByAdminUserId(null);
+        }
+        feedback.setUpdatedDate(nowIso);
+        feedback.setUpdatedUser(admin.id());
+        feedbackRepository.save(feedback);
+        if (resolved && !wasResolved) {
+            appendSupportMessage(
+                    normalize(feedback.getUserId()),
+                    admin,
+                    feedbackResolvedMessage(feedback),
+                    "solved");
+        }
+        adminTelemetryService.record(resolved ? "admin.feedback.resolved" : "admin.feedback.unresolved", "moderation", normalizedFeedbackId, admin.id());
         return dashboard(admin.id());
     }
 
@@ -218,6 +306,24 @@ public class AdminModerationService {
                 || reportsRepository.findByTargetUserIdOrderByCreatedDateDesc(targetUserId).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only reported users can be moderated.");
         }
+    }
+
+    private void markReportWarned(String targetUserId, String adminUserId, String reportId) {
+        String normalizedReportId = normalize(reportId);
+        if (!StringUtils.hasText(normalizedReportId)) {
+            return;
+        }
+        UserReportSubmission report = reportsRepository.findById(normalizedReportId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found."));
+        if (!targetUserId.equals(normalize(report.getTargetUserId()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Report does not belong to the reported user.");
+        }
+        String nowIso = Instant.now().toString();
+        report.setWarnedAtIso(nowIso);
+        report.setWarnedByAdminUserId(adminUserId);
+        report.setUpdatedDate(nowIso);
+        report.setUpdatedUser(adminUserId);
+        reportsRepository.save(report);
     }
 
     private void appendSupportMessage(String targetUserId, AdminUserDto admin, String text, String supportStatus) {
@@ -338,6 +444,68 @@ public class AdminModerationService {
         return avatar;
     }
 
+    private AdminReviewCountsDto reviewCounts(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
+        return new AdminReviewCountsDto(
+                (int) reports.stream().filter(report -> !isResolved(report.getResolvedAtIso())).count(),
+                (int) reports.stream().filter(report -> isResolved(report.getResolvedAtIso())).count(),
+                (int) feedback.stream().filter(item -> !isResolved(item.getResolvedAtIso())).count(),
+                (int) feedback.stream().filter(item -> isResolved(item.getResolvedAtIso())).count());
+    }
+
+    private List<UserReportSubmission> filterReportsByStatus(List<UserReportSubmission> reports, String status) {
+        if (!StringUtils.hasText(status)) {
+            return reports;
+        }
+        return reports.stream()
+                .filter(report -> matchesReviewStatus(report.getResolvedAtIso(), status))
+                .toList();
+    }
+
+    private List<UserFeedbackSubmission> filterFeedbackByStatus(List<UserFeedbackSubmission> feedback, String status) {
+        if (!StringUtils.hasText(status)) {
+            return feedback;
+        }
+        return feedback.stream()
+                .filter(item -> matchesReviewStatus(item.getResolvedAtIso(), status))
+                .toList();
+    }
+
+    private boolean matchesReviewStatus(String resolvedAtIso, String status) {
+        boolean resolved = isResolved(resolvedAtIso);
+        return "resolved".equals(status) ? resolved : !resolved;
+    }
+
+    private boolean isResolved(String resolvedAtIso) {
+        return StringUtils.hasText(normalize(resolvedAtIso));
+    }
+
+    private String normalizeReviewStatus(String value) {
+        String normalized = normalize(value).toLowerCase(Locale.ROOT);
+        if ("resolved".equals(normalized) || "read".equals(normalized) || "solved".equals(normalized)) {
+            return "resolved";
+        }
+        if ("unresolved".equals(normalized) || "new".equals(normalized) || "open".equals(normalized)) {
+            return "unresolved";
+        }
+        return null;
+    }
+
+    private String reportResolvedMessage(UserReportSubmission report) {
+        String handle = normalize(report.getHandle());
+        if (StringUtils.hasText(handle)) {
+            return "Your report about " + handle + " has been reviewed by MyScoutee moderation. Thank you for helping keep MyScoutee safe.";
+        }
+        return "Your report has been reviewed by MyScoutee moderation. Thank you for helping keep MyScoutee safe.";
+    }
+
+    private String feedbackResolvedMessage(UserFeedbackSubmission feedback) {
+        String subject = normalize(feedback.getSubject());
+        if (StringUtils.hasText(subject)) {
+            return "Your feedback \"" + subject + "\" has been reviewed by MyScoutee. Thank you for helping improve the app.";
+        }
+        return "Your feedback has been reviewed by MyScoutee. Thank you for helping improve the app.";
+    }
+
     private Map<String, Users> usersById(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
         List<String> ids = new ArrayList<>();
         reports.forEach(report -> {
@@ -411,7 +579,11 @@ public class AdminModerationService {
                 report.getChatId(), report.getMessageId(), report.getAssetId(), report.getAssetType(),
                 chat == null ? null : chat.getTitle(),
                 chat == null ? List.of() : chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(chat.getChatId()).stream().map(this::toChatMessage).toList(),
-                report.getCreatedDate());
+                report.getCreatedDate(),
+                report.getWarnedAtIso(),
+                report.getWarnedByAdminUserId(),
+                report.getResolvedAtIso(),
+                report.getResolvedByAdminUserId());
     }
 
     private Chat resolveReportedChat(UserReportSubmission report) {
@@ -469,7 +641,8 @@ public class AdminModerationService {
     private AdminFeedbackDto toFeedback(UserFeedbackSubmission item, Map<String, Users> usersById) {
         Users user = usersById.get(normalize(item.getUserId()));
         return new AdminFeedbackDto(item.getId(), item.getUserId(), text(user == null ? null : user.getName(), "User"),
-                firstImage(user), item.getCategory(), item.getSubject(), item.getDetails(), item.getCreatedDate());
+                firstImage(user), item.getCategory(), item.getSubject(), item.getDetails(), item.getCreatedDate(),
+                item.getResolvedAtIso(), item.getResolvedByAdminUserId());
     }
 
     private String firstImage(Users user) {

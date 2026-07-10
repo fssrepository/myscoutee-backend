@@ -27,7 +27,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.UserReportSubmission;
 import com.raxim.myscoutee.profile.data.document.UserExperienceProfile;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -56,6 +58,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserEventFeedbackCount
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserMenuCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserRealtimeLongPollRequestDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.experience.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 
@@ -166,6 +169,47 @@ class HomeUserProfileServiceTest {
         assertThat(user.getDeletedAtIso()).isNotBlank();
         verify(affinityRecomputeTaskService).enqueueAdminStatusChanged("active");
         verify(adminTelemetryService).record("profile.deleted", "profiles", "active", "active");
+    }
+
+    @Test
+    void submitReportAllowsActiveEventOrganizerWithoutSharedMembership() {
+        Users reporter = user("reporter", 0d);
+        when(usersRepository.findByUserId("reporter")).thenReturn(Optional.of(reporter));
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setOwnerUserId("organizer");
+        event.setCreatorUserId("organizer");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        event.setTitle("Open event");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+
+        var response = service.submitReport(reportRequest("reporter", "organizer", "event-1"));
+
+        assertThat(response.submitted()).isTrue();
+        ArgumentCaptor<UserReportSubmission> reportCaptor = ArgumentCaptor.forClass(UserReportSubmission.class);
+        verify(userReportSubmissionsRepository).save(reportCaptor.capture());
+        assertThat(reportCaptor.getValue().getTargetUserId()).isEqualTo("organizer");
+        assertThat(reportCaptor.getValue().getMemberEntryId()).isNull();
+    }
+
+    @Test
+    void submitReportStillRejectsUnrelatedOrdinaryEventMember() {
+        Users reporter = user("reporter", 0d);
+        when(usersRepository.findByUserId("reporter")).thenReturn(Optional.of(reporter));
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setOwnerUserId("organizer");
+        event.setCreatorUserId("organizer");
+        event.setStatus(ActivityEvent.STATUS_ACTIVE);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+
+        var response = service.submitReport(reportRequest("reporter", "other-member", "event-1"));
+
+        assertThat(response.submitted()).isFalse();
+        assertThat(response.message()).contains("event organizer or a member you shared an event with");
+        verify(userReportSubmissionsRepository, never()).save(any());
     }
 
     @Test
@@ -459,6 +503,26 @@ class HomeUserProfileServiceTest {
         user.setName(userId);
         user.setAffinity(affinity);
         return user;
+    }
+
+    private UserReportUserSubmitRequestDto reportRequest(String userId, String targetUserId, String eventId) {
+        return new UserReportUserSubmitRequestDto(
+                userId,
+                targetUserId,
+                "Harassment",
+                "Enough report details",
+                targetUserId,
+                null,
+                eventId,
+                "Open event",
+                "2026-07-13T18:00:00Z",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 
     private Users.UserActivitiesRecord storedActivityCounters() {

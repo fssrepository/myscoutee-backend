@@ -48,7 +48,19 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutOptionalSubEventDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotDayDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
@@ -71,7 +83,10 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventRe
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventStageRuntimeStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingDemandRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -106,6 +121,7 @@ public class ActivitiesEventsService {
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String MEMBER_STATUS_INVITED = "I";
+    private static final String MEMBER_STATUS_DELETED = "deleted";
     private static final String STAGE_STATUS_ACTIVE = "A";
     private static final String STAGE_STATUS_START_REVIEW = "RS";
     private static final String STAGE_STATUS_SCORE_REVIEW = "SR";
@@ -135,6 +151,7 @@ public class ActivitiesEventsService {
     private final ActivitiesMembersService activitiesMembersService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
+    private final EventCheckoutBasketService eventCheckoutBasketService;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -166,6 +183,7 @@ public class ActivitiesEventsService {
             ActivitiesMembersService activitiesMembersService,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
+            EventCheckoutBasketService eventCheckoutBasketService,
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
@@ -195,6 +213,7 @@ public class ActivitiesEventsService {
         this.activitiesMembersService = activitiesMembersService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
+        this.eventCheckoutBasketService = eventCheckoutBasketService;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
@@ -232,7 +251,7 @@ public class ActivitiesEventsService {
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
         Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
-        Set<String> trackedSourceIds = new LinkedHashSet<>(trackedStatusesBySourceId.keySet());
+        Set<String> trackedSourceIds = visibleActivitySourceIds(trackedStatusesBySourceId);
         Set<String> membershipSourceIds = new LinkedHashSet<>(trackedSourceIds);
         membershipSourceIds.removeAll(directSourceIds);
 
@@ -269,7 +288,7 @@ public class ActivitiesEventsService {
             return emptyEventQueryContext();
         }
         Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
-        Set<String> trackedSourceIds = new LinkedHashSet<>(trackedStatusesBySourceId.keySet());
+        Set<String> trackedSourceIds = visibleActivitySourceIds(trackedStatusesBySourceId);
         List<ActivityEvent> preferredRecords = computePreferredEventRecords(loadEventDocumentsBySourceIds(trackedSourceIds));
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId = buildMemberSnapshotMap(preferredRecords);
         EventQueryContext snapshotContext = new EventQueryContext(
@@ -310,6 +329,13 @@ public class ActivitiesEventsService {
     }
 
     private EventQueryContext buildUserListCardQueryContext(ViewerContext viewer, boolean includeEdgeWeights) {
+        return buildUserListCardQueryContext(viewer, includeEdgeWeights, false);
+    }
+
+    private EventQueryContext buildUserListCardQueryContext(
+            ViewerContext viewer,
+            boolean includeEdgeWeights,
+            boolean includeDeletedMemberships) {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
             return emptyEventQueryContext();
         }
@@ -321,7 +347,7 @@ public class ActivitiesEventsService {
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
 
-        Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
+        Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId(), includeDeletedMemberships);
         LinkedHashSet<String> membershipSourceIds = new LinkedHashSet<>(trackedStatusesBySourceId.keySet());
         membershipSourceIds.removeAll(directSourceIds);
 
@@ -424,7 +450,11 @@ public class ActivitiesEventsService {
     }
 
     private Map<String, String> trackedEventMembershipStatuses(String userId) {
-        Map<String, String> rawStatuses = activitiesMembersService.findTrackedEventMembershipStatusesForUser(userId);
+        return trackedEventMembershipStatuses(userId, false);
+    }
+
+    private Map<String, String> trackedEventMembershipStatuses(String userId, boolean includeDeleted) {
+        Map<String, String> rawStatuses = activitiesMembersService.findTrackedEventMembershipStatusesForUser(userId, includeDeleted);
         if (rawStatuses == null || rawStatuses.isEmpty()) {
             return Map.of();
         }
@@ -435,11 +465,31 @@ public class ActivitiesEventsService {
             if (StringUtils.hasText(sourceId)
                     && (MEMBER_STATUS_ACCEPTED.equals(status)
                     || MEMBER_STATUS_PENDING.equals(status)
-                    || MEMBER_STATUS_INVITED.equals(status))) {
+                    || MEMBER_STATUS_INVITED.equals(status)
+                    || (includeDeleted && MEMBER_STATUS_DELETED.equals(status)))) {
                 statusesBySourceId.put(sourceId, status);
             }
         }
         return statusesBySourceId;
+    }
+
+    private Set<String> visibleActivitySourceIds(Map<String, String> statusesBySourceId) {
+        Set<String> sourceIds = statusesBySourceId == null
+                ? new LinkedHashSet<>()
+                : new LinkedHashSet<>(statusesBySourceId.keySet());
+        if (sourceIds.isEmpty()) {
+            return sourceIds;
+        }
+        for (ActivityEvent record : loadEventDocumentsBySourceIds(sourceIds)) {
+            if (isGeneratedSlotRecord(record)) {
+                String parentEventId = normalizeId(record.getParentEventId());
+                if (StringUtils.hasText(parentEventId)) {
+                    sourceIds.add(parentEventId);
+                    sourceIds.remove(normalizeId(record.getSourceId()));
+                }
+            }
+        }
+        return sourceIds;
     }
 
     private boolean isTrackedAttendingMembershipStatus(String status) {
@@ -654,8 +704,10 @@ public class ActivitiesEventsService {
         if (viewer == null) {
             return List.of();
         }
-        return withEventQueryContext(buildDirectOwnerQueryContext(viewer), () ->
-                queryDirectFilteredRecords(viewer, "trash", "all").stream()
+        EventsFilterRequestDto request = new EventsFilterRequestDto(
+                requestedUserId, "trash", "all", null, null, null, null, null, null, null, null);
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true), () ->
+                queryFilteredRecords(viewer, request).stream()
                         .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
                         .sorted(listItemComparator())
@@ -663,7 +715,23 @@ public class ActivitiesEventsService {
     }
 
     public EventsExplorePageDto queryTrashPage(String requestedUserId, Integer requestedLimit, String cursor) {
-        return queryDirectFilterPage(requestedUserId, "trash", "all", requestedLimit, cursor);
+        ViewerContext viewer = resolveViewer(requestedUserId);
+        if (viewer == null) {
+            return new EventsExplorePageDto(List.of(), 0, null);
+        }
+        EventsFilterRequestDto request = new EventsFilterRequestDto(
+                requestedUserId, "trash", "all", null, null, null, requestedLimit, cursor, null, null, null);
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true), () -> {
+            int limit = normalizePageLimit(requestedLimit, 12);
+            List<ActivityEvent> sorted = sortEventRecordsByStart(queryFilteredRecords(viewer, request));
+            int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
+            int endIndex = Math.min(sorted.size(), startIndex + limit);
+            List<ActivityEvent> pageRecords = sorted.subList(startIndex, endIndex);
+            String nextCursor = endIndex < sorted.size() && !pageRecords.isEmpty()
+                    ? serializeCursorId(pageRecords.get(pageRecords.size() - 1).getSourceId())
+                    : null;
+            return new EventsExplorePageDto(toHydratedEventDtos(viewer, pageRecords), sorted.size(), nextCursor);
+        });
     }
 
     private EventsExplorePageDto queryDirectFilterPage(
@@ -699,6 +767,11 @@ public class ActivitiesEventsService {
         }
         String filter = normalizeActivityListFilter(request == null ? null : request.filter());
         String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
+        if ("trash".equals(filter)) {
+            EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request), true);
+            return withEventQueryContext(context, () ->
+                    pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
+        }
         if (usesDirectOwnerListFilter(filter)) {
             return withEventQueryContext(buildDirectOwnerListCardQueryContext(viewer), () ->
                     pageEventListRecords(viewer, queryDirectFilteredRecords(viewer, filter, hostingPublicationFilter), request));
@@ -720,6 +793,531 @@ public class ActivitiesEventsService {
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
                         isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
+    }
+
+    public EventInvitationContextDto loadInvitationContext(String requestedUserId, String eventId) {
+        EventDetailDto record = loadEventDetailById(requestedUserId, eventId);
+        if (record == null) {
+            return null;
+        }
+        return new EventInvitationContextDto(
+                record,
+                activitiesMembersService.queryMembers(OWNER_TYPE_EVENT, record.id(), false),
+                eventCheckoutBasketService.loadBasketByEvent(requestedUserId, record.id()));
+    }
+
+    public EventCheckoutSlotsResultDto loadCheckoutSlots(EventCheckoutSlotsQueryDto request) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String sourceId = normalizeId(request == null ? null : request.eventId());
+        if (viewer == null || !StringUtils.hasText(sourceId)) {
+            return null;
+        }
+        ActivityEvent selected = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(sourceId)), viewer.userId());
+        if (selected == null) {
+            return null;
+        }
+        String parentEventId = isGeneratedSlotRecord(selected)
+                ? firstNonBlank(selected.getParentEventId(), selected.getSourceId())
+                : selected.getSourceId();
+        if (!StringUtils.hasText(parentEventId)) {
+            return null;
+        }
+        eventSlotReadModelService.refreshForChangedSourceIds(List.of(parentEventId));
+        ActivityEvent parent = preferredSubEventsDefinitionRecord(loadEventDocumentsBySourceIds(List.of(parentEventId)), viewer.userId());
+        if (parent == null) {
+            parent = selected;
+        }
+        ActivityEvent checkoutParent = parent;
+        EventCheckoutBasketDto checkoutBasket = eventCheckoutBasketService.loadBasketByEvent(viewer.userId(), parentEventId);
+        Map<String, Integer> slotReservations = eventCheckoutBasketService.activeSlotReservationCountsByEvent(parentEventId);
+        Map<String, Integer> optionalReservations = eventCheckoutBasketService.activeOptionalReservationCountsByEvent(parentEventId);
+        boolean basketView = "basket".equalsIgnoreCase(safeText(request == null ? null : request.view()));
+
+        List<EventSlotOccurrenceDto> allSlots = cloneSlotOccurrences(checkoutParent.getUpcomingSlots()).stream()
+                .filter(Objects::nonNull)
+                .filter(slot -> checkoutSlotMatchesOrder(slot, request))
+                .filter(slot -> basketView || checkoutSlotOverlapsRange(slot, request))
+                .sorted((left, right) -> checkoutSlotDirection(request)
+                        * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
+                .toList();
+        Set<String> bookedSlotIds = acceptedParticipantOwnerIds(
+                OWNER_TYPE_EVENT,
+                allSlots.stream()
+                        .map(EventSlotOccurrenceDto::id)
+                        .toList(),
+                viewer.userId());
+        List<EventCheckoutSlotDto> allSlotDtos = allSlots.stream()
+                .map(slot -> toCheckoutSlotDto(
+                        checkoutParent,
+                        slot,
+                        slotReservations.getOrDefault(normalizeId(slot.id()), 0),
+                        bookedSlotIds.contains(normalizeId(slot.id()))))
+                .toList();
+        List<EventCheckoutSlotDayDto> days = checkoutSlotDayDtos(allSlotDtos);
+        Map<String, EventCheckoutSlotDto> allSlotDtosById = new LinkedHashMap<>();
+        for (EventCheckoutSlotDto slotDto : allSlotDtos) {
+            String slotId = normalizeId(slotDto == null ? null : slotDto.id());
+            if (StringUtils.hasText(slotId)) {
+                allSlotDtosById.put(slotId, slotDto);
+            }
+        }
+        List<EventCheckoutSlotDto> basketSlotDtos = checkoutBasket == null
+                ? List.of()
+                : (checkoutBasket.items() == null ? List.<EventCheckoutBasketItemDto>of() : checkoutBasket.items()).stream()
+                        .filter(Objects::nonNull)
+                        .filter(item -> "event".equals(safeText(item.kind())))
+                        .filter(item -> StringUtils.hasText(normalizeId(item.slotSourceId())))
+                        .map(item -> isSucceededCheckoutResult(item.resultState())
+                                ? checkoutSlotDtoFromBasketItem(checkoutParent, item)
+                                : allSlotDtosById.getOrDefault(
+                                        normalizeId(item.slotSourceId()),
+                                        checkoutSlotDtoFromBasketItem(checkoutParent, item)))
+                        .filter(Objects::nonNull)
+                        .sorted((left, right) -> checkoutSlotDirection(request)
+                                * Long.compare(toSortableDate(left.startAtIso()), toSortableDate(right.startAtIso())))
+                        .toList();
+        List<EventCheckoutSlotDto> pageSource = basketView ? basketSlotDtos : allSlotDtos;
+        int offset = checkoutCursorOffset(request == null ? null : request.cursor());
+        int limit = Math.max(1, Math.min(60, request == null || request.limit() == null ? 15 : request.limit()));
+        int from = Math.min(offset, pageSource.size());
+        int to = Math.min(pageSource.size(), from + limit);
+        String nextCursor = to < pageSource.size() ? Integer.toString(to) : null;
+        String currency = pageSource.stream()
+                .map(EventCheckoutSlotDto::currency)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .or(() -> allSlotDtos.stream()
+                        .map(EventCheckoutSlotDto::currency)
+                        .filter(StringUtils::hasText)
+                        .findFirst())
+                .orElseGet(() -> checkoutPricingCurrency(checkoutParent.getPricing()));
+        return new EventCheckoutSlotsResultDto(
+                parentEventId,
+                checkoutParent.getMode(),
+                days,
+                pageSource.subList(from, to),
+                pageSource.size(),
+                nextCursor,
+                currency,
+                checkoutOptionalSubEventDtos(checkoutParent, optionalReservations, currency),
+                checkoutBasket);
+    }
+
+    private EventCheckoutSlotDto toCheckoutSlotDto(
+            ActivityEvent parent,
+            EventSlotOccurrenceDto slot,
+            int reservedCount,
+            boolean bookedByViewer) {
+        CheckoutSlotPricing pricing = resolveCheckoutSlotPricing(parent == null ? null : parent.getPricing(), parent, slot);
+        int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
+        int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
+        int pendingMembers = normalizeCount(slot == null ? null : slot.pendingMembers());
+        int activeReservations = Math.max(0, reservedCount);
+        int availableSlots = Math.max(0, capacityTotal - acceptedMembers - pendingMembers - activeReservations);
+        return new EventCheckoutSlotDto(
+                slot == null ? "" : slot.id(),
+                slot == null ? "" : slot.parentEventId(),
+                slot == null ? "" : slot.id(),
+                slot == null ? null : slot.slotTemplateId(),
+                slot == null ? null : slot.title(),
+                slot == null ? null : slot.timeframe(),
+                slot == null ? null : slot.startAtIso(),
+                slot == null ? null : slot.endAtIso(),
+                capacityTotal,
+                acceptedMembers,
+                pendingMembers,
+                availableSlots,
+                bookedByViewer,
+                pricing.amount(),
+                pricing.currency(),
+                pricing.rows());
+    }
+
+    private EventCheckoutSlotDto checkoutSlotDtoFromBasketItem(ActivityEvent parent, EventCheckoutBasketItemDto item) {
+        String slotSourceId = normalizeId(item == null ? null : item.slotSourceId());
+        if (!StringUtils.hasText(slotSourceId)) {
+            return null;
+        }
+        String selectedDateKey = safeText(item.selectedDateKey());
+        int quantity = Math.max(1, item.quantity() == null ? 1 : item.quantity());
+        return new EventCheckoutSlotDto(
+                slotSourceId,
+                parent == null ? "" : parent.getSourceId(),
+                slotSourceId,
+                item.slotTemplateId(),
+                parent == null ? null : parent.getTitle(),
+                firstNonBlank(item.detail(), parent == null ? null : parent.getTimeframe(), "Selected slot"),
+                StringUtils.hasText(selectedDateKey) ? selectedDateKey + "T00:00:00.000Z" : parent == null ? null : parent.getStartAtIso(),
+                StringUtils.hasText(selectedDateKey) ? selectedDateKey + "T23:59:59.000Z" : parent == null ? null : parent.getEndAtIso(),
+                quantity,
+                0,
+                0,
+                quantity,
+                isSucceededCheckoutResult(item == null ? null : item.resultState()),
+                Math.max(0d, item.amount() == null ? 0d : item.amount()),
+                firstNonBlank(item.currency(), parent == null ? null : checkoutPricingCurrency(parent.getPricing()), "USD"),
+                item.pricingSummaryRows() == null ? List.of() : item.pricingSummaryRows());
+    }
+
+    private boolean isSucceededCheckoutResult(String resultState) {
+        return "succeeded".equals(safeText(resultState));
+    }
+
+    private List<EventCheckoutOptionalSubEventDto> checkoutOptionalSubEventDtos(
+            ActivityEvent parent,
+            Map<String, Integer> reservations,
+            String fallbackCurrency) {
+        if (parent == null || !Boolean.TRUE.equals(parent.getSubEventsEnabled())) {
+            return List.of();
+        }
+        Map<String, SubEventDefinitionDto> definitionsById = new LinkedHashMap<>();
+        addCheckoutOptionalDefinitions(definitionsById, parent.getSubEventDefinitions());
+        for (EventSlotTemplateDto template : parent.getSlotTemplates() == null ? List.<EventSlotTemplateDto>of() : parent.getSlotTemplates()) {
+            addCheckoutOptionalDefinitions(definitionsById, template == null ? null : template.subEventDefinitions());
+        }
+        return definitionsById.values().stream()
+                .filter(Objects::nonNull)
+                .filter(item -> Boolean.TRUE.equals(item.optional()))
+                .map(item -> toCheckoutOptionalSubEventDto(
+                        item,
+                        reservations == null ? 0 : reservations.getOrDefault(normalizeId(item.id()), 0),
+                        fallbackCurrency))
+                .toList();
+    }
+
+    private void addCheckoutOptionalDefinitions(
+            Map<String, SubEventDefinitionDto> target,
+            List<SubEventDefinitionDto> definitions) {
+        if (target == null) {
+            return;
+        }
+        int index = 0;
+        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
+            String id = firstNonBlank(definition == null ? null : definition.id(), fallbackSubEventId(index));
+            index += 1;
+            if (definition == null || !StringUtils.hasText(id) || target.containsKey(id)) {
+                continue;
+            }
+            target.put(id, definition);
+        }
+    }
+
+    private EventCheckoutOptionalSubEventDto toCheckoutOptionalSubEventDto(
+            SubEventDefinitionDto definition,
+            int reservedCount,
+            String fallbackCurrency) {
+        CheckoutSlotPricing pricing = resolveCheckoutOptionalSubEventPricing(definition, fallbackCurrency);
+        int capacityTotal = normalizeCount(definition == null ? null : definition.capacityMax());
+        int normalizedReservedCount = Math.max(0, reservedCount);
+        return new EventCheckoutOptionalSubEventDto(
+                definition == null ? "" : firstNonBlank(definition.id(), "optional"),
+                definition == null ? "Optional sub event" : firstNonBlank(definition.name(), definition.id(), "Optional sub event"),
+                definition == null ? null : definition.description(),
+                null,
+                null,
+                capacityTotal,
+                normalizedReservedCount,
+                Math.max(0, capacityTotal - normalizedReservedCount),
+                pricing.amount(),
+                pricing.currency(),
+                pricing.rows());
+    }
+
+    private List<EventCheckoutSlotDayDto> checkoutSlotDayDtos(List<EventCheckoutSlotDto> slots) {
+        Map<String, CheckoutSlotDayAccumulator> grouped = new LinkedHashMap<>();
+        for (EventCheckoutSlotDto slot : slots == null ? List.<EventCheckoutSlotDto>of() : slots) {
+            String dateKey = checkoutSlotDateKey(slot == null ? null : slot.startAtIso());
+            if (!StringUtils.hasText(dateKey)) {
+                continue;
+            }
+            CheckoutSlotDayAccumulator accumulator = grouped.computeIfAbsent(
+                    dateKey,
+                    key -> new CheckoutSlotDayAccumulator(slot == null ? "USD" : slot.currency()));
+            accumulator.add(slot);
+        }
+        return grouped.entrySet().stream()
+                .map(entry -> entry.getValue().toDto(entry.getKey()))
+                .toList();
+    }
+
+    private CheckoutSlotPricing resolveCheckoutSlotPricing(
+            PricingConfigDto pricing,
+            ActivityEvent parent,
+            EventSlotOccurrenceDto slot) {
+        String currency = checkoutPricingCurrency(pricing);
+        if (pricing == null) {
+            return new CheckoutSlotPricing(0d, currency, List.of());
+        }
+        String slotTemplateId = safeText(slot == null ? null : slot.slotTemplateId());
+        double previewBase = safeDouble(pricing.basePrice());
+        if (Boolean.TRUE.equals(pricing.slotPricingEnabled()) && StringUtils.hasText(slotTemplateId)) {
+            previewBase = (pricing.slotOverrides() == null ? List.<com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingSlotOverrideDto>of() : pricing.slotOverrides()).stream()
+                    .filter(override -> slotTemplateId.equals(safeText(override == null ? null : override.slotId())))
+                    .map(override -> override == null ? null : override.price())
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .map(this::safeDouble)
+                    .orElse(previewBase);
+        }
+        List<EventCheckoutPricingSummaryRowDto> rows = new ArrayList<>();
+        rows.add(new EventCheckoutPricingSummaryRowDto(
+                StringUtils.hasText(slotTemplateId) ? "base:" + slotTemplateId : "base",
+                StringUtils.hasText(slotTemplateId) ? "Slot base price" : "Base price",
+                null,
+                roundMoney(previewBase),
+                currency,
+                1));
+
+        double nextPrice = previewBase;
+        int capacityTotal = normalizeCount(slot == null ? null : slot.capacityTotal());
+        int acceptedMembers = normalizeCount(slot == null ? null : slot.acceptedMembers());
+        int capacityFilledPercent = capacityTotal > 0
+                ? (int) Math.round((acceptedMembers / (double) capacityTotal) * 100d)
+                : 0;
+        double hoursUntilStart = resolveCheckoutHoursUntilStart(slot == null ? null : slot.startAtIso());
+
+        if (checkoutPricingModeMatches(pricing.mode(), "demand-based", "hybrid") && Boolean.TRUE.equals(pricing.demandRulesEnabled())) {
+            for (PricingDemandRuleDto rule : pricing.demandRules() == null ? List.<PricingDemandRuleDto>of() : pricing.demandRules()) {
+                if (!matchesCheckoutDemandRule(rule, capacityFilledPercent, slotTemplateId)) {
+                    continue;
+                }
+                double previousPrice = nextPrice;
+                nextPrice = applyCheckoutPricingAction(nextPrice, rule.action());
+                rows.add(new EventCheckoutPricingSummaryRowDto(
+                        "demand:" + firstNonBlank(rule.id(), UUID.randomUUID().toString()),
+                        "Demand pricing",
+                        describeCheckoutPricingAction(rule.action()),
+                        roundMoney(nextPrice - previousPrice),
+                        currency,
+                        1));
+            }
+        }
+        if (checkoutPricingModeMatches(pricing.mode(), "time-based", "hybrid") && Boolean.TRUE.equals(pricing.timeRulesEnabled())) {
+            for (PricingTimeRuleDto rule : pricing.timeRules() == null ? List.<PricingTimeRuleDto>of() : pricing.timeRules()) {
+                if (!matchesCheckoutTimeRule(rule, hoursUntilStart, slotTemplateId, slot == null ? null : slot.startAtIso())) {
+                    continue;
+                }
+                double previousPrice = nextPrice;
+                nextPrice = applyCheckoutPricingAction(nextPrice, rule.action());
+                rows.add(new EventCheckoutPricingSummaryRowDto(
+                        "time:" + firstNonBlank(rule.id(), UUID.randomUUID().toString()),
+                        "Time pricing",
+                        describeCheckoutPricingAction(rule.action()),
+                        roundMoney(nextPrice - previousPrice),
+                        currency,
+                        1));
+            }
+        }
+
+        if (pricing.minPrice() != null) {
+            double previousPrice = nextPrice;
+            nextPrice = Math.max(safeDouble(pricing.minPrice()), nextPrice);
+            if (nextPrice != previousPrice) {
+                rows.add(new EventCheckoutPricingSummaryRowDto("min-price", "Minimum price", null, roundMoney(nextPrice - previousPrice), currency, 1));
+            }
+        }
+        if (pricing.maxPrice() != null) {
+            double previousPrice = nextPrice;
+            nextPrice = Math.min(safeDouble(pricing.maxPrice()), nextPrice);
+            if (nextPrice != previousPrice) {
+                rows.add(new EventCheckoutPricingSummaryRowDto("max-price", "Maximum price", null, roundMoney(nextPrice - previousPrice), currency, 1));
+            }
+        }
+        return new CheckoutSlotPricing(roundMoney(nextPrice), currency, rows);
+    }
+
+    private CheckoutSlotPricing resolveCheckoutOptionalSubEventPricing(
+            SubEventDefinitionDto definition,
+            String fallbackCurrency) {
+        PricingConfigDto pricing = definition == null ? null : definition.pricing();
+        String currency = pricing == null || !StringUtils.hasText(safeText(pricing.currency()))
+                ? firstNonBlank(fallbackCurrency, "USD")
+                : checkoutPricingCurrency(pricing);
+        if (pricing == null) {
+            return new CheckoutSlotPricing(0d, currency, List.of());
+        }
+        double amount = roundMoney(Math.max(0d, safeDouble(pricing.basePrice())));
+        return new CheckoutSlotPricing(
+                amount,
+                currency,
+                List.of(new EventCheckoutPricingSummaryRowDto(
+                        "subevent:" + firstNonBlank(definition.id(), "optional") + ":base",
+                        firstNonBlank(definition.name(), "Optional sub event"),
+                        null,
+                        amount,
+                        currency,
+                        1)));
+    }
+
+    private String checkoutPricingCurrency(PricingConfigDto pricing) {
+        String currency = safeText(pricing == null ? null : pricing.currency()).toUpperCase(Locale.ROOT);
+        return StringUtils.hasText(currency) ? currency : "USD";
+    }
+
+    private boolean checkoutPricingModeMatches(String value, String... expected) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        if (!StringUtils.hasText(normalized)) {
+            normalized = "fixed";
+        }
+        for (String candidate : expected == null ? new String[0] : expected) {
+            if (normalized.equals(safeText(candidate).toLowerCase(Locale.ROOT))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesCheckoutDemandRule(PricingDemandRuleDto rule, int capacityFilledPercent, String slotTemplateId) {
+        if (rule == null) {
+            return false;
+        }
+        if ("selected_slots".equals(safeText(rule.appliesTo())) && !checkoutRuleIncludesSlot(rule.slotIds(), slotTemplateId)) {
+            return false;
+        }
+        int threshold = normalizeCount(rule.capacityFilledPercent());
+        return "lte".equals(safeText(rule.operator()))
+                ? capacityFilledPercent <= threshold
+                : capacityFilledPercent >= threshold;
+    }
+
+    private boolean matchesCheckoutTimeRule(PricingTimeRuleDto rule, double hoursUntilStart, String slotTemplateId, String startAtIso) {
+        if (rule == null) {
+            return false;
+        }
+        if ("selected_slots".equals(safeText(rule.appliesTo())) && !checkoutRuleIncludesSlot(rule.slotIds(), slotTemplateId)) {
+            return false;
+        }
+        String trigger = safeText(rule.trigger());
+        if ("specific_date".equals(trigger)) {
+            String start = safeText(rule.specificDateStart());
+            String end = safeText(rule.specificDateEnd());
+            String comparisonDate = safeText(startAtIso).length() >= 10 ? safeText(startAtIso).substring(0, 10) : "";
+            return StringUtils.hasText(start)
+                    && StringUtils.hasText(end)
+                    && StringUtils.hasText(comparisonDate)
+                    && comparisonDate.compareTo(start) >= 0
+                    && comparisonDate.compareTo(end) <= 0;
+        }
+        double value = Math.max(0d, safeDouble(rule.offsetValue()));
+        if ("hours_before_start".equals(trigger)) {
+            return hoursUntilStart <= value;
+        }
+        return hoursUntilStart <= value * 24d;
+    }
+
+    private boolean checkoutRuleIncludesSlot(List<String> slotIds, String slotTemplateId) {
+        String normalizedSlotTemplateId = safeText(slotTemplateId);
+        return StringUtils.hasText(normalizedSlotTemplateId)
+                && (slotIds == null ? List.<String>of() : slotIds).stream()
+                        .anyMatch(item -> normalizedSlotTemplateId.equals(safeText(item)));
+    }
+
+    private double applyCheckoutPricingAction(double currentPrice, PricingActionDto action) {
+        if (action == null) {
+            return Math.max(0d, currentPrice);
+        }
+        double value = safeDouble(action.value());
+        return switch (safeText(action.kind())) {
+            case "set_exact_price" -> Math.max(0d, value);
+            case "increase_amount" -> Math.max(0d, currentPrice + value);
+            case "decrease_amount" -> Math.max(0d, currentPrice - value);
+            case "decrease_percent" -> Math.max(0d, currentPrice * (1d - (value / 100d)));
+            default -> Math.max(0d, currentPrice * (1d + (value / 100d)));
+        };
+    }
+
+    private String describeCheckoutPricingAction(PricingActionDto action) {
+        double value = action == null ? 0d : safeDouble(action.value());
+        return switch (safeText(action == null ? null : action.kind())) {
+            case "set_exact_price" -> "Set to " + roundMoney(value);
+            case "increase_amount" -> "+" + roundMoney(value);
+            case "decrease_amount" -> "-" + roundMoney(value);
+            case "decrease_percent" -> "-" + roundMoney(value) + "%";
+            default -> "+" + roundMoney(value) + "%";
+        };
+    }
+
+    private double roundMoney(double value) {
+        return Math.round(value * 100d) / 100d;
+    }
+
+    private double resolveCheckoutHoursUntilStart(String startAtIso) {
+        long startMs = toSortableDate(startAtIso);
+        if (startMs <= 0L) {
+            return 0d;
+        }
+        return Math.max(0d, Math.round((startMs - System.currentTimeMillis()) / (60d * 60d * 1000d)));
+    }
+
+    private boolean checkoutSlotMatchesOrder(EventSlotOccurrenceDto slot, EventCheckoutSlotsQueryDto query) {
+        long end = toSortableDate(slot == null ? null : slot.endAtIso());
+        if (end <= 0L) {
+            end = toSortableDate(slot == null ? null : slot.startAtIso());
+        }
+        if (end <= 0L) {
+            return false;
+        }
+        boolean past = end <= System.currentTimeMillis();
+        return "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? past : !past;
+    }
+
+    private boolean checkoutSlotOverlapsRange(EventSlotOccurrenceDto slot, EventCheckoutSlotsQueryDto query) {
+        LocalDate rangeStart = checkoutQueryDate(firstNonBlank(query == null ? null : query.rangeStart(), query == null ? null : query.anchorDate()));
+        LocalDate rangeEnd = checkoutQueryDate(query == null ? null : query.rangeEnd());
+        if (checkoutQueryIsUpcomingFromDate(query, rangeStart, rangeEnd)) {
+            rangeEnd = null;
+        }
+        if (rangeStart == null && rangeEnd == null) {
+            return true;
+        }
+        long startMs = toSortableDate(slot == null ? null : slot.startAtIso());
+        long endMs = toSortableDate(slot == null ? null : slot.endAtIso());
+        if (endMs <= 0L) {
+            endMs = startMs;
+        }
+        if (rangeStart != null && endMs < rangeStart.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()) {
+            return false;
+        }
+        if (rangeEnd != null && startMs > rangeEnd.atTime(23, 59, 59, 999_000_000).toInstant(ZoneOffset.UTC).toEpochMilli()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkoutQueryIsUpcomingFromDate(EventCheckoutSlotsQueryDto query, LocalDate rangeStart, LocalDate rangeEnd) {
+        return rangeStart != null
+                && rangeStart.equals(rangeEnd)
+                && "day".equalsIgnoreCase(safeText(query == null ? null : query.view()))
+                && !"past".equalsIgnoreCase(safeText(query == null ? null : query.order()));
+    }
+
+    private int checkoutSlotDirection(EventCheckoutSlotsQueryDto query) {
+        return "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? -1 : 1;
+    }
+
+    private LocalDate checkoutQueryDate(String value) {
+        String text = safeText(value);
+        if (!StringUtils.hasText(text)) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(text.length() > 10 ? text.substring(0, 10) : text);
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
+    }
+
+    private String checkoutSlotDateKey(String startAtIso) {
+        long startMs = toSortableDate(startAtIso);
+        return startMs <= 0L ? "" : Instant.ofEpochMilli(startMs).atZone(ZoneOffset.UTC).toLocalDate().toString();
+    }
+
+    private int checkoutCursorOffset(String cursor) {
+        try {
+            return Math.max(0, Integer.parseInt(safeText(cursor)));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
     }
 
     public EventSubEventsResultDto loadSubEventsById(EventSubEventsQueryDto request) {
@@ -818,9 +1416,10 @@ public class ActivitiesEventsService {
     private SubEventParticipationSlotCandidate subEventParticipationSlotCandidate(EventSubEventsSlotDto slot) {
         SubEventParticipationSlotCandidate candidate = new SubEventParticipationSlotCandidate(slot);
         String slotOwnerId = subEventParticipantSlotOwnerId(slot);
+        boolean concreteSlot = isConcreteSubEventSlot(slot);
         candidate.eventOwnerIds.addAll(uniqueParticipantOwnerIds(
                 slotOwnerId,
-                slot == null ? null : slot.parentEventId(),
+                concreteSlot ? null : slot == null ? null : slot.parentEventId(),
                 slot == null ? null : slot.slotSourceId(),
                 slot == null ? null : slot.id()));
         List<SubEventItemDto> items = candidate.items();
@@ -962,6 +1561,12 @@ public class ActivitiesEventsService {
                 slot == null ? null : slot.slotSourceId(),
                 slot == null ? null : slot.parentEventId(),
                 slot == null ? null : slot.id());
+    }
+
+    private boolean isConcreteSubEventSlot(EventSubEventsSlotDto slot) {
+        String slotSourceId = normalizeId(slot == null ? null : slot.slotSourceId());
+        String parentEventId = normalizeId(slot == null ? null : slot.parentEventId());
+        return StringUtils.hasText(slotSourceId) && !slotSourceId.equals(parentEventId);
     }
 
     private String subEventParticipantItemId(SubEventItemDto item, int index) {
@@ -1228,11 +1833,14 @@ public class ActivitiesEventsService {
         });
     }
 
-    public void trash(EventActionRequestDto request) {
+    public EventParticipationActionResultDto trash(EventActionRequestDto request) {
         String sourceId = request == null ? null : normalizeId(request.sourceId());
+        if (Boolean.TRUE.equals(request == null ? null : request.removeMembershipOnly())) {
+            return removeCheckoutMembershipOnly(request, sourceId);
+        }
         boolean organizerLifecycleRequest = isOrganizerLifecycleRequest(request);
         if (organizerLifecycleRequest && !accessControlService.canCurrentActorDeleteEvent(sourceId)) {
-            return;
+            return null;
         }
         maybePostMemberLeftMessage(request);
         maybeApplyLeaveCancellationRefund(request);
@@ -1250,6 +1858,86 @@ public class ActivitiesEventsService {
             markEventAttachmentsUnavailable(updated, "trashed");
         }
         userActivityCountersService.refreshEventCountersForDocuments(updated);
+        return null;
+    }
+
+    private EventParticipationActionResultDto removeCheckoutMembershipOnly(
+            EventActionRequestDto request,
+            String sourceId) {
+        ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
+        String normalizedSourceId = normalizeId(sourceId);
+        String slotSourceId = normalizeId(request == null ? null : request.slotSourceId());
+        if (viewer == null || !StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (StringUtils.hasText(checkoutState)) {
+            String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    viewer.userId(),
+                    normalizedSourceId,
+                    slotSourceId,
+                    checkoutState,
+                    firstNonBlank(request.checkoutResultState(), "deleted"),
+                    pendingReason,
+                    firstNonBlank(request.checkoutSessionId(), request.paymentSessionId(), null),
+                    request.counterDelta()));
+        }
+
+        LinkedHashSet<String> membershipSourceIds = new LinkedHashSet<>();
+        membershipSourceIds.add(normalizedSourceId);
+        if (StringUtils.hasText(slotSourceId) && !normalizedSourceId.equals(slotSourceId)) {
+            membershipSourceIds.add(slotSourceId);
+        } else {
+            membershipSourceIds.addAll(generatedSlotSourceIdsForParent(normalizedSourceId));
+            membershipSourceIds.addAll(activeGeneratedSlotMembershipSourceIdsForUser(normalizedSourceId, viewer.userId()));
+        }
+
+        ActivitiesMembersService.OwnerMembersSnapshot sourceSnapshot = null;
+        for (String membershipSourceId : membershipSourceIds) {
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                    activitiesMembersService.removeEventParticipation(membershipSourceId, viewer.userId(), viewer.userId());
+            if (normalizedSourceId.equals(membershipSourceId)) {
+                sourceSnapshot = snapshot;
+            }
+        }
+
+        ActivityEvent refreshed = findPreferredEventRecord(normalizedSourceId);
+        return toParticipationLeaveResult(normalizedSourceId, slotSourceId, refreshed, sourceSnapshot, request);
+    }
+
+    private List<String> generatedSlotSourceIdsForParent(String parentSourceId) {
+        String normalizedParentSourceId = normalizeId(parentSourceId);
+        if (!StringUtils.hasText(normalizedParentSourceId)) {
+            return List.of();
+        }
+        List<ActivityEvent> slotDocuments = activityEventsRepository.findByParentEventIdIn(List.of(normalizedParentSourceId));
+        return computePreferredEventRecords(slotDocuments == null ? List.of() : slotDocuments).stream()
+                .filter(this::isGeneratedSlotRecord)
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+    }
+
+    private List<String> activeGeneratedSlotMembershipSourceIdsForUser(String parentSourceId, String userId) {
+        String normalizedParentSourceId = normalizeId(parentSourceId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedParentSourceId) || !StringUtils.hasText(normalizedUserId)) {
+            return List.of();
+        }
+        String generatedSlotPrefix = normalizedParentSourceId + ":slot:";
+        return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !MEMBER_STATUS_DELETED.equals(safeText(member.getStatus())))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .filter(ownerId -> ownerId.startsWith(generatedSlotPrefix))
+                .distinct()
+                .toList();
     }
 
     public void publish(EventActionRequestDto request) {
@@ -1698,9 +2386,15 @@ public class ActivitiesEventsService {
         if (!accessControlService.canCurrentActorJoinEvent(viewer.userId(), sourceId)) {
             return toParticipationActionResult(sourceId, slotSourceId, "unchanged", null, preferred, null, request);
         }
-        boolean approvalRequested = isApprovalRequested(request);
+        boolean checkoutBasketUpdateRequested = isPendingCheckoutBasketUpdateRequest(request, viewer.userId(), requestedSourceId);
+        syncCheckoutBasketForJoin(request);
+        boolean alreadyAccepted = isAcceptedMember(
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId),
+                viewer.userId());
+        boolean approvalRequested = isApprovalRequested(request)
+                || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
-        boolean accepted = !waitingList && isConfirmedBooking(request, preferred);
+        boolean accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
 
         if (StringUtils.hasText(slotSourceId)) {
             final String requestedSlotSourceId = Objects.requireNonNull(slotSourceId);
@@ -1710,7 +2404,7 @@ public class ActivitiesEventsService {
                     .orElse(null);
             if (slotRecord != null) {
                 waitingList = waitingList || isRecordFull(slotRecord);
-                accepted = !waitingList && isConfirmedBooking(request, preferred);
+                accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
                 activitiesMembersService.requestJoin(sourceId, viewer.user(), preferred, accepted, waitingList, approvalRequested);
                 ActivitiesMembersService.OwnerMembersSnapshot slotSnapshot =
                         activitiesMembersService.requestJoin(slotSourceId, viewer.user(), slotRecord, accepted, waitingList, approvalRequested);
@@ -1718,8 +2412,11 @@ public class ActivitiesEventsService {
                 affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
                 affinityRecomputeTaskService.enqueueEventMembersChanged(slotSourceId, viewer.userId());
                 if (joinedSlot) {
+                    markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, slotSourceId);
                     recordJoinPayment(request, viewer.userId(), sourceId, slotSourceId, slotRecord.getStartAtIso(), preferred);
                     postMemberJoinedMessage(sourceId, viewer.user());
+                } else if (checkoutBasketUpdateRequested) {
+                    enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
                 }
                 ActivityEvent refreshedSlotRecord = loadEventDocumentsBySourceIds(List.of(requestedSlotSourceId)).stream()
                         .filter(this::isGeneratedSlotRecord)
@@ -1741,8 +2438,11 @@ public class ActivitiesEventsService {
         boolean joined = isAcceptedMember(snapshot, viewer.userId());
         affinityRecomputeTaskService.enqueueEventMembersChanged(sourceId, viewer.userId());
         if (joined) {
+            markAcceptedCheckoutBasketSucceeded(request, viewer.userId(), sourceId, null);
             recordJoinPayment(request, viewer.userId(), sourceId, null, preferred.getStartAtIso(), preferred);
             postMemberJoinedMessage(sourceId, viewer.user());
+        } else if (checkoutBasketUpdateRequested) {
+            enqueueCheckoutBasketUpdatedNotification(preferred, viewer.user(), pendingReasonForAction(waitingList, approvalRequested));
         }
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         return toParticipationActionResult(
@@ -1753,6 +2453,299 @@ public class ActivitiesEventsService {
                 refreshed == null ? preferred : refreshed,
                 snapshot,
                 request);
+    }
+
+    private void markAcceptedCheckoutBasketSucceeded(
+            EventActionRequestDto request,
+            String userId,
+            String sourceId,
+            String slotSourceId) {
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (!StringUtils.hasText(checkoutState)) {
+            return;
+        }
+        eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                userId,
+                sourceId,
+                slotSourceId,
+                checkoutState,
+                "succeeded",
+                null,
+                request.paymentSessionId(),
+                request.counterDelta()));
+    }
+
+    public EventParticipationActionResultDto payEventCheckout(EventCheckoutStateChangeRequestDto request, String provider) {
+        if (request == null) {
+            return null;
+        }
+        EventCheckoutBasketDto basket = saveSubmittedPaymentBasket(request);
+        if (basket == null) {
+            basket = eventCheckoutBasketService.loadBasketByEvent(request.userId(), request.sourceId());
+        }
+        if (basket == null || basket.items() == null || basket.items().isEmpty()) {
+            return null;
+        }
+        String slotSourceId = firstNonBlank(basket.slotSourceId(), request.slotSourceId(), null);
+        String paymentMembershipSourceId = firstNonBlank(slotSourceId, request.sourceId(), null);
+        ActivitiesMembersService.OwnerMembersSnapshot acceptedBeforePaymentSnapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizeId(paymentMembershipSourceId));
+        boolean acceptedBeforePayment = isAcceptedMember(acceptedBeforePaymentSnapshot, request.userId());
+        ActivityEvent paymentRecord = StringUtils.hasText(slotSourceId)
+                ? loadEventDocumentsBySourceIds(List.of(slotSourceId)).stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse(null)
+                : findPreferredEventRecord(request.sourceId());
+        if (!paymentService.hasJoinedEventJoin(request.userId(), paymentMembershipSourceId)
+                && isRecordFull(paymentRecord)) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    slotSourceId,
+                    "waiting",
+                    null,
+                    "waitlist",
+                    null,
+                    request.counterDelta()));
+            return toParticipationActionResult(
+                    request.sourceId(),
+                    slotSourceId,
+                    "pending",
+                    "waitlist",
+                    paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
+                    acceptedBeforePaymentSnapshot,
+                    null);
+        }
+        EventCheckoutRequestDto paymentRequest = checkoutRequestFromBasket(request, basket);
+        EventCheckoutSessionDto session = paymentService.payCheckout(paymentRequest, provider);
+        EventActionRequestDto joinRequest = new EventActionRequestDto(
+                request.userId(),
+                request.sourceId(),
+                slotSourceId,
+                basket.items().stream()
+                        .map(item -> normalizeId(item.subEventId()))
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList(),
+                List.of(),
+                List.of(),
+                session == null ? null : session.id(),
+                Boolean.TRUE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        try {
+            EventParticipationActionResultDto result = acceptedBeforePayment
+                    ? toParticipationActionResult(
+                            request.sourceId(),
+                            slotSourceId,
+                            "accepted",
+                            null,
+                            paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
+                            acceptedBeforePaymentSnapshot,
+                            joinRequest)
+                    : requestJoin(joinRequest);
+            if (result == null || !"accepted".equals(safeText(result.membershipStatus()))) {
+                eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                        request.userId(),
+                        request.sourceId(),
+                        slotSourceId,
+                        "approval".equals(safeText(result == null ? null : result.pendingReason()))
+                                ? "approval-pending"
+                                : "waitlist".equals(safeText(result == null ? null : result.pendingReason()))
+                                        ? "waiting"
+                                        : "confirmed",
+                        null,
+                        result == null ? null : result.pendingReason(),
+                        session == null ? null : session.id(),
+                        request.counterDelta()));
+                return result;
+            }
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    slotSourceId,
+                    "pay",
+                    "succeeded",
+                    null,
+                    session == null ? null : session.id(),
+                    request.counterDelta()));
+            return result;
+        } catch (RuntimeException exception) {
+            eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                    request.userId(),
+                    request.sourceId(),
+                    slotSourceId,
+                    "pay",
+                    "failed",
+                    null,
+                    session == null ? null : session.id(),
+                    request.counterDelta()));
+            throw exception;
+        }
+    }
+
+    private EventCheckoutBasketDto saveSubmittedPaymentBasket(EventCheckoutStateChangeRequestDto request) {
+        EventCheckoutRequestDto checkout = request == null ? null : request.checkoutRequest();
+        if (checkout == null || checkout.basketItems() == null || checkout.basketItems().isEmpty()) {
+            return null;
+        }
+        return eventCheckoutBasketService.saveBasket(new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                firstNonBlank(checkout.slotSourceId(), request.slotSourceId(), null),
+                checkout.optionalSubEventIds(),
+                checkout.assetSelections(),
+                checkout.acceptedPolicyIds(),
+                checkout.basketItems(),
+                checkout.pricingSummaryRows(),
+                "confirmed",
+                checkout.lineItems(),
+                checkout.totalAmount(),
+                checkout.currency(),
+                null));
+    }
+
+    private void syncCheckoutBasketForJoin(EventActionRequestDto request) {
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (!StringUtils.hasText(checkoutState)) {
+            return;
+        }
+        String pendingReason = pendingReasonForCheckoutState(checkoutState, request.pendingReason());
+        String userId = normalizeId(request.userId());
+        String sourceId = normalizeId(request.sourceId());
+        if (!StringUtils.hasText(userId) || !StringUtils.hasText(sourceId)) {
+            return;
+        }
+        List<EventCheckoutBasketItemDto> basketItems = request.basketItems() == null
+                ? List.of()
+                : request.basketItems().stream().filter(Objects::nonNull).toList();
+        if (!basketItems.isEmpty()) {
+            eventCheckoutBasketService.saveBasket(new EventCheckoutRequestDto(
+                    userId,
+                    sourceId,
+                    request.slotSourceId(),
+                    request.optionalSubEventIds(),
+                    request.assetSelections(),
+                    request.acceptedPolicyIds(),
+                    basketItems,
+                    request.pricingSummaryRows(),
+                    checkoutState,
+                    request.lineItems(),
+                    request.totalAmount(),
+                    request.currency(),
+                    pendingReason));
+            return;
+        }
+        eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
+                userId,
+                sourceId,
+                request.slotSourceId(),
+                checkoutState,
+                null,
+                pendingReason,
+                request.paymentSessionId(),
+                request.counterDelta()));
+    }
+
+    private boolean isPendingCheckoutBasketUpdateRequest(
+            EventActionRequestDto request,
+            String userId,
+            String sourceId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        if (request == null || !StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
+            return false;
+        }
+        String checkoutState = safeText(request == null ? null : request.checkoutState());
+        if (!"waiting".equals(checkoutState) && !"approval-pending".equals(checkoutState)) {
+            return false;
+        }
+        if (request.basketItems() == null || request.basketItems().isEmpty()) {
+            return false;
+        }
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedSourceId);
+        return snapshot != null
+                && (snapshot.pendingMemberUserIds().contains(normalizedUserId)
+                        || snapshot.hasPendingRequest(normalizedUserId));
+    }
+
+    private void enqueueCheckoutBasketUpdatedNotification(
+            ActivityEvent event,
+            Users member,
+            String pendingReason) {
+        if (notificationOutboxService == null || event == null || member == null) {
+            return;
+        }
+        String eventId = normalizeId(event.getSourceId());
+        String memberUserId = normalizeId(member.getId());
+        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(memberUserId)) {
+            return;
+        }
+        List<String> adminUserIds = resolveAdminUserIds(eventId, event.getCreatorUserId()).stream()
+                .filter(userId -> !memberUserId.equals(normalizeId(userId)))
+                .toList();
+        if (adminUserIds.isEmpty()) {
+            return;
+        }
+        boolean waitlist = "waitlist".equals(safeText(pendingReason));
+        String eventTitle = firstNonBlank(event.getTitle(), "event");
+        String memberName = firstNonBlank(member.getName(), memberUserId, "A member");
+        String title = waitlist ? "Waitlist basket updated" : "Booking update needs re-approval";
+        String body = waitlist
+                ? memberName + " updated the waiting-list basket for " + eventTitle + ". Review the new selection."
+                : memberName + " updated the checkout basket for " + eventTitle + ". Please re-approve the request.";
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", safeText(event.getTitle()));
+        payload.put("memberUserId", memberUserId);
+        payload.put("memberName", memberName);
+        payload.put("pendingReason", safeText(pendingReason));
+        payload.put("checkoutAction", "basket-update");
+        payload.put("updatedAt", Instant.now().toString());
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-checkout-basket-updated",
+                "event",
+                eventId,
+                "event-admins",
+                adminUserIds,
+                title,
+                body,
+                "/game",
+                firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "event-checkout-basket-updated-" + eventId + "-" + memberUserId,
+                payload,
+                memberUserId));
+    }
+
+    private EventCheckoutRequestDto checkoutRequestFromBasket(
+            EventCheckoutStateChangeRequestDto request,
+            EventCheckoutBasketDto basket) {
+        return new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                firstNonBlank(basket.slotSourceId(), request.slotSourceId(), null),
+                basket.items().stream()
+                        .map(item -> normalizeId(item.subEventId()))
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .toList(),
+                List.of(),
+                List.of(),
+                basket.items(),
+                basket.pricingSummaryRows(),
+                "pay",
+                basket.lineItems(),
+                basket.totalAmount(),
+                basket.currency(),
+                null);
     }
 
     private EventParticipationActionResultDto toParticipationActionResult(
@@ -1784,8 +2777,39 @@ public class ActivitiesEventsService {
                 acceptedMembers,
                 pendingMembers,
                 Math.max(acceptedMembers, capacityTotal),
-                capacityTotal > 0 && acceptedMembers >= capacityTotal,
+                resolveFullForActionResult(record, acceptedMembers, capacityTotal),
                 normalizeId(request == null ? null : request.paymentSessionId()));
+    }
+
+    private EventParticipationActionResultDto toParticipationLeaveResult(
+            String sourceId,
+            String slotSourceId,
+            ActivityEvent record,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot,
+            EventActionRequestDto request) {
+        int acceptedMembers = snapshot == null
+                ? normalizeCount(record == null ? null : record.getAcceptedMembers())
+                : snapshot.acceptedMembers();
+        int pendingMembers = snapshot == null
+                ? normalizeCount(record == null ? null : record.getPendingMembers())
+                : snapshot.pendingMembers();
+        int capacityTotal = snapshot == null || snapshot.capacityTotal() == null
+                ? normalizeCount(record == null ? null : record.getCapacityTotal())
+                : Math.max(0, snapshot.capacityTotal());
+        return new EventParticipationActionResultDto(
+                normalizeId(sourceId),
+                StringUtils.hasText(slotSourceId) ? normalizeId(slotSourceId) : null,
+                "leave",
+                "deleted",
+                null,
+                acceptedMembers,
+                pendingMembers,
+                Math.max(acceptedMembers, capacityTotal),
+                resolveFullForActionResult(record, acceptedMembers, capacityTotal),
+                normalizeId(firstNonBlank(
+                        request == null ? null : request.checkoutSessionId(),
+                        request == null ? null : request.paymentSessionId(),
+                        null)));
     }
 
     private String pendingReasonForAction(boolean waitingList, boolean approvalRequested) {
@@ -1807,6 +2831,20 @@ public class ActivitiesEventsService {
             return "approval";
         }
         return null;
+    }
+
+    private String pendingReasonForCheckoutState(String checkoutState, String pendingReason) {
+        String normalizedState = safeText(checkoutState);
+        if ("waiting".equals(normalizedState)) {
+            return "waitlist";
+        }
+        if ("approval-pending".equals(normalizedState)) {
+            return "approval";
+        }
+        if (StringUtils.hasText(normalizedState)) {
+            return null;
+        }
+        return pendingReasonForDto(pendingReason);
     }
 
     private boolean isAcceptedMember(ActivitiesMembersService.OwnerMembersSnapshot snapshot, String userId) {
@@ -2385,14 +3423,56 @@ public class ActivitiesEventsService {
     }
 
     private boolean isWaitlistRequested(EventActionRequestDto request) {
-        return "waitlist".equals(safeText(request == null ? null : request.pendingReason()));
+        return "waitlist".equals(pendingReasonForCheckoutState(
+                request == null ? null : request.checkoutState(),
+                request == null ? null : request.pendingReason()));
     }
 
     private boolean isApprovalRequested(EventActionRequestDto request) {
-        return "approval".equals(safeText(request == null ? null : request.pendingReason()));
+        return "approval".equals(pendingReasonForCheckoutState(
+                request == null ? null : request.checkoutState(),
+                request == null ? null : request.pendingReason()));
     }
 
     private boolean isRecordFull(ActivityEvent record) {
+        if (record == null) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(record.getFull())) {
+            return true;
+        }
+        if (isSlotParentRecord(record)) {
+            return slotParentFull(record.getUpcomingSlots());
+        }
+        return directRecordFull(record);
+    }
+
+    private boolean resolveFullForActionResult(ActivityEvent record, int acceptedMembers, int capacityTotal) {
+        if (record != null && Boolean.TRUE.equals(record.getFull())) {
+            return true;
+        }
+        if (record != null && isSlotParentRecord(record)) {
+            return slotParentFull(record.getUpcomingSlots());
+        }
+        return capacityTotal > 0 && acceptedMembers >= capacityTotal;
+    }
+
+    private boolean slotParentFull(List<EventSlotOccurrenceDto> slots) {
+        if (slots == null || slots.isEmpty()) {
+            return true;
+        }
+        return slots.stream().allMatch(this::slotOccurrenceFull);
+    }
+
+    private boolean slotOccurrenceFull(EventSlotOccurrenceDto slot) {
+        if (slot == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(slot.capacityTotal());
+        return capacityTotal > 0 && normalizeCount(slot.acceptedMembers()) >= capacityTotal;
+    }
+
+    private boolean directRecordFull(ActivityEvent record) {
         if (record == null) {
             return false;
         }
@@ -2400,7 +3480,7 @@ public class ActivitiesEventsService {
         if (capacityTotal <= 0) {
             return false;
         }
-        return resolveAcceptedMemberUserIds(record).size() >= capacityTotal;
+        return Math.max(normalizeCount(record.getAcceptedMembers()), resolveAcceptedMemberUserIds(record).size()) >= capacityTotal;
     }
 
     private void recordJoinPayment(
@@ -2925,7 +4005,9 @@ public class ActivitiesEventsService {
             case "invitations" -> invitationItems;
             case "my-events" -> "drafts".equals(hostingPublicationFilter) ? draftItems : myEventItems;
             case "drafts" -> draftItems;
-            case "trash" -> userItems.stream().filter(this::isTrashStatus).toList();
+            case "trash" -> userItems.stream()
+                    .filter(record -> isTrashStatus(record) || hasDeletedMembership(record, viewer.userId()))
+                    .toList();
             default -> activeEventItems;
         };
     }
@@ -3021,10 +4103,56 @@ public class ActivitiesEventsService {
                 current == null ? Set.of() : current.trackedEventSourceIds(),
                 current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey());
+        Map<String, String> checkoutResultStatesBySourceId = checkoutResultStatesBySourceId(
+                viewer == null ? null : viewer.userId(),
+                hydratedRecords);
         return withEventQueryContext(pageContext, () -> hydratedRecords.stream()
-                .map(record -> toEventDto(record, viewer))
+                .map(record -> toEventDto(record, viewer, checkoutResultStatesBySourceId))
                 .filter(Objects::nonNull)
                 .toList());
+    }
+
+    private Map<String, String> checkoutResultStatesBySourceId(
+            String userId,
+            List<ActivityEvent> records) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, String> result = new LinkedHashMap<>();
+        for (ActivityEvent record : records) {
+            String sourceId = normalizeId(record == null ? null : record.getSourceId());
+            if (!StringUtils.hasText(sourceId) || result.containsKey(sourceId)) {
+                continue;
+            }
+            String resultState = checkoutBasketResultState(eventCheckoutBasketService.loadBasketByEvent(normalizedUserId, sourceId));
+            if (StringUtils.hasText(resultState)) {
+                result.put(sourceId, resultState);
+            }
+        }
+        return result.isEmpty() ? Map.of() : result;
+    }
+
+    private String checkoutBasketResultState(EventCheckoutBasketDto basket) {
+        List<String> resultStates = basket == null || basket.items() == null
+                ? List.of()
+                : basket.items().stream()
+                        .map(item -> safeText(item == null ? null : item.resultState()))
+                        .map(value -> StringUtils.hasText(value) ? value : "pending")
+                        .toList();
+        if (resultStates.isEmpty()) {
+            return null;
+        }
+        if (resultStates.stream().anyMatch("failed"::equals)) {
+            return "failed";
+        }
+        if (resultStates.stream().allMatch("deleted"::equals)) {
+            return "deleted";
+        }
+        if (resultStates.stream().allMatch(value -> "deleted".equals(value) || "succeeded".equals(value))) {
+            return "succeeded";
+        }
+        return "pending";
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> resolveHydratedPageSnapshots(
@@ -3381,6 +4509,30 @@ public class ActivitiesEventsService {
         return ActivityEvent.STATUS_TRASHED.equals(status);
     }
 
+    private boolean hasDeletedMembership(ActivityEvent record, String userId) {
+        String normalizedUserId = normalizeId(userId);
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(sourceId)) {
+            return false;
+        }
+        if (MEMBER_STATUS_DELETED.equals(trackedEventMembershipStatus(record))) {
+            return true;
+        }
+        return MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, normalizedUserId));
+    }
+
+    private String eventMembershipStatusForUser(String sourceId, String userId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedSourceId) || !StringUtils.hasText(normalizedUserId)) {
+            return "";
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedSourceId, normalizedUserId)
+                .map(ActivityMember::getStatus)
+                .map(this::safeText)
+                .orElse("");
+    }
+
     private ActivityEvent buildMembershipProjection(String ownerUserId, ActivityEvent record) {
         ActivityEvent projection = cloneDocument(record);
         projection.setOwnerUserId(ownerUserId);
@@ -3540,18 +4692,33 @@ public class ActivitiesEventsService {
     }
 
     private EventDto toEventDto(ActivityEvent record, ViewerContext viewer) {
-        return activityEventMapper.toDto(record, eventDtoMappingContext(viewer, record));
+        return toEventDto(record, viewer, Map.of());
+    }
+
+    private EventDto toEventDto(
+            ActivityEvent record,
+            ViewerContext viewer,
+            Map<String, String> checkoutResultStatesBySourceId) {
+        return activityEventMapper.toDto(record, eventDtoMappingContext(viewer, record, checkoutResultStatesBySourceId));
     }
 
     private ActivityEventMapper.MappingContext eventDtoMappingContext(
             ViewerContext viewer,
             ActivityEvent record) {
+        return eventDtoMappingContext(viewer, record, Map.of());
+    }
+
+    private ActivityEventMapper.MappingContext eventDtoMappingContext(
+            ViewerContext viewer,
+            ActivityEvent record,
+            Map<String, String> checkoutResultStatesBySourceId) {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId =
                 ctx == null ? singleRecordSnapshot(record) : ctx.snapshotsBySourceId();
         return new ActivityEventMapper.MappingContext(
                 viewer == null ? null : viewer.locationCoordinates(),
-                snapshotsBySourceId);
+                snapshotsBySourceId,
+                checkoutResultStatesBySourceId);
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> singleRecordSnapshot(ActivityEvent record) {
@@ -3944,6 +5111,9 @@ public class ActivitiesEventsService {
         document.setTicketing(publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getTicketing())
                 : request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
+        document.setApprovalRequired(publishedManageMode
+                ? existing != null && Boolean.TRUE.equals(existing.getApprovalRequired())
+                : request.approvalRequired() != null ? request.approvalRequired() : existing != null && Boolean.TRUE.equals(existing.getApprovalRequired()));
         document.setPricing(publishedManageMode
                 ? existing == null ? null : clonePricing(existing.getPricing())
                 : request.pricing() != null ? clonePricing(request.pricing()) : existing == null ? null : clonePricing(existing.getPricing()));
@@ -3971,6 +5141,7 @@ public class ActivitiesEventsService {
         document.setPendingMemberUserIds(pendingMemberUserIds);
         document.setInvitedMemberUserIds(invitedMemberUserIds);
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
+        document.setFull(directRecordFull(document));
         document.setTopics(normalizeStrings(request.topics()));
         boolean subEventsEnabled = publishedManageMode
                 ? existing == null || existing.getSubEventsEnabled() == null || Boolean.TRUE.equals(existing.getSubEventsEnabled())
@@ -4230,6 +5401,9 @@ public class ActivitiesEventsService {
         }
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         String sourceId = normalizeId(record.getSourceId());
+        if (MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, userId))) {
+            return false;
+        }
         if (ctx != null && StringUtils.hasText(sourceId) && ctx.trackedEventSourceIds().contains(sourceId)) {
             return true;
         }
@@ -4316,7 +5490,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean exploreHasOpenSpots(ActivityEvent record) {
-        return normalizeCount(record.getCapacityTotal()) > resolveAcceptedMemberUserIds(record).size();
+        return !isRecordFull(record);
     }
 
     private boolean isViewerAdmin(ActivityEvent record, String viewerUserId) {
@@ -4399,7 +5573,9 @@ public class ActivitiesEventsService {
                 .include("capacityMin")
                 .include("capacityMax")
                 .include("capacityTotal")
+                .include("full")
                 .include("ticketing")
+                .include("approvalRequired")
                 .include("parentEventId")
                 .include("slotTemplateId")
                 .include("generated")
@@ -5310,6 +6486,7 @@ public class ActivitiesEventsService {
         String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
         ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
         ActivityEvent next = new ActivityEvent();
+        GeneratedSlotMemberSnapshot slotMembers = generatedSlotMemberSnapshot(parent, existing, definitions);
         String nowIso = Instant.now().toString();
         next.setId(resolveExistingId(SLOT_READ_MODEL_USER_ID, sourceId, existing));
         next.setSyncKey(resolveExistingSyncKey(SLOT_READ_MODEL_USER_ID, sourceId, existing == null ? null : existing.getSyncKey()));
@@ -5345,10 +6522,11 @@ public class ActivitiesEventsService {
         next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
         next.setCapacityMin(parent.getCapacityMin());
         next.setCapacityMax(parent.getCapacityMax());
-        next.setCapacityTotal(normalizeCount(parent.getCapacityTotal()));
+        next.setCapacityTotal(slotMembers.capacityTotal());
         next.setAutoInviter(parent.getAutoInviter());
         next.setFrequency(parent.getFrequency());
         next.setTicketing(parent.getTicketing());
+        next.setApprovalRequired(parent.getApprovalRequired());
         next.setPricing(clonePricing(parent.getPricing()));
         next.setSlotsEnabled(false);
         next.setSlotTemplates(List.of());
@@ -5357,8 +6535,13 @@ public class ActivitiesEventsService {
         next.setGenerated(true);
         next.setEventType("slot");
         next.setUpcomingSlots(List.of());
-        next.setAcceptedMembers(existing == null ? 0 : normalizeCount(existing.getAcceptedMembers()));
-        next.setPendingMembers(existing == null ? 0 : normalizeCount(existing.getPendingMembers()));
+        next.setAcceptedMembers(slotMembers.acceptedMembers());
+        next.setPendingMembers(slotMembers.pendingMembers());
+        next.setAcceptedMemberUserIds(slotMembers.acceptedMemberUserIds());
+        next.setPendingMemberUserIds(slotMembers.pendingMemberUserIds());
+        next.setInvitedMemberUserIds(slotMembers.invitedMemberUserIds());
+        next.setPendingRequestMemberUserIds(slotMembers.pendingRequestMemberUserIds());
+        next.setFull(directRecordFull(next));
         next.setTopics(normalizeStrings(parent.getTopics()));
         next.setSubEventsEnabled(false);
         next.setSubEventDefinitions(cloneSubEventDefinitions(definitions));
@@ -5371,9 +6554,73 @@ public class ActivitiesEventsService {
         next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(creatorUserId);
-        next.setAdmins(List.of());
+        next.setAdmins(slotMembers.adminUserIds());
         next.normalizeLifecycleState();
         records.add(next);
+    }
+
+    private GeneratedSlotMemberSnapshot generatedSlotMemberSnapshot(
+            ActivityEvent parent,
+            ActivityEvent existing,
+            List<SubEventDefinitionDto> definitions) {
+        List<String> adminUserIds = normalizeIds(parent == null ? null : parent.getAdmins());
+        List<String> rawAcceptedMemberUserIds = normalizeIds(existing == null ? null : existing.getAcceptedMemberUserIds());
+        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>(rawAcceptedMemberUserIds);
+        acceptedMemberUserIds.addAll(adminUserIds);
+        int storedAcceptedMembers = normalizeCount(existing == null ? null : existing.getAcceptedMembers());
+        int acceptedMembers = acceptedMemberUserIds.isEmpty()
+                ? storedAcceptedMembers
+                : acceptedMemberUserIds.size();
+        Set<String> acceptedUserIds = new LinkedHashSet<>(acceptedMemberUserIds);
+        List<String> rawPendingMemberUserIds = normalizeIds(existing == null ? null : existing.getPendingMemberUserIds());
+        List<String> pendingMemberUserIds = removeUserIds(rawPendingMemberUserIds, acceptedUserIds);
+        int pendingMembers = rawPendingMemberUserIds.isEmpty()
+                ? normalizeCount(existing == null ? null : existing.getPendingMembers())
+                : pendingMemberUserIds.size();
+        List<String> invitedMemberUserIds = removeUserIds(
+                normalizeIds(existing == null ? null : existing.getInvitedMemberUserIds()),
+                acceptedUserIds);
+        List<String> pendingRequestMemberUserIds = removeUserIds(
+                normalizeIds(existing == null ? null : existing.getPendingRequestMemberUserIds()),
+                acceptedUserIds);
+        int slotCapacityTotal = slotDefinitionCapacityTotal(definitions);
+        int baseCapacityTotal = slotCapacityTotal > 0
+                ? slotCapacityTotal
+                : normalizeCount(parent == null ? null : parent.getCapacityTotal());
+        int capacityTotal = Math.max(acceptedMembers, baseCapacityTotal);
+        return new GeneratedSlotMemberSnapshot(
+                adminUserIds,
+                acceptedMembers,
+                pendingMembers,
+                capacityTotal,
+                new ArrayList<>(acceptedMemberUserIds),
+                pendingMemberUserIds,
+                invitedMemberUserIds,
+                pendingRequestMemberUserIds);
+    }
+
+    private int slotDefinitionCapacityTotal(List<SubEventDefinitionDto> definitions) {
+        int capacityTotal = 0;
+        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
+            if (definition == null || Boolean.TRUE.equals(definition.optional())) {
+                continue;
+            }
+            int capacityMax = normalizeCount(definition.capacityMax());
+            if (capacityMax <= 0) {
+                continue;
+            }
+            capacityTotal = capacityTotal <= 0 ? capacityMax : Math.min(capacityTotal, capacityMax);
+        }
+        return capacityTotal;
+    }
+
+    private List<String> removeUserIds(List<String> userIds, Set<String> excludedUserIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+        return userIds.stream()
+                .filter(userId -> !excludedUserIds.contains(userId))
+                .toList();
     }
 
     private String buildGeneratedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime occurrenceStart) {
@@ -5671,6 +6918,62 @@ public class ActivitiesEventsService {
         merged.addAll(first);
         merged.addAll(second);
         return merged;
+    }
+
+    private record CheckoutSlotPricing(
+            double amount,
+            String currency,
+            List<EventCheckoutPricingSummaryRowDto> rows) {
+    }
+
+    private record GeneratedSlotMemberSnapshot(
+            List<String> adminUserIds,
+            int acceptedMembers,
+            int pendingMembers,
+            int capacityTotal,
+            List<String> acceptedMemberUserIds,
+            List<String> pendingMemberUserIds,
+            List<String> invitedMemberUserIds,
+            List<String> pendingRequestMemberUserIds) {
+    }
+
+    private static final class CheckoutSlotDayAccumulator {
+        private int slotCount;
+        private int availableSlots;
+        private boolean bookedByViewer;
+        private double lowestAmount = Double.MAX_VALUE;
+        private String currency;
+
+        CheckoutSlotDayAccumulator(String currency) {
+            this.currency = StringUtils.hasText(currency) ? currency : "USD";
+        }
+
+        void add(EventCheckoutSlotDto slot) {
+            if (slot == null) {
+                return;
+            }
+            slotCount += 1;
+            int slotAvailable = Math.max(0, slot.availableSlots() == null ? 0 : slot.availableSlots());
+            availableSlots += slotAvailable;
+            bookedByViewer = bookedByViewer || Boolean.TRUE.equals(slot.bookedByViewer());
+            if (slotAvailable > 0) {
+                double amount = slot.amount() == null ? 0d : Math.max(0d, slot.amount());
+                lowestAmount = Math.min(lowestAmount, amount);
+            }
+            if (StringUtils.hasText(slot.currency())) {
+                currency = slot.currency();
+            }
+        }
+
+        EventCheckoutSlotDayDto toDto(String dateKey) {
+            return new EventCheckoutSlotDayDto(
+                    dateKey,
+                    slotCount,
+                    availableSlots,
+                    bookedByViewer,
+                    lowestAmount == Double.MAX_VALUE ? 0d : lowestAmount,
+                    currency);
+        }
     }
 
     private record ViewerContext(

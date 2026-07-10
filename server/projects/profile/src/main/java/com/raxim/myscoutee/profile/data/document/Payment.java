@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 
 @Document(collection = "payments")
@@ -34,6 +36,8 @@ public class Payment {
     private String bookingStartAtIso;
     private List<String> optionalSubEventIds = new ArrayList<>();
     private List<String> acceptedPolicyIds = new ArrayList<>();
+    private List<EventCheckoutBasketItemDto> basketItems = new ArrayList<>();
+    private List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows = new ArrayList<>();
     private List<EventCheckoutLineItemDto> lineItems = new ArrayList<>();
     private String bookingStatus;
     private String joinedAtIso;
@@ -88,6 +92,16 @@ public class Payment {
     public List<String> getAcceptedPolicyIds() { return acceptedPolicyIds; }
     public void setAcceptedPolicyIds(List<String> acceptedPolicyIds) {
         this.acceptedPolicyIds = acceptedPolicyIds == null ? new ArrayList<>() : new ArrayList<>(acceptedPolicyIds);
+    }
+
+    public List<EventCheckoutBasketItemDto> getBasketItems() { return basketItems; }
+    public void setBasketItems(List<EventCheckoutBasketItemDto> basketItems) {
+        this.basketItems = basketItems == null ? new ArrayList<>() : new ArrayList<>(basketItems);
+    }
+
+    public List<EventCheckoutPricingSummaryRowDto> getPricingSummaryRows() { return pricingSummaryRows; }
+    public void setPricingSummaryRows(List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
+        this.pricingSummaryRows = pricingSummaryRows == null ? new ArrayList<>() : new ArrayList<>(pricingSummaryRows);
     }
 
     public List<EventCheckoutLineItemDto> getLineItems() { return lineItems; }

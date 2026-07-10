@@ -470,11 +470,23 @@ public class UserActivityCountersService {
 
     private void collectSourceIds(Set<String> sourceIds, Collection<ActivityEvent> events) {
         for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
+            String parentEventId = isGeneratedSlotRecord(event)
+                    ? normalizeId(event.getParentEventId())
+                    : "";
+            String sourceId = StringUtils.hasText(parentEventId)
+                    ? parentEventId
+                    : normalizeId(event == null ? null : event.getSourceId());
             if (StringUtils.hasText(sourceId)) {
                 sourceIds.add(sourceId);
             }
         }
+    }
+
+    private boolean isGeneratedSlotRecord(ActivityEvent event) {
+        return event != null
+                && (Boolean.TRUE.equals(event.getGenerated())
+                || StringUtils.hasText(normalizeId(event.getParentEventId()))
+                || "slot".equals(safeText(event.getEventType())));
     }
 
     private int eventPreferenceScore(ActivityEvent event, String userId) {

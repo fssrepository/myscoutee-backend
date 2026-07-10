@@ -8,6 +8,10 @@ import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +25,8 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.IdeaPost;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminCountsDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.IdeaPostsRepository;
@@ -30,6 +36,8 @@ public class IdeaPostsService {
     private static final String DEFAULT_LANG = "en";
     private static final int EXCERPT_MAX_LENGTH = 180;
     private static final int MAX_IMAGE_URLS = 24;
+    private static final int DEFAULT_ADMIN_PAGE_SIZE = 10;
+    private static final int MAX_ADMIN_PAGE_SIZE = 50;
     private static final Safelist IDEA_HTML_SAFELIST = Safelist.relaxed()
             .addTags("section", "article", "figure", "figcaption", "h2", "h3", "h4")
             .addAttributes(":all", "class")
@@ -41,16 +49,19 @@ public class IdeaPostsService {
 
     private final ConfigProperties configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
+    private final MongoTemplate mongoTemplate;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
 
     public IdeaPostsService(
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
+            MongoTemplate mongoTemplate,
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService) {
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
+        this.mongoTemplate = mongoTemplate;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
     }
@@ -84,6 +95,38 @@ public class IdeaPostsService {
         return ideaPostsRepository.findAllByLangOrderBySubmittedAtIsoDesc(contentLang(lang)).stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    public IdeaPostAdminPageDto adminPostsPage(
+            String adminUserId,
+            String lang,
+            String status,
+            Integer page,
+            Integer pageSize,
+            String cursor) {
+        ensureAdmin(adminUserId);
+        String language = contentLang(lang);
+        String normalizedStatus = adminStatus(status);
+        int limit = normalizePageSize(pageSize);
+        long offset = resolvePageOffset(page, limit, cursor);
+        Criteria pageCriteria = adminPostsCriteria(language, normalizedStatus);
+        long total = mongoTemplate.count(Query.query(pageCriteria), IdeaPost.class);
+        List<IdeaPostDto> records = mongoTemplate.find(
+                Query.query(pageCriteria)
+                        .with(Sort.by(
+                                Sort.Order.desc("submittedAtIso"),
+                                Sort.Order.desc("_id")))
+                        .skip(Math.min(offset, total))
+                        .limit(limit),
+                IdeaPost.class).stream()
+                .map(this::toDto)
+                .toList();
+        long nextOffset = Math.min(offset, total) + records.size();
+        return new IdeaPostAdminPageDto(
+                records,
+                toSafeInt(total),
+                nextOffset < total ? String.valueOf(nextOffset) : null,
+                adminPostCounts(language));
     }
 
     public IdeaPostDto savePost(IdeaPostSaveRequestDto request) {
@@ -268,6 +311,74 @@ public class IdeaPostsService {
             }
         }
         return text(existing, fallback);
+    }
+
+    private IdeaPostAdminCountsDto adminPostCounts(String lang) {
+        return new IdeaPostAdminCountsDto(
+                countAdminPosts(lang, "all"),
+                countAdminPosts(lang, "featured"),
+                countAdminPosts(lang, "published"),
+                countAdminPosts(lang, "drafts"),
+                countAdminPosts(lang, "trashed"));
+    }
+
+    private int countAdminPosts(String lang, String status) {
+        return toSafeInt(mongoTemplate.count(Query.query(adminPostsCriteria(lang, status)), IdeaPost.class));
+    }
+
+    private Criteria adminPostsCriteria(String lang, String status) {
+        List<Criteria> criteria = new ArrayList<>();
+        criteria.add(Criteria.where("lang").is(contentLang(lang)));
+        switch (adminStatus(status)) {
+            case "featured" -> {
+                criteria.add(Criteria.where("trashed").ne(true));
+                criteria.add(Criteria.where("featured").is(true));
+            }
+            case "published" -> {
+                criteria.add(Criteria.where("trashed").ne(true));
+                criteria.add(Criteria.where("published").ne(false));
+            }
+            case "drafts" -> {
+                criteria.add(Criteria.where("trashed").ne(true));
+                criteria.add(Criteria.where("published").is(false));
+            }
+            case "trashed" -> criteria.add(Criteria.where("trashed").is(true));
+            default -> criteria.add(Criteria.where("trashed").ne(true));
+        }
+        return new Criteria().andOperator(criteria.toArray(Criteria[]::new));
+    }
+
+    private String adminStatus(String value) {
+        return switch (normalize(value).toLowerCase()) {
+            case "featured", "published", "drafts", "trashed" -> normalize(value).toLowerCase();
+            case "draft" -> "drafts";
+            case "trash" -> "trashed";
+            default -> "all";
+        };
+    }
+
+    private int normalizePageSize(Integer pageSize) {
+        int requested = pageSize == null ? DEFAULT_ADMIN_PAGE_SIZE : pageSize;
+        return Math.max(1, Math.min(MAX_ADMIN_PAGE_SIZE, requested));
+    }
+
+    private long resolvePageOffset(Integer page, int pageSize, String cursor) {
+        String normalizedCursor = normalize(cursor);
+        if (StringUtils.hasText(normalizedCursor)) {
+            try {
+                return Math.max(0L, Long.parseLong(normalizedCursor));
+            } catch (NumberFormatException ignored) {
+                return 0L;
+            }
+        }
+        return Math.max(0L, page == null ? 0L : page.longValue()) * Math.max(1L, pageSize);
+    }
+
+    private int toSafeInt(long value) {
+        if (value <= 0L) {
+            return 0;
+        }
+        return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
     }
 
     private String ensureAdmin(String adminUserId) {

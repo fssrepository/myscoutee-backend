@@ -84,6 +84,7 @@ public class ChatService {
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
     private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    private static final String SUPPORT_CASE_STATUS_WARNED = "warned";
     private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
     private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
     private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
@@ -2077,7 +2078,7 @@ public class ChatService {
     private String normalizeSupportCaseStatus(String value) {
         String normalized = safeText(value).toLowerCase(Locale.ROOT);
         return switch (normalized) {
-            case SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            case SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
             default -> SUPPORT_CASE_STATUS_PENDING;
         };
     }
@@ -2085,7 +2086,7 @@ public class ChatService {
     private String normalizeSupportCaseFilter(String value) {
         String normalized = safeText(value).toLowerCase(Locale.ROOT);
         return switch (normalized) {
-            case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
             default -> SUPPORT_CASE_FILTER_ALL;
         };
     }

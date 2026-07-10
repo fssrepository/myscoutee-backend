@@ -145,7 +145,10 @@ class PaymentServiceTest {
     }
 
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
-        PaymentService service = new PaymentService(List.of(processors), repository);
+        PaymentService service = new PaymentService(
+                List.of(processors),
+                repository,
+                org.mockito.Mockito.mock(EventCheckoutBasketService.class));
         ReflectionTestUtils.setField(service, "enablePay", enablePay);
         return service;
     }
@@ -186,6 +189,9 @@ class PaymentServiceTest {
                 List.of("sub-event-1"),
                 List.of(),
                 List.of("policy-1"),
+                List.of(),
+                List.of(),
+                "draft",
                 List.of(new EventCheckoutLineItemDto("ticket", "event-ticket", "Ticket", "One seat", amount, currency)),
                 amount,
                 currency,

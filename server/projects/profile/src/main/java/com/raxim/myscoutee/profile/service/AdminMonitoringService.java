@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,6 +24,14 @@ public class AdminMonitoringService {
     private static final String HEALTH_OK = "ok";
     private static final String HEALTH_WATCH = "watch";
     private static final String HEALTH_ALERT = "alert";
+    private static final String FILTER_ALL = "all";
+    private static final String FILTER_WATCH = "watch";
+    private static final String FILTER_DOMAINS = "domains";
+    private static final String FILTER_DELIVERY = "delivery";
+    private static final String FILTER_WORKERS = "workers";
+    private static final Set<String> DOMAIN_FILTER_CATEGORIES = Set.of("users", "events", "members", "assets", "chat");
+    private static final Set<String> DELIVERY_FILTER_CATEGORIES = Set.of("notifications");
+    private static final Set<String> WORKER_FILTER_CATEGORIES = Set.of("matching", "jobs");
 
     private final AdminMonitoringRepository monitoringRepository;
     private final AdminModerationService adminModerationService;
@@ -35,8 +44,12 @@ public class AdminMonitoringService {
     }
 
     public AdminMonitoringStateDto state(String adminUserId) {
+        return state(adminUserId, FILTER_ALL);
+    }
+
+    public AdminMonitoringStateDto state(String adminUserId, String filter) {
         adminModerationService.resolveAdminActor(adminUserId);
-        return toDto(monitoringRepository.globalSnapshotOrDefault());
+        return toDto(monitoringRepository.globalSnapshotOrDefault(), filter);
     }
 
     public Optional<String> lastTelemetryStreamId() {
@@ -88,7 +101,7 @@ public class AdminMonitoringService {
         monitoringRepository.save(snapshot);
     }
 
-    private AdminMonitoringStateDto toDto(AdminMonitoringSnapshot snapshot) {
+    private AdminMonitoringStateDto toDto(AdminMonitoringSnapshot snapshot, String filter) {
         Map<String, Long> counters = safeMap(snapshot.getCounters());
         Map<String, Long> categoryCounters = safeMap(snapshot.getCategoryCounters());
         Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
@@ -111,11 +124,13 @@ public class AdminMonitoringService {
                 notificationsCategory(counters, categoryCounters, nodeCounters, outboxPending, outboxRunning, outboxFailed, outboxSent),
                 jobsCategory(counters, categoryCounters, nodeCounters, alertCounters)
         );
+        Map<String, Long> filterCounts = monitoringFilterCounts(categories);
         return new AdminMonitoringStateDto(
                 firstNonBlank(snapshot.getGeneratedAtIso(), Instant.now().toString()),
                 firstNonBlank(snapshot.getSource(), "http"),
                 overallHealth(categories),
-                categories);
+                filterCounts,
+                filterCategories(categories, normalizeFilter(filter)));
     }
 
     private AdminMonitoringCategoryDto usersCategory(
@@ -485,6 +500,63 @@ public class AdminMonitoringService {
             return "scheduler";
         }
         return "writes";
+    }
+
+    private Map<String, Long> monitoringFilterCounts(List<AdminMonitoringCategoryDto> categories) {
+        Map<String, Long> counts = new LinkedHashMap<>();
+        counts.put(FILTER_ALL, Long.valueOf(categories.size()));
+        counts.put(FILTER_WATCH, categories.stream()
+                .filter(category -> category != null && !HEALTH_OK.equals(category.health()))
+                .count());
+        counts.put(FILTER_DOMAINS, categories.stream()
+                .filter(category -> inCategorySet(category, DOMAIN_FILTER_CATEGORIES))
+                .count());
+        counts.put(FILTER_DELIVERY, categories.stream()
+                .filter(category -> inCategorySet(category, DELIVERY_FILTER_CATEGORIES))
+                .count());
+        counts.put(FILTER_WORKERS, categories.stream()
+                .filter(category -> inCategorySet(category, WORKER_FILTER_CATEGORIES))
+                .count());
+        return counts;
+    }
+
+    private List<AdminMonitoringCategoryDto> filterCategories(List<AdminMonitoringCategoryDto> categories, String filter) {
+        if (FILTER_WATCH.equals(filter)) {
+            return categories.stream()
+                    .filter(category -> category != null && !HEALTH_OK.equals(category.health()))
+                    .toList();
+        }
+        if (FILTER_DOMAINS.equals(filter)) {
+            return categories.stream()
+                    .filter(category -> inCategorySet(category, DOMAIN_FILTER_CATEGORIES))
+                    .toList();
+        }
+        if (FILTER_DELIVERY.equals(filter)) {
+            return categories.stream()
+                    .filter(category -> inCategorySet(category, DELIVERY_FILTER_CATEGORIES))
+                    .toList();
+        }
+        if (FILTER_WORKERS.equals(filter)) {
+            return categories.stream()
+                    .filter(category -> inCategorySet(category, WORKER_FILTER_CATEGORIES))
+                    .toList();
+        }
+        return categories;
+    }
+
+    private boolean inCategorySet(AdminMonitoringCategoryDto category, Set<String> keys) {
+        return category != null && keys.contains(normalizeKey(category.key()));
+    }
+
+    private String normalizeFilter(String filter) {
+        String normalized = normalizeKey(filter);
+        if (FILTER_WATCH.equals(normalized)
+                || FILTER_DOMAINS.equals(normalized)
+                || FILTER_DELIVERY.equals(normalized)
+                || FILTER_WORKERS.equals(normalized)) {
+            return normalized;
+        }
+        return FILTER_ALL;
     }
 
     private String overallHealth(List<AdminMonitoringCategoryDto> categories) {

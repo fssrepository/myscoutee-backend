@@ -264,6 +264,12 @@
     "value": "Solved"
   },
   {
+    "_id": "i18n-message-en-activities-support-case-filter-warned",
+    "key": "activities.support.case.filter.warned",
+    "lang": "en",
+    "value": "Warned"
+  },
+  {
     "_id": "i18n-message-en-activities-support-case-status-blocked",
     "key": "activities.support.case.status.blocked",
     "lang": "en",
@@ -286,6 +292,12 @@
     "key": "activities.support.case.status.solved",
     "lang": "en",
     "value": "Solved"
+  },
+  {
+    "_id": "i18n-message-en-activities-support-case-status-warned",
+    "key": "activities.support.case.status.warned",
+    "lang": "en",
+    "value": "Warned"
   },
   {
     "_id": "i18n-message-en-add-myscoutee-to-your-home-screen",
@@ -904,6 +916,18 @@
     "key": "demo.data.ready",
     "lang": "en",
     "value": "Demo data ready"
+  },
+  {
+    "_id": "i18n-message-en-demo-admin-selector-subtitle",
+    "key": "demo.admin.selector.subtitle",
+    "lang": "en",
+    "value": "Choose an admin profile."
+  },
+  {
+    "_id": "i18n-message-en-demo-selector-subtitle",
+    "key": "demo.selector.subtitle",
+    "lang": "en",
+    "value": "Choose a demo profile."
   },
   {
     "_id": "i18n-message-en-demo-session-ready",
@@ -3082,18 +3106,6 @@
     "key": "login",
     "lang": "en",
     "value": "Login"
-  },
-  {
-    "_id": "i18n-message-en-login-disabled-mode-choose-a-demo-user-to-open-perspective-based-data",
-    "key": "login.disabled.mode.choose.a.demo.user.to.open.perspective.based.data",
-    "lang": "en",
-    "value": "Login disabled mode. Choose a demo user to open perspective-based data."
-  },
-  {
-    "_id": "i18n-message-en-login-disabled-mode-choose-an-admin-user-to-seed-moderation-data",
-    "key": "login.disabled.mode.choose.an.admin.user.to.seed.moderation.data",
-    "lang": "en",
-    "value": "Login disabled mode. Choose an admin user to seed moderation data."
   },
   {
     "_id": "i18n-message-en-moderation-and-support",
@@ -7182,6 +7194,12 @@
     "value": "Waiting List"
   },
   {
+    "_id": "i18n-message-en-warn",
+    "key": "warn",
+    "lang": "en",
+    "value": "Warn"
+  },
+  {
     "_id": "i18n-message-en-warn-in-chat",
     "key": "warn.in.chat",
     "lang": "en",
@@ -10701,13 +10719,13 @@
     "_id": "i18n-message-en-asset-lending-policies-popup-subtitle",
     "key": "asset.lending.policies.popup.subtitle",
     "lang": "en",
-    "value": "Keep the list compact here. Open a policy to edit the details borrowers need to read and approve."
+    "value": "Open a policy to edit its details."
   },
   {
     "_id": "i18n-message-en-asset-lending-policies-editor-subtitle",
     "key": "asset.lending.policies.editor.subtitle",
     "lang": "en",
-    "value": "Write the lending policy clearly and choose whether borrowers must approve it before sending the request."
+    "value": "Describe the policy and choose if approval is required."
   },
   {
     "_id": "i18n-message-en-total-capacity",
@@ -11064,6 +11082,270 @@
     "value": "Share MyScoutee"
   },
   {
+    "_id": "i18n-message-en-admin-review-status-resolved",
+    "key": "admin.review.status.resolved",
+    "lang": "en",
+    "value": "Resolved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-status-unresolved",
+    "key": "admin.review.status.unresolved",
+    "lang": "en",
+    "value": "Unresolved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-solved",
+    "key": "admin.review.action.mark.solved",
+    "lang": "en",
+    "value": "Mark solved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-solved-busy",
+    "key": "admin.review.action.mark.solved.busy",
+    "lang": "en",
+    "value": "Marking solved..."
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-unresolved",
+    "key": "admin.review.action.mark.unresolved",
+    "lang": "en",
+    "value": "Mark unresolved"
+  },
+  {
+    "_id": "i18n-message-en-admin-review-action-mark-unresolved-busy",
+    "key": "admin.review.action.mark.unresolved.busy",
+    "lang": "en",
+    "value": "Reopening..."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-review-status-filter",
+    "key": "admin.feedback.review.status.filter",
+    "lang": "en",
+    "value": "Feedback status filter"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-review-status-filter",
+    "key": "admin.reports.review.status.filter",
+    "lang": "en",
+    "value": "Report status filter"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-empty-title",
+    "key": "admin.feedback.empty.title",
+    "lang": "en",
+    "value": "No feedback"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-empty-description",
+    "key": "admin.feedback.empty.description",
+    "lang": "en",
+    "value": "No application feedback has been submitted."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-empty-title",
+    "key": "admin.reports.empty.title",
+    "lang": "en",
+    "value": "No reports"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-empty-description",
+    "key": "admin.reports.empty.description",
+    "lang": "en",
+    "value": "No moderation reports are waiting for review."
+  },
+  {
+    "_id": "i18n-message-en-admin-blocked-users-subtitle",
+    "key": "admin.blocked.users.subtitle",
+    "lang": "en",
+    "value": "Profiles currently blocked by moderation."
+  },
+  {
+    "_id": "i18n-message-en-admin-blocked-users-empty-title",
+    "key": "admin.blocked.users.empty.title",
+    "lang": "en",
+    "value": "No blocked users"
+  },
+  {
+    "_id": "i18n-message-en-admin-blocked-users-empty-description",
+    "key": "admin.blocked.users.empty.description",
+    "lang": "en",
+    "value": "No profiles are currently blocked by moderation."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-solved-title",
+    "key": "admin.feedback.confirm.mark.solved.title",
+    "lang": "en",
+    "value": "Mark feedback solved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-solved-message",
+    "key": "admin.feedback.confirm.mark.solved.message",
+    "lang": "en",
+    "value": "{user} will receive a support message saying the feedback was reviewed."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-unresolved-title",
+    "key": "admin.feedback.confirm.mark.unresolved.title",
+    "lang": "en",
+    "value": "Mark feedback unresolved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-confirm-mark-unresolved-message",
+    "key": "admin.feedback.confirm.mark.unresolved.message",
+    "lang": "en",
+    "value": "The feedback will return to the unresolved list."
+  },
+  {
+    "_id": "i18n-message-en-admin-feedback-fallback-user",
+    "key": "admin.feedback.fallback.user",
+    "lang": "en",
+    "value": "The user"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-solved-title",
+    "key": "admin.reports.confirm.mark.solved.title",
+    "lang": "en",
+    "value": "Mark report solved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-solved-message",
+    "key": "admin.reports.confirm.mark.solved.message",
+    "lang": "en",
+    "value": "{user} will receive a support message saying the report was reviewed."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-unresolved-title",
+    "key": "admin.reports.confirm.mark.unresolved.title",
+    "lang": "en",
+    "value": "Mark report unresolved?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-mark-unresolved-message",
+    "key": "admin.reports.confirm.mark.unresolved.message",
+    "lang": "en",
+    "value": "The report will return to the unresolved list."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-fallback-reporter",
+    "key": "admin.reports.fallback.reporter",
+    "lang": "en",
+    "value": "The reporter"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-block-title",
+    "key": "admin.reports.confirm.block.title",
+    "lang": "en",
+    "value": "Block {user}?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-block-message",
+    "key": "admin.reports.confirm.block.message",
+    "lang": "en",
+    "value": "The user will be blocked and a support chat message will be sent."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-unblock-title",
+    "key": "admin.reports.confirm.unblock.title",
+    "lang": "en",
+    "value": "Unblock {user}?"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-confirm-unblock-message",
+    "key": "admin.reports.confirm.unblock.message",
+    "lang": "en",
+    "value": "The user profile status will be restored and they can use MyScoutee again."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-block",
+    "key": "admin.reports.action.block",
+    "lang": "en",
+    "value": "Block"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-block-busy",
+    "key": "admin.reports.action.block.busy",
+    "lang": "en",
+    "value": "Blocking..."
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-unblock",
+    "key": "admin.reports.action.unblock",
+    "lang": "en",
+    "value": "Unblock"
+  },
+  {
+    "_id": "i18n-message-en-admin-reports-action-unblock-busy",
+    "key": "admin.reports.action.unblock.busy",
+    "lang": "en",
+    "value": "Unblocking..."
+  },
+  {
+    "_id": "i18n-message-en-share-what-happened-reports-are-reviewed-by-moderation-and-we-use-them-t",
+    "key": "share.what.happened.reports.are.reviewed.by.moderation.and.we.use.them.to.improve.trust.and.safety",
+    "lang": "en",
+    "value": "Share what happened. Reports are reviewed by moderation, and we use them to improve trust and safety."
+  },
+  {
+    "_id": "i18n-message-en-user",
+    "key": "user",
+    "lang": "en",
+    "value": "User"
+  },
+  {
+    "_id": "i18n-message-en-event-context",
+    "key": "event.context",
+    "lang": "en",
+    "value": "Event context"
+  },
+  {
+    "_id": "i18n-message-en-reason",
+    "key": "reason",
+    "lang": "en",
+    "value": "Reason"
+  },
+  {
+    "_id": "i18n-message-en-selected-member",
+    "key": "selected.member",
+    "lang": "en",
+    "value": "Selected member"
+  },
+  {
+    "_id": "i18n-message-en-selected-member-placeholder",
+    "key": "selected.member.placeholder",
+    "lang": "en",
+    "value": "Selected member"
+  },
+  {
+    "_id": "i18n-message-en-submit-report",
+    "key": "submit.report",
+    "lang": "en",
+    "value": "Submit report"
+  },
+  {
+    "_id": "i18n-message-en-add-short-details-about-what-happened-and-why-you-are-reporting-this-mem",
+    "key": "add.short.details.about.what.happened.and.why.you.are.reporting.this.member.placeholder",
+    "lang": "en",
+    "value": "Add short details about what happened and why you are reporting this member."
+  },
+  {
+    "_id": "i18n-message-en-reports-can-only-be-started-from-a-member-card-of-an-event-you-both-atte",
+    "key": "reports.can.only.be.started.from.a.member.card.of.an.event.you.both.attended",
+    "lang": "en",
+    "value": "Reports can only be started from a member card of an event you both attended."
+  },
+  {
+    "_id": "i18n-message-en-reports-can-only-be-started-from-an-event-organizer-or-a-member-card-tie",
+    "key": "reports.can.only.be.started.from.an.event.organizer.or.a.member.card.tied.to.an.event",
+    "lang": "en",
+    "value": "Reports can only be started from an event organizer or a member card tied to an event."
+  },
+  {
+    "_id": "i18n-message-en-reports-can-only-be-submitted-for-an-event-organizer-or-a-member-you-sha",
+    "key": "reports.can.only.be.submitted.for.an.event.organizer.or.a.member.you.shared.an.event.with",
+    "lang": "en",
+    "value": "Reports can only be submitted for an event organizer or a member you shared an event with."
+  },
+  {
     "_id": "i18n-message-en-logout-question",
     "key": "logout.question",
     "lang": "en",
@@ -11334,6 +11616,12 @@
     "value": "Megoldott"
   },
   {
+    "_id": "i18n-message-hu-activities-support-case-filter-warned",
+    "key": "activities.support.case.filter.warned",
+    "lang": "hu",
+    "value": "Figyelmeztetett"
+  },
+  {
     "_id": "i18n-message-hu-activities-support-case-status-blocked",
     "key": "activities.support.case.status.blocked",
     "lang": "hu",
@@ -11356,6 +11644,12 @@
     "key": "activities.support.case.status.solved",
     "lang": "hu",
     "value": "Megoldott"
+  },
+  {
+    "_id": "i18n-message-hu-activities-support-case-status-warned",
+    "key": "activities.support.case.status.warned",
+    "lang": "hu",
+    "value": "Figyelmeztetett"
   },
   {
     "_id": "i18n-message-hu-add-myscoutee-to-your-home-screen",
@@ -11974,6 +12268,18 @@
     "key": "demo.data.ready",
     "lang": "hu",
     "value": "Demo adatok készen állnak"
+  },
+  {
+    "_id": "i18n-message-hu-demo-admin-selector-subtitle",
+    "key": "demo.admin.selector.subtitle",
+    "lang": "hu",
+    "value": "Válassz admin profilt."
+  },
+  {
+    "_id": "i18n-message-hu-demo-selector-subtitle",
+    "key": "demo.selector.subtitle",
+    "lang": "hu",
+    "value": "Válassz demo profilt."
   },
   {
     "_id": "i18n-message-hu-demo-session-ready",
@@ -14152,18 +14458,6 @@
     "key": "login",
     "lang": "hu",
     "value": "Bejelentkezés"
-  },
-  {
-    "_id": "i18n-message-hu-login-disabled-mode-choose-a-demo-user-to-open-perspective-based-data",
-    "key": "login.disabled.mode.choose.a.demo.user.to.open.perspective.based.data",
-    "lang": "hu",
-    "value": "Bejelentkezés nélküli mód. Válassz demo felhasználót a nézőpont szerinti adatok megnyitásához."
-  },
-  {
-    "_id": "i18n-message-hu-login-disabled-mode-choose-an-admin-user-to-seed-moderation-data",
-    "key": "login.disabled.mode.choose.an.admin.user.to.seed.moderation.data",
-    "lang": "hu",
-    "value": "Bejelentkezés nélküli mód. Válassz admin felhasználót a moderációs adatok feltöltéséhez."
   },
   {
     "_id": "i18n-message-hu-moderation-and-support",
@@ -18252,6 +18546,12 @@
     "value": "Várólista"
   },
   {
+    "_id": "i18n-message-hu-warn",
+    "key": "warn",
+    "lang": "hu",
+    "value": "Figyelmeztetés"
+  },
+  {
     "_id": "i18n-message-hu-warn-in-chat",
     "key": "warn.in.chat",
     "lang": "hu",
@@ -20871,7 +21171,7 @@
     "_id": "i18n-message-hu-images",
     "key": "images",
     "lang": "hu",
-    "value": "kép"
+    "value": "Képek"
   },
   {
     "_id": "i18n-message-hu-leave-end-empty-for-present",
@@ -21729,7 +22029,7 @@
     "_id": "i18n-message-hu-workspace",
     "key": "workspace",
     "lang": "hu",
-    "value": "Munkatér"
+    "value": "Munka"
   },
   {
     "_id": "i18n-message-hu-asset-image",
@@ -21759,13 +22059,13 @@
     "_id": "i18n-message-hu-asset-lending-policies-popup-subtitle",
     "key": "asset.lending.policies.popup.subtitle",
     "lang": "hu",
-    "value": "Itt maradjon tömör a lista. Nyiss meg egy feltételt a kölcsönzőknek szánt részletek szerkesztéséhez."
+    "value": "Nyiss meg egy feltételt a részletek szerkesztéséhez."
   },
   {
     "_id": "i18n-message-hu-asset-lending-policies-editor-subtitle",
     "key": "asset.lending.policies.editor.subtitle",
     "lang": "hu",
-    "value": "Írd le egyértelműen a kölcsönzési feltételt, és válaszd ki, hogy a kölcsönzőknek jóvá kell-e hagyniuk a kérés előtt."
+    "value": "Írd le a feltételt, és válaszd ki, kötelező-e jóváhagyni."
   },
   {
     "_id": "i18n-message-hu-total-capacity",
@@ -22134,9 +22434,393 @@
     "value": "MyScoutee megosztása"
   },
   {
+    "_id": "i18n-message-hu-admin-review-status-resolved",
+    "key": "admin.review.status.resolved",
+    "lang": "hu",
+    "value": "Megoldott"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-status-unresolved",
+    "key": "admin.review.status.unresolved",
+    "lang": "hu",
+    "value": "Megoldatlan"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-solved",
+    "key": "admin.review.action.mark.solved",
+    "lang": "hu",
+    "value": "Megoldottra jelölés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-solved-busy",
+    "key": "admin.review.action.mark.solved.busy",
+    "lang": "hu",
+    "value": "Megoldottra jelölés..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-unresolved",
+    "key": "admin.review.action.mark.unresolved",
+    "lang": "hu",
+    "value": "Megoldatlanná jelölés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-review-action-mark-unresolved-busy",
+    "key": "admin.review.action.mark.unresolved.busy",
+    "lang": "hu",
+    "value": "Újranyitás..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-review-status-filter",
+    "key": "admin.feedback.review.status.filter",
+    "lang": "hu",
+    "value": "Visszajelzés állapotszűrő"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-review-status-filter",
+    "key": "admin.reports.review.status.filter",
+    "lang": "hu",
+    "value": "Jelentés állapotszűrő"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-empty-title",
+    "key": "admin.feedback.empty.title",
+    "lang": "hu",
+    "value": "Nincs visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-empty-description",
+    "key": "admin.feedback.empty.description",
+    "lang": "hu",
+    "value": "Még nem érkezett alkalmazás-visszajelzés."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-empty-title",
+    "key": "admin.reports.empty.title",
+    "lang": "hu",
+    "value": "Nincs jelentés"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-empty-description",
+    "key": "admin.reports.empty.description",
+    "lang": "hu",
+    "value": "Nincs moderációs jelentés átnézésre."
+  },
+  {
+    "_id": "i18n-message-hu-admin-blocked-users-subtitle",
+    "key": "admin.blocked.users.subtitle",
+    "lang": "hu",
+    "value": "Moderáció által jelenleg letiltott profilok."
+  },
+  {
+    "_id": "i18n-message-hu-admin-blocked-users-empty-title",
+    "key": "admin.blocked.users.empty.title",
+    "lang": "hu",
+    "value": "Nincs letiltott felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-admin-blocked-users-empty-description",
+    "key": "admin.blocked.users.empty.description",
+    "lang": "hu",
+    "value": "Jelenleg nincs moderáció által letiltott profil."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-solved-title",
+    "key": "admin.feedback.confirm.mark.solved.title",
+    "lang": "hu",
+    "value": "Visszajelzés megoldottra jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-solved-message",
+    "key": "admin.feedback.confirm.mark.solved.message",
+    "lang": "hu",
+    "value": "{user} támogatási üzenetet kap arról, hogy a visszajelzést átnéztük."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-unresolved-title",
+    "key": "admin.feedback.confirm.mark.unresolved.title",
+    "lang": "hu",
+    "value": "Visszajelzés megoldatlanná jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-confirm-mark-unresolved-message",
+    "key": "admin.feedback.confirm.mark.unresolved.message",
+    "lang": "hu",
+    "value": "A visszajelzés visszakerül a megoldatlan listába."
+  },
+  {
+    "_id": "i18n-message-hu-admin-feedback-fallback-user",
+    "key": "admin.feedback.fallback.user",
+    "lang": "hu",
+    "value": "A felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-solved-title",
+    "key": "admin.reports.confirm.mark.solved.title",
+    "lang": "hu",
+    "value": "Jelentés megoldottra jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-solved-message",
+    "key": "admin.reports.confirm.mark.solved.message",
+    "lang": "hu",
+    "value": "{user} támogatási üzenetet kap arról, hogy a jelentést átnéztük."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-unresolved-title",
+    "key": "admin.reports.confirm.mark.unresolved.title",
+    "lang": "hu",
+    "value": "Jelentés megoldatlanná jelölése?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-mark-unresolved-message",
+    "key": "admin.reports.confirm.mark.unresolved.message",
+    "lang": "hu",
+    "value": "A jelentés visszakerül a megoldatlan listába."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-fallback-reporter",
+    "key": "admin.reports.fallback.reporter",
+    "lang": "hu",
+    "value": "A jelentő"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-block-title",
+    "key": "admin.reports.confirm.block.title",
+    "lang": "hu",
+    "value": "Letiltod {user} felhasználót?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-block-message",
+    "key": "admin.reports.confirm.block.message",
+    "lang": "hu",
+    "value": "A felhasználó le lesz tiltva, és támogatási csevegőüzenetet kap."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-unblock-title",
+    "key": "admin.reports.confirm.unblock.title",
+    "lang": "hu",
+    "value": "Feloldod {user} tiltását?"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-confirm-unblock-message",
+    "key": "admin.reports.confirm.unblock.message",
+    "lang": "hu",
+    "value": "A felhasználó profilállapota visszaáll, és újra használhatja a MyScoutee-t."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-block",
+    "key": "admin.reports.action.block",
+    "lang": "hu",
+    "value": "Letiltás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-block-busy",
+    "key": "admin.reports.action.block.busy",
+    "lang": "hu",
+    "value": "Letiltás..."
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-unblock",
+    "key": "admin.reports.action.unblock",
+    "lang": "hu",
+    "value": "Feloldás"
+  },
+  {
+    "_id": "i18n-message-hu-admin-reports-action-unblock-busy",
+    "key": "admin.reports.action.unblock.busy",
+    "lang": "hu",
+    "value": "Feloldás..."
+  },
+  {
+    "_id": "i18n-message-hu-share-what-happened-reports-are-reviewed-by-moderation-and-we-use-them-t",
+    "key": "share.what.happened.reports.are.reviewed.by.moderation.and.we.use.them.to.improve.trust.and.safety",
+    "lang": "hu",
+    "value": "Mondd el, mi történt. A jelentéseket a moderátorok felülvizsgálják, és felhasználjuk őket a bizalom és a biztonság javítására."
+  },
+  {
+    "_id": "i18n-message-hu-user",
+    "key": "user",
+    "lang": "hu",
+    "value": "Felhasználó"
+  },
+  {
+    "_id": "i18n-message-hu-event-context",
+    "key": "event.context",
+    "lang": "hu",
+    "value": "Esemény kontextusa"
+  },
+  {
+    "_id": "i18n-message-hu-reason",
+    "key": "reason",
+    "lang": "hu",
+    "value": "Indok"
+  },
+  {
+    "_id": "i18n-message-hu-selected-member",
+    "key": "selected.member",
+    "lang": "hu",
+    "value": "Kiválasztott tag"
+  },
+  {
+    "_id": "i18n-message-hu-selected-member-placeholder",
+    "key": "selected.member.placeholder",
+    "lang": "hu",
+    "value": "Kiválasztott tag"
+  },
+  {
+    "_id": "i18n-message-hu-submit-report",
+    "key": "submit.report",
+    "lang": "hu",
+    "value": "Jelentés küldése"
+  },
+  {
+    "_id": "i18n-message-hu-add-short-details-about-what-happened-and-why-you-are-reporting-this-mem",
+    "key": "add.short.details.about.what.happened.and.why.you.are.reporting.this.member.placeholder",
+    "lang": "hu",
+    "value": "Írd le röviden, mi történt, és miért jelented ezt a tagot."
+  },
+  {
+    "_id": "i18n-message-hu-reports-can-only-be-started-from-a-member-card-of-an-event-you-both-atte",
+    "key": "reports.can.only.be.started.from.a.member.card.of.an.event.you.both.attended",
+    "lang": "hu",
+    "value": "Jelentést csak olyan esemény tagkártyájáról indíthatsz, amelyen mindketten részt vettetek."
+  },
+  {
+    "_id": "i18n-message-hu-reports-can-only-be-started-from-an-event-organizer-or-a-member-card-tie",
+    "key": "reports.can.only.be.started.from.an.event.organizer.or.a.member.card.tied.to.an.event",
+    "lang": "hu",
+    "value": "Jelentést csak egy esemény szervezőjéről vagy az eseményhez tartozó tagkártyáról indíthatsz."
+  },
+  {
+    "_id": "i18n-message-hu-reports-can-only-be-submitted-for-an-event-organizer-or-a-member-you-sha",
+    "key": "reports.can.only.be.submitted.for.an.event.organizer.or.a.member.you.shared.an.event.with",
+    "lang": "hu",
+    "value": "Jelentést csak az esemény szervezőjéről vagy olyan tagról küldhetsz, akivel közös eseményen vettél részt."
+  },
+  {
     "_id": "i18n-message-hu-logout-question",
     "key": "logout.question",
     "lang": "hu",
     "value": "Biztosan kilép?"
+  },
+  {
+    "_id": "i18n-message-en-after",
+    "key": "after",
+    "lang": "en",
+    "value": "After"
+  },
+  {
+    "_id": "i18n-message-en-anchor",
+    "key": "anchor",
+    "lang": "en",
+    "value": "Anchor"
+  },
+  {
+    "_id": "i18n-message-en-before",
+    "key": "before",
+    "lang": "en",
+    "value": "Before"
+  },
+  {
+    "_id": "i18n-message-en-during",
+    "key": "during",
+    "lang": "en",
+    "value": "During"
+  },
+  {
+    "_id": "i18n-message-en-event-anchor",
+    "key": "event.anchor",
+    "lang": "en",
+    "value": "Event Anchor"
+  },
+  {
+    "_id": "i18n-message-en-minutes-short",
+    "key": "minutes.short",
+    "lang": "en",
+    "value": "min"
+  },
+  {
+    "_id": "i18n-message-en-offset",
+    "key": "offset",
+    "lang": "en",
+    "value": "Offset"
+  },
+  {
+    "_id": "i18n-message-en-offset-minutes",
+    "key": "offset.minutes",
+    "lang": "en",
+    "value": "Offset minutes"
+  },
+  {
+    "_id": "i18n-message-en-placement",
+    "key": "placement",
+    "lang": "en",
+    "value": "Placement"
+  },
+  {
+    "_id": "i18n-message-en-position",
+    "key": "position",
+    "lang": "en",
+    "value": "Position"
+  },
+  {
+    "_id": "i18n-message-hu-after",
+    "key": "after",
+    "lang": "hu",
+    "value": "Utána"
+  },
+  {
+    "_id": "i18n-message-hu-anchor",
+    "key": "anchor",
+    "lang": "hu",
+    "value": "Viszonyítási pont"
+  },
+  {
+    "_id": "i18n-message-hu-before",
+    "key": "before",
+    "lang": "hu",
+    "value": "Előtte"
+  },
+  {
+    "_id": "i18n-message-hu-during",
+    "key": "during",
+    "lang": "hu",
+    "value": "Közben"
+  },
+  {
+    "_id": "i18n-message-hu-event-anchor",
+    "key": "event.anchor",
+    "lang": "hu",
+    "value": "Viszonyítási pont"
+  },
+  {
+    "_id": "i18n-message-hu-minutes-short",
+    "key": "minutes.short",
+    "lang": "hu",
+    "value": "perc"
+  },
+  {
+    "_id": "i18n-message-hu-offset",
+    "key": "offset",
+    "lang": "hu",
+    "value": "Eltolás"
+  },
+  {
+    "_id": "i18n-message-hu-offset-minutes",
+    "key": "offset.minutes",
+    "lang": "hu",
+    "value": "Eltolás percben"
+  },
+  {
+    "_id": "i18n-message-hu-placement",
+    "key": "placement",
+    "lang": "hu",
+    "value": "Elhelyezés"
+  },
+  {
+    "_id": "i18n-message-hu-position",
+    "key": "position",
+    "lang": "hu",
+    "value": "Pozíció"
   }
 ]

@@ -5,3 +5,9 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
+
+new deployment of frontend makes load issue - stuck on android view
+horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
+translation (event editor)
+landing site - article (lazy load + no vertical scrollbar)
+graph view - 1-3 connection slider disappeared

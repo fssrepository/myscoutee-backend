@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionPageDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicies;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
@@ -28,6 +29,23 @@ public class ActivitiesResourcesController {
             @RequestParam("subEventId") String subEventId,
             @RequestParam("assetOwnerUserId") String assetOwnerUserId) {
         return activitiesResourcesService.queryState(ownerId, subEventId, assetOwnerUserId);
+    }
+
+    @GetMapping("/contributions")
+    public SubEventSupplyContributionPageDto querySupplyContributions(
+            @RequestParam("ownerId") String ownerId,
+            @RequestParam("subEventId") String subEventId,
+            @RequestParam("assetOwnerUserId") String assetOwnerUserId,
+            @RequestParam("assetId") String assetId,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "12") Integer pageSize) {
+        return activitiesResourcesService.querySupplyContributions(
+                ownerId,
+                subEventId,
+                assetOwnerUserId,
+                assetId,
+                page,
+                pageSize);
     }
 
     @PostMapping("/replace")

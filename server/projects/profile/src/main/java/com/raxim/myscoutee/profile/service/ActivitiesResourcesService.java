@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEve
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionPageDto;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
@@ -58,6 +60,41 @@ public class ActivitiesResourcesService {
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
         ActivitySubEventResource record = resolveRecord(ownerId, subEventId, assetOwnerUserId);
         return record == null ? null : activitySubEventResourceMapper.toDto(filterToOwnedAssets(record));
+    }
+
+    public SubEventSupplyContributionPageDto querySupplyContributions(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId,
+            String assetId,
+            Integer page,
+            Integer pageSize) {
+        int normalizedPage = Math.max(0, page == null ? 0 : page);
+        int normalizedPageSize = Math.max(1, Math.min(60, pageSize == null ? 12 : pageSize));
+        String normalizedAssetId = normalizeId(assetId);
+        ActivitySubEventResource record = resolveRecord(ownerId, subEventId, assetOwnerUserId);
+        if (record == null || !StringUtils.hasText(normalizedAssetId)) {
+            return new SubEventSupplyContributionPageDto(List.of(), 0, normalizedPage, normalizedPageSize);
+        }
+        ActivitySubEventResource filtered = filterToOwnedAssets(record);
+        List<SubEventSupplyContributionEntryRecord> entries = new ArrayList<>(
+                filtered.getSupplyContributionEntriesByAssetId().getOrDefault(normalizedAssetId, List.of()));
+        entries.sort(Comparator.comparing(
+                entry -> normalizeDateTime(entry == null ? null : entry.addedAtIso(), ""),
+                Comparator.reverseOrder()));
+        int total = entries.size();
+        long requestedStart = (long) normalizedPage * normalizedPageSize;
+        int start = (int) Math.min(total, requestedStart);
+        int end = Math.min(total, start + normalizedPageSize);
+        List<SubEventSupplyContributionEntryDto> items = entries.subList(start, end).stream()
+                .filter(Objects::nonNull)
+                .map(entry -> new SubEventSupplyContributionEntryDto(
+                        safeText(entry.id()),
+                        safeText(entry.userId()),
+                        Math.max(0, entry.quantity() == null ? 0 : entry.quantity()),
+                        normalizeDateTime(entry.addedAtIso(), "")))
+                .toList();
+        return new SubEventSupplyContributionPageDto(items, total, normalizedPage, normalizedPageSize);
     }
 
     public ActivitySubEventResourceStateDto replace(ActivitySubEventResourceStateDto request) {

@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
@@ -25,6 +26,8 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatD
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRequestDto;
@@ -115,9 +118,21 @@ public class ActivitiesEventsController {
         return activitiesEventsService.loadEventDetailById(userId, eventId);
     }
 
+    @GetMapping("/invitation-context")
+    public EventInvitationContextDto invitationContext(
+            @RequestParam("userId") String userId,
+            @RequestParam("eventId") String eventId) {
+        return activitiesEventsService.loadInvitationContext(userId, eventId);
+    }
+
     @PostMapping("/sub-events")
     public EventSubEventsResultDto subEvents(@RequestBody EventSubEventsQueryDto request) {
         return activitiesEventsService.loadSubEventsById(request);
+    }
+
+    @PostMapping("/checkout/slots")
+    public EventCheckoutSlotsResultDto checkoutSlots(@RequestBody EventCheckoutSlotsQueryDto request) {
+        return activitiesEventsService.loadCheckoutSlots(request);
     }
 
     @PostMapping("/explore")
@@ -129,8 +144,8 @@ public class ActivitiesEventsController {
     }
 
     @PostMapping("/trash")
-    public void trash(@RequestBody EventActionRequestDto request) {
-        activitiesEventsService.trash(request);
+    public EventParticipationActionResultDto trash(@RequestBody EventActionRequestDto request) {
+        return activitiesEventsService.trash(request);
     }
 
     @PostMapping("/publish")

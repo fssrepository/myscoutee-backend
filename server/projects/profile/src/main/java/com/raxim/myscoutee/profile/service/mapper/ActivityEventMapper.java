@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
 
@@ -18,9 +19,11 @@ import com.raxim.myscoutee.profile.service.ActivitiesMembersService;
 public class ActivityEventMapper {
     public record MappingContext(
             LocationCoordinatesDto viewerCoordinates,
-            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId) {
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
+            Map<String, String> checkoutResultStatesBySourceId) {
         public MappingContext {
             snapshotsBySourceId = snapshotsBySourceId == null ? Map.of() : snapshotsBySourceId;
+            checkoutResultStatesBySourceId = checkoutResultStatesBySourceId == null ? Map.of() : checkoutResultStatesBySourceId;
         }
     }
 
@@ -69,6 +72,7 @@ public class ActivityEventMapper {
                 nullableCount(record.getCapacityMin()),
                 nullableCount(record.getCapacityMax()),
                 Math.max(acceptedMembers, capacityTotal),
+                resolveEventFull(record, acceptedMembers, capacityTotal),
                 resolveEventType(record),
                 normalizeMode(record.getMode()),
                 acceptedMembers,
@@ -78,7 +82,45 @@ public class ActivityEventMapper {
                 invitedMemberUserIds,
                 pendingRequestMemberUserIds,
                 null,
+                Boolean.TRUE.equals(record.getApprovalRequired()),
+                resolveCheckoutResultState(record, context),
                 safeDouble(record.getBoost()));
+    }
+
+    private String resolveCheckoutResultState(ActivityEvent record, MappingContext context) {
+        String sourceId = normalizeId(record == null ? null : record.getSourceId());
+        if (!StringUtils.hasText(sourceId) || context == null || context.checkoutResultStatesBySourceId() == null) {
+            return null;
+        }
+        String value = context.checkoutResultStatesBySourceId().get(sourceId);
+        return "pending".equals(value) || "deleted".equals(value) || "succeeded".equals(value) || "failed".equals(value)
+                ? value
+                : null;
+    }
+
+    private Boolean resolveEventFull(ActivityEvent record, int acceptedMembers, int capacityTotal) {
+        if (record == null) {
+            return Boolean.FALSE;
+        }
+        if (Boolean.TRUE.equals(record.getFull())) {
+            return Boolean.TRUE;
+        }
+        if (Boolean.TRUE.equals(record.getSlotsEnabled()) && !Boolean.TRUE.equals(record.getGenerated())) {
+            List<EventSlotOccurrenceDto> upcomingSlots = record.getUpcomingSlots();
+            if (upcomingSlots == null || upcomingSlots.isEmpty()) {
+                return Boolean.TRUE;
+            }
+            return upcomingSlots.stream().allMatch(this::isSlotOccurrenceFull);
+        }
+        return capacityTotal > 0 && acceptedMembers >= capacityTotal;
+    }
+
+    private boolean isSlotOccurrenceFull(EventSlotOccurrenceDto slot) {
+        if (slot == null) {
+            return false;
+        }
+        int capacityTotal = normalizeCount(slot.capacityTotal());
+        return capacityTotal > 0 && normalizeCount(slot.acceptedMembers()) >= capacityTotal;
     }
 
     private ActivitiesMembersService.OwnerMembersSnapshot resolveMembersSnapshot(
