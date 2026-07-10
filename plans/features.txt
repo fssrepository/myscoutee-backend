@@ -7,4 +7,4 @@ buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
 new deployment of frontend makes load issue - stuck on android view
-stage - timeline view mobile horizontal scroll is slowing down
+horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
