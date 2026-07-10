@@ -10719,7 +10719,7 @@
     "_id": "i18n-message-en-asset-lending-policies-popup-subtitle",
     "key": "asset.lending.policies.popup.subtitle",
     "lang": "en",
-    "value": "Keep the list compact here. Open a policy to edit the details borrowers need to read and approve."
+    "value": "Open a policy to edit its details."
   },
   {
     "_id": "i18n-message-en-asset-lending-policies-editor-subtitle",
@@ -22059,7 +22059,7 @@
     "_id": "i18n-message-hu-asset-lending-policies-popup-subtitle",
     "key": "asset.lending.policies.popup.subtitle",
     "lang": "hu",
-    "value": "Itt maradjon tömör a lista. Nyiss meg egy feltételt a kölcsönzőknek szánt részletek szerkesztéséhez."
+    "value": "Nyiss meg egy feltételt a részletek szerkesztéséhez."
   },
   {
     "_id": "i18n-message-hu-asset-lending-policies-editor-subtitle",

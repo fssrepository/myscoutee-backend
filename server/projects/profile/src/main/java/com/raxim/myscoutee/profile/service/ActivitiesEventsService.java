@@ -48,6 +48,7 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
@@ -792,6 +793,17 @@ public class ActivitiesEventsService {
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
                         isViewerAdmin(preferred, viewer.userId()) ? "hosting" : "events"));
+    }
+
+    public EventInvitationContextDto loadInvitationContext(String requestedUserId, String eventId) {
+        EventDetailDto record = loadEventDetailById(requestedUserId, eventId);
+        if (record == null) {
+            return null;
+        }
+        return new EventInvitationContextDto(
+                record,
+                activitiesMembersService.queryMembers(OWNER_TYPE_EVENT, record.id(), false),
+                eventCheckoutBasketService.loadBasketByEvent(requestedUserId, record.id()));
     }
 
     public EventCheckoutSlotsResultDto loadCheckoutSlots(EventCheckoutSlotsQueryDto request) {

@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackQueryDto;
@@ -115,6 +116,13 @@ public class ActivitiesEventsController {
             @RequestParam("userId") String userId,
             @RequestParam("eventId") String eventId) {
         return activitiesEventsService.loadEventDetailById(userId, eventId);
+    }
+
+    @GetMapping("/invitation-context")
+    public EventInvitationContextDto invitationContext(
+            @RequestParam("userId") String userId,
+            @RequestParam("eventId") String eventId) {
+        return activitiesEventsService.loadInvitationContext(userId, eventId);
     }
 
     @PostMapping("/sub-events")

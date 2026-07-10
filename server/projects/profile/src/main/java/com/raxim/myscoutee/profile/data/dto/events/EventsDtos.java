@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
@@ -415,6 +416,12 @@ public final class EventsDtos {
             Double boost,
             Double affinity,
             String paymentSessionId) {
+    }
+
+    public record EventInvitationContextDto(
+            EventDetailDto record,
+            List<ActivityMemberEntryDto> members,
+            EventCheckoutBasketDto checkoutBasket) {
     }
 
     public record EventSubEventsQueryDto(
