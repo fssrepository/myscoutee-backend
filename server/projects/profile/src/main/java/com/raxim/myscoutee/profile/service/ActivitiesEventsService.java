@@ -2479,7 +2479,10 @@ public class ActivitiesEventsService {
         if (request == null) {
             return null;
         }
-        EventCheckoutBasketDto basket = eventCheckoutBasketService.loadBasketByEvent(request.userId(), request.sourceId());
+        EventCheckoutBasketDto basket = saveSubmittedPaymentBasket(request);
+        if (basket == null) {
+            basket = eventCheckoutBasketService.loadBasketByEvent(request.userId(), request.sourceId());
+        }
         if (basket == null || basket.items() == null || basket.items().isEmpty()) {
             return null;
         }
@@ -2537,18 +2540,17 @@ public class ActivitiesEventsService {
                 null,
                 null);
         try {
-            EventParticipationActionResultDto result = requestJoin(joinRequest);
-            if (result == null || !"accepted".equals(safeText(result.membershipStatus()))) {
-                if (acceptedBeforePayment) {
-                    result = toParticipationActionResult(
+            EventParticipationActionResultDto result = acceptedBeforePayment
+                    ? toParticipationActionResult(
                             request.sourceId(),
                             slotSourceId,
                             "accepted",
                             null,
                             paymentRecord == null ? findPreferredEventRecord(request.sourceId()) : paymentRecord,
                             acceptedBeforePaymentSnapshot,
-                            joinRequest);
-                } else {
+                            joinRequest)
+                    : requestJoin(joinRequest);
+            if (result == null || !"accepted".equals(safeText(result.membershipStatus()))) {
                 eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                         request.userId(),
                         request.sourceId(),
@@ -2563,7 +2565,6 @@ public class ActivitiesEventsService {
                         session == null ? null : session.id(),
                         request.counterDelta()));
                 return result;
-                }
             }
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     request.userId(),
@@ -2587,6 +2588,27 @@ public class ActivitiesEventsService {
                     request.counterDelta()));
             throw exception;
         }
+    }
+
+    private EventCheckoutBasketDto saveSubmittedPaymentBasket(EventCheckoutStateChangeRequestDto request) {
+        EventCheckoutRequestDto checkout = request == null ? null : request.checkoutRequest();
+        if (checkout == null || checkout.basketItems() == null || checkout.basketItems().isEmpty()) {
+            return null;
+        }
+        return eventCheckoutBasketService.saveBasket(new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                firstNonBlank(checkout.slotSourceId(), request.slotSourceId(), null),
+                checkout.optionalSubEventIds(),
+                checkout.assetSelections(),
+                checkout.acceptedPolicyIds(),
+                checkout.basketItems(),
+                checkout.pricingSummaryRows(),
+                "confirmed",
+                checkout.lineItems(),
+                checkout.totalAmount(),
+                checkout.currency(),
+                null));
     }
 
     private void syncCheckoutBasketForJoin(EventActionRequestDto request) {

@@ -542,7 +542,20 @@ public final class EventsDtos {
             String resultState,
             String pendingReason,
             String checkoutSessionId,
-            Object counterDelta) {
+            Object counterDelta,
+            EventCheckoutRequestDto checkoutRequest) {
+        public EventCheckoutStateChangeRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                String checkoutState,
+                String resultState,
+                String pendingReason,
+                String checkoutSessionId,
+                Object counterDelta) {
+            this(userId, sourceId, slotSourceId, checkoutState, resultState, pendingReason, checkoutSessionId, counterDelta, null);
+        }
+
         public EventCheckoutStateChangeRequestDto(
                 String userId,
                 String sourceId,
@@ -550,7 +563,7 @@ public final class EventsDtos {
                 String resultState,
                 String pendingReason,
                 String checkoutSessionId) {
-            this(userId, sourceId, null, checkoutState, resultState, pendingReason, checkoutSessionId, null);
+            this(userId, sourceId, null, checkoutState, resultState, pendingReason, checkoutSessionId, null, null);
         }
     }
 
