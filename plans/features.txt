@@ -11,6 +11,6 @@ horizontal scroll on event editor sub events (timeline cards) -- repeateadly scr
 translation (event editor)
 landing site - article (lazy load + no vertical scrollbar)
 graph view - 1-3 connection slider disappeared
-emoji app-menu wrong
+emoji app-menu wrong - it should have been a tab
 borrowing policy - mobile badge in the row on the right hand side, not below
 activity rate popup - full screen image view - last page on date rate should show no new item
