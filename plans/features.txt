@@ -19,9 +19,9 @@ last page on date rate should show no new item
 
 features
 --------
-promo code not finished yet, that logic needs to be finished - 
-so the event organizer can send it and generate for specific users
+the event organizer can send it and generate for specific users
 add promo code on payment screen to get discount
+mutiple discount code can be added - maybe at the end of the vip line of pricing config
 
 low priority
 ------------
