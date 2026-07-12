@@ -17,9 +17,7 @@ bugs
 
 features
 --------
-the event organizer can send it and generate for specific users
-add promo code on payment screen to get discount
-mutiple discount code can be added - maybe at the end of the vip line of pricing config
+add promo code button on pricing summary (top right, which affects the pricing right away)
 
 low priority
 ------------
