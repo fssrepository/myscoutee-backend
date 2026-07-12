@@ -12,8 +12,7 @@ bugs
 2) graph view - 1-3 connection slider disappeared
 3) emoji app-menu wrong - it should have been a tab
 4) borrowing policy - mobile badge in the row on the right hand side, not below
-5) activity rate popup - full screen image view - 
-last page on date rate should show no new item
+5) activity rate - full screen view - last page on date rate should show no new item
 6) text card height on event editor (2 explanation rows hasn't enough room)
 
 features
