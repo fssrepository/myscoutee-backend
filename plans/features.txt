@@ -14,3 +14,4 @@ graph view - 1-3 connection slider disappeared
 emoji app-menu wrong - it should have been a tab
 borrowing policy - mobile badge in the row on the right hand side, not below
 activity rate popup - full screen image view - last page on date rate should show no new item
+text card height on event editor (2 explanation rows hasn't enough room)
