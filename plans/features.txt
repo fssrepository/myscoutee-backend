@@ -16,3 +16,4 @@ borrowing policy - mobile badge in the row on the right hand side, not below
 activity rate popup - full screen image view - last page on date rate should show no new item
 text card height on event editor (2 explanation rows hasn't enough room)
 promo code not finished yet, that logic needs to be finished - so the event organizer can send it and generate for specific users
+add promo code on payment screen to get discount
