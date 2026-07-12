@@ -15,7 +15,6 @@ bugs
 5) activity rate popup - full screen image view - 
 last page on date rate should show no new item
 6) text card height on event editor (2 explanation rows hasn't enough room)
-7) maybe remove the event draft automatic save
 
 features
 --------
@@ -25,6 +24,7 @@ mutiple discount code can be added - maybe at the end of the vip line of pricing
 
 low priority
 ------------
-new deployment of frontend makes load issue - stuck on android view
-horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
-translation (event editor)
+1) new deployment of frontend makes load issue - stuck on android view
+2) horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
+remove the event draft automatic save - maybe that's the issue
+3) translation (event editor)
