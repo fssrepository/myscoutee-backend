@@ -9,11 +9,11 @@ https://developers.facebook.com/ -> business verfication is needed
 bugs
 ----
 1) landing site - article (lazy load + no vertical scrollbar)
-2) graph view - 1-3 connection slider disappeared
-3) emoji app-menu wrong - it should have been a tab
-4) borrowing policy - mobile badge in the row on the right hand side, not below
-5) activity rate - full screen view - last page on date rate should show no new item
-6) text card height on event editor (2 explanation rows hasn't enough room)
+2) emoji app-menu wrong - it should have been a tab
+3) borrowing policy - mobile badge in the row on the right hand side, not below
+4) activity rate - full screen view - last page on date rate should show no new item
+5) text card height on event editor (2 explanation rows hasn't enough room)
+6) graph view - 1-3 connection slider disappeared
 7) add promo code button on pricing summary (top right, which affects the pricing right away)
 
 low priority
