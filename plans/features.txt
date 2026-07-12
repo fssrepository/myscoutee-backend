@@ -14,10 +14,7 @@ bugs
 4) borrowing policy - mobile badge in the row on the right hand side, not below
 5) activity rate - full screen view - last page on date rate should show no new item
 6) text card height on event editor (2 explanation rows hasn't enough room)
-
-features
---------
-add promo code button on pricing summary (top right, which affects the pricing right away)
+7) add promo code button on pricing summary (top right, which affects the pricing right away)
 
 low priority
 ------------
