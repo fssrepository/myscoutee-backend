@@ -6,8 +6,19 @@ create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
-new deployment of frontend makes load issue - stuck on android view
-horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
-translation (event editor)
-landing site - article (lazy load + no vertical scrollbar)
-graph view - 1-3 connection slider disappeared
+bugs
+----
+1) landing site - article - lazy load
+2) emoji app-menu wrong - it should have been a tab
+3) borrowing policy - mobile badge in the row on the right hand side, not below
+4) activity rate - full screen view - last page on date rate should show no new item
+5) text card height on event editor (2 explanation rows hasn't enough room)
+6) graph view - on multiple hop, reposition problem somehow
+7) add promo code button on pricing summary (top right, which affects the pricing right away)
+
+low priority
+------------
+1) new deployment of frontend makes load issue - stuck on android view
+2) horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
+remove the event draft automatic save - maybe that's the issue
+3) translation (event editor)
