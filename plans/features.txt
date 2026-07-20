@@ -19,6 +19,3 @@ bugs
 low priority
 ------------
 1) new deployment of frontend makes load issue - stuck on android view
-2) horizontal scroll on event editor sub events (timeline cards) -- repeateadly scroling, it slows down the swipe
-remove the event draft automatic save - maybe that's the issue
-3) translation (event editor)

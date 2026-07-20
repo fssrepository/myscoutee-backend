@@ -426,6 +426,12 @@
     "value": "Affinity graph view"
   },
   {
+    "_id": "i18n-message-en-after",
+    "key": "after",
+    "lang": "en",
+    "value": "After"
+  },
+  {
     "_id": "i18n-message-en-all",
     "key": "all",
     "lang": "en",
@@ -442,6 +448,12 @@
     "key": "ambition",
     "lang": "en",
     "value": "Ambition"
+  },
+  {
+    "_id": "i18n-message-en-anchor",
+    "key": "anchor",
+    "lang": "en",
+    "value": "Anchor"
   },
   {
     "_id": "i18n-message-en-any",
@@ -526,6 +538,12 @@
     "key": "basics",
     "lang": "en",
     "value": "Basics"
+  },
+  {
+    "_id": "i18n-message-en-before",
+    "key": "before",
+    "lang": "en",
+    "value": "Before"
   },
   {
     "_id": "i18n-message-en-age-range",
@@ -694,6 +712,48 @@
     "key": "close.privacy.popup",
     "lang": "en",
     "value": "Close privacy popup"
+  },
+  {
+    "_id": "i18n-message-en-during",
+    "key": "during",
+    "lang": "en",
+    "value": "During"
+  },
+  {
+    "_id": "i18n-message-en-event-anchor",
+    "key": "event.anchor",
+    "lang": "en",
+    "value": "Event Anchor"
+  },
+  {
+    "_id": "i18n-message-en-minutes-short",
+    "key": "minutes.short",
+    "lang": "en",
+    "value": "min"
+  },
+  {
+    "_id": "i18n-message-en-offset",
+    "key": "offset",
+    "lang": "en",
+    "value": "Offset"
+  },
+  {
+    "_id": "i18n-message-en-offset-minutes",
+    "key": "offset.minutes",
+    "lang": "en",
+    "value": "Offset minutes"
+  },
+  {
+    "_id": "i18n-message-en-placement",
+    "key": "placement",
+    "lang": "en",
+    "value": "Placement"
+  },
+  {
+    "_id": "i18n-message-en-position",
+    "key": "position",
+    "lang": "en",
+    "value": "Position"
   },
   {
     "_id": "i18n-message-en-close-profile",
@@ -8472,12 +8532,6 @@
     "value": "Remove"
   },
   {
-    "_id": "i18n-message-en-remove-feedback",
-    "key": "remove.feedback",
-    "lang": "en",
-    "value": "Remove feedback?"
-  },
-  {
     "_id": "i18n-message-en-removing",
     "key": "removing",
     "lang": "en",
@@ -8536,12 +8590,6 @@
     "key": "restore.feedback",
     "lang": "en",
     "value": "Restore"
-  },
-  {
-    "_id": "i18n-message-en-restore-feedback-question",
-    "key": "restore.feedback.question",
-    "lang": "en",
-    "value": "Restore feedback?"
   },
   {
     "_id": "i18n-message-en-route",
@@ -10926,6 +10974,18 @@
     "value": "Share asset"
   },
   {
+    "_id": "i18n-message-en-remove-feedback",
+    "key": "remove.feedback",
+    "lang": "en",
+    "value": "Remove feedback?"
+  },
+  {
+    "_id": "i18n-message-en-restore-feedback-question",
+    "key": "restore.feedback.question",
+    "lang": "en",
+    "value": "Restore feedback?"
+  },
+  {
     "_id": "i18n-message-en-location",
     "key": "location",
     "lang": "en",
@@ -11352,6 +11412,1692 @@
     "value": "Logout?"
   },
   {
+    "_id": "i18n-message-en-min",
+    "key": "min",
+    "lang": "en",
+    "value": "Min"
+  },
+  {
+    "_id": "i18n-message-en-max",
+    "key": "max",
+    "lang": "en",
+    "value": "Max"
+  },
+  {
+    "_id": "i18n-message-en-date",
+    "key": "date",
+    "lang": "en",
+    "value": "Date"
+  },
+  {
+    "_id": "i18n-message-en-paid",
+    "key": "paid",
+    "lang": "en",
+    "value": "Paid"
+  },
+  {
+    "_id": "i18n-message-en-confirmed",
+    "key": "confirmed",
+    "lang": "en",
+    "value": "Confirmed"
+  },
+  {
+    "_id": "i18n-message-en-included",
+    "key": "included",
+    "lang": "en",
+    "value": "Included"
+  },
+  {
+    "_id": "i18n-message-en-item",
+    "key": "item",
+    "lang": "en",
+    "value": "item"
+  },
+  {
+    "_id": "i18n-message-en-items",
+    "key": "items",
+    "lang": "en",
+    "value": "items"
+  },
+  {
+    "_id": "i18n-message-en-payment",
+    "key": "payment",
+    "lang": "en",
+    "value": "Payment"
+  },
+  {
+    "_id": "i18n-message-en-update",
+    "key": "update",
+    "lang": "en",
+    "value": "Update"
+  },
+  {
+    "_id": "i18n-message-en-updating",
+    "key": "updating",
+    "lang": "en",
+    "value": "Updating..."
+  },
+  {
+    "_id": "i18n-message-en-continuing",
+    "key": "continuing",
+    "lang": "en",
+    "value": "Continuing..."
+  },
+  {
+    "_id": "i18n-message-en-rejected",
+    "key": "rejected",
+    "lang": "en",
+    "value": "Rejected"
+  },
+  {
+    "_id": "i18n-message-en-approved",
+    "key": "approved",
+    "lang": "en",
+    "value": "Approved"
+  },
+  {
+    "_id": "i18n-message-en-topics",
+    "key": "topics",
+    "lang": "en",
+    "value": "Topics"
+  },
+  {
+    "_id": "i18n-message-en-timeline",
+    "key": "timeline",
+    "lang": "en",
+    "value": "Timeline"
+  },
+  {
+    "_id": "i18n-message-en-cards",
+    "key": "cards",
+    "lang": "en",
+    "value": "Cards"
+  },
+  {
+    "_id": "i18n-message-en-mandatory",
+    "key": "mandatory",
+    "lang": "en",
+    "value": "Mandatory"
+  },
+  {
+    "_id": "i18n-message-en-no-description",
+    "key": "no.description",
+    "lang": "en",
+    "value": "No description"
+  },
+  {
+    "_id": "i18n-message-en-duration",
+    "key": "duration",
+    "lang": "en",
+    "value": "Duration"
+  },
+  {
+    "_id": "i18n-message-en-on",
+    "key": "on",
+    "lang": "en",
+    "value": "On"
+  },
+  {
+    "_id": "i18n-message-en-off",
+    "key": "off",
+    "lang": "en",
+    "value": "Off"
+  },
+  {
+    "_id": "i18n-message-en-event-participation",
+    "key": "event.participation",
+    "lang": "en",
+    "value": "Participation"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-my-participation",
+    "key": "event.subevents.my.participation",
+    "lang": "en",
+    "value": "My participation"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-group-capacity-min",
+    "key": "event.subevents.group.capacity.min",
+    "lang": "en",
+    "value": "Minimum capacity"
+  },
+  {
+    "_id": "i18n-message-en-event-subevents-group-capacity-max",
+    "key": "event.subevents.group.capacity.max",
+    "lang": "en",
+    "value": "Maximum capacity"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-summary",
+    "key": "event.checkout.payment.summary",
+    "lang": "en",
+    "value": "Payment summary"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-continue-booking",
+    "key": "event.checkout.continue.booking",
+    "lang": "en",
+    "value": "Continue booking"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-paying",
+    "key": "event.checkout.paying",
+    "lang": "en",
+    "value": "Paying..."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-releasing",
+    "key": "event.checkout.releasing",
+    "lang": "en",
+    "value": "Releasing..."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-update-required",
+    "key": "event.checkout.update.required",
+    "lang": "en",
+    "value": "Update required"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-ready-for-payment",
+    "key": "event.checkout.ready.for.payment",
+    "lang": "en",
+    "value": "Ready for payment"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-payment-in-progress",
+    "key": "event.checkout.payment.in.progress",
+    "lang": "en",
+    "value": "Payment in progress"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-can-continue",
+    "key": "event.checkout.can.continue",
+    "lang": "en",
+    "value": "Ready to continue"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-create",
+    "key": "event.editor.create",
+    "lang": "en",
+    "value": "Create Event"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-save-aria",
+    "key": "event.editor.save.aria",
+    "lang": "en",
+    "value": "Save event"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-image-aria",
+    "key": "event.editor.image.aria",
+    "lang": "en",
+    "value": "Event image"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-visibility-open-aria",
+    "key": "event.editor.visibility.open.aria",
+    "lang": "en",
+    "value": "Open visibility selector"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-topics-open-aria",
+    "key": "event.editor.topics.open.aria",
+    "lang": "en",
+    "value": "Open topics"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-topics-select",
+    "key": "event.editor.topics.select",
+    "lang": "en",
+    "value": "Select topics"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-location-placeholder",
+    "key": "event.editor.location.placeholder",
+    "lang": "en",
+    "value": "Event route location"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-location-map-aria",
+    "key": "event.editor.location.map.aria",
+    "lang": "en",
+    "value": "Open event route on map"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-location-not-set",
+    "key": "event.editor.location.not.set",
+    "lang": "en",
+    "value": "Location not set"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-date-not-set",
+    "key": "event.editor.date.not.set",
+    "lang": "en",
+    "value": "Date not set"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-blind-enabled-description",
+    "key": "event.editor.blind.enabled.description",
+    "lang": "en",
+    "value": "Attendees won't see each other before the event."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-blind-disabled-description",
+    "key": "event.editor.blind.disabled.description",
+    "lang": "en",
+    "value": "Attendees can preview each other before the event."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-auto-inviter-on",
+    "key": "event.editor.auto.inviter.on",
+    "lang": "en",
+    "value": "Auto Inviter On"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-auto-inviter-off",
+    "key": "event.editor.auto.inviter.off",
+    "lang": "en",
+    "value": "Auto Inviter Off"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-auto-inviter-enabled-description",
+    "key": "event.editor.auto.inviter.enabled.description",
+    "lang": "en",
+    "value": "Invites people by matching mutual preferences."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-auto-inviter-disabled-description",
+    "key": "event.editor.auto.inviter.disabled.description",
+    "lang": "en",
+    "value": "Manual invites only."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-ticketing-on",
+    "key": "event.editor.ticketing.on",
+    "lang": "en",
+    "value": "Ticketing On"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-ticketing-off",
+    "key": "event.editor.ticketing.off",
+    "lang": "en",
+    "value": "Ticketing Off"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-ticketing-enabled-description",
+    "key": "event.editor.ticketing.enabled.description",
+    "lang": "en",
+    "value": "QR attendee check-in is enabled."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-ticketing-disabled-description",
+    "key": "event.editor.ticketing.disabled.description",
+    "lang": "en",
+    "value": "No QR check-in scanning."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-auto-approve-on",
+    "key": "event.editor.auto.approve.on",
+    "lang": "en",
+    "value": "Auto approve On"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-auto-approve-off",
+    "key": "event.editor.auto.approve.off",
+    "lang": "en",
+    "value": "Auto approve Off"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-approval-required-description",
+    "key": "event.editor.approval.required.description",
+    "lang": "en",
+    "value": "Join requests wait for event admin approval."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-approval-automatic-description",
+    "key": "event.editor.approval.automatic.description",
+    "lang": "en",
+    "value": "Confirmed bookings can continue without admin approval."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-checkout-waiting-place",
+    "key": "event.editor.checkout.waiting.place",
+    "lang": "en",
+    "value": "Waiting for a place"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-checkout-waiting-approval",
+    "key": "event.editor.checkout.waiting.approval",
+    "lang": "en",
+    "value": "Waiting for approval"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-title",
+    "key": "event.editor.basket.title",
+    "lang": "en",
+    "value": "Basket"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-payment-subtitle",
+    "key": "event.editor.basket.payment.subtitle",
+    "lang": "en",
+    "value": "Items to pay for"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-selected-items",
+    "key": "event.editor.basket.selected.items",
+    "lang": "en",
+    "value": "Selected items"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-selected-items-subtitle",
+    "key": "event.editor.basket.selected.items.subtitle",
+    "lang": "en",
+    "value": "Selected checkout items"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-selected-slot-subtitle",
+    "key": "event.editor.basket.selected.slot.subtitle",
+    "lang": "en",
+    "value": "Selected slot checkout items"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-edit-aria",
+    "key": "event.editor.basket.edit.aria",
+    "lang": "en",
+    "value": "Edit checkout items"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-empty",
+    "key": "event.editor.basket.empty",
+    "lang": "en",
+    "value": "No basket items yet. Use the edit button to add a slot."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-basket-no-selected-items",
+    "key": "event.editor.basket.no.selected.items",
+    "lang": "en",
+    "value": "No selected checkout items yet."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-pricing-current-review",
+    "key": "event.editor.pricing.current.review",
+    "lang": "en",
+    "value": "Current Price Review"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-pricing-final-price",
+    "key": "event.editor.pricing.final.price",
+    "lang": "en",
+    "value": "Final price"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-title",
+    "key": "event.editor.payment.title",
+    "lang": "en",
+    "value": "Payment"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-subtitle",
+    "key": "event.editor.payment.subtitle",
+    "lang": "en",
+    "value": "Review the amount, then start payment."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-amount",
+    "key": "event.editor.payment.amount",
+    "lang": "en",
+    "value": "Amount"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-status",
+    "key": "event.editor.payment.status",
+    "lang": "en",
+    "value": "Status"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-card-number",
+    "key": "event.editor.payment.card.number",
+    "lang": "en",
+    "value": "Card number"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-card-name",
+    "key": "event.editor.payment.card.name",
+    "lang": "en",
+    "value": "Name on card"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-card-expiry",
+    "key": "event.editor.payment.card.expiry",
+    "lang": "en",
+    "value": "Expiry"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-card-cvc",
+    "key": "event.editor.payment.card.cvc",
+    "lang": "en",
+    "value": "CVC"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-gateway",
+    "key": "event.editor.payment.gateway",
+    "lang": "en",
+    "value": "Gateway"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-demo",
+    "key": "event.editor.payment.demo",
+    "lang": "en",
+    "value": "Demo payment"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-ready-redirect",
+    "key": "event.editor.payment.ready.redirect",
+    "lang": "en",
+    "value": "Ready to redirect"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-review-before-confirm",
+    "key": "event.editor.payment.review.before.confirm",
+    "lang": "en",
+    "value": "Review before confirm"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-gateway-note",
+    "key": "event.editor.payment.gateway.note",
+    "lang": "en",
+    "value": "Payment continues through the configured payment provider after confirmation."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-payment-demo-note",
+    "key": "event.editor.payment.demo.note",
+    "lang": "en",
+    "value": "Demo payment form. The fields are locked, but the payment step can still be completed."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-override-close-aria",
+    "key": "event.editor.slot.override.close.aria",
+    "lang": "en",
+    "value": "Close override editor"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-override-title",
+    "key": "event.editor.slot.override.title",
+    "lang": "en",
+    "value": "Override Slot"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-select-date",
+    "key": "event.editor.slot.select.date",
+    "lang": "en",
+    "value": "Select slot date"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-previous-dates-aria",
+    "key": "event.editor.slot.previous.dates.aria",
+    "lang": "en",
+    "value": "Previous slot dates"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-next-dates-aria",
+    "key": "event.editor.slot.next.dates.aria",
+    "lang": "en",
+    "value": "Next slot dates"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-date-pending",
+    "key": "event.editor.slot.date.pending",
+    "lang": "en",
+    "value": "Slot date pending"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slot-rule-pending",
+    "key": "event.editor.slot.rule.pending",
+    "lang": "en",
+    "value": "Slot rule pending"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-title",
+    "key": "event.editor.subevents.title",
+    "lang": "en",
+    "value": "Sub Events"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-toggle-aria",
+    "key": "event.editor.subevents.toggle.aria",
+    "lang": "en",
+    "value": "Toggle sub events"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-disabled-description",
+    "key": "event.editor.subevents.disabled.description",
+    "lang": "en",
+    "value": "Use the main event without sub events."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-definitions-empty",
+    "key": "event.editor.subevents.definitions.empty",
+    "lang": "en",
+    "value": "No sub event definitions yet"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-definition-add-aria",
+    "key": "event.editor.subevents.definition.add.aria",
+    "lang": "en",
+    "value": "Add sub event definition"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-tournament-definition",
+    "key": "event.editor.subevents.tournament.definition",
+    "lang": "en",
+    "value": "Tournament definition"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-casual-definition",
+    "key": "event.editor.subevents.casual.definition",
+    "lang": "en",
+    "value": "Casual definition"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-main-event-range",
+    "key": "event.editor.subevents.main.event.range",
+    "lang": "en",
+    "value": "Main event range"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-definition",
+    "key": "event.editor.subevents.definition",
+    "lang": "en",
+    "value": "Definition"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-stage-delete-title",
+    "key": "event.editor.subevents.stage.delete.title",
+    "lang": "en",
+    "value": "Delete Stage Definition"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-definition-delete-title",
+    "key": "event.editor.subevents.definition.delete.title",
+    "lang": "en",
+    "value": "Delete Sub Event Definition"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-definition-delete-failure",
+    "key": "event.editor.subevents.definition.delete.failure",
+    "lang": "en",
+    "value": "Unable to delete sub event definition."
+  },
+  {
+    "_id": "i18n-message-en-frequency",
+    "key": "frequency",
+    "lang": "en",
+    "value": "Frequency"
+  },
+  {
+    "_id": "i18n-message-en-select",
+    "key": "select",
+    "lang": "en",
+    "value": "Select"
+  },
+  {
+    "_id": "i18n-message-en-schedule-frequency-custom",
+    "key": "schedule.frequency.custom",
+    "lang": "en",
+    "value": "Custom"
+  },
+  {
+    "_id": "i18n-message-en-profile-review-before-save",
+    "key": "profile.review.before.save",
+    "lang": "en",
+    "value": "Review the profile before saving."
+  },
+  {
+    "_id": "i18n-message-en-profile-photos-minimum-three",
+    "key": "profile.photos.minimum.three",
+    "lang": "en",
+    "value": "Add at least 3 photos."
+  },
+  {
+    "_id": "i18n-message-en-profile-optional-details",
+    "key": "profile.optional.details",
+    "lang": "en",
+    "value": "Optional details."
+  },
+  {
+    "_id": "i18n-message-en-profile-visibility-change-aria",
+    "key": "profile.visibility.change.aria",
+    "lang": "en",
+    "value": "Change visibility"
+  },
+  {
+    "_id": "i18n-message-en-profile-physique-select",
+    "key": "profile.physique.select",
+    "lang": "en",
+    "value": "Select physique"
+  },
+  {
+    "_id": "i18n-message-en-demo-user-selector-perspective-subtitle",
+    "key": "demo.user.selector.perspective.subtitle",
+    "lang": "en",
+    "value": "Signed-out mode. Choose a demo user to open data from their perspective."
+  },
+  {
+    "_id": "i18n-message-en-admin-help-select-screen-before-saving",
+    "key": "admin.help.select.screen.before.saving",
+    "lang": "en",
+    "value": "Choose a canonical screen before saving."
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-time-aria",
+    "key": "date.input.toggle.time.aria",
+    "lang": "en",
+    "value": "Toggle time picker"
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-range-aria",
+    "key": "date.input.toggle.range.aria",
+    "lang": "en",
+    "value": "Toggle date range picker"
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-start-date-aria",
+    "key": "date.input.toggle.start.date.aria",
+    "lang": "en",
+    "value": "Toggle start date picker"
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-start-time-aria",
+    "key": "date.input.toggle.start.time.aria",
+    "lang": "en",
+    "value": "Toggle start time picker"
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-end-date-aria",
+    "key": "date.input.toggle.end.date.aria",
+    "lang": "en",
+    "value": "Toggle end date picker"
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-end-time-aria",
+    "key": "date.input.toggle.end.time.aria",
+    "lang": "en",
+    "value": "Toggle end time picker"
+  },
+  {
+    "_id": "i18n-message-en-date-input-toggle-date-aria",
+    "key": "date.input.toggle.date.aria",
+    "lang": "en",
+    "value": "Toggle date picker"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-toggle-aria",
+    "key": "event.editor.slots.toggle.aria",
+    "lang": "en",
+    "value": "Toggle slots"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-empty",
+    "key": "event.editor.slots.empty",
+    "lang": "en",
+    "value": "No slots yet. Use + to create the first one."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-empty-short",
+    "key": "event.editor.policies.empty.short",
+    "lang": "en",
+    "value": "No policies yet."
+  },
+  {
+    "_id": "i18n-message-en-pricing",
+    "key": "pricing",
+    "lang": "en",
+    "value": "Pricing"
+  },
+  {
+    "_id": "i18n-message-en-currency",
+    "key": "currency",
+    "lang": "en",
+    "value": "Currency"
+  },
+  {
+    "_id": "i18n-message-en-tax",
+    "key": "tax",
+    "lang": "en",
+    "value": "Tax"
+  },
+  {
+    "_id": "i18n-message-en-if",
+    "key": "if",
+    "lang": "en",
+    "value": "If"
+  },
+  {
+    "_id": "i18n-message-en-then",
+    "key": "then",
+    "lang": "en",
+    "value": "Then"
+  },
+  {
+    "_id": "i18n-message-en-value",
+    "key": "value",
+    "lang": "en",
+    "value": "Value"
+  },
+  {
+    "_id": "i18n-message-en-quantity",
+    "key": "quantity",
+    "lang": "en",
+    "value": "Quantity"
+  },
+  {
+    "_id": "i18n-message-en-refund",
+    "key": "refund",
+    "lang": "en",
+    "value": "Refund"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-title",
+    "key": "pricing.asset.title",
+    "lang": "en",
+    "value": "Asset Pricing"
+  },
+  {
+    "_id": "i18n-message-en-pricing-optional-title",
+    "key": "pricing.optional.title",
+    "lang": "en",
+    "value": "Optional Pricing"
+  },
+  {
+    "_id": "i18n-message-en-pricing-event-subtitle-enabled",
+    "key": "pricing.event.subtitle.enabled",
+    "lang": "en",
+    "value": "Configure paid entry for the main event and optional slot overrides."
+  },
+  {
+    "_id": "i18n-message-en-pricing-event-subtitle-disabled",
+    "key": "pricing.event.subtitle.disabled",
+    "lang": "en",
+    "value": "Keep it free for now or prepare ticketing rules in advance."
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-subtitle",
+    "key": "pricing.asset.subtitle",
+    "lang": "en",
+    "value": "Set the default charge for using this asset without event slot-specific pricing controls."
+  },
+  {
+    "_id": "i18n-message-en-pricing-subevent-subtitle",
+    "key": "pricing.subevent.subtitle",
+    "lang": "en",
+    "value": "Optional sub events can add a separate charge beyond the main event price without slot-specific rules."
+  },
+  {
+    "_id": "i18n-message-en-pricing-setup-open",
+    "key": "pricing.setup.open",
+    "lang": "en",
+    "value": "Open Pricing Setup"
+  },
+  {
+    "_id": "i18n-message-en-pricing-base-price",
+    "key": "pricing.base.price",
+    "lang": "en",
+    "value": "Base Price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-minimum",
+    "key": "pricing.minimum",
+    "lang": "en",
+    "value": "Min Price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-maximum",
+    "key": "pricing.maximum",
+    "lang": "en",
+    "value": "Max Price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-no-minimum",
+    "key": "pricing.no.minimum",
+    "lang": "en",
+    "value": "No minimum"
+  },
+  {
+    "_id": "i18n-message-en-pricing-no-maximum",
+    "key": "pricing.no.maximum",
+    "lang": "en",
+    "value": "No maximum"
+  },
+  {
+    "_id": "i18n-message-en-pricing-rounding",
+    "key": "pricing.rounding",
+    "lang": "en",
+    "value": "Rounding"
+  },
+  {
+    "_id": "i18n-message-en-pricing-quantity-rules",
+    "key": "pricing.quantity.rules",
+    "lang": "en",
+    "value": "Quantity Rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-event-quantity-minimum",
+    "key": "pricing.event.quantity.minimum",
+    "lang": "en",
+    "value": "Event quantity >="
+  },
+  {
+    "_id": "i18n-message-en-pricing-quantity-rule-remove-aria",
+    "key": "pricing.quantity.rule.remove.aria",
+    "lang": "en",
+    "value": "Remove quantity rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-quantity-rule-add",
+    "key": "pricing.quantity.rule.add",
+    "lang": "en",
+    "value": "Add Quantity Rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-quantity-disabled-hint",
+    "key": "pricing.quantity.disabled.hint",
+    "lang": "en",
+    "value": "Quantity pricing is currently off. Turn it on when a multi-event slot should reduce the total from the one-event base price."
+  },
+  {
+    "_id": "i18n-message-en-pricing-demand-rules",
+    "key": "pricing.demand.rules",
+    "lang": "en",
+    "value": "Demand Rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-capacity-percent",
+    "key": "pricing.capacity.percent",
+    "lang": "en",
+    "value": "Capacity %"
+  },
+  {
+    "_id": "i18n-message-en-pricing-applies-to",
+    "key": "pricing.applies.to",
+    "lang": "en",
+    "value": "Applies To"
+  },
+  {
+    "_id": "i18n-message-en-pricing-demand-rule-remove-aria",
+    "key": "pricing.demand.rule.remove.aria",
+    "lang": "en",
+    "value": "Remove demand rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-demand-rule-add",
+    "key": "pricing.demand.rule.add",
+    "lang": "en",
+    "value": "Add Demand Rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-demand-disabled-hint",
+    "key": "pricing.demand.disabled.hint",
+    "lang": "en",
+    "value": "Demand pricing is currently off. Turn it on when you want capacity-based price changes."
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-rules",
+    "key": "pricing.time.rules",
+    "lang": "en",
+    "value": "Time Rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-rule-remove-aria",
+    "key": "pricing.time.rule.remove.aria",
+    "lang": "en",
+    "value": "Remove time rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-rule-add",
+    "key": "pricing.time.rule.add",
+    "lang": "en",
+    "value": "Add Time Rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-disabled-hint",
+    "key": "pricing.time.disabled.hint",
+    "lang": "en",
+    "value": "Time pricing is currently off. Turn it on for early-bird or last-minute adjustments."
+  },
+  {
+    "_id": "i18n-message-en-pricing-cancellation-title",
+    "key": "pricing.cancellation.title",
+    "lang": "en",
+    "value": "Cancellation & Reimbursement"
+  },
+  {
+    "_id": "i18n-message-en-pricing-notice-window",
+    "key": "pricing.notice.window",
+    "lang": "en",
+    "value": "Notice Window"
+  },
+  {
+    "_id": "i18n-message-en-pricing-refund-value",
+    "key": "pricing.refund.value",
+    "lang": "en",
+    "value": "Refund Value"
+  },
+  {
+    "_id": "i18n-message-en-pricing-cancellation-rule-remove-aria",
+    "key": "pricing.cancellation.rule.remove.aria",
+    "lang": "en",
+    "value": "Remove cancellation rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-cancellation-rule-add",
+    "key": "pricing.cancellation.rule.add",
+    "lang": "en",
+    "value": "Add Cancellation Rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-cancellation-disabled-hint",
+    "key": "pricing.cancellation.disabled.hint",
+    "lang": "en",
+    "value": "Cancellation reimbursement is off. Turn it on to define how much of a paid booking can be refunded before the booking starts."
+  },
+  {
+    "_id": "i18n-message-en-pricing-audience-title",
+    "key": "pricing.audience.title",
+    "lang": "en",
+    "value": "Advanced Audience Pricing"
+  },
+  {
+    "_id": "i18n-message-en-pricing-member-price",
+    "key": "pricing.member.price",
+    "lang": "en",
+    "value": "Member Price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-vip-price",
+    "key": "pricing.vip.price",
+    "lang": "en",
+    "value": "VIP Price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-invite-discount-percent",
+    "key": "pricing.invite.discount.percent",
+    "lang": "en",
+    "value": "Invite-only Discount %"
+  },
+  {
+    "_id": "i18n-message-en-pricing-sold-out-label",
+    "key": "pricing.sold.out.label",
+    "lang": "en",
+    "value": "Sold Out Label"
+  },
+  {
+    "_id": "i18n-message-en-pricing-promo-code",
+    "key": "pricing.promo.code",
+    "lang": "en",
+    "value": "Promo Code"
+  },
+  {
+    "_id": "i18n-message-en-pricing-effect",
+    "key": "pricing.effect",
+    "lang": "en",
+    "value": "Effect"
+  },
+  {
+    "_id": "i18n-message-en-pricing-promo-remove-aria",
+    "key": "pricing.promo.remove.aria",
+    "lang": "en",
+    "value": "Remove promo code"
+  },
+  {
+    "_id": "i18n-message-en-pricing-promo-add",
+    "key": "pricing.promo.add",
+    "lang": "en",
+    "value": "Add Promo Code"
+  },
+  {
+    "_id": "i18n-message-en-pricing-audience-disabled-hint",
+    "key": "pricing.audience.disabled.hint",
+    "lang": "en",
+    "value": "Audience pricing is off, so every attendee will see the same public price until you turn on member, VIP, or promo-code pricing."
+  },
+  {
+    "_id": "i18n-message-en-pricing-base",
+    "key": "pricing.base",
+    "lang": "en",
+    "value": "Base"
+  },
+  {
+    "_id": "i18n-message-en-pricing-demand-adjustment",
+    "key": "pricing.demand.adjustment",
+    "lang": "en",
+    "value": "Demand adjustment"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-adjustment",
+    "key": "pricing.time.adjustment",
+    "lang": "en",
+    "value": "Time adjustment"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-title",
+    "key": "event.editor.policies.title",
+    "lang": "en",
+    "value": "Event Policies"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-enabled-description",
+    "key": "event.editor.policies.enabled.description",
+    "lang": "en",
+    "value": "Add the rules attendees need to read and approve before joining."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-disabled-description",
+    "key": "event.editor.policies.disabled.description",
+    "lang": "en",
+    "value": "Attendees can join without approving event policies."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-setup-title",
+    "key": "event.editor.policies.setup.title",
+    "lang": "en",
+    "value": "Policy Setup"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-setup-aria",
+    "key": "event.editor.policies.setup.aria",
+    "lang": "en",
+    "value": "Policy setup"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-setup-close-aria",
+    "key": "event.editor.policies.setup.close.aria",
+    "lang": "en",
+    "value": "Close policy setup"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-setup-open",
+    "key": "event.editor.policies.setup.open",
+    "lang": "en",
+    "value": "Open Policy Setup"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-view",
+    "key": "event.editor.policies.view",
+    "lang": "en",
+    "value": "View Policies"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-empty-readonly",
+    "key": "event.editor.policies.empty.readonly",
+    "lang": "en",
+    "value": "No policies are configured for this event."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-empty-description",
+    "key": "event.editor.policies.empty.description",
+    "lang": "en",
+    "value": "No policies yet. Add policies if attendees must review terms before joining or booking."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policies-popup-subtitle",
+    "key": "event.editor.policies.popup.subtitle",
+    "lang": "en",
+    "value": "Open a policy to edit its details."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-create",
+    "key": "event.editor.policy.create",
+    "lang": "en",
+    "value": "Create Policy"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-edit",
+    "key": "event.editor.policy.edit",
+    "lang": "en",
+    "value": "Edit Policy"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-required",
+    "key": "event.editor.policy.required",
+    "lang": "en",
+    "value": "Required approval"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-optional",
+    "key": "event.editor.policy.optional",
+    "lang": "en",
+    "value": "Optional policy"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-required-description",
+    "key": "event.editor.policy.required.description",
+    "lang": "en",
+    "value": "Attendees must approve this policy before joining."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-optional-description",
+    "key": "event.editor.policy.optional.description",
+    "lang": "en",
+    "value": "Optional policy shown during join or checkout."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-required-checkbox",
+    "key": "event.editor.policy.required.checkbox",
+    "lang": "en",
+    "value": "Attendees must approve this policy"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-add-aria",
+    "key": "event.editor.policy.add.aria",
+    "lang": "en",
+    "value": "Add policy"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-editor-subtitle",
+    "key": "event.editor.policy.editor.subtitle",
+    "lang": "en",
+    "value": "Write the policy clearly and choose whether attendees must approve it before joining."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-form-close-aria",
+    "key": "event.editor.policy.form.close.aria",
+    "lang": "en",
+    "value": "Close policy form"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-title-placeholder",
+    "key": "event.editor.policy.title.placeholder",
+    "lang": "en",
+    "value": "Policy title"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-description-placeholder",
+    "key": "event.editor.policy.description.placeholder",
+    "lang": "en",
+    "value": "Explain the policy clearly."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-policy-save-aria",
+    "key": "event.editor.policy.save.aria",
+    "lang": "en",
+    "value": "Save policy"
+  },
+  {
+    "_id": "i18n-message-en-summary",
+    "key": "summary",
+    "lang": "en",
+    "value": "Summary"
+  },
+  {
+    "_id": "i18n-message-en-override",
+    "key": "override",
+    "lang": "en",
+    "value": "Override"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-title",
+    "key": "event.editor.slots.title",
+    "lang": "en",
+    "value": "Slots"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-subtitle",
+    "key": "event.editor.slots.subtitle",
+    "lang": "en",
+    "value": "Base schedule and date-specific overrides."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-disabled-description",
+    "key": "event.editor.slots.disabled.description",
+    "lang": "en",
+    "value": "Use the main event date range without slot schedules."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-time-pending",
+    "key": "event.editor.slots.time.pending",
+    "lang": "en",
+    "value": "Time pending"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-slots-add-base-aria",
+    "key": "event.editor.slots.add.base.aria",
+    "lang": "en",
+    "value": "Add base slot"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-edit",
+    "key": "event.editor.schedule.edit",
+    "lang": "en",
+    "value": "Edit Schedule"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-add",
+    "key": "event.editor.schedule.add",
+    "lang": "en",
+    "value": "Add Schedule"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-edit-description",
+    "key": "event.editor.schedule.edit.description",
+    "lang": "en",
+    "value": "Update the selected base slot start rule."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-add-description",
+    "key": "event.editor.schedule.add.description",
+    "lang": "en",
+    "value": "Create a base slot start rule."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-close-aria",
+    "key": "event.editor.schedule.close.aria",
+    "lang": "en",
+    "value": "Close schedule setup"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-save-aria",
+    "key": "event.editor.schedule.save.aria",
+    "lang": "en",
+    "value": "Save schedule"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-add-aria",
+    "key": "event.editor.schedule.add.aria",
+    "lang": "en",
+    "value": "Add schedule"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-schedule-start-time",
+    "key": "event.editor.schedule.start.time",
+    "lang": "en",
+    "value": "Start time"
+  },
+  {
+    "_id": "i18n-message-en-pricing-action-decrease-percent",
+    "key": "pricing.action.decrease.percent",
+    "lang": "en",
+    "value": "Decrease by %"
+  },
+  {
+    "_id": "i18n-message-en-pricing-action-increase-amount",
+    "key": "pricing.action.increase.amount",
+    "lang": "en",
+    "value": "Increase by amount"
+  },
+  {
+    "_id": "i18n-message-en-pricing-action-decrease-amount",
+    "key": "pricing.action.decrease.amount",
+    "lang": "en",
+    "value": "Decrease by amount"
+  },
+  {
+    "_id": "i18n-message-en-pricing-action-set-exact",
+    "key": "pricing.action.set.exact",
+    "lang": "en",
+    "value": "Set exact price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-action-increase-percent",
+    "key": "pricing.action.increase.percent",
+    "lang": "en",
+    "value": "Increase by %"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-per-booking",
+    "key": "pricing.charge.per.booking",
+    "lang": "en",
+    "value": "Per booking"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-per-slot",
+    "key": "pricing.charge.per.slot",
+    "lang": "en",
+    "value": "Per slot"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-per-attendee",
+    "key": "pricing.charge.per.attendee",
+    "lang": "en",
+    "value": "Per attendee"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-basis",
+    "key": "pricing.charge.basis",
+    "lang": "en",
+    "value": "Charge Basis"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-type",
+    "key": "pricing.charge.type",
+    "lang": "en",
+    "value": "Charge Type"
+  },
+  {
+    "_id": "i18n-message-en-pricing-rounding-whole",
+    "key": "pricing.rounding.whole",
+    "lang": "en",
+    "value": "Whole number"
+  },
+  {
+    "_id": "i18n-message-en-pricing-rounding-none",
+    "key": "pricing.rounding.none",
+    "lang": "en",
+    "value": "No rounding"
+  },
+  {
+    "_id": "i18n-message-en-pricing-tax-excluded",
+    "key": "pricing.tax.excluded",
+    "lang": "en",
+    "value": "Excluded"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slots-selected",
+    "key": "pricing.slots.selected",
+    "lang": "en",
+    "value": "Selected slots"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slots-all",
+    "key": "pricing.slots.all",
+    "lang": "en",
+    "value": "All slots"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slots-specific",
+    "key": "pricing.slots.specific",
+    "lang": "en",
+    "value": "Specific slots"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-before-start-hours",
+    "key": "pricing.time.before.start.hours",
+    "lang": "en",
+    "value": "Before event start by hours"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-during-range",
+    "key": "pricing.time.during.range",
+    "lang": "en",
+    "value": "During date range"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-before-start-days",
+    "key": "pricing.time.before.start.days",
+    "lang": "en",
+    "value": "Before event start by days"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-setup-title",
+    "key": "pricing.asset.setup.title",
+    "lang": "en",
+    "value": "Asset Pricing Setup"
+  },
+  {
+    "_id": "i18n-message-en-pricing-optional-setup-title",
+    "key": "pricing.optional.setup.title",
+    "lang": "en",
+    "value": "Optional Pricing Setup"
+  },
+  {
+    "_id": "i18n-message-en-pricing-setup-title",
+    "key": "pricing.setup.title",
+    "lang": "en",
+    "value": "Pricing Setup"
+  },
+  {
+    "_id": "i18n-message-en-pricing-setup-subtitle",
+    "key": "pricing.setup.subtitle",
+    "lang": "en",
+    "value": "Adjust the full pricing configuration here while the summary stays compact on the form."
+  },
+  {
+    "_id": "i18n-message-en-pricing-hours-before-start",
+    "key": "pricing.hours.before.start",
+    "lang": "en",
+    "value": "Hours before start"
+  },
+  {
+    "_id": "i18n-message-en-pricing-weeks-before-start",
+    "key": "pricing.weeks.before.start",
+    "lang": "en",
+    "value": "Weeks before start"
+  },
+  {
+    "_id": "i18n-message-en-pricing-months-before-start",
+    "key": "pricing.months.before.start",
+    "lang": "en",
+    "value": "Months before start"
+  },
+  {
+    "_id": "i18n-message-en-pricing-days-before-start",
+    "key": "pricing.days.before.start",
+    "lang": "en",
+    "value": "Days before start"
+  },
+  {
+    "_id": "i18n-message-en-pricing-refund-fixed",
+    "key": "pricing.refund.fixed",
+    "lang": "en",
+    "value": "Fixed refund"
+  },
+  {
+    "_id": "i18n-message-en-pricing-refund-percent",
+    "key": "pricing.refund.percent",
+    "lang": "en",
+    "value": "Refund %"
+  },
+  {
+    "_id": "i18n-message-en-pricing-time-rule-slots",
+    "key": "pricing.time.rule.slots",
+    "lang": "en",
+    "value": "Time Rule Slots"
+  },
+  {
+    "_id": "i18n-message-en-pricing-demand-rule-slots",
+    "key": "pricing.demand.rule.slots",
+    "lang": "en",
+    "value": "Demand Rule Slots"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge",
+    "key": "pricing.charge",
+    "lang": "en",
+    "value": "Charge"
+  },
+  {
+    "_id": "i18n-message-en-pricing-dynamic-rules",
+    "key": "pricing.dynamic.rules",
+    "lang": "en",
+    "value": "Dynamic rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-cancellation",
+    "key": "pricing.cancellation",
+    "lang": "en",
+    "value": "Cancellation"
+  },
+  {
+    "_id": "i18n-message-en-pricing-no-reimbursement-schedule",
+    "key": "pricing.no.reimbursement.schedule",
+    "lang": "en",
+    "value": "No reimbursement schedule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-audience",
+    "key": "pricing.audience",
+    "lang": "en",
+    "value": "Audience"
+  },
+  {
+    "_id": "i18n-message-en-pricing-setup-wizard-aria",
+    "key": "pricing.setup.wizard.aria",
+    "lang": "en",
+    "value": "Pricing setup wizard"
+  },
+  {
+    "_id": "i18n-message-en-pricing-setup-close-aria",
+    "key": "pricing.setup.close.aria",
+    "lang": "en",
+    "value": "Close pricing setup"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-hide-aria",
+    "key": "pricing.summary.hide.aria",
+    "lang": "en",
+    "value": "Hide pricing summary"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-show-aria",
+    "key": "pricing.summary.show.aria",
+    "lang": "en",
+    "value": "Show pricing summary"
+  },
+  {
+    "_id": "i18n-message-en-pricing-draft-apply-aria",
+    "key": "pricing.draft.apply.aria",
+    "lang": "en",
+    "value": "Apply pricing draft"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slot-customize-title",
+    "key": "pricing.slot.customize.title",
+    "lang": "en",
+    "value": "Customize pricing per slot"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slot-customize-subtitle",
+    "key": "pricing.slot.customize.subtitle",
+    "lang": "en",
+    "value": "Override global rules with slot-specific pricing."
+  },
+  {
+    "_id": "i18n-message-en-pricing-slot-select",
+    "key": "pricing.slot.select",
+    "lang": "en",
+    "value": "Select slot"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slot-time-window-follows",
+    "key": "pricing.slot.time.window.follows",
+    "lang": "en",
+    "value": "Time window will follow the selected slot."
+  },
+  {
+    "_id": "i18n-message-en-pricing-slot-time-follows",
+    "key": "pricing.slot.time.follows",
+    "lang": "en",
+    "value": "Time follows this slot."
+  },
+  {
+    "_id": "i18n-message-en-minutes",
+    "key": "minutes",
+    "lang": "en",
+    "value": "minutes"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-stage-description-placeholder",
+    "key": "event.editor.subevents.stage.description.placeholder",
+    "lang": "en",
+    "value": "Describe this stage"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-mandatory-price-note",
+    "key": "event.editor.subevents.mandatory.price.note",
+    "lang": "en",
+    "value": "Mandatory sub events are included in the main event price."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-stage-rule",
+    "key": "event.editor.subevents.stage.rule",
+    "lang": "en",
+    "value": "Stage Rule"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-manual-groups-warning",
+    "key": "event.editor.subevents.manual.groups.warning",
+    "lang": "en",
+    "value": "Manual groups add extra capacity on top of auto groups. Customization only!"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-group-minimum",
+    "key": "event.editor.subevents.group.minimum",
+    "lang": "en",
+    "value": "Min Per Group"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-group-maximum",
+    "key": "event.editor.subevents.group.maximum",
+    "lang": "en",
+    "value": "Max Per Group"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-leaderboard-type",
+    "key": "event.editor.subevents.leaderboard.type",
+    "lang": "en",
+    "value": "Leaderboard Type"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-advance-per-group",
+    "key": "event.editor.subevents.advance.per.group",
+    "lang": "en",
+    "value": "Advance Per Group"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-estimated-group-count",
+    "key": "event.editor.subevents.estimated.group.count",
+    "lang": "en",
+    "value": "Estimated Group Count"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-location-placeholder",
+    "key": "event.editor.subevents.location.placeholder",
+    "lang": "en",
+    "value": "Sub event location"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-location-map-aria",
+    "key": "event.editor.subevents.location.map.aria",
+    "lang": "en",
+    "value": "Open sub event location on map"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-form-close-aria",
+    "key": "event.editor.subevents.form.close.aria",
+    "lang": "en",
+    "value": "Close sub event form"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-mandatory-aria",
+    "key": "event.editor.subevents.mandatory.aria",
+    "lang": "en",
+    "value": "Mandatory sub event"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-save-aria",
+    "key": "event.editor.subevents.save.aria",
+    "lang": "en",
+    "value": "Save sub event"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-optional-mode-aria",
+    "key": "event.editor.subevents.optional.mode.aria",
+    "lang": "en",
+    "value": "Sub event optional mode"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-stage-select",
+    "key": "event.editor.subevents.stage.select",
+    "lang": "en",
+    "value": "Select stage"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-subevents-stage-create",
+    "key": "event.editor.subevents.stage.create",
+    "lang": "en",
+    "value": "Create Stage Event"
+  },
+  {
     "_id": "i18n-message-hu-about",
     "key": "about",
     "lang": "hu",
@@ -11505,7 +13251,7 @@
     "_id": "i18n-message-hu-activities-support-case-actions",
     "key": "activities.support.case.actions",
     "lang": "hu",
-    "value": "Support ügy műveletek"
+    "value": "Támogatási ügy műveletei"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-assignee-by",
@@ -11523,7 +13269,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-block-title",
     "key": "activities.support.case.confirm.block.title",
     "lang": "hu",
-    "value": "Support ügy blokkolása"
+    "value": "Támogatási ügy blokkolása"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-pick-message",
@@ -11535,7 +13281,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-pick-title",
     "key": "activities.support.case.confirm.pick.title",
     "lang": "hu",
-    "value": "Support ügy felvétele"
+    "value": "Támogatási ügy felvétele"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-reopen-message",
@@ -11547,7 +13293,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-reopen-title",
     "key": "activities.support.case.confirm.reopen.title",
     "lang": "hu",
-    "value": "Support ügy újranyitása"
+    "value": "Támogatási ügy újranyitása"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-solve-message",
@@ -11559,7 +13305,7 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-solve-title",
     "key": "activities.support.case.confirm.solve.title",
     "lang": "hu",
-    "value": "Support ügy megoldása"
+    "value": "Támogatási ügy megoldása"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-confirm-unpick-message",
@@ -11571,19 +13317,19 @@
     "_id": "i18n-message-hu-activities-support-case-confirm-unpick-title",
     "key": "activities.support.case.confirm.unpick.title",
     "lang": "hu",
-    "value": "Support ügy leadása"
+    "value": "Támogatási ügy leadása"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-error-update",
     "key": "activities.support.case.error.update",
     "lang": "hu",
-    "value": "Nem sikerült frissíteni a support ügyet."
+    "value": "Nem sikerült frissíteni a támogatási ügyet."
   },
   {
     "_id": "i18n-message-hu-activities-support-case-filter-aria",
     "key": "activities.support.case.filter.aria",
     "lang": "hu",
-    "value": "Support ügyek szűrése"
+    "value": "Támogatási ügyek szűrése"
   },
   {
     "_id": "i18n-message-hu-activities-support-case-filter-all",
@@ -11778,6 +13524,12 @@
     "value": "Szimpátia gráf nézet"
   },
   {
+    "_id": "i18n-message-hu-after",
+    "key": "after",
+    "lang": "hu",
+    "value": "Utána"
+  },
+  {
     "_id": "i18n-message-hu-all",
     "key": "all",
     "lang": "hu",
@@ -11796,6 +13548,12 @@
     "value": "Ambíció"
   },
   {
+    "_id": "i18n-message-hu-anchor",
+    "key": "anchor",
+    "lang": "hu",
+    "value": "Viszonyítási pont"
+  },
+  {
     "_id": "i18n-message-hu-any",
     "key": "any",
     "lang": "hu",
@@ -11811,7 +13569,7 @@
     "_id": "i18n-message-hu-app-support",
     "key": "app.support",
     "lang": "hu",
-    "value": "App support"
+    "value": "Alkalmazástámogatás"
   },
   {
     "_id": "i18n-message-hu-apply-filters",
@@ -11878,6 +13636,12 @@
     "key": "basics",
     "lang": "hu",
     "value": "Alapadatok"
+  },
+  {
+    "_id": "i18n-message-hu-before",
+    "key": "before",
+    "lang": "hu",
+    "value": "Előtte"
   },
   {
     "_id": "i18n-message-hu-age-range",
@@ -12046,6 +13810,48 @@
     "key": "close.privacy.popup",
     "lang": "hu",
     "value": "Adatvédelmi ablak bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-during",
+    "key": "during",
+    "lang": "hu",
+    "value": "Közben"
+  },
+  {
+    "_id": "i18n-message-hu-event-anchor",
+    "key": "event.anchor",
+    "lang": "hu",
+    "value": "Viszonyítási pont"
+  },
+  {
+    "_id": "i18n-message-hu-minutes-short",
+    "key": "minutes.short",
+    "lang": "hu",
+    "value": "perc"
+  },
+  {
+    "_id": "i18n-message-hu-offset",
+    "key": "offset",
+    "lang": "hu",
+    "value": "Eltolás"
+  },
+  {
+    "_id": "i18n-message-hu-offset-minutes",
+    "key": "offset.minutes",
+    "lang": "hu",
+    "value": "Eltolás percben"
+  },
+  {
+    "_id": "i18n-message-hu-placement",
+    "key": "placement",
+    "lang": "hu",
+    "value": "Elhelyezés"
+  },
+  {
+    "_id": "i18n-message-hu-position",
+    "key": "position",
+    "lang": "hu",
+    "value": "Pozíció"
   },
   {
     "_id": "i18n-message-hu-close-profile",
@@ -12711,7 +14517,7 @@
     "_id": "i18n-message-hu-monitoring",
     "key": "monitoring",
     "lang": "hu",
-    "value": "Monitoring"
+    "value": "Monitorozás"
   },
   {
     "_id": "i18n-message-hu-metrics",
@@ -13053,7 +14859,7 @@
     "_id": "i18n-message-hu-admin-jobs-run-windows-description",
     "key": "admin.jobs.run.windows.description",
     "lang": "hu",
-    "value": "A folyamat mentett futási ablakai. A worker a mentett job rekordot olvassa."
+    "value": "A folyamat mentett futási ablakai. A háttérfeldolgozó a mentett feladatrekordot olvassa."
   },
   {
     "_id": "i18n-message-hu-admin-jobs-close-run-window-editor",
@@ -13677,7 +15483,7 @@
     "_id": "i18n-message-hu-admin-monitoring-category-chat",
     "key": "admin.monitoring.category.chat",
     "lang": "hu",
-    "value": "Chat"
+    "value": "Csevegés"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-category-chat-summary",
@@ -13791,25 +15597,25 @@
     "_id": "i18n-message-hu-admin-monitoring-node-affinity-worker",
     "key": "admin.monitoring.node.affinity.worker",
     "lang": "hu",
-    "value": "Affinitás worker"
+    "value": "Affinitási feldolgozó"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-node-discovery-read-model",
     "key": "admin.monitoring.node.discovery.read.model",
     "lang": "hu",
-    "value": "Discovery read model"
+    "value": "Felfedezési olvasási modell"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-node-chat-ui",
     "key": "admin.monitoring.node.chat.ui",
     "lang": "hu",
-    "value": "Chat UI"
+    "value": "Csevegési felület"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-node-chat-stream",
     "key": "admin.monitoring.node.chat.stream",
     "lang": "hu",
-    "value": "Chat stream"
+    "value": "Csevegésfolyam"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-node-attachment-lifecycle",
@@ -13857,13 +15663,13 @@
     "_id": "i18n-message-hu-admin-monitoring-node-scheduler",
     "key": "admin.monitoring.node.scheduler",
     "lang": "hu",
-    "value": "Scheduler"
+    "value": "Ütemező"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-node-audit-trail",
     "key": "admin.monitoring.node.audit.trail",
     "lang": "hu",
-    "value": "Audit trail"
+    "value": "Auditnapló"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-metric-profile-writes",
@@ -14019,7 +15825,7 @@
     "_id": "i18n-message-hu-admin-monitoring-metric-visible-scores",
     "key": "admin.monitoring.metric.visible.scores",
     "lang": "hu",
-    "value": "Látható score-ok"
+    "value": "Látható pontszámok"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-metric-messages",
@@ -14103,7 +15909,7 @@
     "_id": "i18n-message-hu-admin-monitoring-edge-recompute",
     "key": "admin.monitoring.edge.recompute",
     "lang": "hu",
-    "value": "Recompute"
+    "value": "Újraszámítás"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-edge-visible-changes",
@@ -14139,13 +15945,13 @@
     "_id": "i18n-message-hu-admin-monitoring-edge-worker-pickup",
     "key": "admin.monitoring.edge.worker.pickup",
     "lang": "hu",
-    "value": "Worker pickup"
+    "value": "Feldolgozói átvétel"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-edge-read-model",
     "key": "admin.monitoring.edge.read.model",
     "lang": "hu",
-    "value": "Read model"
+    "value": "Olvasási modell"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-edge-attachment-lifecycle",
@@ -14157,7 +15963,7 @@
     "_id": "i18n-message-hu-admin-monitoring-edge-push-intent",
     "key": "admin.monitoring.edge.push.intent",
     "lang": "hu",
-    "value": "Push intent"
+    "value": "Push kérés"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-edge-outbox-persist",
@@ -14169,7 +15975,7 @@
     "_id": "i18n-message-hu-admin-monitoring-edge-firebase-batch",
     "key": "admin.monitoring.edge.firebase.batch",
     "lang": "hu",
-    "value": "Firebase batch"
+    "value": "Firebase-köteg"
   },
   {
     "_id": "i18n-message-hu-admin-monitoring-edge-token-cleanup",
@@ -14187,7 +15993,7 @@
     "_id": "i18n-message-hu-admin-monitoring-edge-audit",
     "key": "admin.monitoring.edge.audit",
     "lang": "hu",
-    "value": "Audit"
+    "value": "Auditálás"
   },
   {
     "_id": "i18n-message-hu-event-scheduler-random-groups",
@@ -15087,7 +16893,7 @@
     "_id": "i18n-message-hu-admin-params-group-boost",
     "key": "admin.params.group.boost",
     "lang": "hu",
-    "value": "Boost"
+    "value": "Erősítés"
   },
   {
     "_id": "i18n-message-hu-admin-params-group-collapse",
@@ -15183,7 +16989,7 @@
     "_id": "i18n-message-hu-admin-params-group-worker",
     "key": "admin.params.group.worker",
     "lang": "hu",
-    "value": "Worker"
+    "value": "Feldolgozó"
   },
   {
     "_id": "i18n-message-hu-admin-params-group-processes",
@@ -15459,7 +17265,7 @@
     "_id": "i18n-message-hu-admin-params-field-absolute-user-impressionnoshowpenalty",
     "key": "admin.params.field.absolute.user.impressionNoShowPenalty",
     "lang": "hu",
-    "value": "No-show büntetés"
+    "value": "Távolmaradási büntetés"
   },
   {
     "_id": "i18n-message-hu-admin-params-field-absolute-user-impressiontraitpercent",
@@ -15669,7 +17475,7 @@
     "_id": "i18n-message-hu-admin-params-field-jobs-workerpolldelayms",
     "key": "admin.params.field.jobs.workerPollDelayMs",
     "lang": "hu",
-    "value": "Worker poll késleltetés"
+    "value": "Feldolgozói lekérdezés késleltetése"
   },
   {
     "_id": "i18n-message-hu-admin-params-field-jobs-batchsize",
@@ -15867,7 +17673,7 @@
     "_id": "i18n-message-hu-admin-params-summary-jobs-initial",
     "key": "admin.params.summary.jobs.initial",
     "lang": "hu",
-    "value": "Kezdeti újraszámítási worker ütemezési alapértékek."
+    "value": "Az újraszámítási feldolgozó kezdeti ütemezési alapértékei."
   },
   {
     "_id": "i18n-message-hu-admin-params-summary-initial-seed",
@@ -17493,7 +19299,7 @@
     "_id": "i18n-message-hu-stats-graph-help-clustering-title",
     "key": "stats.graph.help.clustering.title",
     "lang": "hu",
-    "value": "Clustering"
+    "value": "Klaszterezés"
   },
   {
     "_id": "i18n-message-hu-stats-graph-help-edges-body",
@@ -17715,7 +19521,7 @@
     "_id": "i18n-message-hu-stats-graph-signal-clustering",
     "key": "stats.graph.signal.clustering",
     "lang": "hu",
-    "value": "Clustering"
+    "value": "Klaszterezés"
   },
   {
     "_id": "i18n-message-hu-stats-graph-signal-cluster-quality",
@@ -17811,7 +19617,7 @@
     "_id": "i18n-message-hu-stats-graph-title",
     "key": "stats.graph.title",
     "lang": "hu",
-    "value": "Social graph"
+    "value": "Közösségi gráf"
   },
   {
     "_id": "i18n-message-hu-stats-revenue-asset-categories",
@@ -22704,123 +24510,1689 @@
     "value": "Biztosan kilép?"
   },
   {
-    "_id": "i18n-message-en-after",
-    "key": "after",
-    "lang": "en",
-    "value": "After"
-  },
-  {
-    "_id": "i18n-message-en-anchor",
-    "key": "anchor",
-    "lang": "en",
-    "value": "Anchor"
-  },
-  {
-    "_id": "i18n-message-en-before",
-    "key": "before",
-    "lang": "en",
-    "value": "Before"
-  },
-  {
-    "_id": "i18n-message-en-during",
-    "key": "during",
-    "lang": "en",
-    "value": "During"
-  },
-  {
-    "_id": "i18n-message-en-event-anchor",
-    "key": "event.anchor",
-    "lang": "en",
-    "value": "Event Anchor"
-  },
-  {
-    "_id": "i18n-message-en-minutes-short",
-    "key": "minutes.short",
-    "lang": "en",
-    "value": "min"
-  },
-  {
-    "_id": "i18n-message-en-offset",
-    "key": "offset",
-    "lang": "en",
-    "value": "Offset"
-  },
-  {
-    "_id": "i18n-message-en-offset-minutes",
-    "key": "offset.minutes",
-    "lang": "en",
-    "value": "Offset minutes"
-  },
-  {
-    "_id": "i18n-message-en-placement",
-    "key": "placement",
-    "lang": "en",
-    "value": "Placement"
-  },
-  {
-    "_id": "i18n-message-en-position",
-    "key": "position",
-    "lang": "en",
-    "value": "Position"
-  },
-  {
-    "_id": "i18n-message-hu-after",
-    "key": "after",
+    "_id": "i18n-message-hu-min",
+    "key": "min",
     "lang": "hu",
-    "value": "Utána"
+    "value": "Min."
   },
   {
-    "_id": "i18n-message-hu-anchor",
-    "key": "anchor",
+    "_id": "i18n-message-hu-max",
+    "key": "max",
     "lang": "hu",
-    "value": "Viszonyítási pont"
+    "value": "Max."
   },
   {
-    "_id": "i18n-message-hu-before",
-    "key": "before",
+    "_id": "i18n-message-hu-date",
+    "key": "date",
     "lang": "hu",
-    "value": "Előtte"
+    "value": "Dátum"
   },
   {
-    "_id": "i18n-message-hu-during",
-    "key": "during",
+    "_id": "i18n-message-hu-paid",
+    "key": "paid",
     "lang": "hu",
-    "value": "Közben"
+    "value": "Fizetve"
   },
   {
-    "_id": "i18n-message-hu-event-anchor",
-    "key": "event.anchor",
+    "_id": "i18n-message-hu-confirmed",
+    "key": "confirmed",
     "lang": "hu",
-    "value": "Viszonyítási pont"
+    "value": "Megerősítve"
   },
   {
-    "_id": "i18n-message-hu-minutes-short",
-    "key": "minutes.short",
+    "_id": "i18n-message-hu-included",
+    "key": "included",
+    "lang": "hu",
+    "value": "Tartalmazza"
+  },
+  {
+    "_id": "i18n-message-hu-item",
+    "key": "item",
+    "lang": "hu",
+    "value": "elem"
+  },
+  {
+    "_id": "i18n-message-hu-items",
+    "key": "items",
+    "lang": "hu",
+    "value": "elem"
+  },
+  {
+    "_id": "i18n-message-hu-payment",
+    "key": "payment",
+    "lang": "hu",
+    "value": "Fizetés"
+  },
+  {
+    "_id": "i18n-message-hu-update",
+    "key": "update",
+    "lang": "hu",
+    "value": "Frissítés"
+  },
+  {
+    "_id": "i18n-message-hu-updating",
+    "key": "updating",
+    "lang": "hu",
+    "value": "Frissítés..."
+  },
+  {
+    "_id": "i18n-message-hu-continuing",
+    "key": "continuing",
+    "lang": "hu",
+    "value": "Továbblépés..."
+  },
+  {
+    "_id": "i18n-message-hu-rejected",
+    "key": "rejected",
+    "lang": "hu",
+    "value": "Elutasítva"
+  },
+  {
+    "_id": "i18n-message-hu-approved",
+    "key": "approved",
+    "lang": "hu",
+    "value": "Jóváhagyva"
+  },
+  {
+    "_id": "i18n-message-hu-topics",
+    "key": "topics",
+    "lang": "hu",
+    "value": "Témák"
+  },
+  {
+    "_id": "i18n-message-hu-timeline",
+    "key": "timeline",
+    "lang": "hu",
+    "value": "Idővonal"
+  },
+  {
+    "_id": "i18n-message-hu-cards",
+    "key": "cards",
+    "lang": "hu",
+    "value": "Kártyák"
+  },
+  {
+    "_id": "i18n-message-hu-mandatory",
+    "key": "mandatory",
+    "lang": "hu",
+    "value": "Kötelező"
+  },
+  {
+    "_id": "i18n-message-hu-no-description",
+    "key": "no.description",
+    "lang": "hu",
+    "value": "Nincs leírás"
+  },
+  {
+    "_id": "i18n-message-hu-duration",
+    "key": "duration",
+    "lang": "hu",
+    "value": "Időtartam"
+  },
+  {
+    "_id": "i18n-message-hu-on",
+    "key": "on",
+    "lang": "hu",
+    "value": "Be"
+  },
+  {
+    "_id": "i18n-message-hu-off",
+    "key": "off",
+    "lang": "hu",
+    "value": "Ki"
+  },
+  {
+    "_id": "i18n-message-hu-event-participation",
+    "key": "event.participation",
+    "lang": "hu",
+    "value": "Részvétel"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-my-participation",
+    "key": "event.subevents.my.participation",
+    "lang": "hu",
+    "value": "Részvételem"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-group-capacity-min",
+    "key": "event.subevents.group.capacity.min",
+    "lang": "hu",
+    "value": "Minimum létszám"
+  },
+  {
+    "_id": "i18n-message-hu-event-subevents-group-capacity-max",
+    "key": "event.subevents.group.capacity.max",
+    "lang": "hu",
+    "value": "Maximum létszám"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-summary",
+    "key": "event.checkout.payment.summary",
+    "lang": "hu",
+    "value": "Fizetési összegzés"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-continue-booking",
+    "key": "event.checkout.continue.booking",
+    "lang": "hu",
+    "value": "Foglalás folytatása"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-paying",
+    "key": "event.checkout.paying",
+    "lang": "hu",
+    "value": "Fizetés..."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-releasing",
+    "key": "event.checkout.releasing",
+    "lang": "hu",
+    "value": "Felszabadítás..."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-update-required",
+    "key": "event.checkout.update.required",
+    "lang": "hu",
+    "value": "Frissítés szükséges"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-ready-for-payment",
+    "key": "event.checkout.ready.for.payment",
+    "lang": "hu",
+    "value": "Fizetésre kész"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-payment-in-progress",
+    "key": "event.checkout.payment.in.progress",
+    "lang": "hu",
+    "value": "Fizetés alatt"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-can-continue",
+    "key": "event.checkout.can.continue",
+    "lang": "hu",
+    "value": "Folytatható"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-create",
+    "key": "event.editor.create",
+    "lang": "hu",
+    "value": "Esemény létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-save-aria",
+    "key": "event.editor.save.aria",
+    "lang": "hu",
+    "value": "Esemény mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-image-aria",
+    "key": "event.editor.image.aria",
+    "lang": "hu",
+    "value": "Esemény képe"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-visibility-open-aria",
+    "key": "event.editor.visibility.open.aria",
+    "lang": "hu",
+    "value": "Láthatóság választó megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-topics-open-aria",
+    "key": "event.editor.topics.open.aria",
+    "lang": "hu",
+    "value": "Témák megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-topics-select",
+    "key": "event.editor.topics.select",
+    "lang": "hu",
+    "value": "Témák választása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-location-placeholder",
+    "key": "event.editor.location.placeholder",
+    "lang": "hu",
+    "value": "Esemény útvonalának helyszíne"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-location-map-aria",
+    "key": "event.editor.location.map.aria",
+    "lang": "hu",
+    "value": "Esemény útvonalának megnyitása térképen"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-location-not-set",
+    "key": "event.editor.location.not.set",
+    "lang": "hu",
+    "value": "Nincs helyszín megadva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-date-not-set",
+    "key": "event.editor.date.not.set",
+    "lang": "hu",
+    "value": "Nincs dátum megadva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-blind-enabled-description",
+    "key": "event.editor.blind.enabled.description",
+    "lang": "hu",
+    "value": "A résztvevők az esemény előtt nem látják egymást."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-blind-disabled-description",
+    "key": "event.editor.blind.disabled.description",
+    "lang": "hu",
+    "value": "A résztvevők az esemény előtt megtekinthetik egymást."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-auto-inviter-on",
+    "key": "event.editor.auto.inviter.on",
+    "lang": "hu",
+    "value": "Automatikus meghívó bekapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-auto-inviter-off",
+    "key": "event.editor.auto.inviter.off",
+    "lang": "hu",
+    "value": "Automatikus meghívó kikapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-auto-inviter-enabled-description",
+    "key": "event.editor.auto.inviter.enabled.description",
+    "lang": "hu",
+    "value": "Kölcsönös preferenciák alapján hív meg embereket."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-auto-inviter-disabled-description",
+    "key": "event.editor.auto.inviter.disabled.description",
+    "lang": "hu",
+    "value": "Csak kézi meghívások."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-ticketing-on",
+    "key": "event.editor.ticketing.on",
+    "lang": "hu",
+    "value": "Jegykezelés bekapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-ticketing-off",
+    "key": "event.editor.ticketing.off",
+    "lang": "hu",
+    "value": "Jegykezelés kikapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-ticketing-enabled-description",
+    "key": "event.editor.ticketing.enabled.description",
+    "lang": "hu",
+    "value": "A QR-kódos résztvevői beléptetés engedélyezve van."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-ticketing-disabled-description",
+    "key": "event.editor.ticketing.disabled.description",
+    "lang": "hu",
+    "value": "Nincs QR-kódos beléptetés."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-auto-approve-on",
+    "key": "event.editor.auto.approve.on",
+    "lang": "hu",
+    "value": "Automatikus jóváhagyás bekapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-auto-approve-off",
+    "key": "event.editor.auto.approve.off",
+    "lang": "hu",
+    "value": "Automatikus jóváhagyás kikapcsolva"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-approval-required-description",
+    "key": "event.editor.approval.required.description",
+    "lang": "hu",
+    "value": "A csatlakozási kérelmek adminisztrátori jóváhagyásra várnak."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-approval-automatic-description",
+    "key": "event.editor.approval.automatic.description",
+    "lang": "hu",
+    "value": "A megerősített foglalások adminisztrátori jóváhagyás nélkül folytatódhatnak."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-checkout-waiting-place",
+    "key": "event.editor.checkout.waiting.place",
+    "lang": "hu",
+    "value": "Helyre vár"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-checkout-waiting-approval",
+    "key": "event.editor.checkout.waiting.approval",
+    "lang": "hu",
+    "value": "Jóváhagyásra vár"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-title",
+    "key": "event.editor.basket.title",
+    "lang": "hu",
+    "value": "Kosár"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-payment-subtitle",
+    "key": "event.editor.basket.payment.subtitle",
+    "lang": "hu",
+    "value": "Fizetés tárgya"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-selected-items",
+    "key": "event.editor.basket.selected.items",
+    "lang": "hu",
+    "value": "Kiválasztott elemek"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-selected-items-subtitle",
+    "key": "event.editor.basket.selected.items.subtitle",
+    "lang": "hu",
+    "value": "Kiválasztott fizetési elemek"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-selected-slot-subtitle",
+    "key": "event.editor.basket.selected.slot.subtitle",
+    "lang": "hu",
+    "value": "A kiválasztott idősáv fizetési elemei"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-edit-aria",
+    "key": "event.editor.basket.edit.aria",
+    "lang": "hu",
+    "value": "Fizetési elemek szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-empty",
+    "key": "event.editor.basket.empty",
+    "lang": "hu",
+    "value": "A kosár még üres. A szerkesztés gombbal adj hozzá egy idősávot."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-basket-no-selected-items",
+    "key": "event.editor.basket.no.selected.items",
+    "lang": "hu",
+    "value": "Még nincs kiválasztott fizetési elem."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-pricing-current-review",
+    "key": "event.editor.pricing.current.review",
+    "lang": "hu",
+    "value": "Aktuális ár összegzése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-pricing-final-price",
+    "key": "event.editor.pricing.final.price",
+    "lang": "hu",
+    "value": "Végső ár"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-title",
+    "key": "event.editor.payment.title",
+    "lang": "hu",
+    "value": "Fizetés"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-subtitle",
+    "key": "event.editor.payment.subtitle",
+    "lang": "hu",
+    "value": "Ellenőrizd az összeget, majd indítsd a fizetést."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-amount",
+    "key": "event.editor.payment.amount",
+    "lang": "hu",
+    "value": "Összeg"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-status",
+    "key": "event.editor.payment.status",
+    "lang": "hu",
+    "value": "Állapot"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-card-number",
+    "key": "event.editor.payment.card.number",
+    "lang": "hu",
+    "value": "Kártyaszám"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-card-name",
+    "key": "event.editor.payment.card.name",
+    "lang": "hu",
+    "value": "Név a kártyán"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-card-expiry",
+    "key": "event.editor.payment.card.expiry",
+    "lang": "hu",
+    "value": "Lejárat"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-card-cvc",
+    "key": "event.editor.payment.card.cvc",
+    "lang": "hu",
+    "value": "CVC"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-gateway",
+    "key": "event.editor.payment.gateway",
+    "lang": "hu",
+    "value": "Fizetési szolgáltató"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-demo",
+    "key": "event.editor.payment.demo",
+    "lang": "hu",
+    "value": "Demó fizetés"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-ready-redirect",
+    "key": "event.editor.payment.ready.redirect",
+    "lang": "hu",
+    "value": "Átirányításra kész"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-review-before-confirm",
+    "key": "event.editor.payment.review.before.confirm",
+    "lang": "hu",
+    "value": "Ellenőrzés megerősítés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-gateway-note",
+    "key": "event.editor.payment.gateway.note",
+    "lang": "hu",
+    "value": "A fizetés a beállított fizetési szolgáltatón keresztül folytatódik a megerősítés után."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-payment-demo-note",
+    "key": "event.editor.payment.demo.note",
+    "lang": "hu",
+    "value": "Demó fizetési felület. A mezők zároltak, de a fizetési lépés ugyanúgy végigvihető."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-override-close-aria",
+    "key": "event.editor.slot.override.close.aria",
+    "lang": "hu",
+    "value": "Idősáv-felülírás szerkesztőjének bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-override-title",
+    "key": "event.editor.slot.override.title",
+    "lang": "hu",
+    "value": "Idősáv felülírása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-select-date",
+    "key": "event.editor.slot.select.date",
+    "lang": "hu",
+    "value": "Idősáv dátumának kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-previous-dates-aria",
+    "key": "event.editor.slot.previous.dates.aria",
+    "lang": "hu",
+    "value": "Előző idősávdátumok"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-next-dates-aria",
+    "key": "event.editor.slot.next.dates.aria",
+    "lang": "hu",
+    "value": "Következő idősávdátumok"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-date-pending",
+    "key": "event.editor.slot.date.pending",
+    "lang": "hu",
+    "value": "Az idősáv dátuma függőben"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slot-rule-pending",
+    "key": "event.editor.slot.rule.pending",
+    "lang": "hu",
+    "value": "Az idősáv szabálya függőben"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-title",
+    "key": "event.editor.subevents.title",
+    "lang": "hu",
+    "value": "Alesemények"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-toggle-aria",
+    "key": "event.editor.subevents.toggle.aria",
+    "lang": "hu",
+    "value": "Alesemények be- vagy kikapcsolása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-disabled-description",
+    "key": "event.editor.subevents.disabled.description",
+    "lang": "hu",
+    "value": "A főesemény használata alesemények nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-definitions-empty",
+    "key": "event.editor.subevents.definitions.empty",
+    "lang": "hu",
+    "value": "Még nincs alesemény-definíció"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-definition-add-aria",
+    "key": "event.editor.subevents.definition.add.aria",
+    "lang": "hu",
+    "value": "Alesemény-definíció hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-tournament-definition",
+    "key": "event.editor.subevents.tournament.definition",
+    "lang": "hu",
+    "value": "Bajnokság-definíció"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-casual-definition",
+    "key": "event.editor.subevents.casual.definition",
+    "lang": "hu",
+    "value": "Normál alesemény-definíció"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-main-event-range",
+    "key": "event.editor.subevents.main.event.range",
+    "lang": "hu",
+    "value": "Főesemény időtartama"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-definition",
+    "key": "event.editor.subevents.definition",
+    "lang": "hu",
+    "value": "Definíció"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-stage-delete-title",
+    "key": "event.editor.subevents.stage.delete.title",
+    "lang": "hu",
+    "value": "Szakaszdefiníció törlése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-definition-delete-title",
+    "key": "event.editor.subevents.definition.delete.title",
+    "lang": "hu",
+    "value": "Alesemény-definíció törlése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-definition-delete-failure",
+    "key": "event.editor.subevents.definition.delete.failure",
+    "lang": "hu",
+    "value": "Nem sikerült törölni az alesemény-definíciót."
+  },
+  {
+    "_id": "i18n-message-hu-frequency",
+    "key": "frequency",
+    "lang": "hu",
+    "value": "Gyakoriság"
+  },
+  {
+    "_id": "i18n-message-hu-select",
+    "key": "select",
+    "lang": "hu",
+    "value": "Választás"
+  },
+  {
+    "_id": "i18n-message-hu-schedule-frequency-custom",
+    "key": "schedule.frequency.custom",
+    "lang": "hu",
+    "value": "Egyéni"
+  },
+  {
+    "_id": "i18n-message-hu-profile-review-before-save",
+    "key": "profile.review.before.save",
+    "lang": "hu",
+    "value": "Ellenőrizd a profilt mentés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-profile-photos-minimum-three",
+    "key": "profile.photos.minimum.three",
+    "lang": "hu",
+    "value": "Adj hozzá legalább 3 fotót."
+  },
+  {
+    "_id": "i18n-message-hu-profile-optional-details",
+    "key": "profile.optional.details",
+    "lang": "hu",
+    "value": "Opcionális részletek."
+  },
+  {
+    "_id": "i18n-message-hu-profile-visibility-change-aria",
+    "key": "profile.visibility.change.aria",
+    "lang": "hu",
+    "value": "Láthatóság módosítása"
+  },
+  {
+    "_id": "i18n-message-hu-profile-physique-select",
+    "key": "profile.physique.select",
+    "lang": "hu",
+    "value": "Testalkat kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-demo-user-selector-perspective-subtitle",
+    "key": "demo.user.selector.perspective.subtitle",
+    "lang": "hu",
+    "value": "Bejelentkezés nélküli mód. Válassz demo felhasználót a nézőpont szerinti adatok megnyitásához."
+  },
+  {
+    "_id": "i18n-message-hu-admin-help-select-screen-before-saving",
+    "key": "admin.help.select.screen.before.saving",
+    "lang": "hu",
+    "value": "Válassz képernyőt mentés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-time-aria",
+    "key": "date.input.toggle.time.aria",
+    "lang": "hu",
+    "value": "Időválasztó megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-range-aria",
+    "key": "date.input.toggle.range.aria",
+    "lang": "hu",
+    "value": "Dátumtartomány-választó megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-start-date-aria",
+    "key": "date.input.toggle.start.date.aria",
+    "lang": "hu",
+    "value": "Kezdő dátum választójának megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-start-time-aria",
+    "key": "date.input.toggle.start.time.aria",
+    "lang": "hu",
+    "value": "Kezdési idő választójának megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-end-date-aria",
+    "key": "date.input.toggle.end.date.aria",
+    "lang": "hu",
+    "value": "Befejező dátum választójának megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-end-time-aria",
+    "key": "date.input.toggle.end.time.aria",
+    "lang": "hu",
+    "value": "Befejezési idő választójának megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-date-input-toggle-date-aria",
+    "key": "date.input.toggle.date.aria",
+    "lang": "hu",
+    "value": "Dátumválasztó megnyitása vagy bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-toggle-aria",
+    "key": "event.editor.slots.toggle.aria",
+    "lang": "hu",
+    "value": "Idősávok be- vagy kikapcsolása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-empty",
+    "key": "event.editor.slots.empty",
+    "lang": "hu",
+    "value": "Még nincs idősáv. A + gombbal hozd létre az elsőt."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-empty-short",
+    "key": "event.editor.policies.empty.short",
+    "lang": "hu",
+    "value": "Még nincs szabályzat."
+  },
+  {
+    "_id": "i18n-message-hu-pricing",
+    "key": "pricing",
+    "lang": "hu",
+    "value": "Árazás"
+  },
+  {
+    "_id": "i18n-message-hu-currency",
+    "key": "currency",
+    "lang": "hu",
+    "value": "Pénznem"
+  },
+  {
+    "_id": "i18n-message-hu-tax",
+    "key": "tax",
+    "lang": "hu",
+    "value": "Adó"
+  },
+  {
+    "_id": "i18n-message-hu-if",
+    "key": "if",
+    "lang": "hu",
+    "value": "Ha"
+  },
+  {
+    "_id": "i18n-message-hu-then",
+    "key": "then",
+    "lang": "hu",
+    "value": "Akkor"
+  },
+  {
+    "_id": "i18n-message-hu-value",
+    "key": "value",
+    "lang": "hu",
+    "value": "Érték"
+  },
+  {
+    "_id": "i18n-message-hu-quantity",
+    "key": "quantity",
+    "lang": "hu",
+    "value": "Mennyiség"
+  },
+  {
+    "_id": "i18n-message-hu-refund",
+    "key": "refund",
+    "lang": "hu",
+    "value": "Visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-title",
+    "key": "pricing.asset.title",
+    "lang": "hu",
+    "value": "Eszköz árazása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-optional-title",
+    "key": "pricing.optional.title",
+    "lang": "hu",
+    "value": "Opcionális árazás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-event-subtitle-enabled",
+    "key": "pricing.event.subtitle.enabled",
+    "lang": "hu",
+    "value": "Állítsd be a főesemény fizetős belépését és az opcionális idősáv-felülírásokat."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-event-subtitle-disabled",
+    "key": "pricing.event.subtitle.disabled",
+    "lang": "hu",
+    "value": "Egyelőre maradhat ingyenes, vagy előre beállíthatod a jegykezelési szabályokat."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-subtitle",
+    "key": "pricing.asset.subtitle",
+    "lang": "hu",
+    "value": "Állítsd be az eszköz használatának alapdíját eseményidősáv-specifikus árszabályok nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-subevent-subtitle",
+    "key": "pricing.subevent.subtitle",
+    "lang": "hu",
+    "value": "Az opcionális alesemények a főesemény árán felül külön díjat is hozzáadhatnak idősáv-specifikus szabályok nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-setup-open",
+    "key": "pricing.setup.open",
+    "lang": "hu",
+    "value": "Árazási beállítások megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-base-price",
+    "key": "pricing.base.price",
+    "lang": "hu",
+    "value": "Alapár"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-minimum",
+    "key": "pricing.minimum",
+    "lang": "hu",
+    "value": "Minimum ár"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-maximum",
+    "key": "pricing.maximum",
+    "lang": "hu",
+    "value": "Maximum ár"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-no-minimum",
+    "key": "pricing.no.minimum",
+    "lang": "hu",
+    "value": "Nincs minimum"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-no-maximum",
+    "key": "pricing.no.maximum",
+    "lang": "hu",
+    "value": "Nincs maximum"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-rounding",
+    "key": "pricing.rounding",
+    "lang": "hu",
+    "value": "Kerekítés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-quantity-rules",
+    "key": "pricing.quantity.rules",
+    "lang": "hu",
+    "value": "Mennyiségi szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-event-quantity-minimum",
+    "key": "pricing.event.quantity.minimum",
+    "lang": "hu",
+    "value": "Események száma >="
+  },
+  {
+    "_id": "i18n-message-hu-pricing-quantity-rule-remove-aria",
+    "key": "pricing.quantity.rule.remove.aria",
+    "lang": "hu",
+    "value": "Mennyiségi szabály eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-quantity-rule-add",
+    "key": "pricing.quantity.rule.add",
+    "lang": "hu",
+    "value": "Mennyiségi szabály hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-quantity-disabled-hint",
+    "key": "pricing.quantity.disabled.hint",
+    "lang": "hu",
+    "value": "A mennyiségi árazás ki van kapcsolva. Kapcsold be, ha több esemény megvásárlásakor csökkenteni szeretnéd az egyes események alapárából számolt végösszeget."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-demand-rules",
+    "key": "pricing.demand.rules",
+    "lang": "hu",
+    "value": "Keresleti szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-capacity-percent",
+    "key": "pricing.capacity.percent",
+    "lang": "hu",
+    "value": "Kapacitás %"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-applies-to",
+    "key": "pricing.applies.to",
+    "lang": "hu",
+    "value": "Érvényes erre"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-demand-rule-remove-aria",
+    "key": "pricing.demand.rule.remove.aria",
+    "lang": "hu",
+    "value": "Keresleti szabály eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-demand-rule-add",
+    "key": "pricing.demand.rule.add",
+    "lang": "hu",
+    "value": "Keresleti szabály hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-demand-disabled-hint",
+    "key": "pricing.demand.disabled.hint",
+    "lang": "hu",
+    "value": "A keresleti árazás ki van kapcsolva. Kapcsold be a kapacitás alapján változó árakhoz."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-rules",
+    "key": "pricing.time.rules",
+    "lang": "hu",
+    "value": "Időalapú szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-rule-remove-aria",
+    "key": "pricing.time.rule.remove.aria",
+    "lang": "hu",
+    "value": "Időalapú szabály eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-rule-add",
+    "key": "pricing.time.rule.add",
+    "lang": "hu",
+    "value": "Időalapú szabály hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-disabled-hint",
+    "key": "pricing.time.disabled.hint",
+    "lang": "hu",
+    "value": "Az időalapú árazás ki van kapcsolva. Kapcsold be a korai vagy utolsó pillanatos módosításokhoz."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-cancellation-title",
+    "key": "pricing.cancellation.title",
+    "lang": "hu",
+    "value": "Lemondás és visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-notice-window",
+    "key": "pricing.notice.window",
+    "lang": "hu",
+    "value": "Értesítési időablak"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-refund-value",
+    "key": "pricing.refund.value",
+    "lang": "hu",
+    "value": "Visszatérítés értéke"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-cancellation-rule-remove-aria",
+    "key": "pricing.cancellation.rule.remove.aria",
+    "lang": "hu",
+    "value": "Lemondási szabály eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-cancellation-rule-add",
+    "key": "pricing.cancellation.rule.add",
+    "lang": "hu",
+    "value": "Lemondási szabály hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-cancellation-disabled-hint",
+    "key": "pricing.cancellation.disabled.hint",
+    "lang": "hu",
+    "value": "A lemondási visszatérítés ki van kapcsolva. Kapcsold be annak meghatározásához, hogy a kezdés előtt mennyi téríthető vissza egy fizetett foglalásból."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-audience-title",
+    "key": "pricing.audience.title",
+    "lang": "hu",
+    "value": "Haladó közönség szerinti árazás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-member-price",
+    "key": "pricing.member.price",
+    "lang": "hu",
+    "value": "Tagi ár"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-vip-price",
+    "key": "pricing.vip.price",
+    "lang": "hu",
+    "value": "VIP ár"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-invite-discount-percent",
+    "key": "pricing.invite.discount.percent",
+    "lang": "hu",
+    "value": "Csak meghívottak kedvezménye %"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-sold-out-label",
+    "key": "pricing.sold.out.label",
+    "lang": "hu",
+    "value": "Elfogyott állapot felirata"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-promo-code",
+    "key": "pricing.promo.code",
+    "lang": "hu",
+    "value": "Promóciós kód"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-effect",
+    "key": "pricing.effect",
+    "lang": "hu",
+    "value": "Hatás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-promo-remove-aria",
+    "key": "pricing.promo.remove.aria",
+    "lang": "hu",
+    "value": "Promóciós kód eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-promo-add",
+    "key": "pricing.promo.add",
+    "lang": "hu",
+    "value": "Promóciós kód hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-audience-disabled-hint",
+    "key": "pricing.audience.disabled.hint",
+    "lang": "hu",
+    "value": "A közönség szerinti árazás ki van kapcsolva, ezért minden résztvevő ugyanazt a nyilvános árat látja, amíg be nem kapcsolod a tagi, VIP- vagy promóciós árazást."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-base",
+    "key": "pricing.base",
+    "lang": "hu",
+    "value": "Alap"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-demand-adjustment",
+    "key": "pricing.demand.adjustment",
+    "lang": "hu",
+    "value": "Keresleti módosítás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-adjustment",
+    "key": "pricing.time.adjustment",
+    "lang": "hu",
+    "value": "Időalapú módosítás"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-title",
+    "key": "event.editor.policies.title",
+    "lang": "hu",
+    "value": "Eseményszabályzatok"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-enabled-description",
+    "key": "event.editor.policies.enabled.description",
+    "lang": "hu",
+    "value": "Add meg a szabályokat, amelyeket a résztvevőknek csatlakozás előtt el kell olvasniuk és jóvá kell hagyniuk."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-disabled-description",
+    "key": "event.editor.policies.disabled.description",
+    "lang": "hu",
+    "value": "A résztvevők az eseményszabályzatok jóváhagyása nélkül csatlakozhatnak."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-setup-title",
+    "key": "event.editor.policies.setup.title",
+    "lang": "hu",
+    "value": "Szabályzatok beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-setup-aria",
+    "key": "event.editor.policies.setup.aria",
+    "lang": "hu",
+    "value": "Szabályzatok beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-setup-close-aria",
+    "key": "event.editor.policies.setup.close.aria",
+    "lang": "hu",
+    "value": "Szabályzatbeállítás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-setup-open",
+    "key": "event.editor.policies.setup.open",
+    "lang": "hu",
+    "value": "Szabályzatbeállítás megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-view",
+    "key": "event.editor.policies.view",
+    "lang": "hu",
+    "value": "Szabályzatok megtekintése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-empty-readonly",
+    "key": "event.editor.policies.empty.readonly",
+    "lang": "hu",
+    "value": "Ehhez az eseményhez nincs beállítva szabályzat."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-empty-description",
+    "key": "event.editor.policies.empty.description",
+    "lang": "hu",
+    "value": "Még nincs szabályzat. Adj hozzá szabályzatot, ha a résztvevőknek csatlakozás vagy foglalás előtt feltételeket kell áttekinteniük."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policies-popup-subtitle",
+    "key": "event.editor.policies.popup.subtitle",
+    "lang": "hu",
+    "value": "Nyiss meg egy szabályzatot a részleteinek szerkesztéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-create",
+    "key": "event.editor.policy.create",
+    "lang": "hu",
+    "value": "Szabályzat létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-edit",
+    "key": "event.editor.policy.edit",
+    "lang": "hu",
+    "value": "Szabályzat szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-required",
+    "key": "event.editor.policy.required",
+    "lang": "hu",
+    "value": "Kötelező jóváhagyás"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-optional",
+    "key": "event.editor.policy.optional",
+    "lang": "hu",
+    "value": "Opcionális szabályzat"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-required-description",
+    "key": "event.editor.policy.required.description",
+    "lang": "hu",
+    "value": "A résztvevőknek csatlakozás előtt jóvá kell hagyniuk ezt a szabályzatot."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-optional-description",
+    "key": "event.editor.policy.optional.description",
+    "lang": "hu",
+    "value": "Csatlakozás vagy fizetés közben megjelenő opcionális szabályzat."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-required-checkbox",
+    "key": "event.editor.policy.required.checkbox",
+    "lang": "hu",
+    "value": "A résztvevőknek jóvá kell hagyniuk ezt a szabályzatot"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-add-aria",
+    "key": "event.editor.policy.add.aria",
+    "lang": "hu",
+    "value": "Szabályzat hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-editor-subtitle",
+    "key": "event.editor.policy.editor.subtitle",
+    "lang": "hu",
+    "value": "Írd le egyértelműen a szabályzatot, és állítsd be, hogy a résztvevőknek jóvá kell-e hagyniuk csatlakozás előtt."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-form-close-aria",
+    "key": "event.editor.policy.form.close.aria",
+    "lang": "hu",
+    "value": "Szabályzatűrlap bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-title-placeholder",
+    "key": "event.editor.policy.title.placeholder",
+    "lang": "hu",
+    "value": "Szabályzat címe"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-description-placeholder",
+    "key": "event.editor.policy.description.placeholder",
+    "lang": "hu",
+    "value": "Írd le egyértelműen a szabályzatot."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-policy-save-aria",
+    "key": "event.editor.policy.save.aria",
+    "lang": "hu",
+    "value": "Szabályzat mentése"
+  },
+  {
+    "_id": "i18n-message-hu-summary",
+    "key": "summary",
+    "lang": "hu",
+    "value": "Összegzés"
+  },
+  {
+    "_id": "i18n-message-hu-override",
+    "key": "override",
+    "lang": "hu",
+    "value": "Felülírás"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-title",
+    "key": "event.editor.slots.title",
+    "lang": "hu",
+    "value": "Idősávok"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-subtitle",
+    "key": "event.editor.slots.subtitle",
+    "lang": "hu",
+    "value": "Alapütemezés és dátumspecifikus felülírások."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-disabled-description",
+    "key": "event.editor.slots.disabled.description",
+    "lang": "hu",
+    "value": "A főesemény dátumtartományának használata idősáv-ütemezések nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-time-pending",
+    "key": "event.editor.slots.time.pending",
+    "lang": "hu",
+    "value": "Az időpont függőben"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-slots-add-base-aria",
+    "key": "event.editor.slots.add.base.aria",
+    "lang": "hu",
+    "value": "Alapidősáv hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-edit",
+    "key": "event.editor.schedule.edit",
+    "lang": "hu",
+    "value": "Ütemezés szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-add",
+    "key": "event.editor.schedule.add",
+    "lang": "hu",
+    "value": "Ütemezés hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-edit-description",
+    "key": "event.editor.schedule.edit.description",
+    "lang": "hu",
+    "value": "Módosítsd a kiválasztott alapidősáv kezdési szabályát."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-add-description",
+    "key": "event.editor.schedule.add.description",
+    "lang": "hu",
+    "value": "Hozz létre kezdési szabályt egy alapidősávhoz."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-close-aria",
+    "key": "event.editor.schedule.close.aria",
+    "lang": "hu",
+    "value": "Ütemezésbeállítás bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-save-aria",
+    "key": "event.editor.schedule.save.aria",
+    "lang": "hu",
+    "value": "Ütemezés mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-add-aria",
+    "key": "event.editor.schedule.add.aria",
+    "lang": "hu",
+    "value": "Ütemezés hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-schedule-start-time",
+    "key": "event.editor.schedule.start.time",
+    "lang": "hu",
+    "value": "Kezdési idő"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-action-decrease-percent",
+    "key": "pricing.action.decrease.percent",
+    "lang": "hu",
+    "value": "Csökkentés %-kal"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-action-increase-amount",
+    "key": "pricing.action.increase.amount",
+    "lang": "hu",
+    "value": "Növelés összeggel"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-action-decrease-amount",
+    "key": "pricing.action.decrease.amount",
+    "lang": "hu",
+    "value": "Csökkentés összeggel"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-action-set-exact",
+    "key": "pricing.action.set.exact",
+    "lang": "hu",
+    "value": "Pontos ár beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-action-increase-percent",
+    "key": "pricing.action.increase.percent",
+    "lang": "hu",
+    "value": "Növelés %-kal"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-per-booking",
+    "key": "pricing.charge.per.booking",
+    "lang": "hu",
+    "value": "Foglalásonként"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-per-slot",
+    "key": "pricing.charge.per.slot",
+    "lang": "hu",
+    "value": "Idősávonként"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-per-attendee",
+    "key": "pricing.charge.per.attendee",
+    "lang": "hu",
+    "value": "Résztvevőnként"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-basis",
+    "key": "pricing.charge.basis",
+    "lang": "hu",
+    "value": "Díjszámítás alapja"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-type",
+    "key": "pricing.charge.type",
+    "lang": "hu",
+    "value": "Díj típusa"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-rounding-whole",
+    "key": "pricing.rounding.whole",
+    "lang": "hu",
+    "value": "Egész szám"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-rounding-none",
+    "key": "pricing.rounding.none",
+    "lang": "hu",
+    "value": "Nincs kerekítés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-tax-excluded",
+    "key": "pricing.tax.excluded",
+    "lang": "hu",
+    "value": "Nincs benne"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slots-selected",
+    "key": "pricing.slots.selected",
+    "lang": "hu",
+    "value": "Kiválasztott idősávok"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slots-all",
+    "key": "pricing.slots.all",
+    "lang": "hu",
+    "value": "Minden idősáv"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slots-specific",
+    "key": "pricing.slots.specific",
+    "lang": "hu",
+    "value": "Megadott idősávok"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-before-start-hours",
+    "key": "pricing.time.before.start.hours",
+    "lang": "hu",
+    "value": "Órákkal az esemény kezdése előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-during-range",
+    "key": "pricing.time.during.range",
+    "lang": "hu",
+    "value": "Dátumtartomány alatt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-before-start-days",
+    "key": "pricing.time.before.start.days",
+    "lang": "hu",
+    "value": "Napokkal az esemény kezdése előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-setup-title",
+    "key": "pricing.asset.setup.title",
+    "lang": "hu",
+    "value": "Eszközárazás beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-optional-setup-title",
+    "key": "pricing.optional.setup.title",
+    "lang": "hu",
+    "value": "Opcionális árazás beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-setup-title",
+    "key": "pricing.setup.title",
+    "lang": "hu",
+    "value": "Árazás beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-setup-subtitle",
+    "key": "pricing.setup.subtitle",
+    "lang": "hu",
+    "value": "Itt módosíthatod a teljes árazási konfigurációt, miközben az űrlapon csak a tömör összegzés marad látható."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-hours-before-start",
+    "key": "pricing.hours.before.start",
+    "lang": "hu",
+    "value": "Órával a kezdés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-weeks-before-start",
+    "key": "pricing.weeks.before.start",
+    "lang": "hu",
+    "value": "Héttel a kezdés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-months-before-start",
+    "key": "pricing.months.before.start",
+    "lang": "hu",
+    "value": "Hónappal a kezdés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-days-before-start",
+    "key": "pricing.days.before.start",
+    "lang": "hu",
+    "value": "Nappal a kezdés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-refund-fixed",
+    "key": "pricing.refund.fixed",
+    "lang": "hu",
+    "value": "Fix visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-refund-percent",
+    "key": "pricing.refund.percent",
+    "lang": "hu",
+    "value": "Visszatérítés %"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-time-rule-slots",
+    "key": "pricing.time.rule.slots",
+    "lang": "hu",
+    "value": "Időalapú szabály idősávjai"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-demand-rule-slots",
+    "key": "pricing.demand.rule.slots",
+    "lang": "hu",
+    "value": "Keresleti szabály idősávjai"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge",
+    "key": "pricing.charge",
+    "lang": "hu",
+    "value": "Díj"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-dynamic-rules",
+    "key": "pricing.dynamic.rules",
+    "lang": "hu",
+    "value": "Dinamikus szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-cancellation",
+    "key": "pricing.cancellation",
+    "lang": "hu",
+    "value": "Lemondás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-no-reimbursement-schedule",
+    "key": "pricing.no.reimbursement.schedule",
+    "lang": "hu",
+    "value": "Nincs visszatérítési ütemezés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-audience",
+    "key": "pricing.audience",
+    "lang": "hu",
+    "value": "Közönség"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-setup-wizard-aria",
+    "key": "pricing.setup.wizard.aria",
+    "lang": "hu",
+    "value": "Árazási beállítások varázslója"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-setup-close-aria",
+    "key": "pricing.setup.close.aria",
+    "lang": "hu",
+    "value": "Árazási beállítások bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-hide-aria",
+    "key": "pricing.summary.hide.aria",
+    "lang": "hu",
+    "value": "Árazási összegzés elrejtése"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-show-aria",
+    "key": "pricing.summary.show.aria",
+    "lang": "hu",
+    "value": "Árazási összegzés megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-draft-apply-aria",
+    "key": "pricing.draft.apply.aria",
+    "lang": "hu",
+    "value": "Árazási piszkozat alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slot-customize-title",
+    "key": "pricing.slot.customize.title",
+    "lang": "hu",
+    "value": "Idősávonkénti árazás testreszabása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slot-customize-subtitle",
+    "key": "pricing.slot.customize.subtitle",
+    "lang": "hu",
+    "value": "A globális szabályok felülírása idősáv-specifikus árazással."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slot-select",
+    "key": "pricing.slot.select",
+    "lang": "hu",
+    "value": "Idősáv kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slot-time-window-follows",
+    "key": "pricing.slot.time.window.follows",
+    "lang": "hu",
+    "value": "Az időablak a kiválasztott idősávot követi."
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slot-time-follows",
+    "key": "pricing.slot.time.follows",
+    "lang": "hu",
+    "value": "Az időzítés ezt az idősávot követi."
+  },
+  {
+    "_id": "i18n-message-hu-minutes",
+    "key": "minutes",
     "lang": "hu",
     "value": "perc"
   },
   {
-    "_id": "i18n-message-hu-offset",
-    "key": "offset",
+    "_id": "i18n-message-hu-event-editor-subevents-stage-description-placeholder",
+    "key": "event.editor.subevents.stage.description.placeholder",
     "lang": "hu",
-    "value": "Eltolás"
+    "value": "Írd le ezt a szakaszt"
   },
   {
-    "_id": "i18n-message-hu-offset-minutes",
-    "key": "offset.minutes",
+    "_id": "i18n-message-hu-event-editor-subevents-mandatory-price-note",
+    "key": "event.editor.subevents.mandatory.price.note",
     "lang": "hu",
-    "value": "Eltolás percben"
+    "value": "A kötelező aleseményeket a főesemény ára tartalmazza."
   },
   {
-    "_id": "i18n-message-hu-placement",
-    "key": "placement",
+    "_id": "i18n-message-hu-event-editor-subevents-stage-rule",
+    "key": "event.editor.subevents.stage.rule",
     "lang": "hu",
-    "value": "Elhelyezés"
+    "value": "Szakaszszabály"
   },
   {
-    "_id": "i18n-message-hu-position",
-    "key": "position",
+    "_id": "i18n-message-hu-event-editor-subevents-manual-groups-warning",
+    "key": "event.editor.subevents.manual.groups.warning",
     "lang": "hu",
-    "value": "Pozíció"
+    "value": "A kézi csoportok az automatikus csoportokon felül további kapacitást adnak. Csak egyedi beállításhoz!"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-group-minimum",
+    "key": "event.editor.subevents.group.minimum",
+    "lang": "hu",
+    "value": "Minimum csoportlétszám"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-group-maximum",
+    "key": "event.editor.subevents.group.maximum",
+    "lang": "hu",
+    "value": "Maximum csoportlétszám"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-leaderboard-type",
+    "key": "event.editor.subevents.leaderboard.type",
+    "lang": "hu",
+    "value": "Ranglista típusa"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-advance-per-group",
+    "key": "event.editor.subevents.advance.per.group",
+    "lang": "hu",
+    "value": "Továbbjutók csoportonként"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-estimated-group-count",
+    "key": "event.editor.subevents.estimated.group.count",
+    "lang": "hu",
+    "value": "Csoportok becsült száma"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-location-placeholder",
+    "key": "event.editor.subevents.location.placeholder",
+    "lang": "hu",
+    "value": "Alesemény helyszíne"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-location-map-aria",
+    "key": "event.editor.subevents.location.map.aria",
+    "lang": "hu",
+    "value": "Alesemény helyszínének megnyitása térképen"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-form-close-aria",
+    "key": "event.editor.subevents.form.close.aria",
+    "lang": "hu",
+    "value": "Aleseményűrlap bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-mandatory-aria",
+    "key": "event.editor.subevents.mandatory.aria",
+    "lang": "hu",
+    "value": "Kötelező alesemény"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-save-aria",
+    "key": "event.editor.subevents.save.aria",
+    "lang": "hu",
+    "value": "Alesemény mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-optional-mode-aria",
+    "key": "event.editor.subevents.optional.mode.aria",
+    "lang": "hu",
+    "value": "Alesemény opcionális módja"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-stage-select",
+    "key": "event.editor.subevents.stage.select",
+    "lang": "hu",
+    "value": "Szakasz kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-subevents-stage-create",
+    "key": "event.editor.subevents.stage.create",
+    "lang": "hu",
+    "value": "Szakaszesemény létrehozása"
   }
 ]
