@@ -113,7 +113,21 @@ export function assertI18nBundle(value) {
 export function assertLandingContent(value, ctx) {
   const response = expectObject(value, 'landing content');
   assertHelpState(response.privacy, ctx, 'landing content.privacy');
-  expectArray(response.ideas, 'landing content.ideas').forEach((idea, index) => assertIdeaPost(idea, `landing content.ideas[${index}]`));
+  const ideas = expectArray(response.ideas, 'landing content.ideas');
+  const ideasTotal = expectNumber(response.ideasTotal, 'landing content.ideasTotal');
+  ideas.forEach((idea, index) => {
+    assertIdeaPost(idea, `landing content.ideas[${index}]`);
+    assert(idea.featured === true, 'landing preview should contain only featured articles', idea);
+    assert(idea.published === true, 'landing preview should contain only published articles', idea);
+    assert(idea.trashed !== true, 'landing preview should exclude trashed articles', idea);
+  });
+  assert(ideas.length <= 8, 'landing article preview should be bounded to eight records', {
+    count: ideas.length
+  });
+  assert(ideasTotal >= ideas.length, 'landing article total should cover the preview', {
+    ideasTotal,
+    previewCount: ideas.length
+  });
   if (response.loginAvailability !== null && response.loginAvailability !== undefined) {
     assertEligibility(response.loginAvailability, 'landing content.loginAvailability');
   }

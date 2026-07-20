@@ -497,6 +497,8 @@ db.getCollection('eventFeedbackAnswers').createIndex({ targetUserId: 1, submitte
 db.getCollection('ideaPosts').createIndex({ contentKey: 1, lang: 1 }, { name: 'idea_post_content_lang', unique: true });
 db.getCollection('ideaPosts').createIndex({ lang: 1, submittedAtIso: -1 }, { name: 'idea_post_lang_submitted' });
 db.getCollection('ideaPosts').createIndex({ lang: 1, published: 1, submittedAtIso: -1 }, { name: 'idea_post_lang_published_submitted' });
+db.getCollection('ideaPosts').createIndex({ lang: 1, published: 1, submittedAtIso: -1, _id: -1 }, { name: 'idea_post_public_page' });
+db.getCollection('ideaPosts').createIndex({ lang: 1, published: 1, featured: 1, submittedAtIso: -1, _id: -1 }, { name: 'idea_post_public_featured_preview' });
 db.getCollection('ideaPosts').createIndex({ published: 1, submittedAtIso: -1 }, { name: 'idea_post_published_submitted' });
 db.getCollection('ideaPosts').createIndex({ featured: 1, published: 1, submittedAtIso: -1 }, { name: 'idea_post_featured_submitted' });
 db.getCollection('ideaPosts').createIndex({ trashed: 1, submittedAtIso: -1 }, { name: 'idea_post_trashed_submitted' });
