@@ -11628,6 +11628,42 @@
     "value": "Save event"
   },
   {
+    "_id": "i18n-message-en-event-editor-publish-question",
+    "key": "event.editor.publish.question",
+    "lang": "en",
+    "value": "Publish event?"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-publish-warning",
+    "key": "event.editor.publish.warning",
+    "lang": "en",
+    "value": "The last saved draft will be published and its details will remain locked until the event is unpublished."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-publish-failure",
+    "key": "event.editor.publish.failure",
+    "lang": "en",
+    "value": "Unable to publish event."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-unpublish-question",
+    "key": "event.editor.unpublish.question",
+    "lang": "en",
+    "value": "Unpublish event?"
+  },
+  {
+    "_id": "i18n-message-en-event-editor-unpublish-warning",
+    "key": "event.editor.unpublish.warning",
+    "lang": "en",
+    "value": "Unpublishing hides the event and unlocks its details for editing."
+  },
+  {
+    "_id": "i18n-message-en-event-editor-unpublish-failure",
+    "key": "event.editor.unpublish.failure",
+    "lang": "en",
+    "value": "Unable to unpublish event."
+  },
+  {
     "_id": "i18n-message-en-event-editor-image-aria",
     "key": "event.editor.image.aria",
     "lang": "en",
@@ -24724,6 +24760,42 @@
     "key": "event.editor.save.aria",
     "lang": "hu",
     "value": "Esemény mentése"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-publish-question",
+    "key": "event.editor.publish.question",
+    "lang": "hu",
+    "value": "Közzéteszed az eseményt?"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-publish-warning",
+    "key": "event.editor.publish.warning",
+    "lang": "hu",
+    "value": "A legutóbb mentett piszkozat lesz közzétéve, és az esemény adatai zárolva maradnak a közzététel visszavonásáig."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-publish-failure",
+    "key": "event.editor.publish.failure",
+    "lang": "hu",
+    "value": "Nem sikerült közzétenni az eseményt."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-unpublish-question",
+    "key": "event.editor.unpublish.question",
+    "lang": "hu",
+    "value": "Visszavonod az esemény közzétételét?"
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-unpublish-warning",
+    "key": "event.editor.unpublish.warning",
+    "lang": "hu",
+    "value": "A közzététel visszavonása elrejti az eseményt, és feloldja az adatait szerkesztésre."
+  },
+  {
+    "_id": "i18n-message-hu-event-editor-unpublish-failure",
+    "key": "event.editor.unpublish.failure",
+    "lang": "hu",
+    "value": "Nem sikerült visszavonni az esemény közzétételét."
   },
   {
     "_id": "i18n-message-hu-event-editor-image-aria",
