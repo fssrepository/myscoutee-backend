@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Locale;
 
 import org.bson.types.ObjectId;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -362,8 +363,32 @@ public class AdminModerationService {
                 false,
                 supportStatus,
                 admin);
-        chatsRepository.save(userChat);
-        chatsRepository.save(adminChat);
+        saveSupportChat(userChat);
+        saveSupportChat(adminChat);
+    }
+
+    private void saveSupportChat(Chat candidate) {
+        try {
+            chatsRepository.save(candidate);
+        } catch (DuplicateKeyException exception) {
+            Chat existing = chatsRepository.findByOwnerUserIdAndChatId(candidate.getOwnerUserId(), candidate.getChatId())
+                    .orElseThrow(() -> exception);
+            existing.setAvatar(candidate.getAvatar());
+            existing.setTitle(candidate.getTitle());
+            existing.setMemberIds(candidate.getMemberIds());
+            existing.setChannelType(candidate.getChannelType());
+            existing.setOwnerId(candidate.getOwnerId());
+            existing.setLastMessage(candidate.getLastMessage());
+            existing.setLastSenderId(candidate.getLastSenderId());
+            existing.setDateIso(candidate.getDateIso());
+            existing.setSupportCase(candidate.getSupportCase());
+            if (candidate.getUnread() != null && candidate.getUnread() > 0) {
+                existing.setUnread(Math.max(1, existing.getUnread() == null ? 1 : existing.getUnread() + 1));
+            } else {
+                existing.setUnread(0);
+            }
+            chatsRepository.save(existing);
+        }
     }
 
     private Chat appendSupportMessageForOwner(

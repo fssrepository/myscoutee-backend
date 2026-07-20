@@ -1,4 +1,4 @@
-import { openNavigatorMenu } from '../../lib/ui-contracts.mjs';
+import { closeExplanationPopupEventually, openNavigatorMenu } from '../../lib/ui-contracts.mjs';
 
 export async function assertUi({ page }) {
   await page.waitForSelector('.game-page');
@@ -10,7 +10,7 @@ export async function assertUi({ page }) {
   await page.click('button[aria-label="Open event actions"]');
   await page.clickByText('app-activities-popup .ui-popup__panel .app-menu__panel button', 'Create Event');
   await page.waitForSelector('app-event-editor-popup .ui-popup__panel');
-  await page.waitForSelector('app-event-editor-popup .ui-popup__panel');
+  await closeExplanationPopupEventually(page);
   await page.waitForSelector('button[aria-label="Save event"]', { visible: false });
   await page.recordStep('event-editor-create-open');
 }

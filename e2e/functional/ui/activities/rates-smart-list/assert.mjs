@@ -82,6 +82,7 @@ export async function assertUi({ page }) {
     await page.clickVisible('button[aria-label="Exit rates fullscreen mode"]');
     await page.waitForSelectorHidden('.activities-popup-rates-fullscreen');
   }
+  await closeExplanationPopupEventually(page, 10000);
   await assertNoDocumentHorizontalOverflow(page);
 }
 

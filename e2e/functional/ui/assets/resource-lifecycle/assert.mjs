@@ -993,8 +993,7 @@ async function uploadAssetImage(page) {
   await page.waitForNetwork('/api/media/images', { timeoutMs: 45000 });
   await page.waitFor('asset image preview visible after file selection', async () => page.evaluate(() => {
     const preview = document.querySelector('app-asset-editor-popup .image-carousel__slot');
-    const background = preview ? window.getComputedStyle(preview).backgroundImage : '';
-    return background.includes('blob:') || background.includes('data:image') || background.includes('/media/');
+    return preview?.classList.contains('is-filled') === true;
   }), 15000);
 }
 

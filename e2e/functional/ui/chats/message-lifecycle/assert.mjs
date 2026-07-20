@@ -24,6 +24,7 @@ export async function assertUi({ page }) {
   await page.recordStep('chat-message-sent-visible');
   await waitForMessageNotPending(page, lifecycleMarker, 30000);
   await page.recordStep('chat-message-ack-cleared-pending');
+  await closeExplanationPopupEventually(page, 10000);
 
   await selectMessageContaining(page, lifecycleMarker);
   await page.clickVisible('.chat-message-tools button[aria-label="React"]');

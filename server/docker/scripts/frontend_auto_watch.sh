@@ -301,7 +301,6 @@ echo "Starting nginx asset sync watcher..."
   while true; do
     FRONTEND_SOURCE_DIR="${BUILD_OUTPUT_DIR}" \
       NGINX_HTML_DIR="${NGINX_HTML_DIR:-/workspace/nginx-html}" \
-      SKIP_INITIAL_SYNC="true" \
       bash "${SYNC_SCRIPT}" "${BUILD_MODE}" watch || true
     echo "nginx asset sync watcher restarting in 3s..."
     sleep 3

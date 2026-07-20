@@ -208,7 +208,7 @@ async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir 
 
     await page.navigate(scenario.route ?? '/', { loadTimeoutMs: timeoutMs });
     mark(timings, 'documentLoadMs', started);
-    await page.waitForSelector('app-entry-shell', { timeoutMs });
+    await page.waitForSelector('.entry-shell', { timeoutMs });
     mark(timings, 'entryShellMs', started);
     const entryPerformanceSnapshot = await collectPerformanceSnapshot(page).catch(() => null);
     recordWebVitalTimings(timings, 'entry', entryPerformanceSnapshot?.webVitals);
@@ -220,13 +220,13 @@ async function runDemoBootstrap({ scenario, baseUrl, vu, iteration, artifactDir 
 
     await waitForLoginDialogOrDemoSelector(page, timeoutMs);
     mark(timings, 'loginGateMs', started);
-    if (await page.isSelectorVisible('.confirmation-dialog')) {
+    if (await page.isSelectorVisible('.dialog')) {
       await page.grantGeolocationPermission();
-      await page.click('.confirmation-dialog-confirm-btn', { timeoutMs });
+      await page.click('.dialog-actions-menu .app-menu__button-row-item:last-of-type', { timeoutMs });
       mark(timings, 'locationAcceptedMs', started);
     }
 
-    await page.waitForSelector('.demo-login-overlay', { timeoutMs });
+    await page.waitForSelector('.demo-user-stage', { timeoutMs });
     await page.waitForSelector('.demo-user-item', { timeoutMs });
     await page.waitForNetwork('/api/auth/demo-users', { timeoutMs }).catch(() => undefined);
     mark(timings, 'demoSelectorMs', started);
@@ -286,6 +286,7 @@ async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir
     viewport: scenario.viewport ?? request.viewport ?? { width: 390, height: 844 }
   });
   const page = await browser.newPage({ viewport: request.viewport ?? scenario.viewport });
+  enableStepTracing(page, testCase.id);
   const auxiliaryPages = [];
   const auxiliaryBrowsers = [];
   const timings = {};
@@ -409,6 +410,17 @@ async function runFunctionalCase({ scenario, baseUrl, vu, iteration, artifactDir
     await page.close().catch(() => undefined);
     await browser.close();
   }
+}
+
+function enableStepTracing(page, caseId) {
+  if (process.env.E2E_UI_STRESS_TRACE_STEPS !== 'true' || typeof page.recordStep !== 'function') {
+    return;
+  }
+  const recordStep = page.recordStep.bind(page);
+  page.recordStep = async (...args) => {
+    console.log(`[ui stress step] ${caseId}: ${args[0] ?? 'unnamed'}`);
+    return recordStep(...args);
+  };
 }
 
 async function configurePageForStress(page, scenario) {

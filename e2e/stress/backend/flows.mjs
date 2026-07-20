@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { createHttpClient } from '../../shared/http.mjs';
 import { parseCommonArgs, runCollection } from '../../shared/collection-runner.mjs';
 import { resetE2eDatabase } from '../../functional/backend/hooks/e2e-db.mjs';
+import { assertChats, assertDemoUsers } from '../../functional/backend/lib/contracts.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
@@ -60,7 +61,7 @@ await Promise.all(workers);
 process.exitCode = failed > 0 ? 1 : 0;
 
 function createCtx(runId) {
-  return {
+  const ctx = {
     mode: 'stress',
     http: createHttpClient({
       baseUrl,
@@ -72,9 +73,44 @@ function createCtx(runId) {
       e2eSecondUserId: `${process.env.E2E_SECOND_USER_ID ?? 'e2e-member'}-${runId}`,
       runId
     },
-    defaultMaxMs: Number(process.env.E2E_DEFAULT_MAX_MS ?? 2500),
-    resolveRequirement: async () => {
-      throw new Error('stress flow cases should seed their own e2e data');
-    }
+    defaultMaxMs: Number(process.env.E2E_DEFAULT_MAX_MS ?? 2500)
   };
+  ctx.resolveRequirement = requirement => resolveFlowRequirement(ctx, requirement);
+  return ctx;
+}
+
+async function resolveFlowRequirement(ctx, requirement) {
+  if (requirement !== 'chat') {
+    throw new Error(`Unsupported stress flow requirement: ${requirement}`);
+  }
+  if (!Array.isArray(ctx.vars.demoUsers)) {
+    const demoUsers = await ctx.http.get('/api/auth/demo-users', {
+      params: { limit: 64 },
+      headers: demoHeaders()
+    });
+    assertDemoUsers(demoUsers.data, ctx);
+  }
+  const candidateIds = [
+    ctx.vars.userId,
+    ...(ctx.vars.demoUsers ?? [])
+      .filter(user => !user.deletedAtIso && user.profileStatus !== 'deleted')
+      .map(user => user.id)
+  ].map(value => `${value ?? ''}`.trim()).filter((value, index, values) => value && values.indexOf(value) === index);
+  for (const userId of candidateIds) {
+    delete ctx.vars.chatId;
+    const chats = await ctx.http.get('/api/activities/chats', {
+      params: { userId },
+      headers: demoHeaders()
+    });
+    assertChats(chats.data, ctx, 'stress flow chat requirement');
+    if (ctx.vars.chatId) {
+      ctx.vars.userId = userId;
+      return;
+    }
+  }
+  throw new Error('No chat was available for stress flow chat requirement');
+}
+
+function demoHeaders() {
+  return { 'X-App-Session-Kind': 'demo' };
 }

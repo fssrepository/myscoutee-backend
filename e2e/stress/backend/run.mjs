@@ -246,6 +246,9 @@ async function resolveRequirement(ctx, requirement) {
       } else {
         assertEventPage(result.data, ctx, 'stress event requirement');
       }
+      if (requirement === 'subEvent' && !ctx.vars.subEventId) {
+        await rememberEventWithSubEventDefinition(ctx, userId, eventItems(result.data));
+      }
       if (ctx.vars.eventId && (requirement !== 'subEvent' || ctx.vars.subEventId)) {
         ctx.vars.userId = userId;
         return;
@@ -262,6 +265,9 @@ async function resolveRequirement(ctx, requirement) {
           assertEventList(fullList.data, ctx, 'stress event requirement full list');
         } else {
           assertEventPage(fullList.data, ctx, 'stress event requirement full list');
+        }
+        if (!ctx.vars.subEventId) {
+          await rememberEventWithSubEventDefinition(ctx, userId, eventItems(fullList.data));
         }
         if (ctx.vars.eventId && ctx.vars.subEventId) {
           ctx.vars.userId = userId;
@@ -305,6 +311,34 @@ async function resolveRequirement(ctx, requirement) {
     throw new Error('No chat was available for stress chat requirement');
   }
   throw new Error(`Unknown stress requirement: ${requirement}`);
+}
+
+function eventItems(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return Array.isArray(value?.records) ? value.records : (Array.isArray(value?.items) ? value.items : []);
+}
+
+async function rememberEventWithSubEventDefinition(ctx, userId, events) {
+  for (const event of events) {
+    if (!event?.id) {
+      continue;
+    }
+    const result = await ctx.http.get('/api/activities/events/detail', {
+      params: { userId, eventId: event.id },
+      headers: demoHeaders()
+    });
+    const subEvent = Array.isArray(result.data?.subEvents) && result.data.subEvents.length > 0
+      ? result.data.subEvents[0]
+      : (Array.isArray(result.data?.subEventDefinitions) ? result.data.subEventDefinitions[0] : null);
+    if (subEvent?.id) {
+      ctx.vars.eventId = event.id;
+      ctx.vars.ownerId = event.id;
+      ctx.vars.subEventId = subEvent.id;
+      return;
+    }
+  }
 }
 
 function preferredDemoUserId() {
