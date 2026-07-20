@@ -9,4 +9,3 @@ https://developers.facebook.com/ -> business verfication is needed
 bugs
 ----
 6) graph view - on multiple hop, reposition problem somehow
-7) add promo code button on pricing summary (top right, which affects the pricing right away)
