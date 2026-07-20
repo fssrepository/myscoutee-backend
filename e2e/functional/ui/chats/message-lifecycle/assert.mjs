@@ -2,6 +2,8 @@ import { assert } from '../../../../shared/assertions.mjs';
 import { assertVisibleCount, closeExplanationPopupEventually, openNavigatorMenu, waitForVisibleText } from '../../lib/ui-contracts.mjs';
 
 const PREFERRED_CHAT_TITLE = 'Group A · Group Channel';
+const CHAT_ROW_SELECTOR = '.activities-popup app-activities-chat-template .ui-single-row';
+const CHAT_POPUP_SELECTOR = '.event-chat-popup-shell .ui-popup__panel';
 
 export async function assertUi({ page }) {
   const marker = `UI E2E chat ${Date.now().toString(36)}`;
@@ -13,12 +15,12 @@ export async function assertUi({ page }) {
   await page.recordStep('chat-list-open');
 
   await openPreferredChat(page);
-  await page.waitForSelector('.popup-panel-event-chat');
+  await page.waitForSelector(CHAT_POPUP_SELECTOR);
   await page.waitForSelector('textarea[placeholder="Write message"]');
   await page.recordStep('chat-thread-open');
 
   await sendChatMessage(page, lifecycleMarker);
-  await waitForVisibleText(page, '.popup-panel-event-chat', lifecycleMarker, 20000);
+  await waitForVisibleText(page, CHAT_POPUP_SELECTOR, lifecycleMarker, 20000);
   await page.recordStep('chat-message-sent-visible');
   await waitForMessageNotPending(page, lifecycleMarker, 30000);
   await page.recordStep('chat-message-ack-cleared-pending');
@@ -32,26 +34,26 @@ export async function assertUi({ page }) {
 
   await selectMessageContaining(page, lifecycleMarker);
   await page.clickVisible('.chat-message-tools button[aria-label="More message actions"]');
-  await page.waitForSelector('.chat-message-action-menu');
-  await page.clickByText('.chat-message-action-menu button', 'Pin');
+  await page.waitForSelector('app-menu-outlet .app-menu__panel');
+  await page.clickByText('app-menu-outlet .app-menu__panel button', 'Pin');
   await waitForMessageChild(page, lifecycleMarker, '.chat-pin-badge', 30000);
   await page.recordStep('chat-message-pinned');
 
   await selectMessageContaining(page, lifecycleMarker);
   await page.clickVisible('.chat-message-tools button[aria-label="More message actions"]');
-  await page.waitForSelector('.chat-message-action-menu');
-  await page.clickByText('.chat-message-action-menu button', 'Edit');
+  await page.waitForSelector('app-menu-outlet .app-menu__panel');
+  await page.clickByText('app-menu-outlet .app-menu__panel button', 'Edit');
   await sendChatMessage(page, editedMarker);
-  await waitForVisibleText(page, '.popup-panel-event-chat', editedMarker, 30000);
+  await waitForVisibleText(page, CHAT_POPUP_SELECTOR, editedMarker, 30000);
   await waitForMessageChild(page, editedMarker, '.chat-edited-label', 30000);
   await waitForMessageNotPending(page, editedMarker, 30000);
   await page.recordStep('chat-message-edited');
 
   await selectMessageContaining(page, editedMarker);
   await page.clickVisible('.chat-message-tools button[aria-label="More message actions"]');
-  await page.waitForSelector('.chat-message-action-menu');
-  await page.clickByText('.chat-message-action-menu button', 'Unsend');
-  await waitForVisibleText(page, '.popup-panel-event-chat', 'You deleted this message', 30000);
+  await page.waitForSelector('app-menu-outlet .app-menu__panel');
+  await page.clickByText('app-menu-outlet .app-menu__panel button', 'Unsend');
+  await waitForVisibleText(page, CHAT_POPUP_SELECTOR, 'You deleted this message', 30000);
   await waitForDeletedMessage(page, 30000);
   await page.recordStep('chat-message-unsent');
 }
@@ -60,14 +62,14 @@ async function assertTwoSessionFanout(newRecordedPage, senderPage, chatTitle, ma
   const receiver = await newRecordedPage('receiver-session');
   try {
     const activeUserId = await senderPage.evaluate(() => {
-      const session = JSON.parse(window.localStorage.getItem('app-session') || '{}');
-      return session.userId || window.localStorage.getItem('demo-active-user') || '';
+      const session = JSON.parse(window.localStorage.getItem('myscoutee.http.session.v1') || '{}');
+      return session.userId || window.localStorage.getItem('myscoutee.http.demo.active-user.v1') || '';
     });
     assert(activeUserId, 'Two-session chat fanout requires the sender demo user id');
     await receiver.primeOrigin({
       localStorage: {
-        'app-session': JSON.stringify({ kind: 'demo', userId: activeUserId }),
-        'demo-active-user': activeUserId
+        'myscoutee.http.session.v1': JSON.stringify({ kind: 'demo', userId: activeUserId }),
+        'myscoutee.http.demo.active-user.v1': activeUserId
       }
     });
     await receiver.navigate('/game', { loadTimeoutMs: 25000 });
@@ -75,20 +77,20 @@ async function assertTwoSessionFanout(newRecordedPage, senderPage, chatTitle, ma
     await openChatList(receiver);
     await receiver.recordStep('receiver-chat-list-open');
     await openChatByTitle(receiver, chatTitle);
-    await receiver.waitForSelector('.popup-panel-event-chat');
+    await receiver.waitForSelector(CHAT_POPUP_SELECTOR);
     await receiver.waitForSelector('textarea[placeholder="Write message"]');
     await receiver.recordStep('receiver-chat-thread-open');
 
-    await senderPage.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', `${marker} fanout`);
-    await senderPage.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
-    await waitForVisibleText(senderPage, '.popup-panel-event-chat', `${marker} fanout`, 30000);
-    await waitForVisibleText(receiver, '.popup-panel-event-chat', `${marker} fanout`, 30000);
+    await senderPage.fillVisible('.event-chat-popup-shell textarea[placeholder="Write message"]', `${marker} fanout`);
+    await senderPage.clickVisible('.event-chat-popup-shell button[aria-label="Send message"]');
+    await waitForVisibleText(senderPage, CHAT_POPUP_SELECTOR, `${marker} fanout`, 30000);
+    await waitForVisibleText(receiver, CHAT_POPUP_SELECTOR, `${marker} fanout`, 30000);
     await receiver.recordStep('receiver-sees-sender-message');
 
-    await receiver.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', receiverMarker);
-    await receiver.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
-    await waitForVisibleText(receiver, '.popup-panel-event-chat', receiverMarker, 30000);
-    await waitForVisibleText(senderPage, '.popup-panel-event-chat', receiverMarker, 30000);
+    await receiver.fillVisible('.event-chat-popup-shell textarea[placeholder="Write message"]', receiverMarker);
+    await receiver.clickVisible('.event-chat-popup-shell button[aria-label="Send message"]');
+    await waitForVisibleText(receiver, CHAT_POPUP_SELECTOR, receiverMarker, 30000);
+    await waitForVisibleText(senderPage, CHAT_POPUP_SELECTOR, receiverMarker, 30000);
     await senderPage.recordStep('chat-sender-sees-receiver-message');
   } finally {
     await receiver.close().catch(() => undefined);
@@ -96,14 +98,14 @@ async function assertTwoSessionFanout(newRecordedPage, senderPage, chatTitle, ma
 }
 
 async function sendChatMessage(page, text) {
-  await page.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', text);
+  await page.fillVisible('.event-chat-popup-shell textarea[placeholder="Write message"]', text);
   await page.waitFor('chat send button enabled', async () => {
     return page.evaluate(() => {
-      const button = document.querySelector('.popup-panel-event-chat button[aria-label="Send message"]');
+      const button = document.querySelector('.event-chat-popup-shell button[aria-label="Send message"]');
       return Boolean(button && !button.disabled);
     });
   }, 10000);
-  await page.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
+  await page.clickVisible('.event-chat-popup-shell button[aria-label="Send message"]');
 }
 
 async function openChatList(page) {
@@ -111,13 +113,13 @@ async function openChatList(page) {
   await page.recordStep('chat-navigator-menu-open');
   await page.click('button[aria-label="Open chat"]');
   await closeExplanationPopupEventually(page, 10000);
-  await page.waitForSelector('.popup-panel-activities');
+  await page.waitForSelector('.activities-popup');
   await page.waitForNetwork('/api/activities/chats', { timeoutMs: 25000 });
   await page.waitFor('visible chat rows', async () => {
-    return page.visibleCount('.popup-panel-activities .activities-card-chat, .popup-panel-activities .activities-row-item')
+    return page.visibleCount(CHAT_ROW_SELECTOR)
       .then(count => count > 0);
   }, 20000);
-  await assertVisibleCount(page, '.activities-card-chat', 1, 'chat rows');
+  await assertVisibleCount(page, CHAT_ROW_SELECTOR, 1, 'chat rows');
 }
 
 async function openPreferredChat(page) {
@@ -137,13 +139,13 @@ async function openFirstChat(page) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const row = Array.from(document.querySelectorAll('.popup-panel-activities .activities-card-chat'))
+    const row = Array.from(document.querySelectorAll('.activities-popup app-activities-chat-template .ui-single-row'))
       .find(visible);
     if (!row) {
       return '';
     }
-    const title = row.querySelector('.activities-card-subtitle')?.textContent?.trim()
-      || row.querySelector('.activities-card-title')?.textContent?.trim()
+    const title = row.querySelector('.ui-single-row__subtitle')?.textContent?.trim()
+      || row.querySelector('.ui-single-row__title')?.textContent?.trim()
       || '';
     row.scrollIntoView({ block: 'center', inline: 'center' });
     row.click();
@@ -163,7 +165,7 @@ async function openChatByTitle(page, title, options = {}) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const row = Array.from(document.querySelectorAll('.popup-panel-activities .activities-card-chat'))
+    const row = Array.from(document.querySelectorAll('.activities-popup app-activities-chat-template .ui-single-row'))
       .find(element => visible(element) && (element.textContent ?? '').includes(title));
     if (!row) {
       return false;
@@ -215,8 +217,8 @@ async function chatMessageClickTarget(page, text) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const root = document.querySelector('.popup-panel-event-chat');
-    const message = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
+    const root = document.querySelector('.event-chat-popup-shell');
+    const message = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
       .find(element => isVisible(element) && (element.textContent ?? '').includes(text));
     if (!message) {
       return null;
@@ -289,7 +291,7 @@ async function waitForMessageNotPending(page, text, timeoutMs) {
           && style.visibility !== 'hidden'
           && style.display !== 'none';
       };
-      const message = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
+      const message = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
         .find(element => isVisible(element) && (element.textContent ?? '').includes(text));
       return Boolean(message && !message.classList.contains('chat-message-pending') && !message.classList.contains('chat-message-timed-out'));
     }, text);
@@ -307,7 +309,7 @@ async function waitForMessageChild(page, text, childSelector, timeoutMs) {
           && style.visibility !== 'hidden'
           && style.display !== 'none';
       };
-      const message = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
+      const message = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
         .find(element => isVisible(element) && (element.textContent ?? '').includes(text));
       return Boolean(message?.querySelector(childSelector));
     }, { text, childSelector });
@@ -317,7 +319,7 @@ async function waitForMessageChild(page, text, childSelector, timeoutMs) {
 async function waitForDeletedMessage(page, timeoutMs) {
   await page.waitFor('deleted chat message not pending', async () => {
     return page.evaluate(() => {
-      return Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message-deleted'))
+      return Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message-deleted'))
         .some(message => !message.classList.contains('chat-message-pending') && !message.classList.contains('chat-message-timed-out'));
     });
   }, timeoutMs);

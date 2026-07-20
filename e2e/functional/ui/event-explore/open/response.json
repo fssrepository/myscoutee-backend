@@ -1,7 +1,6 @@
 {
   "urlPath": "/game",
   "selectors": [
-    ".popup-panel-activities",
     ".activities-popup"
   ],
   "text": [

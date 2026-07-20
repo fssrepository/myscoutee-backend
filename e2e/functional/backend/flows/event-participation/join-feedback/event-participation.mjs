@@ -4,7 +4,7 @@ import { assertEvent, assertEventList } from '../../../lib/contracts.mjs';
 export async function assertResponse({ ctx, result, request }) {
   const event = assertEvent(result.data, 'participation event sync');
   const eventId = event.id;
-  assert(event.published === true, 'participation event should be published from sync', event);
+  assert(event.status === 'A', 'participation event should be active after sync', event);
 
   const join = await ctx.http.post('/api/activities/events/join', {
     headers: request.headers,
@@ -19,7 +19,8 @@ export async function assertResponse({ ctx, result, request }) {
     },
     expectedStatus: 200
   });
-  assertEvent(join.data, 'joined participation event');
+  assert(join.data?.sourceId === eventId, 'join should return the participation event source id', join.data);
+  assert(join.data?.membershipStatus === 'accepted', 'join should accept the participant', join.data);
 
   const attending = await ctx.http.get('/api/activities/events/attending', {
     headers: request.headers,
@@ -37,6 +38,7 @@ export async function assertResponse({ ctx, result, request }) {
 
   await ctx.http.post('/api/activities/events/feedback/submit', {
     headers: request.headers,
+    params: { userId: ctx.vars.e2eSecondUserId },
     json: {
       userId: ctx.vars.e2eSecondUserId,
       eventId,
@@ -50,6 +52,7 @@ export async function assertResponse({ ctx, result, request }) {
   });
   await ctx.http.post('/api/activities/events/feedback/note', {
     headers: request.headers,
+    params: { userId: ctx.vars.e2eSecondUserId },
     json: {
       userId: ctx.vars.e2eSecondUserId,
       eventId,
@@ -64,6 +67,7 @@ export async function assertResponse({ ctx, result, request }) {
   });
   await ctx.http.post('/api/activities/events/feedback/remove', {
     headers: request.headers,
+    params: { userId: ctx.vars.e2eSecondUserId },
     json: {
       userId: ctx.vars.e2eSecondUserId,
       eventId
@@ -77,6 +81,7 @@ export async function assertResponse({ ctx, result, request }) {
   });
   await ctx.http.post('/api/activities/events/feedback/restore', {
     headers: request.headers,
+    params: { userId: ctx.vars.e2eSecondUserId },
     json: {
       userId: ctx.vars.e2eSecondUserId,
       eventId

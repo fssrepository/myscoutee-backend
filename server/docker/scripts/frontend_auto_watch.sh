@@ -72,12 +72,18 @@ validate_build_configuration() {
 }
 
 resolve_build_output_dir() {
-  case "${BUILD_MODE}" in
+  case "${BUILD_CONFIGURATION}" in
     dev)
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/dev"
       ;;
-    prod)
+    e2e)
+      printf '%s\n' "${BUILD_FRONTEND_ROOT}/e2e"
+      ;;
+    github)
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/docs"
+      ;;
+    production)
+      printf '%s\n' "${BUILD_FRONTEND_ROOT}/prod"
       ;;
     *)
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/dev"

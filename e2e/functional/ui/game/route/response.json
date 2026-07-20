@@ -3,7 +3,7 @@
   "selectors": [
     ".game-page",
     ".game-card-deck",
-    "button.user-selector-btn-global",
+    ".user-selector-menu button[aria-label=\"Open user menu\"]",
     "button[aria-label=\"Open profile filters\"]"
   ],
   "network": [

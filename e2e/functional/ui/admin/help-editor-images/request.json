@@ -2,11 +2,11 @@
   "name": "admin help editor explanation carousel loads seeded images",
   "group": "admin",
   "order": 80,
-  "route": "/admin/workspace",
+  "route": "/admin",
   "localStorage": {
-    "app-session": "{{adminAppSession}}",
-    "demo-active-user": "{{adminUserId}}",
-    "myscoutee-admin-session": "{{adminSession}}"
+    "myscoutee.http.session.v1": "{{adminAppSession}}",
+    "myscoutee.http.demo.active-user.v1": "{{adminUserId}}",
+    "myscoutee.http.admin.session.v1": "{{adminSession}}"
   },
   "script": "assert.mjs",
   "fullStackOnly": true,

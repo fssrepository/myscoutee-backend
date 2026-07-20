@@ -5,7 +5,7 @@ export async function assertUi({ page }) {
   await openNavigatorMenu(page);
   await page.recordStep('navigator-menu-open');
   await page.click('button[aria-label="Open profile editor"]');
-  await page.waitForSelector('.popup-panel-profile-editor');
+  await page.waitForSelector('.profile-editor-popup-content');
   await page.waitForSelector('.profile-editor-wrap');
   await page.recordStep('profile-editor-open');
 }

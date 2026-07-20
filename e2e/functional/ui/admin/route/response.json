@@ -1,8 +1,8 @@
 {
-  "urlPath": "/admin/workspace",
+  "urlPath": "/admin",
   "selectors": [
     ".admin-workspace",
-    "button.user-selector-btn-global"
+    ".user-selector-menu button[aria-label=\"Open user menu\"]"
   ],
   "network": [
     "/api/admin/dashboard"

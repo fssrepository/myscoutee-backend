@@ -1,7 +1,7 @@
 {
   "urlPath": "/",
   "selectors": [
-    ".demo-login-overlay",
+    ".demo-user-stage",
     ".demo-user-item"
   ],
   "network": [

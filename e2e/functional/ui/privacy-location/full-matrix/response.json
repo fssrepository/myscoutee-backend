@@ -3,9 +3,9 @@
     ".game-page"
   ],
   "absentSelectors": [
-    ".entry-consent-overlay",
-    ".confirmation-dialog",
-    ".demo-login-overlay",
+    "app-entry-page app-document-viewer .ui-popup__panel",
+    ".dialog",
+    ".demo-user-stage",
     "app-navigator-privacy-popup",
     ".navigator-settings-popup-shell"
   ],

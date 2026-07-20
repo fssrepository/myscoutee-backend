@@ -801,8 +801,8 @@ export class ChromePage {
 
 export function demoSessionStorage(userId = '9f3b3f085e23af6c89dbc432') {
   return {
-    'app-session': JSON.stringify({ kind: 'demo', userId }),
-    'demo-active-user': userId
+    'myscoutee.http.session.v1': JSON.stringify({ kind: 'demo', userId }),
+    'myscoutee.http.demo.active-user.v1': userId
   };
 }
 

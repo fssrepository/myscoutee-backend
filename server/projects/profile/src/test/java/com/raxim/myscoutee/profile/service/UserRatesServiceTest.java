@@ -99,16 +99,102 @@ class UserRatesServiceTest {
     }
 
     @Test
+    void syncReusesNaturalKeyRecordWhenClientSyncKeyChanges() {
+        Users owner = user("u1", "Owner", List.of("music"));
+        Users related = user("u2", "Related", List.of("music"));
+        UserRate existing = singleRate("stored-rate-id", "u1", "u2", 4);
+        existing.setSyncKey("old-client-sync-key");
+        existing.setCreatedDate("2026-05-01T09:00:00Z");
+        existing.setCreatedUser("u1");
+
+        UserRatesService service = syncService(Map.of("u1", owner, "u2", related), List.of());
+        when(userRatesRepository.findBySyncKey("new-client-sync-key")).thenReturn(Optional.empty());
+        when(userRatesRepository.findByOwnerUserIdAndMode("u1", "single")).thenReturn(List.of(existing));
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "new-client-sync-key",
+                "u1",
+                "u2",
+                8,
+                "single",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "u1",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        UserRate saved = singleSavedRate();
+        assertThat(saved.getId()).isEqualTo("stored-rate-id");
+        assertThat(saved.getSyncKey()).isEqualTo("new-client-sync-key");
+        assertThat(saved.getCreatedDate()).isEqualTo("2026-05-01T09:00:00Z");
+        assertThat(saved.getCreatedUser()).isEqualTo("u1");
+        assertThat(saved.getScoreGiven()).isEqualTo(8);
+    }
+
+    @Test
+    void syncPrefersNaturalKeyWhenClientSyncKeyBelongsToAnotherRate() {
+        Users owner = user("u1", "Owner", List.of("music"));
+        Users related = user("u2", "Related", List.of("music"));
+        Users staleTarget = user("u3", "Stale target", List.of("music"));
+        UserRate natural = singleRate("natural-rate-id", "u1", "u2", 4);
+        natural.setSyncKey("natural-client-key");
+        UserRate staleSyncKey = singleRate("stale-sync-rate-id", "u1", "u3", 2);
+        staleSyncKey.setSyncKey("reused-client-key");
+
+        UserRatesService service = syncService(
+                Map.of("u1", owner, "u2", related, "u3", staleTarget),
+                List.of());
+        when(userRatesRepository.findBySyncKey("reused-client-key")).thenReturn(Optional.of(staleSyncKey));
+        when(userRatesRepository.findByOwnerUserIdAndMode("u1", "single")).thenReturn(List.of(natural, staleSyncKey));
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "reused-client-key",
+                "u1",
+                "u2",
+                9,
+                "single",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "u1",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        UserRate saved = singleSavedRate();
+        assertThat(saved.getId()).isEqualTo("natural-rate-id");
+        assertThat(saved.getSyncKey()).isEqualTo("natural-client-key");
+        assertThat(saved.getRelatedUserId()).isEqualTo("u2");
+        assertThat(saved.getScoreGiven()).isEqualTo(9);
+    }
+
+    @Test
     void syncKeepsFriendsInCommonOnSingleRatesOnlyAndInsideNetworkOnPairRatesOnly() {
         Users owner = user("owner", "Owner", List.of("music"));
         Users friend = user("friend", "Friend", List.of("music"));
         Users first = user("u1", "First", List.of("music"));
         Users second = user("u2", "Second", List.of("music"));
+        Users third = user("u3", "Third", List.of("music"));
         Map<String, Users> usersById = Map.of(
                 "owner", owner,
                 "friend", friend,
                 "u1", first,
-                "u2", second);
+                "u2", second,
+                "u3", third);
 
         UserRatesService service = syncService(usersById, List.of());
         when(userRatesRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
@@ -155,7 +241,7 @@ class UserRatesServiceTest {
                 new UserRateRecordDto(
                         "sync-wrong-pair-social",
                         "u1",
-                        "u2",
+                        "u3",
                         8,
                         "pair",
                         "2026-05-08T10:00:00Z",

@@ -147,6 +147,7 @@ tasks.register('bootRunStress', org.springframework.boot.gradle.tasks.run.BootRu
 tasks.register('e2eTest', Test) {
 	description = 'Runs backend HTTP e2e tests. Disabled from check unless -PrunE2e=true is supplied.'
 	group = 'verification'
+	maxHeapSize = '2g'
 
 	testClassesDirs = sourceSets.e2eTest.output.classesDirs
 	classpath = sourceSets.e2eTest.runtimeClasspath

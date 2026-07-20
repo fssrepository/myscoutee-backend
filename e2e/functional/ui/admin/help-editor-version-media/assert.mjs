@@ -47,7 +47,7 @@ export async function assertUi({ page }) {
     page.clearNetworkLog();
     await page.clickVisible('.help-editor-draft-row .help-editor-confirm-btn');
     await page.waitForNetwork('/api/admin/explanation/revisions', { timeoutMs: 45000 });
-    await waitForVisibleText(page, '.popup-panel-help-editor', marker, 45000);
+    await waitForVisibleText(page, '.help-editor-body', marker, 45000);
     const savedRevision = await readRevisionByMarker(page, marker);
     assert(savedRevision?.id, 'Saved help editor revision should be visible in component state', { savedRevision });
     savedRevisionId = savedRevision.id;
@@ -63,7 +63,7 @@ export async function assertUi({ page }) {
     await page.recordStep('help-version-media-revision-saved');
 
     await reloadAndOpenHelpEditorExplanation(page);
-    await waitForVisibleText(page, '.popup-panel-help-editor', marker, 45000);
+    await waitForVisibleText(page, '.help-editor-body', marker, 45000);
     const reloadedRevision = await readRevisionByMarker(page, marker);
     assert(reloadedRevision?.id === savedRevisionId, 'Saved help editor revision should reload from backend', {
       savedRevisionId,
@@ -100,38 +100,58 @@ async function openHelpEditorExplanation(page) {
   await openNavigatorMenu(page);
   await page.recordStep('help-version-media-admin-menu-open');
   await page.click('button[aria-label="Open content editor"]');
-  await page.waitForSelector('.popup-panel-help-editor');
+  await page.waitForSelector('.help-editor-body');
   await selectFirstExplanationSurface(page);
 }
 
 async function reloadAndOpenHelpEditorExplanation(page) {
-  await page.navigate('/admin/workspace', { loadTimeoutMs: 30000 });
+  await page.navigate('/admin', { loadTimeoutMs: 30000 });
   await page.waitForSelector('.admin-workspace');
   await openNavigatorMenu(page);
   await page.click('button[aria-label="Open content editor"]');
-  await page.waitForSelector('.popup-panel-help-editor');
+  await page.waitForSelector('.help-editor-body');
   await selectFirstExplanationSurface(page);
 }
 
 async function selectFirstExplanationSurface(page) {
-  await page.click('.help-editor-document-menu-btn');
-  await page.click('.help-editor-document-menu-branch');
-  await page.click('.help-editor-document-menu-surface');
+  const root = 'app-admin-help-editor-popup .ui-popup__header-controls';
+  const trigger = `${root} button[aria-label="Select content type"]`;
+  await page.waitFor('help editor document menu ready', async () => page.evaluate(selector => {
+    const button = document.querySelector(selector);
+    return Boolean(button && !button.disabled);
+  }, trigger), 30000);
+  await page.clickVisible(trigger);
+  await page.waitForSelector(`${root} .app-menu__panel`);
+  await page.clickByText(`${root} .app-menu__panel button`, 'Explanations');
+  await page.waitForSelector(`${root} .app-menu__branch-title`);
+  const selected = await page.evaluate(rootSelector => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+    };
+    const button = Array.from(document.querySelectorAll(`${rootSelector} .app-menu__items .app-menu__item`))
+      .find(item => visible(item) && !item.disabled);
+    button?.click();
+    return Boolean(button);
+  }, root);
+  assert(selected, 'Help editor content menu should expose an explanation surface');
   await page.waitForNetwork('/api/admin/explanation', { timeoutMs: 30000 });
-  await page.waitForSelector('.popup-panel-help-editor');
+  await page.waitForSelector('.help-editor-body');
 }
 
 async function startEmptyRevision(page) {
+  const createSelector = 'app-admin-help-editor-popup button[aria-label="Create explanation revision"]';
   await page.waitFor('help editor create revision action enabled', async () => {
     return page.evaluate(() => {
-      const button = document.querySelector('button[title="Create empty revision"]');
+      const button = document.querySelector('app-admin-help-editor-popup button[aria-label="Create explanation revision"]');
       return Boolean(button) && !button.disabled;
     });
   }, 30000);
-  await page.clickVisible('button[title="Create empty revision"]');
+  await page.clickVisible(createSelector);
   await page.waitForSelector('.help-editor-draft-row');
   const contextSelected = await page.evaluate(() => {
-    const text = document.querySelector('.help-editor-draft-row .help-editor-context-trigger')?.textContent ?? '';
+    const text = document.querySelector('.help-editor-draft-row .help-editor-context-field .app-menu__trigger')?.textContent ?? '';
     return text.trim().length > 0 && !text.includes('Choose screen');
   });
   assert(contextSelected, 'New explanation revision should inherit the selected canonical screen');
@@ -161,7 +181,7 @@ async function ensureDraftExplanationSectionOpen(page) {
         draftToggle.click();
       }
     }
-    if (isVisible(draft.querySelector('app-editable-image-carousel'))) {
+    if (isVisible(draft.querySelector('app-image-carousel'))) {
       return true;
     }
     const sectionToggle = Array.from(draft.querySelectorAll('.help-editor-edit-section .help-editor-caret-btn'))
@@ -173,8 +193,8 @@ async function ensureDraftExplanationSectionOpen(page) {
     return true;
   });
   assert(opened, 'Help editor draft section should be openable');
-  await page.waitForSelector('.help-editor-draft-row app-editable-image-carousel');
-  await page.waitForSelector('.help-editor-draft-row .editable-image-carousel');
+  await page.waitForSelector('.help-editor-draft-row app-image-carousel');
+  await page.waitForSelector('.help-editor-draft-row .image-carousel');
 }
 
 async function addAndRemoveExtraSection(page) {
@@ -229,13 +249,13 @@ async function fillDraftContent(page, marker) {
 async function uploadHelpImageToDraftSlot(page, slotIndex, fixture) {
   await clickDraftCarouselSlot(page, slotIndex);
   page.clearNetworkLog();
-  await page.setFileInputFiles('.help-editor-draft-row .editable-image-carousel__slot-input', fixture.path, {
+  await page.setFileInputFiles('.help-editor-draft-row .image-carousel__slot-input', fixture.path, {
     index: slotIndex
   });
   await page.waitForNetwork('/api/media/images', { timeoutMs: 45000 });
   await page.waitFor('help editor carousel upload completed', async () => {
-    return page.evaluate(() => {
-      return !Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__upload-ring'))
+    return page.evaluate(slotIndex => {
+      const uploadFinished = !Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__upload-ring'))
         .some(element => {
           const rect = element.getBoundingClientRect();
           const style = window.getComputedStyle(element);
@@ -244,7 +264,10 @@ async function uploadHelpImageToDraftSlot(page, slotIndex, fixture) {
             && style.display !== 'none'
             && style.visibility !== 'hidden';
         });
-    });
+      const slot = document.querySelectorAll('.help-editor-draft-row .image-carousel__slot')[slotIndex];
+      const background = slot ? window.getComputedStyle(slot).backgroundImage || '' : '';
+      return uploadFinished && background.includes('url(');
+    }, slotIndex);
   }, 45000);
   const imageUrl = await draftCarouselImageUrlAtSlot(page, slotIndex);
   assert(imageUrl, 'Help editor carousel slot should expose a media URL after upload', { fixture, slotIndex });
@@ -255,7 +278,7 @@ async function uploadHelpImageToDraftSlot(page, slotIndex, fixture) {
 
 async function clickDraftCarouselSlot(page, slotIndex) {
   const clicked = await page.evaluate(slotIndex => {
-    const buttons = Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__slot-hit'));
+    const buttons = Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__slot-hit'));
     const button = buttons[Math.max(0, Math.trunc(Number(slotIndex) || 0))];
     if (!button || button.disabled) {
       return false;
@@ -281,7 +304,7 @@ async function removeDraftCarouselSlot(page, slotIndex, expectedUrl) {
         return text;
       }
     };
-    const slots = Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__slot'));
+    const slots = Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__slot'));
     const slot = slots[Math.max(0, Math.trunc(Number(slotIndex) || 0))];
     if (!slot) {
       return false;
@@ -294,7 +317,7 @@ async function removeDraftCarouselSlot(page, slotIndex, expectedUrl) {
     ) {
       return false;
     }
-    const remove = slot.querySelector('.editable-image-carousel__slot-action--remove');
+    const remove = slot.querySelector('.image-carousel__slot-action--remove');
     if (!remove || remove.disabled) {
       return false;
     }
@@ -327,7 +350,7 @@ async function readDraftCarouselSnapshot(page) {
       const background = window.getComputedStyle(element).backgroundImage || '';
       return background.match(/url\(["']?(.*?)["']?\)/)?.[1] ?? '';
     };
-    const urls = Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__slot'))
+    const urls = Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__slot'))
       .map(backgroundUrl)
       .filter(Boolean)
       .map(url => {
@@ -357,7 +380,7 @@ function comparableMediaUrl(value) {
 
 async function draftCarouselImageUrlAtSlot(page, slotIndex) {
   return page.evaluate(slotIndex => {
-    const host = document.querySelector('.help-editor-draft-row app-editable-image-carousel');
+    const host = document.querySelector('.help-editor-draft-row app-image-carousel');
     const carousel = window.ng?.getComponent?.(host);
     const componentUrls = typeof carousel?.imageSlots === 'function'
       ? carousel.imageSlots()
@@ -366,7 +389,7 @@ async function draftCarouselImageUrlAtSlot(page, slotIndex) {
     if (value) {
       return `${value}`;
     }
-    const slot = Array.from(document.querySelectorAll('.help-editor-draft-row .editable-image-carousel__slot'))[slotIndex];
+    const slot = Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__slot'))[slotIndex];
     const background = slot ? window.getComputedStyle(slot).backgroundImage || '' : '';
     return background.match(/url\(["']?(.*?)["']?\)/)?.[1] ?? '';
   }, slotIndex);
@@ -382,7 +405,7 @@ async function readRevisionByMarker(page, marker) {
       'profile.editor',
       'profile.view',
       'assets',
-      'assets.car',
+      'assets.transport',
       'assets.accommodation',
       'assets.supplies',
       'assets.tickets',
@@ -392,7 +415,7 @@ async function readRevisionByMarker(page, marker) {
     ];
     let adminUserId = '';
     try {
-      adminUserId = JSON.parse(window.localStorage.getItem('myscoutee-admin-session') || '{}')?.adminUserId ?? '';
+      adminUserId = JSON.parse(window.localStorage.getItem('myscoutee.http.admin.session.v1') || '{}')?.adminUserId ?? '';
     } catch {
       adminUserId = '';
     }
@@ -524,11 +547,11 @@ async function deleteRevisionThroughUi(page, marker) {
     return true;
   }, marker);
   assert(clicked, 'Saved help editor revision should expose Delete revision action');
-  await page.waitForSelector('.confirmation-dialog');
+  await page.waitForSelector('.dialog');
   page.clearNetworkLog();
-  await page.clickVisible('.confirmation-dialog-confirm-btn');
+  await page.clickVisible('.dialog-actions-menu .app-menu__button-row-item:last-of-type');
   await page.waitForNetwork('/api/admin/explanation/revisions/', { timeoutMs: 45000 });
-  await page.waitForSelectorHidden('.confirmation-dialog', { timeoutMs: 45000 });
+  await page.waitForSelectorHidden('.dialog', { timeoutMs: 45000 });
 }
 
 async function waitForRevisionAbsent(page, marker, revisionId) {
@@ -542,7 +565,7 @@ async function waitForRevisionAbsent(page, marker, revisionId) {
         'profile.editor',
         'profile.view',
         'assets',
-        'assets.car',
+        'assets.transport',
         'assets.accommodation',
         'assets.supplies',
         'assets.tickets',
@@ -552,7 +575,7 @@ async function waitForRevisionAbsent(page, marker, revisionId) {
       ];
       let adminUserId = '';
       try {
-        adminUserId = JSON.parse(window.localStorage.getItem('myscoutee-admin-session') || '{}')?.adminUserId ?? '';
+        adminUserId = JSON.parse(window.localStorage.getItem('myscoutee.http.admin.session.v1') || '{}')?.adminUserId ?? '';
       } catch {
         adminUserId = '';
       }

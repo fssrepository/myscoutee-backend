@@ -1,14 +1,14 @@
 {
   "urlPath": "/game",
   "selectors": [
-    ".popup-panel-activities",
+    ".activities-popup",
     ".activities-popup"
   ],
   "absentSelectors": [
-    ".explanation-popup",
-    ".confirmation-dialog",
+    "app-explanation-popup .ui-popup__panel",
+    ".dialog",
     ".popup-loading-overlay",
-    ".popup-panel-event-editor"
+    "app-event-editor-popup .ui-popup__panel"
   ],
   "network": [
     "/api/activities/events",

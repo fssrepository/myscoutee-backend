@@ -16,29 +16,75 @@ export async function assertUi({ page }) {
   assert(action.clicked, 'Event explore should expose at least one join/book/waitlist action', action);
   await page.recordStep('event-explore-join-action-opened');
 
-  if (await page.isSelectorVisible('.confirmation-dialog')) {
+  await page.waitFor('join confirmation or checkout review visible', async () => {
+    return (await isEventJoinConfirmationVisible(page))
+      || (await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel'));
+  }, 15000);
+  const checkoutReviewAlreadyVisible = await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel');
+  if (!checkoutReviewAlreadyVisible && await isEventJoinConfirmationVisible(page)) {
     await page.recordStep('event-explore-simple-join-dialog');
     await page.waitFor('simple join confirm enabled', async () => {
       return page.evaluate(() => {
-        const button = document.querySelector('.confirmation-dialog-confirm-btn');
+        const button = document.querySelector('.dialog-actions-menu .app-menu__button-row-item:last-of-type');
         return Boolean(button && !button.disabled);
       });
     }, 15000);
-    await page.mouseClickVisible('.confirmation-dialog-confirm-btn');
-    await page.waitForNetwork('/api/activities/events/join', { timeoutMs: 30000 });
-    await page.waitForSelectorHidden('.confirmation-dialog', { timeoutMs: 30000 });
-    await page.recordStep('event-explore-simple-join-submitted');
-    return;
+    await page.clickVisible('.dialog-actions-menu .app-menu__button-row-item:last-of-type');
+    const progressed = await page.waitFor('simple join submitted or checkout review opened', async () => {
+      return page.hasNetwork('/api/activities/events/join')
+        || (await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel'));
+    }, 30000).then(() => true).catch(() => false);
+    assert(progressed, 'Event join confirmation should submit or open checkout review', await readJoinFlowSnapshot(page));
+    if (!(await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel'))) {
+      await page.waitForNetwork('/api/activities/events/join', { timeoutMs: 30000 });
+      await page.waitForSelectorHidden('.dialog', { timeoutMs: 30000 });
+      await page.recordStep('event-explore-simple-join-submitted');
+      return;
+    }
   }
 
-  await page.waitForSelector('.event-checkout-dialog', { timeoutMs: 15000 });
+  await page.waitForSelector('app-event-editor-popup .ui-popup__panel', { timeoutMs: 15000 });
   await page.recordStep('event-explore-checkout-open');
   await prepareCheckout(page);
   await page.recordStep('event-explore-checkout-prepared');
   await submitCheckout(page);
-  await page.waitForNetwork('/api/activities/events/join', { timeoutMs: 45000 });
-  await page.waitForSelectorHidden('.event-checkout-dialog', { timeoutMs: 45000 }).catch(() => undefined);
+  await page.waitForNetwork('/api/activities/events/checkout/pay', { timeoutMs: 45000 });
+  await page.waitForSelectorHidden('app-event-editor-popup .ui-popup__panel', { timeoutMs: 45000 }).catch(() => undefined);
   await page.recordStep('event-explore-checkout-submitted');
+}
+
+async function isEventJoinConfirmationVisible(page) {
+  return page.evaluate(() => {
+    const dialog = document.querySelector('.dialog');
+    if (!dialog) {
+      return false;
+    }
+    const rect = dialog.getBoundingClientRect();
+    const style = window.getComputedStyle(dialog);
+    if (rect.width <= 0 || rect.height <= 0 || style.visibility === 'hidden' || style.display === 'none') {
+      return false;
+    }
+    const title = dialog.querySelector('h3')?.textContent?.trim() ?? '';
+    return ['Join waiting list?', 'Request to join?', 'Continue booking?'].includes(title);
+  });
+}
+
+async function readJoinFlowSnapshot(page) {
+  return page.evaluate(() => ({
+    dialogTitle: document.querySelector('.dialog h3')?.textContent?.trim() ?? '',
+    dialogText: document.querySelector('.dialog')?.textContent?.trim().replace(/\s+/g, ' ').slice(0, 600) ?? '',
+    checkoutVisible: Boolean(document.querySelector('app-event-editor-popup .ui-popup__panel')),
+    visiblePopups: Array.from(document.querySelectorAll('.ui-popup__panel'))
+      .filter(element => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+      })
+      .map(element => ({
+        host: element.parentElement?.tagName?.toLowerCase() ?? '',
+        text: (element.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 220)
+      }))
+  }));
 }
 
 async function seedJoinableEvent(page) {
@@ -46,12 +92,17 @@ async function seedJoinableEvent(page) {
   const eventId = `e2e-ui-join-${suffix}`;
   const hostUserId = `e2e-ui-join-host-${suffix}`;
   const title = `E2E UI Join ${suffix}`;
+  const startAt = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
+  startAt.setUTCHours(18, 0, 0, 0);
+  const endAt = new Date(startAt.getTime() + (2 * 60 * 60 * 1000));
+  const startAtIso = startAt.toISOString();
+  const endAtIso = endAt.toISOString();
   const headers = {
     'Content-Type': 'application/json',
     'X-App-Session-Kind': 'demo'
   };
 
-  const result = await page.evaluate(async ({ eventId, hostUserId, title, headers }) => {
+  const result = await page.evaluate(async ({ eventId, hostUserId, title, startAtIso, endAtIso, headers }) => {
     const jsonFetch = async (url, body) => {
       const response = await fetch(url, {
         method: 'POST',
@@ -100,8 +151,8 @@ async function seedJoinableEvent(page) {
       timeframe: 'Tomorrow evening',
       activity: 5,
       isAdmin: false,
-      startAt: '2026-06-20T18:00:00Z',
-      endAt: '2026-06-20T20:00:00Z',
+      startAtIso,
+      endAtIso,
       distanceKm: 1.2,
       imageUrl: '',
       acceptedMembers: 1,
@@ -116,7 +167,7 @@ async function seedJoinableEvent(page) {
       eventType: 'meetup',
       visibility: 'Public',
       blindMode: 'Open Event',
-      published: true,
+      status: 'A',
       creatorUserId: hostUserId,
       creatorName: 'E2E UI Join Host',
       creatorInitials: 'JH',
@@ -169,9 +220,9 @@ async function seedJoinableEvent(page) {
       subEventsDisplayMode: 'list'
     });
     return { id: event?.id ?? eventId, title: event?.title ?? title };
-  }, { eventId, hostUserId, title, headers });
+  }, { eventId, hostUserId, title, startAtIso, endAtIso, headers });
 
-  assert(result?.id === eventId, 'Join scenario should seed a fresh published event', result);
+  assert(result?.id === eventId, 'Join scenario should seed a fresh active event', result);
   return result;
 }
 
@@ -179,17 +230,17 @@ async function openEventExplore(page) {
   await openNavigatorMenu(page);
   await page.click('button[aria-label="Open events"]');
   await closeExplanationPopupEventually(page, 10000);
-  await page.waitForSelector('.popup-panel-activities');
-  if (await page.isSelectorVisible('.activities-explore-btn')) {
-    await page.clickVisible('.activities-explore-btn');
+  await page.waitForSelector('.activities-popup');
+  if (await page.isSelectorVisible('button[aria-label="Open event explore"]')) {
+    await page.clickVisible('button[aria-label="Open event explore"]');
   } else {
     await page.click('button[aria-label="Open event actions"]');
-    await page.click('.activities-quick-action-option-explore');
+    await page.clickByText('app-activities-popup .ui-popup__panel .app-menu__panel button', 'Explore');
   }
-  await page.waitForSelector('.popup-panel-event-explore');
+  await page.waitForSelector('.event-explore-popup');
   await page.waitForNetwork('/api/activities/events/explore', { timeoutMs: 25000 });
-  await waitForSmartListSettled(page, '.popup-panel-event-explore');
-  await waitForVisibleCount(page, '.popup-panel-event-explore .experience-item-card', 1, 'event explore cards', 45000);
+  await waitForSmartListSettled(page, '.event-explore-popup');
+  await waitForVisibleCount(page, '.event-explore-popup .experience-item-card', 1, 'event explore cards', 45000);
 }
 
 async function openFirstJoinableEventAction(page, preferredTitle) {
@@ -203,12 +254,11 @@ async function openFirstJoinableEventAction(page, preferredTitle) {
           && style.visibility !== 'hidden'
           && style.display !== 'none';
       };
-      const cards = Array.from(document.querySelectorAll('.popup-panel-event-explore .experience-item-card'))
+      const cards = Array.from(document.querySelectorAll('.event-explore-popup .experience-item-card'))
         .filter(visible);
-      const orderedCards = [
-        ...cards.filter(card => (card.querySelector('.ui-info-card__title')?.textContent?.trim() ?? '') === preferredTitle),
-        ...cards.filter(card => (card.querySelector('.ui-info-card__title')?.textContent?.trim() ?? '') !== preferredTitle)
-      ];
+      const orderedCards = cards.filter(
+        card => (card.querySelector('.ui-info-card__title')?.textContent?.trim() ?? '') === preferredTitle
+      );
       for (const card of orderedCards) {
         const title = card.querySelector('.ui-info-card__title')?.textContent?.trim() ?? '';
         if (/participation/i.test(title)) {
@@ -231,7 +281,7 @@ async function openFirstJoinableEventAction(page, preferredTitle) {
       await scrollExploreList(page);
       continue;
     }
-    await page.waitForSelector('.popup-panel-event-explore .ui-info-card__menu-action');
+    await page.waitForSelector('app-event-explore-popup app-menu-outlet .app-menu__panel button');
     const clicked = await page.evaluate(() => {
       const visible = element => {
         const rect = element.getBoundingClientRect();
@@ -241,7 +291,7 @@ async function openFirstJoinableEventAction(page, preferredTitle) {
           && style.visibility !== 'hidden'
           && style.display !== 'none';
       };
-      const actions = Array.from(document.querySelectorAll('.popup-panel-event-explore .ui-info-card__menu-action'))
+      const actions = Array.from(document.querySelectorAll('app-event-explore-popup app-menu-outlet .app-menu__panel button'))
         .filter(visible);
       const action = actions.find(button => {
         const text = (button.textContent ?? '').toLowerCase();
@@ -266,10 +316,10 @@ async function openFirstJoinableEventAction(page, preferredTitle) {
     await scrollExploreList(page);
   }
   const snapshot = await page.evaluate(() => {
-    const root = document.querySelector('.popup-panel-event-explore');
+    const root = document.querySelector('.event-explore-popup');
     return {
       text: (root?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1200),
-      visibleCards: Array.from(document.querySelectorAll('.popup-panel-event-explore .experience-item-card'))
+      visibleCards: Array.from(document.querySelectorAll('.event-explore-popup .experience-item-card'))
         .filter(element => {
           const rect = element.getBoundingClientRect();
           const style = window.getComputedStyle(element);
@@ -294,60 +344,46 @@ async function openFirstJoinableEventAction(page, preferredTitle) {
 }
 
 async function prepareCheckout(page) {
-  if ((await page.visibleCount('.event-checkout-slot-card')) > 0) {
-    await page.evaluate(() => {
-      const visible = element => {
-        const rect = element.getBoundingClientRect();
-        const style = window.getComputedStyle(element);
-        return rect.width > 0
-          && rect.height > 0
-          && style.visibility !== 'hidden'
-          && style.display !== 'none';
-      };
-      const selected = Array.from(document.querySelectorAll('.event-checkout-slot-card.is-selected')).find(visible);
-      if (!selected) {
-        Array.from(document.querySelectorAll('.event-checkout-slot-card')).find(visible)?.click();
-      }
-    });
-  }
-  await page.evaluate(() => {
-    for (const input of document.querySelectorAll('.event-checkout-policy-card input[type="checkbox"]')) {
-      if (!input.checked) {
-        input.click();
-      }
-    }
-  });
+  await page.waitForSelector('app-event-editor-popup .event-editor-checkout-footer');
 }
 
 async function submitCheckout(page) {
   await page.waitFor('checkout confirm enabled', async () => {
     return page.evaluate(() => {
-      const button = document.querySelector('.event-checkout-btn--confirm');
+      const button = document.querySelector(
+        'app-event-editor-popup .event-editor-checkout-footer__actions button[aria-label="Join"]'
+      );
       return Boolean(button && !button.disabled);
     });
   }, 20000);
-  await page.clickVisible('.event-checkout-btn--confirm');
+  await page.clickVisible('app-event-editor-popup .event-editor-checkout-footer__actions button[aria-label="Join"]');
+  await page.waitForSelector('.dialog');
+  await page.clickVisible('.dialog-actions-menu .app-menu__button-row-item:last-of-type');
   await page.waitFor('checkout submitted or payment step visible', async () => {
-    return (await page.isSelectorVisible('.event-checkout-card--payment'))
-      || page.hasNetwork('/api/activities/events/join');
+    return (await page.isSelectorVisible('app-event-editor-popup .editor-list-card--payment'))
+      || page.hasNetwork('/api/activities/events/checkout/pay');
   }, 30000);
-  if (await page.isSelectorVisible('.event-checkout-card--payment')) {
+  if (await page.isSelectorVisible('app-event-editor-popup .editor-list-card--payment')) {
     await page.recordStep('event-explore-checkout-payment-step');
     await page.waitFor('checkout payment confirm enabled', async () => {
       return page.evaluate(() => {
-        const button = document.querySelector('.event-checkout-btn--confirm');
+        const button = document.querySelector(
+          'app-event-editor-popup .event-editor-checkout-footer__actions button[aria-label="payment"]'
+        );
         return Boolean(button && !button.disabled);
       });
     }, 20000);
-    await page.clickVisible('.event-checkout-btn--confirm');
+    await page.clickVisible('app-event-editor-popup .event-editor-checkout-footer__actions button[aria-label="payment"]');
+    await page.waitForSelector('.dialog');
+    await page.clickVisible('.dialog-actions-menu .app-menu__button-row-item:last-of-type');
   }
 }
 
 async function scrollExploreList(page) {
   await page.evaluate(() => {
-    const list = document.querySelector('.popup-panel-event-explore .smart-list');
+    const list = document.querySelector('.event-explore-popup .smart-list');
     list?.scrollBy({ top: 600, left: 0, behavior: 'instant' });
     list?.dispatchEvent(new Event('scroll', { bubbles: true }));
   });
-  await waitForSmartListSettled(page, '.popup-panel-event-explore', 30000);
+  await waitForSmartListSettled(page, '.event-explore-popup', 30000);
 }

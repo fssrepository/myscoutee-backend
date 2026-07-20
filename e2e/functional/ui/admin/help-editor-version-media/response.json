@@ -1,11 +1,11 @@
 {
-  "urlPath": "/admin/workspace",
+  "urlPath": "/admin",
   "selectors": [
-    ".popup-panel-help-editor",
+    ".help-editor-body",
     ".help-editor-revision-card"
   ],
   "absentSelectors": [
-    ".confirmation-dialog",
+    ".dialog",
     ".popup-loading-overlay"
   ],
   "network": [

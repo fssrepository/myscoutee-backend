@@ -2,6 +2,6 @@
   "status": 200,
   "body": {
     "type": "object",
-    "required": ["id", "title", "published", "creatorUserId"]
+    "required": ["id", "title", "status", "creatorUserId"]
   }
 }

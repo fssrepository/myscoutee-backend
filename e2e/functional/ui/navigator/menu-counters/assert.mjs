@@ -7,16 +7,16 @@ import {
 } from '../../lib/ui-contracts.mjs';
 
 const MENU_COUNTER_SELECTORS = {
-  rates: '.menu-shortcuts .menu-shortcut-rates',
-  chat: '.menu-shortcuts .menu-shortcut-chat',
-  invitations: '.menu-shortcuts .menu-shortcut-invitations',
-  events: '.menu-shortcuts .menu-shortcut-events',
-  hosting: '.menu-shortcuts .menu-shortcut-hosting',
-  cars: '.assets-shortcuts .asset-shortcut-car',
-  accommodation: '.assets-shortcuts .asset-shortcut-accommodation',
-  supplies: '.assets-shortcuts .asset-shortcut-supplies',
-  tickets: '.assets-shortcuts .asset-shortcut-ticket',
-  feedback: '.feedback-shortcut-event'
+  rates: 'button[aria-label="Open rates"]',
+  chat: 'button[aria-label="Open chat"]',
+  invitations: 'button[aria-label="Open invitations"]',
+  events: 'button[aria-label="Open events"]',
+  hosting: 'button[aria-label="Open my events"]',
+  cars: 'button[aria-label="Transport"]',
+  accommodation: 'button[aria-label="Accommodation"]',
+  supplies: 'button[aria-label="Supplies"]',
+  tickets: 'button[aria-label="Ticket"]',
+  feedback: 'button[aria-label="Open feedback"]'
 };
 
 export async function assertUi({ page }) {
@@ -65,10 +65,14 @@ export async function assertUi({ page }) {
 
   await openEventsPopupFromMenu(page);
   const eventCounters = await readEventPopupCounters(page);
-  assertBadgeMatches(eventCounters.primaryTrigger, expected.activities.event.all, 'Event popup Events trigger badge should match app-context All event counter', {
+  assertBadgeMatches(eventCounters.primaryTrigger, expected.activities.events, 'Event popup Events trigger badge should match the active event counter', {
     initialMenu,
     eventCounters,
     expected
+  });
+  assertBadgeTextEquals(eventCounters.primaryTrigger, initialMenu.events, 'Event popup Events trigger badge should match the navigator Events badge', {
+    initialMenu,
+    eventCounters
   });
   assertBadgeMatches(eventCounters.scopeTrigger, expected.activities.event.active, 'Event popup active scope trigger should match app-context Active Events counter', {
     initialMenu,
@@ -92,7 +96,7 @@ export async function assertUi({ page }) {
     eventCounters,
     expected
   });
-  await closePopup(page, '.popup-panel-activities');
+  await closePopup(page, '.activities-popup');
   await assertMenuCountersUnchanged(page, initialMenu, 'opening the events popup');
 
   await openAssetsPopupFromMenu(page);
@@ -110,7 +114,7 @@ export async function assertUi({ page }) {
     initialMenu,
     assetCounters
   });
-  await closePopup(page, '.popup-panel-assets');
+  await closePopup(page, '.asset-popup-content');
   await assertMenuCountersUnchanged(page, initialMenu, 'opening the assets popup');
 
   await openFeedbackPopupFromMenu(page);
@@ -119,7 +123,7 @@ export async function assertUi({ page }) {
     initialMenu,
     feedbackCounters
   });
-  await closePopup(page, '.popup-panel-event-feedback');
+  await closePopup(page, '.event-feedback-list-popup');
   await assertMenuCountersUnchanged(page, initialMenu, 'opening the feedback popup');
 
   await assertNoDocumentHorizontalOverflow(page);
@@ -127,26 +131,26 @@ export async function assertUi({ page }) {
 
 async function openEventsPopupFromMenu(page) {
   await openNavigatorMenu(page);
-  await page.clickVisible('.user-menu-panel.open .menu-shortcuts .menu-shortcut-events');
-  await page.waitForSelector('.popup-panel-activities', { timeoutMs: 30000 });
+  await page.clickVisible('.user-menu-panel.open button[aria-label="Open events"]');
+  await page.waitForSelector('.activities-popup', { timeoutMs: 30000 });
   await closeExplanationPopupEventually(page, 10000);
-  await waitForBackendUiWindow(page, '.popup-panel-activities', 30000);
+  await waitForBackendUiWindow(page, '.activities-popup', 30000);
 }
 
 async function openAssetsPopupFromMenu(page) {
   await openNavigatorMenu(page);
-  await page.clickVisible('.user-menu-panel.open .assets-shortcuts .asset-shortcut-car');
-  await page.waitForSelector('.popup-panel-assets', { timeoutMs: 30000 });
+  await page.clickVisible('.user-menu-panel.open button[aria-label="Transport"]');
+  await page.waitForSelector('.asset-popup-content', { timeoutMs: 30000 });
   await closeExplanationPopupEventually(page, 10000);
-  await waitForBackendUiWindow(page, '.popup-panel-assets', 30000);
+  await waitForBackendUiWindow(page, '.asset-popup-content', 30000);
 }
 
 async function openFeedbackPopupFromMenu(page) {
   await openNavigatorMenu(page);
-  await page.clickVisible('.user-menu-panel.open .feedback-shortcut-event');
-  await page.waitForSelector('.popup-panel-event-feedback', { timeoutMs: 30000 });
+  await page.clickVisible('.user-menu-panel.open button[aria-label="Open feedback"]');
+  await page.waitForSelector('.event-feedback-list-popup', { timeoutMs: 30000 });
   await closeExplanationPopupEventually(page, 10000);
-  await waitForBackendUiWindow(page, '.popup-panel-event-feedback', 30000);
+  await waitForBackendUiWindow(page, '.event-feedback-list-popup', 30000);
 }
 
 async function readOpenMenuBadges(page) {
@@ -155,7 +159,7 @@ async function readOpenMenuBadges(page) {
     const counters = {};
     for (const [key, selector] of Object.entries(selectors)) {
       const button = document.querySelector(`.user-menu-panel.open ${selector}`);
-      counters[key] = normalizeBadgeText(button?.querySelector('.menu-shortcut-badge, .card-badge')?.textContent ?? '');
+      counters[key] = normalizeBadgeText(button?.querySelector('.app-menu__counter')?.textContent ?? '');
     }
     return counters;
 
@@ -176,11 +180,13 @@ async function assertMenuCountersUnchanged(page, expected, actionLabel) {
 }
 
 async function readEventPopupCounters(page) {
-  const primaryTrigger = await readCounterText(page, '.popup-panel-activities .activities-primary-filter-select .rate-filter-trigger-badge');
-  const scopeTrigger = await readCounterText(page, '.popup-panel-activities .activities-event-scope-filter-select .rate-filter-trigger-badge');
-  await page.mouseClickVisible('.popup-panel-activities .activities-event-scope-filter-select .mat-mdc-select-trigger');
-  await page.waitForSelector('.activities-event-scope-options-panel mat-option', { timeoutMs: 10000 });
-  const scope = await readOptionCountersByLabel(page, '.activities-event-scope-options-panel mat-option', {
+  const toolbarSelector = 'app-activities-popup .ui-popup__toolbar';
+  const primaryTrigger = await readMenuTriggerCounter(page, toolbarSelector, 'Events');
+  const scopeTrigger = await readMenuTriggerCounter(page, toolbarSelector, 'Active Events');
+  await page.clickByText(`${toolbarSelector} .app-menu__trigger`, 'Active Events');
+  const optionSelector = `${toolbarSelector} .app-menu__panel button`;
+  await page.waitForSelector(optionSelector, { timeoutMs: 10000 });
+  const scope = await readOptionCountersByLabel(page, optionSelector, {
     all: 'All',
     activeEvents: 'Active Events',
     pending: 'Pending',
@@ -194,11 +200,12 @@ async function readEventPopupCounters(page) {
 }
 
 async function readAssetPopupCounters(page) {
-  await page.mouseClickVisible('.popup-panel-assets .assets-primary-filter-select .mat-mdc-select-trigger');
-  await page.waitForSelector('.assets-filter-options-panel mat-option', { timeoutMs: 10000 });
-  const counters = await readOptionCountersByLabel(page, '.assets-filter-options-panel mat-option', {
-    car: 'Car',
-    property: 'Property',
+  await page.mouseClickVisible('app-asset-popup button[aria-label="Open asset filter"]');
+  const optionSelector = 'app-asset-popup .app-menu__panel button';
+  await page.waitForSelector(optionSelector, { timeoutMs: 10000 });
+  const counters = await readOptionCountersByLabel(page, optionSelector, {
+    car: 'Transport',
+    property: 'Accommodation',
     supplies: 'Supplies',
     ticket: 'Ticket'
   });
@@ -207,21 +214,26 @@ async function readAssetPopupCounters(page) {
 }
 
 async function readFeedbackPopupCounters(page) {
-  await page.mouseClickVisible('.popup-panel-event-feedback .event-feedback-filter-trigger');
-  await page.waitForSelector('.popup-panel-event-feedback .event-feedback-filter-option', { timeoutMs: 10000 });
-  const counters = await readOptionCountersByLabel(page, '.popup-panel-event-feedback .event-feedback-filter-option', {
+  await page.mouseClickVisible('app-event-feedback-popup button[aria-label="Open event feedback filter"]');
+  const optionSelector = 'app-event-feedback-popup .app-menu__panel button';
+  await page.waitForSelector(optionSelector, { timeoutMs: 10000 });
+  const counters = await readOptionCountersByLabel(page, optionSelector, {
     ownEvents: 'Own Events',
     pending: 'Pending',
     feedbacked: 'Feedbacked',
     removed: 'Removed'
   });
-  await page.mouseClickVisible('.popup-panel-event-feedback .event-feedback-filter-trigger');
+  await page.mouseClickVisible('app-event-feedback-popup button[aria-label="Open event feedback filter"]');
   return counters;
 }
 
-async function readCounterText(page, selector) {
-  const text = await page.evaluate(selector => document.querySelector(selector)?.textContent ?? '', selector);
-  return normalizeBadgeText(text);
+async function readMenuTriggerCounter(page, rootSelector, label) {
+  return page.evaluate(({ rootSelector, label }) => {
+    const normalize = value => `${value ?? ''}`.trim().replace(/\s+/g, ' ');
+    const trigger = Array.from(document.querySelectorAll(`${rootSelector} .app-menu__trigger`))
+      .find(button => normalize(button.querySelector('.app-menu__trigger-label')?.textContent) === label);
+    return normalize(trigger?.querySelector('.app-menu__counter')?.textContent);
+  }, { rootSelector, label });
 }
 
 async function readOptionCountersByLabel(page, selector, labelsByKey) {
@@ -236,7 +248,7 @@ async function readOptionCountersByLabel(page, selector, labelsByKey) {
       if (!match) {
         continue;
       }
-      counters[match[0]] = normalizeBadgeText(option.querySelector('.rate-filter-count-badge')?.textContent ?? '');
+      counters[match[0]] = normalizeBadgeText(option.querySelector('.app-menu__counter, .rate-filter-count-badge')?.textContent ?? '');
     }
     return counters;
 
@@ -310,7 +322,7 @@ function assertBadgeTextEquals(actualText, expectedText, message, details = {}) 
   });
 }
 
-function expectedBadgeText(value, max = 9) {
+function expectedBadgeText(value, max = 99) {
   const normalizedMax = Math.max(1, Math.trunc(Number(max) || 9));
   const normalizedValue = Math.max(0, Math.trunc(Number(value) || 0));
   return normalizedValue > normalizedMax ? `${normalizedMax}+` : `${normalizedValue}`;
@@ -335,8 +347,9 @@ async function closeMatOverlay(page) {
 }
 
 async function closePopup(page, panelSelector) {
-  if (await page.isSelectorVisible(`${panelSelector} .popup-close`)) {
-    await page.mouseClickVisible(`${panelSelector} .popup-close`);
-  }
+  await page.evaluate(panelSelector => {
+    const panel = document.querySelector(panelSelector)?.closest('.ui-popup__panel');
+    panel?.querySelector('.ui-popup__close')?.click();
+  }, panelSelector);
   await page.waitForSelectorHidden(panelSelector, { timeoutMs: 20000 });
 }

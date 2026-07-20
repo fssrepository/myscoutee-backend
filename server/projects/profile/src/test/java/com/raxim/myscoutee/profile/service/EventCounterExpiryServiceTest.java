@@ -114,17 +114,18 @@ class EventCounterExpiryServiceTest {
         ActivityMember sourceMember = member("past-event", "member", "accepted");
         ActivityMember pastMembership = member("past-event", "member", "accepted");
         ActivityMember liveMembership = member("live-event", "member", "accepted");
+        ActivityMember liveInvitationMembership = member("invite-event", "member", "I");
 
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(dueEvent))
                 .thenReturn(List.of())
                 .thenReturn(List.of(dueEvent, pastMemberEvent))
                 .thenReturn(List.of(pastMemberEvent, liveMemberEvent, liveInvitation, pastInvitation))
-                .thenReturn(List.of(dueEvent, liveCanonical));
+                .thenReturn(List.of(dueEvent, liveCanonical, liveInvitation));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("event"), any()))
                 .thenReturn(List.of(sourceMember));
         when(mongoTemplate.find(any(Query.class), eq(ActivityMember.class)))
-                .thenReturn(List.of(pastMembership, liveMembership));
+                .thenReturn(List.of(pastMembership, liveMembership, liveInvitationMembership));
 
         Users member = new Users();
         member.setUserId("member");

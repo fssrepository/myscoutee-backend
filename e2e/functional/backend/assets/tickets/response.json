@@ -2,6 +2,6 @@
   "status": 200,
   "body": {
     "type": "object",
-    "required": ["records", "total"]
+    "required": ["items", "total"]
   }
 }

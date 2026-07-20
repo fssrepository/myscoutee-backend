@@ -62,7 +62,7 @@ async function resolveRequirement(requirement) {
   if (requirement === 'subEvent') {
     await ensureEvent(true);
     if (!ctx.vars.subEventId) {
-      throw new Error('No demo event with subEvents was found for subEvent requirement');
+      throw new Error('No demo event with a sub-event definition was found for subEvent requirement');
     }
     return;
   }
@@ -112,6 +112,9 @@ async function ensureEvent(requireSubEvent = false) {
     } else {
       assertEventPage(result.data, ctx, 'event requirement');
     }
+    if (requireSubEvent && !ctx.vars.subEventId) {
+      await rememberEventWithSubEventDefinition(userId, eventItems(result.data));
+    }
     if (ctx.vars.eventId && (!requireSubEvent || ctx.vars.subEventId)) {
       ctx.vars.userId = userId;
       return;
@@ -129,6 +132,9 @@ async function ensureEvent(requireSubEvent = false) {
       } else {
         assertEventPage(fullList.data, ctx, 'event requirement full list');
       }
+      if (!ctx.vars.subEventId) {
+        await rememberEventWithSubEventDefinition(userId, eventItems(fullList.data));
+      }
       if (ctx.vars.eventId && ctx.vars.subEventId) {
         ctx.vars.userId = userId;
         return;
@@ -136,8 +142,36 @@ async function ensureEvent(requireSubEvent = false) {
     }
   }
   throw new Error(requireSubEvent
-    ? 'No demo event with subEvents was found for subEvent requirement'
+    ? 'No demo event with a sub-event definition was found for subEvent requirement'
     : 'No demo event was found for event requirement');
+}
+
+function eventItems(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return Array.isArray(value?.records) ? value.records : (Array.isArray(value?.items) ? value.items : []);
+}
+
+async function rememberEventWithSubEventDefinition(userId, events) {
+  for (const event of events) {
+    if (!event?.id) {
+      continue;
+    }
+    const result = await ctx.http.get('/api/activities/events/detail', {
+      params: { userId, eventId: event.id },
+      headers: demoHeaders()
+    });
+    const subEvent = Array.isArray(result.data?.subEvents) && result.data.subEvents.length > 0
+      ? result.data.subEvents[0]
+      : (Array.isArray(result.data?.subEventDefinitions) ? result.data.subEventDefinitions[0] : null);
+    if (subEvent?.id) {
+      ctx.vars.eventId = event.id;
+      ctx.vars.ownerId = event.id;
+      ctx.vars.subEventId = subEvent.id;
+      return;
+    }
+  }
 }
 
 async function ensureAsset() {

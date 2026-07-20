@@ -75,7 +75,7 @@ class AdminAffinityGraphServiceTest {
                 user("u2", "Ben", "man", "public"),
                 user("u3", "Chloe", "woman", "public"),
                 user("u-deleted", "Deleted", "man", "deleted"),
-                user("u-onboarding", "Onboarding", "woman", "public")));
+                user("u-onboarding", "Onboarding", "woman", "onboarding")));
         when(userAffinityEdgesRepository.findAll()).thenReturn(List.of(
                 edge("u1", "u2", 0.82d),
                 edge("u2", "u3", 0.12d),

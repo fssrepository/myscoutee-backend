@@ -12,15 +12,15 @@ export async function assertUi({ page }) {
   await page.recordStep('profile-before-edit');
 
   await setProfileStatus(page, 'friends only');
-  await page.fillVisible('.popup-panel-profile-editor .name-field input', nextName);
-  await page.fillVisible('.popup-panel-profile-editor .city-field input', nextCity);
-  await page.fillVisible('.popup-panel-profile-editor .height-field input', nextHeight);
-  await page.fillVisible('.popup-panel-profile-editor .profile-about-field textarea', marker);
+  await page.fillVisible('.profile-editor-popup-content [data-control-id="full-name"] input', nextName);
+  await page.fillVisible('.profile-editor-popup-content [data-control-id="city"] input', nextCity);
+  await page.fillVisible('.profile-editor-popup-content [data-control-id="height"] input', nextHeight);
+  await page.fillVisible('.profile-editor-popup-content [data-control-id="about"] textarea', marker);
   await page.recordStep('profile-fields-edited');
 
-  await page.clickVisible('.popup-panel-profile-editor button.popup-close[aria-label="Close"]');
+  await page.clickVisible('app-profile-editor button[aria-label="Save profile"]');
   await page.waitForNetwork('/api/auth/me/profile', { timeoutMs: 20000 });
-  await page.waitForSelectorHidden('.popup-panel-profile-editor', { timeoutMs: 20000 });
+  await page.waitForSelectorHidden('.profile-editor-popup-content', { timeoutMs: 20000 });
   await page.recordStep('profile-save-closed');
 
   await page.navigate('/game', { loadTimeoutMs: 25000 });
@@ -43,11 +43,11 @@ export async function assertUi({ page }) {
       return element && 'value' in element ? element.value : '';
     };
     return {
-      name: visibleValue('.popup-panel-profile-editor .name-field input'),
-      city: visibleValue('.popup-panel-profile-editor .city-field input'),
-      height: visibleValue('.popup-panel-profile-editor .height-field input'),
-      status: document.querySelector('.popup-panel-profile-editor .profile-status-header-picker .event-visibility-trigger')?.textContent ?? '',
-      about: visibleValue('.popup-panel-profile-editor .profile-about-field textarea')
+      name: visibleValue('.profile-editor-popup-content [data-control-id="full-name"] input'),
+      city: visibleValue('.profile-editor-popup-content [data-control-id="city"] input'),
+      height: visibleValue('.profile-editor-popup-content [data-control-id="height"] input'),
+      status: document.querySelector('app-profile-editor button[aria-label="Open profile status selector"]')?.textContent ?? '',
+      about: visibleValue('.profile-editor-popup-content [data-control-id="about"] textarea')
     };
   });
   assert(values.name === nextName, 'Profile name should reload from backend', values);
@@ -58,9 +58,9 @@ export async function assertUi({ page }) {
 
   await setProfileStatus(page, 'public');
   await page.recordStep('profile-status-restored-public');
-  await page.clickVisible('.popup-panel-profile-editor button.popup-close[aria-label="Close"]');
+  await page.clickVisible('app-profile-editor button[aria-label="Save profile"]');
   await page.waitForNetwork('/api/auth/me/profile', { timeoutMs: 20000 });
-  await page.waitForSelectorHidden('.popup-panel-profile-editor', { timeoutMs: 20000 });
+  await page.waitForSelectorHidden('.profile-editor-popup-content', { timeoutMs: 20000 });
   await page.recordStep('profile-public-restore-saved');
 
   await page.navigate('/game', { loadTimeoutMs: 25000 });
@@ -84,7 +84,7 @@ async function waitForProfileStatus(page, label) {
   const needle = `${label}`.trim().toLowerCase();
   await page.waitFor(`profile status ${label} visible`, async () => {
     const status = await page.evaluate(() => {
-      return document.querySelector('.popup-panel-profile-editor .profile-status-header-picker .event-visibility-trigger')?.textContent ?? '';
+      return document.querySelector('app-profile-editor button[aria-label="Open profile status selector"]')?.textContent ?? '';
     });
     return status.toLowerCase().includes(needle);
   }, 20000);
@@ -94,13 +94,13 @@ async function openProfileEditor(page) {
   await openNavigatorMenu(page);
   await page.recordStep('profile-navigator-menu-open');
   await page.click('button[aria-label="Open profile editor"]');
-  await page.waitForSelector('.popup-panel-profile-editor');
+  await page.waitForSelector('.profile-editor-popup-content');
   await page.waitForSelector('.profile-editor-wrap');
 }
 
 async function setProfileStatus(page, label) {
-  await page.clickVisible('.popup-panel-profile-editor .profile-status-header-picker .event-visibility-trigger');
-  await page.waitForSelector('.popup-panel-profile-editor .profile-status-header-picker .activities-view-picker-panel');
+  await page.clickVisible('app-profile-editor button[aria-label="Open profile status selector"]');
+  await page.waitForSelector('app-profile-editor .ui-popup__header-controls .app-menu__panel');
   const clicked = await page.evaluate(({ selector, label }) => {
     const needle = `${label}`.trim().toLowerCase();
     const visible = element => {
@@ -120,7 +120,7 @@ async function setProfileStatus(page, label) {
     option.click();
     return true;
   }, {
-    selector: '.popup-panel-profile-editor .profile-status-header-picker .activities-view-option',
+    selector: 'app-profile-editor .ui-popup__header-controls .app-menu__panel button',
     label
   });
   assert(clicked, 'Profile status picker should expose the requested option', { label });
@@ -141,9 +141,9 @@ async function readVisibleProfileValues(page) {
       return element && 'value' in element ? element.value : '';
     };
     return {
-      name: visibleValue('.popup-panel-profile-editor .name-field input'),
-      city: visibleValue('.popup-panel-profile-editor .city-field input'),
-      about: visibleValue('.popup-panel-profile-editor .profile-about-field textarea')
+      name: visibleValue('.profile-editor-popup-content [data-control-id="full-name"] input'),
+      city: visibleValue('.profile-editor-popup-content [data-control-id="city"] input'),
+      about: visibleValue('.profile-editor-popup-content [data-control-id="about"] textarea')
     };
   });
 }

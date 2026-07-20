@@ -56,7 +56,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.service.ChatStreamPublisher;
@@ -148,7 +148,7 @@ class BackendChatStreamSchedulerE2ETest {
         E2eInfrastructure.redisStream.clear();
         withReal(() -> {
             mongoTemplate.remove(new Query(), Users.class);
-            mongoTemplate.remove(new Query(), ActivityChat.class);
+            mongoTemplate.remove(new Query(), Chat.class);
             mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
             mongoTemplate.insert(List.of(
                     user(SENDER_ID, "Stream Sender"),
@@ -291,7 +291,7 @@ class BackendChatStreamSchedulerE2ETest {
     }
 
     private void seedChat() {
-        ActivityChat chat = new ActivityChat();
+        Chat chat = new Chat();
         chat.setMongoId(CHAT_ID + ":" + SENDER_ID);
         chat.setChatId(CHAT_ID);
         chat.setOwnerUserId(SENDER_ID);

@@ -2,7 +2,7 @@
   "urlPath": "/game",
   "selectors": [
     ".profile-editor-wrap",
-    ".popup-panel-profile-editor"
+    ".profile-editor-popup-content"
   ],
   "network": [
     "/api/auth/me"

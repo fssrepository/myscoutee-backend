@@ -38,6 +38,6 @@ export async function assertResponse({ ctx, result, request }) {
     expectedStatus: 200
   });
   const summary = expectObject(picked.data, 'admin support-case pick response');
-  assert(summary.supportCaseStatus === 'picked', 'admin should be able to pick support case', summary);
-  assert(summary.supportCaseAssigneeUserId === ADMIN_USER_ID, 'support case should be assigned to the admin actor', summary);
+  assert(summary.supportCase?.status === 'picked', 'admin should be able to pick support case', summary);
+  assert(summary.supportCase?.assignee?.userId === ADMIN_USER_ID, 'support case should be assigned to the admin actor', summary);
 }

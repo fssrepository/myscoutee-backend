@@ -34,7 +34,7 @@ export async function assertUi({ page }) {
   await assertImageUrlPresent(page, firstUrl, 'Uploaded profile image should reload from backend');
   await page.recordStep('profile-media-upload-reloaded');
 
-  const secondUrl = await uploadProfileImageToSlot(page, slotIndex, SECOND_IMAGE_FIXTURE);
+  const secondUrl = await uploadProfileImageToSlot(page, slotIndex, SECOND_IMAGE_FIXTURE, firstUrl);
   assert(secondUrl.includes('/media/public?key='), 'Replacement profile image should resolve to media storage URL', { secondUrl });
   assert(secondUrl !== firstUrl, 'Replacing a profile image should produce a new media URL', { firstUrl, secondUrl });
   await page.recordStep('profile-media-replaced');
@@ -59,13 +59,13 @@ async function openProfileEditor(page) {
   await openNavigatorMenu(page);
   await page.recordStep('profile-media-navigator-menu-open');
   await page.click('button[aria-label="Open profile editor"]');
-  await page.waitForSelector('.popup-panel-profile-editor');
+  await page.waitForSelector('.profile-editor-popup-content');
   await page.waitForSelector('.profile-editor-wrap');
 }
 
 async function openImageEditor(page) {
-  await page.clickVisible('.popup-panel-profile-editor .avatar-edit-btn[aria-label="Open image editor"]');
-  await page.waitForSelector('.popup-panel-image-editor');
+  await page.clickVisible('.profile-editor-popup-content button[aria-label="Open image editor"]');
+  await page.waitForSelector('.image-editor-wrap');
   await page.waitForSelector('.image-editor-wrap');
 }
 
@@ -91,52 +91,57 @@ async function findEmptyImageSlot(page) {
       const match = background.match(/url\(["']?(.*?)["']?\)/);
       return match?.[1] ?? '';
     };
-    const buttons = Array.from(document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button'))
+    const buttons = Array.from(document.querySelectorAll('.image-editor-wrap .image-carousel__slot'))
       .filter(visible);
-    return buttons.findIndex(button => !backgroundUrl(button));
+    return buttons.findIndex(button => !button.classList.contains('is-filled') && !backgroundUrl(button));
   });
 }
 
 async function removeExistingUploadedMediaSlots(page) {
-  const removedCount = await page.evaluate(() => {
-    const backgroundUrl = element => {
-      const background = window.getComputedStyle(element).backgroundImage || '';
-      const match = background.match(/url\(["']?(.*?)["']?\)/);
-      return match?.[1] ?? '';
-    };
-    let removed = 0;
-    const buttons = Array.from(document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button'));
-    for (const button of buttons) {
-      const url = backgroundUrl(button);
-      if (!url.includes('/media/public?key=profile/')) {
-        continue;
-      }
-      const remove = button.querySelector('.remove-slot');
+  const slotIndexes = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll('.image-editor-wrap .image-carousel__slot'))
+      .map((slot, index) => ({ index, filled: slot.classList.contains('is-filled') }))
+      .filter(slot => slot.index >= 3 && slot.filled)
+      .map(slot => slot.index)
+      .sort((first, second) => second - first);
+  });
+  if (slotIndexes.length === 0) {
+    return 0;
+  }
+  for (const slotIndex of slotIndexes) {
+    const clicked = await page.evaluate(slotIndex => {
+      const slot = document.querySelectorAll('.image-editor-wrap .image-carousel__slot')[slotIndex];
+      const remove = slot?.querySelector('button[aria-label="Remove image"]');
       if (!remove) {
-        continue;
+        return false;
       }
       remove.click();
-      removed += 1;
-    }
-    return removed;
-  });
-  if (removedCount <= 0) {
-    return 0;
+      return true;
+    }, slotIndex);
+    assert(clicked, `Existing uploaded profile image ${slotIndex + 1} should be removable`);
+    await page.waitFor(`uploaded profile image ${slotIndex + 1} removed`, async () => {
+      const snapshot = await readImageSlotSnapshot(page);
+      return snapshot.filledCount < slotIndex + 1;
+    }, 10000);
   }
   await page.waitFor('stale uploaded profile images removed from visible slots', async () => {
     const snapshot = await readImageSlotSnapshot(page);
-    return !snapshot.urls.some(url => url.includes('/media/public?key=profile/'));
+    return snapshot.filledCount === 3;
   }, 15000);
-  return removedCount;
+  return slotIndexes.length;
 }
 
-async function uploadProfileImageToSlot(page, slotIndex, fixture) {
+async function uploadProfileImageToSlot(page, slotIndex, fixture, previousUrl = '') {
   await selectImageSlotForUpload(page, slotIndex);
   page.clearNetworkLog();
-  await page.setFileInputFiles('.popup-panel-image-editor .image-file-input-hidden', fixture.path);
-  await page.waitForNetwork('/api/auth/me/profile-image', { timeoutMs: 45000 });
+  await page.setFileInputFiles(
+    '.image-editor-wrap .image-carousel__slot-input',
+    fixture.path,
+    { index: slotIndex }
+  );
+  await page.waitForNetwork('/api/media/images', { timeoutMs: 45000 });
   await page.waitFor('profile image upload finished', async () => {
-    return page.evaluate(slotIndex => {
+    return page.evaluate(({ slotIndex, previousUrl }) => {
       const visible = element => {
         const rect = element.getBoundingClientRect();
         const style = window.getComputedStyle(element);
@@ -150,11 +155,12 @@ async function uploadProfileImageToSlot(page, slotIndex, fixture) {
         const match = background.match(/url\(["']?(.*?)["']?\)/);
         return match?.[1] ?? '';
       };
-      const rings = Array.from(document.querySelectorAll('.popup-panel-image-editor .slot-upload-ring'))
+      const rings = Array.from(document.querySelectorAll('.image-editor-wrap .image-carousel__upload-ring'))
         .filter(visible);
-      const slot = document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button')[slotIndex];
-      return rings.length === 0 && Boolean(slot && backgroundUrl(slot));
-    }, slotIndex);
+      const slot = document.querySelectorAll('.image-editor-wrap .image-carousel__slot')[slotIndex];
+      const currentUrl = slot ? backgroundUrl(slot) : '';
+      return rings.length === 0 && Boolean(currentUrl) && currentUrl !== previousUrl;
+    }, { slotIndex, previousUrl });
   }, 45000);
   const url = await imageSlotUrl(page, slotIndex);
   assert(url, 'Profile image slot should expose a background URL after upload', { slotIndex });
@@ -168,13 +174,14 @@ async function uploadProfileImageToSlot(page, slotIndex, fixture) {
 
 async function selectImageSlotForUpload(page, slotIndex) {
   const firstClick = await page.evaluate(slotIndex => {
-    const button = document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button')[slotIndex];
+    const button = document.querySelectorAll('.image-editor-wrap .image-carousel__slot-hit')[slotIndex];
     if (!button || button.disabled) {
       return { clicked: false };
     }
-    const background = window.getComputedStyle(button).backgroundImage || '';
+    const slot = button.closest('.image-carousel__slot');
+    const background = slot ? window.getComputedStyle(slot).backgroundImage || '' : '';
     const hadImage = background.includes('url(');
-    const wasSelected = button.classList.contains('slot-selected');
+    const wasSelected = Boolean(slot?.classList.contains('is-selected'));
     button.scrollIntoView({ block: 'center', inline: 'center' });
     button.click();
     return { clicked: true, hadImage, wasSelected };
@@ -183,12 +190,12 @@ async function selectImageSlotForUpload(page, slotIndex) {
   if (firstClick.hadImage && !firstClick.wasSelected) {
     await page.waitFor(`profile image slot ${slotIndex + 1} selected`, async () => {
       return page.evaluate(slotIndex => {
-        const button = document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button')[slotIndex];
-        return Boolean(button?.classList.contains('slot-selected'));
+        const slot = document.querySelectorAll('.image-editor-wrap .image-carousel__slot')[slotIndex];
+        return Boolean(slot?.classList.contains('is-selected'));
       }, slotIndex);
     }, 10000);
     const secondClick = await page.evaluate(slotIndex => {
-      const button = document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button')[slotIndex];
+      const button = document.querySelectorAll('.image-editor-wrap .image-carousel__slot-hit')[slotIndex];
       if (!button || button.disabled) {
         return false;
       }
@@ -203,8 +210,8 @@ async function removeProfileImageSlot(page, slotIndex) {
   const removedUrl = await imageSlotUrl(page, slotIndex);
   assert(removedUrl, 'Profile image slot should contain an image before remove', { slotIndex });
   const clicked = await page.evaluate(slotIndex => {
-    const button = document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button')[slotIndex];
-    const remove = button?.querySelector('.remove-slot');
+    const slot = document.querySelectorAll('.image-editor-wrap .image-carousel__slot')[slotIndex];
+    const remove = slot?.querySelector('button[aria-label="Remove image"]');
     if (!remove) {
       return false;
     }
@@ -226,17 +233,25 @@ async function imageSlotUrl(page, slotIndex) {
       const match = background.match(/url\(["']?(.*?)["']?\)/);
       return match?.[1] ?? '';
     };
-    const slot = document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button')[slotIndex];
+    const slot = document.querySelectorAll('.image-editor-wrap .image-carousel__slot')[slotIndex];
     return slot ? backgroundUrl(slot) : '';
   }, slotIndex);
 }
 
 async function assertImageUrlPresent(page, expectedUrl, message) {
+  const rendered = await page.waitFor('profile image URL rendered after reload', async () => {
+    const snapshot = await readImageSlotSnapshot(page);
+    return snapshot.urls.includes(expectedUrl);
+  }, 15000).then(() => true).catch(() => false);
   const snapshot = await readImageSlotSnapshot(page);
-  assert(snapshot.urls.includes(expectedUrl), message, { expectedUrl, snapshot });
+  assert(rendered && snapshot.urls.includes(expectedUrl), message, { expectedUrl, snapshot });
 }
 
 async function assertImageUrlAbsent(page, expectedUrl, message) {
+  await page.waitFor('profile image carousel settled after reload', async () => {
+    const snapshot = await readImageSlotSnapshot(page);
+    return snapshot.filledCount === snapshot.urls.length;
+  }, 15000);
   const snapshot = await readImageSlotSnapshot(page);
   assert(!snapshot.urls.includes(expectedUrl), message, { expectedUrl, snapshot });
 }
@@ -256,17 +271,18 @@ async function readImageSlotSnapshot(page) {
       const match = background.match(/url\(["']?(.*?)["']?\)/);
       return match?.[1] ?? '';
     };
-    const slots = Array.from(document.querySelectorAll('.popup-panel-image-editor .image-editor-grid button'))
+    const slots = Array.from(document.querySelectorAll('.image-editor-wrap .image-carousel__slot'))
       .filter(visible)
       .map((button, index) => ({
         index,
-        selected: button.classList.contains('slot-selected'),
-        featured: button.classList.contains('slot-featured'),
+        selected: button.classList.contains('is-selected'),
+        featured: index === 0 && button.classList.contains('is-filled'),
+        filled: button.classList.contains('is-filled'),
         url: backgroundUrl(button)
       }));
     return {
       slotCount: slots.length,
-      filledCount: slots.filter(slot => Boolean(slot.url)).length,
+      filledCount: slots.filter(slot => slot.filled).length,
       urls: slots.map(slot => slot.url).filter(Boolean),
       slots
     };
@@ -275,11 +291,11 @@ async function readImageSlotSnapshot(page) {
 
 async function closeAndPersistProfile(page) {
   page.clearNetworkLog();
-  if (await page.isSelectorVisible('.popup-panel-image-editor')) {
-    await page.clickVisible('.popup-panel-image-editor button.popup-back-btn[aria-label="Back"]');
-    await page.waitForSelector('.popup-panel-profile-editor');
+  if (await page.isSelectorVisible('.image-editor-wrap')) {
+    await page.clickVisible('app-profile-editor .ui-popup__close[aria-label="Close"]');
+    await page.waitForSelector('.profile-editor-popup-content');
   }
-  await page.clickVisible('.popup-panel-profile-editor button.popup-close[aria-label="Close"]');
+  await page.clickVisible('app-profile-editor button[aria-label="Save profile"]');
   await page.waitForNetwork('/api/auth/me/profile', { timeoutMs: 30000 });
-  await page.waitForSelectorHidden('.popup-panel-profile-editor', { timeoutMs: 20000 });
+  await page.waitForSelectorHidden('.profile-editor-popup-content', { timeoutMs: 20000 });
 }

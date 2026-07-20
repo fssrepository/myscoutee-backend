@@ -45,8 +45,8 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -164,8 +164,8 @@ class BackendChatMediaE2ETest {
 
         JsonNode readerMessages = getJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + READER_ID);
         JsonNode readerMessage = messageById(readerMessages, messageId);
-        assertThat(ids(readerMessage.path("readBy"), "id")).doesNotContain(READER_ID);
-        assertThat(findChat(READER_ID, CHAT_ID).getUnread()).isEqualTo(1);
+        assertThat(ids(readerMessage.path("readBy"), "id")).contains(READER_ID);
+        assertThat(findChat(READER_ID, CHAT_ID).getUnread()).isZero();
 
         JsonNode edited = postJson("/activities/chats/" + CHAT_ID + "/messages/" + messageId + "/edit?userId=" + SENDER_ID,
                 Map.of("text", "Updated backend-only plan with stronger validation"));
@@ -251,9 +251,9 @@ class BackendChatMediaE2ETest {
 
         JsonNode picked = postJson("/activities/chats/" + SUPPORT_CHAT_ID + "/support-case?userId=" + ADMIN_ID,
                 Map.of("userId", ADMIN_ID, "action", "pick"));
-        assertThat(picked.path("supportCaseStatus").asString()).isEqualTo("picked");
-        assertThat(picked.path("supportCaseAssigneeUserId").asString()).isEqualTo(ADMIN_ID);
-        assertThat(picked.path("supportCaseAssigneeName").asString()).isEqualTo("Chat User 50");
+        assertThat(picked.path("supportCase").path("status").asString()).isEqualTo("picked");
+        assertThat(picked.path("supportCase").path("assignee").path("userId").asString()).isEqualTo(ADMIN_ID);
+        assertThat(picked.path("supportCase").path("assignee").path("name").asString()).isEqualTo("Chat User 50");
 
         JsonNode pickedPage = getJson("/activities/chats/page?userId=" + ADMIN_ID
                 + "&contextFilter=service&adminServiceOnly=true&supportCaseFilter=picked&limit=20");
@@ -261,8 +261,8 @@ class BackendChatMediaE2ETest {
 
         JsonNode solved = postJson("/activities/chats/" + SUPPORT_CHAT_ID + "/support-case?userId=" + ADMIN_ID,
                 Map.of("userId", ADMIN_ID, "action", "solve"));
-        assertThat(solved.path("supportCaseStatus").asString()).isEqualTo("solved");
-        assertThat(solved.path("supportCaseAssigneeUserId").asString()).isEqualTo(ADMIN_ID);
+        assertThat(solved.path("supportCase").path("status").asString()).isEqualTo("solved");
+        assertThat(solved.path("supportCase").path("assignee").path("userId").asString()).isEqualTo(ADMIN_ID);
 
         JsonNode solvedPage = getJson("/activities/chats/page?userId=" + ADMIN_ID
                 + "&contextFilter=service&adminServiceOnly=true&supportCaseFilter=solved&limit=20");
@@ -270,9 +270,9 @@ class BackendChatMediaE2ETest {
 
         JsonNode reopened = postJson("/activities/chats/" + SUPPORT_CHAT_ID + "/support-case?userId=" + ADMIN_ID,
                 Map.of("userId", ADMIN_ID, "action", "reopen"));
-        assertThat(reopened.path("supportCaseStatus").asString()).isEqualTo("pending");
-        assertThat(reopened.path("supportCaseAssigneeUserId").asString()).isBlank();
-        assertThat(findChat(REPORTER_ID, SUPPORT_CHAT_ID).getSupportCaseStatus()).isEqualTo("pending");
+        assertThat(reopened.path("supportCase").path("status").asString()).isEqualTo("pending");
+        assertThat(reopened.path("supportCase").path("assignee").isNull()).isTrue();
+        assertThat(findChat(REPORTER_ID, SUPPORT_CHAT_ID).getSupportCase().getStatus()).isEqualTo("pending");
     }
 
     @Test
@@ -284,8 +284,8 @@ class BackendChatMediaE2ETest {
         assertThat(ids(getJson("/activities/chats?userId=" + OUTSIDER_ID), "id")).doesNotContain(CHAT_ID);
 
         JsonNode adminSupportMessages = getJson("/activities/chats/" + SUPPORT_CHAT_ID + "/messages?userId=" + ADMIN_ID);
-        assertThat(adminSupportMessages).isEmpty();
-        assertThat(findChat(REPORTER_ID, SUPPORT_CHAT_ID).getSupportCaseStatus()).isEqualTo("pending");
+        assertThat(adminSupportMessages.path("items")).isEmpty();
+        assertThat(findChat(REPORTER_ID, SUPPORT_CHAT_ID).getSupportCase().getStatus()).isEqualTo("pending");
     }
 
     @Test
@@ -360,15 +360,15 @@ class BackendChatMediaE2ETest {
         postExpectStatus("/activities/chats/" + SUPPORT_CHAT_ID + "/support-case?userId=" + ADMIN_ID,
                 Map.of("userId", ADMIN_ID, "action", "teleport"),
                 400);
-        ActivityChat supportChat = findChat(REPORTER_ID, SUPPORT_CHAT_ID);
-        assertThat(supportChat.getSupportCaseStatus()).isEqualTo("pending");
-        assertThat(supportChat.getSupportCaseAssigneeUserId()).isBlank();
+        Chat supportChat = findChat(REPORTER_ID, SUPPORT_CHAT_ID);
+        assertThat(supportChat.getSupportCase().getStatus()).isEqualTo("pending");
+        assertThat(supportChat.getSupportCase().getAssignee()).isNull();
     }
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
-        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
+        mongoTemplate.remove(new Query(), Chat.class);
+        mongoTemplate.remove(new Query(), ChatMessage.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), Asset.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
@@ -415,7 +415,7 @@ class BackendChatMediaE2ETest {
     }
 
     private void seedChat() {
-        ActivityChat chat = new ActivityChat();
+        Chat chat = new Chat();
         chat.setMongoId(CHAT_ID + ":" + SENDER_ID);
         chat.setChatId(CHAT_ID);
         chat.setOwnerUserId(SENDER_ID);
@@ -425,13 +425,13 @@ class BackendChatMediaE2ETest {
         chat.setUnread(0);
         chat.setDateIso(BASE_TIME.toString());
         chat.setChannelType("mainEvent");
-        chat.setEventId(EVENT_ID);
+        chat.setOwnerId(EVENT_ID);
         chat.setMessages(new ArrayList<>());
         mongoTemplate.save(chat);
     }
 
     private void seedSupportCaseChat() {
-        ActivityChat chat = new ActivityChat();
+        Chat chat = new Chat();
         chat.setMongoId(SUPPORT_CHAT_ID + ":" + REPORTER_ID);
         chat.setChatId(SUPPORT_CHAT_ID);
         chat.setOwnerUserId(REPORTER_ID);
@@ -440,11 +440,13 @@ class BackendChatMediaE2ETest {
         chat.setMemberIds(List.of(REPORTER_ID));
         chat.setUnread(1);
         chat.setDateIso(BASE_TIME.plus(Duration.ofMinutes(2)).toString());
-        chat.setChannelType("serviceEvent");
+        chat.setChannelType("supportCase");
         chat.setLastMessage("I need moderation support.");
         chat.setLastSenderId(REPORTER_ID);
-        chat.setSupportCaseStatus("pending");
-        chat.setSupportCaseUpdatedAtIso(BASE_TIME.plus(Duration.ofMinutes(2)).toString());
+        Chat.SupportCaseRecord supportCase = new Chat.SupportCaseRecord();
+        supportCase.setStatus("pending");
+        supportCase.setUpdatedAtIso(BASE_TIME.plus(Duration.ofMinutes(2)).toString());
+        chat.setSupportCase(supportCase);
         chat.setMessages(new ArrayList<>());
         mongoTemplate.save(chat);
     }
@@ -573,11 +575,11 @@ class BackendChatMediaE2ETest {
         return attachment;
     }
 
-    private ActivityChat findChat(String ownerUserId, String chatId) {
-        ActivityChat chat = fromReal(() -> mongoTemplate.findOne(
+    private Chat findChat(String ownerUserId, String chatId) {
+        Chat chat = fromReal(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("ownerUserId").is(ownerUserId)
                         .and("id").is(chatId)),
-                ActivityChat.class));
+                Chat.class));
         assertThat(chat).as("chat %s/%s", ownerUserId, chatId).isNotNull();
         return chat;
     }
@@ -697,7 +699,7 @@ class BackendChatMediaE2ETest {
     }
 
     private JsonNode messageById(JsonNode messages, String messageId) {
-        for (JsonNode message : messages) {
+        for (JsonNode message : messages.path("items")) {
             if (messageId.equals(message.path("id").asString())) {
                 return message;
             }
