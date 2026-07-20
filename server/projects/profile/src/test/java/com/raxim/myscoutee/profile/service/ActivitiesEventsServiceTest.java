@@ -82,6 +82,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private PaymentService paymentService;
     @Mock
+    private EventCheckoutBasketService eventCheckoutBasketService;
+    @Mock
     private ScheduledMessageTaskService scheduledMessageTaskService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -128,6 +130,7 @@ class ActivitiesEventsServiceTest {
                 activitiesMembersService,
                 eventParticipationTicketService,
                 paymentService,
+                eventCheckoutBasketService,
                 scheduledMessageTaskService,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -798,7 +801,9 @@ class ActivitiesEventsServiceTest {
                 1,
                 1,
                 false,
+                false,
                 "One-time",
+                false,
                 false,
                 null,
                 false,

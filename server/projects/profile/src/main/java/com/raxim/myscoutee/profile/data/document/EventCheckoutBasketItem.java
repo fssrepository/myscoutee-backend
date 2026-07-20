@@ -40,6 +40,7 @@ public class EventCheckoutBasketItem {
     private String status;
     private String resultState;
     private List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows = new ArrayList<>();
+    private List<String> appliedPromoCodes = new ArrayList<>();
     private String checkoutSessionId;
     private String createdAtIso;
     private String updatedAtIso;
@@ -99,6 +100,11 @@ public class EventCheckoutBasketItem {
     public List<EventCheckoutPricingSummaryRowDto> getPricingSummaryRows() { return pricingSummaryRows; }
     public void setPricingSummaryRows(List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows) {
         this.pricingSummaryRows = pricingSummaryRows == null ? new ArrayList<>() : new ArrayList<>(pricingSummaryRows);
+    }
+
+    public List<String> getAppliedPromoCodes() { return appliedPromoCodes; }
+    public void setAppliedPromoCodes(List<String> appliedPromoCodes) {
+        this.appliedPromoCodes = appliedPromoCodes == null ? new ArrayList<>() : new ArrayList<>(appliedPromoCodes);
     }
 
     public String getCheckoutSessionId() { return checkoutSessionId; }

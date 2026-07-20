@@ -10,7 +10,3 @@ bugs
 ----
 6) graph view - on multiple hop, reposition problem somehow
 7) add promo code button on pricing summary (top right, which affects the pricing right away)
-
-low priority
-------------
-1) new deployment of frontend makes load issue - stuck on android view

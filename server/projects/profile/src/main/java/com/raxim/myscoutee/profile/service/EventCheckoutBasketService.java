@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -61,12 +62,13 @@ public class EventCheckoutBasketService {
             return null;
         }
 
-        List<EventCheckoutBasketItemDto> items = repository
+        List<EventCheckoutBasketItem> persistedItems = repository
                 .findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                         normalizedUserId,
                         normalizedSourceId,
                         ACTIVE_STATUSES,
-                        DISPLAY_RESULT_STATES)
+                        DISPLAY_RESULT_STATES);
+        List<EventCheckoutBasketItemDto> items = persistedItems
                 .stream()
                 .map(this::toItemDto)
                 .filter(Objects::nonNull)
@@ -113,7 +115,11 @@ public class EventCheckoutBasketService {
                 items.stream().map(EventCheckoutBasketItemDto::slotSourceId).filter(StringUtils::hasText).findFirst().orElse(null),
                 items.stream().map(EventCheckoutBasketItemDto::selectedDateKey).filter(StringUtils::hasText).findFirst().orElse(null),
                 items.stream().map(EventCheckoutBasketItemDto::checkoutSessionId).filter(StringUtils::hasText).findFirst().orElse(null),
-                items.stream().map(EventCheckoutBasketItemDto::expiresAtIso).filter(StringUtils::hasText).findFirst().orElse(null));
+                items.stream().map(EventCheckoutBasketItemDto::expiresAtIso).filter(StringUtils::hasText).findFirst().orElse(null),
+                normalizePromoCodes(persistedItems.stream()
+                        .filter(Objects::nonNull)
+                        .flatMap(item -> (item.getAppliedPromoCodes() == null ? List.<String>of() : item.getAppliedPromoCodes()).stream())
+                        .toList()));
     }
 
     public Map<String, Integer> activeSlotReservationCountsByEvent(String sourceId) {
@@ -167,6 +173,7 @@ public class EventCheckoutBasketService {
                 : request.basketItems().stream().filter(Objects::nonNull).toList();
         String nowIso = Instant.now().toString();
         String requestStatus = normalizeStatus(request.checkoutState());
+        List<String> appliedPromoCodes = normalizePromoCodes(request.appliedPromoCodes());
         Query staleQuery = new Query(new Criteria().andOperator(
                 Criteria.where("userId").is(normalizedUserId),
                 Criteria.where("sourceId").is(normalizedSourceId),
@@ -209,6 +216,7 @@ public class EventCheckoutBasketService {
                     .set("status", status)
                     .set("resultState", resultState)
                     .set("pricingSummaryRows", item.pricingSummaryRows() == null ? List.of() : List.copyOf(item.pricingSummaryRows()))
+                    .set("appliedPromoCodes", appliedPromoCodes)
                     .set("checkoutSessionId", normalizeId(item.checkoutSessionId()))
                     .set("updatedAtIso", nowIso)
                     .set("expiresAtIso", expiresAtIso)
@@ -403,6 +411,18 @@ public class EventCheckoutBasketService {
         return "deleted".equals(normalized) || "succeeded".equals(normalized) || "failed".equals(normalized)
                 ? normalized
                 : "pending";
+    }
+
+    private List<String> normalizePromoCodes(List<String> promoCodes) {
+        if (promoCodes == null || promoCodes.isEmpty()) {
+            return List.of();
+        }
+        return promoCodes.stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .map(value -> value.toUpperCase(Locale.ROOT))
+                .distinct()
+                .toList();
     }
 
     private String mergeStatus(String existingStatus, String nextStatus) {

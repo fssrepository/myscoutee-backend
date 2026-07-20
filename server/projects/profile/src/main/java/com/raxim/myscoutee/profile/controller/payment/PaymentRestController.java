@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPromoCodeValidationRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPromoCodeValidationResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.profile.service.ActivitiesEventsService;
 import com.raxim.myscoutee.profile.service.EventCheckoutBasketService;
+import com.raxim.myscoutee.profile.service.EventCheckoutPricingService;
 import com.raxim.myscoutee.profile.service.PaymentService;
 
 @RestController
@@ -22,14 +25,17 @@ public class PaymentRestController {
 
     private final PaymentService paymentService;
     private final EventCheckoutBasketService basketService;
+    private final EventCheckoutPricingService pricingService;
     private final ActivitiesEventsService activitiesEventsService;
 
     public PaymentRestController(
             PaymentService paymentService,
             EventCheckoutBasketService basketService,
+            EventCheckoutPricingService pricingService,
             ActivitiesEventsService activitiesEventsService) {
         this.paymentService = paymentService;
         this.basketService = basketService;
+        this.pricingService = pricingService;
         this.activitiesEventsService = activitiesEventsService;
     }
 
@@ -48,6 +54,12 @@ public class PaymentRestController {
     @PostMapping("/checkout/state")
     public EventCheckoutBasketDto updateBasketState(@RequestBody EventCheckoutStateChangeRequestDto request) {
         return basketService.updateBasketState(request);
+    }
+
+    @PostMapping("/checkout/promo-code/validate")
+    public EventCheckoutPromoCodeValidationResultDto validatePromoCode(
+            @RequestBody EventCheckoutPromoCodeValidationRequestDto request) {
+        return pricingService.validatePromoCode(request);
     }
 
     @PostMapping("/checkout")

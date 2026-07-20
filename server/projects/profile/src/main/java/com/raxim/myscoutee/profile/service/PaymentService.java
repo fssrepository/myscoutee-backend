@@ -39,6 +39,7 @@ public class PaymentService {
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
     private final EventCheckoutBasketService eventCheckoutBasketService;
+    private final EventCheckoutPricingService eventCheckoutPricingService;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
@@ -46,22 +47,25 @@ public class PaymentService {
     public PaymentService(
             List<PaymentProcessor> processorList,
             PaymentsRepository paymentsRepository,
-            EventCheckoutBasketService eventCheckoutBasketService) {
+            EventCheckoutBasketService eventCheckoutBasketService,
+            EventCheckoutPricingService eventCheckoutPricingService) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
+        this.eventCheckoutPricingService = eventCheckoutPricingService;
     }
 
     public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request, String provider) {
+        EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
         String normalizedProvider = normalizeProvider(provider);
         EventCheckoutSessionDto sessionDto = !enablePay
-                ? createDummySession(request, null)
-                : resolveProcessor(normalizedProvider).checkout(request);
+                ? createDummySession(authoritativeRequest, null)
+                : resolveProcessor(normalizedProvider).checkout(authoritativeRequest);
 
         Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
-        ensurePaymentRequestCompatible(payment, request);
-        hydratePaymentRequest(payment, request, normalizedProvider);
+        ensurePaymentRequestCompatible(payment, authoritativeRequest);
+        hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
         payment.setCheckoutSessionId(sessionDto.id());
         if (!enablePay) {
             payment.setGatewaySessionId(sessionDto.id());
@@ -71,19 +75,20 @@ public class PaymentService {
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
         paymentsRepository.save(payment);
-        eventCheckoutBasketService.saveBasket(withCheckoutState(request, "confirmed", sessionDto.id()));
+        eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "confirmed", sessionDto.id()));
         return sessionDto;
     }
 
     public EventCheckoutSessionDto pay(EventCheckoutRequestDto request, String paymentSessionId, String provider) {
         String normalizedProvider = normalizeProvider(provider);
         Payment payment = findByAnySessionId(paymentSessionId).orElseGet(Payment::new);
-        ensurePaymentRequestCompatible(payment, request);
+        EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
+        ensurePaymentRequestCompatible(payment, authoritativeRequest);
         EventCheckoutSessionDto sessionDto = !enablePay
-                ? createDummySession(request, paymentSessionId)
-                : resolveProcessor(normalizedProvider).pay(request, paymentSessionId);
+                ? createDummySession(authoritativeRequest, paymentSessionId)
+                : resolveProcessor(normalizedProvider).pay(authoritativeRequest, paymentSessionId);
 
-        hydratePaymentRequest(payment, request, normalizedProvider);
+        hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
         payment.setCheckoutSessionId(hasText(payment.getCheckoutSessionId()) ? payment.getCheckoutSessionId() : normalizeId(paymentSessionId));
         payment.setGatewaySessionId(normalizeId(sessionDto.id()));
         payment.setStatus(safeText(sessionDto.status()));
@@ -91,19 +96,20 @@ public class PaymentService {
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
         paymentsRepository.save(payment);
-        eventCheckoutBasketService.saveBasket(withCheckoutState(request, "pay", payment.getCheckoutSessionId()));
+        eventCheckoutBasketService.saveBasket(withCheckoutState(authoritativeRequest, "pay", payment.getCheckoutSessionId()));
         return sessionDto;
     }
 
     public EventCheckoutSessionDto payCheckout(EventCheckoutRequestDto request, String provider) {
+        EventCheckoutRequestDto authoritativeRequest = eventCheckoutPricingService.reprice(request);
         String normalizedProvider = normalizeProvider(provider);
         EventCheckoutSessionDto sessionDto = !enablePay
-                ? createDummySession(request, null)
-                : resolveProcessor(normalizedProvider).pay(request, null);
+                ? createDummySession(authoritativeRequest, null)
+                : resolveProcessor(normalizedProvider).pay(authoritativeRequest, null);
 
         Payment payment = findByAnySessionId(sessionDto.id()).orElseGet(Payment::new);
-        ensurePaymentRequestCompatible(payment, request);
-        hydratePaymentRequest(payment, request, normalizedProvider);
+        ensurePaymentRequestCompatible(payment, authoritativeRequest);
+        hydratePaymentRequest(payment, authoritativeRequest, normalizedProvider);
         String sessionId = normalizeId(sessionDto.id());
         payment.setCheckoutSessionId(hasText(payment.getCheckoutSessionId()) ? payment.getCheckoutSessionId() : sessionId);
         payment.setGatewaySessionId(sessionId);
@@ -112,6 +118,10 @@ public class PaymentService {
         payment.setRefundStatus(hasText(payment.getRefundStatus()) ? payment.getRefundStatus() : REFUND_STATUS_NONE);
         payment.setCreatedDate(hasText(payment.getCreatedDate()) ? payment.getCreatedDate() : nowIso());
         paymentsRepository.save(payment);
+        eventCheckoutBasketService.saveBasket(withCheckoutState(
+                authoritativeRequest,
+                "pay",
+                payment.getCheckoutSessionId()));
         return new EventCheckoutSessionDto(
                 payment.getCheckoutSessionId(),
                 sessionDto.provider(),
@@ -300,6 +310,7 @@ public class PaymentService {
         payment.setBasketItems(request == null || request.basketItems() == null ? List.of() : request.basketItems());
         payment.setPricingSummaryRows(request == null || request.pricingSummaryRows() == null ? List.of() : request.pricingSummaryRows());
         payment.setLineItems(request == null || request.lineItems() == null ? List.of() : request.lineItems());
+        payment.setAppliedPromoCodes(request == null ? List.of() : normalizePromoCodes(request.appliedPromoCodes()));
     }
 
     private Optional<Payment> findByAnySessionId(String sessionId) {
@@ -356,7 +367,8 @@ public class PaymentService {
                 request.lineItems(),
                 request.totalAmount(),
                 request.currency(),
-                request.pendingReason());
+                request.pendingReason(),
+                normalizePromoCodes(request.appliedPromoCodes()));
     }
 
     private void ensurePaymentRequestCompatible(Payment payment, EventCheckoutRequestDto request) {
@@ -368,7 +380,10 @@ public class PaymentService {
         ensureSameValue("currency", payment.getCurrency(), request == null ? null : safeCurrency(request.currency()));
         double requestedAmount = request == null ? 0D : safeAmount(request.totalAmount());
         double existingAmount = safeAmount(payment.getAmount());
-        if (existingAmount > 0D && requestedAmount > 0D && roundMoney(existingAmount) != roundMoney(requestedAmount)) {
+        boolean persistedOrSessionBound = hasText(payment.getId())
+                || hasText(payment.getCheckoutSessionId())
+                || hasText(payment.getGatewaySessionId());
+        if (persistedOrSessionBound && roundMoney(existingAmount) != roundMoney(requestedAmount)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Payment session amount cannot be changed.");
         }
     }
@@ -499,6 +514,18 @@ public class PaymentService {
         return values.stream()
                 .map(this::normalizeId)
                 .filter(this::hasText)
+                .distinct()
+                .toList();
+    }
+
+    private List<String> normalizePromoCodes(List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return List.of();
+        }
+        return values.stream()
+                .map(this::safeText)
+                .filter(this::hasText)
+                .map(value -> value.toUpperCase(java.util.Locale.ROOT))
                 .distinct()
                 .toList();
     }

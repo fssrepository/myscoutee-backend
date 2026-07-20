@@ -9,6 +9,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntr
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.LocationCoordinatesDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
@@ -62,7 +63,51 @@ public final class EventsDtos {
             Boolean removeMembershipOnly,
             String checkoutResultState,
             String checkoutSessionId,
-            Object counterDelta) {
+            Object counterDelta,
+            List<String> appliedPromoCodes) {
+        public EventActionRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean bookingConfirmed,
+                String pendingReason,
+                String checkoutState,
+                List<EventCheckoutBasketItemDto> basketItems,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency,
+                Boolean removeMembershipOnly,
+                String checkoutResultState,
+                String checkoutSessionId,
+                Object counterDelta) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    bookingConfirmed,
+                    pendingReason,
+                    checkoutState,
+                    basketItems,
+                    pricingSummaryRows,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    removeMembershipOnly,
+                    checkoutResultState,
+                    checkoutSessionId,
+                    counterDelta,
+                    null);
+        }
+
         public EventActionRequestDto(
                 String userId,
                 String sourceId,
@@ -95,6 +140,80 @@ public final class EventsDtos {
                     lineItems,
                     totalAmount,
                     currency,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
+
+        public EventActionRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean bookingConfirmed,
+                String pendingReason,
+                String checkoutState,
+                List<EventCheckoutBasketItemDto> basketItems,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency,
+                List<String> appliedPromoCodes) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    bookingConfirmed,
+                    pendingReason,
+                    checkoutState,
+                    basketItems,
+                    pricingSummaryRows,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    null,
+                    null,
+                    null,
+                    null,
+                    appliedPromoCodes);
+        }
+
+        public EventActionRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                String paymentSessionId,
+                Boolean bookingConfirmed,
+                String pendingReason) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    paymentSessionId,
+                    bookingConfirmed,
+                    pendingReason,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -531,7 +650,60 @@ public final class EventsDtos {
             List<EventCheckoutLineItemDto> lineItems,
             Double totalAmount,
             String currency,
-            String pendingReason) {
+            String pendingReason,
+            List<String> appliedPromoCodes) {
+        public EventCheckoutRequestDto(
+                String userId,
+                String sourceId,
+                String slotSourceId,
+                List<String> optionalSubEventIds,
+                List<EventCheckoutAssetSelectionDto> assetSelections,
+                List<String> acceptedPolicyIds,
+                List<EventCheckoutBasketItemDto> basketItems,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                String checkoutState,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency,
+                String pendingReason) {
+            this(
+                    userId,
+                    sourceId,
+                    slotSourceId,
+                    optionalSubEventIds,
+                    assetSelections,
+                    acceptedPolicyIds,
+                    basketItems,
+                    pricingSummaryRows,
+                    checkoutState,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    pendingReason,
+                    null);
+        }
+    }
+
+    public record EventCheckoutPromoCodeValidationRequestDto(
+            String sourceId,
+            String code) {
+    }
+
+    public record EventCheckoutPromoCodeValidationResultDto(
+            boolean valid,
+            String code,
+            PricingPromoCodeDto promoCode,
+            String effect,
+            String message,
+            String messageKey) {
+        public EventCheckoutPromoCodeValidationResultDto(
+                boolean valid,
+                String code,
+                PricingPromoCodeDto promoCode,
+                String effect,
+                String message) {
+            this(valid, code, promoCode, effect, message, null);
+        }
     }
 
     public record EventCheckoutStateChangeRequestDto(
@@ -625,7 +797,36 @@ public final class EventsDtos {
             String slotSourceId,
             String selectedDateKey,
             String checkoutSessionId,
-            String expiresAtIso) {
+            String expiresAtIso,
+            List<String> appliedPromoCodes) {
+        public EventCheckoutBasketDto(
+                String userId,
+                String sourceId,
+                String status,
+                List<EventCheckoutBasketItemDto> items,
+                List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+                List<EventCheckoutLineItemDto> lineItems,
+                Double totalAmount,
+                String currency,
+                String slotSourceId,
+                String selectedDateKey,
+                String checkoutSessionId,
+                String expiresAtIso) {
+            this(
+                    userId,
+                    sourceId,
+                    status,
+                    items,
+                    pricingSummaryRows,
+                    lineItems,
+                    totalAmount,
+                    currency,
+                    slotSourceId,
+                    selectedDateKey,
+                    checkoutSessionId,
+                    expiresAtIso,
+                    null);
+        }
     }
 
     public record EventCheckoutSessionDto(

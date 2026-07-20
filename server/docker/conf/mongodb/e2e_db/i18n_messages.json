@@ -11616,6 +11616,144 @@
     "value": "Ready to continue"
   },
   {
+    "_id": "i18n-message-en-event-checkout-promo-action-aria",
+    "key": "event.checkout.promo.action.aria",
+    "lang": "en",
+    "value": "Manage promo codes"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-action-counter-aria",
+    "key": "event.checkout.promo.action.counter.aria",
+    "lang": "en",
+    "value": "Applied promo codes"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-setup-title",
+    "key": "event.checkout.promo.setup.title",
+    "lang": "en",
+    "value": "Promo Codes"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-setup-subtitle",
+    "key": "event.checkout.promo.setup.subtitle",
+    "lang": "en",
+    "value": "Applied codes remain in this checkout until payment is completed."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-setup-aria",
+    "key": "event.checkout.promo.setup.aria",
+    "lang": "en",
+    "value": "Promo code setup"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-setup-close-aria",
+    "key": "event.checkout.promo.setup.close.aria",
+    "lang": "en",
+    "value": "Close promo code setup"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-add-title",
+    "key": "event.checkout.promo.add.title",
+    "lang": "en",
+    "value": "Add Promo Code"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-add-subtitle",
+    "key": "event.checkout.promo.add.subtitle",
+    "lang": "en",
+    "value": "Enter a code received from the event admin."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-add-close-aria",
+    "key": "event.checkout.promo.add.close.aria",
+    "lang": "en",
+    "value": "Close promo code entry"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-add-verify-aria",
+    "key": "event.checkout.promo.add.verify.aria",
+    "lang": "en",
+    "value": "Verify promo code"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-add-loading",
+    "key": "event.checkout.promo.add.loading",
+    "lang": "en",
+    "value": "Loading promo code entry"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-validating",
+    "key": "event.checkout.promo.validating",
+    "lang": "en",
+    "value": "Verifying promo code"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-verify-failed",
+    "key": "event.checkout.promo.verify.failed",
+    "lang": "en",
+    "value": "The promo code could not be verified. Try again."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-input-label",
+    "key": "event.checkout.promo.input.label",
+    "lang": "en",
+    "value": "Promo Code"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-input-placeholder",
+    "key": "event.checkout.promo.input.placeholder",
+    "lang": "en",
+    "value": "Enter your code"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-input-hint",
+    "key": "event.checkout.promo.input.hint",
+    "lang": "en",
+    "value": "A code is only used after payment completes successfully."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-add-aria",
+    "key": "event.checkout.promo.add.aria",
+    "lang": "en",
+    "value": "Verify promo code"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-applied",
+    "key": "event.checkout.promo.applied",
+    "lang": "en",
+    "value": "Applied"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-applied-description",
+    "key": "event.checkout.promo.applied.description",
+    "lang": "en",
+    "value": "This code is included in the current price summary."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-empty",
+    "key": "event.checkout.promo.empty",
+    "lang": "en",
+    "value": "No promo code has been applied yet."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-required",
+    "key": "event.checkout.promo.required",
+    "lang": "en",
+    "value": "Enter a promo code."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-duplicate",
+    "key": "event.checkout.promo.duplicate",
+    "lang": "en",
+    "value": "This promo code is already applied."
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-promo-invalid",
+    "key": "event.checkout.promo.invalid",
+    "lang": "en",
+    "value": "This promo code is not valid for this event."
+  },
+  {
     "_id": "i18n-message-en-event-editor-create",
     "key": "event.editor.create",
     "lang": "en",
@@ -24748,6 +24886,144 @@
     "key": "event.checkout.can.continue",
     "lang": "hu",
     "value": "Folytatható"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-action-aria",
+    "key": "event.checkout.promo.action.aria",
+    "lang": "hu",
+    "value": "Promóciós kódok kezelése"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-action-counter-aria",
+    "key": "event.checkout.promo.action.counter.aria",
+    "lang": "hu",
+    "value": "Alkalmazott promóciós kódok"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-setup-title",
+    "key": "event.checkout.promo.setup.title",
+    "lang": "hu",
+    "value": "Promóciós kódok"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-setup-subtitle",
+    "key": "event.checkout.promo.setup.subtitle",
+    "lang": "hu",
+    "value": "Az alkalmazott kódok a fizetés befejezéséig ehhez a pénztárhoz tartoznak."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-setup-aria",
+    "key": "event.checkout.promo.setup.aria",
+    "lang": "hu",
+    "value": "Promóciós kódok beállítása"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-setup-close-aria",
+    "key": "event.checkout.promo.setup.close.aria",
+    "lang": "hu",
+    "value": "Promóciós kódok bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-add-title",
+    "key": "event.checkout.promo.add.title",
+    "lang": "hu",
+    "value": "Promóciós kód hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-add-subtitle",
+    "key": "event.checkout.promo.add.subtitle",
+    "lang": "hu",
+    "value": "Add meg az esemény adminisztrátorától kapott kódot."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-add-close-aria",
+    "key": "event.checkout.promo.add.close.aria",
+    "lang": "hu",
+    "value": "Promóciós kód megadásának bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-add-verify-aria",
+    "key": "event.checkout.promo.add.verify.aria",
+    "lang": "hu",
+    "value": "Promóciós kód ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-add-loading",
+    "key": "event.checkout.promo.add.loading",
+    "lang": "hu",
+    "value": "Promóciós kód mező betöltése"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-validating",
+    "key": "event.checkout.promo.validating",
+    "lang": "hu",
+    "value": "Promóciós kód ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-verify-failed",
+    "key": "event.checkout.promo.verify.failed",
+    "lang": "hu",
+    "value": "A promóciós kódot nem sikerült ellenőrizni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-input-label",
+    "key": "event.checkout.promo.input.label",
+    "lang": "hu",
+    "value": "Promóciós kód"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-input-placeholder",
+    "key": "event.checkout.promo.input.placeholder",
+    "lang": "hu",
+    "value": "Írd be a kódot"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-input-hint",
+    "key": "event.checkout.promo.input.hint",
+    "lang": "hu",
+    "value": "A kód csak a fizetés sikeres befejezésekor kerül felhasználásra."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-add-aria",
+    "key": "event.checkout.promo.add.aria",
+    "lang": "hu",
+    "value": "Promóciós kód ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-applied",
+    "key": "event.checkout.promo.applied",
+    "lang": "hu",
+    "value": "Alkalmazva"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-applied-description",
+    "key": "event.checkout.promo.applied.description",
+    "lang": "hu",
+    "value": "A kód szerepel az aktuális árösszegzésben."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-empty",
+    "key": "event.checkout.promo.empty",
+    "lang": "hu",
+    "value": "Még nincs promóciós kód alkalmazva."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-required",
+    "key": "event.checkout.promo.required",
+    "lang": "hu",
+    "value": "Adj meg egy promóciós kódot."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-duplicate",
+    "key": "event.checkout.promo.duplicate",
+    "lang": "hu",
+    "value": "Ez a promóciós kód már alkalmazva van."
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-promo-invalid",
+    "key": "event.checkout.promo.invalid",
+    "lang": "hu",
+    "value": "Ez a promóciós kód nem érvényes ehhez az eseményhez."
   },
   {
     "_id": "i18n-message-hu-event-editor-create",
