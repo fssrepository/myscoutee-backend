@@ -5970,6 +5970,24 @@
     "value": "New profiles"
   },
   {
+    "_id": "i18n-message-en-stats-event-profile-active",
+    "key": "stats.event.profile.active",
+    "lang": "en",
+    "value": "Active profiles"
+  },
+  {
+    "_id": "i18n-message-en-stats-event-profile-onboarding",
+    "key": "stats.event.profile.onboarding",
+    "lang": "en",
+    "value": "Onboarding profiles"
+  },
+  {
+    "_id": "i18n-message-en-stats-event-profile-inactive",
+    "key": "stats.event.profile.inactive",
+    "lang": "en",
+    "value": "Inactive profiles"
+  },
+  {
     "_id": "i18n-message-en-stats-event-rates-synced",
     "key": "stats.event.rates.synced",
     "lang": "en",
@@ -6660,6 +6678,12 @@
     "value": "Active events"
   },
   {
+    "_id": "i18n-message-en-stats-kpi-active-profiles",
+    "key": "stats.kpi.active.profiles",
+    "lang": "en",
+    "value": "Active profiles"
+  },
+  {
     "_id": "i18n-message-en-stats-kpi-active-users",
     "key": "stats.kpi.active.users",
     "lang": "en",
@@ -6684,6 +6708,12 @@
     "value": "Matching"
   },
   {
+    "_id": "i18n-message-en-stats-kpi-inactive-profiles",
+    "key": "stats.kpi.inactive.profiles",
+    "lang": "en",
+    "value": "Inactive profiles"
+  },
+  {
     "_id": "i18n-message-en-stats-kpi-moderation",
     "key": "stats.kpi.moderation",
     "lang": "en",
@@ -6694,6 +6724,12 @@
     "key": "stats.kpi.moderation.pressure",
     "lang": "en",
     "value": "Moderation pressure"
+  },
+  {
+    "_id": "i18n-message-en-stats-kpi-onboarding-users",
+    "key": "stats.kpi.onboarding.users",
+    "lang": "en",
+    "value": "Onboarding users"
   },
   {
     "_id": "i18n-message-en-stats-kpi-profiles",
@@ -19266,6 +19302,24 @@
     "value": "Új profilok"
   },
   {
+    "_id": "i18n-message-hu-stats-event-profile-active",
+    "key": "stats.event.profile.active",
+    "lang": "hu",
+    "value": "Aktív profilok"
+  },
+  {
+    "_id": "i18n-message-hu-stats-event-profile-onboarding",
+    "key": "stats.event.profile.onboarding",
+    "lang": "hu",
+    "value": "Regisztráció alatt"
+  },
+  {
+    "_id": "i18n-message-hu-stats-event-profile-inactive",
+    "key": "stats.event.profile.inactive",
+    "lang": "hu",
+    "value": "Inaktív profilok"
+  },
+  {
     "_id": "i18n-message-hu-stats-event-rates-synced",
     "key": "stats.event.rates.synced",
     "lang": "hu",
@@ -19956,6 +20010,12 @@
     "value": "Aktív események"
   },
   {
+    "_id": "i18n-message-hu-stats-kpi-active-profiles",
+    "key": "stats.kpi.active.profiles",
+    "lang": "hu",
+    "value": "Aktív profilok"
+  },
+  {
     "_id": "i18n-message-hu-stats-kpi-active-users",
     "key": "stats.kpi.active.users",
     "lang": "hu",
@@ -19980,6 +20040,12 @@
     "value": "Párosítás"
   },
   {
+    "_id": "i18n-message-hu-stats-kpi-inactive-profiles",
+    "key": "stats.kpi.inactive.profiles",
+    "lang": "hu",
+    "value": "Inaktív profilok"
+  },
+  {
     "_id": "i18n-message-hu-stats-kpi-moderation",
     "key": "stats.kpi.moderation",
     "lang": "hu",
@@ -19990,6 +20056,12 @@
     "key": "stats.kpi.moderation.pressure",
     "lang": "hu",
     "value": "Moderációs nyomás"
+  },
+  {
+    "_id": "i18n-message-hu-stats-kpi-onboarding-users",
+    "key": "stats.kpi.onboarding.users",
+    "lang": "hu",
+    "value": "Regisztráló felhasználók"
   },
   {
     "_id": "i18n-message-hu-stats-kpi-profiles",
