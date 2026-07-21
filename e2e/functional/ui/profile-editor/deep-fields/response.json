@@ -1,7 +1,7 @@
 {
   "urlPath": "/game",
   "selectors": [
-    ".popup-panel-profile-editor",
+    ".profile-editor-popup-content",
     ".profile-editor-wrap"
   ],
   "network": [

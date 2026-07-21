@@ -16,6 +16,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDeviceUpsert
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageMutationRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPageResponseDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMembersPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
@@ -72,6 +73,16 @@ public class ChatsController {
             @RequestParam(value = "cursor", required = false) String cursor,
             @RequestParam(value = "limit", required = false) Integer limit) {
         return chatService.queryMessagesPage(chatId, userId, limit, cursor);
+    }
+
+    @GetMapping("/{chatId}/members/page")
+    public ChatMembersPageResponseDto queryMembersPage(
+            @PathVariable("chatId") String chatId,
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            @RequestParam(value = "pendingOnly", required = false) Boolean pendingOnly) {
+        return chatService.queryMembersPage(chatId, userId, limit, cursor, pendingOnly);
     }
 
     @PostMapping("/{chatId}/messages")

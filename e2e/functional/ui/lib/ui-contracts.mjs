@@ -64,7 +64,7 @@ export async function openNavigatorMenu(page) {
       return;
     }
     await waitForNavigatorButtonReady(page);
-    await page.mouseClickVisible('button.user-selector-btn-global:not(.is-covered)');
+    await page.clickVisible('.navigator-trigger-rail:not(.is-covered) .user-selector-menu button[aria-label="Open user menu"]');
     const opened = await waitForNavigatorMenuOrBlockingOverlay(page, 5000);
     if (opened && await page.isSelectorVisible('.user-menu-panel.open')) {
       return;
@@ -91,7 +91,7 @@ async function waitForNavigatorButtonReady(page) {
         && style.display !== 'none'
         && style.pointerEvents !== 'none';
     };
-    return Array.from(document.querySelectorAll('button.user-selector-btn-global'))
+    return Array.from(document.querySelectorAll('.navigator-trigger-rail:not(.is-covered) .user-selector-menu button[aria-label="Open user menu"]'))
       .some(button => visible(button) && !button.disabled && !button.classList.contains('is-covered'));
   }));
 }
@@ -110,7 +110,7 @@ async function waitForNavigatorMenuOrBlockingOverlay(page, timeoutMs = 5000) {
         && style.display !== 'none';
     };
     return visible(document.querySelector('.user-menu-panel.open'))
-      || visible(document.querySelector('.explanation-popup'))
+      || visible(document.querySelector('app-explanation-popup .ui-popup__panel'))
       || visible(document.querySelector('.app-install-prompt'))
       || visible(document.querySelector('app-navigator-privacy-popup'));
   }), timeoutMs).then(() => true).catch(() => false);
@@ -147,13 +147,13 @@ async function navigatorMenuSnapshot(page) {
     return {
       url: window.location.href,
       bodyClasses: document.body.className,
-      buttons: Array.from(document.querySelectorAll('button.user-selector-btn-global')).map(visible),
+      buttons: Array.from(document.querySelectorAll('.user-selector-menu button')).map(visible),
       menuPanel: visible(document.querySelector('.user-menu-panel')),
       openMenuPanel: visible(document.querySelector('.user-menu-panel.open')),
-      explanationPopup: visible(document.querySelector('.explanation-popup')),
+      explanationPopup: visible(document.querySelector('app-explanation-popup .ui-popup__panel')),
       installPrompt: visible(document.querySelector('.app-install-prompt')),
       privacyPopup: visible(document.querySelector('app-navigator-privacy-popup')),
-      assetPopup: visible(document.querySelector('.popup-panel-assets'))
+      assetPopup: visible(document.querySelector('.asset-popup-content'))
     };
   });
 }
@@ -225,13 +225,12 @@ async function backendUiState(page, rootSelector = 'body', options = {}) {
       '.smart-list__loading',
       '.is-pane-loading',
       '[aria-busy="true"]',
-      '.entry-consent-loading',
+      '.document-viewer-status-loading',
       '.demo-user-progress',
-      '.explanation-popup__loading',
+      '.explanation-popup__loading-body',
       '.event-editor-save-btn-shell.is-loading',
       '.event-editor-save-btn-ring-progress.is-loading',
-      '.confirmation-dialog-confirm-shell.is-loading',
-      '.confirmation-dialog-confirm-ring-progress.is-loading',
+      '.dialog-actions-menu .app-menu__button-row-item--progress-loading',
       '.event-checkout-confirm-shell.is-loading',
       '.event-checkout-confirm-ring-progress.is-loading',
       '.profile-onboarding-save-shell.is-loading',
@@ -440,7 +439,7 @@ export async function smartListSnapshot(page, rootSelector) {
           attr: element.getAttribute('data-group-label') || ''
         })),
       stickyLabel: (root.querySelector('.smart-list__sticky, .smart-list__sticky-label')?.textContent ?? '').trim(),
-      isCalendar: Boolean(root.querySelector('.smart-list--calendar')),
+      isCalendar: Boolean(root.querySelector('.smart-list--week, .smart-list--month')),
       scrollTop: list?.scrollTop ?? 0,
       scrollHeight: list?.scrollHeight ?? 0,
       clientHeight: list?.clientHeight ?? 0,
@@ -563,17 +562,17 @@ export async function performDemoLogin(page, options = {}) {
   await page.primeOrigin(options.storage ?? {});
   await page.navigate(options.entryRoute ?? '/', { loadTimeoutMs: timeoutMs });
   await page.recordStep('suite-login-entry');
-  await page.waitForSelector('app-entry-shell', { timeoutMs });
+  await page.waitForSelector('app-entry-page', { timeoutMs });
   await acceptEntryPrivacyIfPresent(page, timeoutMs);
   await page.recordStep('suite-login-privacy-accepted');
   await page.click('.entry-cta-primary', { timeoutMs });
   await waitForLoginDialogOrDemoSelector(page, timeoutMs);
-  if (await page.isSelectorVisible('.confirmation-dialog')) {
+  if (await page.isSelectorVisible('.dialog')) {
     await page.recordStep('suite-login-location-dialog');
     await page.grantGeolocationPermission();
-    await page.click('.confirmation-dialog-confirm-btn', { timeoutMs });
+    await page.click('.dialog-actions-menu .app-menu__button-row-item:last-of-type', { timeoutMs });
   }
-  await page.waitForSelector('.demo-login-overlay', { timeoutMs });
+  await page.waitForSelector('.demo-user-stage', { timeoutMs });
   await page.waitForSelector('.demo-user-item', { timeoutMs });
   await page.recordStep('suite-login-demo-selector');
   await clickDemoUser(page, options.userId ?? '', timeoutMs);
@@ -591,20 +590,22 @@ export async function settleFirstRunOverlays(page, options = {}) {
 }
 
 export async function acceptEntryPrivacyIfPresent(page, timeoutMs = 15000) {
-  if (!(await page.isSelectorVisible('.entry-consent-overlay'))) {
-    await page.waitForSelector('.entry-consent-overlay', {
+  const popupSelector = 'app-entry-page app-document-viewer .ui-popup__panel';
+  const acceptSelector = 'app-entry-page app-document-viewer button[aria-label="Accept and continue"]';
+  if (!(await page.isSelectorVisible(popupSelector))) {
+    await page.waitForSelector(popupSelector, {
       timeoutMs: Math.min(timeoutMs, 5000)
     }).catch(() => undefined);
   }
-  if (!(await page.isSelectorVisible('.entry-consent-overlay'))) {
+  if (!(await page.isSelectorVisible(popupSelector))) {
     return false;
   }
-  await page.waitFor('entry privacy accept enabled', async () => page.evaluate(() => {
-    const button = document.querySelector('.entry-consent-btn-primary');
+  await page.waitFor('entry privacy accept enabled', async () => page.evaluate(acceptSelector => {
+    const button = document.querySelector(acceptSelector);
     return Boolean(button && !button.disabled);
-  }), timeoutMs);
-  await page.click('.entry-consent-btn-primary', { timeoutMs });
-  await page.waitForSelectorHidden('.entry-consent-overlay', { timeoutMs });
+  }, acceptSelector), timeoutMs);
+  await page.click(acceptSelector, { timeoutMs });
+  await page.waitForSelectorHidden(popupSelector, { timeoutMs });
   await page.recordStep('entry-privacy-accepted');
   return true;
 }
@@ -624,10 +625,11 @@ export async function approveNavigatorPrivacyIfPresent(page, timeoutMs = 15000) 
 }
 
 export async function closeExplanationPopupIfPresent(page, timeoutMs = 15000) {
-  if (!(await page.isSelectorVisible('.explanation-popup'))) {
+  const popupSelector = 'app-explanation-popup .ui-popup__panel';
+  if (!(await page.isSelectorVisible(popupSelector))) {
     return false;
   }
-  const clicked = await page.evaluate(() => {
+  const clicked = await page.evaluate(popupSelector => {
     const normalize = value => `${value ?? ''}`
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
@@ -641,30 +643,32 @@ export async function closeExplanationPopupIfPresent(page, timeoutMs = 15000) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const buttons = Array.from(document.querySelectorAll('.explanation-popup button'))
+    const popup = document.querySelector(popupSelector);
+    const buttons = Array.from(popup?.querySelectorAll('button') ?? [])
       .filter(button => visible(button) && !button.disabled);
     const action = buttons.find(button => {
       const text = normalize(button.textContent);
       return text.includes('got it') || text.includes('ertem');
-    }) ?? document.querySelector('.explanation-popup__header-action');
+    }) ?? popup?.querySelector('button[aria-label="got.it"], button[aria-label="Got it"]');
     if (!action || action.disabled) {
       return false;
     }
     action.scrollIntoView({ block: 'center', inline: 'center' });
     action.click();
     return true;
-  });
+  }, popupSelector);
   if (!clicked) {
-    await page.clickVisible('.explanation-popup__header-action', { timeoutMs });
+    await page.clickVisible(`${popupSelector} button[aria-label="got.it"]`, { timeoutMs });
   }
-  await page.waitForSelectorHidden('.explanation-popup', { timeoutMs });
+  await page.waitForSelectorHidden(popupSelector, { timeoutMs });
   await page.recordStep('explanation-popup-closed');
   return true;
 }
 
 export async function closeExplanationPopupEventually(page, timeoutMs = 8000) {
-  if (!(await page.isSelectorVisible('.explanation-popup'))) {
-    await page.waitForSelector('.explanation-popup', {
+  const popupSelector = 'app-explanation-popup .ui-popup__panel';
+  if (!(await page.isSelectorVisible(popupSelector))) {
+    await page.waitForSelector(popupSelector, {
       timeoutMs: Math.min(Number(timeoutMs) || 8000, 8000)
     }).catch(() => undefined);
   }
@@ -722,13 +726,13 @@ export async function clickDemoUser(page, userId, timeoutMs) {
   }, { userId });
   assert(clicked, 'Should select a demo user from the demo selector');
   await page.waitFor('demo selector closes after user selection', async () => {
-    return !(await page.isSelectorVisible('.demo-login-overlay'));
+    return !(await page.isSelectorVisible('.demo-user-stage'));
   }, timeoutMs);
 }
 
 export async function waitForLoginDialogOrDemoSelector(page, timeoutMs) {
   await page.waitFor('location dialog or demo selector', async () => {
-    return (await page.isSelectorVisible('.confirmation-dialog'))
-      || (await page.isSelectorVisible('.demo-login-overlay'));
+    return (await page.isSelectorVisible('.dialog'))
+      || (await page.isSelectorVisible('.demo-user-stage'));
   }, timeoutMs);
 }

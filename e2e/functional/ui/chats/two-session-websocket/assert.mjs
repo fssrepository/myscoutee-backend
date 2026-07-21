@@ -7,6 +7,8 @@ import {
   waitForVisibleText
 } from '../../lib/ui-contracts.mjs';
 
+const CHAT_POPUP_SELECTOR = '.event-chat-popup-shell .ui-popup__panel';
+
 const SENDER_USER_ID = 'bf057de7c586eede7e84bdc7';
 const RECEIVER_USER_ID = '7822c5f99eff99d63abe8933';
 const PREFERRED_SHARED_CHAT_ID = '60c8f35688886a1030926aed';
@@ -44,13 +46,13 @@ export async function assertUi({ page, ctx, newIsolatedRecordedPage }) {
   });
 
   const senderOpen = await openChatById(page, sharedChat.id);
-  await page.waitForSelector('.popup-panel-event-chat');
+  await page.waitForSelector(CHAT_POPUP_SELECTOR);
   await page.waitForSelector('textarea[placeholder="Write message"]');
   await assertOpenChatId(page, sharedChat.id);
   await page.recordStep(`sender-chat-thread-open-${senderOpen.method}`);
 
   const receiverOpen = await openChatById(receiver, sharedChat.id);
-  await receiver.waitForSelector('.popup-panel-event-chat');
+  await receiver.waitForSelector(CHAT_POPUP_SELECTOR);
   await receiver.waitForSelector('textarea[placeholder="Write message"]');
   await assertOpenChatId(receiver, sharedChat.id);
   await receiver.recordStep(`receiver-chat-thread-open-${receiverOpen.method}`);
@@ -59,12 +61,12 @@ export async function assertUi({ page, ctx, newIsolatedRecordedPage }) {
   await settleChatThread(receiver);
 
   await sendChatMessage(page, senderText);
-  await waitForVisibleText(page, '.popup-panel-event-chat', senderText, 30000);
+  await waitForVisibleText(page, CHAT_POPUP_SELECTOR, senderText, 30000);
   await waitForMessageNotPending(page, senderText, 45000);
   await assertSingleMessage(page, senderText, { mine: true, label: 'sender sees own sent message once' });
   await page.recordStep('sender-message-sent-and-acked');
 
-  await waitForVisibleText(receiver, '.popup-panel-event-chat', senderText, 45000);
+  await waitForVisibleText(receiver, CHAT_POPUP_SELECTOR, senderText, 45000);
   await assertSingleMessage(receiver, senderText, { mine: false, label: 'receiver sees sender message once' });
   await receiver.recordStep('receiver-sees-sender-message');
 
@@ -77,17 +79,17 @@ export async function assertUi({ page, ctx, newIsolatedRecordedPage }) {
   await receiver.recordStep('receiver-reacted-to-sender-message');
 
   await sendChatMessage(receiver, receiverText);
-  await waitForVisibleText(receiver, '.popup-panel-event-chat', receiverText, 30000);
+  await waitForVisibleText(receiver, CHAT_POPUP_SELECTOR, receiverText, 30000);
   await waitForMessageNotPending(receiver, receiverText, 45000);
   await assertSingleMessage(receiver, receiverText, { mine: true, label: 'receiver sees own sent message once' });
   await receiver.recordStep('receiver-message-sent-and-acked');
 
-  await waitForVisibleText(page, '.popup-panel-event-chat', receiverText, 45000);
+  await waitForVisibleText(page, CHAT_POPUP_SELECTOR, receiverText, 45000);
   await assertSingleMessage(page, receiverText, { mine: false, label: 'sender sees receiver message once' });
   await page.recordStep('sender-sees-receiver-message');
 
   await assertBrowserExpectations(receiver, {
-    selectors: ['.popup-panel-event-chat', '.chat-message'],
+    selectors: [CHAT_POPUP_SELECTOR, '.chat-message'],
     absentSelectors: ['.chat-message-pending', '.chat-message-timed-out'],
     network: ['/api/activities/chats'],
     noCrashText: true,
@@ -104,17 +106,17 @@ async function primeDemoUser(page, userId) {
 
 function demoStorage(userId) {
   return {
-    'app-session': JSON.stringify({ kind: 'demo', userId }),
-    'demo-active-user': userId
+    'myscoutee.http.session.v1': JSON.stringify({ kind: 'demo', userId }),
+    'myscoutee.http.demo.active-user.v1': userId
   };
 }
 
 async function assertActiveUser(page, expectedUserId) {
   const session = await page.evaluate(() => {
-    const appSession = JSON.parse(window.localStorage.getItem('app-session') || '{}');
+    const appSession = JSON.parse(window.localStorage.getItem('myscoutee.http.session.v1') || '{}');
     return {
       appSessionUserId: appSession.userId ?? '',
-      demoActiveUser: window.localStorage.getItem('demo-active-user') ?? ''
+      demoActiveUser: window.localStorage.getItem('myscoutee.http.demo.active-user.v1') ?? ''
     };
   });
   assert(
@@ -198,13 +200,13 @@ async function openChatList(page) {
   await page.recordStep('chat-navigator-menu-open');
   await page.click('button[aria-label="Open chat"]');
   await closeExplanationPopupEventually(page, 10000);
-  await page.waitForSelector('.popup-panel-activities');
+  await page.waitForSelector('.activities-popup');
   await page.waitForNetwork('/api/activities/chats', { timeoutMs: 30000 });
   await page.waitFor('visible chat rows', async () => {
-    return page.visibleCount('.popup-panel-activities .activities-card-chat, .popup-panel-activities .activities-row-item')
+    return page.visibleCount('.activities-popup app-activities-chat-template .ui-single-row')
       .then(count => count > 0);
   }, 30000);
-  await assertVisibleCount(page, '.activities-card-chat', 1, 'chat rows');
+  await assertVisibleCount(page, '.activities-popup app-activities-chat-template .ui-single-row', 1, 'chat rows');
 }
 
 async function openChatById(page, chatId) {
@@ -218,7 +220,7 @@ async function openChatById(page, chatId) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const matchingRow = document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`);
+    const matchingRow = document.querySelector(`[data-single-row-id="${CSS.escape(chatId)}"]`);
     if (matchingRow) {
       matchingRow.scrollIntoView({ block: 'center', inline: 'center' });
       matchingRow.click();
@@ -232,8 +234,8 @@ async function openChatById(page, chatId) {
     return {
       opened: false,
       method: 'none',
-      visibleRowIds: Array.from(document.querySelectorAll('.popup-panel-activities [data-chat-id]'))
-        .map(row => row.getAttribute('data-chat-id'))
+      visibleRowIds: Array.from(document.querySelectorAll('.activities-popup [data-single-row-id]'))
+        .map(row => row.getAttribute('data-single-row-id'))
         .filter(Boolean)
         .slice(0, 20)
     };
@@ -247,7 +249,7 @@ async function scrollActivitiesChatListUntilRow(page, chatId, timeoutMs = 60000)
   let lastState = null;
   while (Date.now() - started < timeoutMs) {
     const found = await page.evaluate(chatId => {
-      const row = document.querySelector(`[data-chat-id="${CSS.escape(chatId)}"]`);
+      const row = document.querySelector(`[data-single-row-id="${CSS.escape(chatId)}"]`);
       if (!row) {
         return false;
       }
@@ -278,7 +280,7 @@ async function scrollActivitiesChatListUntilRow(page, chatId, timeoutMs = 60000)
 
 async function scrollActivitiesChatListOnce(page) {
   return page.evaluate(() => {
-    const root = document.querySelector('.popup-panel-activities') ?? document;
+    const root = document.querySelector('.activities-popup') ?? document;
     const list = root.querySelector('.smart-list');
     if (!list) {
       return { hasList: false };
@@ -304,7 +306,7 @@ async function scrollActivitiesChatListOnce(page) {
 async function assertOpenChatId(page, expectedChatId) {
   await page.waitFor(`chat popup opened for ${expectedChatId}`, async () => {
     return page.evaluate(expectedChatId => {
-      const panel = document.querySelector('.popup-panel-event-chat');
+      const panel = document.querySelector('.event-chat-popup-shell');
       return `${panel?.getAttribute('data-chat-id') ?? ''}`.trim() === expectedChatId;
     }, expectedChatId);
   }, 15000);
@@ -313,15 +315,15 @@ async function assertOpenChatId(page, expectedChatId) {
 async function settleChatThread(page) {
   await page.waitFor('chat initial load settled', async () => {
     return page.evaluate(() => {
-      const input = document.querySelector('.popup-panel-event-chat textarea[placeholder="Write message"]');
+      const input = document.querySelector('.event-chat-popup-shell textarea[placeholder="Write message"]');
       return Boolean(input && !input.disabled);
     });
   }, 30000);
 }
 
 async function sendChatMessage(page, text) {
-  await page.fillVisible('.popup-panel-event-chat textarea[placeholder="Write message"]', text);
-  await page.clickVisible('.popup-panel-event-chat button[aria-label="Send message"]');
+  await page.fillVisible('.event-chat-popup-shell textarea[placeholder="Write message"]', text);
+  await page.clickVisible('.event-chat-popup-shell button[aria-label="Send message"]');
 }
 
 async function reactToMessage(page, text) {
@@ -332,7 +334,42 @@ async function reactToMessage(page, text) {
 }
 
 async function selectMessageContaining(page, text) {
-  const point = await page.evaluate(text => {
+  const deadline = Date.now() + 12000;
+  while (Date.now() < deadline) {
+    const target = await chatMessageClickTarget(page, text);
+    assert(target, `Should select chat message containing ${text}`);
+    if (target.toolsVisible) {
+      return;
+    }
+    await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 150)));
+    await clickPoint(page, target.point);
+    const toolsVisible = await page.waitForSelector('.chat-message-tools', { timeoutMs: 1600 })
+      .then(() => true)
+      .catch(() => false);
+    if (toolsVisible) {
+      return;
+    }
+    await clickMessageElement(page, text);
+    const programmaticToolsVisible = await page.waitForSelector('.chat-message-tools', { timeoutMs: 1600 })
+      .then(() => true)
+      .catch(() => false);
+    if (programmaticToolsVisible) {
+      return;
+    }
+  }
+  assert(false, 'Chat message tools should open after selecting a message', { text });
+}
+
+async function clickMessageElement(page, text) {
+  await page.evaluate(text => {
+    const message = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
+      .find(element => (element.textContent ?? '').includes(text));
+    message?.click();
+  }, text);
+}
+
+async function chatMessageClickTarget(page, text) {
+  return page.evaluate(text => {
     const isVisible = element => {
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
@@ -341,21 +378,24 @@ async function selectMessageContaining(page, text) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const message = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
+    const message = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
       .find(element => isVisible(element) && (element.textContent ?? '').includes(text));
     if (!message) {
       return null;
     }
     message.scrollIntoView({ block: 'center', inline: 'center' });
-    const rect = message.getBoundingClientRect();
+    const clickTarget = message.querySelector('.chat-bubble')
+      ?? message.querySelector('.chat-message-content')
+      ?? message;
+    const rect = clickTarget.getBoundingClientRect();
     return {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2
+      toolsVisible: Boolean(message.querySelector('.chat-message-tools')),
+      point: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      }
     };
   }, text);
-  assert(point, `Should select chat message containing ${text}`);
-  await clickPoint(page, point);
-  await page.waitForSelector('.chat-message-tools', { timeoutMs: 10000 });
 }
 
 async function clickPoint(page, point) {
@@ -401,7 +441,7 @@ async function waitForMessageChild(page, text, childSelector, timeoutMs) {
           && style.visibility !== 'hidden'
           && style.display !== 'none';
       };
-      const message = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
+      const message = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
         .find(element => isVisible(element) && (element.textContent ?? '').includes(text));
       return Boolean(message?.querySelector(childSelector));
     }, { text, childSelector });
@@ -439,7 +479,7 @@ async function readMessageSnapshot(page, text) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const visibleMessages = Array.from(document.querySelectorAll('.popup-panel-event-chat .chat-message'))
+    const visibleMessages = Array.from(document.querySelectorAll('.event-chat-popup-shell .chat-message'))
       .filter(element => isVisible(element) && (element.textContent ?? '').includes(text))
       .map(element => ({
         id: element.getAttribute('data-chat-message-id') ?? '',

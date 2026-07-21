@@ -14,6 +14,7 @@ public final class LandingContentDtos {
             HelpCenterStateDto privacy,
             HelpCenterStateDto terms,
             List<IdeaPostDto> ideas,
+            Integer ideasTotal,
             UserLocationEligibilityResponseDto loginAvailability) {
     }
 }

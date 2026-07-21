@@ -45,7 +45,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
@@ -105,7 +105,7 @@ class BackendLifecycleE2ETest {
     private static final String SUB_EVENT_ID = "e2e-life-sub-cars";
     private static final String RESOURCE_ASSET_ID = "e2e-life-resource-transport";
     private static final String MANAGED_ASSET_ID = "e2e-life-managed-transport";
-    private static final Instant BASE_TIME = Instant.parse("2026-06-15T12:00:00Z");
+    private static final Instant BASE_TIME = Instant.now().plus(Duration.ofDays(30));
 
     private static TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo;
     private static String mongoBaseUri;
@@ -174,7 +174,7 @@ class BackendLifecycleE2ETest {
         assertThat(paid.path("status").asString()).isEqualTo("approved");
 
         JsonNode joined = postJson("/activities/events/join", joinPayload(PAID_MEMBER_ID, paymentSessionId, true, null));
-        assertThat(joined.path("id").asString()).isEqualTo(EVENT_ID);
+        assertThat(joined.path("sourceId").asString()).isEqualTo(EVENT_ID);
 
         ActivityMember paidMember = findMember("event", EVENT_ID, PAID_MEMBER_ID);
         assertThat(paidMember.getStatus()).isEqualTo("accepted");
@@ -561,7 +561,7 @@ class BackendLifecycleE2ETest {
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), ActivitySubEventResource.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), Asset.class);
         mongoTemplate.remove(new Query(), Payment.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
@@ -594,6 +594,7 @@ class BackendLifecycleE2ETest {
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
         user.setActivities(new Users.UserActivitiesRecord(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
@@ -652,7 +653,7 @@ class BackendLifecycleE2ETest {
         payload.put("location", "Lifecycle Arena");
         payload.put("locationCoordinates", new LocationCoordinatesDto(48.1486d, 17.1077d));
         payload.put("topics", List.of("football", "transport"));
-        payload.put("subEvents", List.of(subEvent()));
+        payload.put("subEventDefinitions", List.of(subEvent()));
         payload.put("mode", "Casual");
         return payload;
     }
@@ -666,7 +667,7 @@ class BackendLifecycleE2ETest {
         item.put("endAt", BASE_TIME.plus(Duration.ofHours(1)).toString());
         item.put("location", "Lifecycle Arena parking");
         item.put("createdByUserId", HOST_ID);
-        item.put("optional", false);
+        item.put("optional", true);
         item.put("capacityMin", 1);
         item.put("capacityMax", 2);
         item.put("carsCapacityMin", 1);
@@ -754,7 +755,7 @@ class BackendLifecycleE2ETest {
         assertThat(paymentSessionId).isNotBlank();
         postJson("/activities/events/pay?paymentSessionId=" + paymentSessionId, edgeCheckoutPayload(eventId, userId));
         JsonNode joined = postJson("/activities/events/join", edgeJoinPayload(eventId, userId, paymentSessionId, pendingReason));
-        assertThat(joined.path("id").asString()).isEqualTo(eventId);
+        assertThat(joined.path("sourceId").asString()).isEqualTo(eventId);
         return paymentSessionId;
     }
 

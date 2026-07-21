@@ -1,7 +1,7 @@
 {
   "urlPath": "/game",
   "selectors": [
-    ".popup-panel-assets",
+    ".asset-popup-content",
     ".experience-item-card"
   ],
   "network": [

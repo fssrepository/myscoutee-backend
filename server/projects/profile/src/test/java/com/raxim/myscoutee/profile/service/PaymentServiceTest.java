@@ -26,6 +26,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutReque
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.PaymentsRepository;
 
 class PaymentServiceTest {
@@ -118,6 +119,127 @@ class PaymentServiceTest {
     }
 
     @Test
+    void authoritativeQuoteReplacesForgedAmountsBeforeProcessorAndPersistsPromoAudit() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
+        EventCheckoutRequestDto forged = checkoutRequest("user-promo", "event-promo", 0.01d, "EUR");
+        EventCheckoutRequestDto canonical = withAppliedPromoCodes(
+                checkoutRequest("user-promo", "event-promo", 25d, "EUR"),
+                List.of("SAVE10", "LESS5"));
+        when(pricingService.reprice(forged)).thenReturn(canonical);
+
+        PaymentService service = new PaymentService(
+                List.of(stripe),
+                repository,
+                org.mockito.Mockito.mock(EventCheckoutBasketService.class),
+                pricingService);
+        ReflectionTestUtils.setField(service, "enablePay", true);
+
+        EventCheckoutSessionDto checkout = service.checkout(forged, "stripe");
+
+        assertThat(stripe.checkoutRequests()).singleElement().satisfies(request -> {
+            assertThat(request.totalAmount()).isEqualTo(25d);
+            assertThat(request.lineItems()).extracting(EventCheckoutLineItemDto::amount).containsExactly(25d);
+            assertThat(request.appliedPromoCodes()).containsExactly("SAVE10", "LESS5");
+        });
+        Payment payment = paymentsBySession.get(checkout.id());
+        assertThat(payment.getAmount()).isEqualTo(25d);
+        assertThat(payment.getAppliedPromoCodes()).containsExactly("SAVE10", "LESS5");
+        assertThat(payment.getBookingStatus()).isEqualTo("initiated");
+    }
+
+    @Test
+    void legacyResourceCheckoutWithNoEventBasketRemainsUnchangedThroughPaymentService() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        ActivityEventsRepository eventsRepository = org.mockito.Mockito.mock(ActivityEventsRepository.class);
+        when(eventsRepository.findBySourceId("asset-1")).thenReturn(List.of());
+        EventCheckoutPricingService pricingService = new EventCheckoutPricingService(
+                eventsRepository,
+                org.mockito.Mockito.mock(TranslationService.class));
+        PaymentService service = new PaymentService(
+                List.of(stripe),
+                repository,
+                org.mockito.Mockito.mock(EventCheckoutBasketService.class),
+                pricingService);
+        ReflectionTestUtils.setField(service, "enablePay", true);
+        EventCheckoutRequestDto resourceRequest = new EventCheckoutRequestDto(
+                "user-resource",
+                "asset-1",
+                null,
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of(),
+                "draft",
+                List.of(new EventCheckoutLineItemDto(
+                        "asset-ticket",
+                        "resource",
+                        "Kayak",
+                        "One booking",
+                        15d,
+                        "EUR")),
+                15d,
+                "EUR",
+                null,
+                List.of());
+
+        EventCheckoutSessionDto checkout = service.checkout(resourceRequest, "stripe");
+
+        assertThat(stripe.checkoutRequests()).containsExactly(resourceRequest);
+        assertThat(checkout.amount()).isEqualTo(15d);
+        Payment payment = paymentsBySession.get(checkout.id());
+        assertThat(payment.getSourceId()).isEqualTo("asset-1");
+        assertThat(payment.getAmount()).isEqualTo(15d);
+        assertThat(payment.getCurrency()).isEqualTo("EUR");
+    }
+
+    @Test
+    void sessionBoundPaymentCannotTransitionBetweenPaidAndFreeCanonicalAmounts() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
+        PaymentService service = paymentService(repository, true, stripe);
+
+        Payment paidSession = new Payment();
+        paidSession.setCheckoutSessionId("checkout-paid");
+        paidSession.setUserId("user-amount");
+        paidSession.setSourceId("event-amount");
+        paidSession.setAmount(25d);
+        paidSession.setCurrency("EUR");
+        savePayment(paymentsBySession, paidSession);
+
+        assertThatThrownBy(() -> service.pay(
+                checkoutRequest("user-amount", "event-amount", 0d, "EUR"),
+                "checkout-paid",
+                "stripe"))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        exception -> assertThat(exception.getStatusCode())
+                                .isEqualTo(org.springframework.http.HttpStatus.CONFLICT));
+
+        Payment freeSession = new Payment();
+        freeSession.setCheckoutSessionId("checkout-free");
+        freeSession.setUserId("user-amount");
+        freeSession.setSourceId("event-amount");
+        freeSession.setAmount(0d);
+        freeSession.setCurrency("EUR");
+        savePayment(paymentsBySession, freeSession);
+
+        assertThatThrownBy(() -> service.pay(
+                checkoutRequest("user-amount", "event-amount", 25d, "EUR"),
+                "checkout-free",
+                "stripe"))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        exception -> assertThat(exception.getStatusCode())
+                                .isEqualTo(org.springframework.http.HttpStatus.CONFLICT));
+        assertThat(stripe.payCalls()).isZero();
+    }
+
+    @Test
     void cancelJoinedBookingComputesPartialRefundFromEligibleRule() {
         Map<String, Payment> paymentsBySession = new HashMap<>();
         PaymentsRepository repository = inMemoryRepository(paymentsBySession);
@@ -145,10 +267,13 @@ class PaymentServiceTest {
     }
 
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {
+        EventCheckoutPricingService pricingService = org.mockito.Mockito.mock(EventCheckoutPricingService.class);
+        when(pricingService.reprice(any(EventCheckoutRequestDto.class))).thenAnswer(invocation -> invocation.getArgument(0));
         PaymentService service = new PaymentService(
                 List.of(processors),
                 repository,
-                org.mockito.Mockito.mock(EventCheckoutBasketService.class));
+                org.mockito.Mockito.mock(EventCheckoutBasketService.class),
+                pricingService);
         ReflectionTestUtils.setField(service, "enablePay", enablePay);
         return service;
     }
@@ -198,6 +323,26 @@ class PaymentServiceTest {
                 null);
     }
 
+    private EventCheckoutRequestDto withAppliedPromoCodes(
+            EventCheckoutRequestDto request,
+            List<String> appliedPromoCodes) {
+        return new EventCheckoutRequestDto(
+                request.userId(),
+                request.sourceId(),
+                request.slotSourceId(),
+                request.optionalSubEventIds(),
+                request.assetSelections(),
+                request.acceptedPolicyIds(),
+                request.basketItems(),
+                request.pricingSummaryRows(),
+                request.checkoutState(),
+                request.lineItems(),
+                request.totalAmount(),
+                request.currency(),
+                request.pendingReason(),
+                appliedPromoCodes);
+    }
+
     private Payment joinedPayment(
             String checkoutSessionId,
             String gatewaySessionId,
@@ -228,6 +373,7 @@ class PaymentServiceTest {
         private final AtomicInteger checkoutCalls = new AtomicInteger();
         private final AtomicInteger payCalls = new AtomicInteger();
         private final List<String> paySessionIds = new java.util.ArrayList<>();
+        private final List<EventCheckoutRequestDto> checkoutRequests = new java.util.ArrayList<>();
 
         RecordingPaymentProcessor(String type) {
             this.type = type;
@@ -241,6 +387,7 @@ class PaymentServiceTest {
         @Override
         public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request) {
             int call = checkoutCalls.incrementAndGet();
+            checkoutRequests.add(request);
             return new EventCheckoutSessionDto(
                     type + "_checkout_" + call,
                     type,
@@ -275,6 +422,10 @@ class PaymentServiceTest {
 
         List<String> paySessionIds() {
             return List.copyOf(paySessionIds);
+        }
+
+        List<EventCheckoutRequestDto> checkoutRequests() {
+            return List.copyOf(checkoutRequests);
         }
     }
 }

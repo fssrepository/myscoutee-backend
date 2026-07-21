@@ -75,28 +75,25 @@ sync_once() {
   local rsync_status=0
   local rsync_log
   local attempt=1
+  local max_attempts=5
   rsync_log="$(mktemp)"
 
   wait_for_source_dir
 
   while true; do
+    : > "${rsync_log}"
     if rsync -a --delete "${SOURCE_DIR}/" "${TARGET_DIR}/" 2>"${rsync_log}"; then
       rm -f "${rsync_log}"
       echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S')"
       return 0
+    else
+      rsync_status=$?
     fi
 
-    rsync_status=$?
-    if [[ "${rsync_status}" -ne 24 ]]; then
+    if [[ "${rsync_status}" -ne 24 || "${attempt}" -ge "${max_attempts}" ]]; then
       cat "${rsync_log}" >&2 || true
       rm -f "${rsync_log}"
       return "${rsync_status}"
-    fi
-
-    if [[ "${attempt}" -ge 2 ]]; then
-      rm -f "${rsync_log}"
-      echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S') (after concurrent file churn)"
-      return 0
     fi
 
     attempt=$((attempt + 1))

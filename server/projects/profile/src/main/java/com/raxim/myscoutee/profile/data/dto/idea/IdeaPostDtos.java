@@ -43,6 +43,12 @@ public final class IdeaPostDtos {
             IdeaPostAdminCountsDto counts) {
     }
 
+    public record IdeaPostPublicPageDto(
+            List<IdeaPostDto> records,
+            Integer total,
+            String nextCursor) {
+    }
+
     public record IdeaPostSaveRequestDto(
             String actorUserId,
             String id,

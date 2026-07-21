@@ -2,12 +2,14 @@ package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +17,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
@@ -68,16 +72,14 @@ class UserActivityCountersServiceTest {
 
         service.refreshAssetCountersForUser("owner");
 
-        Users saved = savedUser();
-        Users.UserActivitiesRecord activities = saved.getActivities();
-        assertThat(activities.cars()).isEqualTo(1);
-        assertThat(activities.accommodation()).isEqualTo(1);
-        assertThat(activities.supplies()).isEqualTo(1);
-        assertThat(activities.tickets()).isEqualTo(5);
-        assertThat(activities.asset().cars()).isEqualTo(1);
-        assertThat(activities.asset().accommodation()).isEqualTo(1);
-        assertThat(activities.asset().supplies()).isEqualTo(1);
-        assertThat(activities.asset().tickets()).isEqualTo(5);
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.cars")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.accommodation")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.supplies")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.asset.cars")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.asset.accommodation")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.asset.supplies")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.asset.tickets")).isEqualTo(5);
     }
 
     @Test
@@ -87,13 +89,12 @@ class UserActivityCountersServiceTest {
 
         service.applyFeedbackStateTransition("viewer", false, false, true, false);
 
-        Users saved = savedUser();
-        Users.UserActivitiesRecord activities = saved.getActivities();
-        assertThat(activities.feedback()).isEqualTo(2);
-        assertThat(activities.eventFeedback().ownEvents()).isEqualTo(4);
-        assertThat(activities.eventFeedback().pending()).isEqualTo(2);
-        assertThat(activities.eventFeedback().feedbacked()).isEqualTo(2);
-        assertThat(activities.eventFeedback().removed()).isZero();
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.feedback")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
+        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
     }
 
     @Test
@@ -114,18 +115,18 @@ class UserActivityCountersServiceTest {
 
         service.refreshFeedbackReceivedCountersForUser("host");
 
-        Users saved = savedUser();
-        Users.UserActivitiesRecord activities = saved.getActivities();
-        assertThat(activities.feedback()).isEqualTo(3);
-        assertThat(activities.eventFeedback().ownEvents()).isEqualTo(2);
-        assertThat(activities.eventFeedback().pending()).isEqualTo(3);
-        assertThat(activities.eventFeedback().feedbacked()).isEqualTo(1);
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.feedback")).isEqualTo(3);
+        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(3);
+        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.eventFeedback.removed")).isZero();
     }
 
-    private Users savedUser() {
-        ArgumentCaptor<Users> captor = ArgumentCaptor.forClass(Users.class);
-        verify(usersRepository).save(captor.capture());
-        return captor.getValue();
+    private Document updatedFields() {
+        ArgumentCaptor<Update> captor = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(any(Query.class), captor.capture(), eq(Users.class));
+        return captor.getValue().getUpdateObject().get("$set", Document.class);
     }
 
     private Users user(String userId, Users.UserActivitiesRecord activities) {
@@ -156,6 +157,7 @@ class UserActivityCountersServiceTest {
                 tickets,
                 0,
                 pending,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(cars, accommodation, supplies, tickets),
                 new Users.UserEventFeedbackCountersRecord(ownEvents, pending, feedbacked, removed),

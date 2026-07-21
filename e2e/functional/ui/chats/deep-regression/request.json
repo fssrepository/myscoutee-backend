@@ -4,8 +4,8 @@
   "order": 94,
   "route": "/game",
   "localStorage": {
-    "app-session": "{\"kind\":\"demo\",\"userId\":\"bf057de7c586eede7e84bdc7\"}",
-    "demo-active-user": "bf057de7c586eede7e84bdc7"
+    "myscoutee.http.session.v1": "{\"kind\":\"demo\",\"userId\":\"bf057de7c586eede7e84bdc7\"}",
+    "myscoutee.http.demo.active-user.v1": "bf057de7c586eede7e84bdc7"
   },
   "script": "assert.mjs",
   "fullStackOnly": true,

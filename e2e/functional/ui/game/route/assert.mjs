@@ -22,7 +22,7 @@ export async function assertUi({ page }) {
   await page.waitForNetwork('/api/game-cards/query', { timeoutMs: 30000 });
   await page.recordStep('game-after-overlays');
   await page.waitFor('global navigator button enabled', async () => page.evaluate(() => {
-    const button = document.querySelector('button.user-selector-btn-global');
+    const button = document.querySelector('.navigator-trigger-rail:not(.is-covered) .user-selector-menu button[aria-label="Open user menu"]');
     return Boolean(button && !button.disabled);
   }), 30000);
   await assertActiveBackendCalls(page, [

@@ -19,7 +19,7 @@
     "images": [],
     "activities": {
       "game": 0,
-      "chat": 0,
+      "chats": 0,
       "invitations": 0,
       "events": 0,
       "hosting": 0,
@@ -29,8 +29,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
-      "adminJobs": 0,
-      "adminMetrics": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,
@@ -51,7 +57,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     }
   },
   {
@@ -74,7 +82,7 @@
     "images": [],
     "activities": {
       "game": 0,
-      "chat": 0,
+      "chats": 0,
       "invitations": 0,
       "events": 0,
       "hosting": 0,
@@ -84,8 +92,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
-      "adminJobs": 0,
-      "adminMetrics": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,
@@ -106,7 +120,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     }
   },
   {
@@ -129,7 +145,7 @@
     "images": [],
     "activities": {
       "game": 0,
-      "chat": 0,
+      "chats": 0,
       "invitations": 0,
       "events": 0,
       "hosting": 0,
@@ -139,8 +155,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
-      "adminJobs": 0,
-      "adminMetrics": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,
@@ -161,7 +183,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": 0,
+      "adminMetrics": 0
     }
   }
 ]

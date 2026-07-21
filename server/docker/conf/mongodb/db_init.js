@@ -466,6 +466,14 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'idea_post_lang_published_submitted' }
   );
   portalDb.ideaPosts.createIndex(
+    { lang: 1, published: 1, submittedAtIso: -1, _id: -1 },
+    { name: 'idea_post_public_page' }
+  );
+  portalDb.ideaPosts.createIndex(
+    { lang: 1, published: 1, featured: 1, submittedAtIso: -1, _id: -1 },
+    { name: 'idea_post_public_featured_preview' }
+  );
+  portalDb.ideaPosts.createIndex(
     { published: 1, submittedAtIso: -1 },
     { name: 'idea_post_published_submitted' }
   );

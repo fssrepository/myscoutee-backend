@@ -538,6 +538,7 @@ class HomeUserProfileServiceTest {
                 11,
                 12,
                 13,
+                new Users.UserChatCountersRecord(4, 1, 1, 1, 1, 0),
                 new Users.UserEventCountersRecord(20, 6, 2, 5, 7, 1, 3),
                 new Users.UserAssetCountersRecord(8, 9, 10, 11),
                 new Users.UserEventFeedbackCountersRecord(4, 13, 14, 2),
@@ -547,21 +548,21 @@ class HomeUserProfileServiceTest {
 
     private void assertFlatCounters(UserRealtimeCountersDto counters) {
         assertFlatCounters(
-                counters.game(), counters.chat(), counters.invitations(), counters.events(), counters.hosting(),
+                counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
                 counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
     }
 
     private void assertFlatCounters(UserMenuCountersDto counters) {
         assertFlatCounters(
-                counters.game(), counters.chat(), counters.invitations(), counters.events(), counters.hosting(),
+                counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
                 counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
     }
 
     private void assertFlatCounters(UserActivitiesDto counters) {
         assertFlatCounters(
-                counters.game(), counters.chat(), counters.invitations(), counters.events(), counters.hosting(),
+                counters.game(), counters.chats(), counters.invitations(), counters.events(), counters.hosting(),
                 counters.cars(), counters.accommodation(), counters.supplies(), counters.tickets(),
                 counters.contacts(), counters.feedback(), counters.adminJobs(), counters.adminMetrics());
     }

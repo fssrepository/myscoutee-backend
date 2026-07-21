@@ -52,7 +52,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway;
@@ -250,7 +250,7 @@ class BackendNotificationDeliveryE2ETest {
     void singleRecipientNotificationUsesDirectFirebaseSendAndExcludesSenderDevice() {
         String recipientUserId = recipientUserIds().get(0);
         withReal(() -> {
-            ActivityChat chat = mongoTemplate.findById(CHAT_ID + ":" + SENDER_ID, ActivityChat.class);
+            Chat chat = mongoTemplate.findById(CHAT_ID + ":" + SENDER_ID, Chat.class);
             assertThat(chat).isNotNull();
             chat.setMemberIds(List.of(recipientUserId));
             mongoTemplate.save(chat);
@@ -324,7 +324,7 @@ class BackendNotificationDeliveryE2ETest {
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
     }
 
@@ -356,6 +356,7 @@ class BackendNotificationDeliveryE2ETest {
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
         user.setActivities(new Users.UserActivitiesRecord(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
@@ -364,7 +365,7 @@ class BackendNotificationDeliveryE2ETest {
     }
 
     private void seedChat() {
-        ActivityChat chat = new ActivityChat();
+        Chat chat = new Chat();
         chat.setMongoId(CHAT_ID + ":" + SENDER_ID);
         chat.setChatId(CHAT_ID);
         chat.setOwnerUserId(SENDER_ID);

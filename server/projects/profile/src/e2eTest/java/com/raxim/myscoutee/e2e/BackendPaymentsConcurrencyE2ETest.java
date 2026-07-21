@@ -49,8 +49,8 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Payment;
@@ -102,7 +102,7 @@ class BackendPaymentsConcurrencyE2ETest {
     private static final String IDEMPOTENT_EVENT_ID = "e2e-pay-idempotent-event";
     private static final String CONCURRENCY_EVENT_ID = "e2e-pay-capacity-event";
     private static final int CONCURRENCY_CAPACITY = 7;
-    private static final Instant BASE_TIME = Instant.parse("2026-07-01T12:00:00Z");
+    private static final Instant BASE_TIME = Instant.now().plus(Duration.ofDays(30));
 
     private static TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo;
     private static String mongoBaseUri;
@@ -143,7 +143,7 @@ class BackendPaymentsConcurrencyE2ETest {
     }
 
     @Test
-    void paymentSessionsAreIdempotentAndRejectCrossUserMutationThroughHttp() {
+    void paymentSessionsAreIdempotentRejectCrossUserMutationAndIgnoreClientPricesThroughHttp() {
         publishPaidEvent(IDEMPOTENT_EVENT_ID, 3);
 
         JsonNode checkout = postJson("/activities/events/checkout?provider=e2e", checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d));
@@ -171,7 +171,7 @@ class BackendPaymentsConcurrencyE2ETest {
         HttpResponse<String> wrongAmountPay = postRaw(
                 "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 31d));
-        assertThat(wrongAmountPay.statusCode()).isEqualTo(409);
+        assertThat(wrongAmountPay.statusCode()).isEqualTo(200);
 
         Map<String, Object> wrongCurrencyPayload = checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d);
         wrongCurrencyPayload.put("currency", "USD");
@@ -185,11 +185,11 @@ class BackendPaymentsConcurrencyE2ETest {
         HttpResponse<String> wrongCurrencyPay = postRaw(
                 "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
                 wrongCurrencyPayload);
-        assertThat(wrongCurrencyPay.statusCode()).isEqualTo(409);
+        assertThat(wrongCurrencyPay.statusCode()).isEqualTo(200);
 
         Payment protectedPayment = onlyPayment(IDEMPOTENT_EVENT_ID, userId(2));
         assertThat(protectedPayment.getUserId()).isEqualTo(userId(2));
-        assertThat(protectedPayment.getAmount()).isEqualTo(30d);
+        assertThat(protectedPayment.getAmount()).isEqualTo(12d);
         assertThat(protectedPayment.getCurrency()).isEqualTo("EUR");
         assertThat(paymentsForEvent(IDEMPOTENT_EVENT_ID)).hasSize(1);
         assertThat(paymentsForEvent("another-event")).isEmpty();
@@ -224,7 +224,7 @@ class BackendPaymentsConcurrencyE2ETest {
                 checkoutPayload(eventId, userId(2), 12d));
         postJson("/activities/events/join", joinPayload(eventId, userId(2), acceptedSessionId));
 
-        List<ActivityChatMessage> afterAcceptedMessages = chatMessages(eventId);
+        List<ChatMessage> afterAcceptedMessages = chatMessages(eventId);
         assertThat(afterAcceptedMessages).hasSize(1);
         assertThat(afterAcceptedMessages.get(0).getClientId()).isEqualTo("member-joined");
         assertThat(onlyPayment(eventId, userId(2)).getBookingStatus()).isEqualTo("joined");
@@ -366,8 +366,8 @@ class BackendPaymentsConcurrencyE2ETest {
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Payment.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
-        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
+        mongoTemplate.remove(new Query(), Chat.class);
+        mongoTemplate.remove(new Query(), ChatMessage.class);
     }
 
     private void seedUsers() {
@@ -397,6 +397,7 @@ class BackendPaymentsConcurrencyE2ETest {
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
         user.setActivities(new Users.UserActivitiesRecord(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
@@ -476,7 +477,7 @@ class BackendPaymentsConcurrencyE2ETest {
 
     private void seedEventChat(String eventId) {
         withReal(() -> {
-            ActivityChat chat = new ActivityChat();
+            Chat chat = new Chat();
             chat.setMongoId(eventId + ":" + HOST_ID);
             chat.setChatId(eventId);
             chat.setOwnerUserId(HOST_ID);
@@ -486,15 +487,15 @@ class BackendPaymentsConcurrencyE2ETest {
             chat.setUnread(0);
             chat.setDateIso(BASE_TIME.toString());
             chat.setChannelType("event");
-            chat.setEventId(eventId);
+            chat.setOwnerId(eventId);
             mongoTemplate.save(chat);
         });
     }
 
-    private List<ActivityChatMessage> chatMessages(String eventId) {
+    private List<ChatMessage> chatMessages(String eventId) {
         return fromReal(() -> mongoTemplate.find(
                 Query.query(Criteria.where("chatId").is(eventId)),
-                ActivityChatMessage.class));
+                ChatMessage.class));
     }
 
     private List<ActivityMember> members(String eventId) {

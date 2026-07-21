@@ -1,8 +1,8 @@
 {
   "urlPath": "/game",
   "selectors": [
-    ".event-editor-popup-shell",
-    ".popup-panel-event-editor",
+    "app-event-editor-popup .ui-popup__panel",
+    "app-event-editor-popup .ui-popup__panel",
     "button[aria-label=\"Save event\"]"
   ],
   "network": [

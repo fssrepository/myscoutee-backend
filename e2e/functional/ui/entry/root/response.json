@@ -2,7 +2,7 @@
   "urlPath": "/",
   "initial": {
     "selectors": [
-      "app-entry-shell",
+      "app-entry-page",
       ".entry-shell",
       ".entry-cta-primary"
     ],
@@ -15,7 +15,7 @@
     ]
   },
   "selectors": [
-    "app-entry-shell",
+    "app-entry-page",
     ".entry-shell"
   ],
   "maxMs": 30000

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.LandingContentDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserLocationEligibilityResponseDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostPublicPageDto;
 import com.raxim.myscoutee.profile.service.HelpCenterService;
 import com.raxim.myscoutee.profile.service.HomeUserProfileService;
 import com.raxim.myscoutee.profile.service.IdeaPostsService;
@@ -37,11 +38,23 @@ public class LandingContentController {
         UserLocationEligibilityResponseDto loginAvailability = hasCoordinates(latitude, longitude)
                 ? homeUserProfileService.queryLocationEligibility(latitude, longitude)
                 : null;
+        IdeaPostPublicPageDto ideaPreview = ideaPostsService.publicFeaturedPosts(lang, acceptLanguage);
         return new LandingContentDto(
                 helpCenterService.activeState("privacy", lang, acceptLanguage),
                 helpCenterService.activeState("terms", lang, acceptLanguage),
-                ideaPostsService.publicPosts(lang, acceptLanguage),
+                ideaPreview.records(),
+                ideaPreview.total(),
                 loginAvailability);
+    }
+
+    @GetMapping("/articles")
+    public IdeaPostPublicPageDto articles(
+            @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "cursor", required = false) String cursor) {
+        return ideaPostsService.publicPostsPage(lang, acceptLanguage, page, pageSize, cursor);
     }
 
     private boolean hasCoordinates(Double latitude, Double longitude) {

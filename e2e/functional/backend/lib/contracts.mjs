@@ -113,7 +113,21 @@ export function assertI18nBundle(value) {
 export function assertLandingContent(value, ctx) {
   const response = expectObject(value, 'landing content');
   assertHelpState(response.privacy, ctx, 'landing content.privacy');
-  expectArray(response.ideas, 'landing content.ideas').forEach((idea, index) => assertIdeaPost(idea, `landing content.ideas[${index}]`));
+  const ideas = expectArray(response.ideas, 'landing content.ideas');
+  const ideasTotal = expectNumber(response.ideasTotal, 'landing content.ideasTotal');
+  ideas.forEach((idea, index) => {
+    assertIdeaPost(idea, `landing content.ideas[${index}]`);
+    assert(idea.featured === true, 'landing preview should contain only featured articles', idea);
+    assert(idea.published === true, 'landing preview should contain only published articles', idea);
+    assert(idea.trashed !== true, 'landing preview should exclude trashed articles', idea);
+  });
+  assert(ideas.length <= 8, 'landing article preview should be bounded to eight records', {
+    count: ideas.length
+  });
+  assert(ideasTotal >= ideas.length, 'landing article total should cover the preview', {
+    ideasTotal,
+    previewCount: ideas.length
+  });
   if (response.loginAvailability !== null && response.loginAvailability !== undefined) {
     assertEligibility(response.loginAvailability, 'landing content.loginAvailability');
   }
@@ -219,18 +233,24 @@ export function assertEvent(value, path = 'event') {
   if (event.subEvents !== null && event.subEvents !== undefined) {
     expectArray(event.subEvents, `${path}.subEvents`);
   }
+  if (event.subEventDefinitions !== null && event.subEventDefinitions !== undefined) {
+    expectArray(event.subEventDefinitions, `${path}.subEventDefinitions`);
+  }
   return event;
 }
 
 export function rememberFirstEvent(ctx, events) {
   const list = Array.isArray(events) ? events : [];
-  const event = list.find(item => Array.isArray(item.subEvents) && item.subEvents.length > 0) ?? list[0];
+  const event = list.find(item => (Array.isArray(item.subEvents) && item.subEvents.length > 0)
+    || (Array.isArray(item.subEventDefinitions) && item.subEventDefinitions.length > 0)) ?? list[0];
   if (!event) {
     return null;
   }
   ctx.vars.eventId = event.id;
   ctx.vars.ownerId = event.id;
-  const subEvent = Array.isArray(event.subEvents) ? event.subEvents[0] : null;
+  const subEvent = Array.isArray(event.subEvents) && event.subEvents.length > 0
+    ? event.subEvents[0]
+    : (Array.isArray(event.subEventDefinitions) ? event.subEventDefinitions[0] : null);
   if (subEvent?.id) {
     ctx.vars.subEventId = subEvent.id;
   }
@@ -267,8 +287,8 @@ export function assertAsset(value, path = 'asset') {
 
 export function assertTicketsPage(value, ctx) {
   const page = expectObject(value, 'asset tickets');
-  expectArray(page.records, 'asset tickets.records').forEach((event, index) => assertEvent(event, `asset tickets.records[${index}]`));
-  expectNumber(page.total ?? page.records.length, 'asset tickets.total');
+  expectArray(page.items, 'asset tickets.items').forEach((event, index) => assertEvent(event, `asset tickets.items[${index}]`));
+  expectNumber(page.total ?? page.items.length, 'asset tickets.total');
   rememberImages(ctx, page);
 }
 
@@ -298,8 +318,9 @@ export function assertChat(value, path = 'chat') {
 }
 
 export function assertMessages(value, ctx) {
-  expectArray(value, 'chat messages').forEach((message, index) => {
-    const path = `chat messages[${index}]`;
+  const page = expectObject(value, 'chat messages');
+  expectArray(page.items, 'chat messages.items').forEach((message, index) => {
+    const path = `chat messages.items[${index}]`;
     expectObject(message, path);
     expectString(message.id, `${path}.id`);
     expectOptionalString(message.text, `${path}.text`);
@@ -308,7 +329,12 @@ export function assertMessages(value, ctx) {
       ctx.vars.messageId = message.id;
     }
   });
-  rememberImages(ctx, value);
+  expectNumber(page.total ?? page.items.length, 'chat messages.total');
+  expectOptionalString(page.nextCursor, 'chat messages.nextCursor');
+  if (page.read !== null && page.read !== undefined) {
+    expectObject(page.read, 'chat messages.read');
+  }
+  rememberImages(ctx, page);
 }
 
 export function assertRates(value) {

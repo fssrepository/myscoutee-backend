@@ -167,7 +167,7 @@ public class UserRatesService {
             return new UserRatesSyncResponseDto(List.of(), List.of());
         }
 
-        List<UserRate> normalizedRates = new ArrayList<>();
+        Map<String, UserRate> normalizedRatesByNaturalKey = new LinkedHashMap<>();
         List<String> syncedRateIds = new ArrayList<>();
         List<String> failedRateIds = new ArrayList<>();
         for (UserRateRecordDto rate : request.rates()) {
@@ -179,10 +179,11 @@ public class UserRatesService {
                 }
                 continue;
             }
-            normalizedRates.add(normalized);
+            normalizedRatesByNaturalKey.put(naturalKey(normalized), normalized);
             syncedRateIds.add(resolveSyncAcknowledgementId(rate, normalized));
         }
 
+        List<UserRate> normalizedRates = new ArrayList<>(normalizedRatesByNaturalKey.values());
         if (!normalizedRates.isEmpty()) {
             affinityCalculationService.applyAffinity(normalizedRates);
             List<UserRate> savedRates = new ArrayList<>();
@@ -399,10 +400,20 @@ public class UserRatesService {
             return null;
         }
 
-        UserRate existing = userRatesRepository.findBySyncKey(syncKey).orElse(null);
         String fromUserId = normalizeOptionalId(rate.fromUserId());
         String toUserId = normalizeOptionalId(rate.toUserId());
         String ownerUserId = resolveOwnerUserId(mode, rate.ownerUserId(), fromUserId);
+        String relatedUserId = resolveActivityRelatedUserId(mode, ownerUserId, fromUserId, toUserId);
+        String secondaryRelatedUserId = resolveActivitySecondaryRelatedUserId(mode, fromUserId, toUserId);
+        if (!isValidNaturalKey(mode, ownerUserId, relatedUserId, secondaryRelatedUserId)) {
+            return null;
+        }
+        UserRate syncKeyRecord = userRatesRepository.findBySyncKey(syncKey).orElse(null);
+        UserRate naturalKeyRecord = findByNaturalKey(ownerUserId, mode, relatedUserId, secondaryRelatedUserId);
+        UserRate existing = naturalKeyRecord != null ? naturalKeyRecord : syncKeyRecord;
+        boolean syncKeyBelongsToDifferentRecord = naturalKeyRecord != null
+                && syncKeyRecord != null
+                && !Objects.equals(naturalKeyRecord.getId(), syncKeyRecord.getId());
         String updatedUserId = resolveUpdatedUser(rate, ownerUserId, fromUserId, toUserId);
         String createdUserId = existing != null
                 ? normalizeOptionalText(existing.getCreatedUser())
@@ -411,7 +422,7 @@ public class UserRatesService {
 
         UserRate document = existing != null ? existing : new UserRate();
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
-        document.setSyncKey(syncKey);
+        document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey() : syncKey);
         document.setMode(mode);
         document.setCreatedDate(existing != null
                 ? normalizeDate(existing.getCreatedDate(), nowIso)
@@ -423,6 +434,41 @@ public class UserRatesService {
         document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
 
         return normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
+    }
+
+    private UserRate findByNaturalKey(
+            String ownerUserId,
+            String mode,
+            String relatedUserId,
+            String secondaryRelatedUserId) {
+        return userRatesRepository.findByOwnerUserIdAndMode(ownerUserId, mode).stream()
+                .filter(record -> Objects.equals(relatedUserId, normalizeOptionalId(record.getRelatedUserId())))
+                .filter(record -> Objects.equals(secondaryRelatedUserId, normalizeOptionalId(record.getSecondaryRelatedUserId())))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String naturalKey(UserRate record) {
+        return String.join("\u0000",
+                normalizeId(record.getOwnerUserId()),
+                normalizeId(record.getMode()),
+                normalizeId(record.getRelatedUserId()),
+                normalizeId(record.getSecondaryRelatedUserId()));
+    }
+
+    private boolean isValidNaturalKey(
+            String mode,
+            String ownerUserId,
+            String relatedUserId,
+            String secondaryRelatedUserId) {
+        if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(relatedUserId)) {
+            return false;
+        }
+        if ("single".equals(mode)) {
+            return !ownerUserId.equals(relatedUserId);
+        }
+        return !"pair".equals(mode)
+                || (StringUtils.hasText(secondaryRelatedUserId) && !relatedUserId.equals(secondaryRelatedUserId));
     }
 
     private UserRate normalizeRateRecord(
@@ -467,6 +513,9 @@ public class UserRatesService {
                 secondaryRelatedUserId));
         document.setBridgeCount(resolveStoredBridgeCount(storedSocialContext, rate.bridgeCount()));
         document.setMet(met);
+        if (rate.distanceMetersExact() != null) {
+            document.setDistanceMetersExact(Math.max(0, rate.distanceMetersExact()));
+        }
         document.setEventName(met
                 ? (StringUtils.hasText(requestedEventName) ? requestedEventName : preservedEventName)
                 : null);
@@ -513,7 +562,7 @@ public class UserRatesService {
         String eventName = StringUtils.hasText(normalizeOptionalText(record.getEventName()))
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
-        RateDistance distance = resolveActivityDistance(currentUser, record.getOwnerLocation());
+        RateDistance distance = resolveActivityDistance(currentUser, record);
         String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), record.getSocialContext());
         String bridgeUserId = resolvePairBridgeUserId(record, resolvedCurrentUserId, socialContext);
         Integer bridgeCount = resolvePairBridgeCount(socialContext);
@@ -582,27 +631,25 @@ public class UserRatesService {
                 ? Comparator.comparingLong(RatePageProjection::dayStartMs)
                 : Comparator.comparingLong(RatePageProjection::dayStartMs).reversed();
         return dayComparator
-                .thenComparing(ratePageInnerComparator(effectiveInnerOrder));
+                .thenComparing(ratePageInnerComparator(effectiveInnerOrder))
+                .thenComparing(projection -> safeText(projection.item().id()));
     }
 
     private Comparator<RatePageProjection> ratePageInnerComparator(String innerOrder) {
         if ("past".equals(innerOrder)) {
             return Comparator
                     .comparingLong(RatePageProjection::happenedAtMs)
-                    .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder())
-                    .thenComparing(projection -> safeText(projection.item().id()));
+                    .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder());
         }
         if ("relevant".equals(innerOrder)) {
             return Comparator
                     .comparingDouble(RatePageProjection::relevanceScore)
                     .reversed()
-                    .thenComparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder())
-                    .thenComparing(projection -> safeText(projection.item().id()));
+                    .thenComparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder());
         }
         return Comparator
                 .comparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder())
-                .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder())
-                .thenComparing(projection -> safeText(projection.item().id()));
+                .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder());
     }
 
     private boolean isWithinRange(RateMenuItemDto item, long rangeStartMs, long rangeEndMs) {
@@ -1105,12 +1152,15 @@ public class UserRatesService {
         return new UserRate.LocationSnapshot(latitude, longitude);
     }
 
-    private RateDistance resolveActivityDistance(Users currentUser, UserRate.LocationSnapshot ownerLocation) {
+    private RateDistance resolveActivityDistance(Users currentUser, UserRate record) {
+        if (record != null && record.getDistanceMetersExact() != null) {
+            return new RateDistance(Math.max(0, record.getDistanceMetersExact()));
+        }
         UserRate.LocationSnapshot origin = resolveCurrentUserLocation(currentUser);
         if (origin == null) {
             return ZERO_DISTANCE;
         }
-        return distanceBetween(origin, ownerLocation);
+        return distanceBetween(origin, record == null ? null : record.getOwnerLocation());
     }
 
     private UserRate.LocationSnapshot resolveCurrentUserLocation(Users currentUser) {

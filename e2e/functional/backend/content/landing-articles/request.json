@@ -1,0 +1,14 @@
+{
+  "name": "landing articles public page",
+  "group": "content",
+  "order": 201,
+  "method": "GET",
+  "path": "/api/landing/articles",
+  "params": {
+    "lang": "en",
+    "page": "0",
+    "pageSize": "2"
+  },
+  "expectedStatus": 200,
+  "maxMs": 5000
+}

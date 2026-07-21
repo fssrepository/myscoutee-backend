@@ -366,7 +366,7 @@ public class EventCounterExpiryService {
         EventCounterState safeCounters = counters == null ? new EventCounterState(0, 0, 0) : counters;
         return new Users.UserActivitiesRecord(
                 count(existing == null ? null : existing.game()),
-                count(existing == null ? null : existing.chat()),
+                count(existing == null ? null : existing.chats()),
                 safeCounters.invitations(),
                 safeCounters.events(),
                 safeCounters.hosting(),
@@ -376,6 +376,7 @@ public class EventCounterExpiryService {
                 count(existing == null ? null : existing.tickets()),
                 count(existing == null ? null : existing.contacts()),
                 count(existing == null ? null : existing.feedback()),
+                existing == null ? null : existing.chat(),
                 new Users.UserEventCountersRecord(
                         safeCounters.events()
                                 + safeCounters.invitations()
@@ -402,7 +403,8 @@ public class EventCounterExpiryService {
             return false;
         }
         return Objects.equals(count(first.game()), count(second.game()))
-                && Objects.equals(count(first.chat()), count(second.chat()))
+                && Objects.equals(count(first.chats()), count(second.chats()))
+                && Objects.equals(first.chat(), second.chat())
                 && Objects.equals(count(first.invitations()), count(second.invitations()))
                 && Objects.equals(count(first.events()), count(second.events()))
                 && Objects.equals(count(first.hosting()), count(second.hosting()))

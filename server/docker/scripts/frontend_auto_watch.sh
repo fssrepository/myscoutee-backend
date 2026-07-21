@@ -72,12 +72,18 @@ validate_build_configuration() {
 }
 
 resolve_build_output_dir() {
-  case "${BUILD_MODE}" in
+  case "${BUILD_CONFIGURATION}" in
     dev)
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/dev"
       ;;
-    prod)
+    e2e)
+      printf '%s\n' "${BUILD_FRONTEND_ROOT}/e2e"
+      ;;
+    github)
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/docs"
+      ;;
+    production)
+      printf '%s\n' "${BUILD_FRONTEND_ROOT}/prod"
       ;;
     *)
       printf '%s\n' "${BUILD_FRONTEND_ROOT}/dev"
@@ -295,7 +301,6 @@ echo "Starting nginx asset sync watcher..."
   while true; do
     FRONTEND_SOURCE_DIR="${BUILD_OUTPUT_DIR}" \
       NGINX_HTML_DIR="${NGINX_HTML_DIR:-/workspace/nginx-html}" \
-      SKIP_INITIAL_SYNC="true" \
       bash "${SYNC_SCRIPT}" "${BUILD_MODE}" watch || true
     echo "nginx asset sync watcher restarting in 3s..."
     sleep 3

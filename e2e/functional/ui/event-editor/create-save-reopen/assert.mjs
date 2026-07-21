@@ -18,15 +18,15 @@ export async function assertUi({ page }) {
   await page.recordStep('event-editor-my-events-open');
 
   await page.click('button[aria-label="Open event actions"]');
-  await page.click('.activities-quick-action-option-create');
-  await page.waitForSelector('.event-editor-popup-shell');
-  await page.waitForSelector('.popup-panel-event-editor');
+  await page.clickByText('app-activities-popup .ui-popup__panel .app-menu__panel button', 'Create Event');
+  await page.waitForSelector('app-event-editor-popup .ui-popup__panel');
+  await page.waitForSelector('app-event-editor-popup .ui-popup__panel');
   await page.recordStep('event-editor-create-open');
 
-  await page.fillVisible('.popup-panel-event-editor .experience-title-field input', title);
-  await page.fillVisible('.popup-panel-event-editor .experience-description-field textarea', description);
-  await setVisibleInputValues(page, '.popup-panel-event-editor .event-capacity-range-field input', ['1', '12']);
-  await page.fillVisible('.popup-panel-event-editor .event-location-field input', 'E2E Test Venue');
+  await page.fillVisible('app-event-editor-popup .ui-popup__panel .experience-title-field input', title);
+  await page.fillVisible('app-event-editor-popup .ui-popup__panel .experience-description-field textarea', description);
+  await setVisibleInputValues(page, 'app-event-editor-popup .ui-popup__panel .event-capacity-range-field input', ['1', '12']);
+  await page.fillVisible('app-event-editor-popup .ui-popup__panel .event-location-field input', 'E2E Test Venue');
   await page.recordStep('event-editor-fields-filled');
 
   await setVisibility(page, 'Friends only');
@@ -37,30 +37,29 @@ export async function assertUi({ page }) {
   await addPolicy(page, policyTitle);
   await page.recordStep('event-editor-policy-added');
 
-  await page.clickVisible('.popup-panel-event-editor .event-subevents-panel-trigger');
-  await page.waitForSelector('.subevents-panel');
+  await ensureSubEventsEnabled(page);
+  await page.clickVisible('app-event-editor-popup button[aria-label="Add sub event definition"]');
+  await page.waitForSelector('app-event-subevent-stage-form-popup .ui-popup__panel');
   await page.recordStep('event-editor-subevents-open');
   await addSubEvent(page, subEventTitle);
-  await waitForVisibleText(page, '.subevents-panel', subEventTitle, 15000);
+  await waitForVisibleText(page, 'app-event-editor-popup .subevent-definition-panel', subEventTitle, 15000);
   await page.recordStep('event-editor-subevent-added');
-  await page.clickVisible('.subevents-panel .subevents-back-btn');
-  await page.waitForSelectorHidden('.subevents-panel');
 
-  await page.clickVisible('.popup-panel-event-editor .event-slots-open-btn');
-  await page.waitForSelector('.event-policies-popup');
+  await page.clickVisible('app-event-editor-popup .event-policies-panel .event-slots-open-btn');
+  await page.waitForSelector('.event-policies-popup-body');
   await page.recordStep('event-editor-policy-setup-open');
-  await page.clickVisible('.event-policies-popup .event-slots-popup-close');
-  await page.waitForSelectorHidden('.event-policies-popup');
+  await page.clickVisible('button[aria-label="Close policy setup"]');
+  await page.waitForSelectorHidden('.event-policies-popup-body');
 
   await page.waitFor('event save button enabled', async () => {
     return page.evaluate(() => {
-      const button = document.querySelector('.popup-panel-event-editor button[aria-label="Save event"]');
+      const button = document.querySelector('app-event-editor-popup .ui-popup__panel button[aria-label="Save event"]');
       return Boolean(button && !button.disabled);
     });
   }, 20000);
-  await page.clickVisible('.popup-panel-event-editor button[aria-label="Save event"]');
+  await page.clickVisible('app-event-editor-popup .ui-popup__panel button[aria-label="Save event"]');
   await page.waitForNetwork('/api/activities/events/sync', { timeoutMs: 30000 });
-  await page.waitForSelectorHidden('.popup-panel-event-editor', { timeoutMs: 30000 });
+  await page.waitForSelectorHidden('app-event-editor-popup .ui-popup__panel', { timeoutMs: 30000 });
   await waitForActivityTitleVisible(page, title, 30000);
   await page.recordStep('event-editor-saved-visible-in-list');
 
@@ -71,23 +70,19 @@ export async function assertUi({ page }) {
   await page.recordStep('event-editor-reloaded-from-backend-list');
   await openSavedEventFromList(page, title);
   await closeExplanationPopupEventually(page, 10000);
-  await waitForVisibleText(page, '.popup-panel-event-editor', title, 30000);
-  await waitForVisibleFieldValue(page, '.popup-panel-event-editor .experience-description-field textarea', description, 30000);
+  await waitForVisibleFieldValue(page, 'app-event-editor-popup .experience-title-field input', title, 30000);
+  await waitForVisibleFieldValue(page, 'app-event-editor-popup .ui-popup__panel .experience-description-field textarea', description, 30000);
   await assertReopenedPolicyPanel(page, policyTitle);
-  await page.clickVisible('.popup-panel-event-editor .event-policies-panel .event-slots-open-btn');
-  await page.waitForSelector('.event-policies-popup');
-  await waitForVisibleText(page, '.event-policies-popup', policyTitle, 30000);
-  await page.clickVisible('.event-policies-popup .event-slots-popup-close');
-  await page.waitForSelectorHidden('.event-policies-popup');
-  await page.clickVisible('.popup-panel-event-editor .event-subevents-panel-trigger');
-  await page.waitForSelector('.subevents-panel');
-  await waitForVisibleText(page, '.subevents-panel', subEventTitle, 30000);
+  await page.clickVisible('app-event-editor-popup .event-policies-panel .event-slots-open-btn');
+  await page.waitForSelector('.event-policies-popup-body');
+  await waitForVisibleText(page, '.event-policies-popup-body', policyTitle, 30000);
+  await page.clickVisible('button[aria-label="Close policy setup"]');
+  await page.waitForSelectorHidden('.event-policies-popup-body');
+  await waitForVisibleText(page, 'app-event-editor-popup .subevent-definition-panel', subEventTitle, 30000);
   await page.recordStep('event-editor-reopened-saved-details');
   await assertNoDocumentHorizontalOverflow(page);
-  await page.clickVisible('.subevents-panel .subevents-back-btn');
-  await page.waitForSelectorHidden('.subevents-panel');
-  await page.clickVisible('.popup-panel-event-editor .popup-close[aria-label="Close"]');
-  await page.waitForSelectorHidden('.popup-panel-event-editor', { timeoutMs: 30000 });
+  await page.clickVisible('app-event-editor-popup > app-popup .ui-popup__close[aria-label="Close"]');
+  await page.waitForSelectorHidden('app-event-editor-popup .ui-popup__panel', { timeoutMs: 30000 });
 
   const visibleTitleCount = await page.evaluate(title => {
     const isVisible = element => {
@@ -98,7 +93,7 @@ export async function assertUi({ page }) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    return Array.from(document.querySelectorAll('.popup-panel-activities .ui-info-card__title, .popup-panel-activities .activities-card-title'))
+    return Array.from(document.querySelectorAll('.activities-popup .ui-info-card__title, .activities-popup .activities-card-title'))
       .filter(isVisible)
       .filter(element => (element.textContent ?? '').includes(title))
       .length;
@@ -138,14 +133,14 @@ async function waitForActivityTitleVisible(page, title, timeoutMs = 30000) {
           && style.visibility !== 'hidden'
           && style.display !== 'none';
       };
-      return Array.from(document.querySelectorAll('.popup-panel-activities .ui-info-card__title, .popup-panel-activities .activities-card-title'))
+      return Array.from(document.querySelectorAll('.activities-popup .ui-info-card__title, .activities-popup .activities-card-title'))
         .some(element => isVisible(element) && (element.textContent ?? '').includes(title));
     }, title);
     if (visible) {
       return;
     }
     await page.evaluate(() => {
-      const list = document.querySelector('.popup-panel-activities .smart-list');
+      const list = document.querySelector('.activities-popup .smart-list');
       if (list) {
         list.scrollBy({ top: Math.max(360, list.clientHeight * 0.85), left: 0, behavior: 'instant' });
         list.dispatchEvent(new Event('scroll', { bubbles: true }));
@@ -158,9 +153,9 @@ async function waitForActivityTitleVisible(page, title, timeoutMs = 30000) {
     await page.evaluate(() => new Promise(resolve => window.setTimeout(resolve, 300)));
   }
   const listState = await page.evaluate(() => {
-    const list = document.querySelector('.popup-panel-activities .smart-list');
+    const list = document.querySelector('.activities-popup .smart-list');
     return {
-      text: (document.querySelector('.popup-panel-activities')?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1200),
+      text: (document.querySelector('.activities-popup')?.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 1200),
       scrollTop: list?.scrollTop ?? 0,
       scrollHeight: list?.scrollHeight ?? 0,
       clientHeight: list?.clientHeight ?? 0
@@ -183,7 +178,7 @@ async function waitForActivityTitleVisible(page, title, timeoutMs = 30000) {
 
 async function assertReopenedPolicyPanel(page, policyTitle) {
   const panel = await page.evaluate(() => {
-    const root = document.querySelector('.popup-panel-event-editor');
+    const root = document.querySelector('app-event-editor-popup .ui-popup__panel');
     const button = root?.querySelector('.event-policies-panel .event-slots-open-btn');
     return {
       hasPanelButton: Boolean(button),
@@ -211,7 +206,7 @@ async function openMyEvents(page) {
   await openNavigatorMenu(page);
   await page.click('button[aria-label="Open my events"]');
   await closeExplanationPopupEventually(page, 10000);
-  await page.waitForSelector('.popup-panel-activities');
+  await page.waitForSelector('.activities-popup');
   await page.waitForSelector('.activities-popup');
   await page.waitForNetwork('/api/activities/events', { timeoutMs: 25000 });
 }
@@ -244,24 +239,42 @@ async function setVisibleInputValues(page, selector, values) {
 }
 
 async function setVisibility(page, label) {
-  await page.clickVisible('.popup-panel-event-editor .event-visibility-trigger');
-  await page.waitForSelector('.popup-panel-event-editor .activities-view-picker-panel');
-  await page.clickByText('.popup-panel-event-editor .activities-view-option', label);
-  await waitForVisibleText(page, '.popup-panel-event-editor .event-visibility-trigger', label, 10000);
+  await page.clickVisible('app-event-editor-popup button[aria-label="Open visibility selector"]');
+  await page.waitForSelector('app-event-editor-popup .ui-popup__header-controls .app-menu__panel');
+  await page.clickByText('app-event-editor-popup .ui-popup__header-controls .app-menu__panel button', label);
+  await waitForVisibleText(page, 'app-event-editor-popup button[aria-label="Open visibility selector"]', label, 10000);
 }
 
 async function toggleEditorCards(page) {
-  await page.clickVisible('.popup-panel-event-editor .event-blind-mode-card');
-  await page.clickVisible('.popup-panel-event-editor .event-auto-inviter-card');
-  await page.clickVisible('.popup-panel-event-editor .event-ticketing-card');
-  await waitForVisibleText(page, '.popup-panel-event-editor', 'Ticketing', 10000).catch(() => undefined);
+  const toggled = await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll(
+      'app-event-editor-popup .event-intel-menu .app-menu__button-row-item'
+    )).filter(button => !button.disabled);
+    for (const index of [0, 2, 3]) {
+      buttons[index]?.click();
+    }
+    return buttons.length;
+  });
+  assert(toggled >= 4, 'Event intel menu should expose blind mode, auto inviter, and ticketing toggles', { toggled });
+  await waitForVisibleText(page, 'app-event-editor-popup .ui-popup__panel', 'Ticketing', 10000).catch(() => undefined);
 }
 
 async function pickFirstTopic(page) {
-  await page.clickVisible('.popup-panel-event-editor .event-topics-panel');
-  await page.waitForSelector('.popup-panel-topic-picker');
+  const opened = await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll(
+      'app-event-editor-popup .event-intel-menu .app-menu__button-row-item'
+    ));
+    const topics = buttons[1];
+    if (!topics || topics.disabled) {
+      return false;
+    }
+    topics.click();
+    return true;
+  });
+  assert(opened, 'Event intel menu should expose the topics selector');
+  await page.waitForSelector('app-event-editor-popup .event-intel-menu .app-menu__panel');
   const topic = await page.evaluate(() => {
-    const button = Array.from(document.querySelectorAll('.popup-panel-topic-picker .values-option-chip'))
+    const button = Array.from(document.querySelectorAll('app-event-editor-popup .event-intel-menu .app-menu__tabs-item'))
       .find(item => {
         const rect = item.getBoundingClientRect();
         const style = window.getComputedStyle(item);
@@ -276,33 +289,51 @@ async function pickFirstTopic(page) {
     return button?.textContent?.trim() ?? '';
   });
   assert(topic, 'Event topic picker should expose at least one topic');
-  await page.clickVisible('.popup-panel-topic-picker .popup-back-btn');
-  await page.waitForSelectorHidden('.popup-panel-topic-picker');
-  await waitForVisibleText(page, '.popup-panel-event-editor .event-topics-panel', topic, 10000);
+  const topicsActive = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll(
+      'app-event-editor-popup .event-intel-menu .app-menu__button-row-item'
+    ))[1]?.classList.contains('app-menu__button-row-item--active') === true;
+  });
+  assert(topicsActive, 'Selecting a topic should mark the event topics action active', { topic });
 }
 
 async function addPolicy(page, policyTitle) {
-  await page.clickVisible('.popup-panel-event-editor .event-policies-panel .event-slots-open-btn');
-  await page.waitForSelector('.event-policies-popup');
-  await page.clickVisible('.event-policies-popup button[aria-label="Add policy"]');
-  await page.waitForSelector('.event-policy-editor-popup');
-  await page.fillVisible('.event-policy-editor-popup input[placeholder="Policy title"]', policyTitle);
-  await page.fillVisible('.event-policy-editor-popup textarea[placeholder="Explain the policy clearly."]', `${policyTitle} must be accepted during e2e.`);
-  await page.clickVisible('.event-policy-editor-popup button[aria-label="Save policy"]');
-  await page.waitForSelectorHidden('.event-policy-editor-popup');
-  await waitForVisibleText(page, '.event-policies-popup', policyTitle, 15000);
-  await page.clickVisible('.event-policies-popup .event-slots-popup-close');
-  await page.waitForSelectorHidden('.event-policies-popup');
+  const policiesOn = await page.evaluate(() => {
+    return document.querySelector('app-event-editor-popup .event-policies-panel')?.classList.contains('is-on') === true;
+  });
+  if (!policiesOn) {
+    await page.clickVisible('app-event-editor-popup .event-policies-toggle');
+  }
+  await page.clickVisible('app-event-editor-popup .ui-popup__panel .event-policies-panel .event-slots-open-btn');
+  await page.waitForSelector('.event-policies-popup-body');
+  await page.clickVisible('button[aria-label="Add policy"]');
+  await page.waitForSelector('app-policies-input-popup .ui-popup__panel');
+  await page.fillVisible('app-policies-input-popup [data-control-id="title"] input', policyTitle);
+  await page.fillVisible('app-policies-input-popup [data-control-id="description"] textarea', `${policyTitle} must be accepted during e2e.`);
+  await page.clickVisible('app-policies-input-popup button[aria-label="Save policy"]');
+  await page.waitForSelectorHidden('app-policies-input-popup .ui-popup__panel');
+  await waitForVisibleText(page, '.event-policies-popup-body', policyTitle, 15000);
+  await page.clickVisible('button[aria-label="Close policy setup"]');
+  await page.waitForSelectorHidden('.event-policies-popup-body');
 }
 
 async function addSubEvent(page, subEventTitle) {
-  await page.clickVisible('.subevents-panel button[aria-label="Add sub event"]');
-  await page.waitForSelector('.subevent-form-popup');
-  await page.fillVisible('.subevent-form-popup .subevent-name-field input', subEventTitle);
-  await page.fillVisible('.subevent-form-popup .experience-description-field textarea', `${subEventTitle} description`);
-  await page.fillVisible('.subevent-form-popup .subevent-location-field input', 'E2E Stage Venue');
-  await page.clickVisible('.subevent-form-popup button[aria-label="Save sub event"]');
-  await page.waitForSelectorHidden('.subevent-form-popup');
+  await page.fillVisible('app-event-subevent-stage-form-popup .subevent-name-field input', subEventTitle);
+  await page.fillVisible('app-event-subevent-stage-form-popup .experience-description-field textarea', `${subEventTitle} description`);
+  await page.fillVisible('app-event-subevent-stage-form-popup .subevent-location-field input', 'E2E Stage Venue');
+  await page.clickVisible('app-event-subevent-stage-form-popup button[aria-label="Save sub event"]');
+  await page.waitForSelectorHidden('app-event-subevent-stage-form-popup .ui-popup__panel');
+}
+
+async function ensureSubEventsEnabled(page) {
+  const toggle = 'app-event-editor-popup .subevent-definition-panel__toggle';
+  const enabled = await page.evaluate(selector => {
+    return document.querySelector(selector)?.classList.contains('is-on') === true;
+  }, toggle);
+  if (!enabled) {
+    await page.clickVisible(toggle);
+  }
+  await page.waitForSelector('app-event-editor-popup button[aria-label="Add sub event definition"]');
 }
 
 async function openSavedEventFromList(page, title) {
@@ -315,7 +346,7 @@ async function openSavedEventFromList(page, title) {
         && style.visibility !== 'hidden'
         && style.display !== 'none';
     };
-    const card = Array.from(document.querySelectorAll('.popup-panel-activities .experience-item-card'))
+    const card = Array.from(document.querySelectorAll('.activities-popup .experience-item-card'))
       .find(element => visible(element) && (element.textContent ?? '').includes(title));
     const menu = card?.querySelector('.ui-info-card__menu-trigger');
     if (!menu || menu.disabled) {
@@ -326,12 +357,33 @@ async function openSavedEventFromList(page, title) {
     return true;
   }, title);
   assert(opened, 'Saved event card should expose an action menu', { title });
-  await page.waitForSelector('.item-action-menu-btn, .ui-info-card__menu-action');
+  await page.waitForSelector('app-activities-popup app-menu-outlet .app-menu__panel button');
   await recordInfoCardMenuAnchorFinding(page, {
     title: 'Saved event card action menu is visually detached from its three-dot trigger'
   });
   await page.recordStep('event-editor-saved-card-menu-anchored');
-  await page.clickByText('.item-action-menu-btn, .ui-info-card__menu-action', 'View');
-  await page.waitForSelector('.popup-panel-event-editor');
+  await page.clickByText('app-activities-popup app-menu-outlet .app-menu__panel button', 'View');
+  await page.waitFor('saved event details or sub-events overview open', async () => {
+    return (await page.isSelectorVisible('app-event-editor-popup .ui-popup__panel'))
+      || (await page.isSelectorVisible('app-event-subevents-list-popup .event-subevents-list-smart-list'));
+  }, 20000);
+  if (await page.isSelectorVisible('app-event-subevents-list-popup .event-subevents-list-smart-list')) {
+    const openedEditor = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll(
+        'app-event-subevents-list-popup .ui-popup__toolbar .app-menu__button-row-item'
+      ));
+      const button = buttons.find(item => /\b(edit|view)\b/i.test(
+        `${item.getAttribute('aria-label') ?? ''} ${item.textContent ?? ''}`
+      ));
+      button?.click();
+      return {
+        clicked: Boolean(button),
+        count: buttons.length,
+        labels: buttons.map(item => ({ aria: item.getAttribute('aria-label'), text: item.textContent?.trim() ?? '' }))
+      };
+    });
+    assert(openedEditor.clicked, 'Sub-events overview should expose its event editor action', openedEditor);
+  }
+  await page.waitForSelector('app-event-editor-popup .ui-popup__panel');
   await page.waitForSelectorHidden('.popup-loading-overlay', { timeoutMs: 30000 });
 }

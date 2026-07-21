@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.controller;
 
 
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,6 +28,8 @@ public class I18nMessageRestController {
             @RequestParam(name = "lang", required = false) String requestedLang,
             @RequestParam(name = "version", required = false) String version) {
         I18nBundleResponseDto bundle = i18nService.getBundle(requestedLang, lang, version);
-        return ResponseEntity.ok(bundle);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(bundle);
     }
 }

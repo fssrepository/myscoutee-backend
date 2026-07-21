@@ -82,6 +82,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private PaymentService paymentService;
     @Mock
+    private EventCheckoutBasketService eventCheckoutBasketService;
+    @Mock
     private ScheduledMessageTaskService scheduledMessageTaskService;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
@@ -128,6 +130,7 @@ class ActivitiesEventsServiceTest {
                 activitiesMembersService,
                 eventParticipationTicketService,
                 paymentService,
+                eventCheckoutBasketService,
                 scheduledMessageTaskService,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -169,7 +172,7 @@ class ActivitiesEventsServiceTest {
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(coldStartEvent, knownHostEvent));
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer")).thenReturn(Map.of());
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false)).thenReturn(Map.of());
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList()))
                 .thenReturn(List.of(edge("viewer", "known-host", 0.92d)));
 
@@ -513,7 +516,7 @@ class ActivitiesEventsServiceTest {
         attending.setAcceptedMemberUserIds(List.of("viewer"));
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1"));
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(attending));
         when(activitiesMembersService.buildBatchEventSnapshots(anyMap())).thenReturn(Map.of());
@@ -538,7 +541,7 @@ class ActivitiesEventsServiceTest {
         third.setAcceptedMemberUserIds(List.of("viewer"));
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
@@ -575,7 +578,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findActiveInvitationEvents("host"))
                 .thenReturn(List.of(invitation));
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(hosting, invitation, trashed));
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host", false)).thenReturn(Map.of());
 
         EventsExplorePageDto hostingResponse = service.queryHostingPage("host", 2, null);
         EventsExplorePageDto invitationResponse = service.queryInvitationsPage("host", 2, null);
@@ -624,7 +627,7 @@ class ActivitiesEventsServiceTest {
         ActivityEvent third = event("event-3", "host", 0d);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1", "event-2", "event-3"));
         AtomicInteger findCalls = new AtomicInteger();
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
@@ -670,7 +673,7 @@ class ActivitiesEventsServiceTest {
                 10);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer"))
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1"));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(staleProjection));
@@ -718,7 +721,7 @@ class ActivitiesEventsServiceTest {
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(first, second, third));
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(first, second, third));
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host")).thenReturn(Map.of());
+        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host", false)).thenReturn(Map.of());
 
         EventsExplorePageDto page = service.queryItemsByUserPage("host", 2, null);
 
@@ -798,7 +801,9 @@ class ActivitiesEventsServiceTest {
                 1,
                 1,
                 false,
+                false,
                 "One-time",
+                false,
                 false,
                 null,
                 false,

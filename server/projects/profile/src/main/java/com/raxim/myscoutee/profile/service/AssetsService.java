@@ -139,8 +139,8 @@ public class AssetsService {
                 .toList();
     }
 
-    public AssetDetailDto queryAssetDetail(String assetId) {
-        String normalizedUserId = currentActorUserId();
+    public AssetDetailDto queryAssetDetail(String userId, String assetId) {
+        String normalizedUserId = effectiveActorUserId(userId);
         String normalizedAssetId = normalizeId(assetId);
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedAssetId)) {
             return null;

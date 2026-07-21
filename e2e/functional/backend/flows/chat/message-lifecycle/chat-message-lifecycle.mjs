@@ -63,7 +63,7 @@ export async function assertResponse({ ctx, result, request }) {
     expectedStatus: 200
   });
   assertMessages(messages.data, ctx);
-  assert(messages.data.some(item => item.id === messageId), 'message list should include the created message');
+  assert(messages.data.items.some(item => item.id === messageId), 'message list should include the created message');
 
   await ctx.http.post('/api/activities/chats/devices', {
     headers: request.headers,

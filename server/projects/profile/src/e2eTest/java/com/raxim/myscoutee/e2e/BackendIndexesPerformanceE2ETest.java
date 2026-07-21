@@ -36,8 +36,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Payment;
@@ -155,12 +155,12 @@ class BackendIndexesPerformanceE2ETest {
     }
 
     private void assertChatParentSearchFieldsAreMaintained() {
-        ActivityChatMessage message = mongoTemplate.findById("chat-message:perf-chat-1:perf-message-1", ActivityChatMessage.class);
+        ChatMessage message = mongoTemplate.findById("chat-message:perf-chat-1:perf-message-1", ChatMessage.class);
         assertThat(message).isNotNull();
         assertThat(message.getMessageSenderUserIds()).contains("perf-u02");
         assertThat(message.getMessageReadByUserIds()).contains("perf-u03");
         assertThat(message.getMessageReactionUserIds()).contains("perf-u04");
-        assertThat(message.getMessageAttachmentKeys()).contains(ActivityChatMessage.messageAttachmentKey("event", "perf-event-1"));
+        assertThat(message.getMessageAttachmentKeys()).contains(ChatMessage.messageAttachmentKey("event", "perf-event-1"));
         assertThat(message.getPollVoterUserIds()).contains("perf-u05");
     }
 
@@ -220,7 +220,7 @@ class BackendIndexesPerformanceE2ETest {
 
     private void clearHotCollections() {
         mongoTemplate.remove(new Query(), Payment.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), Users.class);
@@ -284,7 +284,7 @@ class BackendIndexesPerformanceE2ETest {
     private void seedChats() {
         for (int index = 1; index <= 80; index++) {
             String chatId = "perf-chat-" + index;
-            ActivityChat chat = new ActivityChat();
+            Chat chat = new Chat();
             chat.setMongoId("perf-u01:" + chatId);
             chat.setChatId(chatId);
             chat.setOwnerUserId("perf-u01");
@@ -295,40 +295,40 @@ class BackendIndexesPerformanceE2ETest {
             chat.setChannelType(index % 6 == 0 ? "serviceEvent" : "direct");
             chat.setUnread(index % 3);
             if (index == 1) {
-                mongoTemplate.save(ActivityChatMessage.fromRecord(chatId, seedSearchMessage()));
+                mongoTemplate.save(E2eChatTestSupport.persistedMessage(chatId, seedSearchMessage()));
             }
             mongoTemplate.save(chat);
         }
     }
 
-    private ActivityChat.ChatMessageRecord seedSearchMessage() {
-        ActivityChat.ChatAvatarRecord senderAvatar = new ActivityChat.ChatAvatarRecord();
+    private ChatMessage seedSearchMessage() {
+        ChatMessage.ChatAvatarRecord senderAvatar = new ChatMessage.ChatAvatarRecord();
         senderAvatar.setId("perf-u02");
         senderAvatar.setInitials("PU2");
         senderAvatar.setGender("woman");
 
-        ActivityChat.ChatReadAvatarRecord reader = new ActivityChat.ChatReadAvatarRecord();
+        ChatMessage.ChatReadAvatarRecord reader = new ChatMessage.ChatReadAvatarRecord();
         reader.setId("perf-u03");
         reader.setInitials("PU3");
         reader.setGender("man");
 
-        ActivityChat.ChatMessageReactionRecord reaction = new ActivityChat.ChatMessageReactionRecord();
+        ChatMessage.ChatMessageReactionRecord reaction = new ChatMessage.ChatMessageReactionRecord();
         reaction.setUserId("perf-u04");
         reaction.setEmoji("+1");
         reaction.setReactedAtIso(BASE_TIME.toString());
 
-        ActivityChat.ChatMessageAttachmentRecord eventAttachment = new ActivityChat.ChatMessageAttachmentRecord();
+        ChatMessage.ChatMessageAttachmentRecord eventAttachment = new ChatMessage.ChatMessageAttachmentRecord();
         eventAttachment.setId("perf-attachment-event");
         eventAttachment.setType("event");
         eventAttachment.setEntityId("perf-event-1");
         eventAttachment.setTitle("Performance Event 1");
 
-        ActivityChat.ChatMessageAttachmentRecord pollAttachment = new ActivityChat.ChatMessageAttachmentRecord();
+        ChatMessage.ChatMessageAttachmentRecord pollAttachment = new ChatMessage.ChatMessageAttachmentRecord();
         pollAttachment.setId("perf-attachment-poll");
         pollAttachment.setType("poll");
         pollAttachment.setDescription("{\"options\":[{\"votes\":[{\"userId\":\"perf-u05\"}]}]}");
 
-        ActivityChat.ChatMessageRecord message = new ActivityChat.ChatMessageRecord();
+        ChatMessage message = new ChatMessage();
         message.setId("perf-message-1");
         message.setSender("Performance User 2");
         message.setSenderAvatar(senderAvatar);

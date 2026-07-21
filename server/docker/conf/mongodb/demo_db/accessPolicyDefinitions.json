@@ -462,23 +462,6 @@
     "updatedUser": "access-policy-seed"
   },
   {
-    "_id": "access-policy-asset-source-refresh",
-    "syncKey": "access-policy-asset-source-refresh",
-    "policyKey": "asset.source.refresh",
-    "permission": "asset.source.refresh",
-    "resourceType": "asset",
-    "required": [
-      "noExplicitDeny",
-      "actorCanRefreshAssetSource"
-    ],
-    "anyOf": [],
-    "status": "active",
-    "description": "Owner/manager may refresh asset from external source.",
-    "createdDate": "2026-06-02T00:00:00Z",
-    "updatedDate": "2026-06-02T00:00:00Z",
-    "updatedUser": "access-policy-seed"
-  },
-  {
     "_id": "access-policy-asset-borrow-request",
     "syncKey": "access-policy-asset-borrow-request",
     "policyKey": "asset.borrow.request",

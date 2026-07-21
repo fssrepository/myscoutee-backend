@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "idea_post_content_lang", def = "{'contentKey': 1, 'lang': 1}", unique = true),
         @CompoundIndex(name = "idea_post_lang_submitted", def = "{'lang': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "idea_post_lang_published_submitted", def = "{'lang': 1, 'published': 1, 'submittedAtIso': -1}"),
+        @CompoundIndex(name = "idea_post_public_page", def = "{'lang': 1, 'published': 1, 'submittedAtIso': -1, '_id': -1}"),
+        @CompoundIndex(name = "idea_post_public_featured_preview", def = "{'lang': 1, 'published': 1, 'featured': 1, 'submittedAtIso': -1, '_id': -1}"),
         @CompoundIndex(name = "idea_post_published_submitted", def = "{'published': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "idea_post_featured_submitted", def = "{'featured': 1, 'published': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "idea_post_trashed_submitted", def = "{'trashed': 1, 'submittedAtIso': -1}")

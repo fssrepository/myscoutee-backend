@@ -109,7 +109,48 @@ public final class SharedDtos {
             PricingCancellationPolicyDto cancellationPolicy,
             Boolean slotPricingEnabled,
             List<PricingSlotOverrideDto> slotOverrides,
-            PricingAudienceSettingsDto audience) {
+            PricingAudienceSettingsDto audience,
+            Boolean enabled) {
+        public PricingConfigDto(
+                String mode,
+                Double basePrice,
+                String currency,
+                String taxMode,
+                String chargeType,
+                Boolean quantityRulesEnabled,
+                List<PricingQuantityRuleDto> quantityRules,
+                Double minPrice,
+                Double maxPrice,
+                String rounding,
+                Boolean demandRulesEnabled,
+                List<PricingDemandRuleDto> demandRules,
+                Boolean timeRulesEnabled,
+                List<PricingTimeRuleDto> timeRules,
+                PricingCancellationPolicyDto cancellationPolicy,
+                Boolean slotPricingEnabled,
+                List<PricingSlotOverrideDto> slotOverrides,
+                PricingAudienceSettingsDto audience) {
+            this(
+                    mode,
+                    basePrice,
+                    currency,
+                    taxMode,
+                    chargeType,
+                    quantityRulesEnabled,
+                    quantityRules,
+                    minPrice,
+                    maxPrice,
+                    rounding,
+                    demandRulesEnabled,
+                    demandRules,
+                    timeRulesEnabled,
+                    timeRules,
+                    cancellationPolicy,
+                    slotPricingEnabled,
+                    slotOverrides,
+                    audience,
+                    null);
+        }
     }
 
     public record SubEventGroupItemDto(

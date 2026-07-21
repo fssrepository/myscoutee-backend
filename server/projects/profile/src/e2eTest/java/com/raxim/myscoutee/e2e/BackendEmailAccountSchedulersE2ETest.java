@@ -42,8 +42,8 @@ import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.AccountPurgeJob;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
-import com.raxim.myscoutee.profile.data.document.ActivityChatMessage;
+import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
@@ -204,22 +204,22 @@ class BackendEmailAccountSchedulersE2ETest {
         assertThat(findAll(Query.query(Criteria.where("userId").is(PURGED_USER_ID)), ActivityMember.class)).isEmpty();
         assertThat(findAll(Query.query(Criteria.where("recipientUserIds").is(PURGED_USER_ID)), NotificationOutboxItem.class)).isEmpty();
 
-        ActivityChat scrubbedChat = findOne(Query.query(Criteria.where("id").is(PURGE_CHAT_ID)), ActivityChat.class);
+        Chat scrubbedChat = findOne(Query.query(Criteria.where("id").is(PURGE_CHAT_ID)), Chat.class);
         assertThat(scrubbedChat).isNotNull();
         assertThat(scrubbedChat.getOwnerUserId()).isEqualTo("deleted-user");
         assertThat(scrubbedChat.getMemberIds()).containsExactly(SURVIVOR_ID);
-        List<ActivityChatMessage> scrubbedMessages = findAll(
+        List<ChatMessage> scrubbedMessages = findAll(
                 Query.query(Criteria.where("chatId").is(PURGE_CHAT_ID)).with(Sort.by(Sort.Direction.ASC, "sentAtIso")),
-                ActivityChatMessage.class);
+                ChatMessage.class);
         assertThat(scrubbedMessages).hasSize(2);
-        ActivityChat.ChatMessageRecord deletedMessage = scrubbedMessages.get(0);
+        ChatMessage deletedMessage = scrubbedMessages.get(0);
         assertThat(deletedMessage.getText()).isBlank();
         assertThat(deletedMessage.getSender()).isEqualTo("Deleted user");
         assertThat(deletedMessage.getSenderAvatar().getInitials()).isEqualTo("DU");
         assertThat(deletedMessage.getSenderAvatar().getGender()).isEqualTo("deleted");
         assertThat(deletedMessage.getAttachments()).isEmpty();
         assertThat(deletedMessage.getDeletedAtIso()).isNotBlank();
-        ActivityChat.ChatMessageRecord survivorMessage = scrubbedMessages.get(1);
+        ChatMessage survivorMessage = scrubbedMessages.get(1);
         assertThat(survivorMessage.getReadBy()).isEmpty();
         assertThat(survivorMessage.getReactions()).isEmpty();
         assertThat(survivorMessage.getPinnedByUserId()).isNull();
@@ -238,8 +238,8 @@ class BackendEmailAccountSchedulersE2ETest {
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Asset.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
-        mongoTemplate.remove(new Query(), ActivityChatMessage.class);
+        mongoTemplate.remove(new Query(), Chat.class);
+        mongoTemplate.remove(new Query(), ChatMessage.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
     }
 
@@ -331,10 +331,10 @@ class BackendEmailAccountSchedulersE2ETest {
         mongoTemplate.save(asset);
 
         mongoTemplate.save(member("asset-member", "asset", PURGED_ASSET_ID, SURVIVOR_ID));
-        ActivityChat purgeChat = purgeChat();
+        Chat purgeChat = purgeChat();
         mongoTemplate.save(purgeChat);
-        mongoTemplate.save(ActivityChatMessage.fromRecord(PURGE_CHAT_ID, purgedUserMessage()));
-        mongoTemplate.save(ActivityChatMessage.fromRecord(PURGE_CHAT_ID, survivorReplyMessage()));
+        mongoTemplate.save(E2eChatTestSupport.persistedMessage(PURGE_CHAT_ID, purgedUserMessage()));
+        mongoTemplate.save(E2eChatTestSupport.persistedMessage(PURGE_CHAT_ID, survivorReplyMessage()));
         mongoTemplate.save(notificationReferencingPurgedUser());
     }
 
@@ -354,8 +354,8 @@ class BackendEmailAccountSchedulersE2ETest {
         return member;
     }
 
-    private ActivityChat purgeChat() {
-        ActivityChat chat = new ActivityChat();
+    private Chat purgeChat() {
+        Chat chat = new Chat();
         chat.setMongoId(PURGE_CHAT_ID + ":" + PURGED_USER_ID);
         chat.setChatId(PURGE_CHAT_ID);
         chat.setOwnerUserId(PURGED_USER_ID);
@@ -370,8 +370,8 @@ class BackendEmailAccountSchedulersE2ETest {
         return chat;
     }
 
-    private ActivityChat.ChatMessageRecord purgedUserMessage() {
-        ActivityChat.ChatMessageRecord message = new ActivityChat.ChatMessageRecord();
+    private ChatMessage purgedUserMessage() {
+        ChatMessage message = new ChatMessage();
         message.setId("purged-message");
         message.setSender("Deleted Soon");
         message.setSenderAvatar(chatAvatar(PURGED_USER_ID, "DS", "woman"));
@@ -379,7 +379,7 @@ class BackendEmailAccountSchedulersE2ETest {
         message.setSentAtIso(BASE_TIME.plus(Duration.ofMinutes(1)).toString());
         message.setReadBy(List.of(chatRead(SURVIVOR_ID, "SU", "man")));
         message.setReactions(new ArrayList<>());
-        ActivityChat.ChatMessageAttachmentRecord attachment = new ActivityChat.ChatMessageAttachmentRecord();
+        ChatMessage.ChatMessageAttachmentRecord attachment = new ChatMessage.ChatMessageAttachmentRecord();
         attachment.setId("voice-1");
         attachment.setType("voice");
         attachment.setTitle("voice");
@@ -389,15 +389,15 @@ class BackendEmailAccountSchedulersE2ETest {
         return message;
     }
 
-    private ActivityChat.ChatMessageRecord survivorReplyMessage() {
-        ActivityChat.ChatMessageRecord message = new ActivityChat.ChatMessageRecord();
+    private ChatMessage survivorReplyMessage() {
+        ChatMessage message = new ChatMessage();
         message.setId("survivor-message");
         message.setSender("Survivor User");
         message.setSenderAvatar(chatAvatar(SURVIVOR_ID, "SU", "man"));
         message.setText("Please keep this after purge");
         message.setSentAtIso(BASE_TIME.plus(Duration.ofMinutes(2)).toString());
         message.setReadBy(List.of(chatRead(PURGED_USER_ID, "DS", "woman")));
-        ActivityChat.ChatMessageReactionRecord reaction = new ActivityChat.ChatMessageReactionRecord();
+        ChatMessage.ChatMessageReactionRecord reaction = new ChatMessage.ChatMessageReactionRecord();
         reaction.setEmoji(":wave:");
         reaction.setUserId(PURGED_USER_ID);
         reaction.setUserName("Deleted Soon");
@@ -405,7 +405,7 @@ class BackendEmailAccountSchedulersE2ETest {
         reaction.setUserGender("woman");
         reaction.setReactedAtIso(BASE_TIME.plus(Duration.ofMinutes(2)).toString());
         message.setReactions(List.of(reaction));
-        ActivityChat.ChatMessageReplyRecord reply = new ActivityChat.ChatMessageReplyRecord();
+        ChatMessage.ChatMessageReplyRecord reply = new ChatMessage.ChatMessageReplyRecord();
         reply.setId("purged-message");
         reply.setSender("Deleted Soon");
         reply.setText("Message that must be scrubbed");
@@ -415,16 +415,16 @@ class BackendEmailAccountSchedulersE2ETest {
         return message;
     }
 
-    private ActivityChat.ChatAvatarRecord chatAvatar(String userId, String initials, String gender) {
-        ActivityChat.ChatAvatarRecord avatar = new ActivityChat.ChatAvatarRecord();
+    private ChatMessage.ChatAvatarRecord chatAvatar(String userId, String initials, String gender) {
+        ChatMessage.ChatAvatarRecord avatar = new ChatMessage.ChatAvatarRecord();
         avatar.setId(userId);
         avatar.setInitials(initials);
         avatar.setGender(gender);
         return avatar;
     }
 
-    private ActivityChat.ChatReadAvatarRecord chatRead(String userId, String initials, String gender) {
-        ActivityChat.ChatReadAvatarRecord reader = new ActivityChat.ChatReadAvatarRecord();
+    private ChatMessage.ChatReadAvatarRecord chatRead(String userId, String initials, String gender) {
+        ChatMessage.ChatReadAvatarRecord reader = new ChatMessage.ChatReadAvatarRecord();
         reader.setId(userId);
         reader.setInitials(initials);
         reader.setGender(gender);
@@ -505,6 +505,7 @@ class BackendEmailAccountSchedulersE2ETest {
         user.setImages(List.of("https://example.test/avatar/" + userId + ".png"));
         user.setActivities(new Users.UserActivitiesRecord(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),

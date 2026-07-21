@@ -5,7 +5,7 @@ export async function assertUi({ page }) {
   await openNavigatorMenu(page);
   await page.recordStep('navigator-menu-open');
   await page.click('button[aria-label="Open events"]');
-  await page.waitForSelector('.popup-panel-activities');
+  await page.waitForSelector('.activities-popup');
   await page.waitForSelector('.activities-popup');
   await page.waitForNetwork('/api/activities/events');
   await page.recordStep('event-explore-open');

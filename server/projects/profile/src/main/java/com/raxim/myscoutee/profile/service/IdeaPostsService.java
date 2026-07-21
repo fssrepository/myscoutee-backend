@@ -1,7 +1,9 @@
 package com.raxim.myscoutee.profile.service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +30,13 @@ import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminActio
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminCountsDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostDto;
+import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostPublicPageDto;
 import com.raxim.myscoutee.profile.data.dto.idea.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.IdeaPostsRepository;
+import com.raxim.myscoutee.profile.repository.LandingArticlesRepository;
+import com.raxim.myscoutee.profile.repository.LandingArticlesRepository.LandingArticleCursor;
+import com.raxim.myscoutee.profile.repository.LandingArticlesRepository.LandingArticleSlice;
+import com.raxim.myscoutee.profile.service.mapper.IdeaPostMapper;
 
 @Service
 public class IdeaPostsService {
@@ -38,6 +45,9 @@ public class IdeaPostsService {
     private static final int MAX_IMAGE_URLS = 24;
     private static final int DEFAULT_ADMIN_PAGE_SIZE = 10;
     private static final int MAX_ADMIN_PAGE_SIZE = 50;
+    private static final int DEFAULT_PUBLIC_PAGE_SIZE = 10;
+    private static final int MAX_PUBLIC_PAGE_SIZE = 50;
+    private static final int LANDING_FEATURED_PREVIEW_SIZE = 8;
     private static final Safelist IDEA_HTML_SAFELIST = Safelist.relaxed()
             .addTags("section", "article", "figure", "figcaption", "h2", "h3", "h4")
             .addAttributes(":all", "class")
@@ -52,18 +62,24 @@ public class IdeaPostsService {
     private final MongoTemplate mongoTemplate;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
+    private final LandingArticlesRepository landingArticlesRepository;
+    private final IdeaPostMapper ideaPostMapper;
 
     public IdeaPostsService(
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
             AdminTelemetryService adminTelemetryService,
-            AppSettingsService appSettingsService) {
+            AppSettingsService appSettingsService,
+            LandingArticlesRepository landingArticlesRepository,
+            IdeaPostMapper ideaPostMapper) {
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
         this.mongoTemplate = mongoTemplate;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
+        this.landingArticlesRepository = landingArticlesRepository;
+        this.ideaPostMapper = ideaPostMapper;
     }
 
     public List<IdeaPostDto> publicPosts() {
@@ -82,8 +98,60 @@ public class IdeaPostsService {
         }
         return posts.stream()
                 .filter(post -> !Boolean.TRUE.equals(post.getTrashed()))
-                .map(this::toDto)
+                .map(ideaPostMapper::toDto)
                 .toList();
+    }
+
+    public IdeaPostPublicPageDto publicPostsPage(
+            String lang,
+            String acceptLanguage,
+            Integer page,
+            Integer pageSize,
+            String cursor) {
+        String requestedLanguage = requestContentLang(lang, acceptLanguage);
+        int normalizedPage = Math.max(0, page == null ? 0 : page);
+        int normalizedPageSize = normalizePublicPageSize(pageSize);
+        LandingArticleCursor decodedCursor = decodePublicCursor(cursor);
+        String effectiveLanguage = decodedCursor == null
+                ? requestedLanguage
+                : cursorLanguage(requestedLanguage, decodedCursor.lang());
+        LandingArticleSlice slice = landingArticlesRepository.findPage(
+                effectiveLanguage,
+                normalizedPage,
+                normalizedPageSize,
+                decodedCursor);
+        if (decodedCursor == null && slice.total() == 0L && !DEFAULT_LANG.equals(effectiveLanguage)) {
+            effectiveLanguage = DEFAULT_LANG;
+            slice = landingArticlesRepository.findPage(
+                    effectiveLanguage,
+                    normalizedPage,
+                    normalizedPageSize,
+                    null);
+        }
+        List<IdeaPostDto> records = slice.records().stream()
+                .map(ideaPostMapper::toDto)
+                .toList();
+        String nextCursor = slice.hasNext() && !slice.records().isEmpty()
+                ? encodePublicCursor(effectiveLanguage, slice.records().get(slice.records().size() - 1))
+                : null;
+        return new IdeaPostPublicPageDto(records, toSafeInt(slice.total()), nextCursor);
+    }
+
+    public IdeaPostPublicPageDto publicFeaturedPosts(String lang, String acceptLanguage) {
+        String effectiveLanguage = requestContentLang(lang, acceptLanguage);
+        LandingArticleSlice preview = landingArticlesRepository.findFeaturedPreview(
+                effectiveLanguage,
+                LANDING_FEATURED_PREVIEW_SIZE);
+        if (preview.total() == 0L && !DEFAULT_LANG.equals(effectiveLanguage)) {
+            effectiveLanguage = DEFAULT_LANG;
+            preview = landingArticlesRepository.findFeaturedPreview(
+                    effectiveLanguage,
+                    LANDING_FEATURED_PREVIEW_SIZE);
+        }
+        return new IdeaPostPublicPageDto(
+                preview.records().stream().map(ideaPostMapper::toDto).toList(),
+                toSafeInt(preview.total()),
+                null);
     }
 
     public List<IdeaPostDto> adminPosts(String adminUserId) {
@@ -93,7 +161,7 @@ public class IdeaPostsService {
     public List<IdeaPostDto> adminPosts(String adminUserId, String lang) {
         ensureAdmin(adminUserId);
         return ideaPostsRepository.findAllByLangOrderBySubmittedAtIsoDesc(contentLang(lang)).stream()
-                .map(this::toDto)
+                .map(ideaPostMapper::toDto)
                 .toList();
     }
 
@@ -119,7 +187,7 @@ public class IdeaPostsService {
                         .skip(Math.min(offset, total))
                         .limit(limit),
                 IdeaPost.class).stream()
-                .map(this::toDto)
+                .map(ideaPostMapper::toDto)
                 .toList();
         long nextOffset = Math.min(offset, total) + records.size();
         return new IdeaPostAdminPageDto(
@@ -172,7 +240,7 @@ public class IdeaPostsService {
         post.setUpdatedUser(actorUserId);
         IdeaPost saved = ideaPostsRepository.save(post);
         adminTelemetryService.record("article.saved", "content", saved.getId(), actorUserId);
-        return toDto(saved);
+        return ideaPostMapper.toDto(saved);
     }
 
     public List<IdeaPostDto> deletePost(String postId, IdeaPostAdminActionRequestDto request) {
@@ -193,7 +261,7 @@ public class IdeaPostsService {
             });
         }
         return ideaPostsRepository.findAllByOrderBySubmittedAtIsoDesc().stream()
-                .map(this::toDto)
+                .map(ideaPostMapper::toDto)
                 .toList();
     }
 
@@ -217,36 +285,7 @@ public class IdeaPostsService {
         post.setUpdatedUser(actorUserId);
         IdeaPost saved = ideaPostsRepository.save(post);
         adminTelemetryService.record("article.restored", "content", saved.getId(), actorUserId);
-        return toDto(saved);
-    }
-
-    private IdeaPostDto toDto(IdeaPost post) {
-        return new IdeaPostDto(
-                normalize(post.getId()),
-                text(post.getContentKey(), contentKeyFromId(post.getId())),
-                contentLang(post.getLang()),
-                languageLabel(post.getLang()),
-                text(post.getTitle(), "Untitled idea"),
-                normalize(post.getExcerpt()),
-                normalize(post.getContentHtml()),
-                normalize(post.getImageUrl()),
-                post.getImageUrls() == null
-                        ? List.of()
-                        : post.getImageUrls().stream()
-                                .map(this::normalize)
-                                .filter(StringUtils::hasText)
-                                .distinct()
-                                .toList(),
-                Boolean.TRUE.equals(post.getFeatured()),
-                !Boolean.FALSE.equals(post.getPublished()),
-                Boolean.TRUE.equals(post.getTrashed()),
-                normalize(post.getTrashedAtIso()),
-                normalize(post.getTrashedByUserId()),
-                normalize(post.getSubmittedAtIso()),
-                normalize(post.getCreatedDate()),
-                normalize(post.getCreatedUser()),
-                normalize(post.getUpdatedDate()),
-                normalize(post.getUpdatedUser()));
+        return ideaPostMapper.toDto(saved);
     }
 
     private String sanitizeHtml(String html) {
@@ -360,6 +399,57 @@ public class IdeaPostsService {
     private int normalizePageSize(Integer pageSize) {
         int requested = pageSize == null ? DEFAULT_ADMIN_PAGE_SIZE : pageSize;
         return Math.max(1, Math.min(MAX_ADMIN_PAGE_SIZE, requested));
+    }
+
+    private int normalizePublicPageSize(Integer pageSize) {
+        int requested = pageSize == null ? DEFAULT_PUBLIC_PAGE_SIZE : pageSize;
+        return Math.max(1, Math.min(MAX_PUBLIC_PAGE_SIZE, requested));
+    }
+
+    private LandingArticleCursor decodePublicCursor(String cursor) {
+        String normalizedCursor = normalize(cursor);
+        if (!StringUtils.hasText(normalizedCursor)) {
+            return null;
+        }
+        try {
+            String decoded = new String(
+                    Base64.getUrlDecoder().decode(normalizedCursor),
+                    StandardCharsets.UTF_8);
+            String[] fields = decoded.split("\\n", -1);
+            String language = fields.length == 3 ? supportedContentLang(fields[0]) : "";
+            String submittedAtIso = fields.length == 3 ? fields[1].trim() : "";
+            String id = fields.length == 3 ? fields[2].trim() : "";
+            if (!StringUtils.hasText(language)
+                    || !StringUtils.hasText(submittedAtIso)
+                    || !StringUtils.hasText(id)) {
+                throw new IllegalArgumentException("Cursor fields are missing.");
+            }
+            return new LandingArticleCursor(language, submittedAtIso, id);
+        } catch (IllegalArgumentException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid article cursor.", exception);
+        }
+    }
+
+    private String encodePublicCursor(String language, IdeaPost post) {
+        String value = contentLang(language)
+                + "\n"
+                + normalize(post.getSubmittedAtIso())
+                + "\n"
+                + normalize(post.getId());
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(value.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String cursorLanguage(String requestedLanguage, String cursorLanguage) {
+        String normalizedCursorLanguage = supportedContentLang(cursorLanguage);
+        boolean sameLanguage = requestedLanguage.equals(normalizedCursorLanguage);
+        boolean englishFallback = !DEFAULT_LANG.equals(requestedLanguage)
+                && DEFAULT_LANG.equals(normalizedCursorLanguage);
+        if (!sameLanguage && !englishFallback) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article cursor language does not match the request.");
+        }
+        return normalizedCursorLanguage;
     }
 
     private long resolvePageOffset(Integer page, int pageSize, String cursor) {

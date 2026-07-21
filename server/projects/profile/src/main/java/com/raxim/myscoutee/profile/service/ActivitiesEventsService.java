@@ -1045,7 +1045,7 @@ public class ActivitiesEventsService {
             ActivityEvent parent,
             EventSlotOccurrenceDto slot) {
         String currency = checkoutPricingCurrency(pricing);
-        if (pricing == null) {
+        if (pricing == null || Boolean.FALSE.equals(pricing.enabled())) {
             return new CheckoutSlotPricing(0d, currency, List.of());
         }
         String slotTemplateId = safeText(slot == null ? null : slot.slotTemplateId());
@@ -1133,7 +1133,7 @@ public class ActivitiesEventsService {
         String currency = pricing == null || !StringUtils.hasText(safeText(pricing.currency()))
                 ? firstNonBlank(fallbackCurrency, "USD")
                 : checkoutPricingCurrency(pricing);
-        if (pricing == null) {
+        if (pricing == null || Boolean.FALSE.equals(pricing.enabled())) {
             return new CheckoutSlotPricing(0d, currency, List.of());
         }
         double amount = roundMoney(Math.max(0d, safeDouble(pricing.basePrice())));
@@ -2538,7 +2538,8 @@ public class ActivitiesEventsService {
                 null,
                 null,
                 null,
-                null);
+                null,
+                basket.appliedPromoCodes());
         try {
             EventParticipationActionResultDto result = acceptedBeforePayment
                     ? toParticipationActionResult(
@@ -2608,7 +2609,8 @@ public class ActivitiesEventsService {
                 checkout.lineItems(),
                 checkout.totalAmount(),
                 checkout.currency(),
-                null));
+                null,
+                checkout.appliedPromoCodes()));
     }
 
     private void syncCheckoutBasketForJoin(EventActionRequestDto request) {
@@ -2639,7 +2641,8 @@ public class ActivitiesEventsService {
                     request.lineItems(),
                     request.totalAmount(),
                     request.currency(),
-                    pendingReason));
+                    pendingReason,
+                    request.appliedPromoCodes()));
             return;
         }
         eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
@@ -2745,7 +2748,8 @@ public class ActivitiesEventsService {
                 basket.lineItems(),
                 basket.totalAmount(),
                 basket.currency(),
-                null);
+                null,
+                basket.appliedPromoCodes());
     }
 
     private EventParticipationActionResultDto toParticipationActionResult(

@@ -17,7 +17,10 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
         @CompoundIndex(name = "chat_owner_public_id", def = "{'ownerUserId': 1, 'id': 1}", unique = true),
         @CompoundIndex(name = "chat_public_id_lookup", def = "{'id': 1}"),
         @CompoundIndex(name = "chat_owner_date", def = "{'ownerUserId': 1, 'dateIso': -1}"),
-        @CompoundIndex(name = "chat_owner_channel_owner", def = "{'ownerUserId': 1, 'channelType': 1, 'ownerId': 1}")
+        @CompoundIndex(name = "chat_owner_channel_owner", def = "{'ownerUserId': 1, 'channelType': 1, 'ownerId': 1}"),
+        @CompoundIndex(name = "chat_owner_channel_date", def = "{'ownerUserId': 1, 'channelType': 1, 'dateIso': -1, 'id': 1}"),
+        @CompoundIndex(name = "chat_owner_channel_relevance", def = "{'ownerUserId': 1, 'channelType': 1, 'unread': -1, 'dateIso': -1, 'id': 1}"),
+        @CompoundIndex(name = "chat_owner_support_status_date", def = "{'ownerUserId': 1, 'supportCase.status': 1, 'dateIso': -1, 'id': 1}")
 })
 public class Chat {
     @MongoId(FieldType.STRING)

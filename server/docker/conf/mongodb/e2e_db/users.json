@@ -6,7 +6,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "game": 106,
-      "chat": 121,
+      "chats": 50,
       "invitations": 4,
       "events": 1,
       "hosting": 29,
@@ -16,6 +16,14 @@
       "tickets": 0,
       "contacts": 3,
       "feedback": 0,
+      "chat": {
+        "all": 50,
+        "event": 29,
+        "subEvent": 0,
+        "group": 9,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 63,
         "active": 1,
@@ -174,7 +182,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "game": 154,
-      "chat": 117,
+      "chats": 33,
       "invitations": 1,
       "events": 3,
       "hosting": 33,
@@ -184,6 +192,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 33,
+        "event": 26,
+        "subEvent": 0,
+        "group": 3,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 61,
         "active": 3,
@@ -249,7 +265,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "game": 109,
-      "chat": 125,
+      "chats": 28,
       "invitations": 1,
       "events": 7,
       "hosting": 31,
@@ -259,6 +275,14 @@
       "tickets": 1,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 28,
+        "event": 20,
+        "subEvent": 0,
+        "group": 4,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 59,
         "active": 7,
@@ -417,7 +441,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "game": 118,
-      "chat": 124,
+      "chats": 13,
       "invitations": 1,
       "events": 10,
       "hosting": 32,
@@ -427,6 +451,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 13,
+        "event": 9,
+        "subEvent": 0,
+        "group": 4,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 60,
         "active": 10,
@@ -584,7 +616,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "game": 121,
-      "chat": 50,
+      "chats": 11,
       "invitations": 2,
       "events": 12,
       "hosting": 1,
@@ -594,6 +626,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 11,
+        "event": 9,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 22,
         "active": 12,
@@ -659,7 +699,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "game": 108,
-      "chat": 42,
+      "chats": 4,
       "invitations": 2,
       "events": 16,
       "hosting": 2,
@@ -669,6 +709,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 4,
+        "event": 4,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 20,
         "active": 16,
@@ -734,7 +782,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "game": 106,
-      "chat": 39,
+      "chats": 6,
       "invitations": 2,
       "events": 14,
       "hosting": 1,
@@ -744,6 +792,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 6,
+        "event": 4,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 20,
         "active": 14,
@@ -808,7 +864,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "game": 104,
-      "chat": 57,
+      "chats": 0,
       "invitations": 2,
       "events": 20,
       "hosting": 1,
@@ -818,6 +874,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 23,
         "active": 20,
@@ -883,7 +947,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "game": 104,
-      "chat": 44,
+      "chats": 0,
       "invitations": 2,
       "events": 22,
       "hosting": 1,
@@ -893,6 +957,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 25,
         "active": 22,
@@ -957,7 +1029,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "game": 104,
-      "chat": 114,
+      "chats": 8,
       "invitations": 2,
       "events": 18,
       "hosting": 30,
@@ -967,6 +1039,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 8,
+        "event": 6,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 50,
         "active": 18,
@@ -1032,7 +1112,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "game": 120,
-      "chat": 63,
+      "chats": 15,
       "invitations": 2,
       "events": 27,
       "hosting": 2,
@@ -1042,6 +1122,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 15,
+        "event": 12,
+        "subEvent": 0,
+        "group": 3,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 31,
         "active": 27,
@@ -1106,7 +1194,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "game": 118,
-      "chat": 109,
+      "chats": 15,
       "invitations": 2,
       "events": 20,
       "hosting": 32,
@@ -1116,6 +1204,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 15,
+        "event": 12,
+        "subEvent": 0,
+        "group": 3,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 55,
         "active": 20,
@@ -1181,7 +1277,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "game": 150,
-      "chat": 73,
+      "chats": 18,
       "invitations": 2,
       "events": 28,
       "hosting": 1,
@@ -1191,6 +1287,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 18,
+        "event": 14,
+        "subEvent": 0,
+        "group": 4,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 31,
         "active": 28,
@@ -1256,7 +1360,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "game": 153,
-      "chat": 48,
+      "chats": 16,
       "invitations": 2,
       "events": 24,
       "hosting": 2,
@@ -1266,6 +1370,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 16,
+        "event": 13,
+        "subEvent": 0,
+        "group": 3,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 30,
         "active": 24,
@@ -1331,7 +1443,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "game": 111,
-      "chat": 57,
+      "chats": 15,
       "invitations": 2,
       "events": 26,
       "hosting": 2,
@@ -1341,6 +1453,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 15,
+        "event": 13,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 31,
         "active": 26,
@@ -1406,7 +1526,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "game": 104,
-      "chat": 55,
+      "chats": 18,
       "invitations": 2,
       "events": 24,
       "hosting": 1,
@@ -1416,6 +1536,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 18,
+        "event": 15,
+        "subEvent": 0,
+        "group": 3,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 28,
         "active": 24,
@@ -1480,7 +1608,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "game": 139,
-      "chat": 38,
+      "chats": 11,
       "invitations": 2,
       "events": 21,
       "hosting": 2,
@@ -1490,6 +1618,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 11,
+        "event": 10,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 27,
         "active": 21,
@@ -1555,7 +1691,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "game": 104,
-      "chat": 35,
+      "chats": 13,
       "invitations": 2,
       "events": 20,
       "hosting": 1,
@@ -1565,6 +1701,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 13,
+        "event": 11,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 23,
         "active": 20,
@@ -1630,7 +1774,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "game": 150,
-      "chat": 25,
+      "chats": 13,
       "invitations": 2,
       "events": 16,
       "hosting": 1,
@@ -1640,6 +1784,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 13,
+        "event": 11,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 19,
         "active": 16,
@@ -1704,7 +1856,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "game": 126,
-      "chat": 23,
+      "chats": 8,
       "invitations": 2,
       "events": 14,
       "hosting": 2,
@@ -1714,6 +1866,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 8,
+        "event": 6,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 17,
         "active": 14,
@@ -1779,7 +1939,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "game": 127,
-      "chat": 13,
+      "chats": 5,
       "invitations": 2,
       "events": 10,
       "hosting": 2,
@@ -1789,6 +1949,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 5,
+        "event": 5,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 13,
         "active": 10,
@@ -1853,7 +2021,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "game": 116,
-      "chat": 16,
+      "chats": 8,
       "invitations": 2,
       "events": 10,
       "hosting": 3,
@@ -1863,6 +2031,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 8,
+        "event": 6,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 13,
         "active": 10,
@@ -1928,7 +2104,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "game": 111,
-      "chat": 7,
+      "chats": 1,
       "invitations": 2,
       "events": 7,
       "hosting": 4,
@@ -1938,6 +2114,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 1,
+        "event": 1,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 10,
         "active": 7,
@@ -2002,7 +2186,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "game": 176,
-      "chat": 9,
+      "chats": 3,
       "invitations": 2,
       "events": 6,
       "hosting": 3,
@@ -2012,6 +2196,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 3,
+        "event": 3,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 9,
         "active": 6,
@@ -2077,7 +2269,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "game": 153,
-      "chat": 7,
+      "chats": 1,
       "invitations": 2,
       "events": 4,
       "hosting": 3,
@@ -2087,6 +2279,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 1,
+        "event": 1,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 7,
         "active": 4,
@@ -2152,7 +2352,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "game": 129,
-      "chat": 8,
+      "chats": 0,
       "invitations": 2,
       "events": 5,
       "hosting": 3,
@@ -2162,6 +2362,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 8,
         "active": 5,
@@ -2227,7 +2435,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "game": 104,
-      "chat": 13,
+      "chats": 2,
       "invitations": 2,
       "events": 7,
       "hosting": 2,
@@ -2237,6 +2445,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 2,
+        "event": 2,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 10,
         "active": 7,
@@ -2302,7 +2518,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "game": 105,
-      "chat": 17,
+      "chats": 2,
       "invitations": 2,
       "events": 8,
       "hosting": 1,
@@ -2312,6 +2528,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 2,
+        "event": 1,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 11,
         "active": 8,
@@ -2376,7 +2600,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "game": 122,
-      "chat": 17,
+      "chats": 4,
       "invitations": 2,
       "events": 11,
       "hosting": 2,
@@ -2386,6 +2610,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 4,
+        "event": 3,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 14,
         "active": 11,
@@ -2451,7 +2683,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "game": 106,
-      "chat": 30,
+      "chats": 5,
       "invitations": 2,
       "events": 12,
       "hosting": 1,
@@ -2461,6 +2693,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 5,
+        "event": 4,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 15,
         "active": 12,
@@ -2526,7 +2766,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "game": 115,
-      "chat": 19,
+      "chats": 3,
       "invitations": 2,
       "events": 13,
       "hosting": 1,
@@ -2536,6 +2776,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 3,
+        "event": 3,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 16,
         "active": 13,
@@ -2600,7 +2848,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "game": 121,
-      "chat": 32,
+      "chats": 5,
       "invitations": 2,
       "events": 14,
       "hosting": 1,
@@ -2610,6 +2858,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 5,
+        "event": 5,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 17,
         "active": 14,
@@ -2675,7 +2931,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "game": 104,
-      "chat": 37,
+      "chats": 6,
       "invitations": 2,
       "events": 16,
       "hosting": 1,
@@ -2685,6 +2941,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 6,
+        "event": 4,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 19,
         "active": 16,
@@ -2749,7 +3013,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "game": 107,
-      "chat": 36,
+      "chats": 5,
       "invitations": 2,
       "events": 18,
       "hosting": 1,
@@ -2759,6 +3023,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 5,
+        "event": 4,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 21,
         "active": 18,
@@ -2824,7 +3096,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "game": 105,
-      "chat": 45,
+      "chats": 9,
       "invitations": 2,
       "events": 18,
       "hosting": 1,
@@ -2834,6 +3106,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 9,
+        "event": 7,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 21,
         "active": 18,
@@ -2898,7 +3178,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "game": 149,
-      "chat": 43,
+      "chats": 8,
       "invitations": 2,
       "events": 19,
       "hosting": 1,
@@ -2908,6 +3188,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 8,
+        "event": 6,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 22,
         "active": 19,
@@ -2973,7 +3261,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "game": 106,
-      "chat": 42,
+      "chats": 5,
       "invitations": 2,
       "events": 18,
       "hosting": 1,
@@ -2983,6 +3271,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 5,
+        "event": 5,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 21,
         "active": 18,
@@ -3048,7 +3344,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "game": 114,
-      "chat": 43,
+      "chats": 11,
       "invitations": 2,
       "events": 19,
       "hosting": 1,
@@ -3058,6 +3354,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 11,
+        "event": 8,
+        "subEvent": 0,
+        "group": 3,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 22,
         "active": 19,
@@ -3123,7 +3427,7 @@
     "about": "I enjoy cultural events and activity-heavy weekends with small groups.",
     "activities": {
       "game": 118,
-      "chat": 41,
+      "chats": 6,
       "invitations": 2,
       "events": 17,
       "hosting": 1,
@@ -3133,6 +3437,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 6,
+        "event": 6,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 20,
         "active": 17,
@@ -3198,7 +3510,7 @@
     "about": "I host social-first events where people who do not know each other can connect fast.",
     "activities": {
       "game": 104,
-      "chat": 40,
+      "chats": 4,
       "invitations": 2,
       "events": 16,
       "hosting": 1,
@@ -3208,6 +3520,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 4,
+        "event": 3,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 19,
         "active": 16,
@@ -3272,7 +3592,7 @@
     "about": "I prefer meaningful conversations and smaller events with quality curation.",
     "activities": {
       "game": 104,
-      "chat": 41,
+      "chats": 3,
       "invitations": 2,
       "events": 17,
       "hosting": 1,
@@ -3282,6 +3602,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 3,
+        "event": 3,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 20,
         "active": 17,
@@ -3347,7 +3675,7 @@
     "about": "I organize active and travel-style events with flexible participant roles.",
     "activities": {
       "game": 105,
-      "chat": 35,
+      "chats": 8,
       "invitations": 2,
       "events": 25,
       "hosting": 1,
@@ -3357,6 +3685,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 8,
+        "event": 6,
+        "subEvent": 0,
+        "group": 2,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 29,
         "active": 25,
@@ -3422,7 +3758,7 @@
     "about": "I host sports and game-heavy events with structured follow-ups.",
     "activities": {
       "game": 104,
-      "chat": 22,
+      "chats": 3,
       "invitations": 2,
       "events": 10,
       "hosting": 1,
@@ -3432,6 +3768,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 3,
+        "event": 2,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 13,
         "active": 10,
@@ -3496,7 +3840,7 @@
     "about": "I optimize event outcomes and participant quality through filtered invites.",
     "activities": {
       "game": 124,
-      "chat": 24,
+      "chats": 4,
       "invitations": 2,
       "events": 12,
       "hosting": 1,
@@ -3506,6 +3850,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 4,
+        "event": 3,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 15,
         "active": 12,
@@ -3571,7 +3923,7 @@
     "about": "I design event atmospheres first and build flow around people and space.",
     "activities": {
       "game": 104,
-      "chat": 20,
+      "chats": 5,
       "invitations": 2,
       "events": 8,
       "hosting": 1,
@@ -3581,6 +3933,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 5,
+        "event": 4,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 11,
         "active": 8,
@@ -3645,7 +4005,7 @@
     "about": "I keep the calendar strict and communication transparent for all members.",
     "activities": {
       "game": 105,
-      "chat": 17,
+      "chats": 0,
       "invitations": 2,
       "events": 8,
       "hosting": 1,
@@ -3655,6 +4015,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 11,
         "active": 8,
@@ -3720,7 +4088,7 @@
     "about": "I run long-format events with multiple sub-events and role-based access.",
     "activities": {
       "game": 104,
-      "chat": 26,
+      "chats": 3,
       "invitations": 2,
       "events": 11,
       "hosting": 1,
@@ -3730,6 +4098,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 3,
+        "event": 3,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 14,
         "active": 11,
@@ -3794,7 +4170,7 @@
     "about": "I host quality-first social events with strong moderation and feedback loops.",
     "activities": {
       "game": 134,
-      "chat": 23,
+      "chats": 4,
       "invitations": 2,
       "events": 8,
       "hosting": 1,
@@ -3804,6 +4180,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 4,
+        "event": 3,
+        "subEvent": 0,
+        "group": 1,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 11,
         "active": 8,
@@ -3869,7 +4253,7 @@
     "about": "I host events where social energy stays high, but logistics stay clean and predictable.",
     "activities": {
       "game": 127,
-      "chat": 28,
+      "chats": 0,
       "invitations": 2,
       "events": 9,
       "hosting": 1,
@@ -3879,6 +4263,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 12,
         "active": 9,
@@ -3944,7 +4336,7 @@
     "about": "I like compact events with clear timelines and simple role assignment.",
     "activities": {
       "game": 114,
-      "chat": 27,
+      "chats": 0,
       "invitations": 2,
       "events": 12,
       "hosting": 1,
@@ -3954,6 +4346,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 15,
         "active": 12,
@@ -4019,7 +4419,7 @@
     "about": "I am the seeded bridge profile for Friends in Common demo discovery.",
     "activities": {
       "game": 2,
-      "chat": 0,
+      "chats": 0,
       "invitations": 0,
       "events": 0,
       "hosting": 0,
@@ -4029,6 +4429,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,
@@ -4092,7 +4500,7 @@
     "about": "A fresh public profile connected only through a seeded friend bridge.",
     "activities": {
       "game": 1,
-      "chat": 0,
+      "chats": 0,
       "invitations": 0,
       "events": 0,
       "hosting": 0,
@@ -4102,6 +4510,14 @@
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,
@@ -4165,17 +4581,25 @@
     },
     "about": "A fresh public outside-network profile for Preferences discovery.",
     "activities": {
-      "chat": 0,
-      "events": 0,
       "game": 0,
-      "hosting": 0,
+      "chats": 0,
       "invitations": 0,
+      "events": 0,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,
@@ -4196,7 +4620,9 @@
         "pending": 0,
         "feedbacked": 0,
         "removed": 0
-      }
+      },
+      "adminJobs": null,
+      "adminMetrics": null
     },
     "affinity": 571200,
     "age": 29,
@@ -4249,17 +4675,25 @@
     "profileStatus": "public",
     "images": [],
     "activities": {
-      "chat": 0,
-      "events": 0,
       "game": 0,
-      "hosting": 2,
+      "chats": 0,
       "invitations": 0,
+      "events": 0,
+      "hosting": 2,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 2,
         "active": 0,
@@ -4304,17 +4738,25 @@
     "profileStatus": "public",
     "images": [],
     "activities": {
-      "chat": 0,
-      "events": 0,
       "game": 0,
-      "hosting": 0,
+      "chats": 0,
       "invitations": 0,
+      "events": 0,
+      "hosting": 0,
       "cars": 0,
       "accommodation": 0,
       "supplies": 0,
       "tickets": 0,
       "contacts": 0,
       "feedback": 0,
+      "chat": {
+        "all": 0,
+        "event": 0,
+        "subEvent": 0,
+        "group": 0,
+        "service": 0,
+        "appSupport": 0
+      },
       "event": {
         "all": 0,
         "active": 0,

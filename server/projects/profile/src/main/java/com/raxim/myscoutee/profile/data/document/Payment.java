@@ -39,6 +39,7 @@ public class Payment {
     private List<EventCheckoutBasketItemDto> basketItems = new ArrayList<>();
     private List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows = new ArrayList<>();
     private List<EventCheckoutLineItemDto> lineItems = new ArrayList<>();
+    private List<String> appliedPromoCodes = new ArrayList<>();
     private String bookingStatus;
     private String joinedAtIso;
     private String cancelledAtIso;
@@ -107,6 +108,11 @@ public class Payment {
     public List<EventCheckoutLineItemDto> getLineItems() { return lineItems; }
     public void setLineItems(List<EventCheckoutLineItemDto> lineItems) {
         this.lineItems = lineItems == null ? new ArrayList<>() : new ArrayList<>(lineItems);
+    }
+
+    public List<String> getAppliedPromoCodes() { return appliedPromoCodes; }
+    public void setAppliedPromoCodes(List<String> appliedPromoCodes) {
+        this.appliedPromoCodes = appliedPromoCodes == null ? new ArrayList<>() : new ArrayList<>(appliedPromoCodes);
     }
 
     public String getBookingStatus() { return bookingStatus; }

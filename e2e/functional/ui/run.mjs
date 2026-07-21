@@ -68,7 +68,7 @@ async function runUiCollection(options) {
         },
         response: {
           urlPath: '/game',
-          selectors: ['app-entry-shell', '.demo-login-overlay', '.game-page'],
+          selectors: ['app-entry-page', '.demo-user-stage', '.game-page'],
           network: ['/api/auth/eligibility', '/api/auth/demo-users', '/api/auth/me']
         }
       };
@@ -347,8 +347,8 @@ async function recordRuntimeFindings(page) {
 
   const popupOverflow = await page.evaluate(() => {
     const selectors = [
-      '.confirmation-dialog',
-      '.explanation-popup',
+      '.dialog',
+      'app-explanation-popup .ui-popup__panel',
       '.navigator-settings-popup-shell',
       '.app-install-prompt',
       '[class*="popup-panel-"]',

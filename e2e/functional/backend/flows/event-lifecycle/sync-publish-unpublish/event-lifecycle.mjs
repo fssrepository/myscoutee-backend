@@ -5,7 +5,7 @@ export async function assertResponse({ ctx, result, request }) {
   const draft = expectObject(result.data, 'event sync draft');
   assertEvent(draft, 'event sync draft');
   assert(draft.id === request.body.id, 'sync should return the created event id', { expected: request.body.id, actual: draft.id });
-  assert(draft.published === false, 'synced e2e event should start as unpublished draft', draft);
+  assert(draft.status === 'DR', 'synced e2e event should start as a draft', draft);
 
   const actionBody = {
     userId: request.body.creatorUserId,
@@ -24,13 +24,12 @@ export async function assertResponse({ ctx, result, request }) {
   });
   const published = assertEventList(publishedHosting.data, ctx, 'published hosting')
     .find(event => event.id === request.body.id);
-  assert(published?.published === true, 'publish should make the event visible as published', published);
+  assert(published?.status === 'A', 'publish should activate the event', published);
 
   const explore = await ctx.http.post('/api/activities/events/explore', {
     headers: request.headers,
     json: {
-      userId: ctx.vars.e2eSecondUserId,
-      limit: 20
+      userId: ctx.vars.e2eSecondUserId
     }
   });
   if (Array.isArray(explore.data)) {
@@ -51,7 +50,7 @@ export async function assertResponse({ ctx, result, request }) {
   });
   const unpublished = assertEventList(unpublishedHosting.data, ctx, 'unpublished hosting')
     .find(event => event.id === request.body.id);
-  assert(unpublished?.published === false, 'unpublish should flip published false', unpublished);
+  assert(unpublished?.status === 'DR', 'unpublish should restore draft status', unpublished);
 
   await ctx.http.post('/api/activities/events/trash', {
     headers: request.headers,

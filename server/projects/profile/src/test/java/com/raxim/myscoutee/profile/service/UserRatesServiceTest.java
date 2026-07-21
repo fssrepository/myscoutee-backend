@@ -83,7 +83,7 @@ class UserRatesServiceTest {
                 10,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                1200))));
 
         UserRate saved = singleSavedRate();
         assertThat(response.syncedRateIds()).containsExactly("sync-single");
@@ -92,10 +92,95 @@ class UserRatesServiceTest {
         assertThat(saved.getRelatedUserId()).isEqualTo("u2");
         assertThat(saved.getScoreGiven()).isEqualTo(9);
         assertThat(saved.getScoreReceived()).isEqualTo(1);
+        assertThat(saved.getDistanceMetersExact()).isEqualTo(1200);
         assertThat(saved.getMutuallyRated()).isTrue();
         assertThat(saved.getAffinityScore()).isCloseTo(0.18d, org.assertj.core.data.Offset.offset(0.000001d));
         assertThat(saved.getEvidenceConfidence()).isEqualTo(1d);
         verify(userAffinityEdgeService).recomputeForRates(anyList());
+    }
+
+    @Test
+    void syncReusesNaturalKeyRecordWhenClientSyncKeyChanges() {
+        Users owner = user("u1", "Owner", List.of("music"));
+        Users related = user("u2", "Related", List.of("music"));
+        UserRate existing = singleRate("stored-rate-id", "u1", "u2", 4);
+        existing.setSyncKey("old-client-sync-key");
+        existing.setCreatedDate("2026-05-01T09:00:00Z");
+        existing.setCreatedUser("u1");
+
+        UserRatesService service = syncService(Map.of("u1", owner, "u2", related), List.of());
+        when(userRatesRepository.findBySyncKey("new-client-sync-key")).thenReturn(Optional.empty());
+        when(userRatesRepository.findByOwnerUserIdAndMode("u1", "single")).thenReturn(List.of(existing));
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "new-client-sync-key",
+                "u1",
+                "u2",
+                8,
+                "single",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "u1",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        UserRate saved = singleSavedRate();
+        assertThat(saved.getId()).isEqualTo("stored-rate-id");
+        assertThat(saved.getSyncKey()).isEqualTo("new-client-sync-key");
+        assertThat(saved.getCreatedDate()).isEqualTo("2026-05-01T09:00:00Z");
+        assertThat(saved.getCreatedUser()).isEqualTo("u1");
+        assertThat(saved.getScoreGiven()).isEqualTo(8);
+    }
+
+    @Test
+    void syncPrefersNaturalKeyWhenClientSyncKeyBelongsToAnotherRate() {
+        Users owner = user("u1", "Owner", List.of("music"));
+        Users related = user("u2", "Related", List.of("music"));
+        Users staleTarget = user("u3", "Stale target", List.of("music"));
+        UserRate natural = singleRate("natural-rate-id", "u1", "u2", 4);
+        natural.setSyncKey("natural-client-key");
+        UserRate staleSyncKey = singleRate("stale-sync-rate-id", "u1", "u3", 2);
+        staleSyncKey.setSyncKey("reused-client-key");
+
+        UserRatesService service = syncService(
+                Map.of("u1", owner, "u2", related, "u3", staleTarget),
+                List.of());
+        when(userRatesRepository.findBySyncKey("reused-client-key")).thenReturn(Optional.of(staleSyncKey));
+        when(userRatesRepository.findByOwnerUserIdAndMode("u1", "single")).thenReturn(List.of(natural, staleSyncKey));
+
+        service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
+                "reused-client-key",
+                "u1",
+                "u2",
+                9,
+                "single",
+                "2026-05-08T10:00:00Z",
+                "2026-05-08T10:01:00Z",
+                "u1",
+                null,
+                "given",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "2026-05-08T10:00:00Z",
+                null))));
+
+        UserRate saved = singleSavedRate();
+        assertThat(saved.getId()).isEqualTo("natural-rate-id");
+        assertThat(saved.getSyncKey()).isEqualTo("natural-client-key");
+        assertThat(saved.getRelatedUserId()).isEqualTo("u2");
+        assertThat(saved.getScoreGiven()).isEqualTo(9);
     }
 
     @Test
@@ -104,11 +189,13 @@ class UserRatesServiceTest {
         Users friend = user("friend", "Friend", List.of("music"));
         Users first = user("u1", "First", List.of("music"));
         Users second = user("u2", "Second", List.of("music"));
+        Users third = user("u3", "Third", List.of("music"));
         Map<String, Users> usersById = Map.of(
                 "owner", owner,
                 "friend", friend,
                 "u1", first,
-                "u2", second);
+                "u2", second,
+                "u3", third);
 
         UserRatesService service = syncService(usersById, List.of());
         when(userRatesRepository.findBySyncKey(anyString())).thenReturn(Optional.empty());
@@ -155,7 +242,7 @@ class UserRatesServiceTest {
                 new UserRateRecordDto(
                         "sync-wrong-pair-social",
                         "u1",
-                        "u2",
+                        "u3",
                         8,
                         "pair",
                         "2026-05-08T10:00:00Z",
@@ -252,6 +339,45 @@ class UserRatesServiceTest {
 
         assertThat(page.items()).extracting(item -> item.id())
                 .containsExactly("balanced-rate", "imbalanced-rate");
+    }
+
+    @Test
+    void activityRateDistanceViewOrdersBucketsThenRelevanceThenExactDistance() {
+        Users owner = user("owner", "Owner", List.of("music"));
+        Users nearLowUser = user("near-low-user", "Near Low", List.of("music"));
+        Users nearHighUser = user("near-high-user", "Near High", List.of("music"));
+        Users farHighUser = user("far-high-user", "Far High", List.of("music"));
+        Map<String, Users> usersById = Map.of(
+                "owner", owner,
+                "near-low-user", nearLowUser,
+                "near-high-user", nearHighUser,
+                "far-high-user", farHighUser);
+
+        UserRate nearLow = singleStoredRate("z-near-low", "owner", "near-low-user", 4, 0, "2026-05-08T10:00:00Z");
+        nearLow.setDistanceMetersExact(2_000);
+        UserRate nearHigh = singleStoredRate("a-near-high", "owner", "near-high-user", 9, 0, "2026-05-08T09:00:00Z");
+        nearHigh.setDistanceMetersExact(4_000);
+        UserRate farHigh = singleStoredRate("far-high", "owner", "far-high-user", 10, 0, "2026-05-08T11:00:00Z");
+        farHigh.setDistanceMetersExact(6_000);
+        UserRatesService service = queryService(usersById, List.of(nearLow, farHigh, nearHigh));
+
+        ActivityRatePageResponseDto page = service.queryActivityRatePage(
+                "owner",
+                "single",
+                "given",
+                "distance",
+                null,
+                "relevant",
+                false,
+                null,
+                20,
+                null,
+                null);
+
+        assertThat(page.items()).extracting(item -> item.id())
+                .containsExactly("a-near-high", "z-near-low", "far-high");
+        assertThat(page.items()).extracting(item -> item.distanceMetersExact())
+                .containsExactly(4_000, 2_000, 6_000);
     }
 
     private UserRatesService syncService(Map<String, Users> usersById, List<UserRate> contextRates) {

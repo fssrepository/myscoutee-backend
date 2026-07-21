@@ -49,7 +49,7 @@ import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
-import com.raxim.myscoutee.profile.data.document.ActivityChat;
+import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
@@ -298,7 +298,7 @@ class BackendContentMediaE2ETest {
         JsonNode targetChatsAfterWarn = getJson("/activities/chats?userId=" + TARGET_ID, DEMO_SESSION);
         JsonNode supportChat = chatById(targetChatsAfterWarn, "c-support-admin-" + TARGET_ID);
         assertThat(supportChat.path("unread").asInt()).isGreaterThanOrEqualTo(1);
-        assertThat(supportChat.path("supportCaseStatus").asString()).isEqualTo("picked");
+        assertThat(supportChat.path("supportCase").path("status").asString()).isEqualTo("warned");
         assertThat(supportChat.path("lastMessage").asString()).contains("E2E warning");
 
         postJson("/admin/users/" + TARGET_ID + "/block", Map.of(
@@ -306,7 +306,7 @@ class BackendContentMediaE2ETest {
                 "message", "E2E blocking after review."), DEMO_SESSION);
         JsonNode blockedUser = getJson("/auth/me?userId=" + TARGET_ID, DEMO_SESSION);
         assertThat(blockedUser.path("profileStatus").asString()).isEqualTo("blocked");
-        assertThat(findDemoChat(ADMIN_ID, "c-support-admin-" + TARGET_ID).getSupportCaseStatus()).isEqualTo("blocked");
+        assertThat(findDemoChat(ADMIN_ID, "c-support-admin-" + TARGET_ID).getSupportCase().getStatus()).isEqualTo("blocked");
         assertThat(fromDemo(() -> mongoTemplate.find(
                 Query.query(Criteria.where("targetId").is(TARGET_ID)),
                 AffinityRecomputeTask.class))).isNotEmpty();
@@ -350,7 +350,7 @@ class BackendContentMediaE2ETest {
         mongoTemplate.remove(new Query(), IdeaPost.class);
         mongoTemplate.remove(new Query(), UserFeedbackSubmission.class);
         mongoTemplate.remove(new Query(), UserReportSubmission.class);
-        mongoTemplate.remove(new Query(), ActivityChat.class);
+        mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), AffinityRecomputeTask.class);
     }
 
@@ -385,6 +385,7 @@ class BackendContentMediaE2ETest {
         user.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
         user.setActivities(new Users.UserActivitiesRecord(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
@@ -615,10 +616,10 @@ class BackendContentMediaE2ETest {
         throw new AssertionError("Missing chat " + chatId + " in " + chats);
     }
 
-    private ActivityChat findDemoChat(String ownerUserId, String chatId) {
-        ActivityChat chat = fromDemo(() -> mongoTemplate.findOne(
+    private Chat findDemoChat(String ownerUserId, String chatId) {
+        Chat chat = fromDemo(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("ownerUserId").is(ownerUserId).and("chatId").is(chatId)),
-                ActivityChat.class));
+                Chat.class));
         assertThat(chat).as("chat " + chatId + " for " + ownerUserId).isNotNull();
         return chat;
     }

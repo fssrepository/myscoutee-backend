@@ -45,6 +45,7 @@ import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserByIdResponseDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserChatCountersDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtDto;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.ProfileExtByIdResponseDto;
@@ -1847,7 +1848,7 @@ public class HomeUserProfileService {
         Users.UserActivitiesRecord activities = user.getActivities();
         return new UserMenuCountersDto(
                 activities == null ? 0 : normalizeCount(activities.game()),
-                activities == null ? 0 : normalizeCount(activities.chat()),
+                activities == null ? 0 : normalizeCount(activities.chats()),
                 activities == null ? 0 : normalizeCount(activities.invitations()),
                 activities == null ? 0 : normalizeCount(activities.events()),
                 activities == null ? 0 : normalizeCount(activities.hosting()),
@@ -1857,6 +1858,7 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.tickets()),
                 activities == null ? 0 : normalizeCount(activities.contacts()),
                 activities == null ? 0 : normalizeCount(activities.feedback()),
+                toUserChatCountersDto(activities == null ? null : activities.chat()),
                 toUserEventCountersDto(activities == null ? null : activities.event()),
                 toUserAssetCountersDto(activities == null ? null : activities.asset()),
                 toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
@@ -1867,6 +1869,7 @@ public class HomeUserProfileService {
     private UserMenuCountersDto emptyMenuCounters() {
         return new UserMenuCountersDto(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new UserChatCountersDto(0, 0, 0, 0, 0, 0),
                 new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                 new UserAssetCountersDto(0, 0, 0, 0),
                 new UserEventFeedbackCountersDto(0, 0, 0, 0),
@@ -2286,14 +2289,14 @@ public class HomeUserProfileService {
             UserImpressionsDto impressions) {
         UserMenuCountersDto counters = buildMenuCounters(user);
         int cursorPartCount = cursorPartCount(requestCursor);
-        int fingerprintOffset = cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
+        int fingerprintOffset = cursorPartCount >= 37 ? 35 : cursorPartCount >= 31 ? 29 : cursorPartCount >= 16 ? 14 : 10;
         String previousHostHash = cursorPart(requestCursor, fingerprintOffset);
         String previousMemberHash = cursorPart(requestCursor, fingerprintOffset + 1);
         String nextHostHash = impressionsFingerprint(impressions == null ? null : impressions.host());
         String nextMemberHash = impressionsFingerprint(impressions == null ? null : impressions.member());
         return new UserRealtimeCountersDto(
                 counters.game(),
-                counters.chat(),
+                counters.chats(),
                 counters.invitations(),
                 counters.events(),
                 counters.hosting(),
@@ -2303,6 +2306,7 @@ public class HomeUserProfileService {
                 counters.tickets(),
                 counters.contacts(),
                 counters.feedback(),
+                counters.chat(),
                 counters.event(),
                 counters.asset(),
                 counters.eventFeedback(),
@@ -2319,7 +2323,7 @@ public class HomeUserProfileService {
         return String.join(":",
                 normalizeId(user.getId()),
                 String.valueOf(normalizeCount(counters.game())),
-                String.valueOf(normalizeCount(counters.chat())),
+                String.valueOf(normalizeCount(counters.chats())),
                 String.valueOf(normalizeCount(counters.invitations())),
                 String.valueOf(normalizeCount(counters.events())),
                 String.valueOf(normalizeCount(counters.hosting())),
@@ -2329,6 +2333,12 @@ public class HomeUserProfileService {
                 String.valueOf(normalizeCount(counters.tickets())),
                 String.valueOf(normalizeCount(counters.contacts())),
                 String.valueOf(normalizeCount(counters.feedback())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().all())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().event())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().subEvent())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().group())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().service())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().appSupport())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().all())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().active())),
                 String.valueOf(normalizeCount(counters.event() == null ? null : counters.event().pending())),
@@ -2460,6 +2470,7 @@ public class HomeUserProfileService {
         if (activities == null) {
             return new UserActivitiesDto(
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    new UserChatCountersDto(0, 0, 0, 0, 0, 0),
                     new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
                     new UserAssetCountersDto(0, 0, 0, 0),
                     new UserEventFeedbackCountersDto(0, 0, 0, 0),
@@ -2467,7 +2478,7 @@ public class HomeUserProfileService {
         }
         return new UserActivitiesDto(
                 normalizeCount(activities.game()),
-                normalizeCount(activities.chat()),
+                normalizeCount(activities.chats()),
                 normalizeCount(activities.invitations()),
                 normalizeCount(activities.events()),
                 normalizeCount(activities.hosting()),
@@ -2477,6 +2488,7 @@ public class HomeUserProfileService {
                 normalizeCount(activities.tickets()),
                 normalizeCount(activities.contacts()),
                 normalizeCount(activities.feedback()),
+                toUserChatCountersDto(activities.chat()),
                 toUserEventCountersDto(activities.event()),
                 toUserAssetCountersDto(activities.asset()),
                 toUserEventFeedbackCountersDto(activities.eventFeedback()),
@@ -2488,6 +2500,7 @@ public class HomeUserProfileService {
         if (activities == null) {
             return new Users.UserActivitiesRecord(
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                    new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                     new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                     new Users.UserAssetCountersRecord(0, 0, 0, 0),
                     new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),
@@ -2495,7 +2508,7 @@ public class HomeUserProfileService {
         }
         return new Users.UserActivitiesRecord(
                 normalizeCount(activities.game()),
-                normalizeCount(activities.chat()),
+                normalizeCount(activities.chats()),
                 normalizeCount(activities.invitations()),
                 normalizeCount(activities.events()),
                 normalizeCount(activities.hosting()),
@@ -2505,6 +2518,7 @@ public class HomeUserProfileService {
                 normalizeCount(activities.tickets()),
                 normalizeCount(activities.contacts()),
                 normalizeCount(activities.feedback()),
+                toUserChatCountersRecord(activities.chat()),
                 toUserEventCountersRecord(activities.event()),
                 toUserAssetCountersRecord(activities.asset()),
                 toUserEventFeedbackCountersRecord(activities.eventFeedback()),
@@ -2521,6 +2535,16 @@ public class HomeUserProfileService {
                 event == null ? 0 : normalizeCount(event.hosting()),
                 event == null ? 0 : normalizeCount(event.drafts()),
                 event == null ? 0 : normalizeCount(event.trash()));
+    }
+
+    private UserChatCountersDto toUserChatCountersDto(Users.UserChatCountersRecord chat) {
+        return new UserChatCountersDto(
+                chat == null ? 0 : normalizeCount(chat.all()),
+                chat == null ? 0 : normalizeCount(chat.event()),
+                chat == null ? 0 : normalizeCount(chat.subEvent()),
+                chat == null ? 0 : normalizeCount(chat.group()),
+                chat == null ? 0 : normalizeCount(chat.service()),
+                chat == null ? 0 : normalizeCount(chat.appSupport()));
     }
 
     private UserAssetCountersDto toUserAssetCountersDto(Users.UserAssetCountersRecord asset) {
@@ -2548,6 +2572,16 @@ public class HomeUserProfileService {
                 event == null ? 0 : normalizeCount(event.hosting()),
                 event == null ? 0 : normalizeCount(event.drafts()),
                 event == null ? 0 : normalizeCount(event.trash()));
+    }
+
+    private Users.UserChatCountersRecord toUserChatCountersRecord(UserChatCountersDto chat) {
+        return new Users.UserChatCountersRecord(
+                chat == null ? 0 : normalizeCount(chat.all()),
+                chat == null ? 0 : normalizeCount(chat.event()),
+                chat == null ? 0 : normalizeCount(chat.subEvent()),
+                chat == null ? 0 : normalizeCount(chat.group()),
+                chat == null ? 0 : normalizeCount(chat.service()),
+                chat == null ? 0 : normalizeCount(chat.appSupport()));
     }
 
     private Users.UserAssetCountersRecord toUserAssetCountersRecord(UserAssetCountersDto asset) {
@@ -2754,7 +2788,7 @@ public class HomeUserProfileService {
                     || normalizeCount(activities.hosting()) > 0;
         }
         if ("attendee".equals(normalizedKind)) {
-            return normalizeCount(activities.chat()) > 0
+            return normalizeCount(activities.chats()) > 0
                     || normalizeCount(activities.invitations()) > 0
                     || normalizeCount(activities.tickets()) > 0
                     || normalizeCount(activities.feedback()) > 0;

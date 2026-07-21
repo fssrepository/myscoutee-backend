@@ -7,37 +7,29 @@ export async function assertUi({ page }) {
   await openNavigatorMenu(page);
   await page.recordStep('admin-navigator-menu-open');
   await page.click('button[aria-label="Open content editor"]');
-  await page.waitForSelector('.popup-panel-help-editor');
+  await page.waitForSelector('.help-editor-body');
   await page.recordStep('help-editor-open');
-  await page.waitFor('help editor document menu ready', async () => {
-    return page.evaluate(() => {
-      const button = document.querySelector('.help-editor-document-menu-btn');
-      return Boolean(button) && !button.disabled;
-    });
-  }, 30000);
-  await page.click('.help-editor-document-menu-btn');
-  await page.clickVisible('.help-editor-document-menu-branch');
-  await page.clickVisible('.help-editor-document-menu-surface');
+  await selectFirstExplanationSurface(page);
   await page.waitForNetwork('/api/admin/explanation');
-  await page.waitForSelector('.popup-panel-help-editor');
+  await page.waitForSelector('.help-editor-body');
   await page.recordStep('explanation-document-selected');
   await clickVisibleHelpEditorEditButton(page);
   await page.waitForSelector('.help-editor-draft-row');
   await page.recordStep('explanation-edit-mode-open');
   await ensureDraftExplanationSectionOpen(page);
-  await page.waitForSelector('app-editable-image-carousel');
-  await page.waitForSelector('.editable-image-carousel');
+  await page.waitForSelector('.help-editor-draft-row app-image-carousel');
+  await page.waitForSelector('.help-editor-draft-row .image-carousel');
   await page.recordStep('explanation-edit-carousel-visible');
   await page.waitFor('seeded explanation carousel image backgrounds', async () => {
     return page.evaluate(() => {
-      return Array.from(document.querySelectorAll('.editable-image-carousel__slot.is-filled')).some(element => {
+      return Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__slot.is-filled')).some(element => {
         const background = window.getComputedStyle(element).backgroundImage;
         return background && background !== 'none' && !background.includes('help-seeded-image:');
       });
     });
   }, 12000);
   const backgrounds = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll('.editable-image-carousel__slot.is-filled'))
+    return Array.from(document.querySelectorAll('.help-editor-draft-row .image-carousel__slot.is-filled'))
       .map(element => window.getComputedStyle(element).backgroundImage)
       .filter(value => value && value !== 'none');
   });
@@ -69,8 +61,33 @@ export async function assertUi({ page }) {
   await page.recordStep('explanation-edit-content-updated');
   await page.clickVisible('.help-editor-draft-row .help-editor-confirm-btn');
   await page.waitForNetwork('/api/admin/explanation', { timeoutMs: 30000 });
-  await waitForVisibleText(page, '.popup-panel-help-editor', marker, 30000);
+  await waitForVisibleText(page, '.help-editor-body', marker, 30000);
   await page.recordStep('explanation-revision-saved-visible');
+}
+
+async function selectFirstExplanationSurface(page) {
+  const root = 'app-admin-help-editor-popup .ui-popup__header-controls';
+  const trigger = `${root} button[aria-label="Select content type"]`;
+  await page.waitFor('help editor document menu ready', async () => page.evaluate(selector => {
+    const button = document.querySelector(selector);
+    return Boolean(button && !button.disabled);
+  }, trigger), 30000);
+  await page.clickVisible(trigger);
+  await page.waitForSelector(`${root} .app-menu__panel`);
+  await page.clickByText(`${root} .app-menu__panel button`, 'Explanations');
+  await page.waitForSelector(`${root} .app-menu__branch-title`);
+  const selected = await page.evaluate(rootSelector => {
+    const visible = element => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+    };
+    const button = Array.from(document.querySelectorAll(`${rootSelector} .app-menu__items .app-menu__item`))
+      .find(item => visible(item) && !item.disabled);
+    button?.click();
+    return Boolean(button);
+  }, root);
+  assert(selected, 'Help editor content menu should expose an explanation surface');
 }
 
 function extractCssBackgroundUrl(value) {
@@ -128,7 +145,7 @@ async function ensureDraftExplanationSectionOpen(page) {
         && style.display !== 'none'
         && style.visibility !== 'hidden';
     };
-    if (isVisible(document.querySelector('app-editable-image-carousel'))) {
+    if (isVisible(document.querySelector('.help-editor-draft-row app-image-carousel'))) {
       return true;
     }
 

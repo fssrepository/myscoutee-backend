@@ -43,15 +43,23 @@ public class EventParticipationTicketService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return List.of();
         }
+        Set<String> acceptedSourceIds = activityMembersRepository
+                .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> "accepted".equals(normalizeMemberStatus(member.getStatus())))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         Map<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : activityEventsRepository.findAcceptedMembershipEvents(normalizedUserId)) {
+        for (ActivityEvent record : activityEventsRepository.findDirectOwnerEvents(normalizedUserId)) {
             if (record == null
                     || !Boolean.TRUE.equals(record.getTicketing())
                     || Boolean.TRUE.equals(record.getIsTrashed())) {
                 continue;
             }
             String sourceId = normalizeId(record.getSourceId());
-            if (!StringUtils.hasText(sourceId)) {
+            if (!StringUtils.hasText(sourceId) || !acceptedSourceIds.contains(sourceId)) {
                 continue;
             }
             ActivityEvent current = preferredBySourceId.get(sourceId);
@@ -353,7 +361,18 @@ public class EventParticipationTicketService {
     }
 
     private boolean preferSourceRecord(ActivityEvent next, ActivityEvent current) {
+        boolean nextCanonical = isCreatorOwnedSourceRecord(next);
+        boolean currentCanonical = isCreatorOwnedSourceRecord(current);
+        if (nextCanonical != currentCanonical) {
+            return nextCanonical;
+        }
         return toSortableDate(next == null ? null : next.getUpdatedDate()) >= toSortableDate(current == null ? null : current.getUpdatedDate());
+    }
+
+    private boolean isCreatorOwnedSourceRecord(ActivityEvent record) {
+        return record != null
+                && StringUtils.hasText(normalizeId(record.getOwnerUserId()))
+                && normalizeId(record.getOwnerUserId()).equals(normalizeId(record.getCreatorUserId()));
     }
 
     private boolean isManagedParticipationOverlay(ActivityEvent record, String creatorUserId) {
