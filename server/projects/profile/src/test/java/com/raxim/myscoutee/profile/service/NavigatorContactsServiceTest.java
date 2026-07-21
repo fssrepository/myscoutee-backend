@@ -66,6 +66,7 @@ class NavigatorContactsServiceTest {
                 1,
                 0,
                 3,
+                new Users.UserChatCountersRecord(4, 1, 1, 1, 1, 0),
                 new Users.UserEventCountersRecord(8, 4, 1, 1, 2, 0, 0),
                 new Users.UserAssetCountersRecord(1, 1, 1, 1),
                 new Users.UserEventFeedbackCountersRecord(1, 2, 3, 4),

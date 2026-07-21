@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Locale;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -603,12 +604,19 @@ public class AdminModerationService {
                 report.getEventStartAtIso(), report.getMemberEntryId(), report.getSourceType(), report.getSourceId(), report.getSourceText(),
                 report.getChatId(), report.getMessageId(), report.getAssetId(), report.getAssetType(),
                 chat == null ? null : chat.getTitle(),
-                chat == null ? List.of() : chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(chat.getChatId()).stream().map(this::toChatMessage).toList(),
+                chat == null ? List.of() : recentReportedChatMessages(chat.getChatId()),
                 report.getCreatedDate(),
                 report.getWarnedAtIso(),
                 report.getWarnedByAdminUserId(),
                 report.getResolvedAtIso(),
                 report.getResolvedByAdminUserId());
+    }
+
+    private List<AdminChatMessageDto> recentReportedChatMessages(String chatId) {
+        List<ChatMessage> messages = new ArrayList<>(chatMessagesRepository
+                .findByChatIdOrderBySentAtIsoDesc(chatId, PageRequest.of(0, 50)));
+        java.util.Collections.reverse(messages);
+        return messages.stream().map(this::toChatMessage).toList();
     }
 
     private Chat resolveReportedChat(UserReportSubmission report) {

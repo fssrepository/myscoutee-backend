@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -710,45 +711,13 @@ public class DeletedAccountPurgeService {
             return;
         }
 
-        Map<String, List<ChatMessage>> messagesByChatId = new LinkedHashMap<>();
+        String purgeAtIso = Instant.now().toString();
+        Set<String> summaryRefreshChatIds = new LinkedHashSet<>();
         for (String chatId : chatIds) {
             String normalizedChatId = safeText(chatId);
-            if (!StringUtils.hasText(normalizedChatId)) {
-                continue;
-            }
-            messagesByChatId.put(normalizedChatId, chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId));
-        }
-
-        String purgeAtIso = Instant.now().toString();
-        List<ChatMessage> changedMessages = new ArrayList<>();
-        Set<String> summaryRefreshChatIds = new LinkedHashSet<>();
-        for (Map.Entry<String, List<ChatMessage>> entry : messagesByChatId.entrySet()) {
-            Set<String> purgedMessageIds = collectSentMessageIds(entry.getValue(), userId);
-            for (ChatMessage message : entry.getValue()) {
-                if (message == null) {
-                    continue;
-                }
-                boolean changed = false;
-                boolean sentByUser = isSentByUser(message, userId);
-                if (sentByUser) {
-                    purgeMessageMedia(message);
-                    scrubSentMessage(message, userId, purgeAtIso);
-                    changed = true;
-                }
-                changed = removeReadsByUser(message, userId) || changed;
-                changed = removeReactionsByUser(message, userId) || changed;
-                changed = removePollVotesByUser(message, userId) || changed;
-                changed = scrubReplyToPurgedMessage(message, purgedMessageIds) || changed;
-                changed = clearPinByUser(message, userId) || changed;
-                if (userId.equals(safeText(message.getDeletedByUserId()))) {
-                    message.setDeletedByName("Deleted user");
-                    changed = true;
-                }
-                if (changed) {
-                    message.refreshMessageSearchFields();
-                    changedMessages.add(message);
-                    summaryRefreshChatIds.add(entry.getKey());
-                }
+            if (StringUtils.hasText(normalizedChatId)
+                    && purgeChatMessagesInBatches(normalizedChatId, userId, purgeAtIso)) {
+                summaryRefreshChatIds.add(normalizedChatId);
             }
         }
 
@@ -769,9 +738,6 @@ public class DeletedAccountPurgeService {
                 }
                 changedChats.add(chat);
             }
-        }
-        if (!changedMessages.isEmpty()) {
-            chatMessagesRepository.saveAll(changedMessages);
         }
         if (!changedChats.isEmpty()) {
             chatsRepository.saveAll(changedChats);
@@ -808,15 +774,58 @@ public class DeletedAccountPurgeService {
         }
     }
 
-    private Set<String> collectSentMessageIds(List<? extends ChatMessage> messages, String userId) {
-        Set<String> ids = new LinkedHashSet<>();
-        for (ChatMessage message : messages == null ? List.<ChatMessage>of() : messages) {
-            String messageId = safeText(message == null ? null : message.getId());
-            if (StringUtils.hasText(messageId) && isSentByUser(message, userId)) {
-                ids.add(messageId);
+    private boolean purgeChatMessagesInBatches(String chatId, String userId, String purgeAtIso) {
+        int pageSize = 100;
+        long total = chatMessagesRepository.countByChatId(chatId);
+        Set<String> purgedMessageIds = new LinkedHashSet<>();
+        for (int offset = 0; offset < total; offset += pageSize) {
+            List<ChatMessage> page = chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(
+                    chatId,
+                    PageRequest.of(offset / pageSize, pageSize));
+            for (ChatMessage message : page) {
+                String messageId = safeText(message == null ? null : message.getId());
+                if (StringUtils.hasText(messageId) && isSentByUser(message, userId)) {
+                    purgedMessageIds.add(messageId);
+                }
             }
         }
-        return ids;
+
+        boolean changedAny = false;
+        for (int offset = 0; offset < total; offset += pageSize) {
+            List<ChatMessage> page = chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(
+                    chatId,
+                    PageRequest.of(offset / pageSize, pageSize));
+            List<ChatMessage> changedMessages = new ArrayList<>();
+            for (ChatMessage message : page) {
+                if (message == null) {
+                    continue;
+                }
+                boolean changed = false;
+                if (isSentByUser(message, userId)) {
+                    purgeMessageMedia(message);
+                    scrubSentMessage(message, userId, purgeAtIso);
+                    changed = true;
+                }
+                changed = removeReadsByUser(message, userId) || changed;
+                changed = removeReactionsByUser(message, userId) || changed;
+                changed = removePollVotesByUser(message, userId) || changed;
+                changed = scrubReplyToPurgedMessage(message, purgedMessageIds) || changed;
+                changed = clearPinByUser(message, userId) || changed;
+                if (userId.equals(safeText(message.getDeletedByUserId()))) {
+                    message.setDeletedByName("Deleted user");
+                    changed = true;
+                }
+                if (changed) {
+                    message.refreshMessageSearchFields();
+                    changedMessages.add(message);
+                }
+            }
+            if (!changedMessages.isEmpty()) {
+                chatMessagesRepository.saveAll(changedMessages);
+                changedAny = true;
+            }
+        }
+        return changedAny;
     }
 
     private boolean removeMember(Chat chat, String userId) {
@@ -968,7 +977,11 @@ public class DeletedAccountPurgeService {
         if (!StringUtils.hasText(normalizedChatId)) {
             return;
         }
-        ChatMessage latest = latestMessage(chatMessagesRepository.findByChatIdOrderBySentAtIsoAsc(normalizedChatId));
+        ChatMessage latest = chatMessagesRepository
+                .findByChatIdOrderBySentAtIsoDesc(normalizedChatId, PageRequest.of(0, 1))
+                .stream()
+                .findFirst()
+                .orElse(null);
         List<Chat> changedChats = new ArrayList<>();
         for (Chat chat : chatsRepository.findByChatId(normalizedChatId)) {
             if (chat == null) {
@@ -987,14 +1000,6 @@ public class DeletedAccountPurgeService {
         if (!changedChats.isEmpty()) {
             chatsRepository.saveAll(changedChats);
         }
-    }
-
-    private ChatMessage latestMessage(List<? extends ChatMessage> messages) {
-        List<? extends ChatMessage> safeMessages = messages == null ? List.of() : messages;
-        return safeMessages.stream()
-                .filter(Objects::nonNull)
-                .reduce((first, second) -> second)
-                .orElse(null);
     }
 
     private String messageSummary(ChatMessage message) {

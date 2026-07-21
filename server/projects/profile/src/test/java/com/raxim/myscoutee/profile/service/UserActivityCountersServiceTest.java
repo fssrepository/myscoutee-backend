@@ -157,6 +157,7 @@ class UserActivityCountersServiceTest {
                 tickets,
                 0,
                 pending,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(cars, accommodation, supplies, tickets),
                 new Users.UserEventFeedbackCountersRecord(ownEvents, pending, feedbacked, removed),

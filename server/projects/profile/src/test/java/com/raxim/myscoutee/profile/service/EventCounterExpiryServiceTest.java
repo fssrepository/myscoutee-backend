@@ -141,6 +141,7 @@ class EventCounterExpiryServiceTest {
                 11,
                 12,
                 13,
+                new Users.UserChatCountersRecord(2, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(18, 6, 0, 5, 7, 0, 0),
                 new Users.UserAssetCountersRecord(8, 9, 10, 11),
                 new Users.UserEventFeedbackCountersRecord(0, 13, 0, 0),

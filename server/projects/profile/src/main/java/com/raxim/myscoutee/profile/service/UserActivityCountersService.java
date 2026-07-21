@@ -276,7 +276,7 @@ public class UserActivityCountersService {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
         return new Users.UserActivitiesRecord(
                 count(safe.game()),
-                count(safe.chat()),
+                count(safe.chats()),
                 counters.invitations(),
                 counters.active(),
                 counters.hosting(),
@@ -286,6 +286,7 @@ public class UserActivityCountersService {
                 count(safe.tickets()),
                 count(safe.contacts()),
                 count(safe.feedback()),
+                safe.chat(),
                 new Users.UserEventCountersRecord(
                         counters.all(),
                         counters.active(),
@@ -324,7 +325,7 @@ public class UserActivityCountersService {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
         return new Users.UserActivitiesRecord(
                 count(safe.game()),
-                count(safe.chat()),
+                count(safe.chats()),
                 count(safe.invitations()),
                 count(safe.events()),
                 count(safe.hosting()),
@@ -334,6 +335,7 @@ public class UserActivityCountersService {
                 count(safe.tickets()),
                 count(safe.contacts()),
                 count(safe.feedback()),
+                safe.chat(),
                 safe.event(),
                 new Users.UserAssetCountersRecord(
                         counters.cars(),
@@ -366,7 +368,7 @@ public class UserActivityCountersService {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
         return new Users.UserActivitiesRecord(
                 count(safe.game()),
-                count(safe.chat()),
+                count(safe.chats()),
                 count(safe.invitations()),
                 count(safe.events()),
                 count(safe.hosting()),
@@ -376,6 +378,7 @@ public class UserActivityCountersService {
                 count(safe.tickets()),
                 count(safe.contacts()),
                 counters.pending(),
+                safe.chat(),
                 safe.event(),
                 safe.asset(),
                 new Users.UserEventFeedbackCountersRecord(
@@ -414,6 +417,7 @@ public class UserActivityCountersService {
     private Users.UserActivitiesRecord emptyActivities() {
         return new Users.UserActivitiesRecord(
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0),
                 new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0),
                 new Users.UserAssetCountersRecord(0, 0, 0, 0),
                 new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0),

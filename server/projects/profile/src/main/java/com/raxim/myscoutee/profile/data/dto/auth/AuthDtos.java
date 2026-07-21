@@ -37,7 +37,7 @@ public final class AuthDtos {
 
     public record UserMenuCountersDto(
             Integer game,
-            Integer chat,
+            Integer chats,
             Integer invitations,
             Integer events,
             Integer hosting,
@@ -47,11 +47,21 @@ public final class AuthDtos {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserChatCountersDto chat,
             UserEventCountersDto event,
             UserAssetCountersDto asset,
             UserEventFeedbackCountersDto eventFeedback,
             Integer adminJobs,
             Integer adminMetrics) {
+    }
+
+    public record UserChatCountersDto(
+            Integer all,
+            Integer event,
+            Integer subEvent,
+            Integer group,
+            Integer service,
+            Integer appSupport) {
     }
 
     public record UserEventCountersDto(
@@ -80,7 +90,7 @@ public final class AuthDtos {
 
     public record UserRealtimeCountersDto(
             Integer game,
-            Integer chat,
+            Integer chats,
             Integer invitations,
             Integer events,
             Integer hosting,
@@ -90,6 +100,7 @@ public final class AuthDtos {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserChatCountersDto chat,
             UserEventCountersDto event,
             UserAssetCountersDto asset,
             UserEventFeedbackCountersDto eventFeedback,
@@ -125,7 +136,7 @@ public final class AuthDtos {
 
     public record UserActivitiesDto(
             Integer game,
-            Integer chat,
+            Integer chats,
             Integer invitations,
             Integer events,
             Integer hosting,
@@ -135,6 +146,7 @@ public final class AuthDtos {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserChatCountersDto chat,
             UserEventCountersDto event,
             UserAssetCountersDto asset,
             UserEventFeedbackCountersDto eventFeedback,

@@ -375,7 +375,7 @@ public class Users {
 
     public record UserActivitiesRecord(
             Integer game,
-            Integer chat,
+            Integer chats,
             Integer invitations,
             Integer events,
             Integer hosting,
@@ -385,11 +385,21 @@ public class Users {
             Integer tickets,
             Integer contacts,
             Integer feedback,
+            UserChatCountersRecord chat,
             UserEventCountersRecord event,
             UserAssetCountersRecord asset,
             UserEventFeedbackCountersRecord eventFeedback,
             Integer adminJobs,
             Integer adminMetrics) {
+    }
+
+    public record UserChatCountersRecord(
+            Integer all,
+            Integer event,
+            Integer subEvent,
+            Integer group,
+            Integer service,
+            Integer appSupport) {
     }
 
     public record UserEventCountersRecord(

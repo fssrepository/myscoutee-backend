@@ -239,7 +239,7 @@ public class NavigatorContactsService {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
         return new Users.UserActivitiesRecord(
                 count(safe.game()),
-                count(safe.chat()),
+                count(safe.chats()),
                 count(safe.invitations()),
                 count(safe.events()),
                 count(safe.hosting()),
@@ -249,6 +249,7 @@ public class NavigatorContactsService {
                 count(safe.tickets()),
                 Math.max(0, contactsCount),
                 count(safe.feedback()),
+                safe.chat() == null ? emptyChatCounters() : safe.chat(),
                 safe.event() == null ? emptyEventCounters() : safe.event(),
                 safe.asset() == null ? emptyAssetCounters() : safe.asset(),
                 safe.eventFeedback() == null ? emptyEventFeedbackCounters() : safe.eventFeedback(),
@@ -269,11 +270,16 @@ public class NavigatorContactsService {
                 0,
                 0,
                 0,
+                emptyChatCounters(),
                 emptyEventCounters(),
                 emptyAssetCounters(),
                 emptyEventFeedbackCounters(),
                 0,
                 0);
+    }
+
+    private Users.UserChatCountersRecord emptyChatCounters() {
+        return new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0);
     }
 
     private Users.UserEventCountersRecord emptyEventCounters() {
