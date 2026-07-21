@@ -141,6 +141,29 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void queryStateUsesNaturalAssignmentScopeInsteadOfGeneratedRecordId() {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setRecordId("legacy-generated-record-id");
+        resource.setStatus("A");
+        resource.setOwnerId("event-1");
+        resource.setSubEventId("sub-1");
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of());
+        resource.setAssetSettingsByType(Map.of());
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
+        when(assetsService.queryAssets("u1")).thenReturn(List.of());
+
+        ActivitySubEventResourceStateDto state = service.queryState("event-1", "sub-1", "u1");
+
+        assertThat(state).isNotNull();
+        assertThat(state.ownerId()).isEqualTo("event-1");
+        assertThat(state.subEventId()).isEqualTo("sub-1");
+        assertThat(state.assetOwnerUserId()).isEqualTo("u1");
+    }
+
+    @Test
     void replaceKeepsEventMembershipInvariantAfterActorPolicyPasses() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
@@ -159,7 +182,8 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -180,7 +204,8 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.empty());
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -203,7 +228,8 @@ class ActivitiesResourcesServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
                 .thenReturn(Optional.of(member("event-1", "u1", "accepted", "Member")));
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
-        when(activitySubEventResourcesRepository.findByRecordIdAndStatusNot("u1:event-1:sub-1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
         when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));

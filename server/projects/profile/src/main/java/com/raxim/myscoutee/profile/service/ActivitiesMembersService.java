@@ -127,6 +127,15 @@ public class ActivitiesMembersService {
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId, Boolean pendingOnly) {
+        return queryMembers(ownerType, ownerId, pendingOnly, null, null);
+    }
+
+    public List<ActivityMemberEntryDto> queryMembers(
+            String ownerType,
+            String ownerId,
+            Boolean pendingOnly,
+            String eventId,
+            String subEventId) {
         String normalizedOwnerType = normalizeOwnerType(ownerType);
         String normalizedOwnerId = normalizeId(ownerId);
         if (!StringUtils.hasText(normalizedOwnerType) || !StringUtils.hasText(normalizedOwnerId)) {
@@ -138,10 +147,15 @@ public class ActivitiesMembersService {
         }
 
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
-        List<ActivityMember> ownerMembers = loadOwnerDocuments(
-                normalizedOwnerType,
-                normalizedOwnerId,
-                Boolean.TRUE.equals(pendingOnly) ? STATUS_PENDING : null).stream()
+        List<ActivityMember> ownerMembers = OWNER_TYPE_ASSET.equals(normalizedOwnerType)
+                && StringUtils.hasText(normalizeId(eventId))
+                && StringUtils.hasText(normalizeId(subEventId))
+                ? loadScopedAssetDocuments(normalizedOwnerId, eventId, subEventId, pendingOnly)
+                : loadOwnerDocuments(
+                        normalizedOwnerType,
+                        normalizedOwnerId,
+                        Boolean.TRUE.equals(pendingOnly) ? STATUS_PENDING : null);
+        ownerMembers = ownerMembers.stream()
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .toList();
         Map<String, List<ActivityMemberInvolvementDto>> involvementsByUserId = memberInvolvementsByUserId(
@@ -154,6 +168,81 @@ public class ActivitiesMembersService {
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
                 .sorted(Comparator.comparing(entry -> toSortableDate(entry.actionAtIso())))
                 .toList();
+    }
+
+    private List<ActivityMember> loadScopedAssetDocuments(
+            String assetId,
+            String eventId,
+            String subEventId,
+            Boolean pendingOnly) {
+        Asset asset = assetsService.findAssetByAssetIdWithScopedRequests(
+                assetId,
+                eventId,
+                subEventId,
+                Boolean.TRUE.equals(pendingOnly) ? STATUS_PENDING : null).orElse(null);
+        if (asset == null) {
+            return List.of();
+        }
+
+        Map<String, ActivityMember> membersByUserId = new LinkedHashMap<>();
+        if (!Boolean.TRUE.equals(pendingOnly)) {
+            ActivityMember owner = scopedAssetOwnerMember(asset, eventId, subEventId);
+            if (owner != null) {
+                membersByUserId.put(normalizeId(owner.getUserId()), owner);
+            }
+        }
+        for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
+            ActivityMember member = scopedAssetRequestMember(asset, request);
+            String memberUserId = normalizeId(member == null ? null : member.getUserId());
+            if (StringUtils.hasText(memberUserId) && !memberUserId.equals(normalizeId(asset.getOwnerUserId()))) {
+                membersByUserId.put(memberUserId, member);
+            }
+        }
+        return List.copyOf(membersByUserId.values());
+    }
+
+    private ActivityMember scopedAssetOwnerMember(Asset asset, String eventId, String subEventId) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId)) {
+            return null;
+        }
+        ActivityMember member = new ActivityMember();
+        member.setSyncKey("asset-scope-owner:" + assetId + ":" + normalizeId(eventId) + ":" + normalizeId(subEventId));
+        member.setOwnerType(OWNER_TYPE_ASSET);
+        member.setOwnerId(assetId);
+        member.setUserId(ownerUserId);
+        member.setRole("Manager");
+        member.setStatus(STATUS_ACCEPTED);
+        member.setActionAtIso(normalizeDateTime(asset.getUpdatedDate(), normalizeDateTime(asset.getCreatedDate(), Instant.now().toString())));
+        member.setMetAtIso(member.getActionAtIso());
+        member.setMetWhere(firstNonBlank(asset.getCity(), asset.getTitle()));
+        return member;
+    }
+
+    private ActivityMember scopedAssetRequestMember(Asset asset, Asset.AssetRequestRecord request) {
+        String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+        String userId = normalizeId(request == null ? null : request.userId());
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(userId)) {
+            return null;
+        }
+        String status = normalizeStatus(request.status());
+        ActivityMember member = new ActivityMember();
+        member.setSyncKey(firstNonBlank(request.id(), "asset-scope-request:" + assetId + ":" + userId));
+        member.setOwnerType(OWNER_TYPE_ASSET);
+        member.setOwnerId(assetId);
+        member.setUserId(userId);
+        member.setRole("Member");
+        member.setStatus(status);
+        if (STATUS_PENDING.equals(status)) {
+            member.setPendingSource("admin");
+            member.setRequestKind(REQUEST_KIND_INVITE);
+        }
+        String requestedAtIso = normalizeDateTime(request.requestedAtIso(), Instant.now().toString());
+        member.setActionAtIso(requestedAtIso);
+        member.setMetAtIso(requestedAtIso);
+        member.setMetWhere(safeText(asset.getTitle()));
+        return member;
     }
 
     public List<ActivityMembersSummaryDto> querySummaries(ActivityMembersSummariesRequestDto request) {

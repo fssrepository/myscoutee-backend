@@ -2,6 +2,8 @@ package com.raxim.myscoutee.profile.data.dto.activities;
 
 import java.util.List;
 
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
+
 public final class ChatDtos {
     private ChatDtos() {
     }
@@ -37,7 +39,30 @@ public final class ChatDtos {
             Double distanceKm,
             Integer distanceMetersExact,
             ChatMetricsDto metrics,
-            ChatSupportCaseDto supportCase) {
+            ChatSupportCaseDto supportCase,
+            String eventId,
+            String subEventId,
+            String groupId,
+            ChatNavigationContextDto navigationContext) {
+    }
+
+    public record ChatNavigationContextDto(
+            String eventId,
+            String eventTitle,
+            String eventTarget,
+            Integer eventPendingMembers,
+            SubEventItemDto subEvent,
+            ChatGroupContextDto group) {
+    }
+
+    public record ChatGroupContextDto(
+            String id,
+            String name,
+            String source,
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
     }
 
     public record ChatMetricBucketDto(

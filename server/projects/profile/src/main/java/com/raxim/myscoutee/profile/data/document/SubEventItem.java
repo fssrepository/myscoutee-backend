@@ -1,8 +1,11 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 
 public record SubEventItem(
         @Field("id")
@@ -41,7 +44,60 @@ public record SubEventItem(
         String stageStatusReason,
         String stageStatusUpdatedAt,
         String stageFinalizedAt,
-        String stageFinalizedByUserId) {
+        String stageFinalizedByUserId,
+        List<SubEventGroupItemDto> groups) {
+
+    public SubEventItem(
+            String id,
+            String name,
+            String description,
+            String startAt,
+            String endAt,
+            String location,
+            String createdByUserId,
+            Integer tournamentGroupCapacityMin,
+            Integer tournamentGroupCapacityMax,
+            String tournamentLeaderboardType,
+            Integer tournamentAdvancePerGroup,
+            Boolean optional,
+            PricingConfigDto pricing,
+            Integer capacityMin,
+            Integer capacityMax,
+            Integer membersAccepted,
+            Integer membersPending,
+            Integer carsPending,
+            Integer accommodationPending,
+            Integer suppliesPending,
+            Integer carsAccepted,
+            Integer accommodationAccepted,
+            Integer suppliesAccepted,
+            Integer carsCapacityMin,
+            Integer carsCapacityMax,
+            Integer accommodationCapacityMin,
+            Integer accommodationCapacityMax,
+            Integer suppliesCapacityMin,
+            Integer suppliesCapacityMax,
+            Integer slotStartOffsetMinutes,
+            Integer slotDurationMinutes,
+            String stageStatus,
+            String stageStatusReason,
+            String stageStatusUpdatedAt,
+            String stageFinalizedAt,
+            String stageFinalizedByUserId) {
+        this(
+                id, name, description, startAt, endAt, location, createdByUserId,
+                tournamentGroupCapacityMin, tournamentGroupCapacityMax,
+                tournamentLeaderboardType, tournamentAdvancePerGroup, optional, pricing,
+                capacityMin, capacityMax, membersAccepted, membersPending,
+                carsPending, accommodationPending, suppliesPending,
+                carsAccepted, accommodationAccepted, suppliesAccepted,
+                carsCapacityMin, carsCapacityMax,
+                accommodationCapacityMin, accommodationCapacityMax,
+                suppliesCapacityMin, suppliesCapacityMax,
+                slotStartOffsetMinutes, slotDurationMinutes,
+                stageStatus, stageStatusReason, stageStatusUpdatedAt,
+                stageFinalizedAt, stageFinalizedByUserId, List.of());
+    }
 
     public SubEventItem(
             String id,
@@ -111,6 +167,7 @@ public record SubEventItem(
                 null,
                 null,
                 null,
-                null);
+                null,
+                List.of());
     }
 }

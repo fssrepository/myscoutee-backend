@@ -204,8 +204,10 @@ public class ActivitiesResourcesService {
             return null;
         }
 
-        return activitySubEventResourcesRepository.findByRecordIdAndStatusNot(
-                        recordId(normalizedOwnerId, normalizedSubEventId, normalizedAssetOwnerUserId),
+        return activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                        normalizedOwnerId,
+                        normalizedSubEventId,
+                        normalizedAssetOwnerUserId,
                         STATUS_DELETED)
                 .orElse(null);
     }

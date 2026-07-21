@@ -21,10 +21,21 @@ public interface ActivitySubEventResourcesRepository extends MongoRepository<Act
 
     List<ActivitySubEventResource> findByOwnerIdInAndStatusNot(Collection<String> ownerIds, String status);
 
+    List<ActivitySubEventResource> findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+            Collection<String> ownerIds,
+            Collection<String> assetOwnerUserIds,
+            String status);
+
     Optional<ActivitySubEventResource> findByRecordIdAndStatusNot(String recordId, String status);
 
     Optional<ActivitySubEventResource> findByOwnerIdAndSubEventIdAndAssetOwnerUserId(
             String ownerId,
             String subEventId,
             String assetOwnerUserId);
+
+    Optional<ActivitySubEventResource> findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId,
+            String status);
 }

@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
@@ -283,6 +284,33 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::userId)
                 .containsExactly("pending-user");
         verify(activityMembersRepository).findByOwnerTypeAndOwnerIdAndStatus("event", "event-1", "pending");
+        verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+    }
+
+    @Test
+    void queryScopedAssetPendingMembersUsesBookingScopeInsteadOfGlobalAssetMembers() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setTitle("Scoped vehicle");
+        scopedAsset.setRequests(List.of());
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                "pending"))
+                .thenReturn(Optional.of(scopedAsset));
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                true,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result).isEmpty();
+        verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerIdAndStatus(anyString(), anyString(), anyString());
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
     }
 

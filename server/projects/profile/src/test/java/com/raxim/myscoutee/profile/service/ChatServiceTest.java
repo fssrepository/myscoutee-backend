@@ -21,16 +21,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import com.mongodb.client.result.UpdateResult;
 
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -126,6 +129,32 @@ class ChatServiceTest {
     }
 
     @Test
+    void openingFirstMessagePageClearsTheWholePersistedUnreadCount() {
+        Chat viewerChat = chat("chat-1", "viewer", 4, "2026-05-26T08:00:00Z", "groupSubEvent");
+        Chat senderChat = chat("chat-1", "sender", 0);
+        ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
+        when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
+        when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
+                .thenReturn(List.of(unreadMessage));
+        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+        when(mongoTemplate.updateMulti(any(Query.class), any(), eq(ChatMessage.class)))
+                .thenReturn(UpdateResult.acknowledged(4L, 4L, null));
+        when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
+
+        assertThat(result.read()).isNotNull();
+        assertThat(result.read().unread()).isZero();
+        assertThat(result.read().messageIds()).containsExactly("m1");
+        verify(chatsRepository).save(org.mockito.ArgumentMatchers.argThat(chat -> chat.getUnread() == 0));
+        verify(mongoTemplate).updateMulti(any(Query.class), any(), eq(ChatMessage.class));
+    }
+
+    @Test
     void queryMembersPageUsesLogicalChatIdAndPaginatesTheMongoUsersQuery() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat otherOwnerChat = chat("chat-1", "sender", 0);
@@ -161,10 +190,10 @@ class ChatServiceTest {
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat));
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn(
-                eq("event"), eq("event-1"), eq("pending"), any(), any(Pageable.class)))
-                .thenReturn(new PageImpl<>(List.of(pendingMember)));
-        when(mongoTemplate.find(any(Query.class), eq(Users.class)))
+        when(mongoTemplate.count(any(Query.class), eq(ActivityMember.class))).thenReturn(1L);
+        when(mongoTemplate.find(any(Query.class), eq(ActivityMember.class)))
+                .thenReturn(List.of(pendingMember));
+        when(usersRepository.findByUserIdIn(any()))
                 .thenReturn(List.of(user("sender", "Sender User", "SU")));
 
         var result = service.queryMembersPage("chat-1", "viewer", 16, null, true);
@@ -173,9 +202,7 @@ class ChatServiceTest {
                 .extracting(member -> member.id())
                 .containsExactly("sender");
         assertThat(result.total()).isEqualTo(1);
-        verify(activityMembersRepository).findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn(
-                eq("event"), eq("event-1"), eq("pending"), any(), any(Pageable.class));
-        verify(mongoTemplate, never()).count(any(Query.class), eq(Users.class));
+        verify(mongoTemplate).count(any(Query.class), eq(ActivityMember.class));
     }
 
     @Test
@@ -287,6 +314,53 @@ class ChatServiceTest {
     }
 
     @Test
+    void queryChatPageReturnsMongoNavigationContextForGroupedChat() {
+        Chat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
+        groupChat.setTitle("Group B · Group Channel");
+        groupChat.setOwnerId("event-1:stage-1:stage-1:group:2");
+        groupChat.setEventId("event-1");
+        groupChat.setSubEventId("stage-1");
+        groupChat.setGroupId("stage-1:group:2");
+
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setOwnerUserId("viewer");
+        event.setCreatorUserId("viewer");
+        event.setTitle("Tournament");
+        event.setPendingMembers(2);
+        event.setSubEvents(List.of(subEvent("stage-1", "Qualifiers")));
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
+        when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(groupChat));
+        when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event));
+
+        var result = service.queryChatPage(
+                "viewer",
+                "group",
+                "date",
+                "desc",
+                null,
+                null,
+                10,
+                null,
+                null,
+                false,
+                null);
+
+        assertThat(result.items()).hasSize(1);
+        var item = result.items().getFirst();
+        assertThat(item.eventId()).isEqualTo("event-1");
+        assertThat(item.subEventId()).isEqualTo("stage-1");
+        assertThat(item.groupId()).isEqualTo("stage-1:group:2");
+        assertThat(item.navigationContext()).isNotNull();
+        assertThat(item.navigationContext().eventTitle()).isEqualTo("Tournament");
+        assertThat(item.navigationContext().eventTarget()).isEqualTo("hosting");
+        assertThat(item.navigationContext().subEvent().name()).isEqualTo("Qualifiers");
+        assertThat(item.navigationContext().group().name()).isEqualTo("Group B");
+    }
+
+    @Test
     void sendMessageRejectsDeniedChatBeforeWrite() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(false);
@@ -356,6 +430,55 @@ class ChatServiceTest {
         message.setReadBy(List.of(readAvatar(readerUserId, "VU")));
         message.refreshMessageSearchFields();
         return message;
+    }
+
+    private SubEventItem subEvent(String id, String name) {
+        SubEventItem base = new SubEventItem(
+                id,
+                name,
+                "",
+                "2026-03-01T09:00:00Z",
+                "2026-03-01T10:00:00Z",
+                "",
+                "viewer",
+                2,
+                4,
+                "Score",
+                1,
+                false,
+                null,
+                2,
+                8,
+                2,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                60);
+        return new SubEventItem(
+                base.id(), base.name(), base.description(), base.startAt(), base.endAt(), base.location(),
+                base.createdByUserId(), base.tournamentGroupCapacityMin(), base.tournamentGroupCapacityMax(),
+                base.tournamentLeaderboardType(), base.tournamentAdvancePerGroup(), base.optional(), base.pricing(),
+                base.capacityMin(), base.capacityMax(), base.membersAccepted(), base.membersPending(),
+                base.carsPending(), base.accommodationPending(), base.suppliesPending(),
+                base.carsAccepted(), base.accommodationAccepted(), base.suppliesAccepted(),
+                base.carsCapacityMin(), base.carsCapacityMax(),
+                base.accommodationCapacityMin(), base.accommodationCapacityMax(),
+                base.suppliesCapacityMin(), base.suppliesCapacityMax(),
+                base.slotStartOffsetMinutes(), base.slotDurationMinutes(), base.stageStatus(),
+                base.stageStatusReason(), base.stageStatusUpdatedAt(), base.stageFinalizedAt(),
+                base.stageFinalizedByUserId(),
+                List.of(new SubEventGroupItemDto("stage-1:group:2", "Group B", 2, 4, "generated")));
     }
 
     private ChatAvatarRecord avatar(String userId, String initials) {

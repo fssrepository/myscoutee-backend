@@ -64,7 +64,8 @@ public final class SubEventItemMapper {
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId());
+                item.stageFinalizedByUserId(),
+                item.groups() == null ? List.of() : new ArrayList<>(item.groups()));
     }
 
     public static List<SubEventItem> toRecordList(List<SubEventItemDto> items) {
@@ -120,6 +121,7 @@ public final class SubEventItemMapper {
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId());
+                item.stageFinalizedByUserId(),
+                item.groups() == null ? List.of() : new ArrayList<>(item.groups()));
     }
 }

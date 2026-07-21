@@ -597,6 +597,38 @@ public class AssetsService {
         return assetsRepository.findByAssetId(normalizedAssetId);
     }
 
+    public Optional<Asset> findAssetByAssetIdWithScopedRequests(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String requestStatus) {
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedRequestStatus = safeText(requestStatus);
+        if (!StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)) {
+            return Optional.empty();
+        }
+
+        List<Document> requestConditions = new ArrayList<>();
+        requestConditions.add(new Document("$eq", List.of("$$request.booking.eventId", normalizedEventId)));
+        requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));
+        if (StringUtils.hasText(normalizedRequestStatus)) {
+            requestConditions.add(new Document("$eq", List.of("$$request.status", normalizedRequestStatus)));
+        }
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                context -> new Document("$match", new Document("assetId", normalizedAssetId)),
+                context -> new Document("$set", new Document("requests", new Document("$filter", new Document()
+                        .append("input", new Document("$ifNull", List.of("$requests", List.of())))
+                        .append("as", "request")
+                        .append("cond", new Document("$and", requestConditions))))));
+        Asset asset = mongoTemplate.aggregate(aggregation, "assets", Asset.class).getUniqueMappedResult();
+        return Optional.ofNullable(asset);
+    }
+
     public void syncRequestsFromMembers(String assetId, List<ActivityMember> members) {
         Optional<Asset> assetOptional = findAssetByAssetId(assetId);
         if (assetOptional.isEmpty()) {
