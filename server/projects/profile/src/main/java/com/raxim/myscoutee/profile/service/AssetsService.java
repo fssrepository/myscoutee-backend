@@ -845,6 +845,7 @@ public class AssetsService {
                                     : nowIso;
             mongoTemplate.save(new AssetRequest(
                     projectionId,
+                    requestId,
                     assetId,
                     ownerUserId,
                     "asset:" + assetId,

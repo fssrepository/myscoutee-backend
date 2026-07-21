@@ -9126,6 +9126,36 @@
     "value": "Close asset requests"
   },
   {
+    "_id": "i18n-message-en-asset-requests-confirm-accept-message",
+    "key": "asset.requests.confirm.accept.message",
+    "lang": "en",
+    "value": "Accept {requester}'s request for {asset}?"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-confirm-accept-title",
+    "key": "asset.requests.confirm.accept.title",
+    "lang": "en",
+    "value": "Accept borrow request?"
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-confirm-failure",
+    "key": "asset.requests.confirm.failure",
+    "lang": "en",
+    "value": "The borrow request could not be updated. Please try again."
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-confirm-reject-message",
+    "key": "asset.requests.confirm.reject.message",
+    "lang": "en",
+    "value": "Reject {requester}'s request for {asset}? The reserved quantity will become available again."
+  },
+  {
+    "_id": "i18n-message-en-asset-requests-confirm-reject-title",
+    "key": "asset.requests.confirm.reject.title",
+    "lang": "en",
+    "value": "Reject borrow request?"
+  },
+  {
     "_id": "i18n-message-en-asset-requests-empty-availability-label",
     "key": "asset.requests.empty.availability.label",
     "lang": "en",
@@ -12984,6 +13014,12 @@
     "value": "Charge Type"
   },
   {
+    "_id": "i18n-message-en-pricing-rounding-half",
+    "key": "pricing.rounding.half",
+    "lang": "en",
+    "value": "0.50 steps"
+  },
+  {
     "_id": "i18n-message-en-pricing-rounding-whole",
     "key": "pricing.rounding.whole",
     "lang": "en",
@@ -13000,6 +13036,18 @@
     "key": "pricing.tax.excluded",
     "lang": "en",
     "value": "Excluded"
+  },
+  {
+    "_id": "i18n-message-en-pricing-tax-excluded-summary",
+    "key": "pricing.tax.excluded.summary",
+    "lang": "en",
+    "value": "Tax excluded"
+  },
+  {
+    "_id": "i18n-message-en-pricing-tax-included-summary",
+    "key": "pricing.tax.included.summary",
+    "lang": "en",
+    "value": "Tax included"
   },
   {
     "_id": "i18n-message-en-pricing-slots-selected",
@@ -13330,6 +13378,300 @@
     "key": "event.editor.subevents.stage.create",
     "lang": "en",
     "value": "Create Stage Event"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-title",
+    "key": "asset.borrow.title",
+    "lang": "en",
+    "value": "Borrow {asset}"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-start",
+    "key": "asset.borrow.start",
+    "lang": "en",
+    "value": "Start"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-end",
+    "key": "asset.borrow.end",
+    "lang": "en",
+    "value": "End"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-close-aria",
+    "key": "asset.borrow.close.aria",
+    "lang": "en",
+    "value": "Close borrow request"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-available-one",
+    "key": "asset.borrow.available.one",
+    "lang": "en",
+    "value": "Available for this time: {count} item"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-available-many",
+    "key": "asset.borrow.available.many",
+    "lang": "en",
+    "value": "Available for this time: {count} items"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-summary",
+    "key": "asset.borrow.summary",
+    "lang": "en",
+    "value": "Borrow Summary"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-cancellation-title",
+    "key": "asset.borrow.cancellation.title",
+    "lang": "en",
+    "value": "Cancellation & Reimbursement"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-cancellation-subtitle",
+    "key": "asset.borrow.cancellation.subtitle",
+    "lang": "en",
+    "value": "What this borrow can reimburse if you cancel before it starts"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-current-reimbursement",
+    "key": "asset.borrow.current.reimbursement",
+    "lang": "en",
+    "value": "Current reimbursement"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-policies",
+    "key": "asset.borrow.policies",
+    "lang": "en",
+    "value": "Policies"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-policies-review",
+    "key": "asset.borrow.policies.review",
+    "lang": "en",
+    "value": "Review and approve before continuing"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-request",
+    "key": "asset.borrow.request",
+    "lang": "en",
+    "value": "Borrow request"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-request-title",
+    "key": "asset.borrow.request.title",
+    "lang": "en",
+    "value": "Borrow Request"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-request-payment-after-hold",
+    "key": "asset.borrow.request.payment.after.hold",
+    "lang": "en",
+    "value": "Confirm the borrow window first. Payment can be completed after the request is held."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-amount-due",
+    "key": "asset.borrow.amount.due",
+    "lang": "en",
+    "value": "Amount due"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-next-step",
+    "key": "asset.borrow.next.step",
+    "lang": "en",
+    "value": "Next step"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-request-payment-note",
+    "key": "asset.borrow.request.payment.note",
+    "lang": "en",
+    "value": "The borrow request is confirmed before payment, so the payment step can remain available from the basket."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-payment-subtitle",
+    "key": "asset.borrow.payment.subtitle",
+    "lang": "en",
+    "value": "Pay for the confirmed borrow window."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-payment-demo",
+    "key": "asset.borrow.payment.demo",
+    "lang": "en",
+    "value": "Dummy pay"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-payment-ready",
+    "key": "asset.borrow.payment.ready",
+    "lang": "en",
+    "value": "Ready to pay"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-payment-locked-note",
+    "key": "asset.borrow.payment.locked.note",
+    "lang": "en",
+    "value": "The fields stay locked here, but the amount, timeframe, and policy approval have already been reviewed."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-no-reimbursement",
+    "key": "asset.borrow.no.reimbursement",
+    "lang": "en",
+    "value": "No reimbursement"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-cancellation-windows-passed",
+    "key": "asset.borrow.cancellation.windows.passed",
+    "lang": "en",
+    "value": "The configured cancellation windows have already passed."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-refundable-now",
+    "key": "asset.borrow.refundable.now",
+    "lang": "en",
+    "value": "{amount} refundable right now"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-hour",
+    "key": "asset.borrow.unit.hour",
+    "lang": "en",
+    "value": "hour"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-hours",
+    "key": "asset.borrow.unit.hours",
+    "lang": "en",
+    "value": "hours"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-day",
+    "key": "asset.borrow.unit.day",
+    "lang": "en",
+    "value": "day"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-days",
+    "key": "asset.borrow.unit.days",
+    "lang": "en",
+    "value": "days"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-week",
+    "key": "asset.borrow.unit.week",
+    "lang": "en",
+    "value": "week"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-weeks",
+    "key": "asset.borrow.unit.weeks",
+    "lang": "en",
+    "value": "weeks"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-month",
+    "key": "asset.borrow.unit.month",
+    "lang": "en",
+    "value": "month"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-unit-months",
+    "key": "asset.borrow.unit.months",
+    "lang": "en",
+    "value": "months"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-cancellation-window",
+    "key": "asset.borrow.cancellation.window",
+    "lang": "en",
+    "value": "{value} {unit} before start"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-refund-percent",
+    "key": "asset.borrow.refund.percent",
+    "lang": "en",
+    "value": "{percent}% refund"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-cancellation-rule-description",
+    "key": "asset.borrow.cancellation.rule.description",
+    "lang": "en",
+    "value": "{refund} when cancelled at least {window}."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-quantity-detail",
+    "key": "asset.borrow.quantity.detail",
+    "lang": "en",
+    "value": "{timeframe} · Qty {quantity}"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-pay",
+    "key": "asset.borrow.pay",
+    "lang": "en",
+    "value": "Pay"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-confirm",
+    "key": "asset.borrow.confirm",
+    "lang": "en",
+    "value": "Confirm borrow"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-send-request",
+    "key": "asset.borrow.send.request",
+    "lang": "en",
+    "value": "Send borrow request"
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-paying",
+    "key": "asset.borrow.paying",
+    "lang": "en",
+    "value": "Paying..."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-confirming",
+    "key": "asset.borrow.confirming",
+    "lang": "en",
+    "value": "Confirming borrow..."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-sending-request",
+    "key": "asset.borrow.sending.request",
+    "lang": "en",
+    "value": "Sending request..."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-error-no-longer-available",
+    "key": "asset.borrow.error.no.longer.available",
+    "lang": "en",
+    "value": "This basket item is no longer available for the selected date range."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-error-checkout",
+    "key": "asset.borrow.error.checkout",
+    "lang": "en",
+    "value": "Unable to start checkout."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-error-payment",
+    "key": "asset.borrow.error.payment",
+    "lang": "en",
+    "value": "Unable to start payment."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-error-send",
+    "key": "asset.borrow.error.send",
+    "lang": "en",
+    "value": "Unable to send the borrow request."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-note-payment-approved",
+    "key": "asset.borrow.note.payment.approved",
+    "lang": "en",
+    "value": "Payment approved. Awaiting owner confirmation."
+  },
+  {
+    "_id": "i18n-message-en-asset-borrow-note-awaiting-owner",
+    "key": "asset.borrow.note.awaiting.owner",
+    "lang": "en",
+    "value": "Awaiting owner confirmation."
   },
   {
     "_id": "i18n-message-hu-about",
@@ -22452,6 +22794,36 @@
     "value": "Eszközkérések bezárása"
   },
   {
+    "_id": "i18n-message-hu-asset-requests-confirm-accept-message",
+    "key": "asset.requests.confirm.accept.message",
+    "lang": "hu",
+    "value": "Elfogadod {requester} kérését ehhez: {asset}?"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-confirm-accept-title",
+    "key": "asset.requests.confirm.accept.title",
+    "lang": "hu",
+    "value": "Elfogadod a kölcsönkérést?"
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-confirm-failure",
+    "key": "asset.requests.confirm.failure",
+    "lang": "hu",
+    "value": "A kölcsönkérést nem sikerült frissíteni. Próbáld újra."
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-confirm-reject-message",
+    "key": "asset.requests.confirm.reject.message",
+    "lang": "hu",
+    "value": "Elutasítod {requester} kérését ehhez: {asset}? A lefoglalt mennyiség újra elérhető lesz."
+  },
+  {
+    "_id": "i18n-message-hu-asset-requests-confirm-reject-title",
+    "key": "asset.requests.confirm.reject.title",
+    "lang": "hu",
+    "value": "Elutasítod a kölcsönkérést?"
+  },
+  {
     "_id": "i18n-message-hu-asset-requests-empty-availability-label",
     "key": "asset.requests.empty.availability.label",
     "lang": "hu",
@@ -26316,6 +26688,12 @@
     "value": "Díj típusa"
   },
   {
+    "_id": "i18n-message-hu-pricing-rounding-half",
+    "key": "pricing.rounding.half",
+    "lang": "hu",
+    "value": "0,50-es lépések"
+  },
+  {
     "_id": "i18n-message-hu-pricing-rounding-whole",
     "key": "pricing.rounding.whole",
     "lang": "hu",
@@ -26332,6 +26710,18 @@
     "key": "pricing.tax.excluded",
     "lang": "hu",
     "value": "Nincs benne"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-tax-excluded-summary",
+    "key": "pricing.tax.excluded.summary",
+    "lang": "hu",
+    "value": "Adó nélkül"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-tax-included-summary",
+    "key": "pricing.tax.included.summary",
+    "lang": "hu",
+    "value": "Adót tartalmaz"
   },
   {
     "_id": "i18n-message-hu-pricing-slots-selected",
@@ -26664,589 +27054,295 @@
     "value": "Szakaszesemény létrehozása"
   },
   {
-    "_id": "i18n-message-en-asset.borrow.title",
-    "key": "asset.borrow.title",
-    "lang": "en",
-    "value": "Borrow {asset}"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.start",
-    "key": "asset.borrow.start",
-    "lang": "en",
-    "value": "Start"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.end",
-    "key": "asset.borrow.end",
-    "lang": "en",
-    "value": "End"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.close.aria",
-    "key": "asset.borrow.close.aria",
-    "lang": "en",
-    "value": "Close borrow request"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.available.one",
-    "key": "asset.borrow.available.one",
-    "lang": "en",
-    "value": "Available for this time: {count} item"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.available.many",
-    "key": "asset.borrow.available.many",
-    "lang": "en",
-    "value": "Available for this time: {count} items"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.summary",
-    "key": "asset.borrow.summary",
-    "lang": "en",
-    "value": "Borrow Summary"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.cancellation.title",
-    "key": "asset.borrow.cancellation.title",
-    "lang": "en",
-    "value": "Cancellation & Reimbursement"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.cancellation.subtitle",
-    "key": "asset.borrow.cancellation.subtitle",
-    "lang": "en",
-    "value": "What this borrow can reimburse if you cancel before it starts"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.current.reimbursement",
-    "key": "asset.borrow.current.reimbursement",
-    "lang": "en",
-    "value": "Current reimbursement"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.policies",
-    "key": "asset.borrow.policies",
-    "lang": "en",
-    "value": "Policies"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.policies.review",
-    "key": "asset.borrow.policies.review",
-    "lang": "en",
-    "value": "Review and approve before continuing"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.request",
-    "key": "asset.borrow.request",
-    "lang": "en",
-    "value": "Borrow request"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.request.title",
-    "key": "asset.borrow.request.title",
-    "lang": "en",
-    "value": "Borrow Request"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.request.payment.after.hold",
-    "key": "asset.borrow.request.payment.after.hold",
-    "lang": "en",
-    "value": "Confirm the borrow window first. Payment can be completed after the request is held."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.amount.due",
-    "key": "asset.borrow.amount.due",
-    "lang": "en",
-    "value": "Amount due"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.next.step",
-    "key": "asset.borrow.next.step",
-    "lang": "en",
-    "value": "Next step"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.request.payment.note",
-    "key": "asset.borrow.request.payment.note",
-    "lang": "en",
-    "value": "The borrow request is confirmed before payment, so the payment step can remain available from the basket."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.payment.subtitle",
-    "key": "asset.borrow.payment.subtitle",
-    "lang": "en",
-    "value": "Pay for the confirmed borrow window."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.payment.demo",
-    "key": "asset.borrow.payment.demo",
-    "lang": "en",
-    "value": "Dummy pay"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.payment.ready",
-    "key": "asset.borrow.payment.ready",
-    "lang": "en",
-    "value": "Ready to pay"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.payment.locked.note",
-    "key": "asset.borrow.payment.locked.note",
-    "lang": "en",
-    "value": "The fields stay locked here, but the amount, timeframe, and policy approval have already been reviewed."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.no.reimbursement",
-    "key": "asset.borrow.no.reimbursement",
-    "lang": "en",
-    "value": "No reimbursement"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.cancellation.windows.passed",
-    "key": "asset.borrow.cancellation.windows.passed",
-    "lang": "en",
-    "value": "The configured cancellation windows have already passed."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.refundable.now",
-    "key": "asset.borrow.refundable.now",
-    "lang": "en",
-    "value": "{amount} refundable right now"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.hour",
-    "key": "asset.borrow.unit.hour",
-    "lang": "en",
-    "value": "hour"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.hours",
-    "key": "asset.borrow.unit.hours",
-    "lang": "en",
-    "value": "hours"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.day",
-    "key": "asset.borrow.unit.day",
-    "lang": "en",
-    "value": "day"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.days",
-    "key": "asset.borrow.unit.days",
-    "lang": "en",
-    "value": "days"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.week",
-    "key": "asset.borrow.unit.week",
-    "lang": "en",
-    "value": "week"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.weeks",
-    "key": "asset.borrow.unit.weeks",
-    "lang": "en",
-    "value": "weeks"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.month",
-    "key": "asset.borrow.unit.month",
-    "lang": "en",
-    "value": "month"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.unit.months",
-    "key": "asset.borrow.unit.months",
-    "lang": "en",
-    "value": "months"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.cancellation.window",
-    "key": "asset.borrow.cancellation.window",
-    "lang": "en",
-    "value": "{value} {unit} before start"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.refund.percent",
-    "key": "asset.borrow.refund.percent",
-    "lang": "en",
-    "value": "{percent}% refund"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.cancellation.rule.description",
-    "key": "asset.borrow.cancellation.rule.description",
-    "lang": "en",
-    "value": "{refund} when cancelled at least {window}."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.quantity.detail",
-    "key": "asset.borrow.quantity.detail",
-    "lang": "en",
-    "value": "{timeframe} · Qty {quantity}"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.pay",
-    "key": "asset.borrow.pay",
-    "lang": "en",
-    "value": "Pay"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.confirm",
-    "key": "asset.borrow.confirm",
-    "lang": "en",
-    "value": "Confirm borrow"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.send.request",
-    "key": "asset.borrow.send.request",
-    "lang": "en",
-    "value": "Send borrow request"
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.paying",
-    "key": "asset.borrow.paying",
-    "lang": "en",
-    "value": "Paying..."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.confirming",
-    "key": "asset.borrow.confirming",
-    "lang": "en",
-    "value": "Confirming borrow..."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.sending.request",
-    "key": "asset.borrow.sending.request",
-    "lang": "en",
-    "value": "Sending request..."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.error.no.longer.available",
-    "key": "asset.borrow.error.no.longer.available",
-    "lang": "en",
-    "value": "This basket item is no longer available for the selected date range."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.error.checkout",
-    "key": "asset.borrow.error.checkout",
-    "lang": "en",
-    "value": "Unable to start checkout."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.error.payment",
-    "key": "asset.borrow.error.payment",
-    "lang": "en",
-    "value": "Unable to start payment."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.error.send",
-    "key": "asset.borrow.error.send",
-    "lang": "en",
-    "value": "Unable to send the borrow request."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.note.payment.approved",
-    "key": "asset.borrow.note.payment.approved",
-    "lang": "en",
-    "value": "Payment approved. Awaiting owner confirmation."
-  },
-  {
-    "_id": "i18n-message-en-asset.borrow.note.awaiting.owner",
-    "key": "asset.borrow.note.awaiting.owner",
-    "lang": "en",
-    "value": "Awaiting owner confirmation."
-  },
-  {
-    "_id": "i18n-message-hu-asset.borrow.title",
+    "_id": "i18n-message-hu-asset-borrow-title",
     "key": "asset.borrow.title",
     "lang": "hu",
     "value": "{asset} kölcsönzése"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.start",
+    "_id": "i18n-message-hu-asset-borrow-start",
     "key": "asset.borrow.start",
     "lang": "hu",
     "value": "Kezdés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.end",
+    "_id": "i18n-message-hu-asset-borrow-end",
     "key": "asset.borrow.end",
     "lang": "hu",
     "value": "Befejezés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.close.aria",
+    "_id": "i18n-message-hu-asset-borrow-close-aria",
     "key": "asset.borrow.close.aria",
     "lang": "hu",
     "value": "Kölcsönzési kérelem bezárása"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.available.one",
+    "_id": "i18n-message-hu-asset-borrow-available-one",
     "key": "asset.borrow.available.one",
     "lang": "hu",
     "value": "Erre az időszakra {count} elem érhető el"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.available.many",
+    "_id": "i18n-message-hu-asset-borrow-available-many",
     "key": "asset.borrow.available.many",
     "lang": "hu",
     "value": "Erre az időszakra {count} elem érhető el"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.summary",
+    "_id": "i18n-message-hu-asset-borrow-summary",
     "key": "asset.borrow.summary",
     "lang": "hu",
     "value": "Kölcsönzés összegzése"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.cancellation.title",
+    "_id": "i18n-message-hu-asset-borrow-cancellation-title",
     "key": "asset.borrow.cancellation.title",
     "lang": "hu",
     "value": "Lemondás és visszatérítés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.cancellation.subtitle",
+    "_id": "i18n-message-hu-asset-borrow-cancellation-subtitle",
     "key": "asset.borrow.cancellation.subtitle",
     "lang": "hu",
     "value": "A kölcsönzés kezdete előtti lemondás esetén elérhető visszatérítés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.current.reimbursement",
+    "_id": "i18n-message-hu-asset-borrow-current-reimbursement",
     "key": "asset.borrow.current.reimbursement",
     "lang": "hu",
     "value": "Jelenlegi visszatérítés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.policies",
+    "_id": "i18n-message-hu-asset-borrow-policies",
     "key": "asset.borrow.policies",
     "lang": "hu",
     "value": "Feltételek"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.policies.review",
+    "_id": "i18n-message-hu-asset-borrow-policies-review",
     "key": "asset.borrow.policies.review",
     "lang": "hu",
     "value": "A folytatás előtt tekintsd át és fogadd el"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.request",
+    "_id": "i18n-message-hu-asset-borrow-request",
     "key": "asset.borrow.request",
     "lang": "hu",
     "value": "Kölcsönzési kérelem"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.request.title",
+    "_id": "i18n-message-hu-asset-borrow-request-title",
     "key": "asset.borrow.request.title",
     "lang": "hu",
     "value": "Kölcsönzési kérelem"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.request.payment.after.hold",
+    "_id": "i18n-message-hu-asset-borrow-request-payment-after-hold",
     "key": "asset.borrow.request.payment.after.hold",
     "lang": "hu",
     "value": "Először erősítsd meg a kölcsönzési időszakot. A fizetés a foglalás rögzítése után végezhető el."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.amount.due",
+    "_id": "i18n-message-hu-asset-borrow-amount-due",
     "key": "asset.borrow.amount.due",
     "lang": "hu",
     "value": "Fizetendő összeg"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.next.step",
+    "_id": "i18n-message-hu-asset-borrow-next-step",
     "key": "asset.borrow.next.step",
     "lang": "hu",
     "value": "Következő lépés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.request.payment.note",
+    "_id": "i18n-message-hu-asset-borrow-request-payment-note",
     "key": "asset.borrow.request.payment.note",
     "lang": "hu",
     "value": "A kölcsönzési kérelem a fizetés előtt kerül megerősítésre, így a fizetési lépés a kosárból is elérhető marad."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.payment.subtitle",
+    "_id": "i18n-message-hu-asset-borrow-payment-subtitle",
     "key": "asset.borrow.payment.subtitle",
     "lang": "hu",
     "value": "Fizesd ki a megerősített kölcsönzési időszakot."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.payment.demo",
+    "_id": "i18n-message-hu-asset-borrow-payment-demo",
     "key": "asset.borrow.payment.demo",
     "lang": "hu",
     "value": "Próbafizetés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.payment.ready",
+    "_id": "i18n-message-hu-asset-borrow-payment-ready",
     "key": "asset.borrow.payment.ready",
     "lang": "hu",
     "value": "Fizetésre kész"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.payment.locked.note",
+    "_id": "i18n-message-hu-asset-borrow-payment-locked-note",
     "key": "asset.borrow.payment.locked.note",
     "lang": "hu",
     "value": "A mezők zároltak, de az összeg, az időszak és a feltételek elfogadása már ellenőrizve lett."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.no.reimbursement",
+    "_id": "i18n-message-hu-asset-borrow-no-reimbursement",
     "key": "asset.borrow.no.reimbursement",
     "lang": "hu",
     "value": "Nincs visszatérítés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.cancellation.windows.passed",
+    "_id": "i18n-message-hu-asset-borrow-cancellation-windows-passed",
     "key": "asset.borrow.cancellation.windows.passed",
     "lang": "hu",
     "value": "A beállított lemondási határidők már lejártak."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.refundable.now",
+    "_id": "i18n-message-hu-asset-borrow-refundable-now",
     "key": "asset.borrow.refundable.now",
     "lang": "hu",
     "value": "Jelenleg {amount} téríthető vissza"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.hour",
+    "_id": "i18n-message-hu-asset-borrow-unit-hour",
     "key": "asset.borrow.unit.hour",
     "lang": "hu",
     "value": "óra"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.hours",
+    "_id": "i18n-message-hu-asset-borrow-unit-hours",
     "key": "asset.borrow.unit.hours",
     "lang": "hu",
     "value": "óra"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.day",
+    "_id": "i18n-message-hu-asset-borrow-unit-day",
     "key": "asset.borrow.unit.day",
     "lang": "hu",
     "value": "nap"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.days",
+    "_id": "i18n-message-hu-asset-borrow-unit-days",
     "key": "asset.borrow.unit.days",
     "lang": "hu",
     "value": "nap"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.week",
+    "_id": "i18n-message-hu-asset-borrow-unit-week",
     "key": "asset.borrow.unit.week",
     "lang": "hu",
     "value": "hét"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.weeks",
+    "_id": "i18n-message-hu-asset-borrow-unit-weeks",
     "key": "asset.borrow.unit.weeks",
     "lang": "hu",
     "value": "hét"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.month",
+    "_id": "i18n-message-hu-asset-borrow-unit-month",
     "key": "asset.borrow.unit.month",
     "lang": "hu",
     "value": "hónap"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.unit.months",
+    "_id": "i18n-message-hu-asset-borrow-unit-months",
     "key": "asset.borrow.unit.months",
     "lang": "hu",
     "value": "hónap"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.cancellation.window",
+    "_id": "i18n-message-hu-asset-borrow-cancellation-window",
     "key": "asset.borrow.cancellation.window",
     "lang": "hu",
     "value": "{value} {unit} a kezdés előtt"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.refund.percent",
+    "_id": "i18n-message-hu-asset-borrow-refund-percent",
     "key": "asset.borrow.refund.percent",
     "lang": "hu",
     "value": "{percent}% visszatérítés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.cancellation.rule.description",
+    "_id": "i18n-message-hu-asset-borrow-cancellation-rule-description",
     "key": "asset.borrow.cancellation.rule.description",
     "lang": "hu",
     "value": "{refund}, legalább {window} történő lemondás esetén."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.quantity.detail",
+    "_id": "i18n-message-hu-asset-borrow-quantity-detail",
     "key": "asset.borrow.quantity.detail",
     "lang": "hu",
     "value": "{timeframe} · {quantity} db"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.pay",
+    "_id": "i18n-message-hu-asset-borrow-pay",
     "key": "asset.borrow.pay",
     "lang": "hu",
     "value": "Fizetés"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.confirm",
+    "_id": "i18n-message-hu-asset-borrow-confirm",
     "key": "asset.borrow.confirm",
     "lang": "hu",
     "value": "Kölcsönzés megerősítése"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.send.request",
+    "_id": "i18n-message-hu-asset-borrow-send-request",
     "key": "asset.borrow.send.request",
     "lang": "hu",
     "value": "Kölcsönzési kérelem küldése"
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.paying",
+    "_id": "i18n-message-hu-asset-borrow-paying",
     "key": "asset.borrow.paying",
     "lang": "hu",
     "value": "Fizetés..."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.confirming",
+    "_id": "i18n-message-hu-asset-borrow-confirming",
     "key": "asset.borrow.confirming",
     "lang": "hu",
     "value": "Kölcsönzés megerősítése..."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.sending.request",
+    "_id": "i18n-message-hu-asset-borrow-sending-request",
     "key": "asset.borrow.sending.request",
     "lang": "hu",
     "value": "Kérelem küldése..."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.error.no.longer.available",
+    "_id": "i18n-message-hu-asset-borrow-error-no-longer-available",
     "key": "asset.borrow.error.no.longer.available",
     "lang": "hu",
     "value": "Ez a kosárelem már nem érhető el a kiválasztott időszakban."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.error.checkout",
+    "_id": "i18n-message-hu-asset-borrow-error-checkout",
     "key": "asset.borrow.error.checkout",
     "lang": "hu",
     "value": "A fizetési folyamat nem indítható el."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.error.payment",
+    "_id": "i18n-message-hu-asset-borrow-error-payment",
     "key": "asset.borrow.error.payment",
     "lang": "hu",
     "value": "A fizetés nem indítható el."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.error.send",
+    "_id": "i18n-message-hu-asset-borrow-error-send",
     "key": "asset.borrow.error.send",
     "lang": "hu",
     "value": "A kölcsönzési kérelem nem küldhető el."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.note.payment.approved",
+    "_id": "i18n-message-hu-asset-borrow-note-payment-approved",
     "key": "asset.borrow.note.payment.approved",
     "lang": "hu",
     "value": "A fizetés jóváhagyva. Tulajdonosi megerősítésre vár."
   },
   {
-    "_id": "i18n-message-hu-asset.borrow.note.awaiting.owner",
+    "_id": "i18n-message-hu-asset-borrow-note-awaiting-owner",
     "key": "asset.borrow.note.awaiting.owner",
     "lang": "hu",
     "value": "Tulajdonosi megerősítésre vár."

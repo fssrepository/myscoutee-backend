@@ -148,7 +148,7 @@ public class AssetAvailabilityMapper {
         int capacity = assetCapacity(request);
         AssetRequestBookingRecord booking = request == null ? null : request.booking();
         return new AssetOccupancyRowDto(
-                normalizeId(request == null ? null : request.id()),
+                sourceRequestId(request),
                 normalizeId(request == null ? assetId : request.assetId()),
                 normalizeId(request == null ? ownerUserId : request.ownerUserId()),
                 requestRange == null ? "" : requestRange.start().toString(),
@@ -176,6 +176,22 @@ public class AssetAvailabilityMapper {
                 safeNullableText(booking == null ? null : booking.startAtIso()),
                 safeNullableText(booking == null ? null : booking.endAtIso()),
                 menuActions(request));
+    }
+
+    private String sourceRequestId(AssetRequest request) {
+        if (request == null) {
+            return "";
+        }
+        String requestId = normalizeId(request.requestId());
+        if (StringUtils.hasText(requestId)) {
+            return requestId;
+        }
+        String projectionId = normalizeId(request.id());
+        String assetId = normalizeId(request.assetId());
+        String prefix = assetId + ":request:";
+        return projectionId.startsWith(prefix)
+                ? normalizeId(projectionId.substring(prefix.length()))
+                : projectionId;
     }
 
     private String joinedSubtitle(AssetRequestBookingRecord booking) {
