@@ -35,6 +35,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
@@ -153,7 +154,6 @@ class ActivitiesResourcesServiceTest {
         resource.setSupplyContributionEntriesByAssetId(Map.of());
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 "event-1", "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
 
         ActivitySubEventResourceStateDto state = service.queryState("event-1", "sub-1", "u1");
 
@@ -184,7 +184,6 @@ class ActivitiesResourcesServiceTest {
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -197,6 +196,35 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void replacePersistsBorrowedAssetAndReturnsCanonicalFallbackCard() {
+        authenticateAs("u1");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        AssetDetailDto borrowedAsset = assetDetail("borrowed-asset", "transport", "owner-2");
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("borrowed-asset")))
+                .thenReturn(Map.of("borrowed-asset", borrowedAsset));
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                "event-1",
+                "sub-1",
+                "u1",
+                Map.of("transport", List.of("borrowed-asset")),
+                Map.of(),
+                Map.of(),
+                Map.of());
+
+        ActivitySubEventResourceStateDto saved = service.replace(request);
+
+        assertThat(saved.assetAssignmentIds()).containsEntry("transport", List.of("borrowed-asset"));
+        assertThat(saved.fallbackAssetCardsByType()).containsEntry("transport", List.of(borrowedAsset));
+    }
+
+    @Test
     void replaceAllowsExplicitAssignmentGrantWithoutAcceptedEventParticipation() {
         authenticateAs("u1");
         when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "resource.assign", "event", "event-1", "allow")));
@@ -206,7 +234,6 @@ class ActivitiesResourcesServiceTest {
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -230,7 +257,6 @@ class ActivitiesResourcesServiceTest {
         when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
         when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
                 "event-1", "sub-1", "u1", "D")).thenReturn(Optional.empty());
-        when(assetsService.queryAssets("u1")).thenReturn(List.of());
         when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -274,7 +300,7 @@ class ActivitiesResourcesServiceTest {
     }
 
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {
-        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of());
+        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {
@@ -306,6 +332,32 @@ class ActivitiesResourcesServiceTest {
         user.setStatus("A");
         user.setProfileStatus("public");
         return user;
+    }
+
+    private AssetDetailDto assetDetail(String id, String type, String ownerUserId) {
+        return new AssetDetailDto(
+                id,
+                type,
+                "Borrowed asset",
+                "",
+                "",
+                "",
+                4,
+                4,
+                "",
+                "",
+                "",
+                List.of(),
+                false,
+                List.of(),
+                null,
+                "public",
+                "A",
+                ownerUserId,
+                "Other owner",
+                List.of(),
+                null,
+                List.of());
     }
 
     private List<AccessPolicyDefinition> defaultPolicyDefinitions() {

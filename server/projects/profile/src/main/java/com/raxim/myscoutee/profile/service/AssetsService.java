@@ -155,6 +155,60 @@ public class AssetsService {
                 .orElse(null);
     }
 
+    public Map<String, AssetDetailDto> queryAssignableAssetDetails(
+            String userId,
+            String eventId,
+            String subEventId,
+            Collection<String> assetIds) {
+        String normalizedUserId = effectiveActorUserId(userId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        Set<String> normalizedAssetIds = (assetIds == null ? List.<String>of() : assetIds).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        if (!StringUtils.hasText(normalizedUserId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || normalizedAssetIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Query borrowedRequestQuery = new Query(Criteria.where("userId").is(normalizedUserId)
+                .and("assetId").in(normalizedAssetIds)
+                .and("requestKind").is("borrow")
+                .and("status").in("pending", "accepted")
+                .and("booking.eventId").is(normalizedEventId)
+                .and("booking.subEventId").is(normalizedSubEventId));
+        Set<String> borrowedAssetIds = mongoTemplate.find(borrowedRequestQuery, AssetRequest.class).stream()
+                .map(AssetRequest::assetId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+
+        List<Asset> eligibleAssets = assetsRepository.findByAssetIdIn(normalizedAssetIds).stream()
+                .filter(Objects::nonNull)
+                .filter(asset -> !isSuppressedLifecycleStatus(asset.getStatus()))
+                .filter(asset -> normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))
+                        || borrowedAssetIds.contains(normalizeId(asset.getAssetId())))
+                .toList();
+        Map<String, String> ownerNamesByUserId = resolveOwnerNamesByUserId(eligibleAssets);
+        Map<String, AssetRequestMetricsDto> metricsByAssetId = resolveAssetRequestMetricsByAssetId(eligibleAssets);
+        Map<String, AssetDetailDto> detailsByAssetId = new LinkedHashMap<>();
+        for (Asset asset : eligibleAssets) {
+            String assetId = normalizeId(asset.getAssetId());
+            AssetDetailDto detail = toAssetDetailDto(
+                    asset,
+                    ownerNamesByUserId,
+                    normalizedUserId,
+                    metricsByAssetId.get(assetId));
+            if (StringUtils.hasText(assetId) && detail != null) {
+                detailsByAssetId.put(assetId, detail);
+            }
+        }
+        return detailsByAssetId;
+    }
+
     public List<AssetDto> queryVisibleAssets(String userId, String type, String category) {
         String normalizedUserId = effectiveActorUserId(userId);
         String normalizedType = normalizeAssetType(type);
@@ -309,6 +363,7 @@ public class AssetsService {
         if (!nextDocuments.isEmpty()) {
             assetsRepository.saveAll(nextDocuments);
             for (Asset saved : nextDocuments) {
+                syncAssetRequestProjection(existingByAssetId.get(normalizeId(saved.getAssetId())), saved);
                 affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved == null ? null : saved.getAssetId()), normalizedUserId);
             }
         }
@@ -660,6 +715,7 @@ public class AssetsService {
         next.setAffinity(resolveAssetAffinity(next, ownerUserId));
         next.setBoost(resolveAssetBoost(next, ownerUserId));
         assetsRepository.save(next);
+        syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizeId(next.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", normalizeId(next.getAssetId()), ownerUserId);
     }
@@ -686,6 +742,9 @@ public class AssetsService {
         }
         Asset saved = proposed;
         if (existing != null) {
+            if (!fullAssetWriteAllowed) {
+                proposed = mergeRequestScopedAssetProposal(existing, proposed);
+            }
             if (!canApplyAssetRequestPolicies(existing, proposed, fullAssetWriteAllowed)) {
                 return null;
             }
@@ -697,11 +756,134 @@ public class AssetsService {
             }
         }
         assetsRepository.save(saved);
+        syncAssetRequestProjection(existing, saved);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizeId(saved.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.saved", "assets", normalizeId(saved.getAssetId()), ownerUserId);
         syncAssetRequestPayments(existing, saved);
         userActivityCountersService.refreshAssetCountersForUser(ownerUserId);
         return saved;
+    }
+
+    private Asset mergeRequestScopedAssetProposal(Asset existing, Asset proposed) {
+        if (existing == null || proposed == null) {
+            return proposed;
+        }
+        String actorUserId = currentActorUserId();
+        String assetId = normalizeId(existing.getAssetId());
+        Map<String, AssetRequestRecord> nextById = requestsById(proposed.getRequests());
+        List<AssetRequestRecord> merged = new ArrayList<>();
+        for (AssetRequestRecord previous : safeRequests(existing.getRequests())) {
+            String requestId = normalizeId(previous == null ? null : previous.id());
+            if (!StringUtils.hasText(requestId)) {
+                continue;
+            }
+            AssetRequestRecord next = nextById.remove(requestId);
+            if (next != null) {
+                merged.add(next);
+                continue;
+            }
+            String requesterUserId = normalizeId(previous.userId());
+            boolean actorCanRemove = !StringUtils.hasText(actorUserId)
+                    ? nextById.isEmpty()
+                    : actorUserId.equals(requesterUserId)
+                            || accessControlService.canManageAsset(assetId, actorUserId);
+            if (!actorCanRemove) {
+                merged.add(previous);
+            }
+        }
+        merged.addAll(nextById.values());
+        proposed.setRequests(merged);
+        return proposed;
+    }
+
+    private void syncAssetRequestProjection(Asset existing, Asset saved) {
+        if (saved == null) {
+            return;
+        }
+        String assetId = normalizeId(saved.getAssetId());
+        String ownerUserId = normalizeId(saved.getOwnerUserId());
+        if (!StringUtils.hasText(assetId) || !StringUtils.hasText(ownerUserId)) {
+            return;
+        }
+
+        String previousOwnerUserId = normalizeId(existing == null ? null : existing.getOwnerUserId());
+        if (StringUtils.hasText(previousOwnerUserId) && !previousOwnerUserId.equals(ownerUserId)) {
+            mongoTemplate.remove(Query.query(Criteria.where("ownerUserId").is(previousOwnerUserId)
+                    .and("assetId").is(assetId)), AssetRequest.class);
+        }
+
+        Query ownerAssetQuery = Query.query(Criteria.where("ownerUserId").is(ownerUserId)
+                .and("assetId").is(assetId));
+        List<AssetRequest> currentDocuments = mongoTemplate.find(ownerAssetQuery, AssetRequest.class);
+        Map<String, AssetRequest> currentById = new LinkedHashMap<>();
+        for (AssetRequest current : currentDocuments == null ? List.<AssetRequest>of() : currentDocuments) {
+            String projectionId = normalizeId(current == null ? null : current.id());
+            if (StringUtils.hasText(projectionId)) {
+                currentById.put(projectionId, current);
+            }
+        }
+
+        String nowIso = Instant.now().toString();
+        String updatedDate = StringUtils.hasText(safeText(saved.getUpdatedDate()))
+                ? safeText(saved.getUpdatedDate())
+                : nowIso;
+        Set<String> retainedRequestIds = new LinkedHashSet<>();
+        for (AssetRequestRecord request : safeRequests(saved.getRequests())) {
+            String requestId = normalizeId(request == null ? null : request.id());
+            if (!StringUtils.hasText(requestId)) {
+                continue;
+            }
+            String projectionId = assetRequestProjectionId(assetId, requestId);
+            retainedRequestIds.add(projectionId);
+            AssetRequest current = currentById.get(projectionId);
+            String createdDate = current != null && StringUtils.hasText(safeText(current.createdDate()))
+                    ? safeText(current.createdDate())
+                    : StringUtils.hasText(safeText(request.requestedAtIso()))
+                            ? safeText(request.requestedAtIso())
+                            : StringUtils.hasText(safeText(saved.getCreatedDate()))
+                                    ? safeText(saved.getCreatedDate())
+                                    : nowIso;
+            mongoTemplate.save(new AssetRequest(
+                    projectionId,
+                    assetId,
+                    ownerUserId,
+                    "asset:" + assetId,
+                    Math.max(0, saved.getCapacityTotal() == null ? 0 : saved.getCapacityTotal()),
+                    normalizeId(request.userId()),
+                    safeText(request.name()),
+                    safeText(request.initials()),
+                    safeText(request.gender()),
+                    safeText(request.status()),
+                    safeText(request.note()),
+                    safeText(request.requestKind()),
+                    safeText(request.requestedAtIso()),
+                    request.booking(),
+                    current == null || current.menuActions() == null ? List.of() : List.copyOf(current.menuActions()),
+                    createdDate,
+                    updatedDate));
+        }
+
+        Set<String> removedProjectionIds = new LinkedHashSet<>();
+        for (AssetRequestRecord previous : safeRequests(existing == null ? null : existing.getRequests())) {
+            String previousRequestId = normalizeId(previous == null ? null : previous.id());
+            if (!StringUtils.hasText(previousRequestId)) {
+                continue;
+            }
+            String projectionId = assetRequestProjectionId(assetId, previousRequestId);
+            if (!retainedRequestIds.contains(projectionId)) {
+                removedProjectionIds.add(projectionId);
+            }
+        }
+        if (!removedProjectionIds.isEmpty()) {
+            Query staleQuery = Query.query(Criteria.where("ownerUserId").is(ownerUserId)
+                    .and("assetId").is(assetId)
+                    .and("_id").in(removedProjectionIds));
+            mongoTemplate.remove(staleQuery, AssetRequest.class);
+        }
+    }
+
+    private String assetRequestProjectionId(String assetId, String requestId) {
+        return normalizeId(assetId) + ":request:" + normalizeId(requestId);
     }
 
     private boolean canApplyAssetRequestPolicies(Asset existing, Asset proposed, boolean fullAssetWriteAllowed) {

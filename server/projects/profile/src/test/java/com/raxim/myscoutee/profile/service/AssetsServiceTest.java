@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,6 +23,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestBookingRecord;
 import com.raxim.myscoutee.profile.data.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.profile.data.document.AssetRequest;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
@@ -601,8 +603,8 @@ class AssetsServiceTest {
     void upsertAllowsPendingBorrowRequestWithoutFullAssetEditAndIgnoresAssetFieldChanges() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         Asset existing = asset();
-        existing.setRequests(List.of());
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorRequestAssetBorrow("u2", "event-1")).thenReturn(true);
@@ -613,7 +615,7 @@ class AssetsServiceTest {
                 mock(ActivityMembersRepository.class),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
-                mock(MongoTemplate.class),
+                mongoTemplate,
                 mock(AbsoluteAffinityService.class),
                 mock(AffinityRecomputeTaskService.class),
                 mock(AdminTelemetryService.class),
@@ -634,8 +636,20 @@ class AssetsServiceTest {
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getTitle()).isEqualTo("Camp Kit");
         assertThat(savedAsset.getValue().getQuantity()).isEqualTo(1);
-        assertThat(savedAsset.getValue().getRequests()).hasSize(1);
-        assertThat(savedAsset.getValue().getRequests().get(0).status()).isEqualTo("pending");
+        assertThat(savedAsset.getValue().getRequests()).hasSize(2);
+        assertThat(savedAsset.getValue().getRequests())
+                .anySatisfy(request -> {
+                    assertThat(request.id()).isEqualTo("request-2");
+                    assertThat(request.status()).isEqualTo("pending");
+                });
+        ArgumentCaptor<AssetRequest> projectedRequest = ArgumentCaptor.forClass(AssetRequest.class);
+        verify(mongoTemplate, times(2)).save(projectedRequest.capture());
+        assertThat(projectedRequest.getAllValues())
+                .anySatisfy(request -> {
+                    assertThat(request.id()).isEqualTo("asset-1:request:request-2");
+                    assertThat(request.assetId()).isEqualTo("asset-1");
+                    assertThat(request.ownerUserId()).isEqualTo("u1");
+                });
         verify(accessControlService).canCurrentActorEditAsset("u1", "asset-1");
         verify(accessControlService).canCurrentActorRequestAssetBorrow("u2", "event-1");
     }

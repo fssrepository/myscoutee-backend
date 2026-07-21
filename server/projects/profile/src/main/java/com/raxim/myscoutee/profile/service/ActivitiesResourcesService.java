@@ -29,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventRe
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionPageDto;
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
@@ -59,7 +60,11 @@ public class ActivitiesResourcesService {
 
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
         ActivitySubEventResource record = resolveRecord(ownerId, subEventId, assetOwnerUserId);
-        return record == null ? null : activitySubEventResourceMapper.toDto(filterToOwnedAssets(record));
+        if (record == null) {
+            return null;
+        }
+        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
+        return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
     }
 
     public SubEventSupplyContributionPageDto querySupplyContributions(
@@ -76,7 +81,8 @@ public class ActivitiesResourcesService {
         if (record == null || !StringUtils.hasText(normalizedAssetId)) {
             return new SubEventSupplyContributionPageDto(List.of(), 0, normalizedPage, normalizedPageSize);
         }
-        ActivitySubEventResource filtered = filterToOwnedAssets(record);
+        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
+        ActivitySubEventResource filtered = filterToAssignableAssets(record, eligibleAssets.keySet());
         List<SubEventSupplyContributionEntryRecord> entries = new ArrayList<>(
                 filtered.getSupplyContributionEntriesByAssetId().getOrDefault(normalizedAssetId, List.of()));
         entries.sort(Comparator.comparing(
@@ -119,6 +125,12 @@ public class ActivitiesResourcesService {
         String recordId = recordId(ownerId, subEventId, assetOwnerUserId);
         ActivitySubEventResource current = resolveRecord(ownerId, subEventId, assetOwnerUserId);
         String nowIso = Instant.now().toString();
+        Map<String, AssetDetailDto> eligibleAssets = assetsService.queryAssignableAssetDetails(
+                assetOwnerUserId,
+                ownerId,
+                subEventId,
+                referencedAssetIds(request));
+        Set<String> eligibleAssetIds = eligibleAssets == null ? Set.of() : eligibleAssets.keySet();
 
         ActivitySubEventResource next = current == null ? new ActivitySubEventResource() : cloneRecord(current);
         next.setId(current == null ? new ObjectId().toHexString() : current.getId());
@@ -129,9 +141,9 @@ public class ActivitiesResourcesService {
         next.setOwnerId(ownerId);
         next.setSubEventId(subEventId);
         next.setAssetOwnerUserId(assetOwnerUserId);
-        next.setAssetAssignmentIds(filterAssetAssignmentIds(request.assetAssignmentIds(), assetOwnerUserId));
-        next.setAssetSettingsByType(filterAssetSettings(request.assetSettingsByType(), assetOwnerUserId));
-        next.setSupplyContributionEntriesByAssetId(filterSupplyContributionEntries(request.supplyContributionEntriesByAssetId(), assetOwnerUserId));
+        next.setAssetAssignmentIds(filterAssignmentIds(request.assetAssignmentIds(), eligibleAssetIds));
+        next.setAssetSettingsByType(filterAssetSettings(request.assetSettingsByType(), eligibleAssetIds));
+        next.setSupplyContributionEntriesByAssetId(filterSupplyContributionEntries(request.supplyContributionEntriesByAssetId(), eligibleAssetIds));
         next.setCreatedDate(current == null ? nowIso : normalizeDateTime(current.getCreatedDate(), nowIso));
         next.setCreatedUser(current == null ? assetOwnerUserId : safeText(current.getCreatedUser()));
         next.setUpdatedDate(nowIso);
@@ -139,7 +151,7 @@ public class ActivitiesResourcesService {
 
         ActivitySubEventResource saved = activitySubEventResourcesRepository.save(next);
         refreshEventParticipationProjection(ownerId);
-        return activitySubEventResourceMapper.toDto(filterToOwnedAssets(saved));
+        return toStateDto(filterToAssignableAssets(saved, eligibleAssetIds), eligibleAssets);
     }
 
     public Set<String> removeManagedResourcesForRemovedEventMembers(
@@ -212,8 +224,7 @@ public class ActivitiesResourcesService {
                 .orElse(null);
     }
 
-    private ActivitySubEventResource filterToOwnedAssets(ActivitySubEventResource source) {
-        Set<String> eligibleAssetIds = ownedAssetIds(source == null ? null : source.getAssetOwnerUserId());
+    private ActivitySubEventResource filterToAssignableAssets(ActivitySubEventResource source, Set<String> eligibleAssetIds) {
         ActivitySubEventResource next = cloneRecord(source);
         next.setAssetAssignmentIds(filterAssignmentIds(next.getAssetAssignmentIds(), eligibleAssetIds));
         next.setAssetSettingsByType(filterSettings(next.getAssetSettingsByType(), eligibleAssetIds));
@@ -353,14 +364,9 @@ public class ActivitiesResourcesService {
                 removedAssignedAssetIds);
     }
 
-    private Map<String, List<String>> filterAssetAssignmentIds(Map<String, List<String>> source, String assetOwnerUserId) {
-        return filterAssignmentIds(source, ownedAssetIds(assetOwnerUserId));
-    }
-
     private Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> filterAssetSettings(
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> source,
-            String assetOwnerUserId) {
-        Set<String> eligibleAssetIds = ownedAssetIds(assetOwnerUserId);
+            Set<String> eligibleAssetIds) {
         Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> next = new LinkedHashMap<>();
         if (source == null) {
             return next;
@@ -392,8 +398,7 @@ public class ActivitiesResourcesService {
 
     private Map<String, List<SubEventSupplyContributionEntryRecord>> filterSupplyContributionEntries(
             Map<String, List<SubEventSupplyContributionEntryDto>> source,
-            String assetOwnerUserId) {
-        Set<String> eligibleAssetIds = ownedAssetIds(assetOwnerUserId);
+            Set<String> eligibleAssetIds) {
         Map<String, List<SubEventSupplyContributionEntryRecord>> next = new LinkedHashMap<>();
         if (source == null) {
             return next;
@@ -507,15 +512,93 @@ public class ActivitiesResourcesService {
         return next;
     }
 
-    private Set<String> ownedAssetIds(String assetOwnerUserId) {
-        String normalizedAssetOwnerUserId = normalizeId(assetOwnerUserId);
-        if (!StringUtils.hasText(normalizedAssetOwnerUserId)) {
-            return Set.of();
+    private Map<String, AssetDetailDto> resolveAssignableAssetDetails(ActivitySubEventResource record) {
+        if (record == null) {
+            return Map.of();
         }
-        return assetsService.queryAssets(normalizedAssetOwnerUserId).stream()
-                .map(asset -> normalizeId(asset.id()))
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+        Map<String, AssetDetailDto> details = assetsService.queryAssignableAssetDetails(
+                record.getAssetOwnerUserId(),
+                record.getOwnerId(),
+                record.getSubEventId(),
+                referencedAssetIds(record));
+        return details == null ? Map.of() : details;
+    }
+
+    private Set<String> referencedAssetIds(ActivitySubEventResourceStateDto state) {
+        Set<String> ids = new LinkedHashSet<>();
+        if (state == null) {
+            return ids;
+        }
+        collectAssignmentIds(ids, state.assetAssignmentIds());
+        if (state.assetSettingsByType() != null) {
+            state.assetSettingsByType().values().stream()
+                    .filter(Objects::nonNull)
+                    .forEach(settings -> settings.keySet().forEach(id -> addNormalizedId(ids, id)));
+        }
+        if (state.supplyContributionEntriesByAssetId() != null) {
+            state.supplyContributionEntriesByAssetId().keySet().forEach(id -> addNormalizedId(ids, id));
+        }
+        return ids;
+    }
+
+    private Set<String> referencedAssetIds(ActivitySubEventResource record) {
+        Set<String> ids = new LinkedHashSet<>();
+        if (record == null) {
+            return ids;
+        }
+        collectAssignmentIds(ids, record.getAssetAssignmentIds());
+        if (record.getAssetSettingsByType() != null) {
+            record.getAssetSettingsByType().values().stream()
+                    .filter(Objects::nonNull)
+                    .forEach(settings -> settings.keySet().forEach(id -> addNormalizedId(ids, id)));
+        }
+        if (record.getSupplyContributionEntriesByAssetId() != null) {
+            record.getSupplyContributionEntriesByAssetId().keySet().forEach(id -> addNormalizedId(ids, id));
+        }
+        return ids;
+    }
+
+    private void collectAssignmentIds(Set<String> target, Map<String, List<String>> assignments) {
+        if (assignments == null) {
+            return;
+        }
+        assignments.values().stream()
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .forEach(id -> addNormalizedId(target, id));
+    }
+
+    private void addNormalizedId(Set<String> target, String value) {
+        String id = normalizeId(value);
+        if (StringUtils.hasText(id)) {
+            target.add(id);
+        }
+    }
+
+    private ActivitySubEventResourceStateDto toStateDto(
+            ActivitySubEventResource record,
+            Map<String, AssetDetailDto> eligibleAssets) {
+        ActivitySubEventResourceStateDto base = activitySubEventResourceMapper.toDto(record);
+        if (base == null) {
+            return null;
+        }
+        Map<String, List<AssetDetailDto>> fallbackByType = new LinkedHashMap<>();
+        String assetOwnerUserId = normalizeId(record.getAssetOwnerUserId());
+        for (AssetDetailDto detail : eligibleAssets == null ? List.<AssetDetailDto>of() : eligibleAssets.values()) {
+            if (detail == null || assetOwnerUserId.equals(normalizeId(detail.ownerUserId()))) {
+                continue;
+            }
+            String type = safeText(detail.type());
+            fallbackByType.computeIfAbsent(type, ignored -> new ArrayList<>()).add(detail);
+        }
+        return new ActivitySubEventResourceStateDto(
+                base.ownerId(),
+                base.subEventId(),
+                base.assetOwnerUserId(),
+                base.assetAssignmentIds(),
+                base.assetSettingsByType(),
+                base.supplyContributionEntriesByAssetId(),
+                fallbackByType);
     }
 
     private String recordId(String ownerId, String subEventId, String assetOwnerUserId) {

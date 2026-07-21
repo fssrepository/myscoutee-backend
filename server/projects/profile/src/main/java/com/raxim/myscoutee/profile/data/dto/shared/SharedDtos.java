@@ -3,6 +3,8 @@ package com.raxim.myscoutee.profile.data.dto.shared;
 import java.util.List;
 import java.util.Map;
 
+import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
+
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
@@ -448,7 +450,8 @@ public final class SharedDtos {
             String assetOwnerUserId,
             Map<String, List<String>> assetAssignmentIds,
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
-            Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId) {
+            Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId,
+            Map<String, List<AssetDetailDto>> fallbackAssetCardsByType) {
     }
 
     public record ActivitySubEventStageRuntimeStateDto(

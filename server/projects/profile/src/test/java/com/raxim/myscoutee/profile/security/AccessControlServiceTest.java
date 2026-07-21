@@ -944,7 +944,7 @@ class AccessControlServiceTest {
     }
 
     private ActivitySubEventResourceStateDto request(String ownerId, String subEventId, String assetOwnerUserId) {
-        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of());
+        return new ActivitySubEventResourceStateDto(ownerId, subEventId, assetOwnerUserId, Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private ActivityMember member(String ownerId, String userId, String status) {

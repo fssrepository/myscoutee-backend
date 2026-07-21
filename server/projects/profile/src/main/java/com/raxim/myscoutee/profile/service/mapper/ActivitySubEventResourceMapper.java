@@ -30,7 +30,8 @@ public class ActivitySubEventResourceMapper {
                 normalizeId(record.getAssetOwnerUserId()),
                 cloneAssignmentIds(record.getAssetAssignmentIds()),
                 toSettingsDtoMap(record.getAssetSettingsByType()),
-                toSupplyContributionDtoMap(record.getSupplyContributionEntriesByAssetId()));
+                toSupplyContributionDtoMap(record.getSupplyContributionEntriesByAssetId()),
+                Map.of());
     }
 
     private Map<String, List<String>> cloneAssignmentIds(Map<String, List<String>> source) {

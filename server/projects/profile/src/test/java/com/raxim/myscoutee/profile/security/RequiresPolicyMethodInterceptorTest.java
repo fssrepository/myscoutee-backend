@@ -163,7 +163,7 @@ class RequiresPolicyMethodInterceptorTest {
     }
 
     private ActivitySubEventResourceStateDto request(String ownerId, String assetOwnerUserId) {
-        return new ActivitySubEventResourceStateDto(ownerId, "sub-1", assetOwnerUserId, Map.of(), Map.of(), Map.of());
+        return new ActivitySubEventResourceStateDto(ownerId, "sub-1", assetOwnerUserId, Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private static class Fixture {
