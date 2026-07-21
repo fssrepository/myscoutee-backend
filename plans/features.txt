@@ -5,3 +5,10 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
+
+feature
+-------
+asset borrow ui and behaviour should be similar then event buy
+1) fizetes menu (ami megmutatja, mennyi volt)
+2) the borrow ui should be similar then asset pay ui (showing asset form instead
+and show slot manager or similar)
