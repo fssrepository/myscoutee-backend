@@ -138,10 +138,11 @@ public class ActivitiesMembersService {
         }
 
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
-        List<ActivityMember> ownerMembers = loadOwnerDocuments(normalizedOwnerType, normalizedOwnerId).stream()
+        List<ActivityMember> ownerMembers = loadOwnerDocuments(
+                normalizedOwnerType,
+                normalizedOwnerId,
+                Boolean.TRUE.equals(pendingOnly) ? STATUS_PENDING : null).stream()
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus())))
-                .filter(member -> !Boolean.TRUE.equals(pendingOnly)
-                        || STATUS_PENDING.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .toList();
         Map<String, List<ActivityMemberInvolvementDto>> involvementsByUserId = memberInvolvementsByUserId(
                 normalizedOwnerType,
@@ -959,6 +960,15 @@ public class ActivitiesMembersService {
 
     private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId) {
         return activityMembersRepository.findByOwnerTypeAndOwnerId(ownerType, ownerId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private List<ActivityMember> loadOwnerDocuments(String ownerType, String ownerId, String status) {
+        if (!StringUtils.hasText(status)) {
+            return loadOwnerDocuments(ownerType, ownerId);
+        }
+        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatus(ownerType, ownerId, status).stream()
                 .filter(Objects::nonNull)
                 .toList();
     }

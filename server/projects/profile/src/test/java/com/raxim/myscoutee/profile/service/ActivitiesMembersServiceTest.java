@@ -267,6 +267,26 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryPendingMembersAppliesStatusInMongoRepositoryQuery() {
+        ActivityMember pendingMember = member("pending-sync", "event-1", "pending-user", "Member", "pending");
+        Users pendingUser = new Users();
+        pendingUser.setId("pending-user");
+        pendingUser.setName("Pending User");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatus("event", "event-1", "pending"))
+                .thenReturn(List.of(pendingMember));
+        when(usersRepository.findByUserId("pending-user")).thenReturn(Optional.of(pendingUser));
+
+        List<ActivityMemberEntryDto> result = service.queryMembers("event", "event-1", true);
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("pending-user");
+        verify(activityMembersRepository).findByOwnerTypeAndOwnerIdAndStatus("event", "event-1", "pending");
+        verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+    }
+
+    @Test
     void acceptPendingMemberUsesPolicyAndSavesAcceptedMember() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");

@@ -114,9 +114,30 @@ public class ChatMapper {
                     label,
                     StringUtils.hasText(safeText(user.getInitials())) ? safeText(user.getInitials()) : initialsFromText(label),
                     normalizeGender(user.getGender()),
-                    firstImageUrl(user.getImages())));
+                    firstImageUrl(user.getImages()),
+                    "accepted"));
         }
         return members;
+    }
+
+    public ChatMemberDto toMemberDto(Users user) {
+        return toMemberDto(user, "accepted");
+    }
+
+    public ChatMemberDto toMemberDto(Users user, String status) {
+        if (user == null || !StringUtils.hasText(normalizeId(user.getUserId()))) {
+            return null;
+        }
+        String userId = normalizeId(user.getUserId());
+        String name = safeText(user.getName());
+        String label = StringUtils.hasText(name) ? name : userId;
+        return new ChatMemberDto(
+                userId,
+                label,
+                StringUtils.hasText(safeText(user.getInitials())) ? safeText(user.getInitials()) : initialsFromText(label),
+                normalizeGender(user.getGender()),
+                firstImageUrl(user.getImages()),
+                "pending".equals(safeText(status)) ? "pending" : "accepted");
     }
 
     private ChatSupportCaseDto toSupportCaseDto(Chat record) {

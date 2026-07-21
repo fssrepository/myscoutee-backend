@@ -18,7 +18,8 @@ public final class ChatDtos {
             String name,
             String initials,
             String gender,
-            String imageUrl) {
+            String imageUrl,
+            String status) {
     }
 
     public record ChatDto(
@@ -69,6 +70,12 @@ public final class ChatDtos {
 
     public record ChatPageResponseDto(
             List<ChatDto> items,
+            Integer total,
+            String nextCursor) {
+    }
+
+    public record ChatMembersPageResponseDto(
+            List<ChatMemberDto> items,
             Integer total,
             String nextCursor) {
     }

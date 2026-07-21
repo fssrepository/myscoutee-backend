@@ -21,11 +21,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.Chat;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.profile.data.document.ChatMessage.ChatReadAvatarRecord;
@@ -121,6 +123,59 @@ class ChatServiceTest {
         verify(usersRepository, times(1)).findByUserId("viewer");
         verify(chatMessagesRepository, never()).saveAll(anyList());
         verify(chatsRepository, never()).save(any(Chat.class));
+    }
+
+    @Test
+    void queryMembersPageUsesLogicalChatIdAndPaginatesTheMongoUsersQuery() {
+        Chat viewerChat = chat("chat-1", "viewer", 0);
+        Chat otherOwnerChat = chat("chat-1", "sender", 0);
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(otherOwnerChat, viewerChat));
+        when(mongoTemplate.count(any(Query.class), eq(Users.class))).thenReturn(2L);
+        when(mongoTemplate.find(any(Query.class), eq(Users.class)))
+                .thenReturn(List.of(user("viewer", "Viewer User", "VU")));
+
+        var result = service.queryMembersPage("chat-1", "viewer", 1, null, false);
+
+        assertThat(result.items())
+                .extracting(member -> member.id())
+                .containsExactly("viewer");
+        assertThat(result.total()).isEqualTo(2);
+        assertThat(result.nextCursor()).isEqualTo("1");
+        verify(mongoTemplate).count(any(Query.class), eq(Users.class));
+        verify(mongoTemplate).find(any(Query.class), eq(Users.class));
+        verify(chatsRepository).findByChatId("chat-1");
+        verify(usersRepository, never()).findAll();
+    }
+
+    @Test
+    void queryPendingChatMembersAppliesStatusBeforeMongoUserLookup() {
+        Chat viewerChat = chat("chat-1", "viewer", 0, "2026-05-26T08:00:00Z", "mainEvent");
+        viewerChat.setOwnerId("event-1");
+        ActivityMember pendingMember = new ActivityMember();
+        pendingMember.setOwnerType("event");
+        pendingMember.setOwnerId("event-1");
+        pendingMember.setUserId("sender");
+        pendingMember.setStatus("pending");
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn(
+                eq("event"), eq("event-1"), eq("pending"), any(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(pendingMember)));
+        when(mongoTemplate.find(any(Query.class), eq(Users.class)))
+                .thenReturn(List.of(user("sender", "Sender User", "SU")));
+
+        var result = service.queryMembersPage("chat-1", "viewer", 16, null, true);
+
+        assertThat(result.items())
+                .extracting(member -> member.id())
+                .containsExactly("sender");
+        assertThat(result.total()).isEqualTo(1);
+        verify(activityMembersRepository).findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn(
+                eq("event"), eq("event-1"), eq("pending"), any(), any(Pageable.class));
+        verify(mongoTemplate, never()).count(any(Query.class), eq(Users.class));
     }
 
     @Test

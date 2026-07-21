@@ -27,6 +27,7 @@ import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -62,6 +63,8 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricBucketDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMetricsDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMemberDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMembersPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageAttachmentDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPageResponseDto;
@@ -341,6 +344,74 @@ public class ChatService {
                 total,
                 nextIndex < total ? String.valueOf(nextIndex) : null,
                 toReadReceiptDto(readUpdate));
+    }
+
+    public ChatMembersPageResponseDto queryMembersPage(
+            String chatId,
+            String requestedUserId,
+            Integer limitValue,
+            String cursor,
+            Boolean pendingOnly) {
+        String userId = requireResolvedUserId(requestedUserId);
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Chat memberSource = snapshot.viewerChat() == null
+                ? snapshot.chatDocuments().get(0)
+                : snapshot.viewerChat();
+        List<String> memberIds = safeMemberIds(memberSource.getMemberIds()).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (memberIds.isEmpty()) {
+            return new ChatMembersPageResponseDto(List.of(), 0, null);
+        }
+
+        int limit = normalizeChatPageLimit(limitValue);
+        int offset = parseChatCursorOffset(cursor);
+        long total;
+        List<String> pageMemberIds;
+        String memberOwnerType = memberOwnerType(chatChannelType(memberSource));
+        if (Boolean.TRUE.equals(pendingOnly)
+                && StringUtils.hasText(memberOwnerType)
+                && StringUtils.hasText(normalizeId(memberSource.getOwnerId()))) {
+            Page<ActivityMember> memberPage = activityMembersRepository
+                    .findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn(
+                            memberOwnerType,
+                            normalizeId(memberSource.getOwnerId()),
+                            MEMBER_STATUS_PENDING,
+                            memberIds,
+                            PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.ASC, "userId")));
+            total = memberPage.getTotalElements();
+            pageMemberIds = memberPage.getContent().stream()
+                    .map(ActivityMember::getUserId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .distinct()
+                    .toList();
+        } else if (Boolean.TRUE.equals(pendingOnly)) {
+            return new ChatMembersPageResponseDto(List.of(), 0, null);
+        } else {
+            total = mongoTemplate.count(new Query(Criteria.where("userId").in(memberIds)), Users.class);
+            pageMemberIds = memberIds;
+        }
+        Criteria memberCriteria = Criteria.where("userId").in(pageMemberIds);
+        Query pageQuery = new Query(memberCriteria)
+                .with(Sort.by(Sort.Direction.ASC, "userId"))
+                .limit(limit);
+        if (!Boolean.TRUE.equals(pendingOnly)) {
+            pageQuery.skip(offset);
+        }
+        List<ChatMemberDto> items = mongoTemplate.find(pageQuery, Users.class).stream()
+                .map(user -> chatMapper.toMemberDto(
+                        user,
+                        Boolean.TRUE.equals(pendingOnly) ? MEMBER_STATUS_PENDING : MEMBER_STATUS_ACCEPTED))
+                .filter(Objects::nonNull)
+                .toList();
+        int nextOffset = offset + items.size();
+        return new ChatMembersPageResponseDto(
+                items,
+                safePageTotal(total),
+                nextOffset < total && !items.isEmpty() ? Integer.toString(nextOffset) : null);
     }
 
     public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text) {
