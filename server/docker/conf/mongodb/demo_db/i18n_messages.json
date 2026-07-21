@@ -13170,6 +13170,30 @@
     "value": "minutes"
   },
   {
+    "_id": "i18n-message-en-event-explore",
+    "key": "event.explore",
+    "lang": "en",
+    "value": "Event Explore"
+  },
+  {
+    "_id": "i18n-message-en-friends-going",
+    "key": "friends.going",
+    "lang": "en",
+    "value": "Friends going"
+  },
+  {
+    "_id": "i18n-message-en-open-spots",
+    "key": "open.spots",
+    "lang": "en",
+    "value": "Open spots"
+  },
+  {
+    "_id": "i18n-message-en-topic",
+    "key": "topic",
+    "lang": "en",
+    "value": "Topic"
+  },
+  {
     "_id": "i18n-message-en-event-editor-subevents-stage-description-placeholder",
     "key": "event.editor.subevents.stage.description.placeholder",
     "lang": "en",
@@ -26440,6 +26464,30 @@
     "key": "minutes",
     "lang": "hu",
     "value": "perc"
+  },
+  {
+    "_id": "i18n-message-hu-event-explore",
+    "key": "event.explore",
+    "lang": "hu",
+    "value": "Események felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-friends-going",
+    "key": "friends.going",
+    "lang": "hu",
+    "value": "Barátok mennek"
+  },
+  {
+    "_id": "i18n-message-hu-open-spots",
+    "key": "open.spots",
+    "lang": "hu",
+    "value": "Szabad helyek"
+  },
+  {
+    "_id": "i18n-message-hu-topic",
+    "key": "topic",
+    "lang": "hu",
+    "value": "Téma"
   },
   {
     "_id": "i18n-message-hu-event-editor-subevents-stage-description-placeholder",
