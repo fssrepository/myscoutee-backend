@@ -63,7 +63,7 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2026-02-01T12:05:00.000Z",
@@ -71,7 +71,8 @@
     "affinity": 1022955,
     "boost": 59,
     "status": "UR",
-    "statusBeforeSuppression": "A"
+    "statusBeforeSuppression": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -137,7 +138,7 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2026-02-01T12:04:00.000Z",
@@ -145,7 +146,8 @@
     "affinity": 1033994,
     "boost": 73,
     "status": "D",
-    "statusBeforeSuppression": "A"
+    "statusBeforeSuppression": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -213,14 +215,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "b5e2db6882d989d8532af12c",
     "affinity": 1030093,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -288,14 +291,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "b5e2db6882d989d8532af12c",
     "affinity": 1035986,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -305,8 +309,8 @@
     "assetId": "2ddc36d7e1cb3673504cbfbc",
     "ownerUserId": "b5e2db6882d989d8532af12c",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -387,14 +391,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "b5e2db6882d989d8532af12c",
     "affinity": 1197089,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -487,14 +526,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "b5e2db6882d989d8532af12c",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "b5e2db6882d989d8532af12c",
     "affinity": 1180157,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -560,14 +600,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "f7bcd28c65ea349b4ee7aed2",
     "affinity": 911251,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -633,14 +674,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "f7bcd28c65ea349b4ee7aed2",
     "affinity": 922290,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -708,14 +750,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "f7bcd28c65ea349b4ee7aed2",
     "affinity": 918389,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -783,14 +826,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "f7bcd28c65ea349b4ee7aed2",
     "affinity": 924282,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -800,8 +844,8 @@
     "assetId": "ca4311d7dd571b2ee4d7fe14",
     "ownerUserId": "f7bcd28c65ea349b4ee7aed2",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -882,14 +926,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "f7bcd28c65ea349b4ee7aed2",
     "affinity": 1085385,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -982,14 +1068,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "f7bcd28c65ea349b4ee7aed2",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "f7bcd28c65ea349b4ee7aed2",
     "affinity": 1068453,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -1062,7 +1149,8 @@
     "updatedUser": "f01086c19a00a6f46b6d41a7",
     "affinity": 868590,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -1135,7 +1223,8 @@
     "updatedUser": "f01086c19a00a6f46b6d41a7",
     "affinity": 879629,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -1210,7 +1299,8 @@
     "updatedUser": "f01086c19a00a6f46b6d41a7",
     "affinity": 875728,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -1285,7 +1375,8 @@
     "updatedUser": "f01086c19a00a6f46b6d41a7",
     "affinity": 881621,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -1295,8 +1386,8 @@
     "assetId": "a679af61eda591c309b8007d",
     "ownerUserId": "f01086c19a00a6f46b6d41a7",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -1377,14 +1468,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "f01086c19a00a6f46b6d41a7",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "f01086c19a00a6f46b6d41a7",
     "affinity": 1042724,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -1484,7 +1623,8 @@
     "updatedUser": "f01086c19a00a6f46b6d41a7",
     "affinity": 1025792,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -1550,14 +1690,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "e76d63199eff33a6945cb797",
     "affinity": 932019,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -1623,14 +1764,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "e76d63199eff33a6945cb797",
     "affinity": 943058,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -1698,14 +1840,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "e76d63199eff33a6945cb797",
     "affinity": 939157,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -1773,14 +1916,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "e76d63199eff33a6945cb797",
     "affinity": 945050,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -1790,8 +1934,8 @@
     "assetId": "fc17844f494d81c7796a2c86",
     "ownerUserId": "e76d63199eff33a6945cb797",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -1872,14 +2016,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "e76d63199eff33a6945cb797",
     "affinity": 1106153,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -1972,14 +2151,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "e76d63199eff33a6945cb797",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "e76d63199eff33a6945cb797",
     "affinity": 1089221,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -2045,14 +2225,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "0cc9990d08304ab26ee67784",
     "affinity": 1068351,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -2118,14 +2299,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "0cc9990d08304ab26ee67784",
     "affinity": 1079390,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -2193,14 +2375,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "0cc9990d08304ab26ee67784",
     "affinity": 1075489,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -2268,14 +2451,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "0cc9990d08304ab26ee67784",
     "affinity": 1081382,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -2285,8 +2469,8 @@
     "assetId": "9ea23c395c80321c0298280f",
     "ownerUserId": "0cc9990d08304ab26ee67784",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -2367,14 +2551,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "0cc9990d08304ab26ee67784",
     "affinity": 1242485,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -2467,14 +2693,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "0cc9990d08304ab26ee67784",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "0cc9990d08304ab26ee67784",
     "affinity": 1225553,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -2547,7 +2774,8 @@
     "updatedUser": "af70e41dbe826cbd7d8b3500",
     "affinity": 732959,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -2620,7 +2848,8 @@
     "updatedUser": "af70e41dbe826cbd7d8b3500",
     "affinity": 743998,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -2695,7 +2924,8 @@
     "updatedUser": "af70e41dbe826cbd7d8b3500",
     "affinity": 740097,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -2770,7 +3000,8 @@
     "updatedUser": "af70e41dbe826cbd7d8b3500",
     "affinity": 745990,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -2780,8 +3011,8 @@
     "assetId": "ed89c965071340ea7b072e00",
     "ownerUserId": "af70e41dbe826cbd7d8b3500",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -2862,14 +3093,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "af70e41dbe826cbd7d8b3500",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "af70e41dbe826cbd7d8b3500",
     "affinity": 907093,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -2969,7 +3248,8 @@
     "updatedUser": "af70e41dbe826cbd7d8b3500",
     "affinity": 890161,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -3035,14 +3315,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "41f4659dbd75a03abc20cd6d",
     "affinity": 960165,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -3108,14 +3389,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "41f4659dbd75a03abc20cd6d",
     "affinity": 971204,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -3183,14 +3465,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "41f4659dbd75a03abc20cd6d",
     "affinity": 967303,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -3258,14 +3541,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "41f4659dbd75a03abc20cd6d",
     "affinity": 973196,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -3275,8 +3559,8 @@
     "assetId": "72782ab8fc8635ee622b00be",
     "ownerUserId": "41f4659dbd75a03abc20cd6d",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -3357,14 +3641,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "41f4659dbd75a03abc20cd6d",
     "affinity": 1134299,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -3457,14 +3776,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "41f4659dbd75a03abc20cd6d",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "41f4659dbd75a03abc20cd6d",
     "affinity": 1117367,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -3530,14 +3850,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "63bae8417bd352e5013c2e93",
     "affinity": 791675,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -3603,14 +3924,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "63bae8417bd352e5013c2e93",
     "affinity": 802714,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -3678,14 +4000,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "63bae8417bd352e5013c2e93",
     "affinity": 798813,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -3753,14 +4076,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "63bae8417bd352e5013c2e93",
     "affinity": 804706,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -3770,8 +4094,8 @@
     "assetId": "d1344cc795e50601c2a3441a",
     "ownerUserId": "63bae8417bd352e5013c2e93",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -3852,14 +4176,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "63bae8417bd352e5013c2e93",
     "affinity": 965809,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -3952,14 +4318,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "63bae8417bd352e5013c2e93",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "63bae8417bd352e5013c2e93",
     "affinity": 948877,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -4032,7 +4399,8 @@
     "updatedUser": "23820c1e76d3bd843f61c799",
     "affinity": 1158302,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -4105,7 +4473,8 @@
     "updatedUser": "23820c1e76d3bd843f61c799",
     "affinity": 1169341,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -4180,7 +4549,8 @@
     "updatedUser": "23820c1e76d3bd843f61c799",
     "affinity": 1165440,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -4255,7 +4625,8 @@
     "updatedUser": "23820c1e76d3bd843f61c799",
     "affinity": 1171333,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -4265,8 +4636,8 @@
     "assetId": "6d0dfc06cab190e33bfb4d87",
     "ownerUserId": "23820c1e76d3bd843f61c799",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -4347,14 +4718,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "23820c1e76d3bd843f61c799",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "23820c1e76d3bd843f61c799",
     "affinity": 1332436,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -4454,7 +4873,8 @@
     "updatedUser": "23820c1e76d3bd843f61c799",
     "affinity": 1315504,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -4520,14 +4940,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "931a01221376d8e28a068fe8",
     "affinity": 996093,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -4593,14 +5014,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "931a01221376d8e28a068fe8",
     "affinity": 1007132,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -4668,14 +5090,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "931a01221376d8e28a068fe8",
     "affinity": 1003231,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -4743,14 +5166,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "931a01221376d8e28a068fe8",
     "affinity": 1009124,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -4760,8 +5184,8 @@
     "assetId": "7d3224f9ec5f7cac9c672e03",
     "ownerUserId": "931a01221376d8e28a068fe8",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -4842,14 +5266,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "931a01221376d8e28a068fe8",
     "affinity": 1170227,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -4942,14 +5401,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "931a01221376d8e28a068fe8",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "931a01221376d8e28a068fe8",
     "affinity": 1153295,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -5015,14 +5475,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
     "affinity": 964573,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -5088,14 +5549,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
     "affinity": 975612,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -5163,14 +5625,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
     "affinity": 971711,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -5238,14 +5701,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
     "affinity": 977604,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -5255,8 +5719,8 @@
     "assetId": "c555bf9becc4ff47b3caeba8",
     "ownerUserId": "ec342d9af3f2cfd6adfd4ee5",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -5337,14 +5801,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
     "affinity": 1138707,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -5437,14 +5943,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "ec342d9af3f2cfd6adfd4ee5",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "ec342d9af3f2cfd6adfd4ee5",
     "affinity": 1121775,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -5517,7 +6024,8 @@
     "updatedUser": "c033e546ef7c928fb8cf073b",
     "affinity": 1060267,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -5590,7 +6098,8 @@
     "updatedUser": "c033e546ef7c928fb8cf073b",
     "affinity": 1071306,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -5665,7 +6174,8 @@
     "updatedUser": "c033e546ef7c928fb8cf073b",
     "affinity": 1067405,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -5740,7 +6250,8 @@
     "updatedUser": "c033e546ef7c928fb8cf073b",
     "affinity": 1073298,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -5750,8 +6261,8 @@
     "assetId": "91364d2cf1337e36879248a3",
     "ownerUserId": "c033e546ef7c928fb8cf073b",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -5832,14 +6343,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "c033e546ef7c928fb8cf073b",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "c033e546ef7c928fb8cf073b",
     "affinity": 1234401,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -5939,7 +6498,8 @@
     "updatedUser": "c033e546ef7c928fb8cf073b",
     "affinity": 1217469,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -6005,14 +6565,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "c100132b3ae88b47890def59",
     "affinity": 1038642,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -6078,14 +6639,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "c100132b3ae88b47890def59",
     "affinity": 1049681,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -6153,14 +6715,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "c100132b3ae88b47890def59",
     "affinity": 1045780,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -6228,14 +6791,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "c100132b3ae88b47890def59",
     "affinity": 1051673,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -6245,8 +6809,8 @@
     "assetId": "471c54ac181b43eaf307dadc",
     "ownerUserId": "c100132b3ae88b47890def59",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -6327,14 +6891,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "c100132b3ae88b47890def59",
     "affinity": 1212776,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -6427,14 +7026,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "c100132b3ae88b47890def59",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "c100132b3ae88b47890def59",
     "affinity": 1195844,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -6500,14 +7100,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "25f4744ead36d038064d62c3",
     "affinity": 966446,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -6573,14 +7174,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "25f4744ead36d038064d62c3",
     "affinity": 977485,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -6648,14 +7250,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "25f4744ead36d038064d62c3",
     "affinity": 973584,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -6723,14 +7326,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "25f4744ead36d038064d62c3",
     "affinity": 979477,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -6740,8 +7344,8 @@
     "assetId": "73e996e26e42311c4efbe92f",
     "ownerUserId": "25f4744ead36d038064d62c3",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -6822,14 +7426,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "25f4744ead36d038064d62c3",
     "affinity": 1140580,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -6922,14 +7568,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "25f4744ead36d038064d62c3",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "25f4744ead36d038064d62c3",
     "affinity": 1123648,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -7002,7 +7649,8 @@
     "updatedUser": "e904dad402b47dd2cdaa8bec",
     "affinity": 874815,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -7075,7 +7723,8 @@
     "updatedUser": "e904dad402b47dd2cdaa8bec",
     "affinity": 885854,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -7150,7 +7799,8 @@
     "updatedUser": "e904dad402b47dd2cdaa8bec",
     "affinity": 881953,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -7225,7 +7875,8 @@
     "updatedUser": "e904dad402b47dd2cdaa8bec",
     "affinity": 887846,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -7235,8 +7886,8 @@
     "assetId": "90c9a84640fe9050f850101f",
     "ownerUserId": "e904dad402b47dd2cdaa8bec",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -7317,14 +7968,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "e904dad402b47dd2cdaa8bec",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "e904dad402b47dd2cdaa8bec",
     "affinity": 1048949,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -7424,7 +8123,8 @@
     "updatedUser": "e904dad402b47dd2cdaa8bec",
     "affinity": 1032017,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -7490,14 +8190,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "4a008502646a200488911f45",
     "affinity": 903218,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -7563,14 +8264,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "4a008502646a200488911f45",
     "affinity": 914257,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -7638,14 +8340,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "4a008502646a200488911f45",
     "affinity": 910356,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -7713,14 +8416,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "4a008502646a200488911f45",
     "affinity": 916249,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -7730,8 +8434,8 @@
     "assetId": "7552047f4771468fed3bea96",
     "ownerUserId": "4a008502646a200488911f45",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -7812,14 +8516,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "4a008502646a200488911f45",
     "affinity": 1077352,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -7912,14 +8651,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "4a008502646a200488911f45",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "4a008502646a200488911f45",
     "affinity": 1060420,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -7985,14 +8725,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "904ee3c526298f6921cde3f3",
     "affinity": 1038886,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -8058,14 +8799,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "904ee3c526298f6921cde3f3",
     "affinity": 1049925,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -8133,14 +8875,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "904ee3c526298f6921cde3f3",
     "affinity": 1046024,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -8208,14 +8951,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "904ee3c526298f6921cde3f3",
     "affinity": 1051917,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -8225,8 +8969,8 @@
     "assetId": "40bc009e063c2090b6d1596a",
     "ownerUserId": "904ee3c526298f6921cde3f3",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -8307,14 +9051,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "904ee3c526298f6921cde3f3",
     "affinity": 1213020,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -8407,14 +9193,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "904ee3c526298f6921cde3f3",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "904ee3c526298f6921cde3f3",
     "affinity": 1196088,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -8487,7 +9274,8 @@
     "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
     "affinity": 713703,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -8560,7 +9348,8 @@
     "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
     "affinity": 724742,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -8635,7 +9424,8 @@
     "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
     "affinity": 720841,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -8710,7 +9500,8 @@
     "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
     "affinity": 726734,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -8720,8 +9511,8 @@
     "assetId": "34071caa96bd00042e32e1c7",
     "ownerUserId": "d94ebcdf7bf9c8f33bb3f32c",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -8802,14 +9593,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "d94ebcdf7bf9c8f33bb3f32c",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
     "affinity": 887837,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -8909,7 +9748,8 @@
     "updatedUser": "d94ebcdf7bf9c8f33bb3f32c",
     "affinity": 870905,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -8975,14 +9815,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "af0436815ab38f4864dd1e24",
     "affinity": 982160,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -9048,14 +9889,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "af0436815ab38f4864dd1e24",
     "affinity": 993199,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -9123,14 +9965,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "af0436815ab38f4864dd1e24",
     "affinity": 989298,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -9198,14 +10041,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "af0436815ab38f4864dd1e24",
     "affinity": 995191,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -9215,8 +10059,8 @@
     "assetId": "79f1ff8172b3a9164f693e1d",
     "ownerUserId": "af0436815ab38f4864dd1e24",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -9297,14 +10141,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "af0436815ab38f4864dd1e24",
     "affinity": 1156294,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -9397,14 +10276,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "af0436815ab38f4864dd1e24",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "af0436815ab38f4864dd1e24",
     "affinity": 1139362,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -9470,14 +10350,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "b0971e779dbdb71f9327eabb",
     "affinity": 857162,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -9543,14 +10424,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "b0971e779dbdb71f9327eabb",
     "affinity": 868201,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -9618,14 +10500,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "b0971e779dbdb71f9327eabb",
     "affinity": 864300,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -9693,14 +10576,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "b0971e779dbdb71f9327eabb",
     "affinity": 870193,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -9710,8 +10594,8 @@
     "assetId": "eb86262d442bc7ad1587f521",
     "ownerUserId": "b0971e779dbdb71f9327eabb",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -9792,14 +10676,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "b0971e779dbdb71f9327eabb",
     "affinity": 1031296,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -9892,14 +10818,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "b0971e779dbdb71f9327eabb",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "b0971e779dbdb71f9327eabb",
     "affinity": 1014364,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -9972,7 +10899,8 @@
     "updatedUser": "8f6ff3752a1f0912cd63e912",
     "affinity": 1143860,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -10045,7 +10973,8 @@
     "updatedUser": "8f6ff3752a1f0912cd63e912",
     "affinity": 1154899,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -10120,7 +11049,8 @@
     "updatedUser": "8f6ff3752a1f0912cd63e912",
     "affinity": 1150998,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -10195,7 +11125,8 @@
     "updatedUser": "8f6ff3752a1f0912cd63e912",
     "affinity": 1156891,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -10205,8 +11136,8 @@
     "assetId": "4d6942b1040053ce67be0d1f",
     "ownerUserId": "8f6ff3752a1f0912cd63e912",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -10287,14 +11218,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "8f6ff3752a1f0912cd63e912",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "8f6ff3752a1f0912cd63e912",
     "affinity": 1317994,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -10394,7 +11373,8 @@
     "updatedUser": "8f6ff3752a1f0912cd63e912",
     "affinity": 1301062,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -10460,14 +11440,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "9d3ba3d74edabe4695e6d3f9",
     "affinity": 923468,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -10533,14 +11514,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "9d3ba3d74edabe4695e6d3f9",
     "affinity": 934507,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -10608,14 +11590,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "9d3ba3d74edabe4695e6d3f9",
     "affinity": 930606,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -10683,14 +11666,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "9d3ba3d74edabe4695e6d3f9",
     "affinity": 936499,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -10700,8 +11684,8 @@
     "assetId": "7a83eaef9497d84818928cdb",
     "ownerUserId": "9d3ba3d74edabe4695e6d3f9",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -10782,14 +11766,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "9d3ba3d74edabe4695e6d3f9",
     "affinity": 1097602,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -10882,14 +11901,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "9d3ba3d74edabe4695e6d3f9",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "9d3ba3d74edabe4695e6d3f9",
     "affinity": 1080670,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -10955,14 +11975,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "0f9350e50f1ffc3cf002b7ed",
     "affinity": 980260,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -11028,14 +12049,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "0f9350e50f1ffc3cf002b7ed",
     "affinity": 991299,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -11103,14 +12125,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "0f9350e50f1ffc3cf002b7ed",
     "affinity": 987398,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -11178,14 +12201,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "0f9350e50f1ffc3cf002b7ed",
     "affinity": 993291,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -11195,8 +12219,8 @@
     "assetId": "a7c430d377cb47da89c8a855",
     "ownerUserId": "0f9350e50f1ffc3cf002b7ed",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -11277,14 +12301,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "0f9350e50f1ffc3cf002b7ed",
     "affinity": 1154394,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -11377,14 +12443,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "0f9350e50f1ffc3cf002b7ed",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "0f9350e50f1ffc3cf002b7ed",
     "affinity": 1137462,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -11457,7 +12524,8 @@
     "updatedUser": "a0fb804ad6f347d6a9dab526",
     "affinity": 1115462,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -11530,7 +12598,8 @@
     "updatedUser": "a0fb804ad6f347d6a9dab526",
     "affinity": 1126501,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -11605,7 +12674,8 @@
     "updatedUser": "a0fb804ad6f347d6a9dab526",
     "affinity": 1122600,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -11680,7 +12750,8 @@
     "updatedUser": "a0fb804ad6f347d6a9dab526",
     "affinity": 1128493,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -11690,8 +12761,8 @@
     "assetId": "33d50dc49c586f133f529647",
     "ownerUserId": "a0fb804ad6f347d6a9dab526",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -11772,14 +12843,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "a0fb804ad6f347d6a9dab526",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "a0fb804ad6f347d6a9dab526",
     "affinity": 1289596,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -11879,7 +12998,8 @@
     "updatedUser": "a0fb804ad6f347d6a9dab526",
     "affinity": 1272664,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -11945,14 +13065,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "ed4924c22a5240a54e48c0b5",
     "affinity": 1044867,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -12018,14 +13139,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "ed4924c22a5240a54e48c0b5",
     "affinity": 1055906,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -12093,14 +13215,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "ed4924c22a5240a54e48c0b5",
     "affinity": 1052005,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -12168,14 +13291,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "ed4924c22a5240a54e48c0b5",
     "affinity": 1057898,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -12185,8 +13309,8 @@
     "assetId": "55eee2af2e3a84d9355842e2",
     "ownerUserId": "ed4924c22a5240a54e48c0b5",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -12267,14 +13391,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "ed4924c22a5240a54e48c0b5",
     "affinity": 1219001,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -12367,14 +13526,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "ed4924c22a5240a54e48c0b5",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "ed4924c22a5240a54e48c0b5",
     "affinity": 1202069,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -12440,14 +13600,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "4b5bad1292fb6db05dc0e455",
     "affinity": 937645,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -12513,14 +13674,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "4b5bad1292fb6db05dc0e455",
     "affinity": 948684,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -12588,14 +13750,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "4b5bad1292fb6db05dc0e455",
     "affinity": 944783,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -12663,14 +13826,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "4b5bad1292fb6db05dc0e455",
     "affinity": 950676,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -12680,8 +13844,8 @@
     "assetId": "4597bf3f35d69e76a51af32b",
     "ownerUserId": "4b5bad1292fb6db05dc0e455",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -12762,14 +13926,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "4b5bad1292fb6db05dc0e455",
     "affinity": 1111779,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -12862,14 +14068,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "4b5bad1292fb6db05dc0e455",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "4b5bad1292fb6db05dc0e455",
     "affinity": 1094847,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -12942,7 +14149,8 @@
     "updatedUser": "e1dccfc3443239865c6ac69a",
     "affinity": 845350,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -13015,7 +14223,8 @@
     "updatedUser": "e1dccfc3443239865c6ac69a",
     "affinity": 856389,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -13090,7 +14299,8 @@
     "updatedUser": "e1dccfc3443239865c6ac69a",
     "affinity": 852488,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -13165,7 +14375,8 @@
     "updatedUser": "e1dccfc3443239865c6ac69a",
     "affinity": 858381,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -13175,8 +14386,8 @@
     "assetId": "ae8ef636e344ea890020b5df",
     "ownerUserId": "e1dccfc3443239865c6ac69a",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -13257,14 +14468,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "e1dccfc3443239865c6ac69a",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "e1dccfc3443239865c6ac69a",
     "affinity": 1019484,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -13364,7 +14623,8 @@
     "updatedUser": "e1dccfc3443239865c6ac69a",
     "affinity": 1002552,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -13430,14 +14690,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "9184901a15076d32ea8b626f",
     "affinity": 883962,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -13503,14 +14764,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "9184901a15076d32ea8b626f",
     "affinity": 895001,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -13578,14 +14840,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "9184901a15076d32ea8b626f",
     "affinity": 891100,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -13653,14 +14916,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "9184901a15076d32ea8b626f",
     "affinity": 896993,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -13670,8 +14934,8 @@
     "assetId": "4ecb12ab88646a6de952328a",
     "ownerUserId": "9184901a15076d32ea8b626f",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -13752,14 +15016,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "9184901a15076d32ea8b626f",
     "affinity": 1058096,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -13852,14 +15151,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "9184901a15076d32ea8b626f",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "9184901a15076d32ea8b626f",
     "affinity": 1041164,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -13925,14 +15225,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "4da20eb049179e73d4757808",
     "affinity": 1060881,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -13998,14 +15299,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "4da20eb049179e73d4757808",
     "affinity": 1071920,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -14073,14 +15375,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "4da20eb049179e73d4757808",
     "affinity": 1068019,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -14148,14 +15451,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "4da20eb049179e73d4757808",
     "affinity": 1073912,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -14165,8 +15469,8 @@
     "assetId": "2b7550bc4cd4e172923e360c",
     "ownerUserId": "4da20eb049179e73d4757808",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Seattle",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -14247,14 +15551,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "4da20eb049179e73d4757808",
     "affinity": 1235015,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -14347,14 +15693,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "4da20eb049179e73d4757808",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "4da20eb049179e73d4757808",
     "affinity": 1218083,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -14427,7 +15774,8 @@
     "updatedUser": "0b8e5df4ec85d858c304a350",
     "affinity": 779190,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -14500,7 +15848,8 @@
     "updatedUser": "0b8e5df4ec85d858c304a350",
     "affinity": 790229,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -14575,7 +15924,8 @@
     "updatedUser": "0b8e5df4ec85d858c304a350",
     "affinity": 786328,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -14650,7 +16000,8 @@
     "updatedUser": "0b8e5df4ec85d858c304a350",
     "affinity": 792221,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -14660,8 +16011,8 @@
     "assetId": "83d78100cf25ca1b3363c705",
     "ownerUserId": "0b8e5df4ec85d858c304a350",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Austin",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -14742,14 +16093,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "0b8e5df4ec85d858c304a350",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "0b8e5df4ec85d858c304a350",
     "affinity": 953324,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -14849,7 +16248,8 @@
     "updatedUser": "0b8e5df4ec85d858c304a350",
     "affinity": 936392,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -14915,14 +16315,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "76da95a9109da485555c0d25",
     "affinity": 967718,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -14988,14 +16389,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "76da95a9109da485555c0d25",
     "affinity": 978757,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -15063,14 +16465,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "76da95a9109da485555c0d25",
     "affinity": 974856,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -15138,14 +16541,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "76da95a9109da485555c0d25",
     "affinity": 980749,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -15155,8 +16559,8 @@
     "assetId": "a0662ee022800f4cc09a1333",
     "ownerUserId": "76da95a9109da485555c0d25",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Portland",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -15237,14 +16641,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "76da95a9109da485555c0d25",
     "affinity": 1141852,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -15337,14 +16776,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "76da95a9109da485555c0d25",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "76da95a9109da485555c0d25",
     "affinity": 1124920,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -15410,14 +16850,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "0c3ab5da9af33d4e688e809c",
     "affinity": 784537,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -15483,14 +16924,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "0c3ab5da9af33d4e688e809c",
     "affinity": 795576,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -15558,14 +17000,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "0c3ab5da9af33d4e688e809c",
     "affinity": 791675,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -15633,14 +17076,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "0c3ab5da9af33d4e688e809c",
     "affinity": 797568,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -15650,8 +17094,8 @@
     "assetId": "92be710e25b7ee0f70bc1a0d",
     "ownerUserId": "0c3ab5da9af33d4e688e809c",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "San Diego",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -15732,14 +17176,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "0c3ab5da9af33d4e688e809c",
     "affinity": 958671,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -15832,14 +17318,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "0c3ab5da9af33d4e688e809c",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "0c3ab5da9af33d4e688e809c",
     "affinity": 941739,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -15912,7 +17399,8 @@
     "updatedUser": "f6f22ba0a6f14cfcf4585d47",
     "affinity": 1159547,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -15985,7 +17473,8 @@
     "updatedUser": "f6f22ba0a6f14cfcf4585d47",
     "affinity": 1170586,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -16060,7 +17549,8 @@
     "updatedUser": "f6f22ba0a6f14cfcf4585d47",
     "affinity": 1166685,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -16135,7 +17625,8 @@
     "updatedUser": "f6f22ba0a6f14cfcf4585d47",
     "affinity": 1172578,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -16145,8 +17636,8 @@
     "assetId": "607283585a9ce97ebc48e636",
     "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -16227,14 +17718,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "f6f22ba0a6f14cfcf4585d47",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "f6f22ba0a6f14cfcf4585d47",
     "affinity": 1333681,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -16334,7 +17873,8 @@
     "updatedUser": "f6f22ba0a6f14cfcf4585d47",
     "affinity": 1316749,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -16400,14 +17940,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "7313a9379f60200cba7b9f71",
     "affinity": 978663,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -16473,14 +18014,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "7313a9379f60200cba7b9f71",
     "affinity": 989702,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -16548,14 +18090,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "7313a9379f60200cba7b9f71",
     "affinity": 985801,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -16623,14 +18166,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "7313a9379f60200cba7b9f71",
     "affinity": 991694,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -16640,8 +18184,8 @@
     "assetId": "07bf581060f02dea6a38ddff",
     "ownerUserId": "7313a9379f60200cba7b9f71",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -16722,14 +18266,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "7313a9379f60200cba7b9f71",
     "affinity": 1152797,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -16822,14 +18401,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "7313a9379f60200cba7b9f71",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "7313a9379f60200cba7b9f71",
     "affinity": 1135865,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -16895,14 +18475,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "eac11b0685f9799953a40dd4",
     "affinity": 986485,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -16968,14 +18549,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "eac11b0685f9799953a40dd4",
     "affinity": 997524,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -17043,14 +18625,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "eac11b0685f9799953a40dd4",
     "affinity": 993623,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -17118,14 +18701,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "eac11b0685f9799953a40dd4",
     "affinity": 999516,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -17135,8 +18719,8 @@
     "assetId": "5539911338c3a6a07f594417",
     "ownerUserId": "eac11b0685f9799953a40dd4",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Boston",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -17217,14 +18801,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "eac11b0685f9799953a40dd4",
     "affinity": 1160619,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -17317,14 +18943,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "eac11b0685f9799953a40dd4",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "eac11b0685f9799953a40dd4",
     "affinity": 1143687,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -17397,7 +19024,8 @@
     "updatedUser": "0216b1ceb256d6f2c89073b8",
     "affinity": 1086661,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -17470,7 +19098,8 @@
     "updatedUser": "0216b1ceb256d6f2c89073b8",
     "affinity": 1097700,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -17545,7 +19174,8 @@
     "updatedUser": "0216b1ceb256d6f2c89073b8",
     "affinity": 1093799,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -17620,7 +19250,8 @@
     "updatedUser": "0216b1ceb256d6f2c89073b8",
     "affinity": 1099692,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -17630,8 +19261,8 @@
     "assetId": "cbed8894bbf2f93276f550eb",
     "ownerUserId": "0216b1ceb256d6f2c89073b8",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Miami",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -17712,14 +19343,62 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "0216b1ceb256d6f2c89073b8",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "0216b1ceb256d6f2c89073b8",
     "affinity": 1260795,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 0,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 0,
+      "maxPrice": 0,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -17819,7 +19498,8 @@
     "updatedUser": "0216b1ceb256d6f2c89073b8",
     "affinity": 1243863,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -17885,14 +19565,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "2d520f3c98b0440c1556f4af",
     "affinity": 1015402,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -17958,14 +19639,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "2d520f3c98b0440c1556f4af",
     "affinity": 1026441,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -18033,14 +19715,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "2d520f3c98b0440c1556f4af",
     "affinity": 1022540,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -18108,14 +19791,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "2d520f3c98b0440c1556f4af",
     "affinity": 1028433,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -18125,8 +19809,8 @@
     "assetId": "32aabd7dd821b58799a439e6",
     "ownerUserId": "2d520f3c98b0440c1556f4af",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Summit Transfer Sedan",
+    "subtitle": "Toyota Corolla · Hybrid",
     "city": "Denver",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -18207,14 +19891,49 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "2d520f3c98b0440c1556f4af",
     "affinity": 1189536,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 1,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 12,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 12,
+      "maxPrice": 12,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -18307,14 +20026,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "2d520f3c98b0440c1556f4af",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "2d520f3c98b0440c1556f4af",
     "affinity": 1172604,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -18380,14 +20100,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "fcad6954169063f106a7a240",
     "affinity": 918389,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -18453,14 +20174,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "fcad6954169063f106a7a240",
     "affinity": 929428,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -18528,14 +20250,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "fcad6954169063f106a7a240",
     "affinity": 925527,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -18603,14 +20326,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "fcad6954169063f106a7a240",
     "affinity": 931420,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -18620,8 +20344,8 @@
     "assetId": "1a0edec4d78c1eea281d6942",
     "ownerUserId": "fcad6954169063f106a7a240",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Station Pickup Sedan",
+    "subtitle": "Škoda Octavia · Automatic",
     "city": "Chicago",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -18702,14 +20426,56 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "fcad6954169063f106a7a240",
     "affinity": 1092523,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 2,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 20,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 20,
+      "maxPrice": 20,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -18802,14 +20568,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "fcad6954169063f106a7a240",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "fcad6954169063f106a7a240",
     "affinity": 1075591,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -18882,7 +20649,8 @@
     "updatedUser": "eb1ca0b761885bb0763e2929",
     "affinity": 863112,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -18955,7 +20723,8 @@
     "updatedUser": "eb1ca0b761885bb0763e2929",
     "affinity": 874151,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -19030,7 +20799,8 @@
     "updatedUser": "eb1ca0b761885bb0763e2929",
     "affinity": 870250,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -19105,7 +20875,8 @@
     "updatedUser": "eb1ca0b761885bb0763e2929",
     "affinity": 876143,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -19115,8 +20886,8 @@
     "assetId": "11d65abc7188bfcd778b546b",
     "ownerUserId": "eb1ca0b761885bb0763e2929",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "City Event Sedan",
+    "subtitle": "Honda Civic · Automatic",
     "city": "Phoenix",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -19204,7 +20975,55 @@
     "updatedUser": "eb1ca0b761885bb0763e2929",
     "affinity": 1037246,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 3,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 28,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 28,
+      "maxPrice": 28,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": true,
+    "policies": [
+      {
+        "id": "pickup-return",
+        "title": "Pickup and return",
+        "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
+        "required": true
+      },
+      {
+        "id": "vehicle-care",
+        "title": "Vehicle care",
+        "description": "Report damage immediately and leave the vehicle clean for the next booking.",
+        "required": true
+      }
+    ]
   },
   {
     "_id": {
@@ -19304,7 +21123,8 @@
     "updatedUser": "eb1ca0b761885bb0763e2929",
     "affinity": 1020314,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -19370,14 +21190,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "d04cd419e735549e3f312977",
     "affinity": 937497,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -19443,14 +21264,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "d04cd419e735549e3f312977",
     "affinity": 948536,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -19518,14 +21340,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "d04cd419e735549e3f312977",
     "affinity": 944635,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -19593,14 +21416,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "d04cd419e735549e3f312977",
     "affinity": 950528,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -19610,8 +21434,8 @@
     "assetId": "b25dee76250d78b0057e8c69",
     "ownerUserId": "d04cd419e735549e3f312977",
     "type": "Transport",
-    "title": "Airport Shuttle Hatchback",
-    "subtitle": "Volkswagen Golf · Manual",
+    "title": "Evening Transfer Sedan",
+    "subtitle": "Volkswagen Passat · Manual",
     "city": "Nashville",
     "capacityTotal": 4,
     "details": "Airport run before midnight, fuel split evenly.",
@@ -19699,7 +21523,42 @@
     "updatedUser": "d04cd419e735549e3f312977",
     "affinity": 1111631,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Sedan",
+    "quantity": 4,
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 45,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_booking",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 45,
+      "maxPrice": 45,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [],
+      "timeRulesEnabled": false,
+      "timeRules": [],
+      "cancellationPolicy": {
+        "enabled": false,
+        "rules": []
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": null,
+        "vipPrice": null,
+        "inviteOnlyDiscountPercent": null,
+        "promoCodes": [],
+        "soldOutLabel": "Unavailable"
+      }
+    },
+    "policiesEnabled": false,
+    "policies": []
   },
   {
     "_id": {
@@ -19792,14 +21651,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "d04cd419e735549e3f312977",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "d04cd419e735549e3f312977",
     "affinity": 1094699,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -19865,14 +21725,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "d182041b8a54132d5168034f",
     "affinity": 1002698,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -19938,14 +21799,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "d182041b8a54132d5168034f",
     "affinity": 1013737,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -20013,14 +21875,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "d182041b8a54132d5168034f",
     "affinity": 1009836,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -20088,14 +21951,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "d182041b8a54132d5168034f",
     "affinity": 1015729,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -20187,14 +22051,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "d182041b8a54132d5168034f",
     "affinity": 1176832,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -20287,14 +22152,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "d182041b8a54132d5168034f",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "d182041b8a54132d5168034f",
     "affinity": 1159900,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -20367,7 +22233,8 @@
     "updatedUser": "7822c5f99eff99d63abe8933",
     "affinity": 751551,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -20440,7 +22307,8 @@
     "updatedUser": "7822c5f99eff99d63abe8933",
     "affinity": 762590,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -20515,7 +22383,8 @@
     "updatedUser": "7822c5f99eff99d63abe8933",
     "affinity": 758689,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -20590,7 +22459,8 @@
     "updatedUser": "7822c5f99eff99d63abe8933",
     "affinity": 764582,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -20689,7 +22559,8 @@
     "updatedUser": "7822c5f99eff99d63abe8933",
     "affinity": 925685,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -20789,7 +22660,8 @@
     "updatedUser": "7822c5f99eff99d63abe8933",
     "affinity": 908753,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -20855,14 +22727,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "1d7d3545ba5e0f1d63918589",
     "affinity": 989630,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -20928,14 +22801,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "1d7d3545ba5e0f1d63918589",
     "affinity": 1000669,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -21003,14 +22877,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "1d7d3545ba5e0f1d63918589",
     "affinity": 996768,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -21078,14 +22953,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "1d7d3545ba5e0f1d63918589",
     "affinity": 1002661,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -21177,14 +23053,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "1d7d3545ba5e0f1d63918589",
     "affinity": 1163764,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -21277,14 +23154,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "1d7d3545ba5e0f1d63918589",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "1d7d3545ba5e0f1d63918589",
     "affinity": 1146832,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -21350,14 +23228,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
     "affinity": 849526,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -21423,14 +23302,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
     "affinity": 860565,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -21498,14 +23378,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
     "affinity": 856664,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -21573,14 +23454,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
     "affinity": 862557,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -21679,7 +23561,8 @@
     "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
     "affinity": 1023660,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -21772,14 +23655,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "cdd937e0adcbd1a5e38f3ceb",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "cdd937e0adcbd1a5e38f3ceb",
     "affinity": 1006728,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -21852,7 +23736,8 @@
     "updatedUser": "f4b2ebd8f56628ab7df58221",
     "affinity": 1125268,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -21925,7 +23810,8 @@
     "updatedUser": "f4b2ebd8f56628ab7df58221",
     "affinity": 1136307,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -22000,7 +23886,8 @@
     "updatedUser": "f4b2ebd8f56628ab7df58221",
     "affinity": 1132406,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -22075,7 +23962,8 @@
     "updatedUser": "f4b2ebd8f56628ab7df58221",
     "affinity": 1138299,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -22167,14 +24055,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "f4b2ebd8f56628ab7df58221",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "f4b2ebd8f56628ab7df58221",
     "affinity": 1299402,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -22274,7 +24163,8 @@
     "updatedUser": "f4b2ebd8f56628ab7df58221",
     "affinity": 1282470,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -22340,14 +24230,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "178e8d0cbe164fa3fede5884",
     "affinity": 960901,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -22413,14 +24304,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "178e8d0cbe164fa3fede5884",
     "affinity": 971940,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -22488,14 +24380,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "178e8d0cbe164fa3fede5884",
     "affinity": 968039,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -22563,14 +24456,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "178e8d0cbe164fa3fede5884",
     "affinity": 973932,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -22669,7 +24563,8 @@
     "updatedUser": "178e8d0cbe164fa3fede5884",
     "affinity": 1135035,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -22762,14 +24657,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "178e8d0cbe164fa3fede5884",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "178e8d0cbe164fa3fede5884",
     "affinity": 1118103,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -22835,14 +24731,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
     "affinity": 919587,
     "boost": 1120.25,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -22908,14 +24805,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
     "affinity": 930626,
     "boost": 1134.25,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -22983,14 +24881,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
     "affinity": 926725,
     "boost": 1106.25,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -23058,14 +24957,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
     "affinity": 932618,
     "boost": 1120.25,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -23157,14 +25057,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
     "affinity": 1093721,
     "boost": 1126.25,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -23257,14 +25158,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "1b1c70be2349b3359a8f6f94",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "1b1c70be2349b3359a8f6f94",
     "affinity": 1076789,
     "boost": 1126.25,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -23337,7 +25239,8 @@
     "updatedUser": "9f3b3f085e23af6c89dbc432",
     "affinity": 1119695,
     "boost": 981.5,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -23410,7 +25313,8 @@
     "updatedUser": "9f3b3f085e23af6c89dbc432",
     "affinity": 1130734,
     "boost": 995.5,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -23485,7 +25389,8 @@
     "updatedUser": "9f3b3f085e23af6c89dbc432",
     "affinity": 1126833,
     "boost": 967.5,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -23560,7 +25465,8 @@
     "updatedUser": "9f3b3f085e23af6c89dbc432",
     "affinity": 1132726,
     "boost": 981.5,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -23659,7 +25565,8 @@
     "updatedUser": "9f3b3f085e23af6c89dbc432",
     "affinity": 1293829,
     "boost": 987.5,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -23759,7 +25666,8 @@
     "updatedUser": "9f3b3f085e23af6c89dbc432",
     "affinity": 1276897,
     "boost": 987.5,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -23825,14 +25733,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "b29df68956f3fe15e04558de",
     "affinity": 985107,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -23898,14 +25807,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "b29df68956f3fe15e04558de",
     "affinity": 996146,
     "boost": 73,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -23973,14 +25883,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "b29df68956f3fe15e04558de",
     "affinity": 992245,
     "boost": 45,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -24048,14 +25959,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "b29df68956f3fe15e04558de",
     "affinity": 998138,
     "boost": 59,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -24147,14 +26059,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:01:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2026-02-01T12:01:00.000Z",
     "updatedUser": "b29df68956f3fe15e04558de",
     "affinity": 1159241,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -24247,14 +26160,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Public",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "b29df68956f3fe15e04558de",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "b29df68956f3fe15e04558de",
     "affinity": 1142309,
     "boost": 65,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   },
   {
     "_id": {
@@ -24320,14 +26234,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:05:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-02-01T12:05:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "affinity": 983876,
     "boost": 1447.75,
-    "status": "A"
+    "status": "A",
+    "category": "Games"
   },
   {
     "_id": {
@@ -24393,14 +26308,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:04:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-02-01T12:04:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "affinity": 994915,
     "boost": 1461.75,
-    "status": "A"
+    "status": "A",
+    "category": "Camping"
   },
   {
     "_id": {
@@ -24468,14 +26384,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:03:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-02-01T12:03:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "affinity": 991014,
     "boost": 1433.75,
-    "status": "A"
+    "status": "A",
+    "category": "Room"
   },
   {
     "_id": {
@@ -24543,14 +26460,15 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:02:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-02-01T12:02:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "affinity": 996907,
     "boost": 1447.75,
-    "status": "A"
+    "status": "A",
+    "category": "Apartment"
   },
   {
     "_id": {
@@ -24649,7 +26567,8 @@
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "affinity": 1158010,
     "boost": 1453.75,
-    "status": "A"
+    "status": "A",
+    "category": "Shuttle"
   },
   {
     "_id": {
@@ -24742,13 +26661,14 @@
         }
       }
     ],
-    "visibility": "Invitation only",
+    "visibility": "Friends only",
     "createdDate": "2026-02-01T12:00:00.000Z",
     "createdUser": "bf057de7c586eede7e84bdc7",
     "updatedDate": "2026-02-01T12:00:00.000Z",
     "updatedUser": "bf057de7c586eede7e84bdc7",
     "affinity": 1141078,
     "boost": 1453.75,
-    "status": "A"
+    "status": "A",
+    "category": "SUV"
   }
 ]
