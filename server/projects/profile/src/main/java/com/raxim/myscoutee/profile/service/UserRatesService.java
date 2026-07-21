@@ -513,6 +513,9 @@ public class UserRatesService {
                 secondaryRelatedUserId));
         document.setBridgeCount(resolveStoredBridgeCount(storedSocialContext, rate.bridgeCount()));
         document.setMet(met);
+        if (rate.distanceMetersExact() != null) {
+            document.setDistanceMetersExact(Math.max(0, rate.distanceMetersExact()));
+        }
         document.setEventName(met
                 ? (StringUtils.hasText(requestedEventName) ? requestedEventName : preservedEventName)
                 : null);
@@ -559,7 +562,7 @@ public class UserRatesService {
         String eventName = StringUtils.hasText(normalizeOptionalText(record.getEventName()))
                 ? normalizeOptionalText(record.getEventName())
                 : ("met".equals(direction) ? "Met" : "Rate");
-        RateDistance distance = resolveActivityDistance(currentUser, record.getOwnerLocation());
+        RateDistance distance = resolveActivityDistance(currentUser, record);
         String socialContext = resolvePairSocialContext(normalizeMode(record.getMode()), record.getSocialContext());
         String bridgeUserId = resolvePairBridgeUserId(record, resolvedCurrentUserId, socialContext);
         Integer bridgeCount = resolvePairBridgeCount(socialContext);
@@ -628,27 +631,25 @@ public class UserRatesService {
                 ? Comparator.comparingLong(RatePageProjection::dayStartMs)
                 : Comparator.comparingLong(RatePageProjection::dayStartMs).reversed();
         return dayComparator
-                .thenComparing(ratePageInnerComparator(effectiveInnerOrder));
+                .thenComparing(ratePageInnerComparator(effectiveInnerOrder))
+                .thenComparing(projection -> safeText(projection.item().id()));
     }
 
     private Comparator<RatePageProjection> ratePageInnerComparator(String innerOrder) {
         if ("past".equals(innerOrder)) {
             return Comparator
                     .comparingLong(RatePageProjection::happenedAtMs)
-                    .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder())
-                    .thenComparing(projection -> safeText(projection.item().id()));
+                    .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder());
         }
         if ("relevant".equals(innerOrder)) {
             return Comparator
                     .comparingDouble(RatePageProjection::relevanceScore)
                     .reversed()
-                    .thenComparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder())
-                    .thenComparing(projection -> safeText(projection.item().id()));
+                    .thenComparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder());
         }
         return Comparator
                 .comparing(RatePageProjection::happenedAtMs, Comparator.reverseOrder())
-                .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder())
-                .thenComparing(projection -> safeText(projection.item().id()));
+                .thenComparing(RatePageProjection::relevanceScore, Comparator.reverseOrder());
     }
 
     private boolean isWithinRange(RateMenuItemDto item, long rangeStartMs, long rangeEndMs) {
@@ -1151,12 +1152,15 @@ public class UserRatesService {
         return new UserRate.LocationSnapshot(latitude, longitude);
     }
 
-    private RateDistance resolveActivityDistance(Users currentUser, UserRate.LocationSnapshot ownerLocation) {
+    private RateDistance resolveActivityDistance(Users currentUser, UserRate record) {
+        if (record != null && record.getDistanceMetersExact() != null) {
+            return new RateDistance(Math.max(0, record.getDistanceMetersExact()));
+        }
         UserRate.LocationSnapshot origin = resolveCurrentUserLocation(currentUser);
         if (origin == null) {
             return ZERO_DISTANCE;
         }
-        return distanceBetween(origin, ownerLocation);
+        return distanceBetween(origin, record == null ? null : record.getOwnerLocation());
     }
 
     private UserRate.LocationSnapshot resolveCurrentUserLocation(Users currentUser) {
