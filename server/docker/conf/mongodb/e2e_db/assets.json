@@ -25573,6 +25573,31 @@
     ],
     "requests": [
       {
+        "_id": "manual:f507987dfeb38ba10df0010c:e930f7a058f4ab02edd44ff7",
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "name": "Nagy Eszter",
+        "initials": "NE",
+        "gender": "woman",
+        "status": "accepted",
+        "note": "Reserved and assigned by the owner.",
+        "requestKind": "manual",
+        "requestedAtIso": "2026-07-22T17:53:28.884Z",
+        "booking": {
+          "eventId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1",
+          "eventTitle": "Seattle Wildflower Meetup NE04X",
+          "subEventId": "f507987dfeb38ba10df0010c",
+          "subEventTitle": "Kickoff",
+          "slotKey": "f507987dfeb38ba10df0010c",
+          "slotLabel": "Kickoff",
+          "timeframe": "Jul 22 · 3:30 PM - 4:15 PM",
+          "startAtIso": "2026-07-22T13:30:00Z",
+          "endAtIso": "2026-07-22T14:15:00Z",
+          "quantity": 1,
+          "totalAmount": 0,
+          "acceptedPolicyIds": []
+        }
+      },
+      {
         "_id": {
           "$oid": "f6f22ba0a6f14cfcf4585d47"
         },

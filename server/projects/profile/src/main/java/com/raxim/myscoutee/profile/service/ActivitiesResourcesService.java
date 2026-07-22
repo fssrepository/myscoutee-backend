@@ -698,12 +698,27 @@ public class ActivitiesResourcesService {
                 accepted += supplyContributionQuantity(record, assetId);
                 continue;
             }
+            List<AssetMemberRequestDto> requests = detail == null ? List.of() : detail.requests();
             int[] requestCounts = assetRequestCounts(
-                    detail == null ? List.of() : detail.requests(),
+                    requests,
                     record == null ? null : record.getOwnerId(),
                     record == null ? null : record.getSubEventId());
             accepted += requestCounts[0];
             pending += requestCounts[1];
+            String managerUserId = normalizeId(settings == null ? null : settings.addedByUserId());
+            if (StringUtils.hasText(managerUserId)
+                    && detail != null
+                    && !hasScopedAssetRequestForUser(
+                            requests,
+                            record == null ? null : record.getOwnerId(),
+                            record == null ? null : record.getSubEventId(),
+                            managerUserId)) {
+                if (managerUserId.equals(normalizeId(detail.ownerUserId()))) {
+                    accepted += 1;
+                } else {
+                    pending += 1;
+                }
+            }
         }
         return new SubEventResourceMetricDto(
                 accepted,
@@ -752,6 +767,31 @@ public class ActivitiesResourcesService {
                 (int) statusByIdentity.values().stream().filter("accepted"::equals).count(),
                 (int) statusByIdentity.values().stream().filter("pending"::equals).count()
         };
+    }
+
+    private boolean hasScopedAssetRequestForUser(
+            List<AssetMemberRequestDto> requests,
+            String ownerId,
+            String subEventId,
+            String userId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        return (requests == null ? List.<AssetMemberRequestDto>of() : requests).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> request.booking() != null)
+                .filter(request -> Objects.equals(
+                        normalizedOwnerId,
+                        normalizeId(request.booking().eventId())))
+                .filter(request -> Objects.equals(
+                        normalizedSubEventId,
+                        normalizeId(request.booking().subEventId())))
+                .filter(request -> Objects.equals(normalizedUserId, normalizeId(request.userId())))
+                .map(request -> safeText(request.status()).toLowerCase(Locale.ROOT))
+                .anyMatch(status -> "accepted".equals(status) || "pending".equals(status));
     }
 
     private Map<String, SubEventResourceMetricDto> persistGroupRuntimeResourceMetrics(

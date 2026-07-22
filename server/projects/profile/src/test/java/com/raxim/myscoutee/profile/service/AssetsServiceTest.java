@@ -90,12 +90,13 @@ class AssetsServiceTest {
                 mock(AccessControlService.class),
                 mock(UserActivityCountersService.class));
 
-        service.syncScopedRequestsFromMemberEntries(
+        String assetOwnerUserId = service.syncScopedRequestsFromMemberEntries(
                 "asset-1",
                 "event-1:subevent-1:group-a",
                 "subevent-1",
                 List.of(invited));
 
+        assertThat(assetOwnerUserId).isEqualTo("u1");
         ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
         verify(assetsRepository).save(savedAsset.capture());
         assertThat(savedAsset.getValue().getRequests())
