@@ -42,6 +42,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQuery
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsFilterRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotOccurrenceDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
@@ -452,6 +453,37 @@ class ActivitiesEventsServiceTest {
             assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
             assertThat(record.getPublished()).isFalse();
         });
+    }
+
+    @Test
+    void eventDetailUsesCanonicalEditorDocumentInsteadOfRicherMembershipSnapshot() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+
+        ActivityEvent canonical = event("event-1", "host", 0d);
+        canonical.setSubEventDefinitions(List.of(new SubEventDefinitionDto(
+                "stage-1", "Opening round", "Saved definition", "After previous",
+                0, 30, "Arena", 2, 8, "Score", 1, false, null, 2, 8, null)));
+        canonical.setSourceLink("https://example.test/event");
+        ActivityEvent scoped = event("event-1", "host", 0d);
+        scoped.setId("event-1-scoped-document");
+        scoped.setOwnerUserId("member-1");
+        scoped.setAcceptedMembers(99);
+        scoped.setSubEventDefinitions(List.of());
+        scoped.setSourceLink(null);
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
+                .thenReturn(List.of(scoped, canonical));
+
+        EventDetailDto result = service.loadEventDetailById("host", "event-1");
+
+        assertThat(result).isNotNull();
+        assertThat(result.sourceLink()).isEqualTo("https://example.test/event");
+        assertThat(result.subEventDefinitions())
+                .extracting(SubEventDefinitionDto::id)
+                .containsExactly("stage-1");
     }
 
     @Test

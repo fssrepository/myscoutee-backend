@@ -788,7 +788,7 @@ public class ActivitiesEventsService {
         if (viewer == null || !StringUtils.hasText(sourceId)) {
             return null;
         }
-        ActivityEvent preferred = findPreferredEventRecord(sourceId);
+        ActivityEvent preferred = findPreferredEventDetailRecord(sourceId);
         return preferred == null
                 ? null
                 : activityEventDetailMapper.toDto(preferred, new ActivityEventDetailMapper.MappingContext(
@@ -5519,6 +5519,42 @@ public class ActivitiesEventsService {
         return computePreferredEventRecords(loadEventDocumentsBySourceIds(List.of(normalizedSourceId))).stream()
                 .findFirst()
                 .orElse(null);
+    }
+
+    private ActivityEvent findPreferredEventDetailRecord(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return null;
+        }
+        ActivityEvent best = null;
+        int bestScore = Integer.MIN_VALUE;
+        for (ActivityEvent record : loadEventDocumentsBySourceIds(List.of(normalizedSourceId))) {
+            int score = eventDetailRecordScore(record);
+            if (best == null || score > bestScore) {
+                best = record;
+                bestScore = score;
+            }
+        }
+        return best;
+    }
+
+    private int eventDetailRecordScore(ActivityEvent record) {
+        if (record == null) {
+            return Integer.MIN_VALUE;
+        }
+        int score = 0;
+        // The creator-owned document is the canonical editor document. Participant
+        // and member-scoped copies intentionally contain only list/runtime state.
+        if (normalizeId(record.getOwnerUserId()).equals(normalizeId(record.getCreatorUserId()))) {
+            score += 1_000_000;
+        }
+        score += record.getSubEventDefinitions() == null ? 0 : record.getSubEventDefinitions().size() * 10_000;
+        score += record.getSlotTemplates() == null ? 0 : record.getSlotTemplates().size() * 1_000;
+        score += record.getPolicies() == null ? 0 : record.getPolicies().size() * 100;
+        score += record.getPricing() == null ? 0 : 50;
+        score += StringUtils.hasText(record.getSourceLink()) ? 10 : 0;
+        score += StringUtils.hasText(record.getBlindMode()) ? 5 : 0;
+        return score;
     }
 
     private List<ActivityEvent> loadEventDocumentsBySourceIds(Collection<String> sourceIds) {
