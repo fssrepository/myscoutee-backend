@@ -17,8 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
@@ -60,6 +62,30 @@ class ActivitiesEventLeaderboardServiceTest {
                 .containsExactly("sub-1:group:1", "sub-1:group:2");
 
         verify(activityEventsRepository, never()).saveAll(any());
+    }
+
+    @Test
+    void tournamentGroupsDeriveStagesAndGroupsFromEditorDefinitions() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        record.setSubEvents(List.of());
+        record.setSubEventDefinitions(List.of(new SubEventDefinitionDto(
+                "stage-1", "Opening round", "Saved definition", "After previous",
+                0, 30, "Arena", 2, 4, "Score", 1, false, null, 2, 8, null)));
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+
+        EventTournamentGroupsStateDto state = service.queryTournamentGroups("host", "event-1");
+
+        assertThat(state.stages()).singleElement().satisfies(stage -> {
+            assertThat(stage.id()).isEqualTo("stage-1");
+            assertThat(stage.groups()).hasSize(2);
+        });
     }
 
     @Test

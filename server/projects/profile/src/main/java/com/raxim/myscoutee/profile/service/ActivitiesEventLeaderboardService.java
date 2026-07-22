@@ -380,9 +380,7 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private List<EventTournamentStageDto> tournamentStages(String ownerId, ActivityEvent event) {
-        List<SubEventItem> subEvents = event == null || event.getSubEvents() == null
-                ? List.of()
-                : event.getSubEvents();
+        List<SubEventItem> subEvents = runtimeStageSequence(event);
         List<EventTournamentStageDto> stages = new ArrayList<>();
         for (int index = 0; index < subEvents.size(); index += 1) {
             SubEventItem subEvent = subEvents.get(index);

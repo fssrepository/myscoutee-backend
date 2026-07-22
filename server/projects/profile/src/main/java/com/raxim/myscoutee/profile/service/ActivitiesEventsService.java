@@ -2068,7 +2068,7 @@ public class ActivitiesEventsService {
 
         List<SubEventItem> preferredSubEvents = StringUtils.hasText(slotSourceId)
                 ? stageActionSlotSubEvents(sourceId, slotSourceId, preferred, request)
-                : cloneSubEvents(preferred.getSubEvents());
+                : cloneSubEvents(runtimeStageSequence(preferred));
         int preferredStageIndex = resolveStageIndex(preferredSubEvents, request.subEventId(), request.subEventIndex());
         if (preferredStageIndex < 0 || preferredStageIndex >= preferredSubEvents.size()) {
             return null;
@@ -2121,7 +2121,20 @@ public class ActivitiesEventsService {
         }
 
         if (updated.isEmpty()) {
-            return toStageActionResult(sourceId, preferredStage, preferredStageIndex, actionTarget.action(), preferred.getAutoInviter());
+            SubEventItem savedStage = copySubEventWithStageStatus(
+                    preferredStage,
+                    actionTarget.nextStatus(),
+                    actionTarget.reason(),
+                    nowIso,
+                    STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? nowIso : null,
+                    STAGE_STATUS_FINALIZED.equals(actionTarget.nextStatus()) ? viewer.userId() : null);
+            saveSubEventStageRuntime(sourceId, preferred, savedStage, viewer.userId());
+            return toStageActionResult(
+                    sourceId,
+                    savedStage,
+                    preferredStageIndex,
+                    actionTarget.action(),
+                    STAGE_ACTION_START.equals(actionTarget.action()) ? Boolean.FALSE : preferred.getAutoInviter());
         }
 
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
