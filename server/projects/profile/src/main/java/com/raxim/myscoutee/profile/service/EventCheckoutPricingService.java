@@ -270,7 +270,7 @@ public class EventCheckoutPricingService {
                 slot,
                 slotTemplateId,
                 StringUtils.hasText(slotTemplateId) ? "base:" + slotTemplateId : "base",
-                StringUtils.hasText(slotTemplateId) ? "Slot base price" : "Base price");
+                StringUtils.hasText(slotTemplateId) ? "pricing.slot.base.price" : "pricing.base.price");
         pricing = applyPromoCodes(pricing, parent.getPricing(), appliedPromoCodes);
         EventCheckoutBasketItemDto item = canonicalMainItem(
                 request,
@@ -301,7 +301,7 @@ public class EventCheckoutPricingService {
                 mainQuote.slot(),
                 null,
                 "subevent:" + optionalId + ":base",
-                firstText(definition.name(), "Optional sub event"));
+                firstText(definition.name(), "event.checkout.optional.sub.event"));
         pricing = finishRounding(pricing, definition.pricing(), "rounding");
         if (definition.pricing() == null) {
             pricing = new PricingSnapshot(pricing.amount(), fallbackCurrency, pricing.rows());
@@ -437,7 +437,7 @@ public class EventCheckoutPricingService {
         List<EventCheckoutPricingSummaryRowDto> rows = new ArrayList<>();
         rows.add(new EventCheckoutPricingSummaryRowDto(
                 firstText(baseKey, "base"),
-                firstText(baseLabel, "Base price"),
+                firstText(baseLabel, "pricing.base.price"),
                 null,
                 roundMoney(basePrice),
                 currency,
@@ -463,7 +463,7 @@ public class EventCheckoutPricingService {
                 nextPrice = applyAction(nextPrice, rule.action());
                 rows.add(new EventCheckoutPricingSummaryRowDto(
                         "demand:" + firstText(rule.id(), "rule"),
-                        "Demand pricing",
+                        "pricing.demand.adjustment",
                         describeAction(rule.action()),
                         roundMoney(nextPrice - previous),
                         currency,
@@ -482,7 +482,7 @@ public class EventCheckoutPricingService {
                 nextPrice = applyAction(nextPrice, rule.action());
                 rows.add(new EventCheckoutPricingSummaryRowDto(
                         "time:" + firstText(rule.id(), "rule"),
-                        "Time pricing",
+                        "pricing.time.adjustment",
                         describeAction(rule.action()),
                         roundMoney(nextPrice - previous),
                         currency,
@@ -494,7 +494,7 @@ public class EventCheckoutPricingService {
             nextPrice = Math.max(Math.max(0d, safeDouble(pricing.minPrice())), nextPrice);
             if (nextPrice != previous) {
                 rows.add(new EventCheckoutPricingSummaryRowDto(
-                        "min-price", "Minimum price", null, roundMoney(nextPrice - previous), currency, 1));
+                        "min-price", "pricing.minimum", null, roundMoney(nextPrice - previous), currency, 1));
             }
         }
         if (pricing.maxPrice() != null) {
@@ -502,7 +502,7 @@ public class EventCheckoutPricingService {
             nextPrice = Math.min(Math.max(0d, safeDouble(pricing.maxPrice())), nextPrice);
             if (nextPrice != previous) {
                 rows.add(new EventCheckoutPricingSummaryRowDto(
-                        "max-price", "Maximum price", null, roundMoney(nextPrice - previous), currency, 1));
+                        "max-price", "pricing.maximum", null, roundMoney(nextPrice - previous), currency, 1));
             }
         }
 
@@ -532,7 +532,7 @@ public class EventCheckoutPricingService {
             nextPrice = applyAction(nextPrice, promo.action());
             rows.add(new EventCheckoutPricingSummaryRowDto(
                     "promo:" + firstText(promo.id(), code),
-                    "Promo code " + code,
+                    "pricing.promo.code",
                     describeAction(promo.action()),
                     roundMoney(nextPrice - previous),
                     pricing.currency(),
@@ -588,7 +588,7 @@ public class EventCheckoutPricingService {
         List<EventCheckoutPricingSummaryRowDto> rows = new ArrayList<>(pricing.rows());
         rows.add(new EventCheckoutPricingSummaryRowDto(
                 firstText(rowKey, "rounding"),
-                "Rounding",
+                "pricing.rounding",
                 null,
                 roundMoney(roundedPrice - pricing.amount()),
                 pricing.currency(),
@@ -818,7 +818,7 @@ public class EventCheckoutPricingService {
     private String describeAction(PricingActionDto action) {
         double value = action == null ? 0d : Math.max(0d, safeDouble(action.value()));
         return switch (safeText(action == null ? null : action.kind())) {
-            case "set_exact_price" -> "Set to " + roundMoney(value);
+            case "set_exact_price" -> "= " + roundMoney(value);
             case "increase_amount" -> "+" + roundMoney(value);
             case "decrease_amount" -> "-" + roundMoney(value);
             case "decrease_percent" -> "-" + roundMoney(value) + "%";
