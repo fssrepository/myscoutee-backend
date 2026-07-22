@@ -18,6 +18,9 @@ and show slot manager or similar)
 6) event feedback does not list past event to maek feedback
 7) ticket has one red counter badge but the list is empty
 8) asset assignment waits for admin approval
+9) auto approve for event owner? when someone has been invited for asset,
+we need to check how to show red counter, as it's hardly visible, and on event where to really show it
+(probably on active events we need to show on the three dot button a badge to show or show a dinamic menu option, not sure)
 
 pls. mirror the frontend local for http also (java backend), 
 as i saw that esemeny elhagyasa does not show the element 
