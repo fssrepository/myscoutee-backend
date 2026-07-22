@@ -315,6 +315,39 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void replaceScopedAssetMembersDelegatesOneScopedAssetMutationWithoutReplacingGlobalMembers() {
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        ActivityMemberEntryDto invited = entry("group-member");
+        when(assetsService.syncScopedRequestsFromMemberEntries(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                List.of(invited)))
+                .thenReturn("asset-owner");
+
+        service.replace(new ActivityMembersReplaceRequestDto(
+                new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                List.of(invited),
+                4,
+                "admin",
+                "event-1:subevent-1:group-a",
+                "subevent-1"));
+
+        verify(assetsService).syncScopedRequestsFromMemberEntries(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                List.of(invited));
+        verify(activitiesResourcesService).refreshGroupRuntimeResourceMetrics(
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                "asset-owner",
+                "admin");
+        verify(activityMembersRepository, never()).saveAll(anyList());
+        verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+    }
+
+    @Test
     void acceptPendingMemberUsesPolicyAndSavesAcceptedMember() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");

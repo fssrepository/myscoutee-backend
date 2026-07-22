@@ -76,6 +76,25 @@ public class ActivitiesResourcesService {
         return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
     }
 
+    public Map<String, SubEventResourceMetricDto> refreshGroupRuntimeResourceMetrics(
+            String ownerId,
+            String subEventId,
+            String assetOwnerUserId,
+            String actorUserId) {
+        ActivitySubEventResource record = resolveRecord(ownerId, subEventId, assetOwnerUserId);
+        if (record == null) {
+            return Map.of();
+        }
+        Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
+        ActivitySubEventResource filtered = filterToAssignableAssets(record, eligibleAssets.keySet());
+        Map<String, SubEventResourceMetricDto> metricsByType = resourceMetricsByType(filtered, eligibleAssets);
+        return persistGroupRuntimeResourceMetrics(
+                filtered,
+                metricsByType,
+                actorUserId,
+                Instant.now().toString());
+    }
+
     public SubEventSupplyContributionPageDto querySupplyContributions(
             String ownerId,
             String subEventId,

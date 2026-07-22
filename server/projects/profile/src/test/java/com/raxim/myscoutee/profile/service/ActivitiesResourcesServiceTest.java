@@ -39,7 +39,10 @@ import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
@@ -319,6 +322,73 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void refreshGroupRuntimeResourceMetricsPersistsCurrentScopedRequestCount() {
+        String runtimeOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        String groupId = "sub-1:group:1";
+        String groupOwnerId = runtimeOwnerId + ":sub-1:" + groupId;
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setRecordId("resource-1");
+        resource.setStatus("A");
+        resource.setOwnerId(groupOwnerId);
+        resource.setSubEventId("sub-1");
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of("Transport", List.of("owned-asset")));
+        resource.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of("owned-asset", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                        0, 8, 1, "u1", false, List.of()))));
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.of(resource));
+        AssetRequestBookingDto booking = new AssetRequestBookingDto(
+                groupOwnerId,
+                "Group A",
+                "sub-1",
+                "Kickoff",
+                null,
+                null,
+                null,
+                null,
+                null,
+                1,
+                null,
+                null,
+                List.of(),
+                null,
+                null);
+        AssetDetailDto ownedAsset = assetDetail(
+                "owned-asset",
+                "Transport",
+                "u1",
+                List.of(
+                        assetRequest("request-1", "member-1", booking),
+                        assetRequest("request-2", "member-2", booking)));
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("owned-asset")))
+                .thenReturn(Map.of("owned-asset", ownedAsset));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId(runtimeOwnerId, "sub-1"))
+                .thenReturn(Optional.empty());
+        when(activitySubEventStageRuntimeRepository.save(any(ActivitySubEventStageRuntime.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Map<String, SubEventResourceMetricDto> metrics = service.refreshGroupRuntimeResourceMetrics(
+                groupOwnerId,
+                "sub-1",
+                "u1",
+                "admin");
+
+        assertThat(metrics.get("Transport").pending()).isEqualTo(2);
+        ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventStageRuntime.class);
+        verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
+        assertThat(runtimeCaptor.getValue().getGroupResourceMetricsByAssetOwnerId()
+                .get(groupId)
+                .get("u1")
+                .get("Transport")
+                .pending()).isEqualTo(2);
+    }
+
+    @Test
     void replaceAllowsExplicitAssignmentGrantWithoutAcceptedEventParticipation() {
         authenticateAs("u1");
         when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "resource.assign", "event", "event-1", "allow")));
@@ -429,6 +499,14 @@ class ActivitiesResourcesServiceTest {
     }
 
     private AssetDetailDto assetDetail(String id, String type, String ownerUserId) {
+        return assetDetail(id, type, ownerUserId, List.of());
+    }
+
+    private AssetDetailDto assetDetail(
+            String id,
+            String type,
+            String ownerUserId,
+            List<AssetMemberRequestDto> requests) {
         return new AssetDetailDto(
                 id,
                 type,
@@ -449,8 +527,26 @@ class ActivitiesResourcesServiceTest {
                 "A",
                 ownerUserId,
                 "Other owner",
-                List.of(),
+                requests,
                 null,
+                List.of());
+    }
+
+    private AssetMemberRequestDto assetRequest(
+            String requestId,
+            String userId,
+            AssetRequestBookingDto booking) {
+        return new AssetMemberRequestDto(
+                requestId,
+                userId,
+                userId,
+                "M",
+                "unknown",
+                "pending",
+                "",
+                "borrow",
+                "2026-07-22T23:26:50Z",
+                booking,
                 List.of());
     }
 

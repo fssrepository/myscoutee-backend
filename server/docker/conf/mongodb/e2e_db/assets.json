@@ -25517,10 +25517,10 @@
         "_id": {
           "$oid": "9184901a15076d32ea8b626f"
         },
-        "userId": "9184901a15076d32ea8b626f",
-        "name": "Nora Hale",
-        "initials": "NH",
-        "gender": "woman",
+        "userId": "904ee3c526298f6921cde3f3",
+        "name": "Liam Reed",
+        "initials": "LR",
+        "gender": "man",
         "status": "pending",
         "note": "Waiting for event admin approval.",
         "requestKind": "borrow",
@@ -25576,9 +25576,9 @@
         "_id": {
           "$oid": "f6f22ba0a6f14cfcf4585d47"
         },
-        "userId": "f6f22ba0a6f14cfcf4585d47",
-        "name": "Ethan Rivera",
-        "initials": "ER",
+        "userId": "e904dad402b47dd2cdaa8bec",
+        "name": "Noah Baker",
+        "initials": "NB",
         "gender": "man",
         "status": "pending",
         "note": "Waiting for event admin approval.",

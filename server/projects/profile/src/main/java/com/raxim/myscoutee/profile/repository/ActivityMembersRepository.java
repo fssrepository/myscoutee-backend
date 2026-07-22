@@ -27,6 +27,13 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
             Collection<String> userIds,
             Pageable pageable);
 
+    Page<ActivityMember> findByOwnerTypeAndOwnerIdAndStatusAndUserIdNotIn(
+            String ownerType,
+            String ownerId,
+            String status,
+            Collection<String> userIds,
+            Pageable pageable);
+
     List<ActivityMember> findByOwnerTypeAndUserId(String ownerType, String userId);
 
     List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String ownerType, Collection<String> ownerIds);

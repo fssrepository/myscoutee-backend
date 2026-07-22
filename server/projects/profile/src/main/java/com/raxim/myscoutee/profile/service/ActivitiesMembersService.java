@@ -527,6 +527,25 @@ public class ActivitiesMembersService {
         }
 
         String actorUserId = resolveActorUserId(request.actorUserId());
+        String scopedEventId = normalizeId(request.eventId());
+        String scopedSubEventId = normalizeId(request.subEventId());
+        if (OWNER_TYPE_ASSET.equals(ownerType)
+                && StringUtils.hasText(scopedEventId)
+                && StringUtils.hasText(scopedSubEventId)) {
+            String assetOwnerUserId = assetsService.syncScopedRequestsFromMemberEntries(
+                    ownerId,
+                    scopedEventId,
+                    scopedSubEventId,
+                    safeMembers(request.members()));
+            if (StringUtils.hasText(assetOwnerUserId)) {
+                activitiesResourcesService.refreshGroupRuntimeResourceMetrics(
+                        scopedEventId,
+                        scopedSubEventId,
+                        assetOwnerUserId,
+                        actorUserId);
+            }
+            return;
+        }
         if (OWNER_TYPE_EVENT.equals(ownerType) && !accessControlService.canManageEventMembers(ownerId, actorUserId)) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,

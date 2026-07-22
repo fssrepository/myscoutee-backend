@@ -53,6 +53,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PolicyItemDto;
@@ -768,6 +769,142 @@ public class AssetsService {
         syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizeId(next.getAssetId()), ownerUserId);
         adminTelemetryService.record("asset.requests.changed", "assets", normalizeId(next.getAssetId()), ownerUserId);
+    }
+
+    public String syncScopedRequestsFromMemberEntries(
+            String assetId,
+            String eventId,
+            String subEventId,
+            List<ActivityMemberEntryDto> members) {
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+
+        Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
+        if (current == null) {
+            return null;
+        }
+        String ownerUserId = normalizeId(current.getOwnerUserId());
+        Map<String, ActivityMemberEntryDto> suppliedByUserId = new LinkedHashMap<>();
+        for (ActivityMemberEntryDto member : members == null ? List.<ActivityMemberEntryDto>of() : members) {
+            String memberUserId = normalizeId(member == null ? null : member.userId());
+            if (StringUtils.hasText(memberUserId) && !ownerUserId.equals(memberUserId)) {
+                suppliedByUserId.put(memberUserId, member);
+            }
+        }
+
+        AssetRequestBookingRecord scopedBooking = safeRequests(current.getRequests()).stream()
+                .filter(request -> isRequestInScope(request, normalizedEventId, normalizedSubEventId))
+                .map(AssetRequestRecord::booking)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .map(this::cloneRequestBooking)
+                .orElseGet(() -> minimalRequestBooking(normalizedEventId, normalizedSubEventId));
+        Set<String> retainedUserIds = new LinkedHashSet<>();
+        List<AssetRequestRecord> nextRequests = new ArrayList<>();
+        for (AssetRequestRecord existing : safeRequests(current.getRequests())) {
+            if (existing == null || !isRequestInScope(existing, normalizedEventId, normalizedSubEventId)) {
+                if (existing != null) {
+                    nextRequests.add(existing);
+                }
+                continue;
+            }
+            if ("manual".equals(normalizeAssetRequestKind(existing.requestKind()))) {
+                nextRequests.add(existing);
+                continue;
+            }
+            String requestUserId = normalizeId(existing.userId());
+            ActivityMemberEntryDto supplied = suppliedByUserId.get(requestUserId);
+            if (supplied == null || "deleted".equals(normalizeMemberStatus(supplied.status()))) {
+                continue;
+            }
+            retainedUserIds.add(requestUserId);
+            AssetRequestRecord updated = toScopedAssetRequest(supplied, existing, scopedBooking);
+            if (updated != null) {
+                nextRequests.add(updated);
+            }
+        }
+        for (Map.Entry<String, ActivityMemberEntryDto> entry : suppliedByUserId.entrySet()) {
+            if (retainedUserIds.contains(entry.getKey())
+                    || "deleted".equals(normalizeMemberStatus(entry.getValue().status()))) {
+                continue;
+            }
+            AssetRequestRecord added = toScopedAssetRequest(entry.getValue(), null, scopedBooking);
+            if (added != null) {
+                nextRequests.add(added);
+            }
+        }
+
+        Asset next = cloneAsset(current);
+        next.setRequests(deduplicateRequests(nextRequests));
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(ownerUserId);
+        next.setAffinity(resolveAssetAffinity(next, ownerUserId));
+        next.setBoost(resolveAssetBoost(next, ownerUserId));
+        assetsRepository.save(next);
+        syncAssetRequestProjection(current, next);
+        affinityRecomputeTaskService.enqueueAssetRequestsChanged(normalizedAssetId, ownerUserId);
+        adminTelemetryService.record("asset.requests.changed", "assets", normalizedAssetId, ownerUserId);
+        return ownerUserId;
+    }
+
+    private boolean isRequestInScope(AssetRequestRecord request, String eventId, String subEventId) {
+        AssetRequestBookingRecord booking = request == null ? null : request.booking();
+        return booking != null
+                && eventId.equals(normalizeId(booking.eventId()))
+                && subEventId.equals(normalizeId(booking.subEventId()));
+    }
+
+    private AssetRequestBookingRecord minimalRequestBooking(String eventId, String subEventId) {
+        return new AssetRequestBookingRecord(
+                eventId,
+                null,
+                subEventId,
+                null,
+                subEventId,
+                null,
+                null,
+                null,
+                null,
+                1,
+                null,
+                null,
+                List.of(),
+                null,
+                null);
+    }
+
+    private AssetRequestRecord toScopedAssetRequest(
+            ActivityMemberEntryDto member,
+            AssetRequestRecord existing,
+            AssetRequestBookingRecord booking) {
+        if (member == null || !StringUtils.hasText(normalizeId(member.userId()))) {
+            return null;
+        }
+        Users user = usersRepository.findByUserId(normalizeId(member.userId())).orElse(null);
+        String status = "pending".equals(normalizeMemberStatus(member.status())) ? "pending" : "accepted";
+        return new AssetRequestRecord(
+                existing != null && StringUtils.hasText(existing.id()) ? existing.id().trim() : UUID.randomUUID().toString(),
+                normalizeId(member.userId()),
+                user == null ? safeText(member.name()) : safeText(user.getName()),
+                user == null ? safeText(member.initials()) : safeText(user.getInitials()),
+                user == null ? safeText(member.gender()) : normalizeGender(user.getGender()),
+                status,
+                StringUtils.hasText(safeText(member.statusText()))
+                        ? safeText(member.statusText())
+                        : "pending".equals(status) ? "Awaiting owner confirmation." : "Approved and synced with the plan.",
+                existing != null ? normalizeAssetRequestKind(existing.requestKind()) : "borrow",
+                existing != null && StringUtils.hasText(existing.requestedAtIso())
+                        ? existing.requestedAtIso()
+                        : normalizeDateTime(member.actionAtIso(), Instant.now().toString()),
+                existing != null && existing.booking() != null
+                        ? cloneRequestBooking(existing.booking())
+                        : cloneRequestBooking(booking));
     }
 
     private Asset saveOwnedAsset(String ownerUserId, AssetDetailDto assetDto) {

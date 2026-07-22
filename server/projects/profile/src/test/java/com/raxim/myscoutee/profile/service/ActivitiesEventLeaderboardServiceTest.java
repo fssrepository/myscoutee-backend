@@ -233,9 +233,18 @@ class ActivitiesEventLeaderboardServiceTest {
                 accessControlService);
         ActivityEvent event = eventRecord("event-1", "canonical");
         String groupOwnerId = "event-1:sub-1:sub-1:group:1";
+        EventLeaderboardEntry placeholderScore = new EventLeaderboardEntry();
+        placeholderScore.setId("placeholder-score");
+        placeholderScore.setEventId("event-1");
+        placeholderScore.setSubEventId("sub-1");
+        placeholderScore.setGroupId("sub-1:group:1");
+        placeholderScore.setEntryType("score");
+        placeholderScore.setMemberId("sub-1:group:1-member-1");
+        placeholderScore.setScoreValue(41);
+        placeholderScore.setCreatedAtIso("2026-07-22T17:24:59Z");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
-                .thenReturn(List.of());
+                .thenReturn(List.of(placeholderScore));
         when(activitiesMembersService.queryMembers("group", groupOwnerId))
                 .thenReturn(List.of(activityMember("accepted-user", "accepted")));
 
@@ -243,6 +252,9 @@ class ActivitiesEventLeaderboardServiceTest {
 
         assertThat(state.groups().getFirst().members())
                 .extracting(member -> member.memberName())
+                .containsExactly("accepted-user", "-----", "-----", "-----");
+        assertThat(state.groups().getFirst().scoreRows())
+                .extracting(row -> row.memberName())
                 .containsExactly("accepted-user", "-----", "-----", "-----");
     }
 

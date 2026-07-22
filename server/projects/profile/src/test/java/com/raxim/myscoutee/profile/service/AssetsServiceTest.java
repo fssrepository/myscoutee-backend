@@ -31,6 +31,7 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetMakeManagerRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequestDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
@@ -41,6 +42,76 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxService.NotificationIntent;
 
 class AssetsServiceTest {
+    @Test
+    void syncScopedMembersOnlyChangesRequestsForTheSelectedGroup() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+        Asset asset = asset();
+        AssetRequestBookingRecord groupABooking = new AssetRequestBookingRecord(
+                "event-1:subevent-1:group-a", "Event", "subevent-1", "Stage", "subevent-1", "Stage",
+                null, null, null, 1, null, null, List.of(), null, null);
+        AssetRequestBookingRecord groupBBooking = new AssetRequestBookingRecord(
+                "event-1:subevent-1:group-b", "Event", "subevent-1", "Stage", "subevent-1", "Stage",
+                null, null, null, 1, null, null, List.of(), null, null);
+        asset.setRequests(List.of(
+                new AssetRequestRecord(
+                        "group-a-old", "u2", "Old Group A", "OA", "man", "accepted", "", "borrow",
+                        "2026-05-11T10:00:00Z", groupABooking),
+                new AssetRequestRecord(
+                        "group-b-kept", "u3", "Group B", "GB", "man", "accepted", "", "borrow",
+                        "2026-05-11T10:00:00Z", groupBBooking)));
+        Users invitedUser = user("u4", "New Group A", "NA");
+        ActivityMemberEntryDto invited = new ActivityMemberEntryDto(
+                null, "u4", "New Group A", "NA", "man", "", "Waiting", "Member", "pending",
+                "admin", "invite", "u1", true, "2026-05-12T10:00:00Z", "2026-05-12T10:00:00Z",
+                "", null, null, List.of());
+
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(invitedUser));
+        when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mongoTemplate,
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        service.syncScopedRequestsFromMemberEntries(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                List.of(invited));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getRequests())
+                .extracting(AssetRequestRecord::id)
+                .contains("group-b-kept")
+                .doesNotContain("group-a-old");
+        assertThat(savedAsset.getValue().getRequests())
+                .filteredOn(request -> "u4".equals(request.userId()))
+                .singleElement()
+                .satisfies(request -> {
+                    assertThat(request.status()).isEqualTo("pending");
+                    assertThat(request.booking().eventId()).isEqualTo("event-1:subevent-1:group-a");
+                    assertThat(request.booking().subEventId()).isEqualTo("subevent-1");
+                });
+    }
+
     @Test
     void makeManagerPersistsRoleAndReturnsRefreshedAssetCard() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);

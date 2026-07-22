@@ -12,6 +12,16 @@ asset borrow ui and behaviour should be similar then event buy
 1) fizetes menu (ami megmutatja, mennyi volt)
 2) the borrow ui should be similar then asset pay ui (showing asset form instead
 and show slot manager or similar)
-3) invite member of asset resources should always list out the parent members
-the contact is only on the main parent (like event or slot)
-4) when make manager, it's like assigning the asset also (so it can use for different purpose?)
+3) when make manager, it's like assigning the asset also (so it can use for different purpose?)
+4) event save - removing image should remove image
+5) asset save similar problem, then event editor save
+6) event feedback does not list past event to maek feedback
+7) ticket has one red counter badge but the list is empty
+
+pls. mirror the frontend local for http also (java backend), 
+as i saw that esemeny elhagyasa does not show the element 
+in kuka (got empty list just right counter) -- 
+sometimes counter not mathcing with the element number 
+(normalize on users collection on mongo) --- 
+clicking on foglalas folytatasa no popup appears and so on 
+-- there are various problems on each bucket
