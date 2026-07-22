@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -115,6 +116,85 @@ class ActivitiesEventLeaderboardServiceTest {
                 .hasMessageContaining("leaderboard entry");
 
         verify(eventLeaderboardEntriesRepository, never()).save(any(EventLeaderboardEntry.class));
+    }
+
+    @Test
+    void virtualSlotLeaderboardUsesParentDefinitionAndKeepsEntriesScopedToSlot() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        String slotId = "event-1:slot:slot-1:2026-06-15T13:30:00Z";
+        ActivityEvent parent = eventRecord("event-1", "canonical");
+        EventLeaderboardEntry existingEntry = new EventLeaderboardEntry();
+        existingEntry.setId("entry-1");
+        existingEntry.setEventId(slotId);
+        existingEntry.setSubEventId("sub-1");
+        existingEntry.setGroupId("sub-1:group:1");
+        existingEntry.setEntryType("score");
+        existingEntry.setMemberId("sub-1:group:1-member-1");
+        existingEntry.setScoreValue(7);
+        existingEntry.setCreatedAtIso("2026-07-22T17:24:59Z");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(slotId, "sub-1"))
+                .thenReturn(List.of(existingEntry));
+        when(activitiesMembersService.queryMembers("group", "sub-1:group:1")).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers("group", "sub-1:group:2")).thenReturn(List.of());
+
+        var state = service.queryState(slotId, "sub-1");
+
+        assertThat(state.eventId()).isEqualTo(slotId);
+        assertThat(state.groups()).hasSize(2);
+        assertThat(state.groups().getFirst().scoreRows()).hasSize(4);
+        assertThat(state.groups().getFirst().scoreRows().getFirst()).satisfies(row -> {
+            assertThat(row.memberId()).isEqualTo("sub-1:group:1-member-1");
+            assertThat(row.memberName()).isEqualTo("Member 1");
+            assertThat(row.total()).isEqualTo(7);
+            assertThat(row.updates()).isEqualTo(1);
+        });
+        verify(activityEventsRepository).findBySourceId("event-1");
+        verify(activityEventsRepository, never()).findBySourceId(slotId);
+    }
+
+    @Test
+    void virtualSlotScoreAuthorizesAgainstParentAndPersistsAgainstSlot() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        String slotId = "event-1:slot:slot-1:2026-06-15T13:30:00Z";
+        ActivityEvent parent = eventRecord("event-1", "canonical");
+        when(accessControlService.canCurrentActorSubmitLeaderboardEntry("member-1", "event-1")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(slotId, "sub-1")).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers("group", "sub-1:group:1")).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers("group", "sub-1:group:2")).thenReturn(List.of());
+
+        service.upsertEntry(new EventLeaderboardEntryUpsertRequestDto(
+                "member-1",
+                slotId,
+                "sub-1",
+                "sub-1:group:1",
+                "Score",
+                "member-1",
+                4,
+                "note",
+                null,
+                null,
+                null,
+                null));
+
+        verify(accessControlService).canCurrentActorSubmitLeaderboardEntry("member-1", "event-1");
+        ArgumentCaptor<EventLeaderboardEntry> entryCaptor = ArgumentCaptor.forClass(EventLeaderboardEntry.class);
+        verify(eventLeaderboardEntriesRepository).save(entryCaptor.capture());
+        assertThat(entryCaptor.getValue().getEventId()).isEqualTo(slotId);
+        assertThat(entryCaptor.getValue().getScoreValue()).isEqualTo(4);
     }
 
     private ActivityEvent eventRecord(String sourceId, String suffix) {

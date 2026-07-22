@@ -80,7 +80,7 @@ public class ActivitiesEventLeaderboardService {
             return new EventLeaderboardStateDto(normalizedEventId, normalizedSubEventId, "", "Score", List.of());
         }
 
-        ActivityEvent event = resolveCanonicalEvent(normalizedEventId);
+        ActivityEvent event = resolveCanonicalEvent(definitionEventId(normalizedEventId));
         SubEventItem subEvent = resolveSubEvent(event, normalizedSubEventId);
         if (event == null || subEvent == null) {
             return new EventLeaderboardStateDto(normalizedEventId, normalizedSubEventId, "", "Score", List.of());
@@ -125,7 +125,7 @@ public class ActivitiesEventLeaderboardService {
         String mode = normalizeLeaderboardType(request.mode());
         String nowIso = Instant.now().toString();
         String actorUserId = normalizeId(request.actorUserId());
-        if (!accessControlService.canCurrentActorSubmitLeaderboardEntry(actorUserId, normalizedEventId)) {
+        if (!accessControlService.canCurrentActorSubmitLeaderboardEntry(actorUserId, definitionEventId(normalizedEventId))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit leaderboard entry for this event.");
         }
         if ("Fifa".equalsIgnoreCase(mode)) {
@@ -444,9 +444,9 @@ public class ActivitiesEventLeaderboardService {
             SubEventItem subEvent,
             SubEventGroupItemDto group,
             List<EventLeaderboardEntry> entries,
-            GeneratorModels.ScoreGeneratorResult result) {
+        GeneratorModels.ScoreGeneratorResult result) {
         String groupId = normalizeId(group.id());
-        List<EventLeaderboardMemberDto> members = resolveMembers(groupId);
+        List<EventLeaderboardMemberDto> members = resolveLeaderboardMembers(group, entries);
         Map<String, String> memberNameById = members.stream()
                 .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
 
@@ -521,16 +521,11 @@ public class ActivitiesEventLeaderboardService {
             String leaderboardType,
             SubEventItem subEvent,
             SubEventGroupItemDto group,
-            List<EventLeaderboardEntry> entries) {
+        List<EventLeaderboardEntry> entries) {
         String groupId = normalizeId(group.id());
-        List<GeneratorModels.LeaderboardMember> members = resolveMembers(groupId).stream()
+        List<GeneratorModels.LeaderboardMember> members = resolveLeaderboardMembers(group, entries).stream()
                 .map(member -> new GeneratorModels.LeaderboardMember(member.memberId(), member.memberName()))
                 .toList();
-        if (members.isEmpty()) {
-            members = resolveMembersFromEntries(groupId, entries).stream()
-                    .map(member -> new GeneratorModels.LeaderboardMember(member.memberId(), member.memberName()))
-                    .toList();
-        }
         List<GeneratorModels.ScoreLeaderboardEntry> scoreEntries = entries.stream()
                 .filter(entry -> groupId.equals(normalizeId(entry.getGroupId())))
                 .filter(entry -> "score".equals(normalizeId(entry.getEntryType())))
@@ -571,6 +566,27 @@ public class ActivitiesEventLeaderboardService {
         return members;
     }
 
+    private List<EventLeaderboardMemberDto> resolveLeaderboardMembers(
+            SubEventGroupItemDto group,
+            List<EventLeaderboardEntry> entries) {
+        String groupId = normalizeId(group == null ? null : group.id());
+        List<EventLeaderboardMemberDto> persistedMembers = resolveMembers(groupId);
+        if (!persistedMembers.isEmpty()) {
+            return persistedMembers;
+        }
+
+        Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
+        int placeholderCount = Math.max(2, safeCount(group == null ? null : group.capacityMax()));
+        for (int index = 1; index <= placeholderCount; index += 1) {
+            String memberId = groupId + "-member-" + index;
+            membersById.put(memberId, new EventLeaderboardMemberDto(memberId, "Member " + index));
+        }
+        for (EventLeaderboardMemberDto member : resolveMembersFromEntries(groupId, entries)) {
+            membersById.putIfAbsent(member.memberId(), member);
+        }
+        return new ArrayList<>(membersById.values());
+    }
+
     private List<EventLeaderboardMemberDto> resolveMembersFromEntries(String groupId, List<EventLeaderboardEntry> entries) {
         Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
         for (EventLeaderboardEntry entry : entries) {
@@ -578,16 +594,31 @@ public class ActivitiesEventLeaderboardService {
                 continue;
             }
             if (StringUtils.hasText(normalizeId(entry.getMemberId()))) {
-                membersById.put(normalizeId(entry.getMemberId()), new EventLeaderboardMemberDto(normalizeId(entry.getMemberId()), normalizeId(entry.getMemberId())));
+                String memberId = normalizeId(entry.getMemberId());
+                membersById.put(memberId, new EventLeaderboardMemberDto(memberId, fallbackMemberName(groupId, memberId)));
             }
             if (StringUtils.hasText(normalizeId(entry.getHomeMemberId()))) {
-                membersById.put(normalizeId(entry.getHomeMemberId()), new EventLeaderboardMemberDto(normalizeId(entry.getHomeMemberId()), normalizeId(entry.getHomeMemberId())));
+                String memberId = normalizeId(entry.getHomeMemberId());
+                membersById.put(memberId, new EventLeaderboardMemberDto(memberId, fallbackMemberName(groupId, memberId)));
             }
             if (StringUtils.hasText(normalizeId(entry.getAwayMemberId()))) {
-                membersById.put(normalizeId(entry.getAwayMemberId()), new EventLeaderboardMemberDto(normalizeId(entry.getAwayMemberId()), normalizeId(entry.getAwayMemberId())));
+                String memberId = normalizeId(entry.getAwayMemberId());
+                membersById.put(memberId, new EventLeaderboardMemberDto(memberId, fallbackMemberName(groupId, memberId)));
             }
         }
         return new ArrayList<>(membersById.values());
+    }
+
+    private String fallbackMemberName(String groupId, String memberId) {
+        String placeholderPrefix = normalizeId(groupId) + "-member-";
+        String normalizedMemberId = normalizeId(memberId);
+        if (normalizedMemberId.startsWith(placeholderPrefix)) {
+            String suffix = normalizedMemberId.substring(placeholderPrefix.length());
+            if (suffix.matches("\\d+")) {
+                return "Member " + suffix;
+            }
+        }
+        return normalizedMemberId;
     }
 
     private List<ActivityEvent> loadEventDocuments(String sourceId) {
@@ -608,6 +639,12 @@ public class ActivitiesEventLeaderboardService {
 
     private ActivityEvent resolveCanonicalEvent(String sourceId) {
         return resolvePreferredEvent(loadEventDocuments(sourceId));
+    }
+
+    private String definitionEventId(String runtimeEventId) {
+        String normalizedEventId = normalizeId(runtimeEventId);
+        int slotMarker = normalizedEventId.indexOf(":slot:");
+        return slotMarker > 0 ? normalizedEventId.substring(0, slotMarker) : normalizedEventId;
     }
 
     private SubEventItem resolveSubEvent(ActivityEvent event, String subEventId) {
