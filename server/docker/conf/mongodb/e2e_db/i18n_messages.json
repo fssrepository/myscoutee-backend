@@ -27346,5 +27346,101 @@
     "key": "asset.borrow.note.awaiting.owner",
     "lang": "hu",
     "value": "Tulajdonosi megerősítésre vár."
+  },
+  {
+    "_id": "i18n-message-en-invitation-pending",
+    "key": "invitation.pending",
+    "lang": "en",
+    "value": "Invitation Pending"
+  },
+  {
+    "_id": "i18n-message-en-invite",
+    "key": "invite",
+    "lang": "en",
+    "value": "Invite"
+  },
+  {
+    "_id": "i18n-message-en-pending-count",
+    "key": "pending.count",
+    "lang": "en",
+    "value": "{count} pending"
+  },
+  {
+    "_id": "i18n-message-en-pending-only",
+    "key": "pending.only",
+    "lang": "en",
+    "value": "Pending only"
+  },
+  {
+    "_id": "i18n-message-en-show-all-members",
+    "key": "show.all.members",
+    "lang": "en",
+    "value": "Show all members"
+  },
+  {
+    "_id": "i18n-message-en-show-pending-members-only",
+    "key": "show.pending.members.only",
+    "lang": "en",
+    "value": "Show pending members only"
+  },
+  {
+    "_id": "i18n-message-en-waiting-for-admin-approval",
+    "key": "waiting.for.admin.approval",
+    "lang": "en",
+    "value": "Waiting For Admin Approval"
+  },
+  {
+    "_id": "i18n-message-en-waiting-for-join-approval",
+    "key": "waiting.for.join.approval",
+    "lang": "en",
+    "value": "Waiting For Join Approval"
+  },
+  {
+    "_id": "i18n-message-hu-invitation-pending",
+    "key": "invitation.pending",
+    "lang": "hu",
+    "value": "Meghívás függőben"
+  },
+  {
+    "_id": "i18n-message-hu-invite",
+    "key": "invite",
+    "lang": "hu",
+    "value": "Meghívás"
+  },
+  {
+    "_id": "i18n-message-hu-pending-count",
+    "key": "pending.count",
+    "lang": "hu",
+    "value": "{count} függőben"
+  },
+  {
+    "_id": "i18n-message-hu-pending-only",
+    "key": "pending.only",
+    "lang": "hu",
+    "value": "Csak függőben lévők"
+  },
+  {
+    "_id": "i18n-message-hu-show-all-members",
+    "key": "show.all.members",
+    "lang": "hu",
+    "value": "Összes tag megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-show-pending-members-only",
+    "key": "show.pending.members.only",
+    "lang": "hu",
+    "value": "Csak a függőben lévő tagok megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-waiting-for-admin-approval",
+    "key": "waiting.for.admin.approval",
+    "lang": "hu",
+    "value": "Admin jóváhagyására vár"
+  },
+  {
+    "_id": "i18n-message-hu-waiting-for-join-approval",
+    "key": "waiting.for.join.approval",
+    "lang": "hu",
+    "value": "Csatlakozási jóváhagyásra vár"
   }
 ]

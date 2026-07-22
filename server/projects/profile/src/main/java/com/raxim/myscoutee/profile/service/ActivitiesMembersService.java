@@ -1648,7 +1648,7 @@ public class ActivitiesMembersService {
                 user == null ? initialsFromText(normalizeId(member.getUserId())) : safeText(user.getInitials()),
                 user == null ? "man" : normalizeGender(user.getGender()),
                 user == null ? "" : safeText(user.getCity()),
-                user == null ? defaultStatusText(status, requestKind, pendingSource) : safeText(user.getStatusText()),
+                defaultStatusText(status, requestKind, pendingSource),
                 role,
                 status,
                 pendingSource,

@@ -315,6 +315,72 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryScopedAssetInvitationUsesMembershipStatusInsteadOfProfileStatus() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setTitle("City-to-Lake SUV");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "invitee-1",
+                "Lucas Lane",
+                "LL",
+                "man",
+                "pending",
+                "",
+                "invite",
+                "2026-07-23T00:00:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        "event-1",
+                        "Seattle Wildflower Meetup",
+                        "subevent-1",
+                        "Kickoff",
+                        "city-to-lake-suv:1",
+                        "City-to-Lake SUV",
+                        "Jul 23",
+                        "2026-07-23T13:30:00Z",
+                        "2026-07-23T14:15:00Z",
+                        1,
+                        null,
+                        null,
+                        List.of(),
+                        null,
+                        false))));
+
+        Users invitee = new Users();
+        invitee.setId("invitee-1");
+        invitee.setUserId("invitee-1");
+        invitee.setName("Lucas Lane");
+        invitee.setStatusText("Waiting for admin approval.");
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
+        when(usersRepository.findByUserId("invitee-1")).thenReturn(Optional.of(invitee));
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1",
+                "subevent-1");
+
+        assertThat(result)
+                .filteredOn(entry -> "invitee-1".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("pending");
+                    assertThat(entry.pendingSource()).isEqualTo("admin");
+                    assertThat(entry.requestKind()).isEqualTo("invite");
+                    assertThat(entry.statusText()).isEqualTo("Invitation pending.");
+                });
+    }
+
+    @Test
     void replaceScopedAssetMembersDelegatesOneScopedAssetMutationWithoutReplacingGlobalMembers() {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         ActivityMemberEntryDto invited = entry("group-member");
