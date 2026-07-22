@@ -1683933,5 +1683933,91 @@
     "updatedDate": "2026-03-25T13:07:57.679Z",
     "createdUser": "7822c5f99eff99d63abe8933",
     "updatedUser": "7822c5f99eff99d63abe8933"
+  },
+  {
+    "_id": {
+      "$oid": "6a6102cc6b9bc63e2bedda9e"
+    },
+    "syncKey": "3701d9b9-3b7c-41f2-b783-221150b56cfe",
+    "recordId": "9f3b3f085e23af6c89dbc432:9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1:f507987dfeb38ba10df0010c",
+    "ownerKey": "9f3b3f085e23af6c89dbc432:9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "assetOwnerUserId": "9f3b3f085e23af6c89dbc432",
+    "assetAssignmentIds": {
+      "Transport": [
+        "11fc507bd2a049c3a297da19",
+        "e930f7a058f4ab02edd44ff7"
+      ]
+    },
+    "assetSettingsByType": {
+      "Transport": {
+        "11fc507bd2a049c3a297da19": {
+          "capacityMin": 0,
+          "capacityMax": 4,
+          "quantity": 1,
+          "addedByUserId": "9f3b3f085e23af6c89dbc432",
+          "routeEnabled": true,
+          "routes": []
+        },
+        "e930f7a058f4ab02edd44ff7": {
+          "capacityMin": 0,
+          "capacityMax": 4,
+          "quantity": 1,
+          "addedByUserId": "9f3b3f085e23af6c89dbc432",
+          "routeEnabled": true,
+          "routes": []
+        }
+      }
+    },
+    "supplyContributionEntriesByAssetId": {},
+    "createdDate": "2026-07-22T17:50:04.646Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T18:50:39.298Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "6a6102f26b9bc63e2bedda9f"
+    },
+    "syncKey": "9d018d58-c765-4e00-8f88-0ebf464cb772",
+    "recordId": "9f3b3f085e23af6c89dbc432:9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-23T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1:f507987dfeb38ba10df0010c",
+    "ownerKey": "9f3b3f085e23af6c89dbc432:9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-23T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-23T13:30:00Z:f507987dfeb38ba10df0010c:f507987dfeb38ba10df0010c:group:1",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "assetOwnerUserId": "9f3b3f085e23af6c89dbc432",
+    "assetAssignmentIds": {
+      "Transport": [
+        "11fc507bd2a049c3a297da19",
+        "e930f7a058f4ab02edd44ff7"
+      ]
+    },
+    "assetSettingsByType": {
+      "Transport": {
+        "11fc507bd2a049c3a297da19": {
+          "capacityMin": 0,
+          "capacityMax": 4,
+          "quantity": 1,
+          "addedByUserId": "9f3b3f085e23af6c89dbc432",
+          "routeEnabled": true,
+          "routes": []
+        },
+        "e930f7a058f4ab02edd44ff7": {
+          "capacityMin": 0,
+          "capacityMax": 4,
+          "quantity": 1,
+          "addedByUserId": "9f3b3f085e23af6c89dbc432",
+          "routeEnabled": true,
+          "routes": []
+        }
+      }
+    },
+    "supplyContributionEntriesByAssetId": {},
+    "createdDate": "2026-07-22T17:50:42.093Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T18:50:39.309Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
   }
 ]

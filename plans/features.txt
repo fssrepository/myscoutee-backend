@@ -12,3 +12,6 @@ asset borrow ui and behaviour should be similar then event buy
 1) fizetes menu (ami megmutatja, mennyi volt)
 2) the borrow ui should be similar then asset pay ui (showing asset form instead
 and show slot manager or similar)
+3) invite member of asset resources should always list out the parent members
+the contact is only on the main parent (like event or slot)
+4) when make manager, it's like assigning the asset also (so it can use for different purpose?)

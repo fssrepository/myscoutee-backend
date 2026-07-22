@@ -1293,8 +1293,8 @@ public class ChatService {
                 safeText(group.source()),
                 members == null ? 0 : members.accepted(),
                 members == null ? 0 : members.pending(),
-                members == null ? normalizeCount(group.capacityMin()) : members.capacityMin(),
-                members == null ? normalizeCount(group.capacityMax()) : members.capacityMax());
+                normalizeCount(group.capacityMin()),
+                normalizeCount(group.capacityMax()));
     }
 
     private Map<String, Users> chatMemberUsers(Collection<Chat> records) {
@@ -1436,7 +1436,7 @@ public class ChatService {
             List<ActivitySubEventResource> resources = metricResourceRecords(
                     resourcesByMetricKey,
                     lookup.viewerUserId(),
-                    lookup.parts().eventId(),
+                    CHAT_CHANNEL_GROUP_SUB_EVENT.equals(lookup.channelType()) ? "" : lookup.parts().eventId(),
                     lookup.ownerId(),
                     lookup.parts().subEventId());
             transport = assetBucket(resources, ASSET_TYPE_TRANSPORT, assetsByOwnerAndId);
@@ -1656,7 +1656,10 @@ public class ChatService {
                 if (ASSET_TYPE_SUPPLIES.equals(type)) {
                     accepted += supplyContributionQuantity(record, assetId);
                 } else if (asset != null) {
-                    int[] requestCounts = assetRequestCountsForMetric(asset, record.getSubEventId());
+                    int[] requestCounts = assetRequestCountsForMetric(
+                            asset,
+                            record.getSubEventId(),
+                            record.getOwnerId());
                     accepted += requestCounts[0];
                     pending += requestCounts[1];
                 }
@@ -1669,30 +1672,42 @@ public class ChatService {
                 Math.max(Math.max(capacityMin, capacityMax), accepted + pending));
     }
 
-    private int[] assetRequestCountsForMetric(Asset asset, String subEventId) {
-        int accepted = 0;
-        int pending = 0;
+    private int[] assetRequestCountsForMetric(Asset asset, String subEventId, String ownerId) {
         String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedOwnerId = normalizeId(ownerId);
+        Map<String, String> statusByMemberIdentity = new LinkedHashMap<>();
         for (AssetRequestRecord request : asset == null || asset.getRequests() == null
                 ? List.<AssetRequestRecord>of()
                 : asset.getRequests()) {
-            String requestId = normalizeId(request == null ? null : request.id());
-            String requestKind = safeText(request == null ? null : request.requestKind());
             String bookingSubEventId = normalizeId(
                     request == null || request.booking() == null ? null : request.booking().subEventId());
-            boolean scopedManual = "manual".equals(requestKind)
-                    && StringUtils.hasText(normalizedSubEventId)
-                    && requestId.startsWith("manual:" + normalizedSubEventId + ":");
-            if (!scopedManual && !normalizedSubEventId.equals(bookingSubEventId)) {
+            String bookingOwnerId = normalizeId(
+                    request == null || request.booking() == null ? null : request.booking().eventId());
+            if (!normalizedSubEventId.equals(bookingSubEventId)
+                    || !normalizedOwnerId.equals(bookingOwnerId)) {
                 continue;
             }
             String status = safeText(request.status()).toLowerCase(Locale.ROOT);
-            if (MEMBER_STATUS_ACCEPTED.equals(status)) {
-                accepted += 1;
-            } else if (MEMBER_STATUS_PENDING.equals(status)) {
-                pending += 1;
+            if (!MEMBER_STATUS_ACCEPTED.equals(status) && !MEMBER_STATUS_PENDING.equals(status)) {
+                continue;
+            }
+            String identity = firstNonBlank(
+                    normalizeId(request.userId()),
+                    normalizeId(request.id()));
+            if (!StringUtils.hasText(identity)) {
+                continue;
+            }
+            String existing = statusByMemberIdentity.get(identity);
+            if (!MEMBER_STATUS_ACCEPTED.equals(existing) || MEMBER_STATUS_ACCEPTED.equals(status)) {
+                statusByMemberIdentity.put(identity, status);
             }
         }
+        int accepted = (int) statusByMemberIdentity.values().stream()
+                .filter(MEMBER_STATUS_ACCEPTED::equals)
+                .count();
+        int pending = (int) statusByMemberIdentity.values().stream()
+                .filter(MEMBER_STATUS_PENDING::equals)
+                .count();
         return new int[] {accepted, pending};
     }
 

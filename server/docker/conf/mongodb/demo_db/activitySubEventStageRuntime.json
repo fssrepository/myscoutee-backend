@@ -1,0 +1,148 @@
+[
+  {
+    "_id": {
+      "$oid": "6a60d73e4674db9d3289bcb0"
+    },
+    "syncKey": "9664abdb-c0d7-49c7-89e0-7c993c72e456",
+    "recordId": "9e5a5b0c84e154e6e71b2d41:f507987dfeb38ba10df0010c",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "groupsCount": 8,
+    "groupResourceMetricsByAssetOwnerId": {},
+    "createdDate": "2026-07-22T14:44:14.039Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T15:37:18.401Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "6a60e392c3b220ef2ea8d278"
+    },
+    "syncKey": "5c5f21ec-a935-4db3-904a-c89f85079343",
+    "recordId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T08:30:00Z:f507987dfeb38ba10df0010c",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T08:30:00Z",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "stageStatus": "SR",
+    "stageStatusReason": "scores-reopened",
+    "stageStatusUpdatedAt": "2026-07-22T15:37:35.748Z",
+    "stageFinalizedAt": "",
+    "stageFinalizedByUserId": "",
+    "groupsCount": 3,
+    "groupResourceMetricsByAssetOwnerId": {},
+    "createdDate": "2026-07-22T15:36:50.107Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T15:37:35.750Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "6a60fcd70206a8ad9b3bc8b1"
+    },
+    "syncKey": "af8a9a6c-53f1-42c3-8dfd-8b280391c182",
+    "recordId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-06-15T13:30:00Z:f507987dfeb38ba10df0010c",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-06-15T13:30:00Z",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "stageStatus": "SR",
+    "stageStatusReason": "stage-closed",
+    "stageStatusUpdatedAt": "2026-07-22T17:24:39.313Z",
+    "stageFinalizedAt": "",
+    "stageFinalizedByUserId": "",
+    "groupsCount": 4,
+    "groupResourceMetricsByAssetOwnerId": {},
+    "createdDate": "2026-07-22T17:24:39.315Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T17:25:07.515Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "6a60fea10bdb107af6aca45b"
+    },
+    "syncKey": "727e8e58-e6c2-49f3-ae9e-89adb3c88565",
+    "recordId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T13:30:00Z:f507987dfeb38ba10df0010c",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-22T13:30:00Z",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "stageStatus": "SR",
+    "stageStatusReason": "stage-closed",
+    "stageStatusUpdatedAt": "2026-07-22T17:32:17.004Z",
+    "stageFinalizedAt": "",
+    "stageFinalizedByUserId": "",
+    "groupsCount": 3,
+    "groupResourceMetricsByAssetOwnerId": {
+      "f507987dfeb38ba10df0010c:group:1": {
+        "9f3b3f085e23af6c89dbc432": {
+          "Transport": {
+            "accepted": 1,
+            "pending": 1,
+            "capacityMin": 0,
+            "capacityMax": 8
+          },
+          "Accommodation": {
+            "accepted": 0,
+            "pending": 0,
+            "capacityMin": 0,
+            "capacityMax": 0
+          },
+          "Supplies": {
+            "accepted": 0,
+            "pending": 0,
+            "capacityMin": 0,
+            "capacityMax": 0
+          }
+        }
+      }
+    },
+    "createdDate": "2026-07-22T17:32:17.005Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T18:54:27.960Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "6a6113009c38a24c44b83cae"
+    },
+    "syncKey": "46de8314-e163-42ff-b643-95fe4a447432",
+    "recordId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-23T13:30:00Z:f507987dfeb38ba10df0010c",
+    "status": "A",
+    "ownerId": "9e5a5b0c84e154e6e71b2d41:slot:slot-1:2026-07-23T13:30:00Z",
+    "subEventId": "f507987dfeb38ba10df0010c",
+    "stageStatus": "RS",
+    "stageStatusReason": "awaiting-tournament-start",
+    "stageStatusUpdatedAt": "",
+    "stageFinalizedAt": "",
+    "stageFinalizedByUserId": "",
+    "groupsCount": 3,
+    "groupResourceMetricsByAssetOwnerId": {
+      "f507987dfeb38ba10df0010c:group:1": {
+        "9f3b3f085e23af6c89dbc432": {
+          "Transport": {
+            "accepted": 0,
+            "pending": 1,
+            "capacityMin": 0,
+            "capacityMax": 8
+          },
+          "Accommodation": {
+            "accepted": 0,
+            "pending": 0,
+            "capacityMin": 0,
+            "capacityMax": 0
+          },
+          "Supplies": {
+            "accepted": 0,
+            "pending": 0,
+            "capacityMin": 0,
+            "capacityMax": 0
+          }
+        }
+      }
+    },
+    "createdDate": "2026-07-22T18:54:27.960Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-22T18:54:27.960Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  }
+]

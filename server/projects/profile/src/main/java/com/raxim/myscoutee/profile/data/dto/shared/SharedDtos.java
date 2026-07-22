@@ -444,6 +444,13 @@ public final class SharedDtos {
             Integer pageSize) {
     }
 
+    public record SubEventResourceMetricDto(
+            Integer accepted,
+            Integer pending,
+            Integer capacityMin,
+            Integer capacityMax) {
+    }
+
     public record ActivitySubEventResourceStateDto(
             String ownerId,
             String subEventId,
@@ -451,11 +458,39 @@ public final class SharedDtos {
             Map<String, List<String>> assetAssignmentIds,
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
             Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId,
-            Map<String, List<AssetDetailDto>> fallbackAssetCardsByType) {
+            Map<String, List<AssetDetailDto>> fallbackAssetCardsByType,
+            Map<String, SubEventResourceMetricDto> resourceMetricsByType) {
+        public ActivitySubEventResourceStateDto(
+                String ownerId,
+                String subEventId,
+                String assetOwnerUserId,
+                Map<String, List<String>> assetAssignmentIds,
+                Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
+                Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId,
+                Map<String, List<AssetDetailDto>> fallbackAssetCardsByType) {
+            this(
+                    ownerId,
+                    subEventId,
+                    assetOwnerUserId,
+                    assetAssignmentIds,
+                    assetSettingsByType,
+                    supplyContributionEntriesByAssetId,
+                    fallbackAssetCardsByType,
+                    Map.of());
+        }
+
         public String authorizationEventId() {
             String normalizedOwnerId = ownerId == null ? "" : ownerId.trim();
-            int slotMarker = normalizedOwnerId.indexOf(":slot:");
-            return slotMarker > 0 ? normalizedOwnerId.substring(0, slotMarker) : normalizedOwnerId;
+            String normalizedSubEventId = subEventId == null ? "" : subEventId.trim();
+            String runtimeOwnerId = normalizedOwnerId;
+            if (!normalizedSubEventId.isEmpty()) {
+                int groupOwnerMarker = normalizedOwnerId.indexOf(":" + normalizedSubEventId + ":");
+                if (groupOwnerMarker > 0) {
+                    runtimeOwnerId = normalizedOwnerId.substring(0, groupOwnerMarker);
+                }
+            }
+            int slotMarker = runtimeOwnerId.indexOf(":slot:");
+            return slotMarker > 0 ? runtimeOwnerId.substring(0, slotMarker) : runtimeOwnerId;
         }
     }
 

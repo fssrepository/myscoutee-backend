@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.HttpStatus;
@@ -34,15 +35,18 @@ import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.profile.repository.AccessPolicyDefinitionsRepository;
 import com.raxim.myscoutee.profile.repository.ChatsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
@@ -56,6 +60,8 @@ import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper
 class ActivitiesResourcesServiceTest {
     @Mock
     private ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
+    @Mock
+    private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
     private AssetsService assetsService;
     @Mock
@@ -98,6 +104,7 @@ class ActivitiesResourcesServiceTest {
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository,
                 assetsService,
                 activitiesMembersServiceProvider,
                 accessControlService,
@@ -216,6 +223,27 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void replaceKeepsGeneratedGroupScopeButAuthorizesAgainstParentEvent() {
+        authenticateAs("u1");
+        String slotOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        String groupOwnerId = slotOwnerId + ":sub-1:sub-1:group:1";
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitySubEventResourceStateDto saved = service.replace(request(groupOwnerId, "sub-1", "u1"));
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.ownerId()).isEqualTo(groupOwnerId);
+        verify(assetsService).queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of());
+        verify(activitiesMembersService).refreshEventParticipationProjection(groupOwnerId);
+    }
+
+    @Test
     void replacePersistsBorrowedAssetAndReturnsCanonicalFallbackCard() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
@@ -242,6 +270,52 @@ class ActivitiesResourcesServiceTest {
 
         assertThat(saved.assetAssignmentIds()).containsEntry("transport", List.of("borrowed-asset"));
         assertThat(saved.fallbackAssetCardsByType()).containsEntry("transport", List.of(borrowedAsset));
+    }
+
+    @Test
+    void replacePersistsCalculatedMetricsInGroupRuntimeWithinSameServiceCall() {
+        authenticateAs("u1");
+        String runtimeOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        String groupId = "sub-1:group:1";
+        String groupOwnerId = runtimeOwnerId + ":sub-1:" + groupId;
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                groupOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        AssetDetailDto ownedAsset = assetDetail("owned-asset", "Transport", "u1");
+        when(assetsService.queryAssignableAssetDetails(
+                "u1", "event-1", "sub-1", Set.of("owned-asset")))
+                .thenReturn(Map.of("owned-asset", ownedAsset));
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId(runtimeOwnerId, "sub-1"))
+                .thenReturn(Optional.empty());
+        ActivitySubEventResourceStateDto request = new ActivitySubEventResourceStateDto(
+                groupOwnerId,
+                "sub-1",
+                "u1",
+                Map.of("Transport", List.of("owned-asset")),
+                Map.of("Transport", Map.of("owned-asset", new SubEventAssignedAssetSettingsDto(
+                        0, 4, 1, "u1", false, List.of()))),
+                Map.of(),
+                Map.of());
+
+        ActivitySubEventResourceStateDto saved = service.replace(request);
+
+        assertThat(saved.resourceMetricsByType().get("Transport").capacityMax()).isEqualTo(4);
+        verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+        ArgumentCaptor<ActivitySubEventStageRuntime> runtimeCaptor = ArgumentCaptor.forClass(
+                ActivitySubEventStageRuntime.class);
+        verify(activitySubEventStageRuntimeRepository).save(runtimeCaptor.capture());
+        ActivitySubEventStageRuntime runtime = runtimeCaptor.getValue();
+        assertThat(runtime.getOwnerId()).isEqualTo(runtimeOwnerId);
+        assertThat(runtime.getSubEventId()).isEqualTo("sub-1");
+        assertThat(runtime.getGroupResourceMetricsByAssetOwnerId()
+                .get(groupId)
+                .get("u1")
+                .get("Transport")
+                .capacityMax()).isEqualTo(4);
     }
 
     @Test

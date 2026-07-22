@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
@@ -118,6 +121,39 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     @Test
+    void tournamentStageGroupsReturnPersistedRuntimeResourceMetrics() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        ActivitySubEventStageRuntime runtime = new ActivitySubEventStageRuntime();
+        runtime.setOwnerId("event-1");
+        runtime.setSubEventId("sub-1");
+        runtime.setGroupResourceMetricsByAssetOwnerId(Map.of(
+                "sub-1:group:1",
+                Map.of(
+                        "owner-1", Map.of("Transport", new GroupResourceMetricRecord(1, 2, 0, 4)),
+                        "owner-2", Map.of("Transport", new GroupResourceMetricRecord(2, 1, 1, 3)))));
+        when(activitySubEventStageRuntimeRepository.findByOwnerIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(java.util.Optional.of(runtime));
+
+        var groups = service.queryTournamentStageGroups("event-1", null, "sub-1");
+
+        assertThat(groups.getFirst().resourceMetricsByType().get("Transport")).satisfies(metric -> {
+            assertThat(metric.accepted()).isEqualTo(3);
+            assertThat(metric.pending()).isEqualTo(3);
+            assertThat(metric.capacityMin()).isEqualTo(1);
+            assertThat(metric.capacityMax()).isEqualTo(7);
+        });
+        assertThat(groups.get(1).resourceMetricsByType()).isEmpty();
+    }
+
+    @Test
     void upsertEntryRejectsDeniedActorBeforeSavingEntry() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
@@ -178,12 +214,36 @@ class ActivitiesEventLeaderboardServiceTest {
         assertThat(state.groups().getFirst().scoreRows()).hasSize(4);
         assertThat(state.groups().getFirst().scoreRows().getFirst()).satisfies(row -> {
             assertThat(row.memberId()).isEqualTo("sub-1:group:1-member-1");
-            assertThat(row.memberName()).isEqualTo("Member 1");
+            assertThat(row.memberName()).isEqualTo("-----");
             assertThat(row.total()).isEqualTo(7);
             assertThat(row.updates()).isEqualTo(1);
         });
         verify(activityEventsRepository).findBySourceId("event-1");
         verify(activityEventsRepository, never()).findBySourceId(slotId);
+    }
+
+    @Test
+    void leaderboardKeepsAcceptedMembersBeforeCapacityPlaceholders() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent event = eventRecord("event-1", "canonical");
+        String groupOwnerId = "event-1:sub-1:sub-1:group:1";
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId("event-1", "sub-1"))
+                .thenReturn(List.of());
+        when(activitiesMembersService.queryMembers("group", groupOwnerId))
+                .thenReturn(List.of(activityMember("accepted-user", "accepted")));
+
+        var state = service.queryState("event-1", "sub-1");
+
+        assertThat(state.groups().getFirst().members())
+                .extracting(member -> member.memberName())
+                .containsExactly("accepted-user", "-----", "-----", "-----");
     }
 
     @Test

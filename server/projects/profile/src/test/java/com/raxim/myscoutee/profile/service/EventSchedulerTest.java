@@ -176,9 +176,9 @@ class EventSchedulerTest {
                 .thenReturn(List.of(
                         group("sub-1:group:1", "Group A"),
                         group("sub-1:group:2", "Group B")));
-        when(activitiesMembersService.syncGroupMembers("sub-1:group:1", "creator-1", List.of("u1", "u2")))
+        when(activitiesMembersService.syncGroupMembers("event-1:sub-1:sub-1:group:1", "creator-1", List.of("u1", "u2")))
                 .thenReturn(List.of("u1", "u2"));
-        when(activitiesMembersService.syncGroupMembers("sub-1:group:2", "creator-1", List.of("u3", "u4")))
+        when(activitiesMembersService.syncGroupMembers("event-1:sub-1:sub-1:group:2", "creator-1", List.of("u3", "u4")))
                 .thenReturn(List.of("u3", "u4"));
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
@@ -191,8 +191,8 @@ class EventSchedulerTest {
                 org.mockito.ArgumentMatchers.eq("event-1"),
                 org.mockito.ArgumentMatchers.eq("sub-1"),
                 anyList());
-        verify(activitiesMembersService).syncGroupMembers("sub-1:group:1", "creator-1", List.of("u1", "u2"));
-        verify(activitiesMembersService).syncGroupMembers("sub-1:group:2", "creator-1", List.of("u3", "u4"));
+        verify(activitiesMembersService).syncGroupMembers("event-1:sub-1:sub-1:group:1", "creator-1", List.of("u1", "u2"));
+        verify(activitiesMembersService).syncGroupMembers("event-1:sub-1:sub-1:group:2", "creator-1", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -263,7 +263,7 @@ class EventSchedulerTest {
                 4);
         ActivitiesMembersService.OwnerMembersSnapshot groupASnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
                 "group",
-                "group-a",
+                "event-2:sub-2:group-a",
                 List.of(),
                 List.of("u1"),
                 List.of(),
@@ -273,7 +273,7 @@ class EventSchedulerTest {
                 2);
         ActivitiesMembersService.OwnerMembersSnapshot groupBSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
                 "group",
-                "group-b",
+                "event-2:sub-2:group-b",
                 List.of(),
                 List.of("u3"),
                 List.of(),
@@ -284,7 +284,9 @@ class EventSchedulerTest {
         when(activitiesMembersService.buildBatchEventSnapshots(any()))
                 .thenReturn(Map.of("event-2", eventSnapshot));
         when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("group"), anyCollection()))
-                .thenReturn(Map.of("group-a", groupASnapshot, "group-b", groupBSnapshot));
+                .thenReturn(Map.of(
+                        "event-2:sub-2:group-a", groupASnapshot,
+                        "event-2:sub-2:group-b", groupBSnapshot));
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 org.mockito.ArgumentMatchers.eq("event-2"),
                 org.mockito.ArgumentMatchers.eq("sub-2"),
@@ -292,9 +294,9 @@ class EventSchedulerTest {
                 .thenReturn(List.of(
                         group("group-a", "Group A"),
                         group("group-b", "Group B")));
-        when(activitiesMembersService.syncGroupMembers("group-a", "creator-1", List.of("u1", "u2")))
+        when(activitiesMembersService.syncGroupMembers("event-2:sub-2:group-a", "creator-1", List.of("u1", "u2")))
                 .thenReturn(List.of("u1", "u2"));
-        when(activitiesMembersService.syncGroupMembers("group-b", "creator-1", List.of("u3", "u4")))
+        when(activitiesMembersService.syncGroupMembers("event-2:sub-2:group-b", "creator-1", List.of("u3", "u4")))
                 .thenReturn(List.of("u3", "u4"));
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
@@ -303,8 +305,8 @@ class EventSchedulerTest {
         assertThat(plans).extracting(GeneratedEventPlan::seedId).containsExactly("group-a", "group-b");
         assertThat(plans).extracting(GeneratedEventPlan::memberUserIds)
                 .containsExactly(List.of("u1", "u2"), List.of("u3", "u4"));
-        verify(activitiesMembersService).syncGroupMembers("group-a", "creator-1", List.of("u1", "u2"));
-        verify(activitiesMembersService).syncGroupMembers("group-b", "creator-1", List.of("u3", "u4"));
+        verify(activitiesMembersService).syncGroupMembers("event-2:sub-2:group-a", "creator-1", List.of("u1", "u2"));
+        verify(activitiesMembersService).syncGroupMembers("event-2:sub-2:group-b", "creator-1", List.of("u3", "u4"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -374,13 +376,13 @@ class EventSchedulerTest {
         when(activitiesEventLeaderboardService.queryState("event-3", "sub-1")).thenReturn(currentState);
         when(activitiesEventLeaderboardService.materializeGeneratedGroups("event-3", "sub-2"))
                 .thenReturn(List.of(group("next-group", "Final")));
-        when(activitiesMembersService.syncGroupMembers("next-group", "creator-1", List.of("u1", "u2")))
+        when(activitiesMembersService.syncGroupMembers("event-3:sub-2:next-group", "creator-1", List.of("u1", "u2")))
                 .thenReturn(List.of("u1", "u2"));
 
         List<EventLeaderboardStateDto> states = scheduler.generateScorePlans();
 
         assertThat(states).containsExactly(currentState);
-        verify(activitiesMembersService).syncGroupMembers("next-group", "creator-1", List.of("u1", "u2"));
+        verify(activitiesMembersService).syncGroupMembers("event-3:sub-2:next-group", "creator-1", List.of("u1", "u2"));
         verify(schedulerPlanMarkersRepository, atLeastOnce()).save(any(SchedulerPlanMarker.class));
     }
 
@@ -417,7 +419,7 @@ class EventSchedulerTest {
                 .thenReturn(List.of(group("sub-4:group:1", "Group A")));
         ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
                 "group",
-                "sub-4:group:1",
+                "event-4:sub-4:sub-4:group:1",
                 List.of(),
                 List.of("u1", "u2"),
                 List.of(),
@@ -428,7 +430,7 @@ class EventSchedulerTest {
         when(activitiesMembersService.buildBatchEventSnapshots(any()))
                 .thenReturn(Map.of("event-4", eventSnapshot));
         when(activitiesMembersService.buildBatchOwnerSnapshots(org.mockito.ArgumentMatchers.eq("group"), anyCollection()))
-                .thenReturn(Map.of("sub-4:group:1", groupSnapshot));
+                .thenReturn(Map.of("event-4:sub-4:sub-4:group:1", groupSnapshot));
 
         List<GeneratedEventPlan> plans = scheduler.generateRandomPlans();
 

@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
@@ -21,6 +22,7 @@ import com.raxim.myscoutee.algo.gen.GeneratorModels;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardFifaMatchDto;
@@ -34,6 +36,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTou
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentResourceMetricDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentStageDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
@@ -407,6 +410,11 @@ public class ActivitiesEventLeaderboardService {
 
     private List<EventTournamentGroupDto> tournamentGroups(String ownerId, ActivityEvent event, SubEventItem subEvent) {
         List<SubEventGroupItemDto> groups = resolveGroups(ownerId, event, subEvent);
+        ActivitySubEventStageRuntime stageRuntime = subEvent == null
+                ? null
+                : activitySubEventStageRuntimeRepository
+                        .findByOwnerIdAndSubEventId(normalizeId(ownerId), normalizeId(subEvent.id()))
+                        .orElse(null);
         List<EventTournamentGroupDto> result = new ArrayList<>();
         for (int index = 0; index < groups.size(); index += 1) {
             SubEventGroupItemDto group = groups.get(index);
@@ -430,7 +438,45 @@ public class ActivitiesEventLeaderboardService {
                     capacityMin,
                     capacityMax,
                     memberCounts.accepted(),
-                    memberCounts.pending()));
+                    memberCounts.pending(),
+                    groupResourceMetrics(stageRuntime, groupId)));
+        }
+        return result;
+    }
+
+    private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(
+            ActivitySubEventStageRuntime runtime,
+            String groupId) {
+        Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> byGroup = runtime == null
+                || runtime.getGroupResourceMetricsByAssetOwnerId() == null
+                ? Map.of()
+                : runtime.getGroupResourceMetricsByAssetOwnerId();
+        Map<String, Map<String, GroupResourceMetricRecord>> byAssetOwner = byGroup.getOrDefault(
+                normalizeId(groupId),
+                Map.of());
+        Map<String, int[]> totalsByType = new LinkedHashMap<>();
+        for (Map<String, GroupResourceMetricRecord> metricsByType : byAssetOwner.values()) {
+            for (Map.Entry<String, GroupResourceMetricRecord> entry :
+                    (metricsByType == null ? Map.<String, GroupResourceMetricRecord>of() : metricsByType).entrySet()) {
+                GroupResourceMetricRecord metric = entry.getValue();
+                if (metric == null) {
+                    continue;
+                }
+                int[] totals = totalsByType.computeIfAbsent(entry.getKey(), ignored -> new int[4]);
+                totals[0] += safeCount(metric.accepted());
+                totals[1] += safeCount(metric.pending());
+                totals[2] += safeCount(metric.capacityMin());
+                totals[3] += safeCount(metric.capacityMax());
+            }
+        }
+        Map<String, EventTournamentResourceMetricDto> result = new LinkedHashMap<>();
+        for (Map.Entry<String, int[]> entry : totalsByType.entrySet()) {
+            int[] totals = entry.getValue();
+            result.put(entry.getKey(), new EventTournamentResourceMetricDto(
+                    totals[0],
+                    totals[1],
+                    totals[2],
+                    Math.max(totals[2], totals[3])));
         }
         return result;
     }
@@ -508,6 +554,13 @@ public class ActivitiesEventLeaderboardService {
                                 row.goalDiff()))
                         .toList();
 
+        Set<String> persistedMemberIds = members.stream()
+                .filter(member -> !"-----".equals(member.memberName()))
+                .map(EventLeaderboardMemberDto::memberId)
+                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+        scoreRows = acceptedMembersFirst(scoreRows, persistedMemberIds, EventLeaderboardScoreStandingRowDto::memberId);
+        fifaRows = acceptedMembersFirst(fifaRows, persistedMemberIds, EventLeaderboardFifaStandingRowDto::memberId);
+
         return new EventLeaderboardGroupDto(
                 groupId,
                 safeText(group.name()),
@@ -582,20 +635,31 @@ public class ActivitiesEventLeaderboardService {
             List<EventLeaderboardEntry> entries) {
         String groupId = normalizeId(group == null ? null : group.id());
         List<EventLeaderboardMemberDto> persistedMembers = resolveMembers(eventId, subEventId, groupId);
-        if (!persistedMembers.isEmpty()) {
-            return persistedMembers;
-        }
-
         Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
-        int placeholderCount = Math.max(2, safeCount(group == null ? null : group.capacityMax()));
-        for (int index = 1; index <= placeholderCount; index += 1) {
-            String memberId = groupId + "-member-" + index;
-            membersById.put(memberId, new EventLeaderboardMemberDto(memberId, "Member " + index));
+        for (EventLeaderboardMemberDto member : persistedMembers) {
+            membersById.put(member.memberId(), member);
         }
         for (EventLeaderboardMemberDto member : resolveMembersFromEntries(groupId, entries)) {
             membersById.putIfAbsent(member.memberId(), member);
         }
+        int intendedMemberCount = Math.max(2, safeCount(group == null ? null : group.capacityMax()));
+        for (int index = 1; membersById.size() < intendedMemberCount; index += 1) {
+            String memberId = groupId + "-member-" + index;
+            membersById.putIfAbsent(memberId, new EventLeaderboardMemberDto(memberId, "-----"));
+        }
         return new ArrayList<>(membersById.values());
+    }
+
+    private <T> List<T> acceptedMembersFirst(
+            List<T> rows,
+            Set<String> acceptedMemberIds,
+            java.util.function.Function<T, String> memberId) {
+        if (rows == null || rows.isEmpty() || acceptedMemberIds == null || acceptedMemberIds.isEmpty()) {
+            return rows == null ? List.of() : rows;
+        }
+        return rows.stream()
+                .sorted(Comparator.comparingInt(row -> acceptedMemberIds.contains(normalizeId(memberId.apply(row))) ? 0 : 1))
+                .toList();
     }
 
     private GroupMemberCounts resolveGroupMemberCounts(String eventId, String subEventId, String groupId) {
@@ -671,7 +735,7 @@ public class ActivitiesEventLeaderboardService {
         if (normalizedMemberId.startsWith(placeholderPrefix)) {
             String suffix = normalizedMemberId.substring(placeholderPrefix.length());
             if (suffix.matches("\\d+")) {
-                return "Member " + suffix;
+                return "-----";
             }
         }
         return normalizedMemberId;
