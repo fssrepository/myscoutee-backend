@@ -83,7 +83,7 @@ class ActivitiesEventLeaderboardServiceTest {
         EventTournamentGroupsStateDto state = service.queryTournamentGroups("host", "event-1");
 
         assertThat(state.stages()).singleElement().satisfies(stage -> {
-            assertThat(stage.id()).isEqualTo("stage-1");
+            assertThat(stage.subEventId()).isEqualTo("stage-1");
             assertThat(stage.groups()).hasSize(2);
         });
     }

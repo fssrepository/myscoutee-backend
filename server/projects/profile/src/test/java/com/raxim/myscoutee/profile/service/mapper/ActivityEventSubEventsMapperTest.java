@@ -53,6 +53,28 @@ class ActivityEventSubEventsMapperTest {
         assertThat(past).isEmpty();
     }
 
+    @Test
+    void upcomingOrderStartsAtFarFutureEventWhenNoCalendarRangeIsProvided() {
+        Instant now = Instant.now();
+        Instant eventStart = now.plus(180, ChronoUnit.DAYS);
+        ActivityEvent parent = parentEvent(eventStart, List.of(slotTemplate(
+                "slot-future",
+                eventStart,
+                subEventDefinition(60))));
+        parent.setStartAtIso(eventStart.toString());
+        parent.setEndAtIso(eventStart.plus(10, ChronoUnit.DAYS).toString());
+
+        List<EventSubEventsSlotDto> upcoming = mapper.toSlotDtos(
+                "event-1",
+                parent,
+                new EventSubEventsQueryDto("user-1", "event-1", "upcoming", "day", null, null, null, false));
+
+        assertThat(upcoming).singleElement().satisfies(slot -> {
+            assertThat(slot.slotTemplateId()).isEqualTo("slot-future");
+            assertThat(slot.subEventItems()).extracting(item -> item.id()).containsExactly("stage-1");
+        });
+    }
+
     private ActivityEvent parentEvent(Instant now, List<EventSlotTemplateDto> slotTemplates) {
         ActivityEvent event = new ActivityEvent();
         event.setSourceId("event-1");

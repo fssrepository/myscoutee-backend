@@ -6460,7 +6460,10 @@ public class ActivitiesEventsService {
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         LocalDateTime horizonStart = parentStart.isAfter(now.minusDays(1)) ? parentStart : now.minusDays(1);
-        LocalDateTime horizonEnd = parentEnd.isBefore(now.plusDays(45)) ? parentEnd : now.plusDays(45);
+        LocalDateTime horizonAnchor = parentStart.isAfter(now) ? parentStart : now;
+        LocalDateTime horizonEnd = parentEnd.isBefore(horizonAnchor.plusDays(45))
+                ? parentEnd
+                : horizonAnchor.plusDays(45);
         if (horizonEnd.isBefore(horizonStart)) {
             return List.of();
         }

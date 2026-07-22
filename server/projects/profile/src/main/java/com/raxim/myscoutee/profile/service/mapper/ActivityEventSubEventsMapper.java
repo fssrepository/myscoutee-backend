@@ -394,8 +394,15 @@ public class ActivityEventSubEventsMapper {
         LocalDateTime rangeStart = queryRangeStart(query);
         LocalDateTime rangeEnd = queryRangeEnd(query);
         boolean isPast = "past".equalsIgnoreCase(safeText(query == null ? null : query.order()));
-        LocalDateTime defaultStart = isPast ? now.minusDays(45) : now;
-        LocalDateTime defaultEnd = isPast ? now : now.plusDays(45);
+        LocalDateTime defaultStart;
+        LocalDateTime defaultEnd;
+        if (isPast) {
+            defaultEnd = minDateTime(parentEnd, now);
+            defaultStart = defaultEnd.minusDays(45);
+        } else {
+            defaultStart = maxDateTime(parentStart, now);
+            defaultEnd = defaultStart.plusDays(45);
+        }
         LocalDateTime start = maxDateTime(parentStart, rangeStart == null ? defaultStart : rangeStart);
         LocalDateTime end = minDateTime(parentEnd, rangeEnd == null ? defaultEnd : rangeEnd);
         return end.isBefore(start) ? null : new SlotGenerationHorizon(start, end);
