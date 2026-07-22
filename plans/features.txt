@@ -17,6 +17,7 @@ and show slot manager or similar)
 5) asset save similar problem, then event editor save
 6) event feedback does not list past event to maek feedback
 7) ticket has one red counter badge but the list is empty
+8) asset assignment waits for admin approval
 
 pls. mirror the frontend local for http also (java backend), 
 as i saw that esemeny elhagyasa does not show the element 

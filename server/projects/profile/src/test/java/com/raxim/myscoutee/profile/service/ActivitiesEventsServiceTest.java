@@ -621,6 +621,8 @@ class ActivitiesEventsServiceTest {
         hosting.setStatus(ActivityEvent.STATUS_ACTIVE);
 
         ActivityEvent invitation = event("invite-1", "other-host", 0d);
+        invitation.setOwnerUserId("accepted-member");
+        invitation.setAdmins(List.of("accepted-member", "other-host"));
         invitation.setStatus(ActivityEvent.STATUS_ACTIVE);
         invitation.setInvitedMemberUserIds(List.of("host"));
 
@@ -643,6 +645,10 @@ class ActivitiesEventsServiceTest {
                 .containsExactly("hosting-1");
         assertThat(invitationResponse.records()).extracting(EventDto::id)
                 .containsExactly("invite-1");
+        assertThat(invitationResponse.records()).singleElement().satisfies(record ->
+                assertThat(record.adminIds())
+                        .containsExactly("other-host")
+                        .doesNotContain("host"));
         assertThat(trashResponse.records()).extracting(EventDto::id)
                 .containsExactly("trash-1");
     }

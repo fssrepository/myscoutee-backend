@@ -4440,6 +4440,7 @@ public class ActivitiesEventsService {
             }
             ActivityEvent projection = cloneDocument(record);
             projection.setOwnerUserId(viewer.userId());
+            projection.setAdmins(resolveAdminUserIds(sourceId, projection.getCreatorUserId()));
             projection.normalizeLifecycleState();
             invitationRecordsBySourceId.put(sourceId, projection);
         }
