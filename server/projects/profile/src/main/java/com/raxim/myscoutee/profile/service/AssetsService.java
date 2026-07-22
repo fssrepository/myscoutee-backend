@@ -485,16 +485,12 @@ public class AssetsService {
         Asset current = findAssetByAssetId(normalizedAssetId).orElse(null);
         Optional<ActivityMember> existingMember = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, normalizedAssetId, normalizedTargetUserId);
-        AssetRequestRecord targetRequest = findAssetRequest(current, normalizedTargetUserId);
-        String targetRequestEventId = assetRequestEventId(targetRequest);
         if (current == null
                 || normalizedTargetUserId.equals(normalizeId(current.getOwnerUserId()))
                 || !canManageAssetMembers(current, normalizedUserId)
                 || !isActiveUser(normalizedTargetUserId)
                 || isAcceptedAssetManagerMember(existingMember.orElse(null))
-                || !isKnownAssetParticipant(current, normalizedTargetUserId, existingMember.orElse(null))
-                || (StringUtils.hasText(targetRequestEventId)
-                        && !accessControlService.canReceiveEventAssetManagerRole(targetRequestEventId, normalizedTargetUserId))) {
+                || !isKnownAssetParticipant(current, normalizedTargetUserId, existingMember.orElse(null))) {
             return null;
         }
 
@@ -534,9 +530,36 @@ public class AssetsService {
         if (!updateAssetManagerRequestsIfSnapshotCurrent(current, next)) {
             return null;
         }
+        syncAssetRequestProjection(current, next);
         affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
         enqueueAssetManagerPromotedNotification(next, normalizedUserId, normalizedTargetUserId);
         return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), normalizedUserId);
+    }
+
+    public AssetDto revokeManager(AssetMakeManagerRequestDto request) {
+        if (request == null) return null;
+        String actorId = normalizeId(request.userId());
+        String assetId = normalizeId(request.assetId());
+        String targetId = normalizeId(request.targetUserId());
+        Asset current = findAssetByAssetId(assetId).orElse(null);
+        Optional<ActivityMember> member = activityMembersRepository
+                .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_ASSET, assetId, targetId);
+        if (current == null || !canManageAssetMembers(current, actorId)
+                || !accessControlService.canCurrentActorPromoteAssetManager(actorId, assetId)
+                || !isAcceptedAssetManagerMember(member.orElse(null))) return null;
+        Asset next = cloneAsset(current);
+        next.setRequests(safeRequests(current.getRequests()).stream().map(item ->
+                targetId.equals(normalizeId(item.userId()))
+                        ? new AssetRequestRecord(item.id(), item.userId(), item.name(), item.initials(), item.gender(),
+                                item.status(), "Borrow request approved by the owner.", item.requestKind(),
+                                item.requestedAtIso(), item.booking())
+                        : item).toList());
+        next.setUpdatedDate(Instant.now().toString());
+        next.setUpdatedUser(actorId);
+        if (!updateAssetManagerRequestsIfSnapshotCurrent(current, next)) return null;
+        member.ifPresent(activityMembersRepository::delete);
+        syncAssetRequestProjection(current, next);
+        return toAssetDto(next, resolveOwnerNamesByUserId(List.of(next)), actorId);
     }
 
     private boolean updateAssetTakeOverIfSnapshotCurrent(Asset current, Asset next) {
@@ -859,7 +882,13 @@ public class AssetsService {
                     safeText(request.requestKind()),
                     safeText(request.requestedAtIso()),
                     request.booking(),
-                    current == null || current.menuActions() == null ? List.of() : List.copyOf(current.menuActions()),
+                    "Promoted to asset manager.".equals(safeText(request.note()))
+                            ? List.of("revokeManager")
+                            : current == null || current.menuActions() == null
+                                    ? List.of()
+                                    : current.menuActions().contains("revokeManager")
+                                            ? List.of("makeManager")
+                                            : List.copyOf(current.menuActions()),
                     createdDate,
                     updatedDate));
         }

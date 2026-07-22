@@ -105,7 +105,7 @@ class AssetsServiceTest {
     }
 
     @Test
-    void makeManagerRejectsEventBorrowWhenRequesterIsNotEventMember() {
+    void makeManagerAllowsAcceptedAssetParticipantWithoutChangingEventMembership() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
@@ -125,7 +125,12 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("asset", "asset-1", "u2"))
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
-        when(accessControlService.canReceiveEventAssetManagerRole("event-1", "u2")).thenReturn(false);
+        when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1"))
+                .thenReturn(List.of(member("asset-1", "u2", "Manager", "accepted")));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
+                .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
 
         AssetsService service = new AssetsService(
                 assetsRepository,
@@ -144,12 +149,11 @@ class AssetsServiceTest {
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
-        assertThat(card).isNull();
-        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
-        verify(mongoTemplate, never()).updateFirst(any(), any(), eq(Asset.class));
-        verify(affinityRecomputeTaskService, never()).enqueueAssetChanged(any(), any());
-        verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
-        verify(accessControlService).canReceiveEventAssetManagerRole("event-1", "u2");
+        assertThat(card).isNotNull();
+        verify(activityMembersRepository).save(any(ActivityMember.class));
+        verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
+        verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
+        verify(accessControlService, never()).canReceiveEventAssetManagerRole(any(), any());
     }
 
     @Test

@@ -151,6 +151,7 @@ public class AssetAvailabilityMapper {
                 sourceRequestId(request),
                 normalizeId(request == null ? assetId : request.assetId()),
                 normalizeId(request == null ? ownerUserId : request.ownerUserId()),
+                normalizeId(request == null ? null : request.userId()),
                 requestRange == null ? "" : requestRange.start().toString(),
                 safeNullableText(booking == null ? null : booking.startAtIso()),
                 safeNullableText(booking == null ? null : booking.endAtIso()),
