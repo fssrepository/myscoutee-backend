@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +21,7 @@ import com.raxim.myscoutee.profile.data.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventLeaderboardDtos.EventTournamentGroupsStateDto;
 import com.raxim.myscoutee.profile.data.document.SubEventItem;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
@@ -90,6 +92,32 @@ class ActivitiesEventLeaderboardServiceTest {
     }
 
     @Test
+    void tournamentStageGroupsUseGroupChannelOwnerForAcceptedAndPendingMembers() {
+        ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
+                activityEventsRepository,
+                activitySubEventGroupsRepository,
+                activitySubEventStageRuntimeRepository,
+                eventLeaderboardEntriesRepository,
+                activitiesMembersService,
+                accessControlService);
+        ActivityEvent record = eventRecord("event-1", "canonical");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(record));
+        String groupOwnerId = "event-1:sub-1:sub-1:group:1";
+        when(activitiesMembersService.queryMembers("group", groupOwnerId)).thenReturn(List.of(
+                activityMember("accepted-member", "accepted"),
+                activityMember("pending-member", "pending")));
+
+        var groups = service.queryTournamentStageGroups("event-1", null, "sub-1");
+
+        assertThat(groups).hasSize(2);
+        assertThat(groups.getFirst()).satisfies(group -> {
+            assertThat(group.membersAccepted()).isEqualTo(1);
+            assertThat(group.membersPending()).isEqualTo(1);
+        });
+        verify(activitiesMembersService).queryMembers("group", groupOwnerId);
+    }
+
+    @Test
     void upsertEntryRejectsDeniedActorBeforeSavingEntry() {
         ActivitiesEventLeaderboardService service = new ActivitiesEventLeaderboardService(
                 activityEventsRepository,
@@ -141,8 +169,7 @@ class ActivitiesEventLeaderboardServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(slotId, "sub-1"))
                 .thenReturn(List.of(existingEntry));
-        when(activitiesMembersService.queryMembers("group", "sub-1:group:1")).thenReturn(List.of());
-        when(activitiesMembersService.queryMembers("group", "sub-1:group:2")).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers(anyString(), anyString())).thenReturn(List.of());
 
         var state = service.queryState(slotId, "sub-1");
 
@@ -173,8 +200,7 @@ class ActivitiesEventLeaderboardServiceTest {
         when(accessControlService.canCurrentActorSubmitLeaderboardEntry("member-1", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(parent));
         when(eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(slotId, "sub-1")).thenReturn(List.of());
-        when(activitiesMembersService.queryMembers("group", "sub-1:group:1")).thenReturn(List.of());
-        when(activitiesMembersService.queryMembers("group", "sub-1:group:2")).thenReturn(List.of());
+        when(activitiesMembersService.queryMembers(anyString(), anyString())).thenReturn(List.of());
 
         service.upsertEntry(new EventLeaderboardEntryUpsertRequestDto(
                 "member-1",
@@ -239,5 +265,28 @@ class ActivitiesEventLeaderboardServiceTest {
                 null,
                 null,
                 null);
+    }
+
+    private ActivityMemberEntryDto activityMember(String userId, String status) {
+        return new ActivityMemberEntryDto(
+                "member-" + userId,
+                userId,
+                userId,
+                "U",
+                "male",
+                "",
+                status,
+                "Member",
+                status,
+                null,
+                null,
+                null,
+                false,
+                null,
+                null,
+                "",
+                null,
+                null,
+                List.of());
     }
 }

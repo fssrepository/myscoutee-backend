@@ -56,11 +56,11 @@ public class ActivitiesResourcesController {
                     @RequiresPolicy(
                             key = AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT,
                             subject = "#request.assetOwnerUserId()",
-                            resourceId = "#request.ownerId()"),
+                            resourceId = "#request.authorizationEventId()"),
                     @RequiresPolicy(
                             key = AccessPolicyKeys.RESOURCE_ASSIGN_MANAGE,
                             subject = "#actorUserId",
-                            resourceId = "#request.ownerId()")
+                            resourceId = "#request.authorizationEventId()")
             })
     public ActivitySubEventResourceStateDto replace(@RequestBody ActivitySubEventResourceStateDto request) {
         return activitiesResourcesService.replace(request);

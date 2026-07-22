@@ -196,6 +196,26 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void replaceAuthorizesGeneratedSlotAssignmentAgainstParentEvent() {
+        authenticateAs("u1");
+        String slotOwnerId = "event-1:slot:slot-1:2026-07-22T13:30:00Z";
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))
+                .thenReturn(Optional.of(member("event-1", "u1", "accepted")));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndAssetOwnerUserIdAndStatusNot(
+                slotOwnerId, "sub-1", "u1", "D")).thenReturn(Optional.empty());
+        when(activitySubEventResourcesRepository.save(any(ActivitySubEventResource.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ActivitySubEventResourceStateDto saved = service.replace(request(slotOwnerId, "sub-1", "u1"));
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.ownerId()).isEqualTo(slotOwnerId);
+        verify(assetsService).queryAssignableAssetDetails("u1", "event-1", "sub-1", Set.of());
+        verify(activitiesMembersService).refreshEventParticipationProjection(slotOwnerId);
+    }
+
+    @Test
     void replacePersistsBorrowedAssetAndReturnsCanonicalFallbackCard() {
         authenticateAs("u1");
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "u1"))

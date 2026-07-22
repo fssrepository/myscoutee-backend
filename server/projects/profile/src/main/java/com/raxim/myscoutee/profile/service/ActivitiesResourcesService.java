@@ -111,6 +111,7 @@ public class ActivitiesResourcesService {
         String ownerId = normalizeId(request.ownerId());
         String subEventId = normalizeId(request.subEventId());
         String assetOwnerUserId = normalizeId(request.assetOwnerUserId());
+        String authorizationEventId = normalizeId(request.authorizationEventId());
         if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId) || !StringUtils.hasText(assetOwnerUserId)) {
             return null;
         }
@@ -118,7 +119,7 @@ public class ActivitiesResourcesService {
                 && !accessControlService.canCurrentActorManageEventResourceAssignment(request)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to assign resources for this event.");
         }
-        if (!accessControlService.canAssignEventResourcesForSubject(ownerId, assetOwnerUserId)) {
+        if (!accessControlService.canAssignEventResourcesForSubject(authorizationEventId, assetOwnerUserId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event membership is required to assign resources.");
         }
 
@@ -127,7 +128,7 @@ public class ActivitiesResourcesService {
         String nowIso = Instant.now().toString();
         Map<String, AssetDetailDto> eligibleAssets = assetsService.queryAssignableAssetDetails(
                 assetOwnerUserId,
-                ownerId,
+                authorizationEventId,
                 subEventId,
                 referencedAssetIds(request));
         Set<String> eligibleAssetIds = eligibleAssets == null ? Set.of() : eligibleAssets.keySet();
@@ -518,7 +519,7 @@ public class ActivitiesResourcesService {
         }
         Map<String, AssetDetailDto> details = assetsService.queryAssignableAssetDetails(
                 record.getAssetOwnerUserId(),
-                record.getOwnerId(),
+                authorizationEventId(record.getOwnerId()),
                 record.getSubEventId(),
                 referencedAssetIds(record));
         return details == null ? Map.of() : details;
@@ -718,6 +719,12 @@ public class ActivitiesResourcesService {
             return firstValue;
         }
         return safeText(second);
+    }
+
+    private String authorizationEventId(String ownerId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        int slotMarker = normalizedOwnerId.indexOf(":slot:");
+        return slotMarker > 0 ? normalizedOwnerId.substring(0, slotMarker) : normalizedOwnerId;
     }
 
     private void refreshEventParticipationProjection(String ownerId) {

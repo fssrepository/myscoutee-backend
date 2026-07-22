@@ -452,6 +452,11 @@ public final class SharedDtos {
             Map<String, Map<String, SubEventAssignedAssetSettingsDto>> assetSettingsByType,
             Map<String, List<SubEventSupplyContributionEntryDto>> supplyContributionEntriesByAssetId,
             Map<String, List<AssetDetailDto>> fallbackAssetCardsByType) {
+        public String authorizationEventId() {
+            String normalizedOwnerId = ownerId == null ? "" : ownerId.trim();
+            int slotMarker = normalizedOwnerId.indexOf(":slot:");
+            return slotMarker > 0 ? normalizedOwnerId.substring(0, slotMarker) : normalizedOwnerId;
+        }
     }
 
     public record ActivitySubEventStageRuntimeStateDto(

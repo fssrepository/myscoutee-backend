@@ -49,6 +49,8 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 public class ActivitiesEventLeaderboardService {
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_DELETED = "D";
+    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
+    private static final String MEMBER_STATUS_PENDING = "pending";
 
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
@@ -417,14 +419,18 @@ public class ActivitiesEventLeaderboardService {
             }
             int capacityMin = Math.max(0, group.capacityMin() == null ? 0 : group.capacityMin());
             int capacityMax = Math.max(capacityMin, group.capacityMax() == null ? capacityMin : group.capacityMax());
+            GroupMemberCounts memberCounts = resolveGroupMemberCounts(
+                    ownerId,
+                    normalizeId(subEvent.id()),
+                    groupId);
             result.add(new EventTournamentGroupDto(
                     groupId,
                     safeText(group.name()),
                     safeText(group.source()).isBlank() ? "manual" : safeText(group.source()),
                     capacityMin,
                     capacityMax,
-                    resolveMembers(groupId).size(),
-                    0));
+                    memberCounts.accepted(),
+                    memberCounts.pending()));
         }
         return result;
     }
@@ -446,7 +452,7 @@ public class ActivitiesEventLeaderboardService {
             List<EventLeaderboardEntry> entries,
         GeneratorModels.ScoreGeneratorResult result) {
         String groupId = normalizeId(group.id());
-        List<EventLeaderboardMemberDto> members = resolveLeaderboardMembers(group, entries);
+        List<EventLeaderboardMemberDto> members = resolveLeaderboardMembers(eventId, subEventId, group, entries);
         Map<String, String> memberNameById = members.stream()
                 .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
 
@@ -523,7 +529,7 @@ public class ActivitiesEventLeaderboardService {
             SubEventGroupItemDto group,
         List<EventLeaderboardEntry> entries) {
         String groupId = normalizeId(group.id());
-        List<GeneratorModels.LeaderboardMember> members = resolveLeaderboardMembers(group, entries).stream()
+        List<GeneratorModels.LeaderboardMember> members = resolveLeaderboardMembers(eventId, subEventId, group, entries).stream()
                 .map(member -> new GeneratorModels.LeaderboardMember(member.memberId(), member.memberName()))
                 .toList();
         List<GeneratorModels.ScoreLeaderboardEntry> scoreEntries = entries.stream()
@@ -553,10 +559,13 @@ public class ActivitiesEventLeaderboardService {
                 fifaMatches);
     }
 
-    private List<EventLeaderboardMemberDto> resolveMembers(String groupId) {
-        List<ActivityMemberEntryDto> entries = activitiesMembersService.queryMembers("group", groupId);
+    private List<EventLeaderboardMemberDto> resolveMembers(String eventId, String subEventId, String groupId) {
+        List<ActivityMemberEntryDto> entries = resolveGroupMemberEntries(eventId, subEventId, groupId);
         List<EventLeaderboardMemberDto> members = new ArrayList<>();
         for (ActivityMemberEntryDto entry : entries) {
+            if (!MEMBER_STATUS_ACCEPTED.equalsIgnoreCase(safeText(entry.status()))) {
+                continue;
+            }
             String memberId = normalizeId(entry.userId());
             if (!StringUtils.hasText(memberId)) {
                 continue;
@@ -567,10 +576,12 @@ public class ActivitiesEventLeaderboardService {
     }
 
     private List<EventLeaderboardMemberDto> resolveLeaderboardMembers(
+            String eventId,
+            String subEventId,
             SubEventGroupItemDto group,
             List<EventLeaderboardEntry> entries) {
         String groupId = normalizeId(group == null ? null : group.id());
-        List<EventLeaderboardMemberDto> persistedMembers = resolveMembers(groupId);
+        List<EventLeaderboardMemberDto> persistedMembers = resolveMembers(eventId, subEventId, groupId);
         if (!persistedMembers.isEmpty()) {
             return persistedMembers;
         }
@@ -585,6 +596,51 @@ public class ActivitiesEventLeaderboardService {
             membersById.putIfAbsent(member.memberId(), member);
         }
         return new ArrayList<>(membersById.values());
+    }
+
+    private GroupMemberCounts resolveGroupMemberCounts(String eventId, String subEventId, String groupId) {
+        int accepted = 0;
+        int pending = 0;
+        for (ActivityMemberEntryDto entry : resolveGroupMemberEntries(eventId, subEventId, groupId)) {
+            String status = safeText(entry == null ? null : entry.status());
+            if (MEMBER_STATUS_ACCEPTED.equalsIgnoreCase(status)) {
+                accepted += 1;
+            } else if (MEMBER_STATUS_PENDING.equalsIgnoreCase(status)) {
+                pending += 1;
+            }
+        }
+        return new GroupMemberCounts(accepted, pending);
+    }
+
+    private List<ActivityMemberEntryDto> resolveGroupMemberEntries(
+            String eventId,
+            String subEventId,
+            String groupId) {
+        String normalizedGroupId = normalizeId(groupId);
+        String memberOwnerId = groupMemberOwnerId(eventId, subEventId, normalizedGroupId);
+        return StringUtils.hasText(memberOwnerId)
+                ? activitiesMembersService.queryMembers("group", memberOwnerId)
+                : List.of();
+    }
+
+    private String groupMemberOwnerId(String eventId, String subEventId, String groupId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedGroupId)) {
+            return "";
+        }
+        if (StringUtils.hasText(normalizedEventId)
+                && (normalizedGroupId.equals(normalizedEventId) || normalizedGroupId.startsWith(normalizedEventId + ":"))) {
+            return normalizedGroupId;
+        }
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return normalizedGroupId;
+        }
+        return normalizedEventId + ":" + normalizedSubEventId + ":" + normalizedGroupId;
+    }
+
+    private record GroupMemberCounts(int accepted, int pending) {
     }
 
     private List<EventLeaderboardMemberDto> resolveMembersFromEntries(String groupId, List<EventLeaderboardEntry> entries) {
