@@ -7,10 +7,12 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotPage;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.EventSlotTemplateDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
@@ -34,16 +37,317 @@ public class ActivityEventSubEventsMapper {
             String parentEventId,
             ActivityEvent parentRecord,
             EventSubEventsQueryDto query) {
+        return toSlotPage(parentEventId, parentRecord, query).slots();
+    }
+
+    public EventSubEventsSlotPage toSlotPage(
+            String parentEventId,
+            ActivityEvent parentRecord,
+            EventSubEventsQueryDto query) {
         String normalizedParentEventId = normalizeId(parentEventId);
         int direction = "past".equalsIgnoreCase(safeText(query == null ? null : query.order())) ? -1 : 1;
         long nowMs = System.currentTimeMillis();
-        return subEventsSlotSources(normalizedParentEventId, parentRecord, query, nowMs).stream()
+        if (parentRecord != null
+                && !isGeneratedSlotRecord(parentRecord)
+                && !Boolean.FALSE.equals(parentRecord.getSubEventsEnabled())
+                && Boolean.TRUE.equals(parentRecord.getSlotsEnabled())
+                && parentRecord.getSlotTemplates() != null
+                && !parentRecord.getSlotTemplates().isEmpty()) {
+            return templateSlotPage(normalizedParentEventId, parentRecord, query, nowMs, direction);
+        }
+        List<EventSubEventsSlotDto> slots = subEventsSlotSources(normalizedParentEventId, parentRecord, query, nowMs).stream()
                 .filter(source -> source.definitions() != null && !source.definitions().isEmpty())
                 .filter(source -> slotSourceMatchesOrder(source, query, nowMs))
                 .filter(source -> slotSourceOverlapsRange(source, query))
                 .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
                 .map(this::toSlotDto)
                 .toList();
+        return slicePage(slots, query);
+    }
+
+    private EventSubEventsSlotPage slicePage(List<EventSubEventsSlotDto> slots, EventSubEventsQueryDto query) {
+        int pageSize = pageSize(query);
+        int offset = Math.min(slots.size(), pageOffset(query, pageSize));
+        int end = Math.min(slots.size(), offset + pageSize);
+        return new EventSubEventsSlotPage(
+                slots.subList(offset, end),
+                slots.size(),
+                end < slots.size() ? Integer.toString(end) : null);
+    }
+
+    private EventSubEventsSlotPage templateSlotPage(
+            String parentEventId,
+            ActivityEvent parent,
+            EventSubEventsQueryDto query,
+            long nowMs,
+            int direction) {
+        LocalDateTime parentStart = toLocalDateTime(parent.getStartAtIso());
+        LocalDateTime parentEnd = toLocalDateTime(parent.getEndAtIso());
+        if (parentStart == null || parentEnd == null || parentEnd.isBefore(parentStart)) {
+            return new EventSubEventsSlotPage(List.of(), 0, null);
+        }
+        List<EventSlotTemplateDto> templates = parent.getSlotTemplates();
+        Set<LocalDate> overrideDates = templates.stream()
+                .map(template -> slotOverrideDateKey(template == null ? null : template.overrideDate()))
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        List<OccurrencePlan> plans = new ArrayList<>();
+        List<SubEventsSlotSource> overrides = new ArrayList<>();
+        LocalDateTime now = toUtcDateTime(nowMs);
+
+        for (EventSlotTemplateDto template : templates) {
+            if (template == null || Boolean.TRUE.equals(template.closed())) {
+                continue;
+            }
+            LocalDateTime templateStart = toLocalDateTime(template.startAt());
+            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
+            if (templateStart == null || definitions.isEmpty()) {
+                continue;
+            }
+            long duration = subEventDefinitionsDurationMinutes(definitions);
+            if (slotOverrideDateKey(template.overrideDate()) != null) {
+                LocalDateTime end = templateStart.plusMinutes(duration);
+                SubEventsSlotSource source = templateSlotSource(parentEventId, parent, template, definitions, templateStart, end);
+                if (!templateStart.isBefore(parentStart)
+                        && !end.isAfter(parentEnd)
+                        && slotSourceMatchesOrder(source, query, nowMs)
+                        && slotSourceOverlapsRange(source, query)) {
+                    overrides.add(source);
+                }
+                continue;
+            }
+            LocalDateTime lower = parentStart;
+            LocalDateTime upper = parentEnd.minusMinutes(Math.max(0L, duration));
+            LocalDateTime rangeStart = queryRangeStart(query);
+            LocalDateTime rangeEnd = queryRangeEnd(query);
+            if (rangeStart != null) {
+                lower = maxDateTime(lower, rangeStart.minusMinutes(Math.max(0L, duration)));
+            }
+            if (rangeEnd != null) {
+                upper = minDateTime(upper, rangeEnd);
+            }
+            boolean past = "past".equalsIgnoreCase(safeText(query == null ? null : query.order()));
+            if (past) {
+                upper = minDateTime(upper, now.minusMinutes(Math.max(0L, duration)));
+            } else {
+                lower = maxDateTime(lower, now.minusMinutes(Math.max(0L, duration)).plusNanos(1L));
+            }
+            if (upper.isBefore(lower)) {
+                continue;
+            }
+            String frequency = normalizedFrequency(parent.getFrequency());
+            long first = indexAtOrAfter(frequency, templateStart, lower);
+            long last = indexAtOrBefore(frequency, templateStart, upper);
+            if (last >= first && (allowsOccurrencesBeforeTemplate(frequency) || last >= 0L)) {
+                plans.add(new OccurrencePlan(
+                        template, definitions, duration, frequency, templateStart, parentStart, first, last, overrideDates));
+            }
+        }
+
+        long totalLong = overrides.size();
+        for (OccurrencePlan plan : plans) {
+            totalLong += validCount(plan);
+        }
+        int total = (int) Math.min(Integer.MAX_VALUE, totalLong);
+        int pageSize = pageSize(query);
+        int offset = Math.min(total, pageOffset(query, pageSize));
+        Comparator<OccurrenceCursor> comparator = Comparator
+                .comparing(OccurrenceCursor::start)
+                .thenComparing(cursor -> safeText(cursor.plan() == null ? null : cursor.plan().template().id()));
+        if (direction < 0) {
+            comparator = comparator.reversed();
+        }
+        PriorityQueue<OccurrenceCursor> queue = new PriorityQueue<>(comparator);
+        for (OccurrencePlan plan : plans) {
+            OccurrenceCursor cursor = validCursor(plan, direction < 0 ? plan.last() : plan.first(), direction);
+            if (cursor != null) {
+                queue.add(cursor);
+            }
+        }
+        for (SubEventsSlotSource source : overrides) {
+            LocalDateTime start = toLocalDateTime(source.startAt());
+            if (start != null) {
+                queue.add(new OccurrenceCursor(null, 0L, start, source));
+            }
+        }
+
+        List<EventSubEventsSlotDto> page = new ArrayList<>(pageSize);
+        int position = 0;
+        while (!queue.isEmpty() && page.size() < pageSize) {
+            OccurrenceCursor cursor = queue.poll();
+            if (position++ >= offset) {
+                SubEventsSlotSource source = cursor.source() != null
+                        ? cursor.source()
+                        : templateSlotSource(
+                                parentEventId,
+                                parent,
+                                cursor.plan().template(),
+                                cursor.plan().definitions(),
+                                cursor.start(),
+                                cursor.start().plusMinutes(cursor.plan().duration()));
+                page.add(toSlotDto(source));
+            }
+            if (cursor.plan() != null) {
+                OccurrenceCursor next = validCursor(cursor.plan(), cursor.index() + direction, direction);
+                if (next != null) {
+                    queue.add(next);
+                }
+            }
+        }
+        int nextOffset = offset + page.size();
+        return new EventSubEventsSlotPage(page, total, nextOffset < total ? Integer.toString(nextOffset) : null);
+    }
+
+    private OccurrenceCursor validCursor(OccurrencePlan plan, long index, int direction) {
+        long current = index;
+        while (current >= plan.first() && current <= plan.last()) {
+            LocalDateTime start = occurrenceAt(plan.frequency(), plan.templateStart(), current);
+            LocalDate key = slotOccurrenceAnchorDateKey(start, plan.templateStart(), plan.parentStart());
+            if (key == null || !plan.overrideDates().contains(key)) {
+                return new OccurrenceCursor(plan, current, start, null);
+            }
+            current += direction;
+        }
+        return null;
+    }
+
+    private long validCount(OccurrencePlan plan) {
+        long count = plan.last() - plan.first() + 1L;
+        if (plan.overrideDates().isEmpty()) {
+            return count;
+        }
+        Set<Long> removed = new LinkedHashSet<>();
+        long offsetMinutes = ChronoUnit.MINUTES.between(plan.parentStart(), plan.templateStart());
+        for (LocalDate overrideDate : plan.overrideDates()) {
+            LocalDateTime target = overrideDate.atTime(plan.parentStart().toLocalTime()).plusMinutes(offsetMinutes);
+            long candidate = indexAtOrAfter(plan.frequency(), plan.templateStart(), target.minusDays(2));
+            for (long index = Math.max(plan.first(), candidate - 2L);
+                    index <= Math.min(plan.last(), candidate + 4L);
+                    index += 1L) {
+                LocalDateTime start = occurrenceAt(plan.frequency(), plan.templateStart(), index);
+                if (overrideDate.equals(slotOccurrenceAnchorDateKey(start, plan.templateStart(), plan.parentStart()))) {
+                    removed.add(index);
+                }
+            }
+        }
+        return Math.max(0L, count - removed.size());
+    }
+
+    private String normalizedFrequency(String value) {
+        String frequency = safeText(value).toLowerCase();
+        return !StringUtils.hasText(frequency) || "custom".equals(frequency) ? "one-time" : frequency;
+    }
+
+    private long indexAtOrAfter(String frequency, LocalDateTime start, LocalDateTime target) {
+        if (isOneTime(frequency)) {
+            return target == null || !target.isAfter(start) ? 0L : 1L;
+        }
+        long index = approximateIndex(frequency, start, target);
+        long minimum = allowsOccurrencesBeforeTemplate(frequency) ? Long.MIN_VALUE : 0L;
+        while (index > minimum && !occurrenceAt(frequency, start, index - 1L).isBefore(target)) {
+            index -= 1L;
+        }
+        while (occurrenceAt(frequency, start, index).isBefore(target)) {
+            index += 1L;
+        }
+        return index;
+    }
+
+    private long indexAtOrBefore(String frequency, LocalDateTime start, LocalDateTime target) {
+        if (isOneTime(frequency)) {
+            return target != null && !target.isBefore(start) ? 0L : -1L;
+        }
+        if (target == null || (!allowsOccurrencesBeforeTemplate(frequency) && target.isBefore(start))) {
+            return -1L;
+        }
+        long index = approximateIndex(frequency, start, target);
+        long minimum = allowsOccurrencesBeforeTemplate(frequency) ? Long.MIN_VALUE : 0L;
+        while (index > minimum && occurrenceAt(frequency, start, index).isAfter(target)) {
+            index -= 1L;
+        }
+        while (!occurrenceAt(frequency, start, index + 1L).isAfter(target)) {
+            index += 1L;
+        }
+        return occurrenceAt(frequency, start, index).isAfter(target) ? -1L : index;
+    }
+
+    private long approximateIndex(String frequency, LocalDateTime start, LocalDateTime target) {
+        if (target == null) {
+            return 0L;
+        }
+        long days = ChronoUnit.DAYS.between(start.toLocalDate(), target.toLocalDate());
+        if ("daily".equals(frequency)) return days;
+        if ("weekly".equals(frequency)) return Math.floorDiv(days, 7L);
+        if ("bi-weekly".equals(frequency) || "biweekly".equals(frequency)) return Math.max(0L, Math.floorDiv(days, 14L));
+        if ("monthly".equals(frequency)) {
+            return ChronoUnit.MONTHS.between(java.time.YearMonth.from(start), java.time.YearMonth.from(target));
+        }
+        return target.getYear() - start.getYear();
+    }
+
+    private LocalDateTime occurrenceAt(String frequency, LocalDateTime start, long index) {
+        if ("daily".equals(frequency)) return start.plusDays(index);
+        if ("weekly".equals(frequency)) return start.plusWeeks(index);
+        if ("bi-weekly".equals(frequency) || "biweekly".equals(frequency)) return start.plusWeeks(index * 2L);
+        if ("monthly".equals(frequency)) return start.plusMonths(index);
+        if ("yearly".equals(frequency) || "annual".equals(frequency) || "annually".equals(frequency)) return start.plusYears(index);
+        return start;
+    }
+
+    private boolean allowsOccurrencesBeforeTemplate(String frequency) {
+        return "daily".equals(frequency)
+                || "weekly".equals(frequency)
+                || "monthly".equals(frequency)
+                || "yearly".equals(frequency)
+                || "annual".equals(frequency)
+                || "annually".equals(frequency);
+    }
+
+    private boolean isOneTime(String frequency) {
+        return !"daily".equals(frequency)
+                && !"weekly".equals(frequency)
+                && !"bi-weekly".equals(frequency)
+                && !"biweekly".equals(frequency)
+                && !"monthly".equals(frequency)
+                && !"yearly".equals(frequency)
+                && !"annual".equals(frequency)
+                && !"annually".equals(frequency);
+    }
+
+    private int pageSize(EventSubEventsQueryDto query) {
+        int value = query == null || query.pageSize() == null ? 12 : query.pageSize();
+        return Math.max(1, Math.min(240, value));
+    }
+
+    private int pageOffset(EventSubEventsQueryDto query, int pageSize) {
+        String cursor = safeText(query == null ? null : query.cursor());
+        if (StringUtils.hasText(cursor)) {
+            try {
+                return Math.max(0, Integer.parseInt(cursor));
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        int page = query == null || query.page() == null ? 0 : Math.max(0, query.page());
+        return (int) Math.min(Integer.MAX_VALUE, (long) page * pageSize);
+    }
+
+    private record OccurrencePlan(
+            EventSlotTemplateDto template,
+            List<SubEventDefinitionDto> definitions,
+            long duration,
+            String frequency,
+            LocalDateTime templateStart,
+            LocalDateTime parentStart,
+            long first,
+            long last,
+            Set<LocalDate> overrideDates) {
+    }
+
+    private record OccurrenceCursor(
+            OccurrencePlan plan,
+            long index,
+            LocalDateTime start,
+            SubEventsSlotSource source) {
     }
 
     private EventSubEventsSlotDto toSlotDto(SubEventsSlotSource source) {
@@ -398,10 +702,10 @@ public class ActivityEventSubEventsMapper {
         LocalDateTime defaultEnd;
         if (isPast) {
             defaultEnd = minDateTime(parentEnd, now);
-            defaultStart = defaultEnd.minusDays(45);
+            defaultStart = parentStart;
         } else {
             defaultStart = maxDateTime(parentStart, now);
-            defaultEnd = defaultStart.plusDays(45);
+            defaultEnd = parentEnd;
         }
         LocalDateTime start = maxDateTime(parentStart, rangeStart == null ? defaultStart : rangeStart);
         LocalDateTime end = minDateTime(parentEnd, rangeEnd == null ? defaultEnd : rangeEnd);

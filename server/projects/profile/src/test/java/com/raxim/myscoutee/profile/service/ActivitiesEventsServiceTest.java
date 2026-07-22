@@ -448,11 +448,34 @@ class ActivitiesEventsServiceTest {
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("draft-1");
             assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
             assertThat(record.getPublished()).isFalse();
         });
+    }
+
+    @Test
+    void eventEditPersistsExplicitlyClearedImage() {
+        Users host = new Users();
+        host.setId("host");
+        host.setName("Host User");
+        ActivityEvent existing = event("draft-1", "host", 0d);
+        existing.setImageUrl("https://example.test/old-event-image.jpg");
+
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
+                .thenReturn(Optional.of(existing));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(record ->
+                assertThat(record.getImageUrl()).isEmpty());
     }
 
     @Test

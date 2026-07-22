@@ -68,6 +68,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionRe
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsResultDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotPage;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExplorePageDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventsExploreQueryDto;
@@ -117,7 +118,6 @@ public class ActivitiesEventsService {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
     private static final String OWNER_TYPE_GROUP = "group";
-    private static final String SLOT_READ_MODEL_USER_ID = "__slot_read_model__";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_PENDING = "pending";
     private static final String MEMBER_STATUS_INVITED = "I";
@@ -1337,10 +1337,11 @@ public class ActivitiesEventsService {
         if (parent == null) {
             parent = selected;
         }
-        List<EventSubEventsSlotDto> baseSlots = activityEventSubEventsMapper.toSlotDtos(
+        EventSubEventsSlotPage page = activityEventSubEventsMapper.toSlotPage(
                 parentEventId,
                 parent,
                 request);
+        List<EventSubEventsSlotDto> baseSlots = page.slots();
         if (Boolean.TRUE.equals(request.participantOnly())) {
             baseSlots = filterSubEventSlotsByAcceptedParticipation(baseSlots, viewer.userId());
         }
@@ -1352,7 +1353,7 @@ public class ActivitiesEventsService {
                 resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
-        return new EventSubEventsResultDto(parent.getMode(), slots);
+        return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
     }
 
     private List<EventSubEventsSlotDto> filterSubEventSlotsByAcceptedParticipation(
@@ -3624,11 +3625,10 @@ public class ActivitiesEventsService {
         telemetryTags.put("eventType", resolveTelemetryEventType(request));
         adminTelemetryService.record("event.synced", "events", sourceId, actorUserId, 1L, telemetryTags);
         syncStageReminderTasksForSavedEvents(savedDocuments, actorUserId);
-        List<ActivityEvent> refreshedReadModelDocuments = materializeSlotOccurrences(savedDocuments);
         if (definitionChange.changed()) {
             syncStageRuntimeGroupCountsForDefinitions(sourceId, actorUserId);
         }
-        userActivityCountersService.refreshEventCountersForDocuments(refreshedReadModelDocuments.isEmpty() ? savedDocuments : refreshedReadModelDocuments);
+        userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId)) {
@@ -3643,7 +3643,7 @@ public class ActivitiesEventsService {
                     bookingStartAtIso,
                     request.pricing() == null ? null : request.pricing().cancellationPolicy());
         }
-        return toEventDto(selectSyncedResponseRecord(sourceId, savedDocuments, refreshedReadModelDocuments, baseRecord), actor);
+        return toEventDto(selectSyncedResponseRecord(sourceId, savedDocuments, List.of(), baseRecord), actor);
     }
 
     private ActivityEvent selectSyncedResponseRecord(
@@ -5104,7 +5104,9 @@ public class ActivitiesEventsService {
                 : normalizeDateTime(request.endAtIso(), document.getStartAtIso()));
         resetExpiredOnBoundaryChange(document, existing);
         document.setDistanceKm(null);
-        document.setImageUrl(StringUtils.hasText(request.imageUrl()) ? request.imageUrl().trim() : safeText(existing == null ? null : existing.getImageUrl()));
+        document.setImageUrl(request.imageUrl() == null
+                ? safeText(existing == null ? null : existing.getImageUrl())
+                : request.imageUrl().trim());
         document.setSourceLink(StringUtils.hasText(request.sourceLink()) ? request.sourceLink().trim() : safeText(existing == null ? null : existing.getSourceLink()));
         document.setLocation(StringUtils.hasText(request.location()) ? request.location().trim() : safeText(existing == null ? null : existing.getLocation()));
         document.setLocationCoordinates(request.locationCoordinates() != null
@@ -6379,372 +6381,6 @@ public class ActivitiesEventsService {
                 && !record.getSlotTemplates().isEmpty();
     }
 
-    private List<ActivityEvent> materializeSlotOccurrences(Collection<ActivityEvent> changedDocuments) {
-        List<String> parentSourceIds = slotReadModelParentSourceIds(changedDocuments);
-        if (parentSourceIds.isEmpty()) {
-            return List.of();
-        }
-        List<ActivityEvent> rawParentDocuments = activityEventsRepository.findBySourceIdIn(parentSourceIds);
-        List<ActivityEvent> parentDocuments = (rawParentDocuments == null ? List.<ActivityEvent>of() : rawParentDocuments).stream()
-                .filter(Objects::nonNull)
-                .toList();
-        List<ActivityEvent> rawSlotDocuments = activityEventsRepository.findByParentEventIdIn(parentSourceIds);
-        List<ActivityEvent> slotDocuments = (rawSlotDocuments == null ? List.<ActivityEvent>of() : rawSlotDocuments).stream()
-                .filter(Objects::nonNull)
-                .toList();
-        List<ActivityEvent> parents = computePreferredEventRecords(parentDocuments).stream()
-                .filter(this::isSlotParentRecord)
-                .toList();
-
-        List<ActivityEvent> toSave = new ArrayList<>();
-        List<ActivityEvent> toDelete = new ArrayList<>();
-        for (ActivityEvent parent : parents) {
-            Map<String, ActivityEvent> existingBySourceId = new LinkedHashMap<>();
-            for (ActivityEvent record : slotDocuments) {
-                if (isGeneratedSlotRecord(record)
-                        && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))) {
-                    existingBySourceId.put(normalizeId(record.getSourceId()), record);
-                }
-            }
-            List<ActivityEvent> generatedRecords = buildGeneratedSlotRecordsForParent(parent, existingBySourceId);
-            Set<String> generatedSourceIds = generatedRecords.stream()
-                    .map(ActivityEvent::getSourceId)
-                    .map(this::normalizeId)
-                    .filter(StringUtils::hasText)
-                    .collect(LinkedHashSet::new, Set::add, Set::addAll);
-            for (ActivityEvent record : slotDocuments) {
-                if (isGeneratedSlotRecord(record)
-                        && normalizeId(parent.getSourceId()).equals(normalizeId(record.getParentEventId()))
-                        && !generatedSourceIds.contains(normalizeId(record.getSourceId()))) {
-                    toDelete.add(record);
-                }
-            }
-            toSave.addAll(generatedRecords);
-        }
-        if (!toDelete.isEmpty()) {
-            activityEventsRepository.deleteAll(toDelete);
-        }
-        if (!toSave.isEmpty()) {
-            activityEventsRepository.saveAll(toSave);
-        }
-        return eventSlotReadModelService.refreshParentUpcomingSlots(parentSourceIds);
-    }
-
-    private List<String> slotReadModelParentSourceIds(Collection<ActivityEvent> changedDocuments) {
-        LinkedHashSet<String> ids = new LinkedHashSet<>();
-        for (ActivityEvent record : changedDocuments == null ? List.<ActivityEvent>of() : changedDocuments) {
-            if (record == null) {
-                continue;
-            }
-            String parentEventId = normalizeId(record.getParentEventId());
-            if (isGeneratedSlotRecord(record) && StringUtils.hasText(parentEventId)) {
-                ids.add(parentEventId);
-                continue;
-            }
-            String sourceId = normalizeId(record.getSourceId());
-            if (StringUtils.hasText(sourceId)) {
-                ids.add(sourceId);
-            }
-        }
-        return new ArrayList<>(ids);
-    }
-
-    private List<ActivityEvent> buildGeneratedSlotRecordsForParent(
-            ActivityEvent parent,
-            Map<String, ActivityEvent> existingBySourceId) {
-        LocalDateTime parentStart = toLocalDateTime(parent.getStartAtIso());
-        LocalDateTime parentEnd = toLocalDateTime(parent.getEndAtIso());
-        if (parentStart == null || parentEnd == null || !parentEnd.isAfter(parentStart)) {
-            return List.of();
-        }
-
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        LocalDateTime horizonStart = parentStart.isAfter(now.minusDays(1)) ? parentStart : now.minusDays(1);
-        LocalDateTime horizonAnchor = parentStart.isAfter(now) ? parentStart : now;
-        LocalDateTime horizonEnd = parentEnd.isBefore(horizonAnchor.plusDays(45))
-                ? parentEnd
-                : horizonAnchor.plusDays(45);
-        if (horizonEnd.isBefore(horizonStart)) {
-            return List.of();
-        }
-
-        List<ActivityEvent> records = new ArrayList<>();
-        String parentSourceId = normalizeId(parent.getSourceId());
-        String creatorUserId = normalizeId(parent.getCreatorUserId());
-        List<EventSlotTemplateDto> templates = cloneSlotTemplates(parent.getSlotTemplates());
-        Set<LocalDate> overrideDates = templates.stream()
-                .filter(Objects::nonNull)
-                .map(EventSlotTemplateDto::overrideDate)
-                .map(this::slotOverrideDateKey)
-                .filter(Objects::nonNull)
-                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        for (EventSlotTemplateDto template : templates) {
-            if (template == null || !StringUtils.hasText(template.id())) {
-                continue;
-            }
-            if (StringUtils.hasText(template.overrideDate()) || Boolean.TRUE.equals(template.closed())) {
-                continue;
-            }
-            LocalDateTime templateStart = toLocalDateTime(template.startAt());
-            if (templateStart == null) {
-                continue;
-            }
-            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
-            long definitionDurationMinutes = subEventDefinitionsDurationMinutes(definitions);
-            long durationMinutes = Math.max(0L, definitionDurationMinutes);
-            for (LocalDateTime occurrenceStart : generateSlotOccurrenceStarts(parent.getFrequency(), templateStart, horizonStart, horizonEnd)) {
-                if (overrideDates.contains(slotOccurrenceAnchorDateKey(occurrenceStart, templateStart, parentStart))) {
-                    continue;
-                }
-                LocalDateTime occurrenceEnd = occurrenceStart.plusMinutes(durationMinutes);
-                if (occurrenceStart.isBefore(parentStart) || occurrenceEnd.isAfter(parentEnd)) {
-                    continue;
-                }
-                addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), occurrenceStart, occurrenceEnd, parentSourceId, creatorUserId, definitions);
-            }
-        }
-        for (EventSlotTemplateDto template : templates) {
-            if (template == null || !StringUtils.hasText(template.id()) || !StringUtils.hasText(template.overrideDate())) {
-                continue;
-            }
-            if (Boolean.TRUE.equals(template.closed())) {
-                continue;
-            }
-            LocalDateTime templateStart = toLocalDateTime(template.startAt());
-            if (templateStart == null) {
-                continue;
-            }
-            List<SubEventDefinitionDto> definitions = slotTemplateSubEventDefinitions(parent, template);
-            long definitionDurationMinutes = subEventDefinitionsDurationMinutes(definitions);
-            long durationMinutes = Math.max(0L, definitionDurationMinutes);
-            LocalDateTime templateEnd = templateStart.plusMinutes(durationMinutes);
-            if (templateStart.isBefore(horizonStart) || templateStart.isAfter(horizonEnd)) {
-                continue;
-            }
-            if (templateStart.isBefore(parentStart) || templateEnd.isAfter(parentEnd)) {
-                continue;
-            }
-            addGeneratedSlotRecordIfMissing(records, parent, existingBySourceId, template.id(), templateStart, templateEnd, parentSourceId, creatorUserId, definitions);
-        }
-        return records;
-    }
-
-    private void addGeneratedSlotRecordIfMissing(
-            List<ActivityEvent> records,
-            ActivityEvent parent,
-            Map<String, ActivityEvent> existingBySourceId,
-            String slotTemplateId,
-            LocalDateTime occurrenceStart,
-            LocalDateTime occurrenceEnd,
-            String parentSourceId,
-            String creatorUserId,
-            List<SubEventDefinitionDto> definitions) {
-        String sourceId = buildGeneratedSlotSourceId(parentSourceId, slotTemplateId, occurrenceStart);
-        ActivityEvent existing = existingBySourceId.get(normalizeId(sourceId));
-        ActivityEvent next = new ActivityEvent();
-        GeneratedSlotMemberSnapshot slotMembers = generatedSlotMemberSnapshot(parent, existing, definitions);
-        String nowIso = Instant.now().toString();
-        next.setId(resolveExistingId(SLOT_READ_MODEL_USER_ID, sourceId, existing));
-        next.setSyncKey(resolveExistingSyncKey(SLOT_READ_MODEL_USER_ID, sourceId, existing == null ? null : existing.getSyncKey()));
-        next.setSourceId(sourceId);
-        next.setOwnerUserId(SLOT_READ_MODEL_USER_ID);
-        next.setAvatar(parent.getAvatar());
-        next.setTitle(parent.getTitle());
-        next.setSubtitle(parent.getSubtitle());
-        next.setTimeframe(buildGeneratedSlotTimeframe(occurrenceStart, occurrenceEnd));
-        next.setInviter(null);
-        next.setUnread(existing == null ? 0 : normalizeCount(existing.getUnread()));
-        next.setActivity(existing == null ? 0 : normalizeCount(existing.getActivity()));
-        next.setStatus(Boolean.TRUE.equals(parent.getPublished()) ? ActivityEvent.STATUS_ACTIVE : ActivityEvent.STATUS_DRAFT);
-        next.setTrashedAtIso(existing == null ? null : existing.getTrashedAtIso());
-        next.setCreatorUserId(creatorUserId);
-        next.setCreatorName(parent.getCreatorName());
-        next.setCreatorInitials(parent.getCreatorInitials());
-        next.setCreatorGender(parent.getCreatorGender());
-        next.setCreatorCity(parent.getCreatorCity());
-        next.setVisibility(parent.getVisibility());
-        next.setBlindMode(parent.getBlindMode());
-        next.setStartAtIso(occurrenceStart.toInstant(ZoneOffset.UTC).toString());
-        next.setEndAtIso(occurrenceEnd.toInstant(ZoneOffset.UTC).toString());
-        next.setIsExpired(false);
-        next.setDistanceKm(null);
-        String existingImageUrl = safeText(existing == null ? null : existing.getImageUrl());
-        String existingSourceLink = safeText(existing == null ? null : existing.getSourceLink());
-        String existingLocation = safeText(existing == null ? null : existing.getLocation());
-        next.setImageUrl(StringUtils.hasText(existingImageUrl) ? existingImageUrl : parent.getImageUrl());
-        next.setSourceLink(StringUtils.hasText(existingSourceLink) ? existingSourceLink : parent.getSourceLink());
-        next.setLocation(StringUtils.hasText(existingLocation) ? existingLocation : parent.getLocation());
-        next.setLocationCoordinates(cloneLocation(parent.getLocationCoordinates()));
-        next.setLocationGeo(toGeoPoint(next.getLocationCoordinates()));
-        next.setCapacityMin(parent.getCapacityMin());
-        next.setCapacityMax(parent.getCapacityMax());
-        next.setCapacityTotal(slotMembers.capacityTotal());
-        next.setAutoInviter(parent.getAutoInviter());
-        next.setFrequency(parent.getFrequency());
-        next.setTicketing(parent.getTicketing());
-        next.setApprovalRequired(parent.getApprovalRequired());
-        next.setPricing(clonePricing(parent.getPricing()));
-        next.setSlotsEnabled(false);
-        next.setSlotTemplates(List.of());
-        next.setParentEventId(parentSourceId);
-        next.setSlotTemplateId(slotTemplateId);
-        next.setGenerated(true);
-        next.setEventType("slot");
-        next.setUpcomingSlots(List.of());
-        next.setAcceptedMembers(slotMembers.acceptedMembers());
-        next.setPendingMembers(slotMembers.pendingMembers());
-        next.setAcceptedMemberUserIds(slotMembers.acceptedMemberUserIds());
-        next.setPendingMemberUserIds(slotMembers.pendingMemberUserIds());
-        next.setInvitedMemberUserIds(slotMembers.invitedMemberUserIds());
-        next.setPendingRequestMemberUserIds(slotMembers.pendingRequestMemberUserIds());
-        next.setFull(directRecordFull(next));
-        next.setTopics(normalizeStrings(parent.getTopics()));
-        next.setSubEventsEnabled(false);
-        next.setSubEventDefinitions(cloneSubEventDefinitions(definitions));
-        next.setSubEvents(List.of());
-        next.setMode(normalizeEventMode(parent.getMode()));
-        next.setRating(existing == null ? safeDouble(parent.getRating()) : safeDouble(existing.getRating()));
-        next.setAffinity(existing == null ? safeDouble(parent.getAffinity()) : safeDouble(existing.getAffinity()));
-        next.setBoost(existing == null ? safeDouble(parent.getBoost()) : safeDouble(existing.getBoost()));
-        next.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
-        next.setCreatedUser(existing == null ? creatorUserId : safeText(existing.getCreatedUser()));
-        next.setUpdatedDate(nowIso);
-        next.setUpdatedUser(creatorUserId);
-        next.setAdmins(slotMembers.adminUserIds());
-        next.normalizeLifecycleState();
-        records.add(next);
-    }
-
-    private GeneratedSlotMemberSnapshot generatedSlotMemberSnapshot(
-            ActivityEvent parent,
-            ActivityEvent existing,
-            List<SubEventDefinitionDto> definitions) {
-        List<String> adminUserIds = normalizeIds(parent == null ? null : parent.getAdmins());
-        List<String> rawAcceptedMemberUserIds = normalizeIds(existing == null ? null : existing.getAcceptedMemberUserIds());
-        LinkedHashSet<String> acceptedMemberUserIds = new LinkedHashSet<>(rawAcceptedMemberUserIds);
-        acceptedMemberUserIds.addAll(adminUserIds);
-        int storedAcceptedMembers = normalizeCount(existing == null ? null : existing.getAcceptedMembers());
-        int acceptedMembers = acceptedMemberUserIds.isEmpty()
-                ? storedAcceptedMembers
-                : acceptedMemberUserIds.size();
-        Set<String> acceptedUserIds = new LinkedHashSet<>(acceptedMemberUserIds);
-        List<String> rawPendingMemberUserIds = normalizeIds(existing == null ? null : existing.getPendingMemberUserIds());
-        List<String> pendingMemberUserIds = removeUserIds(rawPendingMemberUserIds, acceptedUserIds);
-        int pendingMembers = rawPendingMemberUserIds.isEmpty()
-                ? normalizeCount(existing == null ? null : existing.getPendingMembers())
-                : pendingMemberUserIds.size();
-        List<String> invitedMemberUserIds = removeUserIds(
-                normalizeIds(existing == null ? null : existing.getInvitedMemberUserIds()),
-                acceptedUserIds);
-        List<String> pendingRequestMemberUserIds = removeUserIds(
-                normalizeIds(existing == null ? null : existing.getPendingRequestMemberUserIds()),
-                acceptedUserIds);
-        int slotCapacityTotal = slotDefinitionCapacityTotal(definitions);
-        int baseCapacityTotal = slotCapacityTotal > 0
-                ? slotCapacityTotal
-                : normalizeCount(parent == null ? null : parent.getCapacityTotal());
-        int capacityTotal = Math.max(acceptedMembers, baseCapacityTotal);
-        return new GeneratedSlotMemberSnapshot(
-                adminUserIds,
-                acceptedMembers,
-                pendingMembers,
-                capacityTotal,
-                new ArrayList<>(acceptedMemberUserIds),
-                pendingMemberUserIds,
-                invitedMemberUserIds,
-                pendingRequestMemberUserIds);
-    }
-
-    private int slotDefinitionCapacityTotal(List<SubEventDefinitionDto> definitions) {
-        int capacityTotal = 0;
-        for (SubEventDefinitionDto definition : definitions == null ? List.<SubEventDefinitionDto>of() : definitions) {
-            if (definition == null || Boolean.TRUE.equals(definition.optional())) {
-                continue;
-            }
-            int capacityMax = normalizeCount(definition.capacityMax());
-            if (capacityMax <= 0) {
-                continue;
-            }
-            capacityTotal = capacityTotal <= 0 ? capacityMax : Math.min(capacityTotal, capacityMax);
-        }
-        return capacityTotal;
-    }
-
-    private List<String> removeUserIds(List<String> userIds, Set<String> excludedUserIds) {
-        if (userIds == null || userIds.isEmpty()) {
-            return List.of();
-        }
-        return userIds.stream()
-                .filter(userId -> !excludedUserIds.contains(userId))
-                .toList();
-    }
-
-    private String buildGeneratedSlotSourceId(String parentEventId, String slotTemplateId, LocalDateTime occurrenceStart) {
-        return parentEventId + ":slot:" + slotTemplateId + ":" + occurrenceStart.toInstant(ZoneOffset.UTC);
-    }
-
-    private String buildGeneratedSlotTimeframe(LocalDateTime startAt, LocalDateTime endAt) {
-        return startAt.toLocalDate() + " · "
-                + String.format("%02d:%02d", startAt.getHour(), startAt.getMinute())
-                + " - "
-                + String.format("%02d:%02d", endAt.getHour(), endAt.getMinute());
-    }
-
-    private List<LocalDateTime> generateSlotOccurrenceStarts(
-            String frequency,
-            LocalDateTime templateStart,
-            LocalDateTime horizonStart,
-            LocalDateTime horizonEnd) {
-        String normalizedFrequency = safeText(frequency).toLowerCase();
-        if (!StringUtils.hasText(normalizedFrequency) || "one-time".equals(normalizedFrequency) || "custom".equals(normalizedFrequency)) {
-            return !templateStart.isBefore(horizonStart) && !templateStart.isAfter(horizonEnd)
-                    ? List.of(templateStart)
-                    : List.of();
-        }
-
-        List<LocalDateTime> starts = new ArrayList<>();
-        LocalDate cursor = horizonStart.toLocalDate();
-        LocalDate endDate = horizonEnd.toLocalDate();
-        while (!cursor.isAfter(endDate)) {
-            if (matchesSlotFrequency(cursor, templateStart, normalizedFrequency)) {
-                LocalDateTime candidate = cursor.atTime(templateStart.toLocalTime());
-                if (!candidate.isBefore(horizonStart) && !candidate.isAfter(horizonEnd)) {
-                    starts.add(candidate);
-                }
-            }
-            cursor = cursor.plusDays(1);
-        }
-        return starts;
-    }
-
-    private boolean matchesSlotFrequency(LocalDate date, LocalDateTime templateStart, String frequency) {
-        if ("daily".equals(frequency)) {
-            return true;
-        }
-        if ("weekly".equals(frequency)) {
-            return date.getDayOfWeek() == templateStart.getDayOfWeek();
-        }
-        if ("bi-weekly".equals(frequency) || "biweekly".equals(frequency)) {
-            if (date.getDayOfWeek() != templateStart.getDayOfWeek()) {
-                return false;
-            }
-            long weeksBetween = ChronoUnit.WEEKS.between(templateStart.toLocalDate(), date);
-            return weeksBetween >= 0L && weeksBetween % 2L == 0L;
-        }
-        if ("monthly".equals(frequency)) {
-            int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
-            return date.getDayOfMonth() == day;
-        }
-        if ("yearly".equals(frequency) || "annual".equals(frequency) || "annually".equals(frequency)) {
-            if (date.getMonthValue() != templateStart.getMonthValue()) {
-                return false;
-            }
-            int day = Math.min(templateStart.getDayOfMonth(), date.lengthOfMonth());
-            return date.getDayOfMonth() == day;
-        }
-        return false;
-    }
-
     private LocalDateTime toLocalDateTime(String value) {
         if (!StringUtils.hasText(value)) {
             return null;
@@ -6980,17 +6616,6 @@ public class ActivitiesEventsService {
             double amount,
             String currency,
             List<EventCheckoutPricingSummaryRowDto> rows) {
-    }
-
-    private record GeneratedSlotMemberSnapshot(
-            List<String> adminUserIds,
-            int acceptedMembers,
-            int pendingMembers,
-            int capacityTotal,
-            List<String> acceptedMemberUserIds,
-            List<String> pendingMemberUserIds,
-            List<String> invitedMemberUserIds,
-            List<String> pendingRequestMemberUserIds) {
     }
 
     private static final class CheckoutSlotDayAccumulator {

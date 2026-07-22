@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -37,7 +38,6 @@ import com.raxim.myscoutee.profile.data.document.SubEventItem;
         @CompoundIndex(name = "event_explore_visibility", def = "{'status': 1, 'creatorUserId': 1, 'visibility': 1}"),
         @CompoundIndex(name = "event_explore_candidates_status", def = "{'status': 1, 'generated': 1, 'creatorUserId': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_explore_feed_status", def = "{'status': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
-        @CompoundIndex(name = "event_slot_parent_start", def = "{'parentEventId': 1, 'generated': 1, 'startAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_end", def = "{'expired': 1, 'endAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_expired_start", def = "{'expired': 1, 'startAtIso': 1, 'sourceId': 1}")
 })
@@ -98,10 +98,14 @@ public class ActivityEvent {
     private List<PolicyItemDto> policies = new ArrayList<>();
     private Boolean slotsEnabled;
     private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
+    @Transient
     private String parentEventId;
+    @Transient
     private String slotTemplateId;
+    @Transient
     private Boolean generated;
     private String eventType;
+    @Transient
     private List<EventSlotOccurrenceDto> upcomingSlots = new ArrayList<>();
     private Integer acceptedMembers;
     private Integer pendingMembers;
