@@ -406,7 +406,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.empty());
         when(accessControlService.canCurrentActorCreateEvent("host", "draft-1")).thenReturn(false);
 
-        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+        service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         assertThat(result).isNull();
         verify(activityEventsRepository, never()).saveAll(anyList());
@@ -443,7 +443,7 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.empty());
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
@@ -469,13 +469,15 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Optional.of(existing));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
+        EventDto result = service.sync(eventPayload("sync-draft-1", "draft-1", "host", false));
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityEventsRepository).saveAll(savedCaptor.capture());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record ->
                 assertThat(record.getImageUrl()).isEmpty());
+        assertThat(result).isNotNull();
+        assertThat(result.imageUrl()).isEmpty();
     }
 
     @Test
@@ -489,12 +491,14 @@ class ActivitiesEventsServiceTest {
                 "stage-1", "Opening round", "Saved definition", "After previous",
                 0, 30, "Arena", 2, 8, "Score", 1, false, null, 2, 8, null)));
         canonical.setSourceLink("https://example.test/event");
+        canonical.setImageUrl("");
         ActivityEvent scoped = event("event-1", "host", 0d);
         scoped.setId("event-1-scoped-document");
         scoped.setOwnerUserId("member-1");
         scoped.setAcceptedMembers(99);
         scoped.setSubEventDefinitions(List.of());
         scoped.setSourceLink(null);
+        scoped.setImageUrl("https://example.test/stale-event-image.jpg");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1")))
@@ -503,6 +507,7 @@ class ActivitiesEventsServiceTest {
         EventDetailDto result = service.loadEventDetailById("host", "event-1");
 
         assertThat(result).isNotNull();
+        assertThat(result.imageUrl()).isEmpty();
         assertThat(result.sourceLink()).isEqualTo("https://example.test/event");
         assertThat(result.subEventDefinitions())
                 .extracting(SubEventDefinitionDto::id)

@@ -13,10 +13,8 @@ asset borrow ui and behaviour should be similar then event buy
 2) the borrow ui should be similar then asset pay ui (showing asset form instead
 and show slot manager or similar)
 3) when make manager, it's like assigning the asset also (so it can use for different purpose?)
-4) event save - removing image should remove image
 5) asset save similar problem, then event editor save
 6) event feedback does not list past event to maek feedback
-7) ticket has one red counter badge but the list is empty
 8) asset assignment waits for admin approval
 9) auto approve for event owner? when someone has been invited for asset,
 we need to check how to show red counter, as it's hardly visible, and on event where to really show it
