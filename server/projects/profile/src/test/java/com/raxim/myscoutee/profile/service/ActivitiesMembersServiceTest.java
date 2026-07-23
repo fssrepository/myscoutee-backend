@@ -111,6 +111,8 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
             ActivityMember saved = invocation.getArgument(0);
             storedMember.set(saved);
@@ -149,7 +151,7 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(false);
         when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("admin");
-        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenReturn(List.of(member));
 
         var result = service.applyAction(new ActivityMemberActionRequestDto(
@@ -182,6 +184,8 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenAnswer(invocation -> List.of(storedMember.get()));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
             ActivityMember saved = invocation.getArgument(0);
@@ -342,6 +346,7 @@ class ActivitiesMembersServiceTest {
 
         assertThat(result).isEmpty();
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+        verify(activityMembersRepository, never()).findManagementOrderedByOwner(anyString(), anyString());
     }
 
     @Test
@@ -351,7 +356,10 @@ class ActivitiesMembersServiceTest {
         pendingUser.setId("pending-user");
         pendingUser.setName("Pending User");
 
-        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatus("event", "event-1", "pending"))
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndStatusOrderByActionAtIsoDescUserIdAsc(
+                "event",
+                "event-1",
+                "pending"))
                 .thenReturn(List.of(pendingMember));
         when(usersRepository.findByUserId("pending-user")).thenReturn(Optional.of(pendingUser));
 
@@ -360,7 +368,10 @@ class ActivitiesMembersServiceTest {
         assertThat(result)
                 .extracting(ActivityMemberEntryDto::userId)
                 .containsExactly("pending-user");
-        verify(activityMembersRepository).findByOwnerTypeAndOwnerIdAndStatus("event", "event-1", "pending");
+        verify(activityMembersRepository).findByOwnerTypeAndOwnerIdAndStatusOrderByActionAtIsoDescUserIdAsc(
+                "event",
+                "event-1",
+                "pending");
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
     }
 
@@ -377,14 +388,15 @@ class ActivitiesMembersServiceTest {
         ActivityMember member = member("member", "event-1", "member", "Member", "accepted");
         member.setActionAtIso("2026-07-23T11:00:00Z");
 
-        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
-                .thenReturn(List.of(member, admin, olderPending, manager, newerPending));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenReturn(List.of(newerPending, olderPending, manager, admin, member));
 
         List<ActivityMemberEntryDto> result = service.queryMembers("event", "event-1");
 
         assertThat(result)
                 .extracting(ActivityMemberEntryDto::userId)
                 .containsExactly("pending-new", "pending-old", "manager", "admin", "member");
+        verify(activityMembersRepository).findManagementOrderedByOwner("event", "event-1");
     }
 
     @Test
@@ -627,6 +639,8 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenAnswer(invocation -> List.of(storedMember.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedMember.get()));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
             ActivityMember saved = invocation.getArgument(0);
             storedMember.set(saved);
@@ -729,7 +743,7 @@ class ActivitiesMembersServiceTest {
 
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(false);
-        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenReturn(List.of(member));
 
         var result = service.applyAction(new ActivityMemberActionRequestDto(
@@ -757,6 +771,8 @@ class ActivitiesMembersServiceTest {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(invitation));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenReturn(List.of(invitation));
 
         var result = service.applyAction(new ActivityMemberActionRequestDto(
@@ -887,6 +903,8 @@ class ActivitiesMembersServiceTest {
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
             ActivityMember saved = invocation.getArgument(0);

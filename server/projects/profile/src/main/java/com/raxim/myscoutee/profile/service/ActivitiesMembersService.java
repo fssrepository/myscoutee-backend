@@ -150,15 +150,25 @@ public class ActivitiesMembersService {
         }
 
         String viewerUserId = homeUserProfileService.resolveSelectedUserId(null);
-        List<ActivityMember> ownerMembers = OWNER_TYPE_ASSET.equals(normalizedOwnerType)
+        boolean scopedAssetMembers = OWNER_TYPE_ASSET.equals(normalizedOwnerType)
                 && StringUtils.hasText(normalizeId(eventId))
-                && StringUtils.hasText(normalizeId(subEventId))
-                ? loadScopedAssetDocuments(normalizedOwnerId, eventId, subEventId, pendingOnly)
-                : loadOwnerDocuments(
-                        normalizedOwnerType,
-                        normalizedOwnerId,
-                        Boolean.TRUE.equals(pendingOnly) ? STATUS_PENDING : null);
+                && StringUtils.hasText(normalizeId(subEventId));
+        List<ActivityMember> ownerMembers;
+        if (scopedAssetMembers) {
+            ownerMembers = loadScopedAssetDocuments(normalizedOwnerId, eventId, subEventId, pendingOnly);
+        } else if (Boolean.TRUE.equals(pendingOnly)) {
+            ownerMembers = activityMembersRepository
+                    .findByOwnerTypeAndOwnerIdAndStatusOrderByActionAtIsoDescUserIdAsc(
+                            normalizedOwnerType,
+                            normalizedOwnerId,
+                            STATUS_PENDING);
+        } else {
+            ownerMembers = activityMembersRepository.findManagementOrderedByOwner(
+                    normalizedOwnerType,
+                    normalizedOwnerId);
+        }
         ownerMembers = ownerMembers.stream()
+                .filter(Objects::nonNull)
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .toList();
         Map<String, List<ActivityMemberInvolvementDto>> involvementsByUserId = memberInvolvementsByUserId(
@@ -169,7 +179,6 @@ public class ActivitiesMembersService {
                 .map(member -> toEntryDto(member, viewerUserId))
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
-                .sorted(this::compareMemberEntriesForManagement)
                 .toList();
     }
 
@@ -201,7 +210,9 @@ public class ActivitiesMembersService {
                 membersByUserId.put(memberUserId, member);
             }
         }
-        return List.copyOf(membersByUserId.values());
+        return membersByUserId.values().stream()
+                .sorted(this::compareMembersForManagement)
+                .toList();
     }
 
     private ActivityMember scopedAssetOwnerMember(Asset asset, String eventId, String subEventId) {
@@ -2297,23 +2308,6 @@ public class ActivitiesMembersService {
             List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
             eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
         }
-    }
-
-    private int compareMemberEntriesForManagement(ActivityMemberEntryDto left, ActivityMemberEntryDto right) {
-        int priorityComparison = Integer.compare(
-                memberManagementPriority(left == null ? null : left.status(), left == null ? null : left.role()),
-                memberManagementPriority(right == null ? null : right.status(), right == null ? null : right.role()));
-        if (priorityComparison != 0) {
-            return priorityComparison;
-        }
-        int actionComparison = Long.compare(
-                toSortableDate(right == null ? null : right.actionAtIso()),
-                toSortableDate(left == null ? null : left.actionAtIso()));
-        if (actionComparison != 0) {
-            return actionComparison;
-        }
-        return normalizeId(left == null ? null : left.userId())
-                .compareTo(normalizeId(right == null ? null : right.userId()));
     }
 
     private int compareMembersForManagement(ActivityMember left, ActivityMember right) {
