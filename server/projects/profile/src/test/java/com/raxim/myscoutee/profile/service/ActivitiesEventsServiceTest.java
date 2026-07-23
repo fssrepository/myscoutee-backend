@@ -569,7 +569,11 @@ class ActivitiesEventsServiceTest {
         EventDto result = service.sync(eventPayload("sync-event-1", "event-1", "host", true, true));
 
         assertThat(result).isNotNull();
-        assertThat(result.ticketing()).isTrue();
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getTicketing()).isTrue());
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
         verify(userActivityCountersService).refreshEventCountersForDocuments(anyList());
         ArgumentCaptor<NotificationOutboxService.NotificationIntent> notificationCaptor =
