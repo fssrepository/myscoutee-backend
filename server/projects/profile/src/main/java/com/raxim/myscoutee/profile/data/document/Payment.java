@@ -17,7 +17,8 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellatio
 @Document(collection = "payments")
 @CompoundIndexes({
     @CompoundIndex(name = "payment_user_source", def = "{'userId': 1, 'sourceId': 1, 'createdDate': -1}"),
-    @CompoundIndex(name = "payment_user_source_booking", def = "{'userId': 1, 'sourceId': 1, 'bookingStatus': 1, 'createdDate': -1}")
+    @CompoundIndex(name = "payment_user_source_booking", def = "{'userId': 1, 'sourceId': 1, 'bookingStatus': 1, 'createdDate': -1}"),
+    @CompoundIndex(name = "payment_revision_root", def = "{'revisionRootSessionId': 1, 'revisionNumber': -1, 'createdDate': -1}")
 })
 public class Payment {
     @Id
@@ -50,6 +51,12 @@ public class Payment {
     private String refundRuleId;
     private String refundNote;
     private PricingCancellationPolicyDto cancellationPolicy;
+    private String auditKind;
+    private String revisionRootSessionId;
+    private String supersedesPaymentId;
+    private Integer revisionNumber;
+    private Double adjustmentAmount;
+    private Integer bookingQuantity;
     private String createdDate;
 
     public String getId() { return id; }
@@ -144,6 +151,24 @@ public class Payment {
 
     public PricingCancellationPolicyDto getCancellationPolicy() { return cancellationPolicy; }
     public void setCancellationPolicy(PricingCancellationPolicyDto cancellationPolicy) { this.cancellationPolicy = cancellationPolicy; }
+
+    public String getAuditKind() { return auditKind; }
+    public void setAuditKind(String auditKind) { this.auditKind = auditKind; }
+
+    public String getRevisionRootSessionId() { return revisionRootSessionId; }
+    public void setRevisionRootSessionId(String revisionRootSessionId) { this.revisionRootSessionId = revisionRootSessionId; }
+
+    public String getSupersedesPaymentId() { return supersedesPaymentId; }
+    public void setSupersedesPaymentId(String supersedesPaymentId) { this.supersedesPaymentId = supersedesPaymentId; }
+
+    public Integer getRevisionNumber() { return revisionNumber; }
+    public void setRevisionNumber(Integer revisionNumber) { this.revisionNumber = revisionNumber; }
+
+    public Double getAdjustmentAmount() { return adjustmentAmount; }
+    public void setAdjustmentAmount(Double adjustmentAmount) { this.adjustmentAmount = adjustmentAmount; }
+
+    public Integer getBookingQuantity() { return bookingQuantity; }
+    public void setBookingQuantity(Integer bookingQuantity) { this.bookingQuantity = bookingQuantity; }
 
     public String getCreatedDate() { return createdDate; }
     public void setCreatedDate(String createdDate) { this.createdDate = createdDate; }

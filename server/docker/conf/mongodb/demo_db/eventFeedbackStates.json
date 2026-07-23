@@ -133,5 +133,50 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2026-05-19T09:40:00.000Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000010"
+    },
+    "syncKey": "event-feedback-state-maya-own-eszter",
+    "viewerUserId": "1b1c70be2349b3359a8f6f94",
+    "eventId": "af3000000000000000000002",
+    "removed": false,
+    "submittedAtIso": "2026-07-12T21:10:00.000Z",
+    "organizerNote": "Eszter made introductions feel natural and kept every project sketch moving. A slightly earlier time check would make the rooftop close even smoother.",
+    "createdDate": "2026-07-12T21:10:00.000Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-07-12T21:10:00.000Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000011"
+    },
+    "syncKey": "event-feedback-state-balazs-own-eszter",
+    "viewerUserId": "b29df68956f3fe15e04558de",
+    "eventId": "af3000000000000000000002",
+    "removed": false,
+    "submittedAtIso": "2026-07-13T08:20:00.000Z",
+    "organizerNote": "The prompts were clear and the group stayed engaged. I would keep the same format and explain the project-swap transition once more before it starts.",
+    "createdDate": "2026-07-13T08:20:00.000Z",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2026-07-13T08:20:00.000Z",
+    "updatedUser": "b29df68956f3fe15e04558de"
+  },
+  {
+    "_id": {
+      "$oid": "af1000000000000000000012"
+    },
+    "syncKey": "event-feedback-state-lucas-lane-own-eszter",
+    "viewerUserId": "23820c1e76d3bd843f61c799",
+    "eventId": "af3000000000000000000002",
+    "removed": false,
+    "submittedAtIso": "2026-07-13T12:45:00.000Z",
+    "organizerNote": "The event felt welcoming and useful, especially the one-to-one sketch reviews. A few more shared markers and boards would help the working session.",
+    "createdDate": "2026-07-13T12:45:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-07-13T12:45:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799"
   }
 ]

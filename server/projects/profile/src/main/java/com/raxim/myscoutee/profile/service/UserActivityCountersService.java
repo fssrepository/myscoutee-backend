@@ -37,6 +37,7 @@ public class UserActivityCountersService {
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
+    private final EventParticipationTicketService eventParticipationTicketService;
     private final MongoTemplate mongoTemplate;
 
     public UserActivityCountersService(
@@ -45,12 +46,14 @@ public class UserActivityCountersService {
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
+            EventParticipationTicketService eventParticipationTicketService,
             MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+        this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -85,7 +88,10 @@ public class UserActivityCountersService {
         for (String userId : normalizeIds(userIds)) {
             usersRepository.findByUserId(userId).ifPresent(user -> {
                 Users.UserActivitiesRecord current = user.getActivities();
-                Users.UserActivitiesRecord next = withEventCounters(current, resolveEventCounters(userId));
+                Users.UserActivitiesRecord next = withEventCounters(
+                        current,
+                        resolveEventCounters(userId),
+                        resolveTicketCount(userId));
                 if (!Objects.equals(current, next)) {
                     updateEventCounters(userId, next);
                 }
@@ -242,6 +248,17 @@ public class UserActivityCountersService {
         return new AssetCounters(cars, accommodation, supplies);
     }
 
+    private int resolveTicketCount(String userId) {
+        long ticketCount = eventParticipationTicketService.queryTicketRecordsForUser(userId).stream()
+                .filter(Objects::nonNull)
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .count();
+        return (int) Math.min(Integer.MAX_VALUE, ticketCount);
+    }
+
     private int resolveReceivedFeedbackEventCount(String userId) {
         Set<String> eventIds = new LinkedHashSet<>();
         for (ActivityEvent event : activityEventsRepository.findByCreatorUserId(userId)) {
@@ -272,8 +289,14 @@ public class UserActivityCountersService {
         return eventsWithFeedback.size();
     }
 
-    private Users.UserActivitiesRecord withEventCounters(Users.UserActivitiesRecord current, EventCounters counters) {
+    private Users.UserActivitiesRecord withEventCounters(
+            Users.UserActivitiesRecord current,
+            EventCounters counters,
+            int ticketCount) {
         Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
+        Users.UserAssetCountersRecord currentAsset = safe.asset() == null
+                ? emptyActivities().asset()
+                : safe.asset();
         return new Users.UserActivitiesRecord(
                 count(safe.game()),
                 count(safe.chats()),
@@ -283,7 +306,7 @@ public class UserActivityCountersService {
                 count(safe.cars()),
                 count(safe.accommodation()),
                 count(safe.supplies()),
-                count(safe.tickets()),
+                count(ticketCount),
                 count(safe.contacts()),
                 count(safe.feedback()),
                 safe.chat(),
@@ -295,7 +318,11 @@ public class UserActivityCountersService {
                         counters.hosting(),
                         counters.drafts(),
                         counters.trash()),
-                safe.asset(),
+                new Users.UserAssetCountersRecord(
+                        count(currentAsset.cars()),
+                        count(currentAsset.accommodation()),
+                        count(currentAsset.supplies()),
+                        count(ticketCount)),
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()));
@@ -317,7 +344,9 @@ public class UserActivityCountersService {
                 .set("activities.event.invitations", count(event.invitations()))
                 .set("activities.event.hosting", count(event.hosting()))
                 .set("activities.event.drafts", count(event.drafts()))
-                .set("activities.event.trash", count(event.trash()));
+                .set("activities.event.trash", count(event.trash()))
+                .set("activities.tickets", count(next.tickets()))
+                .set("activities.asset.tickets", count(next.asset() == null ? null : next.asset().tickets()));
         updateUserActivityFields(normalizedUserId, update);
     }
 

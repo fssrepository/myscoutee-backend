@@ -415,6 +415,11 @@ public final class EventsDtos {
             List<EventFeedbackCardDto> cards) {
     }
 
+    public record EventFeedbackSubmitRequestDto(
+            String userId,
+            EventFeedbackDetailDto feedback) {
+    }
+
     public record EventDto(
             String id,
             String userId,
@@ -862,5 +867,27 @@ public final class EventsDtos {
             Double amount,
             String currency,
             String paymentUrl) {
+    }
+
+    public record EventCheckoutPaymentAuditDto(
+            String id,
+            String userId,
+            String sourceId,
+            String checkoutSessionId,
+            String provider,
+            String status,
+            String bookingStatus,
+            String auditKind,
+            Integer revisionNumber,
+            Double adjustmentAmount,
+            Integer bookingQuantity,
+            String supersedesPaymentId,
+            Double amount,
+            String currency,
+            List<EventCheckoutBasketItemDto> basketItems,
+            List<EventCheckoutPricingSummaryRowDto> pricingSummaryRows,
+            List<EventCheckoutLineItemDto> lineItems,
+            String joinedAtIso,
+            String createdAtIso) {
     }
 }

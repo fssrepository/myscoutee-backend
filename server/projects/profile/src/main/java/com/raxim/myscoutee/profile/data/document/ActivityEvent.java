@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -98,14 +97,10 @@ public class ActivityEvent {
     private List<PolicyItemDto> policies = new ArrayList<>();
     private Boolean slotsEnabled;
     private List<EventSlotTemplateDto> slotTemplates = new ArrayList<>();
-    @Transient
     private String parentEventId;
-    @Transient
     private String slotTemplateId;
-    @Transient
     private Boolean generated;
     private String eventType;
-    @Transient
     private List<EventSlotOccurrenceDto> upcomingSlots = new ArrayList<>();
     private Integer acceptedMembers;
     private Integer pendingMembers;

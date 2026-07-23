@@ -5,10 +5,3 @@ cloudflare - caching images (so won't need to use google cloud bandwith)
 create facebook campaign
 buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
-
-feature
--------
-6) event feedback does not list past event to maek feedback
-8) asset assignment waits for admin approval
-9) we need to check how to show red counter, as it's hardly visible, and on event where to really show it
-(probably on active events we need to show on the three dot button a badge to show or show a dinamic menu option, not sure)

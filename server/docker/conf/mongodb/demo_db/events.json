@@ -1,6 +1,170 @@
 [
   {
     "_id": {
+      "$oid": "af3000000000000000000001"
+    },
+    "syncKey": "seed-event-feedback-pending-eszter",
+    "sourceId": "af3000000000000000000001",
+    "ownerUserId": "4da20eb049179e73d4757808",
+    "status": "I",
+    "admins": [
+      "4da20eb049179e73d4757808"
+    ],
+    "avatar": "LS",
+    "title": "Seattle Summer Creative Social",
+    "subtitle": "A relaxed evening of creative prompts, coffee, and small-group conversations.",
+    "timeframe": "Jul 18 · 5:00 PM - 7:30 PM",
+    "inviter": null,
+    "unread": 0,
+    "activity": 0,
+    "trashedAtIso": null,
+    "creatorUserId": "4da20eb049179e73d4757808",
+    "creatorName": "Lucas Stone",
+    "creatorInitials": "LS",
+    "creatorGender": "man",
+    "creatorCity": "Seattle",
+    "visibility": "Public",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-07-18T17:00:00.000Z",
+    "endAtIso": "2026-07-18T19:30:00.000Z",
+    "distanceKm": 0,
+    "imageUrl": "https://picsum.photos/seed/seed-event-feedback-pending-eszter/1200/700",
+    "sourceLink": "https://example.com/event-feedback/af3000000000000000000001",
+    "location": "Seattle Creative Studio",
+    "locationCoordinates": {
+      "latitude": 47.6101,
+      "longitude": -122.3421
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3421,
+        47.6101
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 12,
+    "capacityTotal": 12,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "slotsEnabled": false,
+    "eventType": "main",
+    "acceptedMembers": 4,
+    "pendingMembers": 0,
+    "topics": [
+      "#Creative",
+      "#Coffee",
+      "#Community"
+    ],
+    "subEvents": [],
+    "mode": "Casual",
+    "rating": 8.4,
+    "boost": 1200,
+    "affinity": 86000,
+    "createdDate": "2026-07-01T12:00:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-07-18T19:30:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808",
+    "statusBeforeSuppression": "A",
+    "expired": true,
+    "acceptedMemberUserIds": [
+      "4da20eb049179e73d4757808",
+      "9f3b3f085e23af6c89dbc432",
+      "af0436815ab38f4864dd1e24",
+      "23820c1e76d3bd843f61c799"
+    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
+    "pendingRequestMemberUserIds": [],
+    "subEventsEnabled": false,
+    "subEventDefinitions": [],
+    "policiesEnabled": false
+  },
+  {
+    "_id": {
+      "$oid": "af3000000000000000000002"
+    },
+    "syncKey": "seed-event-feedback-own-eszter",
+    "sourceId": "af3000000000000000000002",
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "status": "I",
+    "admins": [
+      "9f3b3f085e23af6c89dbc432"
+    ],
+    "avatar": "NE",
+    "title": "Seattle Rooftop Ideas Exchange",
+    "subtitle": "A small creative exchange with guided introductions, project sketches, and a relaxed rooftop close.",
+    "timeframe": "Jul 12 · 6:00 PM - 8:30 PM",
+    "inviter": null,
+    "unread": 0,
+    "activity": 0,
+    "trashedAtIso": null,
+    "creatorUserId": "9f3b3f085e23af6c89dbc432",
+    "creatorName": "Nagy Eszter",
+    "creatorInitials": "NE",
+    "creatorGender": "woman",
+    "creatorCity": "Seattle",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2026-07-12T18:00:00.000Z",
+    "endAtIso": "2026-07-12T20:30:00.000Z",
+    "distanceKm": 0,
+    "imageUrl": "https://picsum.photos/seed/seed-event-feedback-own-eszter/1200/700",
+    "sourceLink": "https://example.com/event-feedback/af3000000000000000000002",
+    "location": "Seattle Rooftop Studio",
+    "locationCoordinates": {
+      "latitude": 47.6156,
+      "longitude": -122.3392
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -122.3392,
+        47.6156
+      ]
+    },
+    "capacityMin": 4,
+    "capacityMax": 10,
+    "capacityTotal": 10,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": false,
+    "slotsEnabled": false,
+    "eventType": "main",
+    "acceptedMembers": 4,
+    "pendingMembers": 0,
+    "topics": [
+      "#Creative",
+      "#Networking",
+      "#Community"
+    ],
+    "subEvents": [],
+    "mode": "Casual",
+    "rating": 8.8,
+    "boost": 1450,
+    "affinity": 91000,
+    "createdDate": "2026-06-28T14:00:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-12T20:30:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432",
+    "statusBeforeSuppression": "A",
+    "expired": true,
+    "acceptedMemberUserIds": [
+      "9f3b3f085e23af6c89dbc432",
+      "1b1c70be2349b3359a8f6f94",
+      "b29df68956f3fe15e04558de",
+      "23820c1e76d3bd843f61c799"
+    ],
+    "pendingMemberUserIds": [],
+    "invitedMemberUserIds": [],
+    "pendingRequestMemberUserIds": [],
+    "subEventsEnabled": false,
+    "subEventDefinitions": [],
+    "policiesEnabled": false
+  },
+  {
+    "_id": {
       "$oid": "c66972829391ece30a38e9be"
     },
     "syncKey": "a9afe92f-8c2c-522f-81d9-f4939f5f0f2c",
@@ -2025,8 +2189,8 @@
         "endAt": "2027-03-01T09:45",
         "groups": [],
         "id": "f507987dfeb38ba10df0010c",
-        "membersAccepted": 4,
-        "membersPending": 8,
+        "membersAccepted": 1,
+        "membersPending": 0,
         "name": "Kickoff",
         "optional": false,
         "startAt": "2027-03-01T09:00",
@@ -2044,8 +2208,8 @@
         "endAt": "2027-03-01T10:30",
         "groups": [],
         "id": "e700916e6e50c6b50c272f1b",
-        "membersAccepted": 0,
-        "membersPending": 7,
+        "membersAccepted": 1,
+        "membersPending": 0,
         "name": "Main Session",
         "optional": true,
         "startAt": "2027-03-01T09:45",
@@ -2063,8 +2227,8 @@
         "endAt": "2027-03-01T11:00",
         "groups": [],
         "id": "f7ca9ad880e371f0ab929147",
-        "membersAccepted": 2,
-        "membersPending": 7,
+        "membersAccepted": 1,
+        "membersPending": 0,
         "name": "Side Activity",
         "optional": false,
         "startAt": "2027-03-01T10:30",
@@ -2082,8 +2246,8 @@
         "endAt": "2027-03-01T11:45",
         "groups": [],
         "id": "b2bb3e98a0b3bfafed8a0934",
-        "membersAccepted": 0,
-        "membersPending": 10,
+        "membersAccepted": 1,
+        "membersPending": 0,
         "name": "Wrap-up",
         "optional": true,
         "startAt": "2027-03-01T11:15",
@@ -6261,6 +6425,87 @@
         "icon": "emoji_events"
       }
     ],
+    "pricing": {
+      "enabled": true,
+      "mode": "fixed",
+      "basePrice": 25,
+      "currency": "USD",
+      "taxMode": "excluded",
+      "chargeType": "per_attendee",
+      "quantityRulesEnabled": false,
+      "quantityRules": [],
+      "minPrice": 15,
+      "maxPrice": 60,
+      "rounding": "whole",
+      "demandRulesEnabled": false,
+      "demandRules": [
+        {
+          "id": "demand-rule-1",
+          "operator": "gte",
+          "capacityFilledPercent": 50,
+          "action": {
+            "kind": "increase_percent",
+            "value": 10
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        }
+      ],
+      "timeRulesEnabled": false,
+      "timeRules": [
+        {
+          "id": "time-rule-1",
+          "trigger": "days_before_start",
+          "offsetValue": 7,
+          "specificDateStart": null,
+          "specificDateEnd": null,
+          "action": {
+            "kind": "decrease_percent",
+            "value": 5
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        }
+      ],
+      "cancellationPolicy": {
+        "enabled": true,
+        "rules": [
+          {
+            "id": "cancellation-rule-1",
+            "offsetUnit": "days",
+            "offsetValue": 7,
+            "refundKind": "percent",
+            "refundValue": 50
+          },
+          {
+            "id": "cancellation-rule-2",
+            "offsetUnit": "hours",
+            "offsetValue": 24,
+            "refundKind": "none",
+            "refundValue": null
+          }
+        ]
+      },
+      "slotPricingEnabled": false,
+      "slotOverrides": [],
+      "audience": {
+        "enabled": false,
+        "memberPrice": 20,
+        "vipPrice": 15,
+        "inviteOnlyDiscountPercent": 25,
+        "promoCodes": [
+          {
+            "id": "promo-code-1",
+            "code": "EARLY",
+            "action": {
+              "kind": "decrease_percent",
+              "value": 10
+            }
+          }
+        ],
+        "soldOutLabel": "Show \"Sold Out\""
+      }
+    },
     "policiesEnabled": false
   },
   {
@@ -8584,8 +8829,8 @@
     "creatorCity": "Nashville",
     "visibility": "Friends only",
     "blindMode": "Blind Event",
-    "startAtIso": "2027-03-07T12:30:00.000Z",
-    "endAtIso": "2027-03-07T14:30:00.000Z",
+    "startAtIso": "2026-03-07T12:30:00.000Z",
+    "endAtIso": "2026-03-07T14:30:00.000Z",
     "distanceKm": 0,
     "imageUrl": "https://picsum.photos/seed/demo-event-events%3A9f3b3f085e23af6c89dbc432%3Aceaae76e8afd0975e1087cc8%3Acreative-studio-meetup/1200/700",
     "sourceLink": "https://example.com/event/9f3b3f085e23af6c89dbc432/ceaae76e8afd0975e1087cc8",
@@ -8697,9 +8942,9 @@
     "rating": 9,
     "boost": 26745,
     "affinity": 2003450,
-    "createdDate": "2027-03-07T12:30:00.000Z",
+    "createdDate": "2026-03-07T12:30:00.000Z",
     "createdUser": "d04cd419e735549e3f312977",
-    "updatedDate": "2027-03-07T12:30:00.000Z",
+    "updatedDate": "2026-03-08T15:45:00.000Z",
     "updatedUser": "d04cd419e735549e3f312977",
     "statusBeforeSuppression": "A",
     "expired": true,
@@ -51670,7 +51915,7 @@
     "syncKey": "http-hosting-23820c1e76d3bd843f61c799",
     "sourceId": "f260f450643e752d226b4253",
     "ownerUserId": "23820c1e76d3bd843f61c799",
-    "status": "A",
+    "status": "I",
     "admins": [
       "23820c1e76d3bd843f61c799"
     ],
@@ -51689,8 +51934,8 @@
     "creatorCity": "Seattle",
     "visibility": "Public",
     "blindMode": "Open Event",
-    "startAtIso": "2027-05-18T19:00:00.000Z",
-    "endAtIso": "2027-05-18T22:00:00.000Z",
+    "startAtIso": "2026-05-18T19:00:00.000Z",
+    "endAtIso": "2026-05-18T22:00:00.000Z",
     "distanceKm": 0,
     "imageUrl": "https://picsum.photos/seed/http-hosting-23820c1e76d3bd843f61c799/1200/700",
     "sourceLink": "https://example.com/hosting/23820c1e76d3bd843f61c799/f260f450643e752d226b4253",
@@ -51714,7 +51959,7 @@
     "ticketing": false,
     "slotsEnabled": false,
     "eventType": "main",
-    "acceptedMembers": 1,
+    "acceptedMembers": 4,
     "pendingMembers": 0,
     "topics": [
       "#Community",
@@ -51726,12 +51971,17 @@
     "rating": 7.8,
     "boost": 23220,
     "affinity": 620130,
-    "createdDate": "2027-05-15T19:00:00.000Z",
+    "createdDate": "2026-05-15T19:00:00.000Z",
     "createdUser": "23820c1e76d3bd843f61c799",
-    "updatedDate": "2027-05-15T19:00:00.000Z",
+    "updatedDate": "2026-05-19T09:40:00.000Z",
     "updatedUser": "23820c1e76d3bd843f61c799",
+    "statusBeforeSuppression": "A",
+    "expired": true,
     "acceptedMemberUserIds": [
-      "23820c1e76d3bd843f61c799"
+      "23820c1e76d3bd843f61c799",
+      "1b1c70be2349b3359a8f6f94",
+      "b29df68956f3fe15e04558de",
+      "9f3b3f085e23af6c89dbc432"
     ],
     "pendingMemberUserIds": [],
     "invitedMemberUserIds": [],
@@ -54063,6 +54313,94 @@
         "icon": "emoji_events"
       }
     ],
+    "policiesEnabled": false
+  },
+  {
+    "_id": {
+      "$oid": "f1c4e57e2000000000000001"
+    },
+    "syncKey": "seed-ticket-nagy-eszter-friends-circle-supper",
+    "sourceId": "4f115bb6be32bf0838efb3b7",
+    "ownerUserId": "9f3b3f085e23af6c89dbc432",
+    "status": "A",
+    "admins": [
+      "b29df68956f3fe15e04558de"
+    ],
+    "avatar": "KB",
+    "title": "Friends Circle Supper",
+    "subtitle": "Small-table meetup for close connections and plus-ones.",
+    "timeframe": "Mar 17 · 6:30 PM - 9:30 PM",
+    "inviter": "Kiss Balázs",
+    "unread": 0,
+    "activity": 0,
+    "trashedAtIso": null,
+    "creatorUserId": "b29df68956f3fe15e04558de",
+    "creatorName": "Kiss Balázs",
+    "creatorInitials": "KB",
+    "creatorGender": "man",
+    "creatorCity": "Chicago",
+    "visibility": "Friends only",
+    "blindMode": "Open Event",
+    "startAtIso": "2027-03-17T18:30:00",
+    "endAtIso": "2027-03-17T21:30:00",
+    "distanceKm": 0,
+    "imageUrl": "https://picsum.photos/seed/4f115bb6be32bf0838efb3b7/1200/700",
+    "sourceLink": "https://example.com/events/4f115bb6be32bf0838efb3b7",
+    "location": "Chicago · Friends Circle",
+    "locationCoordinates": {
+      "latitude": 41.8889,
+      "longitude": -87.6346
+    },
+    "locationGeo": {
+      "type": "Point",
+      "coordinates": [
+        -87.6346,
+        41.8889
+      ]
+    },
+    "capacityMin": 6,
+    "capacityMax": 14,
+    "capacityTotal": 22,
+    "autoInviter": false,
+    "frequency": "One-time",
+    "ticketing": true,
+    "approvalRequired": false,
+    "slotsEnabled": false,
+    "eventType": "main",
+    "acceptedMembers": 5,
+    "pendingMembers": 2,
+    "topics": [
+      "#StreetFood",
+      "#GoingOut"
+    ],
+    "subEvents": [],
+    "mode": "Casual",
+    "rating": 8.4,
+    "boost": 25018,
+    "affinity": 2025821,
+    "createdDate": "2027-03-17T18:30:00",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2027-03-17T18:30:00",
+    "updatedUser": "b29df68956f3fe15e04558de",
+    "acceptedMemberUserIds": [
+      "b29df68956f3fe15e04558de",
+      "b5e2db6882d989d8532af12c",
+      "9f3b3f085e23af6c89dbc432",
+      "1b1c70be2349b3359a8f6f94",
+      "f4b2ebd8f56628ab7df58221"
+    ],
+    "pendingMemberUserIds": [
+      "178e8d0cbe164fa3fede5884",
+      "cdd937e0adcbd1a5e38f3ceb"
+    ],
+    "invitedMemberUserIds": [
+      "178e8d0cbe164fa3fede5884"
+    ],
+    "pendingRequestMemberUserIds": [
+      "cdd937e0adcbd1a5e38f3ceb"
+    ],
+    "subEventsEnabled": true,
+    "subEventDefinitions": [],
     "policiesEnabled": false
   }
 ]

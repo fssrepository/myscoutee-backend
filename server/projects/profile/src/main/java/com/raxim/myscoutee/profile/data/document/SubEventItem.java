@@ -170,4 +170,45 @@ public record SubEventItem(
                 null,
                 List.of());
     }
+
+    public SubEventItem withMemberCounts(Integer accepted, Integer pending) {
+        return new SubEventItem(
+                id,
+                name,
+                description,
+                startAt,
+                endAt,
+                location,
+                createdByUserId,
+                tournamentGroupCapacityMin,
+                tournamentGroupCapacityMax,
+                tournamentLeaderboardType,
+                tournamentAdvancePerGroup,
+                optional,
+                pricing,
+                capacityMin,
+                capacityMax,
+                accepted,
+                pending,
+                carsPending,
+                accommodationPending,
+                suppliesPending,
+                carsAccepted,
+                accommodationAccepted,
+                suppliesAccepted,
+                carsCapacityMin,
+                carsCapacityMax,
+                accommodationCapacityMin,
+                accommodationCapacityMax,
+                suppliesCapacityMin,
+                suppliesCapacityMax,
+                slotStartOffsetMinutes,
+                slotDurationMinutes,
+                stageStatus,
+                stageStatusReason,
+                stageStatusUpdatedAt,
+                stageFinalizedAt,
+                stageFinalizedByUserId,
+                groups);
+    }
 }

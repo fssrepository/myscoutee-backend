@@ -24,6 +24,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageR
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSlotsQueryDto;
@@ -231,11 +232,11 @@ public class ActivitiesEventsController {
     @PostMapping("/feedback/submit")
     @RequiresPolicy(
             key = AccessPolicyKeys.EVENT_FEEDBACK_SUBMIT,
-            subject = "#actorUserId",
-            resourceId = "#request?.eventId()",
+            subject = "#request?.userId() ?: #actorUserId",
+            resourceId = "#request?.feedback()?.eventId()",
             skipWhenAuthenticationOptional = true)
-    public void submitFeedback(@RequestBody EventFeedbackDetailDto request) {
-        activitiesEventFeedbackService.submit(request);
+    public EventFeedbackDetailDto submitFeedback(@RequestBody EventFeedbackSubmitRequestDto request) {
+        return activitiesEventFeedbackService.submit(request);
     }
 
     @PostMapping("/feedback/note")

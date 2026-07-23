@@ -240,6 +240,138 @@ class PaymentServiceTest {
     }
 
     @Test
+    void paymentAuditUsesTheExactPersistedSessionAmountAndRejectsMismatchedScope() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        PaymentService service = paymentService(repository, false, new RecordingPaymentProcessor("stripe"));
+        Payment payment = new Payment();
+        payment.setId("payment-audit-1");
+        payment.setCheckoutSessionId("checkout-audit-1");
+        payment.setUserId("borrower-1");
+        payment.setSourceId("asset-1");
+        payment.setProvider("dummy");
+        payment.setStatus("approved");
+        payment.setBookingStatus("joined");
+        payment.setAmount(12d);
+        payment.setCurrency("USD");
+        payment.setLineItems(List.of(new EventCheckoutLineItemDto(
+                "asset-line",
+                "resource",
+                "Evening Transfer Sedan",
+                "Mar 23, 12:00 AM - 12:45 AM",
+                12d,
+                "USD")));
+        savePayment(paymentsBySession, payment);
+
+        var audit = service.loadPaymentAudit("borrower-1", "asset-1", "checkout-audit-1");
+
+        assertThat(audit).isNotNull();
+        assertThat(audit.amount()).isEqualTo(12d);
+        assertThat(audit.status()).isEqualTo("approved");
+        assertThat(audit.bookingStatus()).isEqualTo("joined");
+        assertThat(audit.lineItems()).singleElement().satisfies(line -> {
+            assertThat(line.label()).isEqualTo("Evening Transfer Sedan");
+            assertThat(line.amount()).isEqualTo(12d);
+        });
+        assertThat(service.loadPaymentAudit("another-user", "asset-1", "checkout-audit-1")).isNull();
+        assertThat(service.loadPaymentAudit("borrower-1", "another-asset", "checkout-audit-1")).isNull();
+    }
+
+    @Test
+    void assetQuantityPriceChangesAppendImmutableRevisionsAndLatestRevisionWins() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        PaymentService service = paymentService(repository, false, new RecordingPaymentProcessor("stripe"));
+        Payment original = new Payment();
+        original.setId("payment-original");
+        original.setCheckoutSessionId("checkout-root");
+        original.setUserId("borrower-1");
+        original.setSourceId("asset-1");
+        original.setProvider("dummy");
+        original.setStatus("approved");
+        original.setBookingStatus("joined");
+        original.setAmount(12d);
+        original.setCurrency("USD");
+        original.setAuditKind("payment");
+        original.setRevisionNumber(0);
+        original.setBookingQuantity(1);
+        savePayment(paymentsBySession, original);
+
+        var firstRevision = service.recordAssetBookingPriceRevision(
+                "checkout-root",
+                "borrower-1",
+                "asset-1",
+                "Evening Transfer Sedan",
+                "Mar 23, 12:00 AM - 12:45 AM",
+                1,
+                2,
+                12d,
+                24d,
+                "USD");
+        var secondRevision = service.recordAssetBookingPriceRevision(
+                "checkout-root",
+                "borrower-1",
+                "asset-1",
+                "Evening Transfer Sedan",
+                "Mar 23, 12:00 AM - 12:45 AM",
+                2,
+                3,
+                24d,
+                36d,
+                "USD");
+        var latest = service.loadPaymentAudit("borrower-1", "asset-1", "checkout-root");
+
+        assertThat(original.getAmount()).isEqualTo(12d);
+        assertThat(firstRevision.amount()).isEqualTo(24d);
+        assertThat(firstRevision.adjustmentAmount()).isEqualTo(12d);
+        assertThat(firstRevision.revisionNumber()).isEqualTo(1);
+        assertThat(secondRevision.amount()).isEqualTo(36d);
+        assertThat(secondRevision.revisionNumber()).isEqualTo(2);
+        assertThat(latest.amount()).isEqualTo(36d);
+        assertThat(latest.bookingQuantity()).isEqualTo(3);
+        assertThat(latest.auditKind()).isEqualTo("booking_price_revision");
+        assertThat(latest.pricingSummaryRows()).extracting(row -> row.amount())
+                .containsExactly(24d, 12d);
+    }
+
+    @Test
+    void assetQuantityRevisionUsesThePreviouslyCommittedBookingTotalWhenTheOldAuditIsStale() {
+        Map<String, Payment> paymentsBySession = new HashMap<>();
+        PaymentsRepository repository = inMemoryRepository(paymentsBySession);
+        PaymentService service = paymentService(repository, false, new RecordingPaymentProcessor("stripe"));
+        Payment original = new Payment();
+        original.setId("payment-original");
+        original.setCheckoutSessionId("checkout-root");
+        original.setUserId("borrower-1");
+        original.setSourceId("asset-1");
+        original.setProvider("dummy");
+        original.setStatus("approved");
+        original.setBookingStatus("joined");
+        original.setAmount(12d);
+        original.setCurrency("USD");
+        savePayment(paymentsBySession, original);
+
+        var revision = service.recordAssetBookingPriceRevision(
+                "checkout-root",
+                "borrower-1",
+                "asset-1",
+                "Evening Transfer Sedan",
+                "Mar 23, 12:00 AM - 12:45 AM",
+                2,
+                3,
+                24d,
+                36d,
+                "USD");
+
+        assertThat(original.getAmount()).isEqualTo(12d);
+        assertThat(revision.amount()).isEqualTo(36d);
+        assertThat(revision.adjustmentAmount()).isEqualTo(12d);
+        assertThat(revision.bookingQuantity()).isEqualTo(3);
+        assertThat(revision.pricingSummaryRows()).extracting(row -> row.amount())
+                .containsExactly(24d, 12d);
+    }
+
+    @Test
     void cancelJoinedBookingComputesPartialRefundFromEligibleRule() {
         Map<String, Payment> paymentsBySession = new HashMap<>();
         PaymentsRepository repository = inMemoryRepository(paymentsBySession);
@@ -286,6 +418,13 @@ class PaymentServiceTest {
                 Optional.ofNullable(paymentsBySession.get(invocation.getArgument(0, String.class))));
         when(repository.findById(anyString())).thenAnswer(invocation ->
                 Optional.ofNullable(paymentsBySession.get(invocation.getArgument(0, String.class))));
+        when(repository.findByRevisionRootSessionId(anyString())).thenAnswer(invocation -> {
+            String rootSessionId = invocation.getArgument(0, String.class);
+            return paymentsBySession.values().stream()
+                    .distinct()
+                    .filter(payment -> rootSessionId.equals(payment.getRevisionRootSessionId()))
+                    .toList();
+        });
         when(repository.save(any(Payment.class))).thenAnswer(invocation -> {
             Payment payment = invocation.getArgument(0, Payment.class);
             savePayment(paymentsBySession, payment);

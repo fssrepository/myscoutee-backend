@@ -44,6 +44,8 @@ class UserActivityCountersServiceTest {
     @Mock
     private EventFeedbackStatesRepository eventFeedbackStatesRepository;
     @Mock
+    private EventParticipationTicketService eventParticipationTicketService;
+    @Mock
     private MongoTemplate mongoTemplate;
 
     private UserActivityCountersService service;
@@ -56,6 +58,7 @@ class UserActivityCountersServiceTest {
                 activityMembersRepository,
                 assetsRepository,
                 eventFeedbackStatesRepository,
+                eventParticipationTicketService,
                 mongoTemplate);
     }
 
@@ -80,6 +83,23 @@ class UserActivityCountersServiceTest {
         assertThat(fields.getInteger("activities.asset.accommodation")).isEqualTo(1);
         assertThat(fields.getInteger("activities.asset.supplies")).isEqualTo(1);
         assertThat(fields.getInteger("activities.asset.tickets")).isEqualTo(5);
+    }
+
+    @Test
+    void refreshEventCountersUsesTheSameTicketProjectionAsTheTicketList() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent firstTicket = event("event-one", "host", "A");
+        ActivityEvent duplicateProjection = event("event-one", "host", "A");
+        ActivityEvent secondTicket = event("event-two", "viewer", "A");
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(eventParticipationTicketService.queryTicketRecordsForUser("viewer"))
+                .thenReturn(List.of(firstTicket, duplicateProjection, secondTicket));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.tickets")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.asset.tickets")).isEqualTo(2);
     }
 
     @Test

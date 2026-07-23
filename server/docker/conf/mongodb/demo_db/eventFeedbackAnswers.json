@@ -204,7 +204,7 @@
     "syncKey": "event-feedback-answer-u3-e5-host",
     "viewerUserId": "9f3b3f085e23af6c89dbc432",
     "eventId": "ceaae76e8afd0975e1087cc8",
-    "cardId": "92617fa9c64a8cc8e3b56daf",
+    "cardId": "feedback-event-ceaae76e8afd0975e1087cc8",
     "kind": "event",
     "targetUserId": "9f3b3f085e23af6c89dbc432",
     "targetRole": "Admin",
@@ -233,7 +233,7 @@
     "syncKey": "event-feedback-answer-u3-e5-u4",
     "viewerUserId": "9f3b3f085e23af6c89dbc432",
     "eventId": "ceaae76e8afd0975e1087cc8",
-    "cardId": "884de10b5fc6742102fd9909",
+    "cardId": "feedback-attendee-ceaae76e8afd0975e1087cc8-1b1c70be2349b3359a8f6f94",
     "kind": "attendee",
     "targetUserId": "1b1c70be2349b3359a8f6f94",
     "targetRole": "Member",
@@ -261,7 +261,7 @@
     "syncKey": "event-feedback-answer-u3-e5-u2",
     "viewerUserId": "9f3b3f085e23af6c89dbc432",
     "eventId": "ceaae76e8afd0975e1087cc8",
-    "cardId": "c1b658a2a412d1954942216d",
+    "cardId": "feedback-attendee-ceaae76e8afd0975e1087cc8-b29df68956f3fe15e04558de",
     "kind": "attendee",
     "targetUserId": "b29df68956f3fe15e04558de",
     "targetRole": "Member",
@@ -569,7 +569,7 @@
     "syncKey": "event-feedback-answer-u3-seattle-host",
     "viewerUserId": "9f3b3f085e23af6c89dbc432",
     "eventId": "f260f450643e752d226b4253",
-    "cardId": "demo-seattle-host-u3",
+    "cardId": "feedback-event-f260f450643e752d226b4253",
     "kind": "event",
     "targetUserId": "23820c1e76d3bd843f61c799",
     "targetRole": "Admin",
@@ -597,7 +597,7 @@
     "syncKey": "event-feedback-answer-u3-seattle-u4",
     "viewerUserId": "9f3b3f085e23af6c89dbc432",
     "eventId": "f260f450643e752d226b4253",
-    "cardId": "demo-seattle-attendee-u3-u4",
+    "cardId": "feedback-attendee-f260f450643e752d226b4253-1b1c70be2349b3359a8f6f94",
     "kind": "attendee",
     "targetUserId": "1b1c70be2349b3359a8f6f94",
     "targetRole": "Member",
@@ -617,5 +617,92 @@
     "createdUser": "9f3b3f085e23af6c89dbc432",
     "updatedDate": "2026-05-19T09:40:00.000Z",
     "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af2000000000000000000023"
+    },
+    "syncKey": "event-feedback-answer-maya-own-eszter-host",
+    "viewerUserId": "1b1c70be2349b3359a8f6f94",
+    "eventId": "af3000000000000000000002",
+    "cardId": "seed-own-eszter-host-maya",
+    "kind": "event",
+    "targetUserId": "9f3b3f085e23af6c89dbc432",
+    "targetRole": "Admin",
+    "primaryValue": "excellent",
+    "secondaryValue": "timing",
+    "personalityTraitIds": [
+      "reliable-one",
+      "empath",
+      "social-charmer"
+    ],
+    "tags": [
+      "host reliability",
+      "host communication",
+      "event timing"
+    ],
+    "submittedAtIso": "2026-07-12T21:10:00.000Z",
+    "createdDate": "2026-07-12T21:10:00.000Z",
+    "createdUser": "1b1c70be2349b3359a8f6f94",
+    "updatedDate": "2026-07-12T21:10:00.000Z",
+    "updatedUser": "1b1c70be2349b3359a8f6f94"
+  },
+  {
+    "_id": {
+      "$oid": "af2000000000000000000024"
+    },
+    "syncKey": "event-feedback-answer-balazs-own-eszter-host",
+    "viewerUserId": "b29df68956f3fe15e04558de",
+    "eventId": "af3000000000000000000002",
+    "cardId": "seed-own-eszter-host-balazs",
+    "kind": "event",
+    "targetUserId": "9f3b3f085e23af6c89dbc432",
+    "targetRole": "Admin",
+    "primaryValue": "great",
+    "secondaryValue": "communication",
+    "personalityTraitIds": [
+      "creative-soul",
+      "deep-thinker",
+      "reliable-one"
+    ],
+    "tags": [
+      "host planning",
+      "host communication",
+      "creative facilitation"
+    ],
+    "submittedAtIso": "2026-07-13T08:20:00.000Z",
+    "createdDate": "2026-07-13T08:20:00.000Z",
+    "createdUser": "b29df68956f3fe15e04558de",
+    "updatedDate": "2026-07-13T08:20:00.000Z",
+    "updatedUser": "b29df68956f3fe15e04558de"
+  },
+  {
+    "_id": {
+      "$oid": "af2000000000000000000025"
+    },
+    "syncKey": "event-feedback-answer-lucas-lane-own-eszter-host",
+    "viewerUserId": "23820c1e76d3bd843f61c799",
+    "eventId": "af3000000000000000000002",
+    "cardId": "seed-own-eszter-host-lucas-lane",
+    "kind": "event",
+    "targetUserId": "9f3b3f085e23af6c89dbc432",
+    "targetRole": "Admin",
+    "primaryValue": "good",
+    "secondaryValue": "resources",
+    "personalityTraitIds": [
+      "adventurer",
+      "ambitious-go-getter",
+      "reliable-one"
+    ],
+    "tags": [
+      "host reliability",
+      "event resources",
+      "project facilitation"
+    ],
+    "submittedAtIso": "2026-07-13T12:45:00.000Z",
+    "createdDate": "2026-07-13T12:45:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-07-13T12:45:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799"
   }
 ]

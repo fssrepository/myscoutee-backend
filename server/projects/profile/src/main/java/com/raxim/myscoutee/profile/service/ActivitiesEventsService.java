@@ -1353,7 +1353,52 @@ public class ActivitiesEventsService {
                 resourceRecordsByKey,
                 stageRuntimeByKey,
                 viewer.userId());
+        slots = withPersistedSubEventMemberCounts(slots);
         return new EventSubEventsResultDto(parent.getMode(), slots, page.total(), page.nextCursor());
+    }
+
+    private List<EventSubEventsSlotDto> withPersistedSubEventMemberCounts(List<EventSubEventsSlotDto> slots) {
+        if (slots == null || slots.isEmpty()) {
+            return List.of();
+        }
+        Set<String> memberOwnerIds = new LinkedHashSet<>();
+        for (EventSubEventsSlotDto slot : slots) {
+            String slotOwnerId = subEventParticipantSlotOwnerId(slot);
+            if (!StringUtils.hasText(slotOwnerId)) {
+                continue;
+            }
+            List<SubEventItemDto> items = slot == null || slot.subEventItems() == null
+                    ? List.of()
+                    : slot.subEventItems();
+            for (int index = 0; index < items.size(); index += 1) {
+                String subEventId = subEventParticipantItemId(items.get(index), index);
+                if (StringUtils.hasText(subEventId)) {
+                    memberOwnerIds.add(slotOwnerId + ":" + subEventId);
+                }
+            }
+        }
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByOwnerId =
+                activitiesMembersService.buildBatchOwnerSnapshots(OWNER_TYPE_SUB_EVENT, memberOwnerIds);
+        return slots.stream()
+                .filter(Objects::nonNull)
+                .map(slot -> {
+                    String slotOwnerId = subEventParticipantSlotOwnerId(slot);
+                    List<SubEventItemDto> items = slot.subEventItems() == null ? List.of() : slot.subEventItems();
+                    List<SubEventItemDto> countedItems = new ArrayList<>(items.size());
+                    for (int index = 0; index < items.size(); index += 1) {
+                        SubEventItemDto item = items.get(index);
+                        String subEventId = subEventParticipantItemId(item, index);
+                        ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByOwnerId.get(
+                                slotOwnerId + ":" + subEventId);
+                        countedItems.add(item == null
+                                ? null
+                                : item.withMemberCounts(
+                                        snapshot == null ? 0 : snapshot.acceptedMembers(),
+                                        snapshot == null ? 0 : snapshot.pendingMembers()));
+                    }
+                    return withSubEventItems(slot, countedItems);
+                })
+                .toList();
     }
 
     private List<EventSubEventsSlotDto> filterSubEventSlotsByAcceptedParticipation(
@@ -2405,8 +2450,11 @@ public class ActivitiesEventsService {
         boolean alreadyAccepted = isAcceptedMember(
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId),
                 viewer.userId());
-        boolean approvalRequested = isApprovalRequested(request)
-                || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted);
+        boolean acceptingInvitation = activitiesMembersService.hasPendingInvitation(sourceId, viewer.userId());
+        boolean approvalRequested = acceptingInvitation
+                ? activitiesMembersService.pendingInvitationRequiresAdminApproval(sourceId, viewer.userId())
+                : isApprovalRequested(request)
+                        || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted);
         boolean waitingList = isWaitlistRequested(request) || isRecordFull(preferred);
         boolean accepted = !waitingList && !approvalRequested && isConfirmedBooking(request, preferred);
 
@@ -2818,7 +2866,7 @@ public class ActivitiesEventsService {
                 normalizeId(sourceId),
                 StringUtils.hasText(slotSourceId) ? normalizeId(slotSourceId) : null,
                 "leave",
-                "deleted",
+                "trashed",
                 null,
                 acceptedMembers,
                 pendingMembers,
@@ -3320,6 +3368,49 @@ public class ActivitiesEventsService {
                 actorUserId));
     }
 
+    private void notifyParticipantsWhenTicketingEnabled(
+            ActivityEvent previous,
+            ActivityEvent event,
+            ActivitiesMembersService.OwnerMembersSnapshot members,
+            String actorUserId) {
+        if (notificationOutboxService == null
+                || previous == null
+                || event == null
+                || Boolean.TRUE.equals(previous.getTicketing())
+                || !Boolean.TRUE.equals(event.getTicketing())) {
+            return;
+        }
+        LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>(members == null
+                ? resolveAcceptedMemberUserIds(event)
+                : members.acceptedMemberUserIds());
+        recipientUserIds.remove(normalizeId(event.getCreatorUserId()));
+        recipientUserIds.removeIf(userId -> !StringUtils.hasText(normalizeId(userId)));
+        if (recipientUserIds.isEmpty()) {
+            return;
+        }
+        String eventId = normalizeId(event.getSourceId());
+        String eventTitle = firstNonBlank(event.getTitle(), "Event");
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("eventId", eventId);
+        payload.put("eventTitle", eventTitle);
+        payload.put("eventScope", "tickets");
+        payload.put("ticketing", "enabled");
+        notificationOutboxService.enqueue(new NotificationIntent(
+                "event-ticketing-enabled",
+                "event",
+                eventId,
+                "accepted-participants",
+                recipientUserIds,
+                "Your event ticket is ready",
+                "Ticketing is now enabled for " + eventTitle + ". Open Tickets to view your entry code.",
+                "/game",
+                firstNonBlank(event.getImageUrl(), "/assets/logo/heart.webp"),
+                "/assets/logo/heart.webp",
+                "event-ticketing-enabled-" + eventId,
+                payload,
+                actorUserId));
+    }
+
     private List<String> eventAudienceUserIds(ActivityEvent event) {
         if (event == null) {
             return List.of();
@@ -3431,12 +3522,6 @@ public class ActivitiesEventsService {
     }
 
     private boolean isConfirmedBooking(EventActionRequestDto request, ActivityEvent preferred) {
-        if (isWaitlistRequested(request) || isApprovalRequested(request)) {
-            return false;
-        }
-        if (!Boolean.TRUE.equals(preferred == null ? null : preferred.getTicketing())) {
-            return false;
-        }
         return Boolean.TRUE.equals(request == null ? null : request.bookingConfirmed());
     }
 
@@ -3628,8 +3713,9 @@ public class ActivitiesEventsService {
         if (definitionChange.changed()) {
             syncStageRuntimeGroupCountsForDefinitions(sourceId, actorUserId);
         }
-        userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
+        userActivityCountersService.refreshEventCountersForDocuments(savedDocuments);
+        notifyParticipantsWhenTicketingEnabled(existing, baseRecord, syncedMembersSnapshot, actorUserId);
         String paymentSessionId = normalizeId(request.paymentSessionId());
         if (StringUtils.hasText(paymentSessionId)) {
             String bookingStartAtIso = request.nextSlot() != null && StringUtils.hasText(request.nextSlot().startAtIso())
@@ -5129,7 +5215,7 @@ public class ActivitiesEventsService {
                 : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         document.setTicketing(publishedManageMode
-                ? existing != null && Boolean.TRUE.equals(existing.getTicketing())
+                ? existing != null && (Boolean.TRUE.equals(existing.getTicketing()) || Boolean.TRUE.equals(request.ticketing()))
                 : request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
         document.setApprovalRequired(publishedManageMode
                 ? existing != null && Boolean.TRUE.equals(existing.getApprovalRequired())
@@ -5422,7 +5508,9 @@ public class ActivitiesEventsService {
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         String sourceId = normalizeId(record.getSourceId());
         if (MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, userId))) {
-            return false;
+            return ctx != null
+                    && MEMBER_STATUS_DELETED.equals(
+                            safeText(ctx.trackedEventStatusesBySourceId().get(sourceId)));
         }
         if (ctx != null && StringUtils.hasText(sourceId) && ctx.trackedEventSourceIds().contains(sourceId)) {
             return true;

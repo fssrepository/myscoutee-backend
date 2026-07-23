@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.Payment;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutBasketItemDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
@@ -35,6 +36,8 @@ public class PaymentService {
     private static final String REFUND_STATUS_NOT_ELIGIBLE = "not_eligible";
     private static final String REFUND_STATUS_PARTIAL = "partial";
     private static final String REFUND_STATUS_FULL = "full";
+    private static final String AUDIT_KIND_PAYMENT = "payment";
+    private static final String AUDIT_KIND_BOOKING_PRICE_REVISION = "booking_price_revision";
 
     private final Map<String, PaymentProcessor> processors;
     private final PaymentsRepository paymentsRepository;
@@ -150,6 +153,114 @@ public class PaymentService {
             String bookingStartAtIso,
             PricingCancellationPolicyDto cancellationPolicy) {
         recordBooking(paymentSessionId, userId, sourceId, slotSourceId, bookingStartAtIso, cancellationPolicy);
+    }
+
+    public EventCheckoutPaymentAuditDto loadPaymentAudit(
+            String userId,
+            String sourceId,
+            String paymentSessionId) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        String normalizedSessionId = normalizeId(paymentSessionId);
+        if (!hasText(normalizedUserId)
+                || !hasText(normalizedSourceId)
+                || !hasText(normalizedSessionId)) {
+            return null;
+        }
+
+        return findByAnySessionId(normalizedSessionId)
+                .filter(payment -> normalizedUserId.equals(normalizeId(payment.getUserId())))
+                .filter(payment -> normalizedSourceId.equals(normalizeId(payment.getSourceId())))
+                .map(this::latestPaymentRevision)
+                .map(this::toPaymentAudit)
+                .orElse(null);
+    }
+
+    public EventCheckoutPaymentAuditDto recordAssetBookingPriceRevision(
+            String paymentSessionId,
+            String userId,
+            String sourceId,
+            String assetTitle,
+            String timeframe,
+            Integer previousQuantity,
+            Integer nextQuantity,
+            Double previousTotalAmount,
+            Double nextTotalAmount,
+            String currency) {
+        String normalizedUserId = normalizeId(userId);
+        String normalizedSourceId = normalizeId(sourceId);
+        Payment anchor = findByAnySessionId(paymentSessionId).orElse(null);
+        if (anchor == null
+                || !hasText(normalizedUserId)
+                || !hasText(normalizedSourceId)
+                || !normalizedUserId.equals(normalizeId(anchor.getUserId()))
+                || !normalizedSourceId.equals(normalizeId(anchor.getSourceId()))) {
+            return null;
+        }
+
+        Payment previous = latestPaymentRevision(anchor);
+        double previousTotal = previousTotalAmount == null || !Double.isFinite(previousTotalAmount)
+                ? roundMoney(safeAmount(previous.getAmount()))
+                : roundMoney(safeAmount(previousTotalAmount));
+        double nextTotal = roundMoney(safeAmount(nextTotalAmount));
+        int normalizedPreviousQuantity = previousQuantity == null
+                ? safeQuantity(previous.getBookingQuantity())
+                : safeQuantity(previousQuantity);
+        int normalizedNextQuantity = safeQuantity(nextQuantity);
+        if (previousTotal == nextTotal && normalizedPreviousQuantity == normalizedNextQuantity) {
+            return toPaymentAudit(previous);
+        }
+
+        String rootSessionId = revisionRootSessionId(previous);
+        Payment revision = new Payment();
+        revision.setUserId(normalizedUserId);
+        revision.setSourceId(normalizedSourceId);
+        revision.setProvider(hasText(previous.getProvider()) ? previous.getProvider() : "audit");
+        revision.setStatus(hasText(previous.getStatus()) ? previous.getStatus() : "approved");
+        revision.setAmount(nextTotal);
+        revision.setCurrency(safeCurrency(currency));
+        revision.setCheckoutSessionId("audit_revision_" + UUID.randomUUID());
+        revision.setSlotSourceId(previous.getSlotSourceId());
+        revision.setBookingStartAtIso(previous.getBookingStartAtIso());
+        revision.setOptionalSubEventIds(previous.getOptionalSubEventIds());
+        revision.setAcceptedPolicyIds(previous.getAcceptedPolicyIds());
+        revision.setBasketItems(List.of());
+        revision.setPricingSummaryRows(List.of(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto(
+                        "base-payment-audit",
+                        "asset.borrow.payment.previous.total",
+                        null,
+                        previousTotal,
+                        safeCurrency(currency),
+                        null),
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutPricingSummaryRowDto(
+                        "quantity-adjustment",
+                        "asset.borrow.payment.quantity.adjustment",
+                        normalizedPreviousQuantity + " → " + normalizedNextQuantity,
+                        roundMoney(nextTotal - previousTotal),
+                        safeCurrency(currency),
+                        null)));
+        revision.setLineItems(List.of(
+                new com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventCheckoutLineItemDto(
+                        "resource:" + normalizedSourceId,
+                        "resource",
+                        hasText(assetTitle) ? assetTitle.trim() : "Asset booking",
+                        hasText(timeframe) ? timeframe.trim() : "",
+                        nextTotal,
+                        safeCurrency(currency))));
+        revision.setAppliedPromoCodes(previous.getAppliedPromoCodes());
+        revision.setBookingStatus(hasText(previous.getBookingStatus()) ? previous.getBookingStatus() : BOOKING_STATUS_JOINED);
+        revision.setJoinedAtIso(nowIso());
+        revision.setRefundStatus(REFUND_STATUS_NONE);
+        revision.setCancellationPolicy(previous.getCancellationPolicy());
+        revision.setAuditKind(AUDIT_KIND_BOOKING_PRICE_REVISION);
+        revision.setRevisionRootSessionId(rootSessionId);
+        revision.setSupersedesPaymentId(previous.getId());
+        revision.setRevisionNumber(revisionNumber(previous) + 1);
+        revision.setAdjustmentAmount(roundMoney(nextTotal - previousTotal));
+        revision.setBookingQuantity(normalizedNextQuantity);
+        revision.setCreatedDate(nowIso());
+        return toPaymentAudit(paymentsRepository.save(revision));
     }
 
     public void cancelAssetBooking(
@@ -311,6 +422,80 @@ public class PaymentService {
         payment.setPricingSummaryRows(request == null || request.pricingSummaryRows() == null ? List.of() : request.pricingSummaryRows());
         payment.setLineItems(request == null || request.lineItems() == null ? List.of() : request.lineItems());
         payment.setAppliedPromoCodes(request == null ? List.of() : normalizePromoCodes(request.appliedPromoCodes()));
+        payment.setAuditKind(hasText(payment.getAuditKind()) ? payment.getAuditKind() : AUDIT_KIND_PAYMENT);
+        payment.setRevisionNumber(payment.getRevisionNumber() == null ? 0 : Math.max(0, payment.getRevisionNumber()));
+    }
+
+    private EventCheckoutPaymentAuditDto toPaymentAudit(Payment payment) {
+        return new EventCheckoutPaymentAuditDto(
+                payment.getId(),
+                payment.getUserId(),
+                payment.getSourceId(),
+                payment.getCheckoutSessionId(),
+                payment.getProvider(),
+                payment.getStatus(),
+                payment.getBookingStatus(),
+                hasText(payment.getAuditKind()) ? payment.getAuditKind() : AUDIT_KIND_PAYMENT,
+                revisionNumber(payment),
+                payment.getAdjustmentAmount(),
+                payment.getBookingQuantity(),
+                payment.getSupersedesPaymentId(),
+                safeAmount(payment.getAmount()),
+                safeCurrency(payment.getCurrency()),
+                copyNonNull(payment.getBasketItems()),
+                copyNonNull(payment.getPricingSummaryRows()),
+                copyNonNull(payment.getLineItems()),
+                payment.getJoinedAtIso(),
+                payment.getCreatedDate());
+    }
+
+    private Payment latestPaymentRevision(Payment anchor) {
+        if (anchor == null) {
+            return null;
+        }
+        String rootSessionId = revisionRootSessionId(anchor);
+        List<Payment> revisions = hasText(rootSessionId)
+                ? copyNonNull(paymentsRepository.findByRevisionRootSessionId(rootSessionId))
+                : List.of();
+        return revisions.stream()
+                .filter(payment -> Objects.equals(normalizeId(anchor.getUserId()), normalizeId(payment.getUserId())))
+                .filter(payment -> Objects.equals(normalizeId(anchor.getSourceId()), normalizeId(payment.getSourceId())))
+                .max(Comparator
+                        .comparingInt(this::revisionNumber)
+                        .thenComparing(payment -> sortableIso(payment.getCreatedDate())))
+                .orElse(anchor);
+    }
+
+    private String revisionRootSessionId(Payment payment) {
+        if (payment == null) {
+            return null;
+        }
+        if (hasText(payment.getRevisionRootSessionId())) {
+            return normalizeId(payment.getRevisionRootSessionId());
+        }
+        if (hasText(payment.getCheckoutSessionId())) {
+            return normalizeId(payment.getCheckoutSessionId());
+        }
+        if (hasText(payment.getGatewaySessionId())) {
+            return normalizeId(payment.getGatewaySessionId());
+        }
+        return normalizeId(payment.getId());
+    }
+
+    private int revisionNumber(Payment payment) {
+        return payment == null || payment.getRevisionNumber() == null
+                ? 0
+                : Math.max(0, payment.getRevisionNumber());
+    }
+
+    private int safeQuantity(Integer value) {
+        return Math.max(1, value == null ? 1 : value);
+    }
+
+    private <T> List<T> copyNonNull(List<T> values) {
+        return values == null
+                ? List.of()
+                : values.stream().filter(Objects::nonNull).toList();
     }
 
     private Optional<Payment> findByAnySessionId(String sessionId) {

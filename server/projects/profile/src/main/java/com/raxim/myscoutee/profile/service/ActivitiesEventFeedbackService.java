@@ -40,6 +40,7 @@ import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackPageS
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStateDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackStatQueryDto;
+import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackToggleRequestDto;
 import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.repository.EventFeedbackAnswersRepository;
@@ -159,29 +160,54 @@ public class ActivitiesEventFeedbackService {
         if (!StringUtils.hasText(userId) || activeUser == null || !StringUtils.hasText(eventId)) {
             return emptyDetailResult(eventId);
         }
+        return loadDetailForUser(activeUser, userId, eventId);
+    }
+
+    private EventFeedbackDetailDto loadDetailForUser(Users activeUser, String userId, String eventId) {
         ActivityEvent record = findFeedbackEventForDetail(userId, eventId);
         if (record == null) {
             return emptyDetailResult(eventId);
         }
         Map<String, Users> usersById = buildFeedbackUsersById(activeUser, List.of(record), List.of());
+        EventFeedbackState state = eventFeedbackStatesRepository
+                .findByViewerUserIdAndEventId(userId, eventId)
+                .orElse(null);
+        List<EventFeedbackAnswer> persistedAnswers =
+                eventFeedbackAnswersRepository.findByViewerUserIdAndEventId(userId, eventId);
+        Map<String, EventFeedbackAnswer> answersByCardId = new LinkedHashMap<>();
+        for (EventFeedbackAnswer answer : persistedAnswers) {
+            String cardId = normalizeId(answer == null ? null : answer.getCardId());
+            if (StringUtils.hasText(cardId)) {
+                answersByCardId.put(cardId, answer);
+            }
+        }
         return new EventFeedbackDetailDto(
                 eventId,
                 safeText(record.getTitle()),
-                "",
-                List.copyOf(buildFeedbackCards(record, usersById, activeUser)));
+                safeText(state == null ? null : state.getSubmittedAtIso()),
+                buildFeedbackCards(record, usersById, activeUser).stream()
+                        .map(card -> mergeFeedbackAnswer(
+                                card,
+                                findFeedbackAnswer(card, answersByCardId, persistedAnswers)))
+                        .toList());
     }
 
-    public void submit(EventFeedbackDetailDto request) {
-        String userId = homeUserProfileService.resolveSelectedUserId(null);
-        String eventId = normalizeId(request == null ? null : request.eventId());
+    public EventFeedbackDetailDto submit(EventFeedbackSubmitRequestDto request) {
+        String userId = homeUserProfileService.resolveSelectedUserId(request == null ? null : request.userId());
+        EventFeedbackDetailDto feedback = request == null ? null : request.feedback();
+        String eventId = normalizeId(feedback == null ? null : feedback.eventId());
         if (!StringUtils.hasText(userId) || !StringUtils.hasText(eventId)) {
-            return;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A feedback user and event are required.");
         }
         if (!accessControlService.canCurrentActorSubmitEventFeedback(userId, eventId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit feedback for this event.");
         }
+        Users activeUser = homeUserProfileService.resolveCurrentUser(userId);
+        if (activeUser == null || findFeedbackEventForDetail(userId, eventId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The feedback event is not available for this user.");
+        }
 
-        String nowIso = firstNonBlank(request == null ? null : request.submittedAtIso(), Instant.now().toString());
+        String nowIso = firstNonBlank(feedback.submittedAtIso(), Instant.now().toString());
         EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
         boolean wasSubmitted = StringUtils.hasText(previousState == null ? null : previousState.getSubmittedAtIso());
         boolean wasRemoved = Boolean.TRUE.equals(previousState == null ? null : previousState.getRemoved());
@@ -191,10 +217,10 @@ public class ActivitiesEventFeedbackService {
         state.setRemovedAtIso(null);
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
-        eventFeedbackStatesRepository.save(state);
 
         LinkedHashSet<String> changedTargetUserIds = new LinkedHashSet<>();
-        for (EventFeedbackCardDto card : safeDetailCards(request == null ? null : request.cards())) {
+        List<EventFeedbackAnswer> answers = new ArrayList<>();
+        for (EventFeedbackCardDto card : safeDetailCards(feedback.cards())) {
             String cardId = normalizeId(card.id());
             if (!StringUtils.hasText(cardId)) {
                 continue;
@@ -214,18 +240,24 @@ public class ActivitiesEventFeedbackService {
             document.setSubmittedAtIso(nowIso);
             document.setUpdatedDate(nowIso);
             document.setUpdatedUser(userId);
-            eventFeedbackAnswersRepository.save(document);
+            answers.add(document);
             String targetUserId = normalizeId(document.getTargetUserId());
             if (StringUtils.hasText(targetUserId)) {
                 changedTargetUserIds.add(targetUserId);
             }
         }
+        if (answers.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one feedback answer is required.");
+        }
+        eventFeedbackAnswersRepository.saveAll(answers);
+        eventFeedbackStatesRepository.save(state);
         for (String targetUserId : changedTargetUserIds) {
             affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
         adminTelemetryService.record("event.feedback.submitted", "events", eventId, userId);
         userActivityCountersService.applyFeedbackStateTransition(userId, wasSubmitted, wasRemoved, true, false);
         userActivityCountersService.refreshFeedbackReceivedCountersForEvent(eventId);
+        return loadDetailForUser(activeUser, userId, eventId);
     }
 
     public void saveNote(EventFeedbackNoteRequestDto request) {
@@ -1103,6 +1135,63 @@ public class ActivitiesEventFeedbackService {
 
     private List<EventFeedbackCardDto> safeDetailCards(List<EventFeedbackCardDto> cards) {
         return cards == null ? List.of() : cards;
+    }
+
+    private EventFeedbackCardDto mergeFeedbackAnswer(
+            EventFeedbackCardDto card,
+            EventFeedbackAnswer answer) {
+        if (card == null || answer == null) {
+            return card;
+        }
+        return new EventFeedbackCardDto(
+                card.id(),
+                card.eventId(),
+                card.kind(),
+                card.attendeeUserId(),
+                card.targetUserId(),
+                card.targetRole(),
+                card.eventTitle(),
+                card.eventSubtitle(),
+                card.eventImageUrl(),
+                card.eventTimeframe(),
+                card.eventStartAtIso(),
+                card.eventLabel(),
+                card.targetName(),
+                card.targetAge(),
+                card.targetCity(),
+                card.targetGender(),
+                card.targetTraitLabel(),
+                card.targetImageUrl(),
+                safeText(answer.getPrimaryValue()),
+                safeText(answer.getSecondaryValue()),
+                answer.getPersonalityTraitIds() == null
+                        ? List.of()
+                        : answer.getPersonalityTraitIds().stream()
+                                .map(this::safeText)
+                                .filter(StringUtils::hasText)
+                                .toList());
+    }
+
+    private EventFeedbackAnswer findFeedbackAnswer(
+            EventFeedbackCardDto card,
+            Map<String, EventFeedbackAnswer> answersByCardId,
+            List<EventFeedbackAnswer> answers) {
+        if (card == null) {
+            return null;
+        }
+        EventFeedbackAnswer directAnswer = answersByCardId.get(normalizeId(card.id()));
+        if (directAnswer != null) {
+            return directAnswer;
+        }
+        String kind = safeText(card.kind());
+        String targetUserId = normalizeId(card.targetUserId());
+        return (answers == null ? List.<EventFeedbackAnswer>of() : answers).stream()
+                .filter(Objects::nonNull)
+                .filter(answer -> kind.equals(safeText(answer.getKind())))
+                .filter(answer -> "event".equals(kind)
+                        || targetUserId.equals(normalizeId(answer.getTargetUserId())))
+                .findFirst()
+                .orElse(null);
     }
 
     private Map<String, Map<String, EventFeedbackAnswerDto>> buildAnswersByEventId(String userId) {

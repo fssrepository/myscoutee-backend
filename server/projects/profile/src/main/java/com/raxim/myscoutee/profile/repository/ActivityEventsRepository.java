@@ -22,6 +22,7 @@ public interface ActivityEventsRepository extends MongoRepository<ActivityEvent,
 
     List<ActivityEvent> findBySourceIdIn(Collection<String> sourceIds);
 
+    @Query("{ 'parentEventId': { $in: ?0 } }")
     List<ActivityEvent> findByParentEventIdIn(Collection<String> parentEventIds);
 
     @Query("{ 'creatorUserId': ?0, 'generated': { $ne: true } }")

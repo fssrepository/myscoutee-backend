@@ -218,7 +218,7 @@
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
-        "feedbacked": 2,
+        "feedbacked": 3,
         "removed": 0
       },
       "adminJobs": 0,
@@ -272,9 +272,9 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 0,
+      "tickets": 1,
       "contacts": 0,
-      "feedback": 0,
+      "feedback": 1,
       "chat": {
         "all": 24,
         "event": 20,
@@ -296,11 +296,11 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 0
+        "tickets": 1
       },
       "eventFeedback": {
-        "ownEvents": 0,
-        "pending": 0,
+        "ownEvents": 1,
+        "pending": 1,
         "feedbacked": 2,
         "removed": 0
       },
@@ -477,7 +477,7 @@
       "eventFeedback": {
         "ownEvents": 0,
         "pending": 0,
-        "feedbacked": 2,
+        "feedbacked": 3,
         "removed": 0
       },
       "adminJobs": 0,
@@ -2857,7 +2857,7 @@
       "supplies": 2,
       "tickets": 0,
       "contacts": 0,
-      "feedback": 0,
+      "feedback": 1,
       "chat": {
         "all": 5,
         "event": 5,
@@ -2883,7 +2883,7 @@
       },
       "eventFeedback": {
         "ownEvents": 0,
-        "pending": 0,
+        "pending": 1,
         "feedbacked": 0,
         "removed": 0
       },
@@ -3684,7 +3684,7 @@
       "supplies": 2,
       "tickets": 0,
       "contacts": 0,
-      "feedback": 0,
+      "feedback": 1,
       "chat": {
         "all": 8,
         "event": 6,
@@ -3710,8 +3710,8 @@
       },
       "eventFeedback": {
         "ownEvents": 1,
-        "pending": 0,
-        "feedbacked": 0,
+        "pending": 1,
+        "feedbacked": 1,
         "removed": 0
       },
       "adminJobs": 0,

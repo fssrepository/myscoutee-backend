@@ -1,6 +1,174 @@
 [
   {
     "_id": {
+      "$oid": "af3100000000000000000001"
+    },
+    "syncKey": "seed-event-feedback-pending-eszter:host",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000001",
+    "userId": "4da20eb049179e73d4757808",
+    "role": "Admin",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": null,
+    "metAtIso": "2026-07-18T17:00:00.000Z",
+    "actionAtIso": "2026-07-18T17:00:00.000Z",
+    "metWhere": "Seattle Creative Studio",
+    "createdDate": "2026-07-01T12:00:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-07-18T19:30:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808"
+  },
+  {
+    "_id": {
+      "$oid": "af3200000000000000000001"
+    },
+    "syncKey": "seed-event-feedback-own-eszter:host",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000002",
+    "userId": "9f3b3f085e23af6c89dbc432",
+    "role": "Admin",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": null,
+    "metAtIso": "2026-07-12T18:00:00.000Z",
+    "actionAtIso": "2026-07-12T18:00:00.000Z",
+    "metWhere": "Seattle Rooftop Studio",
+    "createdDate": "2026-06-28T14:00:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-12T20:30:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af3200000000000000000002"
+    },
+    "syncKey": "seed-event-feedback-own-eszter:attendee:maya",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000002",
+    "userId": "1b1c70be2349b3359a8f6f94",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "9f3b3f085e23af6c89dbc432",
+    "metAtIso": "2026-07-12T18:00:00.000Z",
+    "actionAtIso": "2026-07-12T18:00:00.000Z",
+    "metWhere": "Seattle Rooftop Studio",
+    "createdDate": "2026-06-28T14:00:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-12T20:30:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af3200000000000000000003"
+    },
+    "syncKey": "seed-event-feedback-own-eszter:attendee:balazs",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000002",
+    "userId": "b29df68956f3fe15e04558de",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "9f3b3f085e23af6c89dbc432",
+    "metAtIso": "2026-07-12T18:00:00.000Z",
+    "actionAtIso": "2026-07-12T18:00:00.000Z",
+    "metWhere": "Seattle Rooftop Studio",
+    "createdDate": "2026-06-28T14:00:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-12T20:30:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af3200000000000000000004"
+    },
+    "syncKey": "seed-event-feedback-own-eszter:attendee:lucas-lane",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000002",
+    "userId": "23820c1e76d3bd843f61c799",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "9f3b3f085e23af6c89dbc432",
+    "metAtIso": "2026-07-12T18:00:00.000Z",
+    "actionAtIso": "2026-07-12T18:00:00.000Z",
+    "metWhere": "Seattle Rooftop Studio",
+    "createdDate": "2026-06-28T14:00:00.000Z",
+    "createdUser": "9f3b3f085e23af6c89dbc432",
+    "updatedDate": "2026-07-12T20:30:00.000Z",
+    "updatedUser": "9f3b3f085e23af6c89dbc432"
+  },
+  {
+    "_id": {
+      "$oid": "af3100000000000000000002"
+    },
+    "syncKey": "seed-event-feedback-pending-eszter:attendee:eszter",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000001",
+    "userId": "9f3b3f085e23af6c89dbc432",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "4da20eb049179e73d4757808",
+    "metAtIso": "2026-07-18T17:00:00.000Z",
+    "actionAtIso": "2026-07-18T17:00:00.000Z",
+    "metWhere": "Seattle Creative Studio",
+    "createdDate": "2026-07-01T12:00:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-07-18T19:30:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808"
+  },
+  {
+    "_id": {
+      "$oid": "af3100000000000000000003"
+    },
+    "syncKey": "seed-event-feedback-pending-eszter:attendee:alex",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000001",
+    "userId": "af0436815ab38f4864dd1e24",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "4da20eb049179e73d4757808",
+    "metAtIso": "2026-07-18T17:00:00.000Z",
+    "actionAtIso": "2026-07-18T17:00:00.000Z",
+    "metWhere": "Seattle Creative Studio",
+    "createdDate": "2026-07-01T12:00:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-07-18T19:30:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808"
+  },
+  {
+    "_id": {
+      "$oid": "af3100000000000000000004"
+    },
+    "syncKey": "seed-event-feedback-pending-eszter:attendee:lucas-lane",
+    "ownerType": "event",
+    "ownerId": "af3000000000000000000001",
+    "userId": "23820c1e76d3bd843f61c799",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "4da20eb049179e73d4757808",
+    "metAtIso": "2026-07-18T17:00:00.000Z",
+    "actionAtIso": "2026-07-18T17:00:00.000Z",
+    "metWhere": "Seattle Creative Studio",
+    "createdDate": "2026-07-01T12:00:00.000Z",
+    "createdUser": "4da20eb049179e73d4757808",
+    "updatedDate": "2026-07-18T19:30:00.000Z",
+    "updatedUser": "4da20eb049179e73d4757808"
+  },
+  {
+    "_id": {
       "$oid": "a5710bad4118b4fc3bcf21e4"
     },
     "syncKey": "ed49ff88-9cc5-5f83-9f93-9c016e32fb84",
@@ -50355,6 +50523,69 @@
     "createdDate": "2026-05-15T19:00:00.000Z",
     "createdUser": "23820c1e76d3bd843f61c799",
     "updatedDate": "2026-05-15T19:00:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799"
+  },
+  {
+    "_id": {
+      "$oid": "af3300000000000000000001"
+    },
+    "syncKey": "seed-event-member:f260f450643e752d226b4253:1b1c70be2349b3359a8f6f94",
+    "ownerType": "event",
+    "ownerId": "f260f450643e752d226b4253",
+    "userId": "1b1c70be2349b3359a8f6f94",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "23820c1e76d3bd843f61c799",
+    "metAtIso": "2026-05-18T19:00:00.000Z",
+    "actionAtIso": "2026-05-18T19:00:00.000Z",
+    "metWhere": "Seattle host venue",
+    "createdDate": "2026-05-15T19:00:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-05-18T22:00:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799"
+  },
+  {
+    "_id": {
+      "$oid": "af3300000000000000000002"
+    },
+    "syncKey": "seed-event-member:f260f450643e752d226b4253:b29df68956f3fe15e04558de",
+    "ownerType": "event",
+    "ownerId": "f260f450643e752d226b4253",
+    "userId": "b29df68956f3fe15e04558de",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "23820c1e76d3bd843f61c799",
+    "metAtIso": "2026-05-18T19:00:00.000Z",
+    "actionAtIso": "2026-05-18T19:00:00.000Z",
+    "metWhere": "Seattle host venue",
+    "createdDate": "2026-05-15T19:00:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-05-18T22:00:00.000Z",
+    "updatedUser": "23820c1e76d3bd843f61c799"
+  },
+  {
+    "_id": {
+      "$oid": "af3300000000000000000003"
+    },
+    "syncKey": "seed-event-member:f260f450643e752d226b4253:9f3b3f085e23af6c89dbc432",
+    "ownerType": "event",
+    "ownerId": "f260f450643e752d226b4253",
+    "userId": "9f3b3f085e23af6c89dbc432",
+    "role": "Member",
+    "status": "accepted",
+    "pendingSource": null,
+    "requestKind": null,
+    "invitedByUserId": "23820c1e76d3bd843f61c799",
+    "metAtIso": "2026-05-18T19:00:00.000Z",
+    "actionAtIso": "2026-05-18T19:00:00.000Z",
+    "metWhere": "Seattle host venue",
+    "createdDate": "2026-05-15T19:00:00.000Z",
+    "createdUser": "23820c1e76d3bd843f61c799",
+    "updatedDate": "2026-05-18T22:00:00.000Z",
     "updatedUser": "23820c1e76d3bd843f61c799"
   },
   {

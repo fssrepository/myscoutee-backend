@@ -1263,6 +1263,18 @@ public class AssetsService {
                         assetRequestBookingSlotSourceId(nextRequest),
                         assetRequestBookingStartAtIso(nextRequest),
                         nextCancellationPolicy);
+            } else if (hasAssetBookingPriceRevision(previousRequest, nextRequest)) {
+                paymentService.recordAssetBookingPriceRevision(
+                        nextPaymentSessionId,
+                        normalizeId(nextRequest.userId()),
+                        normalizeId(saved.getAssetId()),
+                        safeText(saved.getTitle()),
+                        safeNullableText(nextRequest.booking().timeframe()),
+                        previousRequest.booking().quantity(),
+                        nextRequest.booking().quantity(),
+                        previousRequest.booking().totalAmount(),
+                        nextRequest.booking().totalAmount(),
+                        nextRequest.booking().currency());
             }
         }
 
@@ -2703,6 +2715,22 @@ public class AssetsService {
 
     private String assetRequestPaymentSessionId(AssetRequestRecord request) {
         return normalizeId(request == null || request.booking() == null ? null : request.booking().paymentSessionId());
+    }
+
+    private boolean hasAssetBookingPriceRevision(
+            AssetRequestRecord previousRequest,
+            AssetRequestRecord nextRequest) {
+        if (previousRequest == null
+                || previousRequest.booking() == null
+                || nextRequest == null
+                || nextRequest.booking() == null) {
+            return false;
+        }
+        int previousQuantity = Math.max(1, previousRequest.booking().quantity() == null ? 1 : previousRequest.booking().quantity());
+        int nextQuantity = Math.max(1, nextRequest.booking().quantity() == null ? 1 : nextRequest.booking().quantity());
+        long previousAmount = Math.round(Math.max(0d, safeDouble(previousRequest.booking().totalAmount())) * 100d);
+        long nextAmount = Math.round(Math.max(0d, safeDouble(nextRequest.booking().totalAmount())) * 100d);
+        return previousQuantity != nextQuantity || previousAmount != nextAmount;
     }
 
     private String assetRequestBookingStartAtIso(AssetRequestRecord request) {

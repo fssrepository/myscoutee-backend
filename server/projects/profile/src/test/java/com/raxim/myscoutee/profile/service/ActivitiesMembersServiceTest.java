@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.Asset;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
@@ -255,6 +256,82 @@ class ActivitiesMembersServiceTest {
                     assertThat(member.getOwnerId()).isEqualTo("event-1");
                     assertThat(member.getStatus()).isEqualTo("accepted");
                 });
+    }
+
+    @Test
+    void replaceSubEventMembersRefreshesEmbeddedEventCounts() {
+        String eventId = "event-1";
+        String subEventId = "subevent-1";
+        String ownerId = eventId + ":" + subEventId;
+        ActivityEvent event = event(eventId, "admin", "admin");
+        event.setSubEvents(List.of(new SubEventItem(
+                subEventId,
+                "Kickoff",
+                "",
+                "2026-07-23T13:30:00Z",
+                "2026-07-23T14:15:00Z",
+                "Seattle",
+                "admin",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                6,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null)));
+        AtomicReference<List<ActivityMember>> storedMembers = new AtomicReference<>(List.of());
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<ActivityMember> saved = invocation.getArgument(0);
+            storedMembers.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId(eventId)).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.replace(new ActivityMembersReplaceRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                List.of(entry("target")),
+                6,
+                "admin",
+                eventId,
+                subEventId));
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<ActivityEvent>> savedEvents = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedEvents.capture());
+        assertThat(savedEvents.getValue())
+                .singleElement()
+                .satisfies(savedEvent -> assertThat(savedEvent.getSubEvents())
+                        .singleElement()
+                        .satisfies(savedSubEvent -> {
+                            assertThat(savedSubEvent.membersAccepted()).isEqualTo(2);
+                            assertThat(savedSubEvent.membersPending()).isZero();
+                        }));
+        assertThat(storedMembers.get())
+                .extracting(ActivityMember::getUserId)
+                .containsExactlyInAnyOrder("admin", "target");
+        verify(eventSlotReadModelService).refreshForChangedEvents(anyList());
     }
 
     @Test
@@ -537,6 +614,71 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::status)
                 .isEqualTo("pending");
         verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void adminCannotAcceptInvitationBeforeInvitedMemberResponds() {
+        ActivityMember invitation = member("member-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(true);
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(invitation));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "admin",
+                "target",
+                "accept",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("pending");
+                    assertThat(entry.requestKind()).isEqualTo("invite");
+                });
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void memberInvitationRequiresAdminApprovalAfterInviteeAccepts() {
+        ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        ActivityMember inviter = member("inviter-sync", "event-1", "member-inviter", "Member", "accepted");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(invitation));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "owner", "owner")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "member-inviter"))
+                .thenReturn(Optional.of(inviter));
+
+        assertThat(service.pendingInvitationRequiresAdminApproval("event-1", "target")).isTrue();
+    }
+
+    @Test
+    void promotedAdminInvitationDoesNotRequireAnotherAdminApproval() {
+        ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("promoted-admin");
+        ActivityMember inviter = member("inviter-sync", "event-1", "promoted-admin", "Admin", "accepted");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenReturn(Optional.of(invitation));
+        when(activityEventsRepository.findBySourceId("event-1"))
+                .thenReturn(List.of(event("event-1", "owner", "owner")));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "promoted-admin"))
+                .thenReturn(Optional.of(inviter));
+
+        assertThat(service.pendingInvitationRequiresAdminApproval("event-1", "target")).isFalse();
     }
 
     @Test

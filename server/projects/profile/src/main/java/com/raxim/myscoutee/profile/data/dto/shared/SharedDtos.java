@@ -30,6 +30,7 @@ public final class SharedDtos {
     }
 
     public record PricingSlotOverrideDto(
+            @Field("id")
             String id,
             String slotId,
             String label,
@@ -40,12 +41,14 @@ public final class SharedDtos {
     }
 
     public record PricingQuantityRuleDto(
+            @Field("id")
             String id,
             Integer minQuantity,
             PricingActionDto action) {
     }
 
     public record PricingDemandRuleDto(
+            @Field("id")
             String id,
             String operator,
             Integer capacityFilledPercent,
@@ -55,6 +58,7 @@ public final class SharedDtos {
     }
 
     public record PricingTimeRuleDto(
+            @Field("id")
             String id,
             String trigger,
             Integer offsetValue,
@@ -66,6 +70,7 @@ public final class SharedDtos {
     }
 
     public record PricingCancellationRuleDto(
+            @Field("id")
             String id,
             String offsetUnit,
             Integer offsetValue,
@@ -79,6 +84,7 @@ public final class SharedDtos {
     }
 
     public record PricingPromoCodeDto(
+            @Field("id")
             String id,
             String code,
             PricingActionDto action) {
@@ -349,6 +355,48 @@ public final class SharedDtos {
                     null,
                     null,
                     List.of());
+        }
+
+        public SubEventItemDto withMemberCounts(Integer accepted, Integer pending) {
+            return new SubEventItemDto(
+                    id,
+                    name,
+                    description,
+                    startAt,
+                    endAt,
+                    location,
+                    createdByUserId,
+                    tournamentGroupCapacityMin,
+                    tournamentGroupCapacityMax,
+                    tournamentLeaderboardType,
+                    tournamentAdvancePerGroup,
+                    optional,
+                    pricing,
+                    capacityMin,
+                    capacityMax,
+                    accepted,
+                    pending,
+                    carsPending,
+                    accommodationPending,
+                    suppliesPending,
+                    carsAccepted,
+                    accommodationAccepted,
+                    suppliesAccepted,
+                    carsCapacityMin,
+                    carsCapacityMax,
+                    accommodationCapacityMin,
+                    accommodationCapacityMax,
+                    suppliesCapacityMin,
+                    suppliesCapacityMax,
+                    slotStartOffsetMinutes,
+                    slotDurationMinutes,
+                    groupsCount,
+                    stageStatus,
+                    stageStatusReason,
+                    stageStatusUpdatedAt,
+                    stageFinalizedAt,
+                    stageFinalizedByUserId,
+                    groups);
         }
     }
 

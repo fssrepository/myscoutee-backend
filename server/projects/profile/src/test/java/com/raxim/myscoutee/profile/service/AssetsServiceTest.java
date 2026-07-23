@@ -1014,6 +1014,104 @@ class AssetsServiceTest {
         verify(accessControlService).canCurrentActorCancelAssetBorrow("u2", "asset-1");
     }
 
+    @Test
+    void upsertAppendsPaymentPriceRevisionWhenPaidBorrowQuantityChanges() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        PaymentService paymentService = mock(PaymentService.class);
+        Asset existing = assetWithEventRequest();
+        AssetRequestRecord previousRequest = existing.getRequests().get(0);
+        existing.setRequests(List.of(new AssetRequestRecord(
+                previousRequest.id(),
+                previousRequest.userId(),
+                previousRequest.name(),
+                previousRequest.initials(),
+                previousRequest.gender(),
+                previousRequest.status(),
+                previousRequest.note(),
+                previousRequest.requestKind(),
+                previousRequest.requestedAtIso(),
+                new AssetRequestBookingRecord(
+                        "event-1",
+                        "Weekend Transport",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2026-05-12T09:00:00Z",
+                        "2026-05-12T11:00:00Z",
+                        1,
+                        12d,
+                        "USD",
+                        List.of(),
+                        "checkout-root",
+                        true))));
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1"))
+                .thenReturn(Optional.of(existing));
+        when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                paymentService,
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+        AssetMemberRequestDto updatedRequest = new AssetMemberRequestDto(
+                "request-1",
+                "u2",
+                "Member Two",
+                "MT",
+                "man",
+                "accepted",
+                "Accepted for this asset.",
+                "borrow",
+                "2026-05-11T10:00:00Z",
+                new AssetRequestBookingDto(
+                        "event-1",
+                        "Weekend Transport",
+                        "subevent-1",
+                        "Morning Trip",
+                        "slot-1",
+                        "Seat",
+                        "morning",
+                        "2026-05-12T09:00:00Z",
+                        "2026-05-12T11:00:00Z",
+                        2,
+                        24d,
+                        "USD",
+                        List.of(),
+                        "checkout-root",
+                        true),
+                List.of());
+
+        service.upsert(new AssetUpsertRequestDto(
+                "u1",
+                assetCard("asset-1", "Camp Kit", 0, List.of(updatedRequest))));
+
+        verify(paymentService).recordAssetBookingPriceRevision(
+                "checkout-root",
+                "u2",
+                "asset-1",
+                "Camp Kit",
+                "morning",
+                1,
+                2,
+                12d,
+                24d,
+                "USD");
+    }
+
     private Asset asset() {
         Asset asset = new Asset();
         asset.setId("asset-doc-1");
