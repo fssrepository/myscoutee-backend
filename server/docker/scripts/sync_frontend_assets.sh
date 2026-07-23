@@ -76,13 +76,19 @@ sync_once() {
   local rsync_log
   local attempt=1
   local max_attempts=5
+  local -a delete_args=()
   rsync_log="$(mktemp)"
 
   wait_for_source_dir
 
+  if [[ "${MODE}" == "prod" ]]; then
+    delete_args=(--delete)
+  fi
+
   while true; do
     : > "${rsync_log}"
-    if rsync -a --delete "${SOURCE_DIR}/" "${TARGET_DIR}/" 2>"${rsync_log}"; then
+    if rsync -a "${delete_args[@]}" "${SOURCE_DIR}/" "${TARGET_DIR}/" 2>"${rsync_log}"; then
+      : > "${TARGET_DIR}/.frontend-ready"
       rm -f "${rsync_log}"
       echo "Synced ${SOURCE_DIR} -> ${TARGET_DIR} at $(date '+%Y-%m-%d %H:%M:%S')"
       return 0
