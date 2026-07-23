@@ -34,6 +34,16 @@ import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetUpsertRequest
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.AssetRequestBookingDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingActionDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingAudienceSettingsDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationPolicyDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingCancellationRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingConfigDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingDemandRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingPromoCodeDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingQuantityRuleDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingSlotOverrideDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.AssetsRepository;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
@@ -647,6 +657,104 @@ class AssetsServiceTest {
     }
 
     @Test
+    void upsertPersistsTheCompleteAssetPricingConfiguration() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        UsersRepository usersRepository = mock(UsersRepository.class);
+        AbsoluteAffinityService absoluteAffinityService = mock(AbsoluteAffinityService.class);
+        AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
+        AccessControlService accessControlService = mock(AccessControlService.class);
+        Users owner = user("u1", "Owner One", "OO");
+        PricingConfigDto pricing = new PricingConfigDto(
+                "hybrid",
+                37.5d,
+                "EUR",
+                "included",
+                "per_attendee",
+                true,
+                List.of(new PricingQuantityRuleDto(
+                        "quantity-1",
+                        3,
+                        new PricingActionDto("decrease_amount", 2.5d))),
+                12d,
+                80d,
+                "half",
+                true,
+                List.of(new PricingDemandRuleDto(
+                        "demand-1",
+                        "lte",
+                        65,
+                        new PricingActionDto("increase_percent", 7d),
+                        "all_slots",
+                        List.of())),
+                true,
+                List.of(new PricingTimeRuleDto(
+                        "time-1",
+                        "specific_date",
+                        null,
+                        "2026-08-01",
+                        "2026-08-10",
+                        new PricingActionDto("decrease_percent", 11d),
+                        "selected_slots",
+                        List.of("slot-1"))),
+                new PricingCancellationPolicyDto(
+                        true,
+                        List.of(new PricingCancellationRuleDto(
+                                "cancel-1",
+                                "weeks",
+                                2,
+                                "fixed_amount",
+                                18.25d))),
+                true,
+                List.of(new PricingSlotOverrideDto(
+                        "override-1",
+                        "slot-1",
+                        "Morning",
+                        "2026-08-01T09:00:00",
+                        "2026-08-01T11:00:00",
+                        29d,
+                        "EUR")),
+                new PricingAudienceSettingsDto(
+                        true,
+                        31d,
+                        25d,
+                        9,
+                        List.of(new PricingPromoCodeDto(
+                                "promo-1",
+                                "SAVE9",
+                                new PricingActionDto("decrease_percent", 9d))),
+                        "Show \"Waitlist\""),
+                true);
+
+        when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.empty());
+        when(accessControlService.canCurrentActorCreateAsset("u1", "asset-1")).thenReturn(true);
+        when(usersRepository.findByUserId("u1")).thenReturn(Optional.of(owner));
+        when(absoluteAffinityService.resolveAssetAffinity(any(), eq(owner))).thenReturn(42d);
+        when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
+        when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                usersRepository,
+                mock(ActivityMembersRepository.class),
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                absoluteAffinityService,
+                affinityRecomputeTaskService,
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                accessControlService,
+                mock(UserActivityCountersService.class));
+
+        service.upsert(new AssetUpsertRequestDto("u1", assetCardWithPricing("asset-1", pricing)));
+
+        ArgumentCaptor<Asset> savedAsset = ArgumentCaptor.forClass(Asset.class);
+        verify(assetsRepository).save(savedAsset.capture());
+        assertThat(savedAsset.getValue().getPricing()).isEqualTo(pricing);
+    }
+
+    @Test
     void upsertUsesEditPolicyForExistingAssetAndStopsWhenDenied() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
@@ -981,6 +1089,32 @@ class AssetsServiceTest {
 
     private AssetDetailDto assetCard(String assetId) {
         return assetCard(assetId, "Camp Kit", 2, List.of());
+    }
+
+    private AssetDetailDto assetCardWithPricing(String assetId, PricingConfigDto pricing) {
+        AssetDetailDto card = assetCard(assetId);
+        return new AssetDetailDto(
+                card.id(),
+                card.type(),
+                card.title(),
+                card.subtitle(),
+                card.category(),
+                card.city(),
+                card.capacityTotal(),
+                card.quantity(),
+                card.details(),
+                card.imageUrl(),
+                card.sourceLink(),
+                card.routes(),
+                card.policiesEnabled(),
+                card.policies(),
+                pricing,
+                card.visibility(),
+                card.status(),
+                card.ownerUserId(),
+                card.ownerName(),
+                card.requests(),
+                card.menuActions());
     }
 
     private AssetDetailDto assetCard(

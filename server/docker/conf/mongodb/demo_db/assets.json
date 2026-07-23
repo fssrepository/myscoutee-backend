@@ -8528,20 +8528,47 @@
     "quantity": 4,
     "pricing": {
       "enabled": true,
-      "mode": "fixed",
-      "basePrice": 0,
+      "mode": "time-based",
+      "basePrice": 12,
       "currency": "USD",
       "taxMode": "excluded",
-      "chargeType": "per_booking",
+      "chargeType": "per_attendee",
       "quantityRulesEnabled": false,
       "quantityRules": [],
-      "minPrice": 0,
-      "maxPrice": 0,
+      "minPrice": 10,
+      "maxPrice": 30,
       "rounding": "whole",
       "demandRulesEnabled": false,
       "demandRules": [],
-      "timeRulesEnabled": false,
-      "timeRules": [],
+      "timeRulesEnabled": true,
+      "timeRules": [
+        {
+          "id": "summer-date-uplift",
+          "trigger": "specific_date",
+          "offsetValue": null,
+          "specificDateStart": "2026-07-23",
+          "specificDateEnd": "2026-07-25",
+          "action": {
+            "kind": "increase_percent",
+            "value": 25
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        },
+        {
+          "id": "last-24-hours",
+          "trigger": "hours_before_start",
+          "offsetValue": 24,
+          "specificDateStart": null,
+          "specificDateEnd": null,
+          "action": {
+            "kind": "increase_amount",
+            "value": 5
+          },
+          "appliesTo": "all_slots",
+          "slotIds": []
+        }
+      ],
       "cancellationPolicy": {
         "enabled": false,
         "rules": []
@@ -17192,7 +17219,7 @@
       "basePrice": 12,
       "currency": "USD",
       "taxMode": "excluded",
-      "chargeType": "per_booking",
+      "chargeType": "per_attendee",
       "quantityRulesEnabled": false,
       "quantityRules": [],
       "minPrice": 12,
@@ -17224,6 +17251,12 @@
         "title": "Pickup and return",
         "description": "Return the vehicle with the agreed fuel level and at the agreed location.",
         "required": true
+      },
+      {
+        "_id": "additional-driver",
+        "title": "Additional driver",
+        "description": "Add another approved driver to the booking.",
+        "required": false
       }
     ]
   },
@@ -19397,6 +19430,12 @@
         "title": "Vehicle care",
         "description": "Report damage immediately and leave the vehicle clean for the next booking.",
         "required": true
+      },
+      {
+        "_id": "additional-driver",
+        "title": "Additional driver",
+        "description": "Allow one additional approved attendee to drive during this booking.",
+        "required": false
       }
     ]
   },

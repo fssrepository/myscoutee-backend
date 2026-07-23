@@ -8,7 +8,6 @@ https://developers.facebook.com/ -> business verfication is needed
 
 feature
 -------
-5) asset save similar problem, then event editor save
 6) event feedback does not list past event to maek feedback
 8) asset assignment waits for admin approval
 9) we need to check how to show red counter, as it's hardly visible, and on event where to really show it

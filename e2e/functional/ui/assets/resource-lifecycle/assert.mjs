@@ -32,9 +32,15 @@ export async function assertUi({ page }) {
   assert(createdAsset?.id, 'Created asset should be persisted with an id', createdAsset);
   assert(createdAsset.imageUrl?.includes('/media/public?key='), 'Created asset image should be uploaded to media storage', createdAsset);
   assert(
-    createdAsset.policiesEnabled === true && Number(createdAsset.policyCount) === 1,
+    createdAsset.policiesEnabled === true
+      && Number(createdAsset.policyCount ?? createdAsset.policies?.length) === 1,
     'Created asset should persist its lending policy summary',
     createdAsset
+  );
+  assert(
+    createdAsset.pricing?.enabled === false && Number(createdAsset.pricing?.basePrice) === 0,
+    'New assets should persist with pricing off and no default charge',
+    createdAsset.pricing
   );
 
   await editOwnedAsset(page, marker, editedDetails);
@@ -564,7 +570,9 @@ async function findOwnedAssetByTitle(page, title) {
     if (!summary?.id) {
       return summary;
     }
-    const detailResponse = await fetch(`/api/assets/${encodeURIComponent(summary.id)}`);
+    const detailResponse = await fetch(
+      `/api/assets/${encodeURIComponent(summary.id)}?userId=${encodeURIComponent(userId)}`
+    );
     const detailText = detailResponse.ok ? await detailResponse.text() : '';
     if (!detailText) {
       return summary;

@@ -3078,6 +3078,18 @@
     "value": "Invitation only"
   },
   {
+    "_id": "i18n-message-en-invitation-pending",
+    "key": "invitation.pending",
+    "lang": "en",
+    "value": "Invitation Pending"
+  },
+  {
+    "_id": "i18n-message-en-invite",
+    "key": "invite",
+    "lang": "en",
+    "value": "Invite"
+  },
+  {
     "_id": "i18n-message-en-loading-article",
     "key": "loading.article",
     "lang": "en",
@@ -4624,6 +4636,18 @@
     "key": "pending",
     "lang": "en",
     "value": "Pending"
+  },
+  {
+    "_id": "i18n-message-en-pending-count",
+    "key": "pending.count",
+    "lang": "en",
+    "value": "{count} pending"
+  },
+  {
+    "_id": "i18n-message-en-pending-only",
+    "key": "pending.only",
+    "lang": "en",
+    "value": "Pending only"
   },
   {
     "_id": "i18n-message-en-past",
@@ -7284,6 +7308,18 @@
     "value": "Waiting for approval"
   },
   {
+    "_id": "i18n-message-en-waiting-for-admin-approval",
+    "key": "waiting.for.admin.approval",
+    "lang": "en",
+    "value": "Waiting For Admin Approval"
+  },
+  {
+    "_id": "i18n-message-en-waiting-for-join-approval",
+    "key": "waiting.for.join.approval",
+    "lang": "en",
+    "value": "Waiting For Join Approval"
+  },
+  {
     "_id": "i18n-message-en-waiting-list",
     "key": "waiting.list",
     "lang": "en",
@@ -8824,6 +8860,18 @@
     "key": "show.password",
     "lang": "en",
     "value": "Show password"
+  },
+  {
+    "_id": "i18n-message-en-show-all-members",
+    "key": "show.all.members",
+    "lang": "en",
+    "value": "Show all members"
+  },
+  {
+    "_id": "i18n-message-en-show-pending-members-only",
+    "key": "show.pending.members.only",
+    "lang": "en",
+    "value": "Show pending members only"
   },
   {
     "_id": "i18n-message-en-share-asset",
@@ -12465,7 +12513,7 @@
     "_id": "i18n-message-en-pricing-asset-subtitle",
     "key": "pricing.asset.subtitle",
     "lang": "en",
-    "value": "Set the default charge for using this asset without event slot-specific pricing controls."
+    "value": "Set the daily rate and choose whether it is billed once per booking or once per item."
   },
   {
     "_id": "i18n-message-en-pricing-subevent-subtitle",
@@ -12484,6 +12532,48 @@
     "key": "pricing.base.price",
     "lang": "en",
     "value": "Base Price"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-daily-rate",
+    "key": "pricing.asset.daily.rate",
+    "lang": "en",
+    "value": "Daily rate"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-base-daily-rate",
+    "key": "pricing.asset.base.daily.rate",
+    "lang": "en",
+    "value": "Base daily rate"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-minimum-daily-rate",
+    "key": "pricing.asset.minimum.daily.rate",
+    "lang": "en",
+    "value": "Minimum daily rate"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-maximum-daily-rate",
+    "key": "pricing.asset.maximum.daily.rate",
+    "lang": "en",
+    "value": "Maximum daily rate"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-billed-duration",
+    "key": "pricing.asset.billed.duration",
+    "lang": "en",
+    "value": "Billed duration (started days)"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-items",
+    "key": "pricing.asset.items",
+    "lang": "en",
+    "value": "Items"
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-billing-explanation",
+    "key": "pricing.asset.billing.explanation",
+    "lang": "en",
+    "value": "Calculation: {rate} per day × {days} started days × {quantity} items. Each started 24-hour period is billed as one day."
   },
   {
     "_id": "i18n-message-en-pricing-minimum",
@@ -12522,10 +12612,22 @@
     "value": "Quantity Rules"
   },
   {
+    "_id": "i18n-message-en-pricing-quantity-adjustment",
+    "key": "pricing.quantity.adjustment",
+    "lang": "en",
+    "value": "Quantity adjustment"
+  },
+  {
     "_id": "i18n-message-en-pricing-event-quantity-minimum",
     "key": "pricing.event.quantity.minimum",
     "lang": "en",
     "value": "Event quantity >="
+  },
+  {
+    "_id": "i18n-message-en-pricing-asset-quantity-minimum",
+    "key": "pricing.asset.quantity.minimum",
+    "lang": "en",
+    "value": "Item quantity >="
   },
   {
     "_id": "i18n-message-en-pricing-quantity-rule-remove-aria",
@@ -12546,6 +12648,12 @@
     "value": "Quantity pricing is currently off. Turn it on when a multi-event slot should reduce the total from the one-event base price."
   },
   {
+    "_id": "i18n-message-en-pricing-asset-quantity-disabled-hint",
+    "key": "pricing.asset.quantity.disabled.hint",
+    "lang": "en",
+    "value": "Quantity rules are off. The daily rate still follows the charge basis; enable rules only for extra quantity discounts or surcharges."
+  },
+  {
     "_id": "i18n-message-en-pricing-demand-rules",
     "key": "pricing.demand.rules",
     "lang": "en",
@@ -12556,6 +12664,12 @@
     "key": "pricing.capacity.percent",
     "lang": "en",
     "value": "Capacity %"
+  },
+  {
+    "_id": "i18n-message-en-pricing-capacity-filled",
+    "key": "pricing.capacity.filled",
+    "lang": "en",
+    "value": "Capacity filled"
   },
   {
     "_id": "i18n-message-en-pricing-applies-to",
@@ -12990,6 +13104,24 @@
     "value": "Per booking"
   },
   {
+    "_id": "i18n-message-en-pricing-charge-per-booking-day",
+    "key": "pricing.charge.per.booking.day",
+    "lang": "en",
+    "value": "Per booking / day"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-per-item",
+    "key": "pricing.charge.per.item",
+    "lang": "en",
+    "value": "Per item"
+  },
+  {
+    "_id": "i18n-message-en-pricing-charge-per-item-day",
+    "key": "pricing.charge.per.item.day",
+    "lang": "en",
+    "value": "Per item / day"
+  },
+  {
     "_id": "i18n-message-en-pricing-charge-per-slot",
     "key": "pricing.charge.per.slot",
     "lang": "en",
@@ -13188,6 +13320,114 @@
     "value": "Audience"
   },
   {
+    "_id": "i18n-message-en-pricing-audience-member-summary",
+    "key": "pricing.audience.member.summary",
+    "lang": "en",
+    "value": "Member {{price}}"
+  },
+  {
+    "_id": "i18n-message-en-pricing-audience-vip-summary",
+    "key": "pricing.audience.vip.summary",
+    "lang": "en",
+    "value": "VIP {{price}}"
+  },
+  {
+    "_id": "i18n-message-en-pricing-audience-invite-summary",
+    "key": "pricing.audience.invite.summary",
+    "lang": "en",
+    "value": "Invite-only -{{percent}}%"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-rule-one",
+    "key": "pricing.summary.rule.one",
+    "lang": "en",
+    "value": "{{count}} rule"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-rule-many",
+    "key": "pricing.summary.rule.many",
+    "lang": "en",
+    "value": "{{count}} rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-override-one",
+    "key": "pricing.summary.override.one",
+    "lang": "en",
+    "value": "{{count}} override"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-override-many",
+    "key": "pricing.summary.override.many",
+    "lang": "en",
+    "value": "{{count}} overrides"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-promo-one",
+    "key": "pricing.summary.promo.one",
+    "lang": "en",
+    "value": "{{count}} promo code"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-promo-many",
+    "key": "pricing.summary.promo.many",
+    "lang": "en",
+    "value": "{{count}} promo codes"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-demand-rules",
+    "key": "pricing.summary.demand.rules",
+    "lang": "en",
+    "value": "Demand: {{count}} rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-time-rules",
+    "key": "pricing.summary.time.rules",
+    "lang": "en",
+    "value": "Time: {{count}} rules"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-demand-rule",
+    "key": "pricing.summary.demand.rule",
+    "lang": "en",
+    "value": "Capacity {operator} {value}%"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-time-hours-rule",
+    "key": "pricing.summary.time.hours.rule",
+    "lang": "en",
+    "value": "{value} hours before start"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-time-days-rule",
+    "key": "pricing.summary.time.days.rule",
+    "lang": "en",
+    "value": "{value} days before start"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-time-date-rule",
+    "key": "pricing.summary.time.date.rule",
+    "lang": "en",
+    "value": "{start} – {end}"
+  },
+  {
+    "_id": "i18n-message-en-pricing-summary-refund-fixed",
+    "key": "pricing.summary.refund.fixed",
+    "lang": "en",
+    "value": "{amount} refund"
+  },
+  {
+    "_id": "i18n-message-en-pricing-slot-base-price",
+    "key": "pricing.slot.base.price",
+    "lang": "en",
+    "value": "Slot base price"
+  },
+  {
+    "_id": "i18n-message-en-event-checkout-optional-sub-event",
+    "key": "event.checkout.optional.sub.event",
+    "lang": "en",
+    "value": "Optional sub event"
+  },
+  {
     "_id": "i18n-message-en-pricing-setup-wizard-aria",
     "key": "pricing.setup.wizard.aria",
     "lang": "en",
@@ -13384,6 +13624,72 @@
     "key": "asset.borrow.title",
     "lang": "en",
     "value": "Borrow {asset}"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-quantity",
+    "key": "asset.assignment.quantity",
+    "lang": "en",
+    "value": "Assigned quantity"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-available",
+    "key": "asset.assignment.available",
+    "lang": "en",
+    "value": "Available to add: {count}"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-subtitle",
+    "key": "asset.assignment.route.subtitle",
+    "lang": "en",
+    "value": "Runtime route for this event asset."
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-open",
+    "key": "asset.assignment.route.open",
+    "lang": "en",
+    "value": "Open Route Setup"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-empty",
+    "key": "asset.assignment.route.empty",
+    "lang": "en",
+    "value": "No route is set for this event asset."
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-popup-title",
+    "key": "asset.assignment.route.popup.title",
+    "lang": "en",
+    "value": "Route Setup - {asset}"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-popup-subtitle",
+    "key": "asset.assignment.route.popup.subtitle",
+    "lang": "en",
+    "value": "Set the route used by this transport for the selected event assignment."
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-stop-one",
+    "key": "asset.assignment.route.stop.one",
+    "lang": "en",
+    "value": "{count} stop"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-stop-many",
+    "key": "asset.assignment.route.stop.many",
+    "lang": "en",
+    "value": "{count} stops"
+  },
+  {
+    "_id": "i18n-message-en-asset-assignment-route-map-aria",
+    "key": "asset.assignment.route.map.aria",
+    "lang": "en",
+    "value": "Open route on map"
+  },
+  {
+    "_id": "i18n-message-en-map",
+    "key": "map",
+    "lang": "en",
+    "value": "Map"
   },
   {
     "_id": "i18n-message-en-asset-borrow-start",
@@ -16752,6 +17058,18 @@
     "value": "Csak meghívással"
   },
   {
+    "_id": "i18n-message-hu-invitation-pending",
+    "key": "invitation.pending",
+    "lang": "hu",
+    "value": "Meghívás függőben"
+  },
+  {
+    "_id": "i18n-message-hu-invite",
+    "key": "invite",
+    "lang": "hu",
+    "value": "Meghívás"
+  },
+  {
     "_id": "i18n-message-hu-loading-article",
     "key": "loading.article",
     "lang": "hu",
@@ -18298,6 +18616,18 @@
     "key": "pending",
     "lang": "hu",
     "value": "Függőben"
+  },
+  {
+    "_id": "i18n-message-hu-pending-count",
+    "key": "pending.count",
+    "lang": "hu",
+    "value": "{count} függőben"
+  },
+  {
+    "_id": "i18n-message-hu-pending-only",
+    "key": "pending.only",
+    "lang": "hu",
+    "value": "Csak függőben lévők"
   },
   {
     "_id": "i18n-message-hu-past",
@@ -20958,6 +21288,18 @@
     "value": "Jóváhagyásra vár"
   },
   {
+    "_id": "i18n-message-hu-waiting-for-admin-approval",
+    "key": "waiting.for.admin.approval",
+    "lang": "hu",
+    "value": "Admin jóváhagyására vár"
+  },
+  {
+    "_id": "i18n-message-hu-waiting-for-join-approval",
+    "key": "waiting.for.join.approval",
+    "lang": "hu",
+    "value": "Csatlakozási jóváhagyásra vár"
+  },
+  {
     "_id": "i18n-message-hu-waiting-list",
     "key": "waiting.list",
     "lang": "hu",
@@ -22444,6 +22786,18 @@
     "key": "show.password",
     "lang": "hu",
     "value": "Jelszó megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-show-all-members",
+    "key": "show.all.members",
+    "lang": "hu",
+    "value": "Összes tag megjelenítése"
+  },
+  {
+    "_id": "i18n-message-hu-show-pending-members-only",
+    "key": "show.pending.members.only",
+    "lang": "hu",
+    "value": "Csak a függőben lévő tagok megjelenítése"
   },
   {
     "_id": "i18n-message-hu-share-asset",
@@ -26139,7 +26493,7 @@
     "_id": "i18n-message-hu-pricing-asset-subtitle",
     "key": "pricing.asset.subtitle",
     "lang": "hu",
-    "value": "Állítsd be az eszköz használatának alapdíját eseményidősáv-specifikus árszabályok nélkül."
+    "value": "Állítsd be a napi díjat, és add meg, hogy foglalásonként vagy elemenként számítandó."
   },
   {
     "_id": "i18n-message-hu-pricing-subevent-subtitle",
@@ -26158,6 +26512,48 @@
     "key": "pricing.base.price",
     "lang": "hu",
     "value": "Alapár"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-daily-rate",
+    "key": "pricing.asset.daily.rate",
+    "lang": "hu",
+    "value": "Napi díj"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-base-daily-rate",
+    "key": "pricing.asset.base.daily.rate",
+    "lang": "hu",
+    "value": "Napi alapdíj"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-minimum-daily-rate",
+    "key": "pricing.asset.minimum.daily.rate",
+    "lang": "hu",
+    "value": "Minimum napi díj"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-maximum-daily-rate",
+    "key": "pricing.asset.maximum.daily.rate",
+    "lang": "hu",
+    "value": "Maximum napi díj"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-billed-duration",
+    "key": "pricing.asset.billed.duration",
+    "lang": "hu",
+    "value": "Számlázott időtartam (megkezdett napok)"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-items",
+    "key": "pricing.asset.items",
+    "lang": "hu",
+    "value": "Elemek"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-billing-explanation",
+    "key": "pricing.asset.billing.explanation",
+    "lang": "hu",
+    "value": "Számítás: {rate} naponta × {days} megkezdett nap × {quantity} elem. Minden megkezdett 24 órás időszak egy számlázott napnak számít."
   },
   {
     "_id": "i18n-message-hu-pricing-minimum",
@@ -26196,10 +26592,22 @@
     "value": "Mennyiségi szabályok"
   },
   {
+    "_id": "i18n-message-hu-pricing-quantity-adjustment",
+    "key": "pricing.quantity.adjustment",
+    "lang": "hu",
+    "value": "Mennyiségi módosítás"
+  },
+  {
     "_id": "i18n-message-hu-pricing-event-quantity-minimum",
     "key": "pricing.event.quantity.minimum",
     "lang": "hu",
     "value": "Események száma >="
+  },
+  {
+    "_id": "i18n-message-hu-pricing-asset-quantity-minimum",
+    "key": "pricing.asset.quantity.minimum",
+    "lang": "hu",
+    "value": "Elemek száma >="
   },
   {
     "_id": "i18n-message-hu-pricing-quantity-rule-remove-aria",
@@ -26220,6 +26628,12 @@
     "value": "A mennyiségi árazás ki van kapcsolva. Kapcsold be, ha több esemény megvásárlásakor csökkenteni szeretnéd az egyes események alapárából számolt végösszeget."
   },
   {
+    "_id": "i18n-message-hu-pricing-asset-quantity-disabled-hint",
+    "key": "pricing.asset.quantity.disabled.hint",
+    "lang": "hu",
+    "value": "A mennyiségi szabályok ki vannak kapcsolva. A napi díj továbbra is a díjszámítás alapja szerint működik; csak további mennyiségi kedvezményhez vagy felárhoz kapcsold be."
+  },
+  {
     "_id": "i18n-message-hu-pricing-demand-rules",
     "key": "pricing.demand.rules",
     "lang": "hu",
@@ -26230,6 +26644,12 @@
     "key": "pricing.capacity.percent",
     "lang": "hu",
     "value": "Kapacitás %"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-capacity-filled",
+    "key": "pricing.capacity.filled",
+    "lang": "hu",
+    "value": "Kapacitás kihasználtsága"
   },
   {
     "_id": "i18n-message-hu-pricing-applies-to",
@@ -26664,6 +27084,24 @@
     "value": "Foglalásonként"
   },
   {
+    "_id": "i18n-message-hu-pricing-charge-per-booking-day",
+    "key": "pricing.charge.per.booking.day",
+    "lang": "hu",
+    "value": "Foglalásonként / nap"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-per-item",
+    "key": "pricing.charge.per.item",
+    "lang": "hu",
+    "value": "Elemenként"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-charge-per-item-day",
+    "key": "pricing.charge.per.item.day",
+    "lang": "hu",
+    "value": "Elemenként / nap"
+  },
+  {
     "_id": "i18n-message-hu-pricing-charge-per-slot",
     "key": "pricing.charge.per.slot",
     "lang": "hu",
@@ -26862,6 +27300,114 @@
     "value": "Közönség"
   },
   {
+    "_id": "i18n-message-hu-pricing-audience-member-summary",
+    "key": "pricing.audience.member.summary",
+    "lang": "hu",
+    "value": "Tag {{price}}"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-audience-vip-summary",
+    "key": "pricing.audience.vip.summary",
+    "lang": "hu",
+    "value": "VIP {{price}}"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-audience-invite-summary",
+    "key": "pricing.audience.invite.summary",
+    "lang": "hu",
+    "value": "Csak meghívottaknak -{{percent}}%"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-rule-one",
+    "key": "pricing.summary.rule.one",
+    "lang": "hu",
+    "value": "{{count}} szabály"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-rule-many",
+    "key": "pricing.summary.rule.many",
+    "lang": "hu",
+    "value": "{{count}} szabály"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-override-one",
+    "key": "pricing.summary.override.one",
+    "lang": "hu",
+    "value": "{{count}} felülírás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-override-many",
+    "key": "pricing.summary.override.many",
+    "lang": "hu",
+    "value": "{{count}} felülírás"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-promo-one",
+    "key": "pricing.summary.promo.one",
+    "lang": "hu",
+    "value": "{{count}} promóciós kód"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-promo-many",
+    "key": "pricing.summary.promo.many",
+    "lang": "hu",
+    "value": "{{count}} promóciós kód"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-demand-rules",
+    "key": "pricing.summary.demand.rules",
+    "lang": "hu",
+    "value": "Kereslet: {{count}} szabály"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-time-rules",
+    "key": "pricing.summary.time.rules",
+    "lang": "hu",
+    "value": "Idő: {{count}} szabály"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-demand-rule",
+    "key": "pricing.summary.demand.rule",
+    "lang": "hu",
+    "value": "Kapacitás {operator} {value}%"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-time-hours-rule",
+    "key": "pricing.summary.time.hours.rule",
+    "lang": "hu",
+    "value": "{value} órával a kezdés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-time-days-rule",
+    "key": "pricing.summary.time.days.rule",
+    "lang": "hu",
+    "value": "{value} nappal a kezdés előtt"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-time-date-rule",
+    "key": "pricing.summary.time.date.rule",
+    "lang": "hu",
+    "value": "{start} – {end}"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-summary-refund-fixed",
+    "key": "pricing.summary.refund.fixed",
+    "lang": "hu",
+    "value": "{amount} visszatérítés"
+  },
+  {
+    "_id": "i18n-message-hu-pricing-slot-base-price",
+    "key": "pricing.slot.base.price",
+    "lang": "hu",
+    "value": "Idősáv alapára"
+  },
+  {
+    "_id": "i18n-message-hu-event-checkout-optional-sub-event",
+    "key": "event.checkout.optional.sub.event",
+    "lang": "hu",
+    "value": "Opcionális alesemény"
+  },
+  {
     "_id": "i18n-message-hu-pricing-setup-wizard-aria",
     "key": "pricing.setup.wizard.aria",
     "lang": "hu",
@@ -27058,6 +27604,72 @@
     "key": "asset.borrow.title",
     "lang": "hu",
     "value": "{asset} kölcsönzése"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-quantity",
+    "key": "asset.assignment.quantity",
+    "lang": "hu",
+    "value": "Hozzárendelt mennyiség"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-available",
+    "key": "asset.assignment.available",
+    "lang": "hu",
+    "value": "Még hozzáadható: {count}"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-subtitle",
+    "key": "asset.assignment.route.subtitle",
+    "lang": "hu",
+    "value": "Az eseményhez használt aktuális útvonal ehhez az eszközhöz."
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-open",
+    "key": "asset.assignment.route.open",
+    "lang": "hu",
+    "value": "Útvonal beállításának megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-empty",
+    "key": "asset.assignment.route.empty",
+    "lang": "hu",
+    "value": "Ehhez az eseményeszközhöz nincs útvonal beállítva."
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-popup-title",
+    "key": "asset.assignment.route.popup.title",
+    "lang": "hu",
+    "value": "Útvonal beállítása – {asset}"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-popup-subtitle",
+    "key": "asset.assignment.route.popup.subtitle",
+    "lang": "hu",
+    "value": "Állítsd be a kiválasztott esemény-hozzárendeléshez használt útvonalat."
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-stop-one",
+    "key": "asset.assignment.route.stop.one",
+    "lang": "hu",
+    "value": "{count} megálló"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-stop-many",
+    "key": "asset.assignment.route.stop.many",
+    "lang": "hu",
+    "value": "{count} megálló"
+  },
+  {
+    "_id": "i18n-message-hu-asset-assignment-route-map-aria",
+    "key": "asset.assignment.route.map.aria",
+    "lang": "hu",
+    "value": "Útvonal megnyitása térképen"
+  },
+  {
+    "_id": "i18n-message-hu-map",
+    "key": "map",
+    "lang": "hu",
+    "value": "Térkép"
   },
   {
     "_id": "i18n-message-hu-asset-borrow-start",
@@ -27346,101 +27958,5 @@
     "key": "asset.borrow.note.awaiting.owner",
     "lang": "hu",
     "value": "Tulajdonosi megerősítésre vár."
-  },
-  {
-    "_id": "i18n-message-en-invitation-pending",
-    "key": "invitation.pending",
-    "lang": "en",
-    "value": "Invitation Pending"
-  },
-  {
-    "_id": "i18n-message-en-invite",
-    "key": "invite",
-    "lang": "en",
-    "value": "Invite"
-  },
-  {
-    "_id": "i18n-message-en-pending-count",
-    "key": "pending.count",
-    "lang": "en",
-    "value": "{count} pending"
-  },
-  {
-    "_id": "i18n-message-en-pending-only",
-    "key": "pending.only",
-    "lang": "en",
-    "value": "Pending only"
-  },
-  {
-    "_id": "i18n-message-en-show-all-members",
-    "key": "show.all.members",
-    "lang": "en",
-    "value": "Show all members"
-  },
-  {
-    "_id": "i18n-message-en-show-pending-members-only",
-    "key": "show.pending.members.only",
-    "lang": "en",
-    "value": "Show pending members only"
-  },
-  {
-    "_id": "i18n-message-en-waiting-for-admin-approval",
-    "key": "waiting.for.admin.approval",
-    "lang": "en",
-    "value": "Waiting For Admin Approval"
-  },
-  {
-    "_id": "i18n-message-en-waiting-for-join-approval",
-    "key": "waiting.for.join.approval",
-    "lang": "en",
-    "value": "Waiting For Join Approval"
-  },
-  {
-    "_id": "i18n-message-hu-invitation-pending",
-    "key": "invitation.pending",
-    "lang": "hu",
-    "value": "Meghívás függőben"
-  },
-  {
-    "_id": "i18n-message-hu-invite",
-    "key": "invite",
-    "lang": "hu",
-    "value": "Meghívás"
-  },
-  {
-    "_id": "i18n-message-hu-pending-count",
-    "key": "pending.count",
-    "lang": "hu",
-    "value": "{count} függőben"
-  },
-  {
-    "_id": "i18n-message-hu-pending-only",
-    "key": "pending.only",
-    "lang": "hu",
-    "value": "Csak függőben lévők"
-  },
-  {
-    "_id": "i18n-message-hu-show-all-members",
-    "key": "show.all.members",
-    "lang": "hu",
-    "value": "Összes tag megjelenítése"
-  },
-  {
-    "_id": "i18n-message-hu-show-pending-members-only",
-    "key": "show.pending.members.only",
-    "lang": "hu",
-    "value": "Csak a függőben lévő tagok megjelenítése"
-  },
-  {
-    "_id": "i18n-message-hu-waiting-for-admin-approval",
-    "key": "waiting.for.admin.approval",
-    "lang": "hu",
-    "value": "Admin jóváhagyására vár"
-  },
-  {
-    "_id": "i18n-message-hu-waiting-for-join-approval",
-    "key": "waiting.for.join.approval",
-    "lang": "hu",
-    "value": "Csatlakozási jóváhagyásra vár"
   }
 ]

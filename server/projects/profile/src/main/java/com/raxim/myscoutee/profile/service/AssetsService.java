@@ -691,8 +691,11 @@ public class AssetsService {
             return Optional.empty();
         }
 
+        List<String> scopedEventIds = new ArrayList<>(new LinkedHashSet<>(List.of(
+                normalizedEventId,
+                authorizationEventId(normalizedEventId, normalizedSubEventId))));
         List<Document> requestConditions = new ArrayList<>();
-        requestConditions.add(new Document("$eq", List.of("$$request.booking.eventId", normalizedEventId)));
+        requestConditions.add(new Document("$in", List.of("$$request.booking.eventId", scopedEventIds)));
         requestConditions.add(new Document("$eq", List.of("$$request.booking.subEventId", normalizedSubEventId)));
         if (StringUtils.hasText(normalizedRequestStatus)) {
             requestConditions.add(new Document("$eq", List.of("$$request.status", normalizedRequestStatus)));
@@ -706,6 +709,20 @@ public class AssetsService {
                         .append("cond", new Document("$and", requestConditions))))));
         Asset asset = mongoTemplate.aggregate(aggregation, "assets", Asset.class).getUniqueMappedResult();
         return Optional.ofNullable(asset);
+    }
+
+    private String authorizationEventId(String eventId, String subEventId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String runtimeEventId = normalizedEventId;
+        if (StringUtils.hasText(normalizedSubEventId)) {
+            int groupOwnerMarker = normalizedEventId.indexOf(":" + normalizedSubEventId + ":");
+            if (groupOwnerMarker > 0) {
+                runtimeEventId = normalizedEventId.substring(0, groupOwnerMarker);
+            }
+        }
+        int slotMarker = runtimeEventId.indexOf(":slot:");
+        return slotMarker > 0 ? runtimeEventId.substring(0, slotMarker) : runtimeEventId;
     }
 
     public void syncRequestsFromMembers(String assetId, List<ActivityMember> members) {
@@ -1901,7 +1918,7 @@ public class AssetsService {
 
     private String assetPriceLabel(Asset asset) {
         PricingConfigDto pricing = asset == null ? null : asset.getPricing();
-        if (pricing == null) {
+        if (pricing == null || !Boolean.TRUE.equals(pricing.enabled())) {
             return null;
         }
         double amount = pricing.basePrice() == null || !Double.isFinite(pricing.basePrice())

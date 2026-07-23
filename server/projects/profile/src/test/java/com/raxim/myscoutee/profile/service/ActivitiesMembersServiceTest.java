@@ -381,6 +381,66 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryScopedAssetBorrowRequestShowsPendingBorrowerInsteadOfInvitation() {
+        Asset scopedAsset = new Asset();
+        scopedAsset.setAssetId("asset-1");
+        scopedAsset.setOwnerUserId("owner-1");
+        scopedAsset.setTitle("City-to-Lake SUV");
+        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+                "request-1",
+                "borrower-1",
+                "Nagy Eszter",
+                "NE",
+                "woman",
+                "pending",
+                "",
+                "borrow",
+                "2026-07-23T18:37:00Z",
+                new Asset.AssetRequestBookingRecord(
+                        "event-1",
+                        "Creative Nights Series",
+                        "subevent-1",
+                        "Kickoff",
+                        "city-to-lake-suv:1",
+                        "City-to-Lake SUV",
+                        "Jul 23",
+                        "2026-07-23T06:30:00Z",
+                        "2026-07-23T07:15:00Z",
+                        2,
+                        40.0,
+                        "USD",
+                        List.of(),
+                        "payment-session-1",
+                        true))));
+
+        when(assetsService.findAssetByAssetIdWithScopedRequests(
+                "asset-1",
+                "event-1:slot:slot-1:2026-07-23T06:30:00Z",
+                "subevent-1",
+                null))
+                .thenReturn(Optional.of(scopedAsset));
+        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.empty());
+        when(usersRepository.findByUserId("borrower-1")).thenReturn(Optional.empty());
+
+        List<ActivityMemberEntryDto> result = service.queryMembers(
+                "asset",
+                "asset-1",
+                false,
+                "event-1:slot:slot-1:2026-07-23T06:30:00Z",
+                "subevent-1");
+
+        assertThat(result)
+                .filteredOn(entry -> "borrower-1".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("pending");
+                    assertThat(entry.pendingSource()).isEqualTo("member");
+                    assertThat(entry.requestKind()).isEqualTo("join");
+                    assertThat(entry.statusText()).isEqualTo("Waiting for admin approval.");
+                });
+    }
+
+    @Test
     void replaceScopedAssetMembersDelegatesOneScopedAssetMutationWithoutReplacingGlobalMembers() {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         ActivityMemberEntryDto invited = entry("group-member");

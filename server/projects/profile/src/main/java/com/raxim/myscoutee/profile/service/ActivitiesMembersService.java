@@ -235,8 +235,9 @@ public class ActivitiesMembersService {
         member.setRole("Member");
         member.setStatus(status);
         if (STATUS_PENDING.equals(status)) {
-            member.setPendingSource("admin");
-            member.setRequestKind(REQUEST_KIND_INVITE);
+            boolean borrowerInitiated = "borrow".equalsIgnoreCase(safeText(request.requestKind()));
+            member.setPendingSource(borrowerInitiated ? "member" : "admin");
+            member.setRequestKind(borrowerInitiated ? REQUEST_KIND_JOIN : REQUEST_KIND_INVITE);
         }
         String requestedAtIso = normalizeDateTime(request.requestedAtIso(), Instant.now().toString());
         member.setActionAtIso(requestedAtIso);
