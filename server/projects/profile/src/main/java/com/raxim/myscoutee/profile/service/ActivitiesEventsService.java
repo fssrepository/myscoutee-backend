@@ -5457,7 +5457,8 @@ public class ActivitiesEventsService {
             String status = safeText(ctx.trackedEventStatusesBySourceId().get(sourceId));
             return MEMBER_STATUS_ACCEPTED.equals(status)
                     || MEMBER_STATUS_PENDING.equals(status)
-                    || MEMBER_STATUS_INVITED.equals(status);
+                    || MEMBER_STATUS_INVITED.equals(status)
+                    || MEMBER_STATUS_DELETED.equals(status);
         }
         return resolveAcceptedMemberUserIds(record).contains(userId)
                 || resolvePendingRequestMemberUserIds(record).contains(userId)

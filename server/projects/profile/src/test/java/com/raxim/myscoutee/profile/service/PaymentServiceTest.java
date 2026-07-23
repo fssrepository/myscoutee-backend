@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
@@ -396,6 +397,37 @@ class PaymentServiceTest {
         assertThat(payment.getRefundCurrency()).isEqualTo("EUR");
         assertThat(payment.getRefundRuleId()).isEqualTo("partial-1d");
         assertThat(payment.getStatus()).isEqualTo("partially_refunded");
+    }
+
+    @Test
+    void pendingEventJoinStatesAreResolvedByOneBatchRead() {
+        PaymentsRepository repository = org.mockito.Mockito.mock(PaymentsRepository.class);
+        Payment pending = new Payment();
+        pending.setUserId("user-1");
+        pending.setSourceId("event-1");
+        pending.setBookingStatus("initiated");
+        pending.setCreatedDate("2026-07-23T10:00:00Z");
+        Payment joined = new Payment();
+        joined.setUserId("user-1");
+        joined.setSourceId("event-2");
+        joined.setBookingStatus("joined");
+        joined.setJoinedAtIso("2026-07-23T11:00:00Z");
+        when(repository.findByUserIdAndSourceIdIn(
+                "user-1",
+                List.of("event-1", "event-2")))
+                .thenReturn(List.of(pending, joined));
+        PaymentService service =
+                paymentService(repository, false, new RecordingPaymentProcessor("stripe"));
+
+        Set<String> result = service.findPendingEventJoinSourceIds(
+                " user-1 ",
+                List.of(" event-1 ", "event-2", "event-1"));
+
+        assertThat(result).containsExactly("event-1");
+        verify(repository).findByUserIdAndSourceIdIn(
+                "user-1",
+                List.of("event-1", "event-2"));
+        verify(repository, never()).findByUserIdAndSourceId(anyString(), anyString());
     }
 
     private PaymentService paymentService(PaymentsRepository repository, boolean enablePay, PaymentProcessor... processors) {

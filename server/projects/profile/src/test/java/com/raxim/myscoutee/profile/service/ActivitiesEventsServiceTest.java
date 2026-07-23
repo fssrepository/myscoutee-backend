@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.lenient;
@@ -777,7 +778,8 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findActiveInvitationEvents("host"))
                 .thenReturn(List.of(invitation));
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(hosting, invitation, trashed));
-        when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("host", false)).thenReturn(Map.of());
+        lenient().when(activitiesMembersService.findTrackedEventMembershipStatusesForUser(eq("host"), anyBoolean()))
+                .thenReturn(Map.of());
 
         EventsExplorePageDto hostingResponse = service.queryHostingPage("host", 2, null);
         EventsExplorePageDto invitationResponse = service.queryInvitationsPage("host", 2, null);
@@ -789,7 +791,7 @@ class ActivitiesEventsServiceTest {
                 .containsExactly("invite-1");
         assertThat(invitationResponse.records()).singleElement().satisfies(record ->
                 assertThat(record.adminIds())
-                        .containsExactly("other-host")
+                        .containsExactly("other-host", "accepted-member")
                         .doesNotContain("host"));
         assertThat(trashResponse.records()).extracting(EventDto::id)
                 .containsExactly("trash-1");
@@ -869,39 +871,26 @@ class ActivitiesEventsServiceTest {
         assertThat(page.nextCursor()).contains("event-2");
         verify(activityEventsRepository, never()).findAll();
         verify(activityEventsRepository, never()).saveAll(anyList());
-        verify(activitiesMembersService).buildBatchEventSnapshots(anyMap());
+        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
         verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
     }
 
     @Test
-    void activeFilterUsesMemberSnapshotWhenProjectionLooksLikeViewerAdmin() {
+    void activeFilterUsesEmbeddedParentMembershipWithoutSnapshotProjection() {
         Users viewer = new Users();
         viewer.setId("viewer");
         viewer.setName("Viewer User");
 
         ActivityEvent staleProjection = event("event-1", "host", 0d);
         staleProjection.setOwnerUserId("viewer");
-        staleProjection.setAdmins(List.of("viewer", "host"));
+        staleProjection.setAdmins(List.of("host"));
         staleProjection.setAcceptedMemberUserIds(List.of("host", "viewer"));
-
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = new ActivitiesMembersService.OwnerMembersSnapshot(
-                "event",
-                "event-1",
-                List.of(),
-                List.of("host", "viewer"),
-                List.of(),
-                List.of(),
-                List.of(),
-                Set.of("host"),
-                10);
 
         when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
         when(activitiesMembersService.findTrackedEventMembershipStatusesForUser("viewer", false))
                 .thenReturn(acceptedStatuses("event-1"));
         when(mongoTemplate.find(any(Query.class), eq(ActivityEvent.class)))
                 .thenReturn(List.of(staleProjection));
-        when(activitiesMembersService.buildBatchEventSnapshots(anyMap()))
-                .thenReturn(Map.of("event-1", snapshot));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -917,6 +906,7 @@ class ActivitiesEventsServiceTest {
             assertThat(record.userId()).isEqualTo("viewer");
             assertThat(record.adminIds()).containsExactly("host");
         });
+        verify(activitiesMembersService, never()).buildBatchEventSnapshots(anyMap());
     }
 
     @Test

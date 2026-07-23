@@ -31,7 +31,7 @@ public class Payment {
     private String currency;
     @Indexed(name = "payment_checkout_session", unique = true, sparse = true)
     private String checkoutSessionId;
-    @Indexed(unique = true, sparse = true)
+    @Indexed(name = "payment_gateway_session", unique = true, sparse = true)
     private String gatewaySessionId;
     private String slotSourceId;
     private String bookingStartAtIso;
