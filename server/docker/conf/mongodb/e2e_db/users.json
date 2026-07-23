@@ -272,7 +272,7 @@
       "cars": 2,
       "accommodation": 2,
       "supplies": 2,
-      "tickets": 1,
+      "tickets": 0,
       "contacts": 0,
       "feedback": 0,
       "chat": {
@@ -296,7 +296,7 @@
         "cars": 2,
         "accommodation": 2,
         "supplies": 2,
-        "tickets": 1
+        "tickets": 0
       },
       "eventFeedback": {
         "ownEvents": 0,
