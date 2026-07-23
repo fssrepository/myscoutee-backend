@@ -365,6 +365,29 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void queryMembersOrdersPendingFirstThenManagersThenMembersByLatestAction() {
+        ActivityMember olderPending = member("pending-old", "event-1", "pending-old", "Member", "pending");
+        olderPending.setActionAtIso("2026-07-23T08:00:00Z");
+        ActivityMember newerPending = member("pending-new", "event-1", "pending-new", "Member", "pending");
+        newerPending.setActionAtIso("2026-07-23T09:00:00Z");
+        ActivityMember admin = member("admin", "event-1", "admin", "Admin", "accepted");
+        admin.setActionAtIso("2026-07-23T07:00:00Z");
+        ActivityMember manager = member("manager", "event-1", "manager", "Manager", "accepted");
+        manager.setActionAtIso("2026-07-23T10:00:00Z");
+        ActivityMember member = member("member", "event-1", "member", "Member", "accepted");
+        member.setActionAtIso("2026-07-23T11:00:00Z");
+
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(member, admin, olderPending, manager, newerPending));
+
+        List<ActivityMemberEntryDto> result = service.queryMembers("event", "event-1");
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("pending-new", "pending-old", "manager", "admin", "member");
+    }
+
+    @Test
     void queryScopedAssetPendingMembersUsesBookingScopeInsteadOfGlobalAssetMembers() {
         Asset scopedAsset = new Asset();
         scopedAsset.setAssetId("asset-1");
@@ -519,8 +542,14 @@ class ActivitiesMembersServiceTest {
 
     @Test
     void replaceScopedAssetMembersDelegatesOneScopedAssetMutationWithoutReplacingGlobalMembers() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(homeUserProfileService.resolveSelectedUserId("borrower")).thenReturn("borrower");
         ActivityMemberEntryDto invited = entry("group-member");
+        when(assetsService.canManageScopedAssetMembers(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                "borrower"))
+                .thenReturn(true);
         when(assetsService.syncScopedRequestsFromMemberEntries(
                 "asset-1",
                 "event-1:subevent-1:group-a",
@@ -532,10 +561,15 @@ class ActivitiesMembersServiceTest {
                 new ActivityMemberOwnerRefDto("asset", "asset-1"),
                 List.of(invited),
                 4,
-                "admin",
+                "borrower",
                 "event-1:subevent-1:group-a",
                 "subevent-1"));
 
+        verify(assetsService).canManageScopedAssetMembers(
+                "asset-1",
+                "event-1:subevent-1:group-a",
+                "subevent-1",
+                "borrower");
         verify(assetsService).syncScopedRequestsFromMemberEntries(
                 "asset-1",
                 "event-1:subevent-1:group-a",
@@ -545,9 +579,37 @@ class ActivitiesMembersServiceTest {
                 "event-1:subevent-1:group-a",
                 "subevent-1",
                 "asset-owner",
-                "admin");
+                "borrower");
         verify(activityMembersRepository, never()).saveAll(anyList());
         verify(activityMembersRepository, never()).findByOwnerTypeAndOwnerId(anyString(), anyString());
+    }
+
+    @Test
+    void replaceScopedAssetMembersRejectsPendingBorrowerBeforeMutation() {
+        when(homeUserProfileService.resolveSelectedUserId("pending-borrower")).thenReturn("pending-borrower");
+        when(assetsService.canManageScopedAssetMembers(
+                "asset-1",
+                "event-1",
+                "subevent-1",
+                "pending-borrower"))
+                .thenReturn(false);
+
+        ResponseStatusException error = assertThrows(
+                ResponseStatusException.class,
+                () -> service.replace(new ActivityMembersReplaceRequestDto(
+                        new ActivityMemberOwnerRefDto("asset", "asset-1"),
+                        List.of(entry("group-member")),
+                        4,
+                        "pending-borrower",
+                        "event-1",
+                        "subevent-1")));
+
+        assertThat(error.getStatusCode().value()).isEqualTo(403);
+        verify(assetsService, never()).syncScopedRequestsFromMemberEntries(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyList());
     }
 
     @Test
@@ -590,6 +652,75 @@ class ActivitiesMembersServiceTest {
         assertThat(savedMember.getValue().getRequestKind()).isNull();
         verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
         verify(chatService).postSystemMessage("event-1", "Target User joined the event.", "member-joined");
+    }
+
+    @Test
+    void acceptPendingSubEventMemberUpdatesEmbeddedCountersOnTheMutation() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember admin = member("admin-sync", ownerId, "admin", "Admin", "accepted");
+        admin.setOwnerType("subEvent");
+        ActivityMember pending = member("member-sync", ownerId, "target", "Member", "pending");
+        pending.setOwnerType("subEvent");
+        pending.setPendingSource("member");
+        pending.setRequestKind("join");
+        AtomicReference<ActivityMember> storedTarget = new AtomicReference<>(pending);
+        ActivityEvent event = event("event-1", "host", "admin");
+        event.setSubEvents(List.of(new SubEventItem(
+                "sub-1",
+                "Optional activity",
+                "",
+                null,
+                null,
+                "",
+                "host",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null)));
+
+        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(admin, storedTarget.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedTarget.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "admin",
+                "target",
+                "accept",
+                null));
+
+        assertThat(event.getSubEvents()).singleElement().satisfies(subEvent -> {
+            assertThat(subEvent.membersAccepted()).isEqualTo(2);
+            assertThat(subEvent.membersPending()).isZero();
+        });
+        verify(activityEventsRepository).saveAll(anyList());
     }
 
     @Test
@@ -724,7 +855,7 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
-    void eventOwnerCannotRemoveTheirOwnParticipation() {
+    void eventOwnerCannotLeaveWhenNoOtherAcceptedAdminRemains() {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
@@ -735,6 +866,92 @@ class ActivitiesMembersServiceTest {
 
         assertThat(result.acceptedMemberUserIds()).contains("owner");
         verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void eventOwnerCanLeaveFromMemberCardAndTransfersOwnershipToAnotherAcceptedAdmin() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        owner.setCreatedDate("2026-01-01T08:00:00Z");
+        ActivityMember successor = member("successor-sync", "event-1", "successor", "Admin", "accepted");
+        successor.setCreatedDate("2026-02-01T08:00:00Z");
+        AtomicReference<List<ActivityMember>> storedMembers = new AtomicReference<>(List.of(owner, successor));
+        Users successorUser = new Users();
+        successorUser.setId("successor");
+        successorUser.setName("Successor Admin");
+        successorUser.setInitials("SA");
+        successorUser.setGender("man");
+        successorUser.setCity("Seattle");
+
+        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(usersRepository.findByUserId("successor")).thenReturn(Optional.of(successorUser));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "owner",
+                "owner",
+                "remove",
+                null));
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("successor");
+        assertThat(event.getOwnerUserId()).isEqualTo("successor");
+        assertThat(event.getCreatorUserId()).isEqualTo("successor");
+        assertThat(event.getCreatorName()).isEqualTo("Successor Admin");
+        assertThat(event.getAdmins()).containsExactly("successor");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "owner".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
+        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+    }
+
+    @Test
+    void promotedAdminCanLeaveWhileTheOwnerRemainsAdmin() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember promotedAdmin = member("admin-sync", "event-1", "promoted-admin", "Admin", "accepted");
+        AtomicReference<List<ActivityMember>> storedMembers = new AtomicReference<>(List.of(owner, promotedAdmin));
+
+        when(homeUserProfileService.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "promoted-admin",
+                "promoted-admin",
+                "remove",
+                null));
+
+        assertThat(event.getCreatorUserId()).isEqualTo("owner");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "promoted-admin".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
     }
 
     @Test

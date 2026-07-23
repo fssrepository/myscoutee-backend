@@ -36,6 +36,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventResourceStateDto;
@@ -207,6 +208,10 @@ class ActivitiesResourcesServiceTest {
         assertThat(saved.ownerId()).isEqualTo("event-1");
         assertThat(saved.assetOwnerUserId()).isEqualTo("u1");
         verify(activitySubEventResourcesRepository).save(any(ActivitySubEventResource.class));
+        verify(activitySubEventResourcesRepository)
+                .findByOwnerIdAndSubEventIdAndStatusNot("event-1", "sub-1", "D");
+        verify(activitiesMembersService)
+                .refreshSubEventParticipationProjection("event-1", "sub-1");
     }
 
     @Test
@@ -393,6 +398,119 @@ class ActivitiesResourcesServiceTest {
     }
 
     @Test
+    void refreshEventProjectionPersistsCanonicalRangeAndPendingBadgeCount() {
+        ActivitySubEventResource resource = new ActivitySubEventResource();
+        resource.setStatus("A");
+        resource.setOwnerId("event-1");
+        resource.setSubEventId("sub-1");
+        resource.setAssetOwnerUserId("u1");
+        resource.setAssetAssignmentIds(Map.of(
+                "Transport",
+                List.of("owned-1", "owned-2", "borrowed-1", "borrowed-2")));
+        resource.setAssetSettingsByType(Map.of(
+                "Transport",
+                Map.of(
+                        "owned-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 1, "u1", false, List.of()),
+                        "owned-2", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 1, "u1", false, List.of()),
+                        "borrowed-1", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 2, "u1", false, List.of()),
+                        "borrowed-2", new ActivitySubEventResource.SubEventAssignedAssetSettingsRecord(
+                                0, 4, 2, "u1", false, List.of()))));
+        resource.setSupplyContributionEntriesByAssetId(Map.of());
+        AssetRequestBookingDto booking = new AssetRequestBookingDto(
+                "event-1",
+                "Event",
+                "sub-1",
+                "Optional activity",
+                null,
+                null,
+                null,
+                null,
+                null,
+                2,
+                null,
+                null,
+                List.of(),
+                null,
+                null);
+        Map<String, AssetDetailDto> details = Map.of(
+                "owned-1", assetDetail("owned-1", "Transport", "u1", 4, List.of()),
+                "owned-2", assetDetail("owned-2", "Transport", "u1", 4, List.of()),
+                "borrowed-1", assetDetail(
+                        "borrowed-1",
+                        "Transport",
+                        "other-1",
+                        4,
+                        List.of(assetRequest("borrow-1", "u1", booking))),
+                "borrowed-2", assetDetail(
+                        "borrowed-2",
+                        "Transport",
+                        "other-2",
+                        4,
+                        List.of(assetRequest("borrow-2", "u1", booking))));
+        ActivityEvent event = event("event-1", "u1", "u1");
+        event.setSubEvents(List.of(new SubEventItem(
+                "sub-1",
+                "Optional activity",
+                "",
+                null,
+                null,
+                "",
+                "u1",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                0,
+                16,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                16,
+                0,
+                0,
+                0,
+                0,
+                null,
+                null)));
+
+        when(activitySubEventResourcesRepository.findByOwnerIdAndSubEventIdAndStatusNot(
+                "event-1", "sub-1", "D")).thenReturn(List.of(resource));
+        when(assetsService.queryAssignableAssetDetails(
+                "u1",
+                "event-1",
+                "sub-1",
+                Set.of("owned-1", "owned-2", "borrowed-1", "borrowed-2")))
+                .thenReturn(details);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activitiesMembersServiceProvider.getIfAvailable()).thenReturn(activitiesMembersService);
+
+        service.refreshEventSubEventResourceProjection("event-1", "sub-1");
+
+        ArgumentCaptor<List<ActivityEvent>> savedCaptor = ArgumentCaptor.forClass(List.class);
+        verify(activityEventsRepository).saveAll(savedCaptor.capture());
+        assertThat(savedCaptor.getValue()).singleElement().satisfies(saved ->
+                assertThat(saved.getSubEvents()).singleElement().satisfies(subEvent -> {
+                    assertThat(subEvent.carsAccepted()).isEqualTo(2);
+                    assertThat(subEvent.carsPending()).isEqualTo(2);
+                    assertThat(subEvent.carsCapacityMin()).isZero();
+                    assertThat(subEvent.carsCapacityMax()).isEqualTo(24);
+                }));
+        verify(activitiesMembersService).refreshSubEventParticipationProjection("event-1", "sub-1");
+    }
+
+    @Test
     void replaceAllowsExplicitAssignmentGrantWithoutAcceptedEventParticipation() {
         authenticateAs("u1");
         when(accessGrantsRepository.findAll()).thenReturn(List.of(grant("u1", "resource.assign", "event", "event-1", "allow")));
@@ -511,6 +629,15 @@ class ActivitiesResourcesServiceTest {
             String type,
             String ownerUserId,
             List<AssetMemberRequestDto> requests) {
+        return assetDetail(id, type, ownerUserId, 4, requests);
+    }
+
+    private AssetDetailDto assetDetail(
+            String id,
+            String type,
+            String ownerUserId,
+            int capacityTotal,
+            List<AssetMemberRequestDto> requests) {
         return new AssetDetailDto(
                 id,
                 type,
@@ -518,7 +645,7 @@ class ActivitiesResourcesServiceTest {
                 "",
                 "",
                 "",
-                4,
+                capacityTotal,
                 4,
                 "",
                 "",

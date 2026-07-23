@@ -180,11 +180,20 @@ public class UserActivityCountersService {
 
     private EventCounters resolveEventCounters(String userId) {
         Set<String> sourceIds = new LinkedHashSet<>();
+        Set<String> deletedMembershipSourceIds = activityMembersRepository
+                .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> isDeletedMembershipStatus(member.getStatus()))
+                .map(ActivityMember::getOwnerId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
         collectSourceIds(sourceIds, activityEventsRepository.findDirectOwnerEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findAdminVisibleEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findAcceptedMembershipEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findActiveInvitationEvents(userId));
         collectSourceIds(sourceIds, activityEventsRepository.findPendingRequestEvents(userId));
+        sourceIds.addAll(deletedMembershipSourceIds);
         Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(activityEventsRepository.findBySourceIdIn(sourceIds), userId);
 
         int active = 0;
@@ -199,7 +208,7 @@ public class UserActivityCountersService {
             if (!countedSources.add(sourceId)) {
                 continue;
             }
-            if (isTrashScopeStatus(event)) {
+            if (isTrashScopeStatus(event) || deletedMembershipSourceIds.contains(sourceId)) {
                 trash += 1;
                 continue;
             }
@@ -577,6 +586,12 @@ public class UserActivityCountersService {
         }
         String status = normalizeStatus(event.getStatus());
         return ActivityEvent.STATUS_TRASHED.equals(status);
+    }
+
+    private boolean isDeletedMembershipStatus(String status) {
+        String normalized = safeText(status);
+        return "deleted".equalsIgnoreCase(normalized)
+                || ActivityEvent.STATUS_DELETED.equalsIgnoreCase(normalized);
     }
 
     private boolean isSuppressedAssetStatus(String status) {

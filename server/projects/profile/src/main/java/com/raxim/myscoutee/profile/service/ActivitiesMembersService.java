@@ -169,7 +169,7 @@ public class ActivitiesMembersService {
                 .map(member -> toEntryDto(member, viewerUserId))
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
-                .sorted(Comparator.comparing(entry -> toSortableDate(entry.actionAtIso())))
+                .sorted(this::compareMemberEntriesForManagement)
                 .toList();
     }
 
@@ -485,7 +485,7 @@ public class ActivitiesMembersService {
         List<ActivityMember> ordered = members.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
-                .sorted(Comparator.comparing(ActivityMember::getActionAtIso, Comparator.nullsLast(String::compareTo)))
+                .sorted(this::compareMembersForManagement)
                 .toList();
         List<String> acceptedUserIds = ordered.stream()
                 .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
@@ -554,6 +554,15 @@ public class ActivitiesMembersService {
         if (OWNER_TYPE_ASSET.equals(ownerType)
                 && StringUtils.hasText(scopedEventId)
                 && StringUtils.hasText(scopedSubEventId)) {
+            if (!assetsService.canManageScopedAssetMembers(
+                    ownerId,
+                    scopedEventId,
+                    scopedSubEventId,
+                    actorUserId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Authenticated user is not allowed to replace members for this asset booking.");
+            }
             String assetOwnerUserId = assetsService.syncScopedRequestsFromMemberEntries(
                     ownerId,
                     scopedEventId,
@@ -708,6 +717,10 @@ public class ActivitiesMembersService {
             if (!canApplyEventMemberAction(ownerId, actorUserId, targetUserId, action)) {
                 return queryMembers(ownerType, ownerId);
             }
+            if (ACTION_REMOVE.equals(action) && actorUserId.equals(targetUserId)) {
+                removeEventParticipation(ownerId, targetUserId, actorUserId);
+                return queryMembers(ownerType, ownerId);
+            }
         } else if (!canManageOwnerMembers(ownerType, ownerId, actorUserId)
                 || actorUserId.equals(targetUserId)
                 || isProtectedOwnerMember(ownerType, ownerId, targetUserId)) {
@@ -804,6 +817,11 @@ public class ActivitiesMembersService {
                 postMemberActionChatMessage(ownerId, action, next);
             }
             userActivityCountersService.refreshEventCountersForSourceIds(List.of(ownerId));
+        } else if (OWNER_TYPE_SUB_EVENT.equals(ownerType)) {
+            SubEventCounterScope scope = subEventCounterScope(ownerId);
+            if (scope != null) {
+                refreshEmbeddedSubEventMembers(scope.eventId(), scope.subEventId(), ownerId);
+            }
         } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, List.of(next));
         }
@@ -897,9 +915,7 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
-        ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
-        if (eventRecord != null
-                && normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
+        if (!normalizedUserId.equals(normalizedActorUserId)) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
 
@@ -913,9 +929,25 @@ public class ActivitiesMembersService {
             if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
                 return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
             }
+            EventAdminLeavePlan leavePlan = resolveEventAdminLeavePlan(
+                    normalizedEventId,
+                    normalizedUserId,
+                    current,
+                    existing);
+            if (!leavePlan.allowed()) {
+                return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+            }
 
             String currentStatus = normalizeStatus(current.getStatus());
             String nowIso = Instant.now().toString();
+            if (StringUtils.hasText(leavePlan.successorAdminUserId())) {
+                transferEventOwnership(
+                        normalizedEventId,
+                        normalizedUserId,
+                        leavePlan.successorAdminUserId(),
+                        normalizedActorUserId,
+                        nowIso);
+            }
             ActivityMember deletedMember = toDeletedMember(current, normalizedActorUserId, nowIso);
             activityMembersRepository.save(deletedMember);
             enqueueOwnerMembersChanged(OWNER_TYPE_EVENT, normalizedEventId, normalizedActorUserId);
@@ -1332,7 +1364,7 @@ public class ActivitiesMembersService {
         List<ActivityMember> ordered = members.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> !STATUS_DELETED.equals(normalizeStatus(member.getStatus())))
-                .sorted(Comparator.comparing(ActivityMember::getActionAtIso, Comparator.nullsLast(String::compareTo)))
+                .sorted(this::compareMembersForManagement)
                 .toList();
         List<String> acceptedUserIds = ordered.stream()
                 .filter(member -> ACCEPTED_STATUSES.contains(normalizeStatus(member.getStatus())))
@@ -2119,6 +2151,9 @@ public class ActivitiesMembersService {
             return accessControlService.canAcceptEventMember(ownerId, actorUserId, targetUserId);
         }
         if (ACTION_REMOVE.equals(action)) {
+            if (normalizeId(actorUserId).equals(normalizeId(targetUserId))) {
+                return canSelfLeaveEvent(ownerId, targetUserId);
+            }
             return accessControlService.canRemoveEventMember(ownerId, actorUserId, targetUserId)
                     || canOwnerRemoveEventAdmin(ownerId, actorUserId, targetUserId);
         }
@@ -2135,6 +2170,191 @@ public class ActivitiesMembersService {
             return canStepDownEventAdmin(ownerId, actorUserId, targetUserId);
         }
         return false;
+    }
+
+    private boolean canSelfLeaveEvent(String eventId, String userId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        List<ActivityMember> members = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
+        ActivityMember current = members.stream()
+                .filter(Objects::nonNull)
+                .filter(member -> normalizedUserId.equals(normalizeId(member.getUserId())))
+                .findFirst()
+                .orElse(null);
+        return current != null
+                && resolveEventAdminLeavePlan(normalizedEventId, normalizedUserId, current, members).allowed();
+    }
+
+    private EventAdminLeavePlan resolveEventAdminLeavePlan(
+            String eventId,
+            String leavingUserId,
+            ActivityMember leavingMember,
+            List<ActivityMember> members) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedLeavingUserId = normalizeId(leavingUserId);
+        String currentStatus = normalizeStatus(leavingMember == null ? null : leavingMember.getStatus());
+        if (!STATUS_ACCEPTED.equals(currentStatus)) {
+            return STATUS_PENDING.equals(currentStatus) || STATUS_INVITED.equals(currentStatus)
+                    ? EventAdminLeavePlan.allowedWithoutTransfer()
+                    : EventAdminLeavePlan.denied();
+        }
+
+        ActivityEvent event = findPreferredEventRecord(normalizedEventId);
+        String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
+        boolean leavingOwner = normalizedLeavingUserId.equals(creatorUserId);
+        boolean leavingAdmin = leavingOwner
+                || "Admin".equals(resolveStoredRole(leavingMember, OWNER_TYPE_EVENT, normalizedEventId));
+        if (!leavingAdmin) {
+            return EventAdminLeavePlan.allowedWithoutTransfer();
+        }
+
+        ActivityMember successor = (members == null ? List.<ActivityMember>of() : members).stream()
+                .filter(Objects::nonNull)
+                .filter(member -> !normalizedLeavingUserId.equals(normalizeId(member.getUserId())))
+                .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
+                .filter(member -> "Admin".equals(resolveStoredRole(member, OWNER_TYPE_EVENT, normalizedEventId)))
+                .min(Comparator
+                        .comparingLong((ActivityMember member) -> memberJoiningTime(member))
+                        .thenComparing(member -> normalizeId(member.getUserId())))
+                .orElse(null);
+        String successorUserId = normalizeId(successor == null ? null : successor.getUserId());
+        if (!StringUtils.hasText(successorUserId) && StringUtils.hasText(creatorUserId) && !leavingOwner) {
+            successorUserId = creatorUserId;
+        }
+        if (!StringUtils.hasText(successorUserId)) {
+            return EventAdminLeavePlan.denied();
+        }
+        return leavingOwner
+                ? EventAdminLeavePlan.allowedWithTransfer(successorUserId)
+                : EventAdminLeavePlan.allowedWithoutTransfer();
+    }
+
+    private void transferEventOwnership(
+            String eventId,
+            String leavingOwnerUserId,
+            String successorAdminUserId,
+            String actorUserId,
+            String nowIso) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedLeavingOwnerUserId = normalizeId(leavingOwnerUserId);
+        String normalizedSuccessorAdminUserId = normalizeId(successorAdminUserId);
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (documents.isEmpty() || !StringUtils.hasText(normalizedSuccessorAdminUserId)) {
+            return;
+        }
+
+        ActivityEvent canonical = documents.stream()
+                .filter(document -> normalizedLeavingOwnerUserId.equals(normalizeId(document.getOwnerUserId())))
+                .filter(document -> normalizedLeavingOwnerUserId.equals(normalizeId(document.getCreatorUserId())))
+                .findFirst()
+                .orElse(findPreferredEventRecord(normalizedEventId));
+        Users successor = usersRepository.findByUserId(normalizedSuccessorAdminUserId).orElse(null);
+        List<ActivityEvent> duplicateSuccessorOverlays = documents.stream()
+                .filter(document -> document != canonical)
+                .filter(document -> normalizedSuccessorAdminUserId.equals(normalizeId(document.getOwnerUserId())))
+                .toList();
+        Set<String> duplicateIds = duplicateSuccessorOverlays.stream()
+                .map(ActivityEvent::getId)
+                .filter(StringUtils::hasText)
+                .collect(LinkedHashSet::new, Set::add, Set::addAll);
+
+        List<ActivityEvent> documentsToSave = new ArrayList<>();
+        for (ActivityEvent document : documents) {
+            if (document == null || duplicateIds.contains(document.getId())) {
+                continue;
+            }
+            document.setCreatorUserId(normalizedSuccessorAdminUserId);
+            document.setCreatorName(successor == null
+                    ? normalizedSuccessorAdminUserId
+                    : firstNonBlank(successor.getName(), normalizedSuccessorAdminUserId));
+            document.setCreatorInitials(successor == null ? "" : safeText(successor.getInitials()));
+            document.setCreatorGender(successor == null ? "" : normalizeGender(successor.getGender()));
+            document.setCreatorCity(successor == null ? "" : safeText(successor.getCity()));
+            LinkedHashSet<String> adminUserIds = new LinkedHashSet<>(document.getAdmins() == null
+                    ? List.of()
+                    : document.getAdmins());
+            adminUserIds.remove(normalizedLeavingOwnerUserId);
+            adminUserIds.add(normalizedSuccessorAdminUserId);
+            document.setAdmins(new ArrayList<>(adminUserIds));
+            if (document == canonical) {
+                document.setOwnerUserId(normalizedSuccessorAdminUserId);
+            }
+            document.setUpdatedDate(nowIso);
+            document.setUpdatedUser(StringUtils.hasText(normalizeId(actorUserId))
+                    ? normalizeId(actorUserId)
+                    : "system");
+            documentsToSave.add(document);
+        }
+        if (!duplicateSuccessorOverlays.isEmpty()) {
+            activityEventsRepository.deleteAll(duplicateSuccessorOverlays);
+        }
+        if (!documentsToSave.isEmpty()) {
+            List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
+            eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
+        }
+    }
+
+    private int compareMemberEntriesForManagement(ActivityMemberEntryDto left, ActivityMemberEntryDto right) {
+        int priorityComparison = Integer.compare(
+                memberManagementPriority(left == null ? null : left.status(), left == null ? null : left.role()),
+                memberManagementPriority(right == null ? null : right.status(), right == null ? null : right.role()));
+        if (priorityComparison != 0) {
+            return priorityComparison;
+        }
+        int actionComparison = Long.compare(
+                toSortableDate(right == null ? null : right.actionAtIso()),
+                toSortableDate(left == null ? null : left.actionAtIso()));
+        if (actionComparison != 0) {
+            return actionComparison;
+        }
+        return normalizeId(left == null ? null : left.userId())
+                .compareTo(normalizeId(right == null ? null : right.userId()));
+    }
+
+    private int compareMembersForManagement(ActivityMember left, ActivityMember right) {
+        int priorityComparison = Integer.compare(
+                memberManagementPriority(
+                        left == null ? null : normalizeStatus(left.getStatus()),
+                        left == null ? null : resolveStoredRole(left, left.getOwnerType(), left.getOwnerId())),
+                memberManagementPriority(
+                        right == null ? null : normalizeStatus(right.getStatus()),
+                        right == null ? null : resolveStoredRole(right, right.getOwnerType(), right.getOwnerId())));
+        if (priorityComparison != 0) {
+            return priorityComparison;
+        }
+        int actionComparison = Long.compare(
+                toSortableDate(right == null ? null : right.getActionAtIso()),
+                toSortableDate(left == null ? null : left.getActionAtIso()));
+        if (actionComparison != 0) {
+            return actionComparison;
+        }
+        return normalizeId(left == null ? null : left.getUserId())
+                .compareTo(normalizeId(right == null ? null : right.getUserId()));
+    }
+
+    private int memberManagementPriority(String status, String role) {
+        if (STATUS_PENDING.equals(normalizeStatus(status))) {
+            return 0;
+        }
+        if (STATUS_ACCEPTED.equals(normalizeStatus(status)) && MANAGER_ROLES.contains(safeText(role))) {
+            return 1;
+        }
+        if (STATUS_ACCEPTED.equals(normalizeStatus(status))) {
+            return 2;
+        }
+        if (STATUS_DISQUALIFIED.equals(normalizeStatus(status))) {
+            return 3;
+        }
+        return 4;
+    }
+
+    private long memberJoiningTime(ActivityMember member) {
+        return toSortableDate(member == null ? null : member.getActionAtIso());
     }
 
     private String memberActionTelemetry(String action) {
@@ -2398,6 +2618,20 @@ public class ActivitiesMembersService {
         }
     }
 
+    private record EventAdminLeavePlan(boolean allowed, String successorAdminUserId) {
+        private static EventAdminLeavePlan denied() {
+            return new EventAdminLeavePlan(false, null);
+        }
+
+        private static EventAdminLeavePlan allowedWithoutTransfer() {
+            return new EventAdminLeavePlan(true, null);
+        }
+
+        private static EventAdminLeavePlan allowedWithTransfer(String successorAdminUserId) {
+            return new EventAdminLeavePlan(true, successorAdminUserId);
+        }
+    }
+
     public void refreshSubEventParticipationProjection(String eventId, String subEventId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -2408,6 +2642,23 @@ public class ActivitiesMembersService {
                 normalizedEventId,
                 normalizedSubEventId,
                 normalizedEventId + ":" + normalizedSubEventId);
+    }
+
+    private SubEventCounterScope subEventCounterScope(String ownerId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        int subEventSeparator = normalizedOwnerId.lastIndexOf(':');
+        if (subEventSeparator <= 0 || subEventSeparator >= normalizedOwnerId.length() - 1) {
+            return null;
+        }
+        String runtimeEventId = normalizedOwnerId.substring(0, subEventSeparator);
+        String subEventId = normalizedOwnerId.substring(subEventSeparator + 1);
+        int slotMarker = runtimeEventId.indexOf(":slot:");
+        String eventId = slotMarker > 0
+                ? runtimeEventId.substring(0, slotMarker)
+                : runtimeEventId;
+        return StringUtils.hasText(eventId) && StringUtils.hasText(subEventId)
+                ? new SubEventCounterScope(eventId, subEventId)
+                : null;
     }
 
     private void refreshEmbeddedSubEventMembers(String eventId, String subEventId, String ownerId) {
@@ -2447,6 +2698,9 @@ public class ActivitiesMembersService {
             List<ActivityEvent> savedDocuments = activityEventsRepository.saveAll(documentsToSave);
             eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
         }
+    }
+
+    private record SubEventCounterScope(String eventId, String subEventId) {
     }
 
     private boolean resolveDirectEventFull(ActivityEvent document) {

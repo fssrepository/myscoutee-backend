@@ -30,6 +30,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.UserAffinityEdge;
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventDetailDto;
@@ -200,7 +201,7 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
-    void subEventReloadUsesPersistedMemberCountsIncludingAdmin() {
+    void subEventReloadUsesEmbeddedCounterProjectionWithoutCounterQueries() {
         Users viewer = new Users();
         viewer.setId("host");
         ActivityEvent parent = event("event-1", "host", 0d);
@@ -223,23 +224,41 @@ class ActivitiesEventsServiceTest {
                 0,
                 16,
                 null)));
-        String memberOwnerId = "event-1:optional-1";
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
-                new ActivitiesMembersService.OwnerMembersSnapshot(
-                        "subEvent",
-                        memberOwnerId,
-                        List.of(),
-                        List.of("host"),
-                        List.of("invitee"),
-                        List.of(),
-                        List.of("invitee"),
-                        Set.of("host"),
-                        16);
+        parent.setSubEvents(List.of(new SubEventItem(
+                "optional-1",
+                "Optional activity",
+                "",
+                null,
+                null,
+                "",
+                "host",
+                null,
+                null,
+                null,
+                null,
+                true,
+                null,
+                0,
+                16,
+                1,
+                1,
+                2,
+                0,
+                0,
+                2,
+                0,
+                0,
+                0,
+                24,
+                0,
+                0,
+                0,
+                0,
+                0,
+                60)));
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(viewer);
         when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(parent));
-        when(activitiesMembersService.buildBatchOwnerSnapshots("subEvent", Set.of(memberOwnerId)))
-                .thenReturn(Map.of(memberOwnerId, snapshot));
 
         EventSubEventsResultDto result = service.loadSubEventsById(new EventSubEventsQueryDto(
                 "host",
@@ -255,7 +274,16 @@ class ActivitiesEventsServiceTest {
                 assertThat(slot.subEventItems()).singleElement().satisfies(item -> {
                     assertThat(item.membersAccepted()).isEqualTo(1);
                     assertThat(item.membersPending()).isEqualTo(1);
+                    assertThat(item.carsAccepted()).isEqualTo(2);
+                    assertThat(item.carsPending()).isEqualTo(2);
+                    assertThat(item.carsCapacityMin()).isZero();
+                    assertThat(item.carsCapacityMax()).isEqualTo(24);
                 }));
+        verify(activitySubEventResourcesRepository, never())
+                .findByOwnerIdInAndStatusNot(anyCollection(), anyString());
+        verify(activitiesResourcesService, never()).queryState(anyString(), anyString(), anyString());
+        verify(activitiesMembersService, never())
+                .buildBatchOwnerSnapshots(anyString(), anyCollection());
     }
 
     @Test

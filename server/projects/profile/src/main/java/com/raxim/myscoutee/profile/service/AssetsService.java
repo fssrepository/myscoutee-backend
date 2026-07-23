@@ -879,6 +879,50 @@ public class AssetsService {
         return ownerUserId;
     }
 
+    public boolean canManageScopedAssetMembers(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String userId) {
+        String normalizedAssetId = normalizeId(assetId);
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedAssetId)
+                || !StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+
+        Asset asset = findAssetByAssetId(normalizedAssetId).orElse(null);
+        if (asset == null || STATUS_TRASHED.equals(safeText(asset.getStatus()))) {
+            return false;
+        }
+        if (normalizedUserId.equals(normalizeId(asset.getOwnerUserId()))
+                || hasAcceptedAssetManagerRole(asset, normalizedUserId)) {
+            return true;
+        }
+        String normalizedAuthorizationEventId = authorizationEventId(normalizedEventId, normalizedSubEventId);
+        return safeRequests(asset.getRequests()).stream()
+                .filter(Objects::nonNull)
+                .filter(request -> "borrow".equals(normalizeAssetRequestKind(request.requestKind())))
+                .filter(request -> MEMBER_STATUS_ACCEPTED.equals(normalizeRequestStatus(request.status())))
+                .filter(request -> normalizedUserId.equals(normalizeId(request.userId())))
+                .anyMatch(request -> {
+                    AssetRequestBookingRecord booking = request.booking();
+                    if (booking == null
+                            || !normalizedSubEventId.equals(normalizeId(booking.subEventId()))) {
+                        return false;
+                    }
+                    String bookingEventId = normalizeId(booking.eventId());
+                    return normalizedEventId.equals(bookingEventId)
+                            || normalizedAuthorizationEventId.equals(authorizationEventId(
+                                    bookingEventId,
+                                    normalizedSubEventId));
+                });
+    }
+
     private boolean isRequestInScope(AssetRequestRecord request, String eventId, String subEventId) {
         AssetRequestBookingRecord booking = request == null ? null : request.booking();
         return booking != null
@@ -1316,7 +1360,9 @@ public class AssetsService {
                         safeNullableText(nextRequest.booking().timeframe()),
                         previousRequest.booking().quantity(),
                         nextRequest.booking().quantity(),
-                        previousRequest.booking().totalAmount(),
+                        assetBookingRevisionBaseline(
+                                nextRequest.booking().previousTotalAmount(),
+                                previousRequest.booking().totalAmount()),
                         nextRequest.booking().totalAmount(),
                         nextRequest.booking().currency());
             }
@@ -2687,6 +2733,9 @@ public class AssetsService {
                 safeNullableText(booking.endAtIso()),
                 nullableCount(booking.quantity()),
                 booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
+                booking.previousTotalAmount() == null || !Double.isFinite(booking.previousTotalAmount())
+                        ? null
+                        : Math.max(0d, booking.previousTotalAmount()),
                 safeNullableText(booking.currency()),
                 normalizeStrings(booking.acceptedPolicyIds()),
                 normalizeId(booking.paymentSessionId()),
@@ -2709,6 +2758,9 @@ public class AssetsService {
                 safeNullableText(booking.endAtIso()),
                 nullableCount(booking.quantity()),
                 booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
+                booking.previousTotalAmount() == null || !Double.isFinite(booking.previousTotalAmount())
+                        ? null
+                        : Math.max(0d, booking.previousTotalAmount()),
                 safeNullableText(booking.currency()),
                 normalizeStrings(booking.acceptedPolicyIds()),
                 normalizeId(booking.paymentSessionId()),
@@ -2732,6 +2784,9 @@ public class AssetsService {
                 safeNullableText(booking.endAtIso()),
                 nullableCount(booking.quantity()),
                 booking.totalAmount() == null || !Double.isFinite(booking.totalAmount()) ? null : Math.max(0d, booking.totalAmount()),
+                booking.previousTotalAmount() == null || !Double.isFinite(booking.previousTotalAmount())
+                        ? null
+                        : Math.max(0d, booking.previousTotalAmount()),
                 safeNullableText(booking.currency()),
                 normalizeStrings(booking.acceptedPolicyIds()),
                 normalizeId(booking.paymentSessionId()),
@@ -2751,10 +2806,20 @@ public class AssetsService {
                 || StringUtils.hasText(booking.endAtIso())
                 || booking.quantity() != null
                 || booking.totalAmount() != null
+                || booking.previousTotalAmount() != null
                 || StringUtils.hasText(booking.currency())
                 || !normalizeStrings(booking.acceptedPolicyIds()).isEmpty()
                 || StringUtils.hasText(booking.paymentSessionId())
                 || Boolean.TRUE.equals(booking.inventoryApplied()));
+    }
+
+    private Double assetBookingRevisionBaseline(Double preferred, Double fallback) {
+        if (preferred != null && Double.isFinite(preferred)) {
+            return Math.max(0d, preferred);
+        }
+        return fallback != null && Double.isFinite(fallback) && fallback > 0d
+                ? Math.max(0d, fallback)
+                : null;
     }
 
     private String assetRequestPaymentSessionId(AssetRequestRecord request) {

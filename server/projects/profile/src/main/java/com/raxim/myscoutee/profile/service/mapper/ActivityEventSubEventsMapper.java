@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsQueryDto;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotPage;
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventSubEventsSlotDto;
@@ -54,7 +55,9 @@ public class ActivityEventSubEventsMapper {
                 && Boolean.TRUE.equals(parentRecord.getSlotsEnabled())
                 && parentRecord.getSlotTemplates() != null
                 && !parentRecord.getSlotTemplates().isEmpty()) {
-            return templateSlotPage(normalizedParentEventId, parentRecord, query, nowMs, direction);
+            return withPersistedCounterProjection(
+                    templateSlotPage(normalizedParentEventId, parentRecord, query, nowMs, direction),
+                    parentRecord);
         }
         List<EventSubEventsSlotDto> slots = subEventsSlotSources(normalizedParentEventId, parentRecord, query, nowMs).stream()
                 .filter(source -> source.definitions() != null && !source.definitions().isEmpty())
@@ -63,7 +66,7 @@ public class ActivityEventSubEventsMapper {
                 .sorted((left, right) -> direction * Long.compare(toSortableDate(left.startAt()), toSortableDate(right.startAt())))
                 .map(this::toSlotDto)
                 .toList();
-        return slicePage(slots, query);
+        return withPersistedCounterProjection(slicePage(slots, query), parentRecord);
     }
 
     private EventSubEventsSlotPage slicePage(List<EventSubEventsSlotDto> slots, EventSubEventsQueryDto query) {
@@ -74,6 +77,94 @@ public class ActivityEventSubEventsMapper {
                 slots.subList(offset, end),
                 slots.size(),
                 end < slots.size() ? Integer.toString(end) : null);
+    }
+
+    private EventSubEventsSlotPage withPersistedCounterProjection(
+            EventSubEventsSlotPage page,
+            ActivityEvent parentRecord) {
+        if (page == null || page.slots() == null || page.slots().isEmpty()) {
+            return page;
+        }
+        Map<String, SubEventItem> countersBySubEventId = new LinkedHashMap<>();
+        for (SubEventItem item : parentRecord == null || parentRecord.getSubEvents() == null
+                ? List.<SubEventItem>of()
+                : parentRecord.getSubEvents()) {
+            String subEventId = normalizeId(item == null ? null : item.id());
+            if (StringUtils.hasText(subEventId)) {
+                countersBySubEventId.put(subEventId, item);
+            }
+        }
+        if (countersBySubEventId.isEmpty()) {
+            return page;
+        }
+        List<EventSubEventsSlotDto> slots = page.slots().stream()
+                .map(slot -> {
+                    if (slot == null || slot.subEventItems() == null) {
+                        return slot;
+                    }
+                    List<SubEventItemDto> items = slot.subEventItems().stream()
+                            .map(item -> withPersistedCounterProjection(
+                                    item,
+                                    countersBySubEventId.get(normalizeId(item == null ? null : item.id()))))
+                            .toList();
+                    return new EventSubEventsSlotDto(
+                            slot.id(),
+                            slot.parentEventId(),
+                            slot.slotSourceId(),
+                            slot.slotTemplateId(),
+                            slot.title(),
+                            slot.timeframe(),
+                            slot.startAt(),
+                            slot.endAt(),
+                            items);
+                })
+                .toList();
+        return new EventSubEventsSlotPage(slots, page.total(), page.nextCursor());
+    }
+
+    private SubEventItemDto withPersistedCounterProjection(SubEventItemDto item, SubEventItem persisted) {
+        if (item == null || persisted == null) {
+            return item;
+        }
+        return new SubEventItemDto(
+                item.id(),
+                item.name(),
+                item.description(),
+                item.startAt(),
+                item.endAt(),
+                item.location(),
+                item.createdByUserId(),
+                item.tournamentGroupCapacityMin(),
+                item.tournamentGroupCapacityMax(),
+                item.tournamentLeaderboardType(),
+                item.tournamentAdvancePerGroup(),
+                item.optional(),
+                item.pricing(),
+                item.capacityMin(),
+                item.capacityMax(),
+                persisted.membersAccepted(),
+                persisted.membersPending(),
+                persisted.carsPending(),
+                persisted.accommodationPending(),
+                persisted.suppliesPending(),
+                persisted.carsAccepted(),
+                persisted.accommodationAccepted(),
+                persisted.suppliesAccepted(),
+                persisted.carsCapacityMin(),
+                persisted.carsCapacityMax(),
+                persisted.accommodationCapacityMin(),
+                persisted.accommodationCapacityMax(),
+                persisted.suppliesCapacityMin(),
+                persisted.suppliesCapacityMax(),
+                item.slotStartOffsetMinutes(),
+                item.slotDurationMinutes(),
+                item.groupsCount(),
+                item.stageStatus(),
+                item.stageStatusReason(),
+                item.stageStatusUpdatedAt(),
+                item.stageFinalizedAt(),
+                item.stageFinalizedByUserId(),
+                item.groups());
     }
 
     private EventSubEventsSlotPage templateSlotPage(

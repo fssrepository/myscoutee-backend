@@ -53,6 +53,70 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 class AssetsServiceTest {
     @Test
+    void scopedAssetMemberManagementRequiresOwnerOrAcceptedBorrower() {
+        AssetsRepository assetsRepository = mock(AssetsRepository.class);
+        ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
+        Asset asset = assetWithEventRequest();
+        when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
+
+        AssetsService service = new AssetsService(
+                assetsRepository,
+                mock(UsersRepository.class),
+                activityMembersRepository,
+                mock(EventParticipationTicketService.class),
+                mock(PaymentService.class),
+                mock(MongoTemplate.class),
+                mock(AbsoluteAffinityService.class),
+                mock(AffinityRecomputeTaskService.class),
+                mock(AdminTelemetryService.class),
+                mock(NotificationOutboxService.class),
+                mock(ChatAttachmentLifecycleService.class),
+                mock(AccessControlService.class),
+                mock(UserActivityCountersService.class));
+
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u1")).isTrue();
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u2")).isTrue();
+
+        asset.setRequests(assetWithPendingBorrowRequest().getRequests());
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u2")).isFalse();
+
+        AssetRequestRecord acceptedRequest = assetWithEventRequest().getRequests().get(0);
+        AssetRequestBookingRecord acceptedBooking = acceptedRequest.booking();
+        asset.setRequests(List.of(new AssetRequestRecord(
+                acceptedRequest.id(),
+                acceptedRequest.userId(),
+                acceptedRequest.name(),
+                acceptedRequest.initials(),
+                acceptedRequest.gender(),
+                acceptedRequest.status(),
+                acceptedRequest.note(),
+                acceptedRequest.requestKind(),
+                acceptedRequest.requestedAtIso(),
+                new AssetRequestBookingRecord(
+                        acceptedBooking.eventId(),
+                        acceptedBooking.eventTitle(),
+                        "another-subevent",
+                        acceptedBooking.subEventTitle(),
+                        acceptedBooking.slotKey(),
+                        acceptedBooking.slotLabel(),
+                        acceptedBooking.timeframe(),
+                        acceptedBooking.startAtIso(),
+                        acceptedBooking.endAtIso(),
+                        acceptedBooking.quantity(),
+                        acceptedBooking.totalAmount(),
+                        acceptedBooking.previousTotalAmount(),
+                        acceptedBooking.currency(),
+                        acceptedBooking.acceptedPolicyIds(),
+                        acceptedBooking.paymentSessionId(),
+                        acceptedBooking.inventoryApplied()))));
+        assertThat(service.canManageScopedAssetMembers(
+                "asset-1", "event-1", "subevent-1", "u2")).isFalse();
+    }
+
+    @Test
     void syncScopedMembersOnlyChangesRequestsForTheSelectedGroup() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         UsersRepository usersRepository = mock(UsersRepository.class);
@@ -1015,7 +1079,7 @@ class AssetsServiceTest {
     }
 
     @Test
-    void upsertAppendsPaymentPriceRevisionWhenPaidBorrowQuantityChanges() {
+    void upsertUsesCalculatedPreviousTotalWhenLegacyBookingAggregateIsZero() {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
         PaymentService paymentService = mock(PaymentService.class);
@@ -1041,8 +1105,8 @@ class AssetsServiceTest {
                         "morning",
                         "2026-05-12T09:00:00Z",
                         "2026-05-12T11:00:00Z",
-                        1,
-                        12d,
+                        2,
+                        0d,
                         "USD",
                         List.of(),
                         "checkout-root",
@@ -1087,7 +1151,8 @@ class AssetsServiceTest {
                         "morning",
                         "2026-05-12T09:00:00Z",
                         "2026-05-12T11:00:00Z",
-                        2,
+                        3,
+                        36d,
                         24d,
                         "USD",
                         List.of(),
@@ -1105,10 +1170,10 @@ class AssetsServiceTest {
                 "asset-1",
                 "Camp Kit",
                 "morning",
-                1,
                 2,
-                12d,
+                3,
                 24d,
+                36d,
                 "USD");
     }
 

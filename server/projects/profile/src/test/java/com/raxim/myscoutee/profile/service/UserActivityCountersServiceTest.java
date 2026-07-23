@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.EventFeedbackState;
@@ -100,6 +101,34 @@ class UserActivityCountersServiceTest {
         Document fields = updatedFields();
         assertThat(fields.getInteger("activities.tickets")).isEqualTo(2);
         assertThat(fields.getInteger("activities.asset.tickets")).isEqualTo(2);
+    }
+
+    @Test
+    void refreshEventCountersPersistsGlobalTrashAndEventsLeftByTheUser() {
+        Users user = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        ActivityEvent globalTrash = event("event-trash", "viewer", "T");
+        globalTrash.setOwnerUserId("viewer");
+        ActivityEvent leftEvent = event("event-left", "new-owner", "A");
+        ActivityMember deletedMembership = new ActivityMember();
+        deletedMembership.setOwnerType("event");
+        deletedMembership.setOwnerId("event-left");
+        deletedMembership.setUserId("viewer");
+        deletedMembership.setStatus("deleted");
+
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user));
+        when(activityEventsRepository.findDirectOwnerEvents("viewer")).thenReturn(List.of(globalTrash));
+        when(activityMembersRepository.findByOwnerTypeAndUserId("event", "viewer"))
+                .thenReturn(List.of(deletedMembership));
+        when(activityEventsRepository.findBySourceIdIn(any()))
+                .thenReturn(List.of(globalTrash, leftEvent));
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.trash")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.event.all")).isZero();
+        assertThat(fields.getInteger("activities.events")).isZero();
+        assertThat(fields.getInteger("activities.hosting")).isZero();
     }
 
     @Test

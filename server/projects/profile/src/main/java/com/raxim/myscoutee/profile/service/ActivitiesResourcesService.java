@@ -16,8 +16,6 @@ import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -87,27 +85,6 @@ public class ActivitiesResourcesService {
         return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void reconcilePersistedEventSubEventResourceProjections() {
-        Set<String> scopes = new LinkedHashSet<>();
-        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findAll()) {
-            if (record == null || STATUS_DELETED.equals(safeText(record.getStatus()))) {
-                continue;
-            }
-            String ownerId = normalizeId(record.getOwnerId());
-            String subEventId = normalizeId(record.getSubEventId());
-            if (isDirectEventResourceScope(ownerId) && StringUtils.hasText(subEventId)) {
-                scopes.add(ownerId + "\n" + subEventId);
-            }
-        }
-        for (String scope : scopes) {
-            String[] parts = scope.split("\n", 2);
-            if (parts.length == 2) {
-                refreshEventSubEventResourceProjection(parts[0], parts[1]);
-            }
-        }
-    }
-
     public void refreshEventSubEventResourceProjection(String ownerId, String subEventId) {
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedSubEventId = normalizeId(subEventId);
@@ -119,15 +96,22 @@ public class ActivitiesResourcesService {
                         normalizedOwnerId,
                         normalizedSubEventId,
                         STATUS_DELETED);
-        Map<String, SubEventResourceMetricDto> aggregate = aggregateResourceMetrics(records);
-        SubEventResourceMetricDto transport = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_TRANSPORT));
-        SubEventResourceMetricDto accommodation = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_ACCOMMODATION));
-        SubEventResourceMetricDto supplies = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_SUPPLIES));
         List<ActivityEvent> changed = new ArrayList<>();
         for (ActivityEvent document : activityEventsRepository.findBySourceId(normalizedOwnerId)) {
             if (document == null || document.getSubEvents() == null) {
                 continue;
             }
+            String projectionUserId = firstNonBlank(
+                    normalizeId(document.getOwnerUserId()),
+                    normalizeId(document.getCreatorUserId()));
+            Map<String, SubEventResourceMetricDto> aggregate = aggregateResourceMetrics(
+                    records.stream()
+                            .filter(Objects::nonNull)
+                            .filter(record -> projectionUserId.equals(normalizeId(record.getAssetOwnerUserId())))
+                            .toList());
+            SubEventResourceMetricDto transport = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_TRANSPORT));
+            SubEventResourceMetricDto accommodation = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_ACCOMMODATION));
+            SubEventResourceMetricDto supplies = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_SUPPLIES));
             boolean updated = false;
             List<SubEventItem> nextItems = new ArrayList<>();
             for (SubEventItem item : document.getSubEvents()) {
@@ -325,6 +309,7 @@ public class ActivitiesResourcesService {
                 metricsByType,
                 assetOwnerUserId,
                 nowIso);
+        refreshEventSubEventResourceProjection(ownerId, subEventId);
         refreshEventParticipationProjection(ownerId);
         return toStateDto(filtered, eligibleAssets, groupMetricsByType);
     }
@@ -378,6 +363,13 @@ public class ActivitiesResourcesService {
         }
         if (!changedRecords.isEmpty()) {
             activitySubEventResourcesRepository.saveAll(changedRecords);
+            changedRecords.stream()
+                    .map(ActivitySubEventResource::getSubEventId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .distinct()
+                    .forEach(subEventId ->
+                            refreshEventSubEventResourceProjection(normalizedOwnerId, subEventId));
             refreshEventParticipationProjection(normalizedOwnerId);
         }
         return removedAssignedAssetIds;
@@ -830,9 +822,10 @@ public class ActivitiesResourcesService {
             SubEventAssignedAssetSettingsRecord settings = settingsByAssetId.get(assetId);
             AssetDetailDto detail = eligibleAssets == null ? null : eligibleAssets.get(assetId);
             capacityMin += normalizeCount(settings == null ? null : settings.capacityMin());
+            int assignedQuantity = Math.max(1, normalizeCount(settings == null ? null : settings.quantity()));
             capacityMax += detail != null && detail.capacityTotal() != null
-                    ? normalizeCount(detail.capacityTotal())
-                    : normalizeCount(settings == null ? null : settings.capacityMax());
+                    ? normalizeCount(detail.capacityTotal()) * assignedQuantity
+                    : normalizeCount(settings == null ? null : settings.capacityMax()) * assignedQuantity;
             if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
                 accepted += supplyContributionQuantity(record, assetId);
                 continue;
