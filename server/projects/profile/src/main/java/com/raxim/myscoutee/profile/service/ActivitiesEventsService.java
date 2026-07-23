@@ -343,6 +343,18 @@ public class ActivitiesEventsService {
             ViewerContext viewer,
             boolean includeEdgeWeights,
             boolean includeDeletedMemberships) {
+        return buildUserListCardQueryContext(
+                viewer,
+                includeEdgeWeights,
+                includeDeletedMemberships,
+                true);
+    }
+
+    private EventQueryContext buildUserListCardQueryContext(
+            ViewerContext viewer,
+            boolean includeEdgeWeights,
+            boolean includeDeletedMemberships,
+            boolean includePendingPayments) {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
             return emptyEventQueryContext();
         }
@@ -369,7 +381,9 @@ public class ActivitiesEventsService {
                 Map.of(),
                 trackedStatusesBySourceId.keySet(),
                 trackedStatusesBySourceId,
-                pendingPaymentEventSourceIds(viewer.userId(), scopedRecords),
+                includePendingPayments
+                        ? pendingPaymentEventSourceIds(viewer.userId(), scopedRecords)
+                        : Set.of(),
                 includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedRecords) : Map.of());
     }
 
@@ -496,9 +510,14 @@ public class ActivitiesEventsService {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
-        return ticketedSourceIds.isEmpty()
+        if (ticketedSourceIds.isEmpty()) {
+            return Set.of();
+        }
+        Set<String> pendingSourceIds =
+                paymentService.findPendingEventJoinSourceIds(normalizedUserId, ticketedSourceIds);
+        return pendingSourceIds == null || pendingSourceIds.isEmpty()
                 ? Set.of()
-                : paymentService.findPendingEventJoinSourceIds(normalizedUserId, ticketedSourceIds);
+                : Set.copyOf(pendingSourceIds);
     }
 
     private Set<String> visibleActivitySourceIds(Map<String, String> statusesBySourceId) {
@@ -734,7 +753,7 @@ public class ActivitiesEventsService {
         }
         EventsFilterRequestDto request = new EventsFilterRequestDto(
                 requestedUserId, "trash", "all", null, null, null, null, null, null, null, null);
-        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true), () ->
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true, false), () ->
                 queryFilteredRecords(viewer, request).stream()
                         .map(record -> toEventDto(record, viewer))
                         .filter(Objects::nonNull)
@@ -749,7 +768,7 @@ public class ActivitiesEventsService {
         }
         EventsFilterRequestDto request = new EventsFilterRequestDto(
                 requestedUserId, "trash", "all", null, null, null, requestedLimit, cursor, null, null, null);
-        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true), () -> {
+        return withEventQueryContext(buildUserListCardQueryContext(viewer, false, true, false), () -> {
             int limit = normalizePageLimit(requestedLimit, 12);
             List<ActivityEvent> sorted = sortEventRecordsByStart(queryFilteredRecords(viewer, request));
             int startIndex = resolveRecordCursorStartIndex(sorted, cursor);
@@ -796,7 +815,11 @@ public class ActivitiesEventsService {
         String filter = normalizeActivityListFilter(request == null ? null : request.filter());
         String hostingPublicationFilter = normalizeHostingPublicationFilter(request == null ? null : request.hostingPublicationFilter());
         if ("trash".equals(filter)) {
-            EventQueryContext context = buildUserListCardQueryContext(viewer, needsActivitiesAffinityEdges(request), true);
+            EventQueryContext context = buildUserListCardQueryContext(
+                    viewer,
+                    needsActivitiesAffinityEdges(request),
+                    true,
+                    false);
             return withEventQueryContext(context, () ->
                     pageEventListRecords(viewer, queryFilteredRecords(viewer, request), request));
         }
