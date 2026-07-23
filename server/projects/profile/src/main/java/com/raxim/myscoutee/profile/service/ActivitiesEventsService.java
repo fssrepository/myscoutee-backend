@@ -269,6 +269,7 @@ public class ActivitiesEventsService {
                 buildMemberSnapshotMap(scopedEvents),
                 trackedSourceIds,
                 trackedStatusesBySourceId,
+                pendingPaymentEventSourceIds(viewer.userId(), scopedEvents),
                 includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of());
     }
 
@@ -283,6 +284,7 @@ public class ActivitiesEventsService {
                 buildMemberSnapshotMap(directOwnerRecords),
                 activitiesMembersService.findTrackedEventSourceIdsForUser(viewer.userId()),
                 trackedEventMembershipStatuses(viewer.userId()),
+                Set.of(),
                 Map.of());
     }
 
@@ -300,6 +302,7 @@ public class ActivitiesEventsService {
                 snapshotsBySourceId,
                 trackedSourceIds,
                 trackedStatusesBySourceId,
+                pendingPaymentEventSourceIds(viewer.userId(), preferredRecords),
                 Map.of());
         List<ActivityEvent> attendingRecords = withEventQueryContext(snapshotContext, () -> preferredRecords.stream()
                 .filter(record -> !viewer.userId().equals(normalizeId(record.getCreatorUserId())))
@@ -313,6 +316,7 @@ public class ActivitiesEventsService {
                 snapshotsBySourceId,
                 trackedSourceIds,
                 trackedStatusesBySourceId,
+                snapshotContext.pendingPaymentEventSourceIds(),
                 Map.of());
     }
 
@@ -321,13 +325,13 @@ public class ActivitiesEventsService {
             return emptyEventQueryContext();
         }
         List<ActivityEvent> directOwnerRecords = queryDirectOwnerListCardRecords(viewer.userId());
-        Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
         return new EventQueryContext(
                 directOwnerRecords,
                 directOwnerRecords,
-                buildMemberSnapshotMap(directOwnerRecords),
-                trackedStatusesBySourceId.keySet(),
-                trackedStatusesBySourceId,
+                Map.of(),
+                Set.of(),
+                Map.of(),
+                Set.of(),
                 Map.of());
     }
 
@@ -362,9 +366,10 @@ public class ActivitiesEventsService {
         return new EventQueryContext(
                 scopedRecords,
                 scopedRecords,
-                buildMemberSnapshotMap(scopedRecords),
+                Map.of(),
                 trackedStatusesBySourceId.keySet(),
                 trackedStatusesBySourceId,
+                pendingPaymentEventSourceIds(viewer.userId(), scopedRecords),
                 includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedRecords) : Map.of());
     }
 
@@ -374,13 +379,13 @@ public class ActivitiesEventsService {
         }
         Map<String, String> trackedStatusesBySourceId = trackedEventMembershipStatuses(viewer.userId());
         List<ActivityEvent> preferredRecords = computePreferredEventRecords(loadEventListCardDocumentsBySourceIds(trackedStatusesBySourceId.keySet()));
-        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId = buildMemberSnapshotMap(preferredRecords);
         EventQueryContext context = new EventQueryContext(
                 preferredRecords,
                 preferredRecords,
-                snapshotsBySourceId,
+                Map.of(),
                 trackedStatusesBySourceId.keySet(),
                 trackedStatusesBySourceId,
+                pendingPaymentEventSourceIds(viewer.userId(), preferredRecords),
                 Map.of());
         List<ActivityEvent> attendingRecords = withEventQueryContext(context, () -> preferredRecords.stream()
                 .filter(record -> !viewer.userId().equals(normalizeId(record.getCreatorUserId())))
@@ -391,14 +396,15 @@ public class ActivitiesEventsService {
         return new EventQueryContext(
                 attendingRecords,
                 attendingRecords,
-                snapshotsBySourceId,
+                Map.of(),
                 trackedStatusesBySourceId.keySet(),
                 trackedStatusesBySourceId,
+                context.pendingPaymentEventSourceIds(),
                 Map.of());
     }
 
     private EventQueryContext emptyEventQueryContext() {
-        return new EventQueryContext(List.of(), List.of(), new LinkedHashMap<>(), Set.of(), Map.of(), Map.of());
+        return new EventQueryContext(List.of(), List.of(), Map.of(), Set.of(), Map.of(), Set.of(), Map.of());
     }
 
     private <T> T withEventQueryContext(EventQueryContext context, Supplier<T> action) {
@@ -449,6 +455,7 @@ public class ActivitiesEventsService {
                 new LinkedHashMap<>(),
                 trackedSourceIds,
                 trackedStatusesBySourceId,
+                Set.of(),
                 includeEdgeWeights ? queryEventOwnerEdgeWeights(viewer, scopedEvents) : Map.of());
     }
 
@@ -474,6 +481,24 @@ public class ActivitiesEventsService {
             }
         }
         return statusesBySourceId;
+    }
+
+    private Set<String> pendingPaymentEventSourceIds(String userId, Collection<ActivityEvent> records) {
+        String normalizedUserId = normalizeId(userId);
+        if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
+            return Set.of();
+        }
+        List<String> ticketedSourceIds = records.stream()
+                .filter(Objects::nonNull)
+                .filter(record -> Boolean.TRUE.equals(record.getTicketing()))
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        return ticketedSourceIds.isEmpty()
+                ? Set.of()
+                : paymentService.findPendingEventJoinSourceIds(normalizedUserId, ticketedSourceIds);
     }
 
     private Set<String> visibleActivitySourceIds(Map<String, String> statusesBySourceId) {
@@ -4012,21 +4037,21 @@ public class ActivitiesEventsService {
         List<ActivityEvent> activeEventItems = memberEventItems.stream()
                 .filter(record -> hasAcceptedParticipation(record, viewer.userId()) && !isPendingReviewStatus(record))
                 .toList();
-        List<ActivityEvent> invitationItems = queryInvitationRecords(viewer);
-        List<ActivityEvent> myEventItems = queryMyEventRecords(viewer, userItems);
-        List<ActivityEvent> draftItems = myEventItems.stream()
-                .filter(record -> Boolean.FALSE.equals(record.getPublished()))
-                .toList();
-        List<ActivityEvent> reviewItems = myEventItems.stream()
-                .filter(this::isPendingReviewStatus)
-                .toList();
 
         return switch (filter) {
-            case "all" -> concat(concat(activeEventItems, pendingEventItems), concat(invitationItems, myEventItems));
-            case "pending" -> concat(pendingEventItems, reviewItems);
-            case "invitations" -> invitationItems;
-            case "my-events" -> "drafts".equals(hostingPublicationFilter) ? draftItems : myEventItems;
-            case "drafts" -> draftItems;
+            case "all" -> {
+                List<ActivityEvent> directOwnerRecords = currentDirectOwnerRecords(viewer.userId());
+                yield concat(
+                        concat(activeEventItems, pendingEventItems),
+                        concat(
+                                queryInvitationRecords(viewer, directOwnerRecords),
+                                queryMyEventRecords(viewer, directOwnerRecords)));
+            }
+            case "pending" -> concat(
+                    pendingEventItems,
+                    queryMyEventRecords(viewer, currentDirectOwnerRecords(viewer.userId())).stream()
+                            .filter(this::isPendingReviewStatus)
+                            .toList());
             case "trash" -> userItems.stream()
                     .filter(record -> isTrashStatus(record) || hasDeletedMembership(record, viewer.userId()))
                     .toList();
@@ -4124,6 +4149,7 @@ public class ActivitiesEventsService {
                 resolveHydratedPageSnapshots(current, hydratedRecords),
                 current == null ? Set.of() : current.trackedEventSourceIds(),
                 current == null ? Map.of() : current.trackedEventStatusesBySourceId(),
+                current == null ? Set.of() : current.pendingPaymentEventSourceIds(),
                 current == null ? Map.of() : current.edgeWeightsByPairKey());
         Map<String, String> checkoutResultStatesBySourceId = checkoutResultStatesBySourceId(
                 viewer == null ? null : viewer.userId(),
@@ -4141,40 +4167,13 @@ public class ActivitiesEventsService {
         if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
             return Map.of();
         }
-        Map<String, String> result = new LinkedHashMap<>();
-        for (ActivityEvent record : records) {
-            String sourceId = normalizeId(record == null ? null : record.getSourceId());
-            if (!StringUtils.hasText(sourceId) || result.containsKey(sourceId)) {
-                continue;
-            }
-            String resultState = checkoutBasketResultState(eventCheckoutBasketService.loadBasketByEvent(normalizedUserId, sourceId));
-            if (StringUtils.hasText(resultState)) {
-                result.put(sourceId, resultState);
-            }
-        }
-        return result.isEmpty() ? Map.of() : result;
-    }
-
-    private String checkoutBasketResultState(EventCheckoutBasketDto basket) {
-        List<String> resultStates = basket == null || basket.items() == null
-                ? List.of()
-                : basket.items().stream()
-                        .map(item -> safeText(item == null ? null : item.resultState()))
-                        .map(value -> StringUtils.hasText(value) ? value : "pending")
-                        .toList();
-        if (resultStates.isEmpty()) {
-            return null;
-        }
-        if (resultStates.stream().anyMatch("failed"::equals)) {
-            return "failed";
-        }
-        if (resultStates.stream().allMatch("deleted"::equals)) {
-            return "deleted";
-        }
-        if (resultStates.stream().allMatch(value -> "deleted".equals(value) || "succeeded".equals(value))) {
-            return "succeeded";
-        }
-        return "pending";
+        List<String> sourceIds = records.stream()
+                .map(ActivityEvent::getSourceId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        return eventCheckoutBasketService.loadResultStatesByEvent(normalizedUserId, sourceIds);
     }
 
     private Map<String, ActivitiesMembersService.OwnerMembersSnapshot> resolveHydratedPageSnapshots(
@@ -4315,20 +4314,21 @@ public class ActivitiesEventsService {
         }
 
         List<ActivityEvent> directOwnerRecords = currentDirectOwnerRecords(viewer.userId());
-        List<ActivityEvent> invitations = queryInvitationRecords(viewer);
-        List<ActivityEvent> myEvents = queryMyEventRecords(viewer, directOwnerRecords);
-        List<ActivityEvent> drafts = myEvents.stream()
-                .filter(record -> Boolean.FALSE.equals(record.getPublished()))
-                .toList();
-        List<ActivityEvent> reviewItems = myEvents.stream()
-                .filter(this::isPendingReviewStatus)
-                .toList();
 
         return switch (filter) {
-            case "invitations" -> invitations;
-            case "my-events" -> "drafts".equals(hostingPublicationFilter) ? drafts : myEvents;
-            case "drafts" -> drafts;
-            case "pending" -> reviewItems;
+            case "invitations" -> queryInvitationRecords(viewer, directOwnerRecords);
+            case "my-events" -> {
+                List<ActivityEvent> myEvents = queryMyEventRecords(viewer, directOwnerRecords);
+                yield "drafts".equals(hostingPublicationFilter)
+                        ? myEvents.stream().filter(record -> Boolean.FALSE.equals(record.getPublished())).toList()
+                        : myEvents;
+            }
+            case "drafts" -> queryMyEventRecords(viewer, directOwnerRecords).stream()
+                    .filter(record -> Boolean.FALSE.equals(record.getPublished()))
+                    .toList();
+            case "pending" -> queryMyEventRecords(viewer, directOwnerRecords).stream()
+                    .filter(this::isPendingReviewStatus)
+                    .toList();
             case "trash" -> directOwnerRecords.stream()
                     .filter(this::isTrashStatus)
                     .sorted(directRecordComparator())
@@ -4423,11 +4423,13 @@ public class ActivitiesEventsService {
                 .include("mode");
     }
 
-    private List<ActivityEvent> queryInvitationRecords(ViewerContext viewer) {
+    private List<ActivityEvent> queryInvitationRecords(
+            ViewerContext viewer,
+            List<ActivityEvent> directOwnerRecords) {
         if (viewer == null || !StringUtils.hasText(viewer.userId())) {
             return List.of();
         }
-        Set<String> scopedTrashSourceIds = activityEventsRepository.findDirectOwnerEvents(viewer.userId()).stream()
+        Set<String> scopedTrashSourceIds = (directOwnerRecords == null ? List.<ActivityEvent>of() : directOwnerRecords).stream()
                 .filter(this::isTrashStatus)
                 .map(ActivityEvent::getSourceId)
                 .map(this::normalizeId)
@@ -4445,7 +4447,7 @@ public class ActivitiesEventsService {
             }
             ActivityEvent projection = cloneDocument(record);
             projection.setOwnerUserId(viewer.userId());
-            projection.setAdmins(resolveAdminUserIds(sourceId, projection.getCreatorUserId()));
+            projection.setAdmins(resolveAdminUserIds(record));
             projection.normalizeLifecycleState();
             invitationRecordsBySourceId.put(sourceId, projection);
         }
@@ -4477,7 +4479,7 @@ public class ActivitiesEventsService {
         }
         projection.setOwnerUserId(viewerUserId);
         projection.setStatus(sourceStatus);
-        projection.setAdmins(resolveAdminUserIds(source.getSourceId(), source.getCreatorUserId()));
+        projection.setAdmins(resolveAdminUserIds(source));
         projection.normalizeLifecycleState();
         return projection;
     }
@@ -4538,8 +4540,10 @@ public class ActivitiesEventsService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(sourceId)) {
             return false;
         }
-        if (MEMBER_STATUS_DELETED.equals(trackedEventMembershipStatus(record))) {
-            return true;
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        if (ctx != null) {
+            return MEMBER_STATUS_DELETED.equals(
+                    safeText(ctx.trackedEventStatusesBySourceId().get(sourceId)));
         }
         return MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, normalizedUserId));
     }
@@ -4559,7 +4563,7 @@ public class ActivitiesEventsService {
     private ActivityEvent buildMembershipProjection(String ownerUserId, ActivityEvent record) {
         ActivityEvent projection = cloneDocument(record);
         projection.setOwnerUserId(ownerUserId);
-        projection.setAdmins(resolveAdminUserIds(projection.getSourceId(), projection.getCreatorUserId()));
+        projection.setAdmins(resolveAdminUserIds(record));
         projection.normalizeLifecycleState();
         return projection;
     }
@@ -5426,13 +5430,11 @@ public class ActivitiesEventsService {
         }
         EventQueryContext ctx = ACTIVE_CONTEXT.get();
         String sourceId = normalizeId(record.getSourceId());
-        if (MEMBER_STATUS_DELETED.equals(eventMembershipStatusForUser(sourceId, userId))) {
-            return ctx != null
-                    && MEMBER_STATUS_DELETED.equals(
-                            safeText(ctx.trackedEventStatusesBySourceId().get(sourceId)));
-        }
-        if (ctx != null && StringUtils.hasText(sourceId) && ctx.trackedEventSourceIds().contains(sourceId)) {
-            return true;
+        if (ctx != null && StringUtils.hasText(sourceId)) {
+            String status = safeText(ctx.trackedEventStatusesBySourceId().get(sourceId));
+            return MEMBER_STATUS_ACCEPTED.equals(status)
+                    || MEMBER_STATUS_PENDING.equals(status)
+                    || MEMBER_STATUS_INVITED.equals(status);
         }
         return resolveAcceptedMemberUserIds(record).contains(userId)
                 || resolvePendingRequestMemberUserIds(record).contains(userId)
@@ -5497,7 +5499,12 @@ public class ActivitiesEventsService {
         if (record == null || !StringUtils.hasText(userId) || !Boolean.TRUE.equals(record.getTicketing())) {
             return false;
         }
-        return paymentService.hasPendingEventJoin(userId, normalizeId(record.getSourceId()));
+        String sourceId = normalizeId(record.getSourceId());
+        EventQueryContext ctx = ACTIVE_CONTEXT.get();
+        if (ctx != null) {
+            return ctx.pendingPaymentEventSourceIds().contains(sourceId);
+        }
+        return paymentService.hasPendingEventJoin(userId, sourceId);
     }
 
     private boolean hasTopic(ActivityEvent record, String topic) {
@@ -5682,6 +5689,22 @@ public class ActivitiesEventsService {
         String normalizedCreatorUserId = normalizeId(creatorUserId);
         if (StringUtils.hasText(normalizedCreatorUserId)) {
             adminUserIds.add(normalizedCreatorUserId);
+        }
+        return new ArrayList<>(adminUserIds);
+    }
+
+    private List<String> resolveAdminUserIds(ActivityEvent record) {
+        LinkedHashSet<String> adminUserIds = new LinkedHashSet<>();
+        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
+                resolveSnapshot(normalizeId(record == null ? null : record.getSourceId()));
+        if (snapshot != null) {
+            adminUserIds.addAll(snapshot.adminUserIds());
+        } else {
+            adminUserIds.addAll(normalizeIds(record == null ? null : record.getAdmins()));
+        }
+        String creatorUserId = normalizeId(record == null ? null : record.getCreatorUserId());
+        if (StringUtils.hasText(creatorUserId)) {
+            adminUserIds.add(creatorUserId);
         }
         return new ArrayList<>(adminUserIds);
     }
@@ -6731,6 +6754,7 @@ public class ActivitiesEventsService {
             Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsBySourceId,
             Set<String> trackedEventSourceIds,
             Map<String, String> trackedEventStatusesBySourceId,
+            Set<String> pendingPaymentEventSourceIds,
             Map<String, Double> edgeWeightsByPairKey) {
     }
 }

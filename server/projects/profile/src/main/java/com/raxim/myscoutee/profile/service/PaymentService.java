@@ -4,11 +4,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -337,6 +340,39 @@ public class PaymentService {
         return findLatestOpenEventPayment(userId, sourceId)
                 .map(payment -> !BOOKING_STATUS_JOINED.equals(safeText(payment.getBookingStatus())))
                 .orElse(false);
+    }
+
+    public Set<String> findPendingEventJoinSourceIds(String userId, Collection<String> sourceIds) {
+        String normalizedUserId = normalizeId(userId);
+        List<String> normalizedSourceIds = sourceIds == null
+                ? List.of()
+                : sourceIds.stream()
+                        .map(this::normalizeId)
+                        .filter(this::hasText)
+                        .distinct()
+                        .toList();
+        if (!hasText(normalizedUserId) || normalizedSourceIds.isEmpty()) {
+            return Set.of();
+        }
+        Map<String, Payment> latestOpenBySourceId = new LinkedHashMap<>();
+        for (Payment payment : paymentsRepository.findByUserIdAndSourceIdIn(normalizedUserId, normalizedSourceIds)) {
+            String sourceId = normalizeId(payment == null ? null : payment.getSourceId());
+            if (!hasText(sourceId)
+                    || BOOKING_STATUS_CANCELLED.equals(safeText(payment.getBookingStatus()))
+                    || REFUND_STATUS_FULL.equals(safeText(payment.getRefundStatus()))) {
+                continue;
+            }
+            Payment current = latestOpenBySourceId.get(sourceId);
+            if (current == null || sortableIso(
+                    hasText(payment.getJoinedAtIso()) ? payment.getJoinedAtIso() : payment.getCreatedDate())
+                    > sortableIso(hasText(current.getJoinedAtIso()) ? current.getJoinedAtIso() : current.getCreatedDate())) {
+                latestOpenBySourceId.put(sourceId, payment);
+            }
+        }
+        return latestOpenBySourceId.entrySet().stream()
+                .filter(entry -> !BOOKING_STATUS_JOINED.equals(safeText(entry.getValue().getBookingStatus())))
+                .map(Map.Entry::getKey)
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
     }
 
     public boolean hasJoinedEventJoin(String userId, String sourceId) {
