@@ -1,5 +1,3 @@
-myscoutee
----------
 cloudflare - caching images (so won't need to use google cloud bandwith)
 
 create facebook campaign

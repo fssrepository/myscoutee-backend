@@ -724,6 +724,77 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void eventOwnerCannotRemoveTheirOwnParticipation() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenReturn(List.of(owner));
+
+        var result = service.removeEventParticipation("event-1", "owner", "owner");
+
+        assertThat(result.acceptedMemberUserIds()).contains("owner");
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void eventOwnerCanRemoveAPromotedAdminEvenWhenNormalRemovalPolicyProtectsAdmins() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember admin = member("admin-sync", "event-1", "promoted-admin", "Admin", "accepted");
+        AtomicReference<ActivityMember> storedAdmin = new AtomicReference<>(admin);
+        when(homeUserProfileService.resolveSelectedUserId("owner")).thenReturn("owner");
+        when(accessControlService.canRemoveEventMember("event-1", "owner", "promoted-admin")).thenReturn(false);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "promoted-admin")).thenReturn(Optional.of(admin));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedAdmin.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedAdmin.set(saved);
+            return saved;
+        });
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "owner",
+                "promoted-admin",
+                "remove",
+                null));
+
+        assertThat(storedAdmin.get().getStatus()).isEqualTo("deleted");
+        verify(activityMembersRepository).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void promotedAdminCanStepDownWithoutLeavingTheEvent() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember admin = member("admin-sync", "event-1", "promoted-admin", "Admin", "accepted");
+        AtomicReference<ActivityMember> storedAdmin = new AtomicReference<>(admin);
+        when(homeUserProfileService.resolveSelectedUserId("promoted-admin")).thenReturn("promoted-admin");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
+                "event", "event-1", "promoted-admin")).thenReturn(Optional.of(admin));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedAdmin.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedAdmin.set(saved);
+            return saved;
+        });
+
+        service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "promoted-admin",
+                "promoted-admin",
+                "step-down-admin",
+                null));
+
+        assertThat(storedAdmin.get().getStatus()).isEqualTo("accepted");
+        assertThat(storedAdmin.get().getRole()).isEqualTo("Member");
+    }
+
+    @Test
     void inviteUsersReturnsEmptyWhenPolicyDenies() {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(false);

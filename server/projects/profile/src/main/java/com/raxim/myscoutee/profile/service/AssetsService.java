@@ -18,6 +18,8 @@ import java.util.UUID;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -93,6 +95,7 @@ public class AssetsService {
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
+    private ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider;
 
     public AssetsService(
             AssetsRepository assetsRepository,
@@ -121,6 +124,12 @@ public class AssetsService {
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
+    }
+
+    @Autowired
+    void setActivitiesResourcesServiceProvider(
+            ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider) {
+        this.activitiesResourcesServiceProvider = activitiesResourcesServiceProvider;
     }
 
     public List<AssetDto> queryAssets(String userId) {
@@ -1090,6 +1099,41 @@ public class AssetsService {
                     .and("assetId").is(assetId)
                     .and("_id").in(removedProjectionIds));
             mongoTemplate.remove(staleQuery, AssetRequest.class);
+        }
+        refreshEventSubEventResourceProjections(existing, saved);
+    }
+
+    private void refreshEventSubEventResourceProjections(Asset existing, Asset saved) {
+        if (activitiesResourcesServiceProvider == null) {
+            return;
+        }
+        ActivitiesResourcesService activitiesResourcesService =
+                activitiesResourcesServiceProvider.getIfAvailable();
+        if (activitiesResourcesService == null) {
+            return;
+        }
+        Set<String> scopes = new LinkedHashSet<>();
+        collectEventSubEventResourceScopes(existing, scopes);
+        collectEventSubEventResourceScopes(saved, scopes);
+        for (String scope : scopes) {
+            String[] parts = scope.split("\n", 2);
+            if (parts.length == 2) {
+                activitiesResourcesService.refreshEventSubEventResourceProjection(parts[0], parts[1]);
+            }
+        }
+    }
+
+    private void collectEventSubEventResourceScopes(Asset asset, Set<String> scopes) {
+        if (asset == null || scopes == null) {
+            return;
+        }
+        for (AssetRequestRecord request : safeRequests(asset.getRequests())) {
+            AssetRequestBookingRecord booking = request == null ? null : request.booking();
+            String eventId = normalizeId(booking == null ? null : booking.eventId());
+            String subEventId = normalizeId(booking == null ? null : booking.subEventId());
+            if (StringUtils.hasText(eventId) && StringUtils.hasText(subEventId)) {
+                scopes.add(eventId + "\n" + subEventId);
+            }
         }
     }
 

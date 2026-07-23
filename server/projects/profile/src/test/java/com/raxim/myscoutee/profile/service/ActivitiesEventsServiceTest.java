@@ -81,6 +81,8 @@ class ActivitiesEventsServiceTest {
     @Mock
     private ActivitiesMembersService activitiesMembersService;
     @Mock
+    private ActivitiesResourcesService activitiesResourcesService;
+    @Mock
     private EventParticipationTicketService eventParticipationTicketService;
     @Mock
     private PaymentService paymentService;
@@ -131,6 +133,7 @@ class ActivitiesEventsServiceTest {
                 userAffinityEdgesRepository,
                 homeUserProfileService,
                 activitiesMembersService,
+                activitiesResourcesService,
                 eventParticipationTicketService,
                 paymentService,
                 eventCheckoutBasketService,

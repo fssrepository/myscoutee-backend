@@ -16,15 +16,19 @@ import java.util.UUID;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.AssetCatalog;
+import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.profile.data.document.SubEventItem;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.profile.data.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
@@ -37,6 +41,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyCont
 import com.raxim.myscoutee.profile.data.dto.assets.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventStageRuntimeRepository;
+import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.mapper.ActivitySubEventResourceMapper;
 
@@ -47,24 +52,30 @@ public class ActivitiesResourcesService {
 
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    private final ActivityEventsRepository activityEventsRepository;
     private final AssetsService assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     private final AccessControlService accessControlService;
     private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
+    private final EventSlotReadModelService eventSlotReadModelService;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
+            ActivityEventsRepository activityEventsRepository,
             AssetsService assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
             AccessControlService accessControlService,
-            ActivitySubEventResourceMapper activitySubEventResourceMapper) {
+            ActivitySubEventResourceMapper activitySubEventResourceMapper,
+            EventSlotReadModelService eventSlotReadModelService) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
+        this.activityEventsRepository = activityEventsRepository;
         this.assetsService = assetsService;
         this.activitiesMembersServiceProvider = activitiesMembersServiceProvider;
         this.accessControlService = accessControlService;
         this.activitySubEventResourceMapper = activitySubEventResourceMapper;
+        this.eventSlotReadModelService = eventSlotReadModelService;
     }
 
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
@@ -74,6 +85,134 @@ public class ActivitiesResourcesService {
         }
         Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
         return toStateDto(filterToAssignableAssets(record, eligibleAssets.keySet()), eligibleAssets);
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void reconcilePersistedEventSubEventResourceProjections() {
+        Set<String> scopes = new LinkedHashSet<>();
+        for (ActivitySubEventResource record : activitySubEventResourcesRepository.findAll()) {
+            if (record == null || STATUS_DELETED.equals(safeText(record.getStatus()))) {
+                continue;
+            }
+            String ownerId = normalizeId(record.getOwnerId());
+            String subEventId = normalizeId(record.getSubEventId());
+            if (isDirectEventResourceScope(ownerId) && StringUtils.hasText(subEventId)) {
+                scopes.add(ownerId + "\n" + subEventId);
+            }
+        }
+        for (String scope : scopes) {
+            String[] parts = scope.split("\n", 2);
+            if (parts.length == 2) {
+                refreshEventSubEventResourceProjection(parts[0], parts[1]);
+            }
+        }
+    }
+
+    public void refreshEventSubEventResourceProjection(String ownerId, String subEventId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!isDirectEventResourceScope(normalizedOwnerId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+        List<ActivitySubEventResource> records = activitySubEventResourcesRepository
+                .findByOwnerIdAndSubEventIdAndStatusNot(
+                        normalizedOwnerId,
+                        normalizedSubEventId,
+                        STATUS_DELETED);
+        Map<String, SubEventResourceMetricDto> aggregate = aggregateResourceMetrics(records);
+        SubEventResourceMetricDto transport = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_TRANSPORT));
+        SubEventResourceMetricDto accommodation = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_ACCOMMODATION));
+        SubEventResourceMetricDto supplies = metricOrEmpty(aggregate.get(AssetCatalog.TYPE_SUPPLIES));
+        List<ActivityEvent> changed = new ArrayList<>();
+        for (ActivityEvent document : activityEventsRepository.findBySourceId(normalizedOwnerId)) {
+            if (document == null || document.getSubEvents() == null) {
+                continue;
+            }
+            boolean updated = false;
+            List<SubEventItem> nextItems = new ArrayList<>();
+            for (SubEventItem item : document.getSubEvents()) {
+                if (item == null || !normalizedSubEventId.equals(normalizeId(item.id()))) {
+                    nextItems.add(item);
+                    continue;
+                }
+                SubEventItem next = item.withResourceMetrics(
+                        transport.accepted(),
+                        transport.pending(),
+                        transport.capacityMin(),
+                        transport.capacityMax(),
+                        accommodation.accepted(),
+                        accommodation.pending(),
+                        accommodation.capacityMin(),
+                        accommodation.capacityMax(),
+                        supplies.accepted(),
+                        supplies.pending(),
+                        supplies.capacityMin(),
+                        supplies.capacityMax());
+                nextItems.add(next);
+                updated = updated || !next.equals(item);
+            }
+            if (updated) {
+                document.setSubEvents(nextItems);
+                changed.add(document);
+            }
+        }
+        if (!changed.isEmpty()) {
+            eventSlotReadModelService.refreshForChangedEvents(activityEventsRepository.saveAll(changed));
+        }
+        ActivitiesMembersService membersService = activitiesMembersServiceProvider.getIfAvailable();
+        if (membersService != null) {
+            membersService.refreshSubEventParticipationProjection(normalizedOwnerId, normalizedSubEventId);
+        }
+    }
+
+    private Map<String, SubEventResourceMetricDto> aggregateResourceMetrics(
+            List<ActivitySubEventResource> records) {
+        Map<String, int[]> totalsByType = new LinkedHashMap<>();
+        for (ActivitySubEventResource record : records == null
+                ? List.<ActivitySubEventResource>of()
+                : records) {
+            if (record == null) {
+                continue;
+            }
+            Map<String, AssetDetailDto> eligibleAssets = resolveAssignableAssetDetails(record);
+            ActivitySubEventResource filtered = filterToAssignableAssets(record, eligibleAssets.keySet());
+            for (Map.Entry<String, SubEventResourceMetricDto> entry
+                    : resourceMetricsByType(filtered, eligibleAssets).entrySet()) {
+                SubEventResourceMetricDto metric = metricOrEmpty(entry.getValue());
+                int[] totals = totalsByType.computeIfAbsent(entry.getKey(), ignored -> new int[4]);
+                totals[0] += normalizeCount(metric.accepted());
+                totals[1] += normalizeCount(metric.pending());
+                totals[2] += normalizeCount(metric.capacityMin());
+                totals[3] += normalizeCount(metric.capacityMax());
+            }
+        }
+        Map<String, SubEventResourceMetricDto> result = new LinkedHashMap<>();
+        for (Map.Entry<String, int[]> entry : totalsByType.entrySet()) {
+            int[] totals = entry.getValue();
+            result.put(entry.getKey(), new SubEventResourceMetricDto(
+                    totals[0],
+                    totals[1],
+                    totals[2],
+                    Math.max(totals[2], totals[3])));
+        }
+        return result;
+    }
+
+    private SubEventResourceMetricDto metricOrEmpty(SubEventResourceMetricDto value) {
+        return value == null
+                ? new SubEventResourceMetricDto(0, 0, 0, 0)
+                : new SubEventResourceMetricDto(
+                        normalizeCount(value.accepted()),
+                        normalizeCount(value.pending()),
+                        normalizeCount(value.capacityMin()),
+                        Math.max(normalizeCount(value.capacityMin()), normalizeCount(value.capacityMax())));
+    }
+
+    private boolean isDirectEventResourceScope(String ownerId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        return StringUtils.hasText(normalizedOwnerId)
+                && !normalizedOwnerId.contains(":slot:")
+                && !normalizedOwnerId.contains(":group:");
     }
 
     public Map<String, SubEventResourceMetricDto> refreshGroupRuntimeResourceMetrics(
@@ -691,9 +830,9 @@ public class ActivitiesResourcesService {
             SubEventAssignedAssetSettingsRecord settings = settingsByAssetId.get(assetId);
             AssetDetailDto detail = eligibleAssets == null ? null : eligibleAssets.get(assetId);
             capacityMin += normalizeCount(settings == null ? null : settings.capacityMin());
-            capacityMax += settings != null && settings.capacityMax() != null
-                    ? normalizeCount(settings.capacityMax())
-                    : normalizeCount(detail == null ? null : detail.capacityTotal());
+            capacityMax += detail != null && detail.capacityTotal() != null
+                    ? normalizeCount(detail.capacityTotal())
+                    : normalizeCount(settings == null ? null : settings.capacityMax());
             if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
                 accepted += supplyContributionQuantity(record, assetId);
                 continue;

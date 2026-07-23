@@ -897,6 +897,11 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
+        ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
+        if (eventRecord != null
+                && normalizedUserId.equals(normalizeId(eventRecord.getCreatorUserId()))) {
+            return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
+        }
 
         synchronized (eventJoinLock(normalizedEventId)) {
             List<ActivityMember> existing = loadOwnerDocuments(OWNER_TYPE_EVENT, normalizedEventId);
@@ -2391,6 +2396,18 @@ public class ActivitiesMembersService {
             eventSlotReadModelService.refreshForChangedEvents(savedDocuments);
             affinityRecomputeTaskService.enqueueEventMembersChanged(normalizedEventId, "system");
         }
+    }
+
+    public void refreshSubEventParticipationProjection(String eventId, String subEventId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return;
+        }
+        refreshEmbeddedSubEventMembers(
+                normalizedEventId,
+                normalizedSubEventId,
+                normalizedEventId + ":" + normalizedSubEventId);
     }
 
     private void refreshEmbeddedSubEventMembers(String eventId, String subEventId, String ownerId) {

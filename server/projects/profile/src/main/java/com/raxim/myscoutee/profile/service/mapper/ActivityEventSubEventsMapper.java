@@ -29,6 +29,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivitySubEventSt
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventAssignedAssetSettingsDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventDefinitionDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventItemDto;
+import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventResourceMetricDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventSupplyContributionEntryDto;
 
 @Component
@@ -1207,6 +1208,15 @@ public class ActivityEventSubEventsMapper {
             if (AssetCatalog.TYPE_SUPPLIES.equals(type)) {
                 accepted += supplyContributionQuantity(resourceRecord, assetId);
             }
+        }
+        SubEventResourceMetricDto recordMetric = resourceRecord.resourceMetricsByType() == null
+                ? null
+                : resourceRecord.resourceMetricsByType().get(type);
+        if (recordMetric != null) {
+            accepted = nonNegativeInteger(recordMetric.accepted());
+            pending = nonNegativeInteger(recordMetric.pending());
+            capacityMin = nonNegativeInteger(recordMetric.capacityMin());
+            capacityMax = nonNegativeInteger(recordMetric.capacityMax());
         }
         SubEventResourceMetric metric = resourceMetricsByKey == null
                 ? null

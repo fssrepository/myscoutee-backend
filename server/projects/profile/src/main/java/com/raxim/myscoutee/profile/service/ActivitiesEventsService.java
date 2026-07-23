@@ -149,6 +149,7 @@ public class ActivitiesEventsService {
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
+    private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
@@ -181,6 +182,7 @@ public class ActivitiesEventsService {
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
+            ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             EventCheckoutBasketService eventCheckoutBasketService,
@@ -211,6 +213,7 @@ public class ActivitiesEventsService {
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.activitiesMembersService = activitiesMembersService;
+        this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.paymentService = paymentService;
         this.eventCheckoutBasketService = eventCheckoutBasketService;
@@ -1769,7 +1772,13 @@ public class ActivitiesEventsService {
             if (record == null) {
                 continue;
             }
-            ActivitySubEventResourceStateDto dto = activitySubEventResourceMapper.toDto(record);
+            ActivitySubEventResourceStateDto dto = activitiesResourcesService.queryState(
+                    record.getOwnerId(),
+                    record.getSubEventId(),
+                    record.getAssetOwnerUserId());
+            if (dto == null) {
+                dto = activitySubEventResourceMapper.toDto(record);
+            }
             if (dto == null) {
                 continue;
             }

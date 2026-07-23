@@ -3,15 +3,21 @@ package com.raxim.myscoutee.profile.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.InOrder;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.dto.events.EventsDtos.EventFeedbackCardDto;
@@ -156,6 +162,94 @@ class ActivitiesEventFeedbackServiceTest {
         assertThat(detail.cards().getFirst().answerPrimary()).isEqualTo("excellent");
         assertThat(detail.cards().getFirst().answerSecondary()).isEqualTo("resources");
         assertThat(detail.cards().getFirst().selectedTraitIds()).containsExactly("reliable-one");
+    }
+
+    @Test
+    void submitReturnsMongoReloadedDetailAfterAnswersAndStateAreSaved() {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        viewer.setUserId("viewer");
+        viewer.setName("Viewer");
+        Users host = new Users();
+        host.setId("host");
+        host.setUserId("host");
+        host.setName("Host");
+
+        ActivityEvent source = new ActivityEvent();
+        source.setSourceId("event-1");
+        source.setTitle("Finished Event");
+        source.setCreatorUserId("host");
+        source.setOwnerUserId("host");
+        source.setAcceptedMemberUserIds(List.of("viewer"));
+        source.setStartAtIso("2020-01-01T10:00:00Z");
+
+        EventFeedbackCardDto card = new EventFeedbackCardDto(
+                "feedback-event-event-1",
+                "event-1",
+                "event",
+                null,
+                "host",
+                "Admin",
+                "Finished Event",
+                "",
+                "",
+                "",
+                "2020-01-01T10:00:00Z",
+                "",
+                "Host",
+                null,
+                "",
+                "man",
+                "",
+                "",
+                "excellent",
+                "resources",
+                List.of("reliable-one"));
+        AtomicReference<EventFeedbackState> persistedState = new AtomicReference<>();
+        AtomicReference<List<EventFeedbackAnswer>> persistedAnswers = new AtomicReference<>(List.of());
+
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(source));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
+        when(eventFeedbackStatesRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenReturn(Optional.empty(), Optional.empty())
+                .thenAnswer(ignored -> Optional.ofNullable(persistedState.get()));
+        when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventIdAndCardId(
+                "viewer",
+                "event-1",
+                "feedback-event-event-1"))
+                .thenReturn(Optional.empty());
+        when(eventFeedbackAnswersRepository.saveAll(anyList())).thenAnswer(invocation -> {
+            List<EventFeedbackAnswer> answers = List.copyOf(invocation.getArgument(0));
+            persistedAnswers.set(answers);
+            return answers;
+        });
+        when(eventFeedbackStatesRepository.save(any(EventFeedbackState.class))).thenAnswer(invocation -> {
+            EventFeedbackState state = invocation.getArgument(0);
+            persistedState.set(state);
+            return state;
+        });
+        when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
+                .thenAnswer(ignored -> persistedAnswers.get());
+
+        EventFeedbackDetailDto persisted = service.submit(new EventFeedbackSubmitRequestDto(
+                "viewer",
+                new EventFeedbackDetailDto(
+                        "event-1",
+                        "Finished Event",
+                        "2026-07-23T18:00:00Z",
+                        List.of(card))));
+
+        assertThat(persisted.submittedAtIso()).isEqualTo("2026-07-23T18:00:00Z");
+        assertThat(persisted.cards()).hasSize(1);
+        assertThat(persisted.cards().getFirst().answerPrimary()).isEqualTo("excellent");
+        assertThat(persisted.cards().getFirst().answerSecondary()).isEqualTo("resources");
+
+        InOrder persistenceOrder = inOrder(eventFeedbackAnswersRepository, eventFeedbackStatesRepository);
+        persistenceOrder.verify(eventFeedbackAnswersRepository).saveAll(anyList());
+        persistenceOrder.verify(eventFeedbackStatesRepository).save(any(EventFeedbackState.class));
     }
 
     @Test

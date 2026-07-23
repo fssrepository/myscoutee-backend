@@ -76,6 +76,8 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
+    private EventSlotReadModelService eventSlotReadModelService;
+    @Mock
     private ChatsRepository chatsRepository;
     @Mock
     private AssetsRepository assetsRepository;
@@ -108,10 +110,12 @@ class ActivitiesResourcesServiceTest {
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
+                activityEventsRepository,
                 assetsService,
                 activitiesMembersServiceProvider,
                 accessControlService,
-                new ActivitySubEventResourceMapper());
+                new ActivitySubEventResourceMapper(),
+                eventSlotReadModelService);
     }
 
     @AfterEach
