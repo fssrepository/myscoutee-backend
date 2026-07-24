@@ -737,30 +737,36 @@ public class ActivitiesMembersService {
         String targetUserId = normalizeId(request.targetUserId());
         String action = normalizeMemberAction(request.action());
         String scopedEventId = normalizeId(request.eventId());
+        String scopedSubEventId = normalizeId(request.subEventId());
+        boolean scopedAssetAction = OWNER_TYPE_ASSET.equals(ownerType)
+                && StringUtils.hasText(scopedEventId)
+                && StringUtils.hasText(scopedSubEventId);
         if (!StringUtils.hasText(ownerType)
                 || !StringUtils.hasText(ownerId)
                 || !StringUtils.hasText(actorUserId)
                 || !StringUtils.hasText(targetUserId)
                 || !StringUtils.hasText(action)) {
-            return queryMembers(ownerType, ownerId);
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             if (!canApplyEventMemberAction(ownerId, actorUserId, targetUserId, action)) {
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             if (ACTION_REMOVE.equals(action) && actorUserId.equals(targetUserId)) {
                 removeEventParticipation(ownerId, targetUserId, actorUserId);
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
         }
-        List<ActivityMember> existing = loadOwnerDocuments(ownerType, ownerId);
+        List<ActivityMember> existing = scopedAssetAction
+                ? loadScopedAssetDocuments(ownerId, scopedEventId, scopedSubEventId, false)
+                : loadOwnerDocuments(ownerType, ownerId);
         ActivityMember current = existing.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> targetUserId.equals(normalizeId(member.getUserId())))
                 .findFirst()
                 .orElse(null);
         if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
-            return queryMembers(ownerType, ownerId);
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
         if (OWNER_TYPE_EVENT.equals(ownerType)
                 && ACTION_REMOVE.equals(action)
@@ -768,7 +774,7 @@ public class ActivitiesMembersService {
                 && isInvitationMembership(current)
                 && !actorUserId.equals(targetUserId)
                 && !actorUserId.equals(normalizeId(current.getInvitedByUserId()))) {
-            return queryMembers(ownerType, ownerId);
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
         String currentRole = resolveStoredRole(current, ownerType, ownerId);
         boolean actorCanManageOwner = canManageOwnerMembers(
@@ -823,7 +829,7 @@ public class ActivitiesMembersService {
                 && (!actorCanManageOwner
                     || actorUserId.equals(targetUserId)
                     || isProtectedOwnerMember(ownerType, ownerId, targetUserId))) {
-            return queryMembers(ownerType, ownerId);
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
         if (!OWNER_TYPE_EVENT.equals(ownerType)
                 && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
@@ -831,7 +837,7 @@ public class ActivitiesMembersService {
                 && !acceptingOwnManagedInvitation
                 && !cancellingOwnManagedInvitation
                 && !rejectingOwnManagedInvitation) {
-            return queryMembers(ownerType, ownerId);
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
 
         String currentStatus = normalizeStatus(current.getStatus());
@@ -845,33 +851,33 @@ public class ActivitiesMembersService {
         if (ACTION_ACCEPT.equals(action)) {
             if (!STATUS_PENDING.equals(currentStatus)
                     || (!acceptingOwnManagedInvitation && !isAdminApprovalMembership(current))) {
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             nextStatus = requiresManagerApproval ? STATUS_PENDING : STATUS_ACCEPTED;
         } else if (ACTION_REMOVE.equals(action)) {
             nextStatus = STATUS_DELETED;
         } else if (ACTION_DISQUALIFY.equals(action)) {
             if (!STATUS_ACCEPTED.equals(currentStatus)) {
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             nextStatus = STATUS_DISQUALIFIED;
         } else if (ACTION_REINSTATE.equals(action)) {
             if (!STATUS_DISQUALIFIED.equals(currentStatus)) {
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             nextStatus = STATUS_ACCEPTED;
         } else if (ACTION_PROMOTE_ADMIN.equals(action)) {
             if (!STATUS_ACCEPTED.equals(currentStatus) || "Admin".equals(safeText(current.getRole()))) {
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             nextStatus = STATUS_ACCEPTED;
         } else if (ACTION_STEP_DOWN_ADMIN.equals(action)) {
             if (!STATUS_ACCEPTED.equals(currentStatus) || !MANAGER_ROLES.contains(currentRole)) {
-                return queryMembers(ownerType, ownerId);
+                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
             }
             nextStatus = STATUS_ACCEPTED;
         } else {
-            return queryMembers(ownerType, ownerId);
+            return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
         }
 
         String nowIso = Instant.now().toString();
@@ -894,7 +900,18 @@ public class ActivitiesMembersService {
         } else if (ACTION_STEP_DOWN_ADMIN.equals(action)) {
             next.setRole("Member");
         }
-        activityMembersRepository.save(next);
+        if (scopedAssetAction) {
+            persistScopedAssetAction(
+                    ownerId,
+                    scopedEventId,
+                    scopedSubEventId,
+                    actorUserId,
+                    targetUserId,
+                    existing,
+                    next);
+        } else {
+            activityMembersRepository.save(next);
+        }
 
         enqueueOwnerMembersChanged(ownerType, ownerId, actorUserId);
         adminTelemetryService.record(
@@ -930,11 +947,50 @@ public class ActivitiesMembersService {
             }
         } else if (OWNER_TYPE_GROUP.equals(ownerType)) {
             tournamentGroupCounterService.syncParent(request.eventId(), request.subEventId());
-        } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
+        } else if (OWNER_TYPE_ASSET.equals(ownerType) && !scopedAssetAction) {
             assetsService.syncRequestsFromMembers(ownerId, List.of(next));
         }
 
-        return queryMembers(ownerType, ownerId);
+        return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId);
+    }
+
+    private void persistScopedAssetAction(
+            String assetId,
+            String eventId,
+            String subEventId,
+            String actorUserId,
+            String targetUserId,
+            List<ActivityMember> existing,
+            ActivityMember next) {
+        String viewerUserId = homeUserProfileService.resolveSelectedUserId(actorUserId);
+        List<ActivityMemberEntryDto> nextEntries = new ArrayList<>();
+        for (ActivityMember member : existing == null ? List.<ActivityMember>of() : existing) {
+            if (member == null || targetUserId.equals(normalizeId(member.getUserId()))) {
+                continue;
+            }
+            ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId);
+            if (entry != null) {
+                nextEntries.add(entry);
+            }
+        }
+        if (next != null && !STATUS_DELETED.equals(normalizeStatus(next.getStatus()))) {
+            ActivityMemberEntryDto nextEntry = toEntryDto(next, viewerUserId);
+            if (nextEntry != null) {
+                nextEntries.add(nextEntry);
+            }
+        }
+        String assetOwnerUserId = assetsService.syncScopedRequestsFromMemberEntries(
+                assetId,
+                eventId,
+                subEventId,
+                nextEntries);
+        if (StringUtils.hasText(assetOwnerUserId)) {
+            activitiesResourcesService.refreshGroupRuntimeResourceMetrics(
+                    eventId,
+                    subEventId,
+                    assetOwnerUserId,
+                    actorUserId);
+        }
     }
 
     public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
