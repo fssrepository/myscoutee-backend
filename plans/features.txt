@@ -5,3 +5,8 @@ buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
 1) check admin ui-s
+
+2) configured server - where metrics can be uploaded, so virtual shares can be calculated
+needs a different server and project, practically a dashboard
+go server with minimal memory, connecting to server, gets the key and the user
+can register with that key to a virtual company
