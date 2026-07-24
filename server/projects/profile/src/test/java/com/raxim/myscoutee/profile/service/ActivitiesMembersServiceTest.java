@@ -1274,6 +1274,48 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void eventMemberCanCancelInvitationTheySentWithoutMemberModerationPermission() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember invitation = member("invite-sync", "event-1", "target", "Member", "pending");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
+
+        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("member-inviter");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-1", "target"))
+                .thenAnswer(invocation -> Optional.of(storedInvitation.get()));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedInvitation.set(saved);
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "member-inviter",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result).isEmpty();
+        assertThat(storedInvitation.get().getStatus()).isEqualTo("deleted");
+        verify(accessControlService, never()).canRemoveEventMember("event-1", "member-inviter", "target");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(eventParticipationTicketService, never()).syncParticipationTicketForUser(anyString(), anyString());
+        verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
+        verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
+    }
+
+    @Test
     void removeMemberUsesPolicyAndRunsCleanupBeforeReturningMembers() {
         ActivityEvent event = event("event-1", "host", "admin");
         ActivityMember member = member("member-sync", "event-1", "target", "Member", "accepted");
@@ -1330,6 +1372,51 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void acceptedEventManagerCanLeaveWithoutMemberModerationPermission() {
+        ActivityEvent event = event("event-1", "owner", "owner");
+        ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
+        ActivityMember manager = member("manager-sync", "event-1", "manager", "Manager", "accepted");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(owner, manager));
+
+        when(homeUserProfileService.resolveSelectedUserId("manager")).thenReturn("manager");
+        when(homeUserProfileService.resolveSelectedUserId(null)).thenReturn("manager");
+        when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
+        when(activityEventsRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"),
+                "manager",
+                "manager",
+                "remove",
+                null));
+
+        assertThat(result)
+                .extracting(ActivityMemberEntryDto::userId)
+                .containsExactly("owner");
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "manager".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
+        verify(accessControlService, never()).canRemoveEventMember(anyString(), anyString(), anyString());
+        verify(eventParticipationTicketService).syncParticipationTicketForUser("event-1", "manager");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("manager"));
+    }
+
+    @Test
     void eventOwnerCanLeaveFromMemberCardAndTransfersOwnershipToAnotherAcceptedAdmin() {
         ActivityEvent event = event("event-1", "owner", "owner");
         ActivityMember owner = member("owner-sync", "event-1", "owner", "Admin", "accepted");
@@ -1379,7 +1466,8 @@ class ActivitiesMembersServiceTest {
                 .singleElement()
                 .extracting(ActivityMember::getStatus)
                 .isEqualTo("deleted");
-        verify(eventParticipationTicketService).syncParticipationTicketsForEvent("event-1");
+        verify(eventParticipationTicketService).syncParticipationTicketForUser("event-1", "owner");
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
     }
 
     @Test
@@ -1509,6 +1597,10 @@ class ActivitiesMembersServiceTest {
             assertThat(saved.getRequestKind()).isEqualTo("invite");
             assertThat(saved.getInvitedByUserId()).isEqualTo("admin");
         });
+        verify(eventParticipationTicketService, never()).syncParticipationTicketsForEvent(anyString());
+        verify(eventSlotReadModelService, never()).refreshForChangedEvents(anyList());
+        verify(affinityRecomputeTaskService, never()).enqueueEventMembersChanged(anyString(), anyString());
+        verify(userActivityCountersService).refreshEventCountersForUsers(List.of("target"));
     }
 
     private ActivityEvent event(String sourceId, String creatorUserId, String adminUserId) {

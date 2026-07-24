@@ -27,6 +27,7 @@ public class MemberPolicyFacts {
     private static final String USER_STATUS_BLOCKED = "B";
     private static final String USER_STATUS_DELETED = "D";
     private static final String USER_STATUS_INACTIVE = "I";
+    private static final Set<String> EVENT_ADMIN_ROLES = Set.of("Admin");
     private static final Set<String> MANAGER_ROLES = Set.of("Admin", "Manager");
 
     private final ActivityMembersRepository activityMembersRepository;
@@ -77,8 +78,13 @@ public class MemberPolicyFacts {
                 || !StringUtils.hasText(normalizedActorUserId)) {
             return false;
         }
-        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType) && isEventCreatorOrAdmin(normalizedOwnerId, normalizedActorUserId)) {
-            return true;
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)) {
+            return isEventCreatorOrAdmin(normalizedOwnerId, normalizedActorUserId)
+                    || hasAcceptedRole(
+                            normalizedOwnerType,
+                            normalizedOwnerId,
+                            normalizedActorUserId,
+                            EVENT_ADMIN_ROLES);
         }
         if (OWNER_TYPE_ASSET.equals(normalizedOwnerType) && isAssetOwner(normalizedOwnerId, normalizedActorUserId)) {
             return true;
@@ -95,8 +101,13 @@ public class MemberPolicyFacts {
                 || !StringUtils.hasText(normalizedUserId)) {
             return true;
         }
-        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType) && isEventCreator(normalizedOwnerId, normalizedUserId)) {
-            return true;
+        if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)) {
+            return isEventCreator(normalizedOwnerId, normalizedUserId)
+                    || hasAcceptedRole(
+                            normalizedOwnerType,
+                            normalizedOwnerId,
+                            normalizedUserId,
+                            EVENT_ADMIN_ROLES);
         }
         if (OWNER_TYPE_ASSET.equals(normalizedOwnerType) && isAssetOwner(normalizedOwnerId, normalizedUserId)) {
             return true;
@@ -214,11 +225,19 @@ public class MemberPolicyFacts {
     }
 
     private boolean hasAcceptedManagerRole(String ownerType, String ownerId, String userId) {
+        return hasAcceptedRole(ownerType, ownerId, userId, MANAGER_ROLES);
+    }
+
+    private boolean hasAcceptedRole(
+            String ownerType,
+            String ownerId,
+            String userId,
+            Set<String> roles) {
         return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(ownerType, ownerId, userId)
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
                 .map(ActivityMember::getRole)
                 .map(this::safeText)
-                .filter(MANAGER_ROLES::contains)
+                .filter(roles::contains)
                 .isPresent();
     }
 

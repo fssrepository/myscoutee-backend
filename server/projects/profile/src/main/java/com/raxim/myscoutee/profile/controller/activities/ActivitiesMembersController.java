@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMemberActionRequestDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersInviteRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersReplaceRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ActivityMembersDtos.ActivityMembersSummariesRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntryDto;
@@ -43,6 +44,11 @@ public class ActivitiesMembersController {
     @PostMapping("/replace")
     public void replace(@RequestBody ActivityMembersReplaceRequestDto request) {
         activitiesMembersService.replace(request);
+    }
+
+    @PostMapping("/invite")
+    public List<ActivityMemberEntryDto> invite(@RequestBody ActivityMembersInviteRequestDto request) {
+        return activitiesMembersService.inviteEventMembers(request);
     }
 
     @PostMapping("/action")
