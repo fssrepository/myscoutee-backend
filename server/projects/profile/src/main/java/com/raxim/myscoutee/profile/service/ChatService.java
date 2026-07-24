@@ -77,6 +77,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMessagesPage
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatReadReceiptDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatServiceEnsureRequestDto;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.profile.repository.ActivitySubEventResourcesRepository;
@@ -246,6 +247,132 @@ public class ChatService {
                 ? Integer.toString(endOffset)
                 : null;
         return new ChatPageResponseDto(items, safePageTotal(total), nextCursor);
+    }
+
+    public ChatDto ensureServiceChat(ChatServiceEnsureRequestDto request, String requestedUserId) {
+        String userId = requireResolvedUserId(requestedUserId);
+        if (request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service chat request is required.");
+        }
+        String serviceContext = safeText(request.serviceContext()).toLowerCase(Locale.US);
+        if (!"event".equals(serviceContext) && !"asset".equals(serviceContext)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported service chat context.");
+        }
+        String eventId = normalizeId(request.eventId());
+        if (!StringUtils.hasText(eventId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event id is required.");
+        }
+        ActivityEvent event = findServiceChatEvent(eventId);
+        if (event == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found.");
+        }
+
+        String subEventId = normalizeId(request.subEventId());
+        String assetId = normalizeId(request.assetId());
+        String requestedTargetUserId = normalizeId(request.targetUserId());
+        Asset asset = null;
+        String targetUserId;
+        String chatId;
+        if ("asset".equals(serviceContext)) {
+            if (!StringUtils.hasText(assetId) || !StringUtils.hasText(subEventId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Asset and sub-event ids are required.");
+            }
+            asset = findServiceChatAsset(assetId, requestedTargetUserId);
+            if (asset == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Asset not found.");
+            }
+            targetUserId = normalizeId(asset.getOwnerUserId());
+            chatId = "c-service-asset-" + assetId + "-" + subEventId + "-" + userId;
+        } else {
+            targetUserId = normalizeId(event.getCreatorUserId());
+            if (!StringUtils.hasText(targetUserId)) {
+                targetUserId = normalizeId(event.getOwnerUserId());
+            }
+            chatId = "c-service-event-" + eventId + "-" + userId;
+        }
+        if (!StringUtils.hasText(targetUserId) || findUser(targetUserId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service chat recipient not found.");
+        }
+        if (StringUtils.hasText(requestedTargetUserId) && !targetUserId.equals(requestedTargetUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The selected service chat recipient is not the resource owner.");
+        }
+        if (targetUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The resource owner cannot open a service chat with themselves.");
+        }
+
+        List<Chat> chatDocuments = chatsRepository.findByChatId(chatId);
+        if (chatDocuments.isEmpty()) {
+            Users targetUser = findUser(targetUserId);
+            Chat baseChat = new Chat();
+            baseChat.setMongoId(buildMongoId(userId, chatId));
+            baseChat.setChatId(chatId);
+            baseChat.setOwnerUserId(userId);
+            baseChat.setAvatar(resolveUserInitials(targetUser, targetUserId));
+            baseChat.setTitle(serviceChatTitle(request.title(), serviceContext, asset, event));
+            baseChat.setLastMessage(serviceChatLastMessage(request.lastMessage(), serviceContext, asset, event));
+            baseChat.setLastSenderId(targetUserId);
+            baseChat.setMemberIds(List.of(userId, targetUserId));
+            baseChat.setUnread(0);
+            baseChat.setDateIso(Instant.now().toString());
+            baseChat.setChannelType(CHAT_CHANNEL_SERVICE_EVENT);
+            baseChat.setOwnerId(eventId);
+            baseChat.setEventId(eventId);
+            baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
+            chatsRepository.save(baseChat);
+            chatDocuments = List.of(baseChat);
+        }
+        chatDocuments = ensureOwnerCopies(chatDocuments);
+        Chat viewerChat = findOwnerChat(chatDocuments, userId);
+        Chat responseChat = viewerChat == null ? chatDocuments.get(0) : viewerChat;
+        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
+    }
+
+    private ActivityEvent findServiceChatEvent(String eventId) {
+        Criteria identity = new Criteria().orOperator(
+                Criteria.where("_id").is(eventId),
+                Criteria.where("sourceId").is(eventId));
+        return mongoTemplate.findOne(Query.query(identity), ActivityEvent.class);
+    }
+
+    private Asset findServiceChatAsset(String assetId, String ownerUserId) {
+        Criteria identity = new Criteria().orOperator(
+                Criteria.where("_id").is(assetId),
+                Criteria.where("assetId").is(assetId));
+        Criteria criteria = StringUtils.hasText(ownerUserId)
+                ? new Criteria().andOperator(identity, Criteria.where("ownerUserId").is(ownerUserId))
+                : identity;
+        return mongoTemplate.findOne(Query.query(criteria), Asset.class);
+    }
+
+    private String serviceChatTitle(
+            String requestedTitle,
+            String serviceContext,
+            Asset asset,
+            ActivityEvent event) {
+        String title = safeText(requestedTitle);
+        if (StringUtils.hasText(title)) {
+            return title;
+        }
+        String subject = "asset".equals(serviceContext)
+                ? safeText(asset == null ? null : asset.getTitle())
+                : safeText(event == null ? null : event.getTitle());
+        return ("asset".equals(serviceContext) ? "Asset Service" : "Event Service")
+                + (StringUtils.hasText(subject) ? " · " + subject : "");
+    }
+
+    private String serviceChatLastMessage(
+            String requestedLastMessage,
+            String serviceContext,
+            Asset asset,
+            ActivityEvent event) {
+        String lastMessage = safeText(requestedLastMessage);
+        if (StringUtils.hasText(lastMessage)) {
+            return lastMessage;
+        }
+        String subject = "asset".equals(serviceContext)
+                ? safeText(asset == null ? null : asset.getTitle())
+                : safeText(event == null ? null : event.getTitle());
+        return "Service chat for " + (StringUtils.hasText(subject) ? subject : serviceContext) + ".";
     }
 
     private ChatPageResponseDto querySupportCasePage(

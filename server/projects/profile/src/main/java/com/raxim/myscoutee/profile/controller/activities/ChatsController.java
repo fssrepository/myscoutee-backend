@@ -20,6 +20,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatMembersPageR
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatDto;
+import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatServiceEnsureRequestDto;
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSupportCaseMutationRequestDto;
 import com.raxim.myscoutee.profile.security.AccessPolicyKeys;
 import com.raxim.myscoutee.profile.security.RequiresPolicy;
@@ -64,6 +65,13 @@ public class ChatsController {
                 rangeEndIso,
                 adminServiceOnly,
                 supportCaseFilter);
+    }
+
+    @PostMapping("/service")
+    public ChatDto ensureServiceChat(
+            @RequestBody ChatServiceEnsureRequestDto request,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return chatService.ensureServiceChat(request, userId);
     }
 
     @GetMapping("/{chatId}/messages")

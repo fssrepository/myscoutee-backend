@@ -201,6 +201,16 @@ public final class ChatDtos {
             List<ChatMessageAttachmentDto> attachments) {
     }
 
+    public record ChatServiceEnsureRequestDto(
+            String serviceContext,
+            String eventId,
+            String subEventId,
+            String assetId,
+            String targetUserId,
+            String title,
+            String lastMessage) {
+    }
+
     public record ChatMessageMutationRequestDto(
             String text,
             Boolean pinned,
