@@ -101,15 +101,10 @@ public class ActivityEventDetailMapper {
 
     private int aggregateRuntimeActivity(ActivityEvent record) {
         int pending = 0;
-        boolean tournament = "Tournament".equalsIgnoreCase(safeText(record == null ? null : record.getMode()));
         for (SubEventItem item : record == null || record.getSubEvents() == null
                 ? List.<SubEventItem>of()
                 : record.getSubEvents()) {
             if (item == null) {
-                continue;
-            }
-            if (tournament) {
-                pending += item.groups() == null ? 0 : item.groups().size();
                 continue;
             }
             if (Boolean.TRUE.equals(item.optional())) {

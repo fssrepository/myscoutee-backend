@@ -90,6 +90,7 @@ public class ActivitiesMembersService {
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
+    private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
 
     public ActivitiesMembersService(
@@ -107,7 +108,8 @@ public class ActivitiesMembersService {
             ChatService chatService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessControlService accessControlService,
-            UserActivityCountersService userActivityCountersService) {
+            UserActivityCountersService userActivityCountersService,
+            ActivityTournamentGroupCounterService tournamentGroupCounterService) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -123,6 +125,7 @@ public class ActivitiesMembersService {
         this.eventSlotReadModelService = eventSlotReadModelService;
         this.accessControlService = accessControlService;
         this.userActivityCountersService = userActivityCountersService;
+        this.tournamentGroupCounterService = tournamentGroupCounterService;
     }
 
     public List<ActivityMemberEntryDto> queryMembers(String ownerType, String ownerId) {
@@ -704,6 +707,9 @@ public class ActivitiesMembersService {
                 && StringUtils.hasText(scopedSubEventId)) {
             refreshEmbeddedSubEventMembers(scopedEventId, scopedSubEventId, ownerId);
         }
+        if (OWNER_TYPE_GROUP.equals(ownerType)) {
+            tournamentGroupCounterService.syncParent(scopedEventId, scopedSubEventId);
+        }
         if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, membersToSave);
         }
@@ -858,6 +864,8 @@ public class ActivitiesMembersService {
             if (scope != null) {
                 refreshEmbeddedSubEventMembers(scope.eventId(), scope.subEventId(), ownerId);
             }
+        } else if (OWNER_TYPE_GROUP.equals(ownerType)) {
+            tournamentGroupCounterService.syncParent(request.eventId(), request.subEventId());
         } else if (OWNER_TYPE_ASSET.equals(ownerType)) {
             assetsService.syncRequestsFromMembers(ownerId, List.of(next));
         }

@@ -4,6 +4,7 @@
 const COUNTER_FIELDS = [
   'membersAccepted',
   'membersPending',
+  'groupsPending',
   'carsAccepted',
   'carsPending',
   'carsCapacityMin',
@@ -218,6 +219,55 @@ function memberMetric(activityMembers, ownerId) {
   return { accepted: accepted.size, pending: pending.size };
 }
 
+function isTournamentStage(subEvent) {
+  return array(subEvent && subEvent.groups).length > 0
+    || count(subEvent && subEvent.groupsCount) > 0
+    || count(subEvent && subEvent.tournamentGroupCount) > 0
+    || count(subEvent && subEvent.tournamentGroupCapacityMin) > 0
+    || count(subEvent && subEvent.tournamentGroupCapacityMax) > 0
+    || Boolean(text(subEvent && subEvent.tournamentLeaderboardType));
+}
+
+function groupMemberPending(activityMembers, eventId, subEventId) {
+  const directOwnerPrefix = `${eventId}:${subEventId}:`;
+  const slotOwnerPrefix = `${eventId}:slot:`;
+  const slotStageMarker = `:${subEventId}:`;
+  return array(activityMembers).filter(member => {
+    if (
+      text(member && member.ownerType) !== 'group'
+      || text(member && member.status).toLowerCase() !== 'pending'
+    ) {
+      return false;
+    }
+    const ownerId = text(member.ownerId);
+    return ownerId.startsWith(directOwnerPrefix)
+      || (ownerId.startsWith(slotOwnerPrefix) && ownerId.includes(slotStageMarker));
+  }).length;
+}
+
+function groupResourcePending(stageRuntimes, eventId, subEventId) {
+  const slotOwnerPrefix = `${eventId}:slot:`;
+  return array(stageRuntimes)
+    .filter(runtime =>
+      text(runtime && runtime.status) !== 'D'
+      && text(runtime && runtime.subEventId) === subEventId
+      && (
+        text(runtime && runtime.ownerId) === eventId
+        || text(runtime && runtime.ownerId).startsWith(slotOwnerPrefix)
+      )
+    )
+    .reduce((runtimeTotal, runtime) =>
+      runtimeTotal + Object.values(object(runtime.groupResourceMetricsByAssetOwnerId))
+        .reduce((groupTotal, byAssetOwner) =>
+          groupTotal + Object.values(object(byAssetOwner))
+            .reduce((ownerTotal, byType) =>
+              ownerTotal + Object.values(object(byType))
+                .reduce((typeTotal, metric) => typeTotal + count(metric && metric.pending), 0),
+            0),
+          0),
+      0);
+}
+
 function aggregateResourceMetrics(resources, assetsById, assetRequests) {
   const result = {
     Transport: { accepted: 0, pending: 0, capacityMin: 0, capacityMax: 0 },
@@ -251,9 +301,14 @@ function nextCounters(event, subEvent, context) {
     && text(resource.assetOwnerUserId) === projectionUserId
   );
   const metrics = aggregateResourceMetrics(resources, context.assetsById, context.assetRequests);
+  const groupsPending = isTournamentStage(subEvent)
+    ? groupMemberPending(context.activityMembers, sourceId, subEventId)
+      + groupResourcePending(context.activitySubEventStageRuntime, sourceId, subEventId)
+    : 0;
   return {
     membersAccepted: member.accepted,
     membersPending: member.pending,
+    groupsPending,
     carsAccepted: metrics.Transport.accepted,
     carsPending: metrics.Transport.pending,
     carsCapacityMin: metrics.Transport.capacityMin,
@@ -273,6 +328,7 @@ function reconcile(data, apply) {
   const context = {
     activityMembers: array(data.activityMembers),
     activityResources: array(data.activityResources),
+    activitySubEventStageRuntime: array(data.activitySubEventStageRuntime),
     assetRequests: array(data.assetRequests),
     assetsById: mapBy(data.assets, asset => asset && asset.assetId)
   };
@@ -291,7 +347,14 @@ function reconcile(data, apply) {
         return subEvent;
       }
       const counters = nextCounters(event, subEvent, context);
-      const fieldChanges = COUNTER_FIELDS.filter(field => count(subEvent[field]) !== counters[field]);
+      const fieldChanges = COUNTER_FIELDS.filter(field =>
+        count(subEvent[field]) !== counters[field]
+        || (
+          field === 'groupsPending'
+          && isTournamentStage(subEvent)
+          && !Object.prototype.hasOwnProperty.call(subEvent, field)
+        )
+      );
       if (!fieldChanges.length) {
         return subEvent;
       }
@@ -307,16 +370,25 @@ function reconcile(data, apply) {
           fields: fieldChanges
         });
       }
-      return apply ? { ...subEvent, ...counters } : subEvent;
+      return { ...subEvent, ...counters };
     });
+    const nextActivity = array(subEvents).some(isTournamentStage)
+      ? subEvents.reduce((total, subEvent) => total + count(subEvent && subEvent.groupsPending), 0)
+      : count(event.activity);
+    if (count(event.activity) !== nextActivity) {
+      eventChanged = true;
+      changedFields += 1;
+    }
     if (eventChanged) {
       changedEvents.push({
         id: event._id,
         sourceId: event.sourceId,
-        subEvents
+        subEvents,
+        activity: nextActivity
       });
       if (apply) {
         event.subEvents = subEvents;
+        event.activity = nextActivity;
       }
     }
   }
@@ -347,6 +419,7 @@ async function runSeedCli() {
     events: read('events'),
     activityMembers: read('activityMembers'),
     activityResources: read('activityResources'),
+    activitySubEventStageRuntime: read('activitySubEventStageRuntime'),
     assetRequests: read('assetRequests'),
     assets: read('assets')
   };
@@ -363,6 +436,7 @@ function runMongo() {
     events: db.events.find({}).toArray(),
     activityMembers: db.activityMembers.find({}).toArray(),
     activityResources: db.activityResources.find({}).toArray(),
+    activitySubEventStageRuntime: db.activitySubEventStageRuntime.find({}).toArray(),
     assetRequests: db.assetRequests.find({}).toArray(),
     assets: db.assets.find({}).toArray()
   };
@@ -374,7 +448,7 @@ function runMongo() {
     const operations = result.changedEvents.map(event => ({
       updateOne: {
         filter: { _id: event.id },
-        update: { $set: { subEvents: event.subEvents } }
+        update: { $set: { subEvents: event.subEvents, activity: event.activity } }
       }
     }));
     db.events.bulkWrite(operations, { ordered: false });

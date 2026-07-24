@@ -159,6 +159,7 @@ public class ActivityEventSubEventsMapper {
                 item.slotStartOffsetMinutes(),
                 item.slotDurationMinutes(),
                 item.groupsCount(),
+                persisted.groupsPending(),
                 item.stageStatus(),
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
@@ -1135,7 +1136,8 @@ public class ActivityEventSubEventsMapper {
                 item.stageStatusReason(),
                 item.stageStatusUpdatedAt(),
                 item.stageFinalizedAt(),
-                item.stageFinalizedByUserId());
+                item.stageFinalizedByUserId())
+                .withGroupsPending(item.groupsPending());
     }
 
     private SubEventItemDto withStageRuntime(SubEventItemDto item, ActivitySubEventStageRuntimeStateDto stageRuntime) {
@@ -1175,11 +1177,13 @@ public class ActivityEventSubEventsMapper {
                 item.slotStartOffsetMinutes(),
                 item.slotDurationMinutes(),
                 stageRuntime.groupsCount() == null ? item.groupsCount() : stageRuntime.groupsCount(),
+                item.groupsPending(),
                 firstNonBlank(stageRuntime.stageStatus(), item.stageStatus()),
                 firstNonBlank(stageRuntime.stageStatusReason(), item.stageStatusReason()),
                 firstNonBlank(stageRuntime.stageStatusUpdatedAt(), item.stageStatusUpdatedAt()),
                 firstNonBlank(stageRuntime.stageFinalizedAt(), item.stageFinalizedAt()),
-                firstNonBlank(stageRuntime.stageFinalizedByUserId(), item.stageFinalizedByUserId()));
+                firstNonBlank(stageRuntime.stageFinalizedByUserId(), item.stageFinalizedByUserId()),
+                item.groups());
     }
 
     private List<SubEventDefinitionTimelineEntry> subEventDefinitionTimeline(List<SubEventDefinitionDto> items) {

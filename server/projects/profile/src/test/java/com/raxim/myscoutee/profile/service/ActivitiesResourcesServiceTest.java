@@ -90,6 +90,8 @@ class ActivitiesResourcesServiceTest {
     private AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
     @Mock
     private AdminMenuCounterService adminMenuCounterService;
+    @Mock
+    private ActivityTournamentGroupCounterService tournamentGroupCounterService;
 
     private ActivitiesResourcesService service;
     private AccessControlService accessControlService;
@@ -116,7 +118,8 @@ class ActivitiesResourcesServiceTest {
                 activitiesMembersServiceProvider,
                 accessControlService,
                 new ActivitySubEventResourceMapper(),
-                eventSlotReadModelService);
+                eventSlotReadModelService,
+                tournamentGroupCounterService);
     }
 
     @AfterEach
@@ -328,6 +331,7 @@ class ActivitiesResourcesServiceTest {
                 .get("u1")
                 .get("Transport")
                 .capacityMax()).isEqualTo(4);
+        verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
     }
 
     @Test
@@ -395,6 +399,7 @@ class ActivitiesResourcesServiceTest {
                 .get("u1")
                 .get("Transport")
                 .pending()).isEqualTo(2);
+        verify(tournamentGroupCounterService).syncParent(runtimeOwnerId, "sub-1");
     }
 
     @Test

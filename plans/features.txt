@@ -5,7 +5,6 @@ buy the domain of myscoutee.com
 https://developers.facebook.com/ -> business verfication is needed
 
 1) check admin ui-s
-notification popup on the menu -- opening should show all the action and direct to the right screen
 
 2) configured server - where metrics can be uploaded, so virtual shares can be calculated
 needs a different server and project, practically a dashboard

@@ -57,4 +57,18 @@ class ActivityEventMapperTest {
         assertThat(dto.pendingMembers()).isEqualTo(45);
         assertThat(dto.activity()).isEqualTo(3);
     }
+
+    @Test
+    void tournamentActivityUsesTheCounterPersistedOnTheParentEvent() {
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("event-1");
+        event.setMode("Casual");
+        event.setActivity(3);
+        event.setPendingMembers(45);
+
+        var dto = mapper.toDto(event, null);
+
+        assertThat(dto.pendingMembers()).isEqualTo(45);
+        assertThat(dto.activity()).isEqualTo(3);
+    }
 }

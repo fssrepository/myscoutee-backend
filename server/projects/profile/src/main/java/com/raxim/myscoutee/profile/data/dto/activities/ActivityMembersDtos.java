@@ -34,6 +34,16 @@ public final class ActivityMembersDtos {
             String actorUserId,
             String targetUserId,
             String action,
-            String reason) {
+            String reason,
+            String eventId,
+            String subEventId) {
+        public ActivityMemberActionRequestDto(
+                ActivityMemberOwnerRefDto owner,
+                String actorUserId,
+                String targetUserId,
+                String action,
+                String reason) {
+            this(owner, actorUserId, targetUserId, action, reason, null, null);
+        }
     }
 }

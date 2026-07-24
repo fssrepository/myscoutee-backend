@@ -531,7 +531,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -579,7 +580,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -620,7 +622,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -3041,7 +3044,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -3089,7 +3093,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -3130,7 +3135,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -3392,7 +3398,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -3440,7 +3447,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -3481,7 +3489,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -4379,7 +4388,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -4427,7 +4437,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -4468,7 +4479,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -5712,7 +5724,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -5760,7 +5773,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -5801,7 +5815,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -6062,7 +6077,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -6110,7 +6126,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -6151,7 +6168,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -6624,7 +6642,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -6672,7 +6691,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -6713,7 +6733,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -6969,7 +6990,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -7017,7 +7039,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -7058,7 +7081,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -7831,7 +7855,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -7879,7 +7904,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -7920,7 +7946,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -8183,7 +8210,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -8231,7 +8259,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -8272,7 +8301,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -8784,7 +8814,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -8832,7 +8863,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -8873,7 +8905,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -9135,7 +9168,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -9183,7 +9217,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -9224,7 +9259,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -11110,7 +11146,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -11158,7 +11195,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -11199,7 +11237,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -12101,7 +12140,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -12149,7 +12189,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -12190,7 +12231,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -13125,7 +13167,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -13173,7 +13216,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -13214,7 +13258,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -13728,7 +13773,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -13776,7 +13822,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -13817,7 +13864,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -14328,7 +14376,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -14376,7 +14425,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -14417,7 +14467,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -14671,7 +14722,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -14719,7 +14771,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -14760,7 +14813,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -16902,7 +16956,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -16950,7 +17005,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -16991,7 +17047,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -17455,7 +17512,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -17503,7 +17561,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -17544,7 +17603,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -19788,7 +19848,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -19836,7 +19897,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -19877,7 +19939,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -20130,7 +20193,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -20178,7 +20242,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -20219,7 +20284,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -20678,7 +20744,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -20726,7 +20793,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -20767,7 +20835,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -21701,7 +21770,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -21749,7 +21819,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -21790,7 +21861,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -22507,7 +22579,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -22555,7 +22628,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -22596,7 +22670,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -22849,7 +22924,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -22897,7 +22973,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -22938,7 +23015,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -23442,7 +23520,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -23490,7 +23569,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -23531,7 +23611,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -23785,7 +23866,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -23833,7 +23915,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -23874,7 +23957,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -24132,7 +24216,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -24180,7 +24265,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -24221,7 +24307,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -24475,7 +24562,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -24523,7 +24611,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -24564,7 +24653,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -25069,7 +25159,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -25117,7 +25208,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -25158,7 +25250,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -25914,7 +26007,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -25962,7 +26056,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -26003,7 +26098,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -26756,7 +26852,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -26804,7 +26901,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -26845,7 +26943,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -27354,7 +27453,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -27402,7 +27502,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -27443,7 +27544,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -27947,7 +28049,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -27995,7 +28098,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -28036,7 +28140,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -28750,7 +28855,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -28798,7 +28904,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -28839,7 +28946,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -29305,7 +29413,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -29353,7 +29462,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -29394,7 +29504,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -29648,7 +29759,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -29696,7 +29808,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -29737,7 +29850,8 @@
         "accommodationCapacityMax": 0,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -30709,7 +30823,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -30757,7 +30872,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -30798,7 +30914,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -31308,7 +31425,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -31356,7 +31474,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -31397,7 +31516,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -32152,7 +32272,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -32200,7 +32321,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -32241,7 +32363,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -32493,7 +32616,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -32541,7 +32665,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -32582,7 +32707,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -32835,7 +32961,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -32883,7 +33010,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -32924,7 +33052,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -34737,7 +34866,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -34785,7 +34915,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -34826,7 +34957,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -35084,7 +35216,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -35132,7 +35265,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -35173,7 +35307,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -35429,7 +35564,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -35477,7 +35613,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -35518,7 +35655,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -36234,7 +36372,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -36282,7 +36421,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -36323,7 +36463,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -36783,7 +36924,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -36831,7 +36973,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -36872,7 +37015,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -37627,7 +37771,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -37675,7 +37820,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -37716,7 +37862,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -37969,7 +38116,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -38017,7 +38165,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -38058,7 +38207,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -39022,7 +39172,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -39070,7 +39221,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -39111,7 +39263,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -40033,7 +40186,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -40081,7 +40235,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -40122,7 +40277,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -40882,7 +41038,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -40930,7 +41087,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -40971,7 +41129,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -41225,7 +41384,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -41273,7 +41433,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -41314,7 +41475,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -42442,7 +42604,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -42490,7 +42653,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -42531,7 +42695,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -42785,7 +42950,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -42833,7 +42999,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -42874,7 +43041,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -43127,7 +43295,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -43175,7 +43344,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -43216,7 +43386,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -43887,7 +44058,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -43935,7 +44107,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -43976,7 +44149,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -44230,7 +44404,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -44278,7 +44453,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -44319,7 +44495,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -44781,7 +44958,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -44829,7 +45007,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -44870,7 +45049,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -45333,7 +45513,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -45381,7 +45562,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -45422,7 +45604,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -45674,7 +45857,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -45722,7 +45906,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -45763,7 +45948,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -46274,7 +46460,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -46322,7 +46509,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -46363,7 +46551,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -46618,7 +46807,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -46666,7 +46856,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -46707,7 +46898,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -48086,7 +48278,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -48134,7 +48327,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -48175,7 +48369,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -48427,7 +48622,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -48475,7 +48671,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -48516,7 +48713,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -49486,7 +49684,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -49534,7 +49733,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -49575,7 +49775,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -49831,7 +50032,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -49879,7 +50081,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -49920,7 +50123,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -50681,7 +50885,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -50729,7 +50934,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -50770,7 +50976,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -51483,7 +51690,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -51531,7 +51739,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -51572,7 +51781,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -51825,7 +52035,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -51873,7 +52084,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -51914,7 +52126,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -52169,7 +52382,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -52217,7 +52431,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       },
       {
         "accommodationPending": 0,
@@ -52258,7 +52473,8 @@
         "accommodationCapacityMax": 6,
         "suppliesAccepted": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 10
+        "suppliesCapacityMax": 10,
+        "groupsPending": 0
       }
     ],
     "mode": "Tournament",
@@ -59712,7 +59928,8 @@
         "suppliesAccepted": 0,
         "suppliesPending": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "id": "demo-results-stage-2",
@@ -59757,7 +59974,8 @@
         "suppliesAccepted": 0,
         "suppliesPending": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       }
     ],
     "createdDate": "2027-05-12T10:00:00.000Z",
@@ -59822,7 +60040,8 @@
         "icon": "emoji_events"
       }
     ],
-    "policiesEnabled": false
+    "policiesEnabled": false,
+    "activity": 0
   },
   {
     "_id": "demo-tournament-start-review",
@@ -59897,7 +60116,8 @@
         "suppliesAccepted": 0,
         "suppliesPending": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       },
       {
         "id": "demo-review-stage-2",
@@ -59939,7 +60159,8 @@
         "suppliesAccepted": 0,
         "suppliesPending": 0,
         "suppliesCapacityMin": 0,
-        "suppliesCapacityMax": 0
+        "suppliesCapacityMax": 0,
+        "groupsPending": 0
       }
     ],
     "createdDate": "2027-05-12T10:00:00.000Z",
@@ -60004,7 +60225,8 @@
         "icon": "emoji_events"
       }
     ],
-    "policiesEnabled": false
+    "policiesEnabled": false,
+    "activity": 0
   },
   {
     "_id": {

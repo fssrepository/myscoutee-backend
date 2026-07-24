@@ -56,6 +56,7 @@ public class ActivitiesResourcesService {
     private final AccessControlService accessControlService;
     private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
     private final EventSlotReadModelService eventSlotReadModelService;
+    private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
@@ -65,7 +66,8 @@ public class ActivitiesResourcesService {
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
             AccessControlService accessControlService,
             ActivitySubEventResourceMapper activitySubEventResourceMapper,
-            EventSlotReadModelService eventSlotReadModelService) {
+            EventSlotReadModelService eventSlotReadModelService,
+            ActivityTournamentGroupCounterService tournamentGroupCounterService) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -74,6 +76,7 @@ public class ActivitiesResourcesService {
         this.accessControlService = accessControlService;
         this.activitySubEventResourceMapper = activitySubEventResourceMapper;
         this.eventSlotReadModelService = eventSlotReadModelService;
+        this.tournamentGroupCounterService = tournamentGroupCounterService;
     }
 
     public ActivitySubEventResourceStateDto queryState(String ownerId, String subEventId, String assetOwnerUserId) {
@@ -972,6 +975,7 @@ public class ActivitiesResourcesService {
         runtime.setUpdatedDate(nowIso);
         runtime.setUpdatedUser(normalizeId(actorUserId));
         activitySubEventStageRuntimeRepository.save(runtime);
+        tournamentGroupCounterService.syncParent(scope.runtimeOwnerId(), scope.subEventId());
         return aggregateGroupRuntimeMetrics(byAssetOwner);
     }
 
