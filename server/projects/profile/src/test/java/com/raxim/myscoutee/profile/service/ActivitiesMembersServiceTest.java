@@ -846,6 +846,179 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void memberInvitationRequiresChildManagerApprovalAfterInviteeAccepts() {
+        String eventId = "event-1";
+        String subEventId = "sub-1";
+        String ownerId = eventId + ":" + subEventId;
+        ActivityMember invitation = member("invite-sync", ownerId, "target", "Member", "pending");
+        invitation.setOwnerType("subEvent");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        ActivityMember inviter = member("inviter-sync", ownerId, "member-inviter", "Member", "accepted");
+        inviter.setOwnerType("subEvent");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(invitation, inviter));
+        ActivityEvent event = event(eventId, "owner", "owner");
+
+        when(homeUserProfileService.resolveSelectedUserId(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+        when(activityEventsRepository.findBySourceId(eventId)).thenReturn(List.of(event));
+
+        var inviteeResult = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "target",
+                "target",
+                "accept",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(inviteeResult)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("pending");
+                    assertThat(entry.pendingSource()).isEqualTo("member");
+                    assertThat(entry.requestKind()).isEqualTo("approval");
+                    assertThat(entry.invitedByUserId()).isEqualTo("member-inviter");
+                });
+
+        var managerResult = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "owner",
+                "target",
+                "accept",
+                null,
+                eventId,
+                subEventId));
+
+        assertThat(managerResult)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .satisfies(entry -> {
+                    assertThat(entry.status()).isEqualTo("accepted");
+                    assertThat(entry.pendingSource()).isNull();
+                    assertThat(entry.requestKind()).isNull();
+                });
+    }
+
+    @Test
+    void unrelatedChildMemberCannotDeleteAnotherMembersInvitation() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember invitation = member("invite-sync", ownerId, "target", "Member", "pending");
+        invitation.setOwnerType("subEvent");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        ActivityMember unrelatedMember = member("other-sync", ownerId, "other-member", "Member", "accepted");
+        unrelatedMember.setOwnerType("subEvent");
+
+        when(homeUserProfileService.resolveSelectedUserId("other-member")).thenReturn("other-member");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenReturn(List.of(invitation, unrelatedMember));
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenReturn(List.of(invitation, unrelatedMember));
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "other-member",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result)
+                .filteredOn(entry -> "target".equals(entry.userId()))
+                .singleElement()
+                .extracting(ActivityMemberEntryDto::status)
+                .isEqualTo("pending");
+        verify(activityMembersRepository, never()).save(any(ActivityMember.class));
+    }
+
+    @Test
+    void inviteeCanRejectChildInvitationAndItDisappearsFromMemberQuery() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember invitation = member("invite-sync", ownerId, "target", "Member", "pending");
+        invitation.setOwnerType("subEvent");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
+
+        when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedInvitation.set(saved);
+            return saved;
+        });
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "target",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result).noneMatch(entry -> "target".equals(entry.userId()));
+        assertThat(storedInvitation.get().getStatus()).isEqualTo("deleted");
+    }
+
+    @Test
+    void onlyInviterCanCancelUnansweredChildInvitation() {
+        String ownerId = "event-1:sub-1";
+        ActivityMember invitation = member("invite-sync", ownerId, "target", "Member", "pending");
+        invitation.setOwnerType("subEvent");
+        invitation.setPendingSource("admin");
+        invitation.setRequestKind("invite");
+        invitation.setInvitedByUserId("member-inviter");
+        ActivityMember inviter = member("inviter-sync", ownerId, "member-inviter", "Member", "accepted");
+        inviter.setOwnerType("subEvent");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(invitation, inviter));
+
+        when(homeUserProfileService.resolveSelectedUserId("member-inviter")).thenReturn("member-inviter");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerId("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.findManagementOrderedByOwner("subEvent", ownerId))
+                .thenAnswer(invocation -> storedMembers.get());
+        when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
+            ActivityMember saved = invocation.getArgument(0);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
+            return saved;
+        });
+
+        var result = service.applyAction(new ActivityMemberActionRequestDto(
+                new ActivityMemberOwnerRefDto("subEvent", ownerId),
+                "member-inviter",
+                "target",
+                "remove",
+                null));
+
+        assertThat(result).noneMatch(entry -> "target".equals(entry.userId()));
+        assertThat(storedMembers.get())
+                .filteredOn(member -> "target".equals(member.getUserId()))
+                .singleElement()
+                .extracting(ActivityMember::getStatus)
+                .isEqualTo("deleted");
+    }
+
+    @Test
     void invitedMemberCanAcceptOwnPendingAssetInvitation() {
         String ownerId = "car-1";
         ActivityMember invitation = member("asset-invite-sync", ownerId, "target", "Member", "pending");
@@ -853,16 +1026,21 @@ class ActivitiesMembersServiceTest {
         invitation.setPendingSource("admin");
         invitation.setRequestKind("invite");
         invitation.setInvitedByUserId("manager");
-        AtomicReference<ActivityMember> storedInvitation = new AtomicReference<>(invitation);
+        ActivityMember manager = member("asset-manager-sync", ownerId, "manager", "Manager", "accepted");
+        manager.setOwnerType("asset");
+        AtomicReference<List<ActivityMember>> storedMembers =
+                new AtomicReference<>(List.of(invitation, manager));
 
         when(homeUserProfileService.resolveSelectedUserId("target")).thenReturn("target");
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", ownerId))
-                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+                .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.findManagementOrderedByOwner("asset", ownerId))
-                .thenAnswer(invocation -> List.of(storedInvitation.get()));
+                .thenAnswer(invocation -> storedMembers.get());
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> {
             ActivityMember saved = invocation.getArgument(0);
-            storedInvitation.set(saved);
+            storedMembers.set(storedMembers.get().stream()
+                    .map(member -> member.getUserId().equals(saved.getUserId()) ? saved : member)
+                    .toList());
             return saved;
         });
 

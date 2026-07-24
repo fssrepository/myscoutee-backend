@@ -760,9 +760,8 @@ public class ActivitiesResourcesService {
             return null;
         }
         Map<String, List<AssetDetailDto>> fallbackByType = new LinkedHashMap<>();
-        String assetOwnerUserId = normalizeId(record.getAssetOwnerUserId());
         for (AssetDetailDto detail : eligibleAssets == null ? List.<AssetDetailDto>of() : eligibleAssets.values()) {
-            if (detail == null || assetOwnerUserId.equals(normalizeId(detail.ownerUserId()))) {
+            if (detail == null) {
                 continue;
             }
             String type = safeText(detail.type());

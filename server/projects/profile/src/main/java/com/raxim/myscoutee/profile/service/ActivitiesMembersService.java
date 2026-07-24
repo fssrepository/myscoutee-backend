@@ -617,7 +617,13 @@ public class ActivitiesMembersService {
         if (OWNER_TYPE_EVENT.equals(ownerType)) {
             validateEventMemberReplacement(ownerId, actorUserId, request.members(), existingByUserId);
         } else {
-            validateManagedOwnerMemberReplacement(ownerType, ownerId, request.members(), existingByUserId);
+            validateManagedOwnerMemberReplacement(
+                    ownerType,
+                    ownerId,
+                    actorUserId,
+                    scopedEventId,
+                    request.members(),
+                    existingByUserId);
         }
 
         List<ActivityMember> nextDocuments = new ArrayList<>();
@@ -725,6 +731,7 @@ public class ActivitiesMembersService {
         String actorUserId = resolveActorUserId(request.actorUserId());
         String targetUserId = normalizeId(request.targetUserId());
         String action = normalizeMemberAction(request.action());
+        String scopedEventId = normalizeId(request.eventId());
         if (!StringUtils.hasText(ownerType)
                 || !StringUtils.hasText(ownerId)
                 || !StringUtils.hasText(actorUserId)
@@ -750,12 +757,39 @@ public class ActivitiesMembersService {
         if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
             return queryMembers(ownerType, ownerId);
         }
+        if (OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current)
+                && !actorUserId.equals(targetUserId)
+                && !actorUserId.equals(normalizeId(current.getInvitedByUserId()))) {
+            return queryMembers(ownerType, ownerId);
+        }
         String currentRole = resolveStoredRole(current, ownerType, ownerId);
+        boolean actorCanManageOwner = canManageOwnerMembers(
+                ownerType,
+                ownerId,
+                actorUserId,
+                scopedEventId);
         boolean acceptingOwnManagedInvitation = !OWNER_TYPE_EVENT.equals(ownerType)
                 && ACTION_ACCEPT.equals(action)
                 && actorUserId.equals(targetUserId)
                 && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
                 && isInvitationMembership(current);
+        boolean cancellingOwnManagedInvitation = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current)
+                && actorUserId.equals(normalizeId(current.getInvitedByUserId()));
+        boolean rejectingOwnManagedInvitation = !OWNER_TYPE_EVENT.equals(ownerType)
+                && ACTION_REMOVE.equals(action)
+                && actorUserId.equals(targetUserId)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current);
+        boolean managingPendingApproval = !OWNER_TYPE_EVENT.equals(ownerType)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isAdminApprovalMembership(current)
+                && actorCanManageOwner;
         boolean steppingDownOwnManagedRole = !OWNER_TYPE_EVENT.equals(ownerType)
                 && ACTION_STEP_DOWN_ADMIN.equals(action)
                 && actorUserId.equals(targetUserId)
@@ -770,22 +804,39 @@ public class ActivitiesMembersService {
                 && !isProtectedOwnerMember(ownerType, ownerId, targetUserId);
         if (!OWNER_TYPE_EVENT.equals(ownerType)
                 && !acceptingOwnManagedInvitation
+                && !cancellingOwnManagedInvitation
+                && !rejectingOwnManagedInvitation
+                && !managingPendingApproval
                 && !steppingDownOwnManagedRole
                 && !leavingOwnManagedMembership
-                && (!canManageOwnerMembers(ownerType, ownerId, actorUserId)
+                && (!actorCanManageOwner
                     || actorUserId.equals(targetUserId)
                     || isProtectedOwnerMember(ownerType, ownerId, targetUserId))) {
+            return queryMembers(ownerType, ownerId);
+        }
+        if (!OWNER_TYPE_EVENT.equals(ownerType)
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current)
+                && !acceptingOwnManagedInvitation
+                && !cancellingOwnManagedInvitation
+                && !rejectingOwnManagedInvitation) {
             return queryMembers(ownerType, ownerId);
         }
 
         String currentStatus = normalizeStatus(current.getStatus());
         String nextStatus;
+        boolean requiresManagerApproval = acceptingOwnManagedInvitation
+                && !canManageOwnerMembers(
+                    ownerType,
+                    ownerId,
+                    current.getInvitedByUserId(),
+                    scopedEventId);
         if (ACTION_ACCEPT.equals(action)) {
             if (!STATUS_PENDING.equals(currentStatus)
                     || (!acceptingOwnManagedInvitation && !isAdminApprovalMembership(current))) {
                 return queryMembers(ownerType, ownerId);
             }
-            nextStatus = STATUS_ACCEPTED;
+            nextStatus = requiresManagerApproval ? STATUS_PENDING : STATUS_ACCEPTED;
         } else if (ACTION_REMOVE.equals(action)) {
             nextStatus = STATUS_DELETED;
         } else if (ACTION_DISQUALIFY.equals(action)) {
@@ -818,9 +869,11 @@ public class ActivitiesMembersService {
                 : cloneMember(current);
         if (!STATUS_DELETED.equals(nextStatus)) {
             next.setStatus(nextStatus);
-            next.setPendingSource(null);
-            next.setRequestKind(null);
-            next.setInvitedByUserId(null);
+            next.setPendingSource(requiresManagerApproval ? "member" : null);
+            next.setRequestKind(requiresManagerApproval ? REQUEST_KIND_APPROVAL : null);
+            if (!requiresManagerApproval) {
+                next.setInvitedByUserId(null);
+            }
             next.setActionAtIso(nowIso);
             next.setUpdatedDate(nowIso);
             next.setUpdatedUser(resolveUpdatedUser(actorUserId, next, current));
@@ -1258,6 +1311,14 @@ public class ActivitiesMembersService {
                         HttpStatus.FORBIDDEN,
                         "An invitation must be accepted by the invited member before admin approval.");
             }
+            if (isInvitationMembership(current)
+                    && requested == null
+                    && !normalizedActorUserId.equals(targetUserId)
+                    && !normalizedActorUserId.equals(normalizeId(current.getInvitedByUserId()))) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Only the inviter may cancel this invitation, or the invitee may reject it.");
+            }
             boolean currentAdmin = STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
                     && "Admin".equals(resolveStoredRole(current, OWNER_TYPE_EVENT, eventId));
             if (!currentAdmin || targetUserId.equals(creatorUserId)) {
@@ -1295,11 +1356,21 @@ public class ActivitiesMembersService {
     private void validateManagedOwnerMemberReplacement(
             String ownerType,
             String ownerId,
+            String actorUserId,
+            String eventId,
             List<ActivityMemberEntryDto> requestedMembers,
             Map<String, ActivityMember> existingByUserId) {
-        if (existingByUserId == null || existingByUserId.isEmpty()) {
-            return;
-        }
+        String normalizedActorUserId = normalizeId(actorUserId);
+        boolean actorCanManage = canManageOwnerMembers(
+                ownerType,
+                ownerId,
+                normalizedActorUserId,
+                eventId);
+        boolean actorIsAcceptedMember = existingByUserId != null
+                && existingByUserId.values().stream()
+                    .filter(Objects::nonNull)
+                    .anyMatch(member -> normalizedActorUserId.equals(normalizeId(member.getUserId()))
+                            && STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())));
         Map<String, ActivityMemberEntryDto> requestedByUserId = new LinkedHashMap<>();
         for (ActivityMemberEntryDto entry : safeMembers(requestedMembers)) {
             String userId = normalizeId(entry == null ? null : entry.userId());
@@ -1307,23 +1378,92 @@ public class ActivitiesMembersService {
                 requestedByUserId.put(userId, entry);
             }
         }
-        for (Map.Entry<String, ActivityMember> existingEntry : existingByUserId.entrySet()) {
+        for (Map.Entry<String, ActivityMember> existingEntry :
+                (existingByUserId == null ? Map.<String, ActivityMember>of() : existingByUserId).entrySet()) {
+            String targetUserId = existingEntry.getKey();
             ActivityMember current = existingEntry.getValue();
-            if (current == null
-                    || !STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
-                    || !MANAGER_ROLES.contains(resolveStoredRole(current, ownerType, ownerId))) {
+            if (current == null || STATUS_DELETED.equals(normalizeStatus(current.getStatus()))) {
                 continue;
             }
-            ActivityMemberEntryDto requested = requestedByUserId.get(existingEntry.getKey());
-            boolean removed = requested == null
-                    || !STATUS_ACCEPTED.equals(normalizeStatus(requested.status()));
-            boolean roleChanged = requested != null
-                    && !resolveStoredRole(current, ownerType, ownerId).equals(safeText(requested.role()));
-            if (removed || roleChanged) {
+            ActivityMemberEntryDto requested = requestedByUserId.get(targetUserId);
+            boolean initialInvitation = STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                    && isInvitationMembership(current);
+            if (initialInvitation) {
+                if (requested == null) {
+                    boolean inviterCancelling = normalizedActorUserId.equals(normalizeId(current.getInvitedByUserId()));
+                    boolean inviteeRejecting = normalizedActorUserId.equals(targetUserId);
+                    if (!inviterCancelling && !inviteeRejecting) {
+                        throw new ResponseStatusException(
+                                HttpStatus.FORBIDDEN,
+                                "Only the inviter may cancel this invitation, or the invitee may reject it.");
+                    }
+                    continue;
+                }
+                boolean invitationChanged = !STATUS_PENDING.equals(normalizeStatus(requested.status()))
+                        || !safeText(current.getRequestKind()).equals(safeText(requested.requestKind()))
+                        || !safeText(current.getPendingSource()).equals(safeText(requested.pendingSource()));
+                if (invitationChanged) {
+                    throw new ResponseStatusException(
+                            HttpStatus.FORBIDDEN,
+                            "Invitation responses must use the managed member action.");
+                }
+                continue;
+            }
+
+            boolean removed = requested == null;
+            boolean protectedManager = STATUS_ACCEPTED.equals(normalizeStatus(current.getStatus()))
+                    && MANAGER_ROLES.contains(resolveStoredRole(current, ownerType, ownerId));
+            boolean protectedManagerChanged = protectedManager && (
+                    removed
+                    || !STATUS_ACCEPTED.equals(normalizeStatus(requested.status()))
+                    || !resolveStoredRole(current, ownerType, ownerId).equals(safeText(requested.role())));
+            if (protectedManagerChanged) {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
                         "An admin or manager must use a managed step-down or ownership-transfer action.");
             }
+            if (removed && !actorCanManage && !normalizedActorUserId.equals(targetUserId)) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Only a manager may remove another member or pending request.");
+            }
+            if (removed) {
+                continue;
+            }
+
+            boolean statusChanged = !normalizeStatus(current.getStatus()).equals(normalizeStatus(requested.status()));
+            boolean roleChanged = requested != null
+                    && !resolveStoredRole(current, ownerType, ownerId).equals(safeText(requested.role()));
+            if ((statusChanged || roleChanged) && !actorCanManage) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "Only a manager may change another member's status or role.");
+            }
+        }
+
+        for (Map.Entry<String, ActivityMemberEntryDto> requestedEntry : requestedByUserId.entrySet()) {
+            if (existingByUserId != null && existingByUserId.containsKey(requestedEntry.getKey())) {
+                continue;
+            }
+            ActivityMemberEntryDto entry = requestedEntry.getValue();
+            String status = normalizeStatus(entry == null ? null : entry.status());
+            String pendingSource = resolvePendingSource(entry == null ? null : entry.pendingSource(), status);
+            String requestKind = resolveRequestKind(
+                    entry == null ? null : entry.requestKind(),
+                    status,
+                    pendingSource);
+            boolean newInvitation = STATUS_PENDING.equals(status)
+                    && (REQUEST_KIND_INVITE.equals(requestKind)
+                        || REQUEST_KIND_WAITLIST_INVITE.equals(requestKind));
+            if (newInvitation && (actorCanManage || actorIsAcceptedMember)) {
+                continue;
+            }
+            if (!newInvitation && actorCanManage) {
+                continue;
+            }
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only an accepted member may invite someone, and only a manager may add an accepted member.");
         }
     }
 
@@ -2501,6 +2641,14 @@ public class ActivitiesMembersService {
     }
 
     private boolean canManageOwnerMembers(String ownerType, String ownerId, String actorUserId) {
+        return canManageOwnerMembers(ownerType, ownerId, actorUserId, null);
+    }
+
+    private boolean canManageOwnerMembers(
+            String ownerType,
+            String ownerId,
+            String actorUserId,
+            String eventId) {
         String normalizedOwnerType = normalizeOwnerType(ownerType);
         String normalizedOwnerId = normalizeId(ownerId);
         String normalizedActorUserId = normalizeId(actorUserId);
@@ -2508,6 +2656,15 @@ public class ActivitiesMembersService {
                 || !StringUtils.hasText(normalizedOwnerId)
                 || !StringUtils.hasText(normalizedActorUserId)) {
             return false;
+        }
+        String normalizedEventId = resolveManagedOwnerEventId(
+                normalizedOwnerType,
+                normalizedOwnerId,
+                eventId);
+        if (!OWNER_TYPE_EVENT.equals(normalizedOwnerType)
+                && StringUtils.hasText(normalizedEventId)
+                && isEventAdminUser(normalizedEventId, normalizedActorUserId)) {
+            return true;
         }
         if (OWNER_TYPE_EVENT.equals(normalizedOwnerType)) {
             ActivityEvent eventRecord = findPreferredEventRecord(normalizedOwnerId);
@@ -2530,6 +2687,22 @@ public class ActivitiesMembersService {
                 .map(ActivityMember::getRole)
                 .map(this::safeText)
                 .anyMatch(MANAGER_ROLES::contains);
+    }
+
+    private String resolveManagedOwnerEventId(
+            String ownerType,
+            String ownerId,
+            String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (StringUtils.hasText(normalizedEventId)) {
+            int slotMarker = normalizedEventId.indexOf(":slot:");
+            return slotMarker > 0 ? normalizedEventId.substring(0, slotMarker) : normalizedEventId;
+        }
+        if (!OWNER_TYPE_SUB_EVENT.equals(normalizeOwnerType(ownerType))) {
+            return "";
+        }
+        SubEventCounterScope scope = subEventCounterScope(ownerId);
+        return scope == null ? "" : scope.eventId();
     }
 
     private boolean isProtectedOwnerMember(String ownerType, String ownerId, String targetUserId) {
@@ -2893,21 +3066,38 @@ public class ActivitiesMembersService {
         String status = normalizeStatus(entry.status());
         String pendingSource = resolvePendingSource(entry.pendingSource(), status);
         String requestKind = resolveRequestKind(entry.requestKind(), status, pendingSource);
-        if (!STATUS_PENDING.equals(status)
-                || !(REQUEST_KIND_INVITE.equals(requestKind) || REQUEST_KIND_WAITLIST_INVITE.equals(requestKind))) {
+        if (!STATUS_PENDING.equals(status)) {
             return null;
+        }
+        if (current != null
+                && STATUS_PENDING.equals(normalizeStatus(current.getStatus()))
+                && isInvitationMembership(current)
+                && StringUtils.hasText(current.getInvitedByUserId())) {
+            return current.getInvitedByUserId().trim();
+        }
+        if (REQUEST_KIND_APPROVAL.equals(requestKind)) {
+            String explicitInvitedByUserId = normalizeId(entry.invitedByUserId());
+            if (StringUtils.hasText(explicitInvitedByUserId)) {
+                return explicitInvitedByUserId;
+            }
+            return current != null && StringUtils.hasText(current.getInvitedByUserId())
+                    ? current.getInvitedByUserId().trim()
+                    : null;
+        }
+        if (!(REQUEST_KIND_INVITE.equals(requestKind) || REQUEST_KIND_WAITLIST_INVITE.equals(requestKind))) {
+            return null;
+        }
+        if (StringUtils.hasText(actorUserId)) {
+            return actorUserId;
         }
         String explicitInvitedByUserId = normalizeId(entry.invitedByUserId());
         if (StringUtils.hasText(explicitInvitedByUserId)) {
             return explicitInvitedByUserId;
         }
-        if (Boolean.TRUE.equals(entry.invitedByActiveUser()) && StringUtils.hasText(actorUserId)) {
-            return actorUserId;
-        }
         if (current != null && StringUtils.hasText(current.getInvitedByUserId())) {
             return current.getInvitedByUserId().trim();
         }
-        return StringUtils.hasText(actorUserId) ? actorUserId : null;
+        return null;
     }
 
     private String resolveCreatedUser(ActivityMember member, String actorUserId) {
